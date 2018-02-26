@@ -27,6 +27,7 @@ import org.apache.lucene.search.Query;
 import org.drools.workbench.models.guided.template.backend.RuleTemplateModelXMLPersistenceImpl;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
+import org.guvnor.common.services.project.categories.Decision;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
@@ -81,7 +82,7 @@ public class IndexGuidedRuleTemplateAttributesTest extends BaseIndexingTest<Guid
 
     @Override
     protected GuidedRuleTemplateResourceTypeDefinition getResourceTypeDefinition() {
-        return new GuidedRuleTemplateResourceTypeDefinition();
+        return new GuidedRuleTemplateResourceTypeDefinition(new Decision());
     }
 
     @Override

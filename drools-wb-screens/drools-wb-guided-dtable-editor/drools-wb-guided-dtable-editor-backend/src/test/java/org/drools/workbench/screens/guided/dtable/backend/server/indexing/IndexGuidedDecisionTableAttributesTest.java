@@ -27,6 +27,7 @@ import org.apache.lucene.search.Query;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
+import org.guvnor.common.services.project.categories.Decision;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
@@ -73,7 +74,7 @@ public class IndexGuidedDecisionTableAttributesTest extends BaseIndexingTest<Gui
 
     @Override
     protected GuidedDTableResourceTypeDefinition getResourceTypeDefinition() {
-        return new GuidedDTableResourceTypeDefinition();
+        return new GuidedDTableResourceTypeDefinition(new Decision());
     }
 
     @Override

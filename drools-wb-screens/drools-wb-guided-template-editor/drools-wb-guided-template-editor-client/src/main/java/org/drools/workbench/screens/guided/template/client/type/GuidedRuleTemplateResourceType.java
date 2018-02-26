@@ -17,12 +17,14 @@
 package org.drools.workbench.screens.guided.template.client.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.guided.template.client.resources.GuidedTemplateEditorResources;
 import org.drools.workbench.screens.guided.template.client.resources.i18n.GuidedTemplateEditorConstants;
 import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
+import org.guvnor.common.services.project.categories.Decision;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 @ApplicationScoped
@@ -30,7 +32,15 @@ public class GuidedRuleTemplateResourceType
         extends GuidedRuleTemplateResourceTypeDefinition
         implements ClientResourceType {
 
-    private static final Image IMAGE = new Image( GuidedTemplateEditorResources.INSTANCE.images().typeGuidedRuleTemplate() );
+    private static final Image IMAGE = new Image(GuidedTemplateEditorResources.INSTANCE.images().typeGuidedRuleTemplate());
+
+    public GuidedRuleTemplateResourceType() {
+    }
+
+    @Inject
+    public GuidedRuleTemplateResourceType(final Decision category) {
+        super(category);
+    }
 
     @Override
     public IsWidget getIcon() {
@@ -40,7 +50,7 @@ public class GuidedRuleTemplateResourceType
     @Override
     public String getDescription() {
         String desc = GuidedTemplateEditorConstants.INSTANCE.guidedTemplateResourceTypeDescription();
-        if ( desc == null || desc.isEmpty() ) {
+        if (desc == null || desc.isEmpty()) {
             return super.getDescription();
         }
         return desc;

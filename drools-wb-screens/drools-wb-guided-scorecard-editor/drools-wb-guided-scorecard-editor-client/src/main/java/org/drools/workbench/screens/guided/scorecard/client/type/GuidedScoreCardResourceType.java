@@ -17,18 +17,28 @@
 package org.drools.workbench.screens.guided.scorecard.client.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.guided.scorecard.client.resources.GuidedScoreCardResources;
 import org.drools.workbench.screens.guided.scorecard.client.resources.i18n.GuidedScoreCardConstants;
 import org.drools.workbench.screens.guided.scorecard.type.GuidedScoreCardResourceTypeDefinition;
+import org.guvnor.common.services.project.categories.Decision;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 @ApplicationScoped
 public class GuidedScoreCardResourceType
         extends GuidedScoreCardResourceTypeDefinition
         implements ClientResourceType {
+
+    public GuidedScoreCardResourceType() {
+    }
+
+    @Inject
+    public GuidedScoreCardResourceType(final Decision category) {
+        super(category);
+    }
 
     @Override
     public IsWidget getIcon() {

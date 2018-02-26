@@ -17,13 +17,32 @@
 package org.drools.workbench.screens.scorecardxls.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import org.guvnor.common.services.project.categories.Decision;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.workbench.category.Category;
+import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @ApplicationScoped
 public class ScoreCardXLSResourceTypeDefinition
         implements ResourceTypeDefinition {
+
+    private Category category;
+
+    public ScoreCardXLSResourceTypeDefinition() {
+    }
+
+    @Inject
+    public ScoreCardXLSResourceTypeDefinition(final Decision category) {
+        this.category = category;
+    }
+
+    @Override
+    public Category getCategory() {
+        return this.category;
+    }
 
     @Override
     public String getShortName() {
@@ -56,7 +75,7 @@ public class ScoreCardXLSResourceTypeDefinition
     }
 
     @Override
-    public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( "." + getSuffix() );
+    public boolean accept(final Path path) {
+        return path.getFileName().endsWith("." + getSuffix());
     }
 }

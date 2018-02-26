@@ -38,6 +38,7 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuided
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.common.DecisionTablePopoverUtils;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
+import org.guvnor.common.services.project.categories.Decision;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
@@ -248,7 +249,7 @@ public class GuidedDecisionTableEditorMenusTest {
     private DecisionTablePopoverUtils popoverUtils;
 
     private GuidedDecisionTableEditorPresenter presenter;
-    private GuidedDTableResourceType resourceType = new GuidedDTableResourceType();
+    private GuidedDTableResourceType resourceType = new GuidedDTableResourceType(new Decision());
 
     private String[] menuItemIdentifiers = new String[]{
             "org.uberfire.workbench.model.menu.impl.MenuBuilderImpl$CurrentContext$1#Delete",

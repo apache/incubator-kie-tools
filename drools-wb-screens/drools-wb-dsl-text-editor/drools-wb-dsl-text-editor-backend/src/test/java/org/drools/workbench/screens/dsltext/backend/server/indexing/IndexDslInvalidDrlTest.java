@@ -28,6 +28,7 @@ import ch.qos.logback.core.Appender;
 
 import org.apache.lucene.search.Query;
 import org.drools.workbench.screens.dsltext.type.DSLResourceTypeDefinition;
+import org.guvnor.common.services.project.categories.Decision;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
@@ -89,7 +90,7 @@ public class IndexDslInvalidDrlTest extends BaseIndexingTest<DSLResourceTypeDefi
 
     @Override
     protected DSLResourceTypeDefinition getResourceTypeDefinition() {
-        return new DSLResourceTypeDefinition();
+        return new DSLResourceTypeDefinition(new Decision());
     }
 
     @Override

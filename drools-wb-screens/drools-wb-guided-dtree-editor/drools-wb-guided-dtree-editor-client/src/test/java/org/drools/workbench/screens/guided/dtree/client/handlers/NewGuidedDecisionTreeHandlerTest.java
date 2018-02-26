@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtree.client.handlers;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.guided.dtree.client.type.GuidedDTreeResourceType;
 import org.drools.workbench.screens.guided.dtree.service.GuidedDecisionTreeEditorService;
+import org.guvnor.common.services.project.categories.Decision;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
@@ -65,7 +66,7 @@ public class NewGuidedDecisionTreeHandlerTest {
     @Captor
     private ArgumentCaptor<ResourceRef> refArgumentCaptor;
 
-    private GuidedDTreeResourceType resourceType = new GuidedDTreeResourceType();
+    private GuidedDTreeResourceType resourceType = new GuidedDTreeResourceType(new Decision());
 
     private NewGuidedDecisionTreeHandler handler;
 

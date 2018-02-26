@@ -30,6 +30,7 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
 import org.drools.workbench.screens.dtablexls.type.DecisionTableXLSResourceTypeDefinition;
+import org.guvnor.common.services.project.categories.Decision;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
@@ -70,7 +71,7 @@ public class IndexDecisionTableXLSAttributeNameAndValueTest extends BaseIndexing
 
     @Override
     protected DecisionTableXLSResourceTypeDefinition getResourceTypeDefinition() {
-        return new DecisionTableXLSResourceTypeDefinition();
+        return new DecisionTableXLSResourceTypeDefinition(new Decision());
     }
 
     @Override

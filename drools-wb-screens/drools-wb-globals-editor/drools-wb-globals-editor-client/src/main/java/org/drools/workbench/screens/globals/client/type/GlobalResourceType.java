@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.globals.client.resources.GlobalsEditorResources;
 import org.drools.workbench.screens.globals.client.resources.i18n.GlobalsEditorConstants;
 import org.drools.workbench.screens.globals.type.GlobalResourceTypeDefinition;
+import org.guvnor.common.services.project.categories.Decision;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
@@ -32,10 +33,20 @@ public class GlobalResourceType
         extends GlobalResourceTypeDefinition
         implements ClientResourceType {
 
-    private static final Image IMAGE = new Image( GlobalsEditorResources.INSTANCE.images().typeGlobalVariable() );
+    private static final Image IMAGE = new Image(GlobalsEditorResources.INSTANCE.images().typeGlobalVariable());
+
+    private TranslationService translationService;
+
+    public GlobalResourceType(final Decision category) {
+        super(category);
+    }
 
     @Inject
-    private TranslationService translationService;
+    public GlobalResourceType(final TranslationService translationService,
+                              final Decision category) {
+        super(category);
+        this.translationService = translationService;
+    }
 
     @Override
     public IsWidget getIcon() {
@@ -44,8 +55,8 @@ public class GlobalResourceType
 
     @Override
     public String getDescription() {
-        String desc = translationService.getTranslation( GlobalsEditorConstants.GlobalResourceTypeDescription );
-        if ( desc == null || desc.isEmpty() ) {
+        String desc = translationService.getTranslation(GlobalsEditorConstants.GlobalResourceTypeDescription);
+        if (desc == null || desc.isEmpty()) {
             return super.getDescription();
         }
         return desc;

@@ -21,6 +21,7 @@ import javax.enterprise.inject.Instance;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDRLResourceTypeDefinition;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDSLRResourceTypeDefinition;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
+import org.guvnor.common.services.project.categories.Decision;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,8 +57,8 @@ public class GuidedRuleEditorRenameHelperTest {
     private DataModelService dataModelService;
 
     private GuidedRuleEditorRenameHelper helper;
-    private GuidedRuleDRLResourceTypeDefinition drlResourceType = new GuidedRuleDRLResourceTypeDefinition();
-    private GuidedRuleDSLRResourceTypeDefinition dslrResourceType = new GuidedRuleDSLRResourceTypeDefinition();
+    private GuidedRuleDRLResourceTypeDefinition drlResourceType = new GuidedRuleDRLResourceTypeDefinition(new Decision());
+    private GuidedRuleDSLRResourceTypeDefinition dslrResourceType = new GuidedRuleDSLRResourceTypeDefinition(new Decision());
 
     private final String drl = "rule \"rule\"\n" +
             "when\n" +

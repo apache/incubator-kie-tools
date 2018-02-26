@@ -17,12 +17,14 @@
 package org.drools.workbench.screens.enums.client.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.enums.client.resources.EnumEditorResources;
 import org.drools.workbench.screens.enums.client.resources.i18n.EnumEditorConstants;
 import org.drools.workbench.screens.enums.type.EnumResourceTypeDefinition;
+import org.guvnor.common.services.project.categories.Model;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 @ApplicationScoped
@@ -31,7 +33,15 @@ public class EnumResourceType
         implements ClientResourceType {
 
     //GwtMockito barfs when this is static... so keep it as an instance variable
-    private Image IMAGE = new Image( EnumEditorResources.INSTANCE.images().typeEnumeration() );
+    private Image IMAGE = new Image(EnumEditorResources.INSTANCE.images().typeEnumeration());
+
+    public EnumResourceType() {
+    }
+
+    @Inject
+    public EnumResourceType(final Model category) {
+        super(category);
+    }
 
     @Override
     public IsWidget getIcon() {
@@ -41,7 +51,7 @@ public class EnumResourceType
     @Override
     public String getDescription() {
         String desc = EnumEditorConstants.INSTANCE.enumResourceTypeDescription();
-        if ( desc == null || desc.isEmpty() ) {
+        if (desc == null || desc.isEmpty()) {
             return super.getDescription();
         }
         return desc;

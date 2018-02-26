@@ -70,6 +70,7 @@ import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.assertEquals;
@@ -160,7 +161,7 @@ public class ScenarioEditorPresenterTest {
                                                  importsWidget,
                                                  fakeService,
                                                  new CallerMock<>(testService),
-                                                 new TestScenarioResourceType(),
+                                                 new TestScenarioResourceType(new Others()),
                                                  modelOracleFactory,
                                                  settingsPage,
                                                  auditPage) {

@@ -36,6 +36,7 @@ import org.guvnor.common.services.backend.file.DotFileFilter;
 import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.backend.validation.GenericValidator;
+import org.guvnor.common.services.project.categories.Decision;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Before;
@@ -121,8 +122,8 @@ public class GuidedDecisionTableGraphEditorServiceImplTest {
 
     private GuidedDecisionTableGraphEditorServiceImpl service;
 
-    private GuidedDTableResourceTypeDefinition dtResourceType = new GuidedDTableResourceTypeDefinition();
-    private GuidedDTableGraphResourceTypeDefinition dtGraphResourceType = new GuidedDTableGraphResourceTypeDefinition();
+    private GuidedDTableResourceTypeDefinition dtResourceType = new GuidedDTableResourceTypeDefinition(new Decision());
+    private GuidedDTableGraphResourceTypeDefinition dtGraphResourceType = new GuidedDTableGraphResourceTypeDefinition(new Decision());
     private DotFileFilter dotFileFilter = new DotFileFilter();
 
     private final List<org.uberfire.java.nio.file.Path> resolvedPaths = new ArrayList<>();

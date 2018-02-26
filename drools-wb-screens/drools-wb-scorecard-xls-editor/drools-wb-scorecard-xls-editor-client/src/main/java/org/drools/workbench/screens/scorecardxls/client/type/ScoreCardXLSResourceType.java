@@ -17,12 +17,14 @@
 package org.drools.workbench.screens.scorecardxls.client.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.scorecardxls.client.resources.ScoreCardXLSEditorResources;
 import org.drools.workbench.screens.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
 import org.drools.workbench.screens.scorecardxls.type.ScoreCardXLSResourceTypeDefinition;
+import org.guvnor.common.services.project.categories.Decision;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 @ApplicationScoped
@@ -30,15 +32,23 @@ public class ScoreCardXLSResourceType
         extends ScoreCardXLSResourceTypeDefinition
         implements ClientResourceType {
 
+    public ScoreCardXLSResourceType() {
+    }
+
+    @Inject
+    public ScoreCardXLSResourceType(final Decision category) {
+        super(category);
+    }
+
     @Override
     public IsWidget getIcon() {
-        return new Image( ScoreCardXLSEditorResources.INSTANCE.images().typeXLSScoreCard() );
+        return new Image(ScoreCardXLSEditorResources.INSTANCE.images().typeXLSScoreCard());
     }
 
     @Override
     public String getDescription() {
         String desc = ScoreCardXLSEditorConstants.INSTANCE.scoreCardXLSResourceTypeDescription();
-        if ( desc == null || desc.isEmpty() ) {
+        if (desc == null || desc.isEmpty()) {
             return super.getDescription();
         }
         return desc;

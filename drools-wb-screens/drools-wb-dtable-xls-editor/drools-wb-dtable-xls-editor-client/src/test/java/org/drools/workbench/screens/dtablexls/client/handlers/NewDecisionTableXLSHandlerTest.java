@@ -24,6 +24,7 @@ import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSResourceType;
 import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSXResourceType;
+import org.guvnor.common.services.project.categories.Decision;
 import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.junit.Before;
@@ -86,8 +87,8 @@ public class NewDecisionTableXLSHandlerTest {
     @Captor
     private ArgumentCaptor<Path> newPathCaptor;
 
-    private DecisionTableXLSResourceType decisionTableXLSResourceType = new DecisionTableXLSResourceType();
-    private DecisionTableXLSXResourceType decisionTableXLSXResourceType = new DecisionTableXLSXResourceType();
+    private DecisionTableXLSResourceType decisionTableXLSResourceType = new DecisionTableXLSResourceType(new Decision());
+    private DecisionTableXLSXResourceType decisionTableXLSXResourceType = new DecisionTableXLSXResourceType(new Decision());
 
     @Mock
     private EventSourceMock<NotificationEvent> mockNotificationEvent;

@@ -17,13 +17,32 @@
 package org.drools.workbench.screens.testscenario.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import org.guvnor.common.services.project.categories.Decision;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.workbench.category.Category;
+import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @ApplicationScoped
 public class TestScenarioResourceTypeDefinition
         implements ResourceTypeDefinition {
+
+    private Category category;
+
+    public TestScenarioResourceTypeDefinition() {
+    }
+
+    @Inject
+    public TestScenarioResourceTypeDefinition(final Others category) {
+        this.category = category;
+    }
+
+    @Override
+    public Category getCategory() {
+        return this.category;
+    }
 
     @Override
     public String getShortName() {
@@ -56,8 +75,7 @@ public class TestScenarioResourceTypeDefinition
     }
 
     @Override
-    public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( "." + getSuffix() );
+    public boolean accept(final Path path) {
+        return path.getFileName().endsWith("." + getSuffix());
     }
-    
 }

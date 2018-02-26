@@ -16,18 +16,28 @@
 package org.drools.workbench.screens.guided.dtree.client.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.guided.dtree.client.resources.GuidedDecisionTreeResources;
 import org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants;
 import org.drools.workbench.screens.guided.dtree.type.GuidedDTreeResourceTypeDefinition;
+import org.guvnor.common.services.project.categories.Decision;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 @ApplicationScoped
 public class GuidedDTreeResourceType
         extends GuidedDTreeResourceTypeDefinition
         implements ClientResourceType {
+
+    public GuidedDTreeResourceType() {
+    }
+
+    @Inject
+    public GuidedDTreeResourceType(final Decision category) {
+        super(category);
+    }
 
     @Override
     public IsWidget getIcon() {

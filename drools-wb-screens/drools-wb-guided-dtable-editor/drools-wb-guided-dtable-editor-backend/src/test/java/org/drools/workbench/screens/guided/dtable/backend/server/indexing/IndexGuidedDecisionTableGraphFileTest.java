@@ -25,6 +25,7 @@ import org.apache.lucene.search.Query;
 import org.drools.workbench.screens.guided.dtable.backend.server.GuidedDTGraphXMLPersistence;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableGraphResourceTypeDefinition;
+import org.guvnor.common.services.project.categories.Decision;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
@@ -88,7 +89,7 @@ public class IndexGuidedDecisionTableGraphFileTest extends BaseIndexingTest<Guid
 
     @Override
     protected GuidedDTableGraphResourceTypeDefinition getResourceTypeDefinition() {
-        return new GuidedDTableGraphResourceTypeDefinition();
+        return new GuidedDTableGraphResourceTypeDefinition(new Decision());
     }
 
     @Override

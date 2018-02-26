@@ -17,12 +17,14 @@
 package org.drools.workbench.screens.dsltext.client.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.dsltext.client.resources.DSLTextEditorResources;
 import org.drools.workbench.screens.dsltext.client.resources.i18n.DSLTextEditorConstants;
 import org.drools.workbench.screens.dsltext.type.DSLResourceTypeDefinition;
+import org.guvnor.common.services.project.categories.Decision;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 @ApplicationScoped
@@ -30,7 +32,15 @@ public class DSLResourceType
         extends DSLResourceTypeDefinition
         implements ClientResourceType {
 
-    private static final Image IMAGE = new Image( DSLTextEditorResources.INSTANCE.images().typeDSL() );
+    private static final Image IMAGE = new Image(DSLTextEditorResources.INSTANCE.images().typeDSL());
+
+    public DSLResourceType() {
+    }
+
+    @Inject
+    public DSLResourceType(final Decision category) {
+        super(category);
+    }
 
     @Override
     public IsWidget getIcon() {
@@ -40,7 +50,7 @@ public class DSLResourceType
     @Override
     public String getDescription() {
         String desc = DSLTextEditorConstants.INSTANCE.dslResourceTypeDescription();
-        if ( desc == null || desc.isEmpty() ) {
+        if (desc == null || desc.isEmpty()) {
             return super.getDescription();
         }
         return desc;

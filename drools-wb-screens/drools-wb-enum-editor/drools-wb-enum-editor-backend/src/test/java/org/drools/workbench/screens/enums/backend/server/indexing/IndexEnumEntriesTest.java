@@ -24,6 +24,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import org.apache.lucene.search.Query;
 import org.drools.workbench.screens.enums.type.EnumResourceTypeDefinition;
+import org.guvnor.common.services.project.categories.Model;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
@@ -95,7 +96,7 @@ public class IndexEnumEntriesTest extends BaseIndexingTest<EnumResourceTypeDefin
 
     @Override
     protected EnumResourceTypeDefinition getResourceTypeDefinition() {
-        return new EnumResourceTypeDefinition();
+        return new EnumResourceTypeDefinition(new Model());
     }
 
     @Override

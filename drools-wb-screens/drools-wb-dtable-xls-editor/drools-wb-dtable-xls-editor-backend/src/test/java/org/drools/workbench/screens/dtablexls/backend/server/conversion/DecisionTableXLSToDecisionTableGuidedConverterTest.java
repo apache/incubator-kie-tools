@@ -32,6 +32,7 @@ import org.drools.workbench.screens.globals.service.GlobalsEditorService;
 import org.drools.workbench.screens.globals.type.GlobalResourceTypeDefinition;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
+import org.guvnor.common.services.project.categories.Decision;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.config.AppConfigService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
@@ -110,11 +111,11 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
     @Mock
     private Path expectedProjectImportsPath;
 
-    private DecisionTableXLSResourceTypeDefinition xlsDTableType = new DecisionTableXLSResourceTypeDefinition();
-    private DecisionTableXLSXResourceTypeDefinition xlsxDTableType = new DecisionTableXLSXResourceTypeDefinition();
-    private GuidedDTableResourceTypeDefinition guidedDTableType = new GuidedDTableResourceTypeDefinition();
-    private DRLResourceTypeDefinition drlType = new DRLResourceTypeDefinition();
-    private GlobalResourceTypeDefinition globalsType = new GlobalResourceTypeDefinition();
+    private DecisionTableXLSResourceTypeDefinition xlsDTableType = new DecisionTableXLSResourceTypeDefinition(new Decision());
+    private DecisionTableXLSXResourceTypeDefinition xlsxDTableType = new DecisionTableXLSXResourceTypeDefinition(new Decision());
+    private GuidedDTableResourceTypeDefinition guidedDTableType = new GuidedDTableResourceTypeDefinition(new Decision());
+    private DRLResourceTypeDefinition drlType = new DRLResourceTypeDefinition(new Decision());
+    private GlobalResourceTypeDefinition globalsType = new GlobalResourceTypeDefinition(new Decision());
 
     private DecisionTableXLSToDecisionTableGuidedConverter converter;
 

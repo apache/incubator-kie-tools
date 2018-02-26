@@ -27,6 +27,7 @@ import org.apache.lucene.search.Query;
 import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardXMLPersistence;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.type.GuidedScoreCardResourceTypeDefinition;
+import org.guvnor.common.services.project.categories.Decision;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
@@ -112,7 +113,7 @@ public class IndexGuidedScoreCardTest extends BaseIndexingTest<GuidedScoreCardRe
 
     @Override
     protected GuidedScoreCardResourceTypeDefinition getResourceTypeDefinition() {
-        return new GuidedScoreCardResourceTypeDefinition();
+        return new GuidedScoreCardResourceTypeDefinition(new Decision());
     }
 
     @Override

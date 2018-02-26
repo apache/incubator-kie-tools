@@ -17,17 +17,27 @@
 package org.drools.workbench.screens.testscenario.client.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.drools.workbench.screens.testscenario.type.TestScenarioResourceTypeDefinition;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.workbench.category.Others;
 
 @ApplicationScoped
 public class TestScenarioResourceType
         extends TestScenarioResourceTypeDefinition
         implements ClientResourceType {
+
+    public TestScenarioResourceType() {
+    }
+
+    @Inject
+    public TestScenarioResourceType(final Others category) {
+        super(category);
+    }
 
     @Override
     public IsWidget getIcon() {

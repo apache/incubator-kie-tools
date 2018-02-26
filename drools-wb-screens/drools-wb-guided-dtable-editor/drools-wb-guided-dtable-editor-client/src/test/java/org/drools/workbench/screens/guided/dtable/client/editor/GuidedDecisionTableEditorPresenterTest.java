@@ -27,6 +27,7 @@ import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResour
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
+import org.guvnor.common.services.project.categories.Decision;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -58,7 +59,7 @@ import static org.mockito.Mockito.verify;
 @RunWith(GwtMockitoTestRunner.class)
 public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTablePresenterTest<GuidedDecisionTableEditorPresenter> {
 
-    private GuidedDTableResourceType resourceType = new GuidedDTableResourceType();
+    private GuidedDTableResourceType resourceType = new GuidedDTableResourceType(new Decision());
 
     @Mock
     private SaveAndRenameCommandBuilder<GuidedDecisionTable52, Metadata> saveAndRenameCommandBuilder;

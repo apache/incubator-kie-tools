@@ -27,6 +27,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import org.apache.commons.io.IOUtils;
 import org.apache.lucene.search.Query;
 import org.drools.workbench.screens.dtablexls.type.DecisionTableXLSResourceTypeDefinition;
+import org.guvnor.common.services.project.categories.Decision;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
@@ -72,7 +73,7 @@ public class IndexDecisionTableXLSMultipleTypesTest extends BaseIndexingTest<Dec
 
     @Override
     protected DecisionTableXLSResourceTypeDefinition getResourceTypeDefinition() {
-        return new DecisionTableXLSResourceTypeDefinition();
+        return new DecisionTableXLSResourceTypeDefinition(new Decision());
     }
 
     @Override

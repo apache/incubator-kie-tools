@@ -27,6 +27,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import org.apache.lucene.search.Query;
 import org.drools.workbench.screens.globals.type.GlobalResourceTypeDefinition;
+import org.guvnor.common.services.project.categories.Decision;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
@@ -88,7 +89,7 @@ public class IndexGlobalsInvalidDrlTest extends BaseIndexingTest<GlobalResourceT
 
     @Override
     protected GlobalResourceTypeDefinition getResourceTypeDefinition() {
-        return new GlobalResourceTypeDefinition();
+        return new GlobalResourceTypeDefinition(new Decision());
     }
 
     @Override

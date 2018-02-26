@@ -22,6 +22,7 @@ import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResour
 import org.drools.workbench.screens.guided.dtable.client.wizard.table.NewGuidedDecisionTableWizard;
 import org.drools.workbench.screens.guided.dtable.client.wizard.table.NewGuidedDecisionTableWizard.GuidedDecisionTableWizardHandler;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
+import org.guvnor.common.services.project.categories.Decision;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
@@ -89,7 +90,7 @@ public class NewGuidedDecisionTableWizardHelperTest {
 
     private NewGuidedDecisionTableWizardHelper helper;
 
-    private GuidedDTableResourceType dtResourceType = new GuidedDTableResourceType();
+    private GuidedDTableResourceType dtResourceType = new GuidedDTableResourceType(new Decision());
 
     @Before
     public void setup() {

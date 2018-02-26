@@ -24,6 +24,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import org.apache.lucene.search.Query;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDRLResourceTypeDefinition;
+import org.guvnor.common.services.project.categories.Decision;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
@@ -63,7 +64,7 @@ public class IndexRuleTest extends BaseIndexingTest<GuidedRuleDRLResourceTypeDef
 
     @Override
     protected GuidedRuleDRLResourceTypeDefinition getResourceTypeDefinition() {
-        return new GuidedRuleDRLResourceTypeDefinition();
+        return new GuidedRuleDRLResourceTypeDefinition(new Decision());
     }
 
     @Override

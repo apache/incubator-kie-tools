@@ -43,6 +43,7 @@ import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEdito
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel.GuidedDecisionTableGraphEntry;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableGraphEditorService;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableGraphSaveAndRenameService;
+import org.guvnor.common.services.project.categories.Decision;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -182,7 +183,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         }
     });
 
-    private GuidedDTableGraphResourceType dtGraphResourceType = new GuidedDTableGraphResourceType();
+    private GuidedDTableGraphResourceType dtGraphResourceType = new GuidedDTableGraphResourceType(new Decision());
 
     @Override
     @Before

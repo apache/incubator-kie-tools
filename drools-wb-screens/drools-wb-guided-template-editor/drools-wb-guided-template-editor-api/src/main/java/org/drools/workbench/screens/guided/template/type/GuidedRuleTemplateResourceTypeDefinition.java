@@ -17,13 +17,31 @@
 package org.drools.workbench.screens.guided.template.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import org.guvnor.common.services.project.categories.Decision;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.workbench.category.Category;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @ApplicationScoped
 public class GuidedRuleTemplateResourceTypeDefinition
         implements ResourceTypeDefinition {
+
+    private Category category;
+
+    public GuidedRuleTemplateResourceTypeDefinition() {
+    }
+
+    @Inject
+    public GuidedRuleTemplateResourceTypeDefinition(final Decision category) {
+        this.category = category;
+    }
+
+    @Override
+    public Category getCategory() {
+        return this.category;
+    }
 
     @Override
     public String getShortName() {
@@ -56,7 +74,7 @@ public class GuidedRuleTemplateResourceTypeDefinition
     }
 
     @Override
-    public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( "." + getSuffix() );
+    public boolean accept(final Path path) {
+        return path.getFileName().endsWith("." + getSuffix());
     }
 }

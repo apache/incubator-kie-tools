@@ -20,6 +20,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableGraphResourceType;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableGraphEditorService;
+import org.guvnor.common.services.project.categories.Decision;
 import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
@@ -76,7 +77,7 @@ public class NewGuidedDecisionTableGraphHandlerTest {
     private ArgumentCaptor<String> fileNameCaptor;
 
     private NewGuidedDecisionTableGraphHandler handler;
-    private GuidedDTableGraphResourceType resourceType = new GuidedDTableGraphResourceType();
+    private GuidedDTableGraphResourceType resourceType = new GuidedDTableGraphResourceType(new Decision());
 
     @Before
     public void setup() {

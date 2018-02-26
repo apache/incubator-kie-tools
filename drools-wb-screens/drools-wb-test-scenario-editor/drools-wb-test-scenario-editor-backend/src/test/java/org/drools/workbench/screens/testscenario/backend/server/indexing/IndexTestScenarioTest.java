@@ -38,6 +38,7 @@ import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.workbench.category.Others;
 
 @NotThreadSafe
 public class IndexTestScenarioTest extends BaseIndexingTest<TestScenarioResourceTypeDefinition> {
@@ -141,7 +142,7 @@ public class IndexTestScenarioTest extends BaseIndexingTest<TestScenarioResource
 
     @Override
     protected TestScenarioResourceTypeDefinition getResourceTypeDefinition() {
-        return new TestScenarioResourceTypeDefinition();
+        return new TestScenarioResourceTypeDefinition(new Others());
     }
 
     @Override

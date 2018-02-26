@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.workitems.client.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -24,13 +25,22 @@ import org.drools.workbench.screens.workitems.client.resources.WorkItemsEditorRe
 import org.drools.workbench.screens.workitems.client.resources.i18n.WorkItemsEditorConstants;
 import org.drools.workbench.screens.workitems.type.WorkItemsTypeDefinition;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.workbench.category.Others;
 
 @ApplicationScoped
 public class WorkItemsResourceType
         extends WorkItemsTypeDefinition
         implements ClientResourceType {
 
-    private static final Image IMAGE = new Image( WorkItemsEditorResources.INSTANCE.images().typeWorkItem() );
+    private static final Image IMAGE = new Image(WorkItemsEditorResources.INSTANCE.images().typeWorkItem());
+
+    public WorkItemsResourceType() {
+    }
+
+    @Inject
+    public WorkItemsResourceType(final Others category) {
+        super(category);
+    }
 
     @Override
     public IsWidget getIcon() {
@@ -40,7 +50,7 @@ public class WorkItemsResourceType
     @Override
     public String getDescription() {
         String desc = WorkItemsEditorConstants.INSTANCE.workItemResourceTypeDescription();
-        if ( desc == null || desc.isEmpty() ) {
+        if (desc == null || desc.isEmpty()) {
             return super.getDescription();
         }
         return desc;

@@ -25,6 +25,7 @@ import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResour
 import org.drools.workbench.screens.guided.dtable.client.wizard.NewGuidedDecisionTableWizardHelper;
 import org.drools.workbench.screens.guided.dtable.client.wizard.table.NewGuidedDecisionTableWizard;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
+import org.guvnor.common.services.project.categories.Decision;
 import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
@@ -101,7 +102,7 @@ public class NewGuidedDecisionTableHandlerTest {
 
     private NewGuidedDecisionTableHandler handler;
     private NewGuidedDecisionTableWizardHelper helper;
-    private GuidedDTableResourceType resourceType = new GuidedDTableResourceType();
+    private GuidedDTableResourceType resourceType = new GuidedDTableResourceType(new Decision());
 
     @Before
     public void setup() {

@@ -39,6 +39,7 @@ import org.guvnor.common.services.backend.file.FileExtensionFilter;
 import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.backend.validation.GenericValidator;
+import org.guvnor.common.services.project.categories.Decision;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Before;
@@ -142,10 +143,8 @@ public class GuidedDecisionTableEditorServiceImplTest {
     @Mock
     private BasicFileAttributes basicFileAttributes;
 
-    private GuidedDTableResourceTypeDefinition dtType = new GuidedDTableResourceTypeDefinition();
-
-    private GuidedDTableGraphResourceTypeDefinition dtGraphType = new GuidedDTableGraphResourceTypeDefinition();
-
+    private GuidedDTableResourceTypeDefinition dtType = new GuidedDTableResourceTypeDefinition(new Decision());
+    private GuidedDTableGraphResourceTypeDefinition dtGraphType = new GuidedDTableGraphResourceTypeDefinition(new Decision());
     private GuidedDecisionTableEditorServiceImpl service;
 
     @Before

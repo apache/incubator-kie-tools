@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.guided.dtable.type;
 
+import org.guvnor.common.services.project.categories.Decision;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.backend.vfs.Path;
@@ -31,7 +32,7 @@ public class GuidedDTableGraphResourceTypeDefinitionTest {
 
     @Before
     public void setup() {
-        type = new GuidedDTableGraphResourceTypeDefinition();
+        type = new GuidedDTableGraphResourceTypeDefinition(new Decision());
     }
 
     @Test

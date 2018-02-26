@@ -24,6 +24,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import org.apache.lucene.search.Query;
 import org.drools.workbench.screens.guided.dtree.type.GuidedDTreeResourceTypeDefinition;
+import org.guvnor.common.services.project.categories.Decision;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
@@ -74,7 +75,7 @@ public class IndexRuleMultipleTypesTest extends BaseIndexingTest<GuidedDTreeReso
 
     @Override
     protected GuidedDTreeResourceTypeDefinition getResourceTypeDefinition() {
-        return new GuidedDTreeResourceTypeDefinition();
+        return new GuidedDTreeResourceTypeDefinition(new Decision());
     }
 
     @Override

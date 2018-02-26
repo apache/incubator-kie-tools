@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.scorecard.client.handlers;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.guided.scorecard.client.type.GuidedScoreCardResourceType;
 import org.drools.workbench.screens.guided.scorecard.service.GuidedScoreCardEditorService;
+import org.guvnor.common.services.project.categories.Decision;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
@@ -65,7 +66,7 @@ public class NewGuidedScoreCardHandlerTest {
     @Captor
     private ArgumentCaptor<ResourceRef> refArgumentCaptor;
 
-    private GuidedScoreCardResourceType resourceType = new GuidedScoreCardResourceType();
+    private GuidedScoreCardResourceType resourceType = new GuidedScoreCardResourceType(new Decision());
 
     private NewGuidedScoreCardHandler handler;
 

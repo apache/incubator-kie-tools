@@ -17,12 +17,14 @@
 package org.drools.workbench.screens.dtablexls.client.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.dtablexls.client.resources.DecisionTableXLSResources;
 import org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
 import org.drools.workbench.screens.dtablexls.type.DecisionTableXLSXResourceTypeDefinition;
+import org.guvnor.common.services.project.categories.Decision;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 @ApplicationScoped
@@ -30,15 +32,23 @@ public class DecisionTableXLSXResourceType
         extends DecisionTableXLSXResourceTypeDefinition
         implements ClientResourceType {
 
+    public DecisionTableXLSXResourceType() {
+    }
+
+    @Inject
+    public DecisionTableXLSXResourceType(final Decision category) {
+        super(category);
+    }
+
     @Override
     public IsWidget getIcon() {
-        return new Image( DecisionTableXLSResources.INSTANCE.images().typeXLSDecisionTable() );
+        return new Image(DecisionTableXLSResources.INSTANCE.images().typeXLSDecisionTable());
     }
 
     @Override
     public String getDescription() {
         String desc = DecisionTableXLSEditorConstants.INSTANCE.XLSXDTableResourceTypeDescription();
-        if ( desc == null || desc.isEmpty() ) {
+        if (desc == null || desc.isEmpty()) {
             return super.getDescription();
         }
         return desc;

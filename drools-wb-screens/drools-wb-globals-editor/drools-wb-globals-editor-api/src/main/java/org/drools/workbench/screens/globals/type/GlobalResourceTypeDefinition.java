@@ -17,12 +17,30 @@
 package org.drools.workbench.screens.globals.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import org.guvnor.common.services.project.categories.Decision;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.workbench.category.Category;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @ApplicationScoped
 public class GlobalResourceTypeDefinition implements ResourceTypeDefinition {
+
+    private Category category;
+
+    public GlobalResourceTypeDefinition() {
+    }
+
+    @Inject
+    public GlobalResourceTypeDefinition(final Decision category) {
+        this.category = category;
+    }
+
+    @Override
+    public Category getCategory() {
+        return this.category;
+    }
 
     @Override
     public String getShortName() {
@@ -55,7 +73,7 @@ public class GlobalResourceTypeDefinition implements ResourceTypeDefinition {
     }
 
     @Override
-    public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( "." + getSuffix() );
+    public boolean accept(final Path path) {
+        return path.getFileName().endsWith("." + getSuffix());
     }
 }

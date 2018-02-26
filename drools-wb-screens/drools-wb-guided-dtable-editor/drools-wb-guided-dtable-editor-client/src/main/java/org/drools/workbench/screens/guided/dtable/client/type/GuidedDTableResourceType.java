@@ -17,12 +17,14 @@
 package org.drools.workbench.screens.guided.dtable.client.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
+import org.guvnor.common.services.project.categories.Decision;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 @ApplicationScoped
@@ -30,15 +32,23 @@ public class GuidedDTableResourceType
         extends GuidedDTableResourceTypeDefinition
         implements ClientResourceType {
 
+    public GuidedDTableResourceType() {
+    }
+
+    @Inject
+    public GuidedDTableResourceType(final Decision category) {
+        super(category);
+    }
+
     @Override
     public IsWidget getIcon() {
-        return new Image( GuidedDecisionTableResources.INSTANCE.images().typeGuidedDecisionTable() );
+        return new Image(GuidedDecisionTableResources.INSTANCE.images().typeGuidedDecisionTable());
     }
 
     @Override
     public String getDescription() {
         String desc = GuidedDecisionTableConstants.INSTANCE.guidedDecisionTableResourceTypeDescription();
-        if ( desc == null || desc.isEmpty() ) {
+        if (desc == null || desc.isEmpty()) {
             return super.getDescription();
         }
         return desc;

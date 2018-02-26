@@ -27,6 +27,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.Query;
 import org.drools.workbench.screens.drltext.type.DRLResourceTypeDefinition;
+import org.guvnor.common.services.project.categories.Decision;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
@@ -80,7 +81,7 @@ public class IndexRuleAttributeNameAndValueCompositionTest extends BaseIndexingT
 
     @Override
     protected DRLResourceTypeDefinition getResourceTypeDefinition() {
-        return new DRLResourceTypeDefinition();
+        return new DRLResourceTypeDefinition(new Decision());
     }
 
     @Override

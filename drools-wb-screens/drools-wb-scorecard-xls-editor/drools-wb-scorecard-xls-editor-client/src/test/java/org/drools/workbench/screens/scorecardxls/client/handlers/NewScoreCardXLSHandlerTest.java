@@ -23,6 +23,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scorecardxls.client.type.ScoreCardXLSResourceType;
+import org.guvnor.common.services.project.categories.Decision;
 import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -103,7 +104,7 @@ public class NewScoreCardXLSHandlerTest {
     @Captor
     private ArgumentCaptor<ResourceRef> refArgumentCaptor;
 
-    private ScoreCardXLSResourceType resourceType = new ScoreCardXLSResourceType();
+    private ScoreCardXLSResourceType resourceType = new ScoreCardXLSResourceType(new Decision());
 
     @Mock
     private EventSourceMock<NotificationEvent> mockNotificationEvent;

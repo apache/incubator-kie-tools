@@ -26,6 +26,7 @@ import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableGra
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableGraphResourceTypeDefinition;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
+import org.guvnor.common.services.project.categories.Decision;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -79,8 +80,8 @@ public class GuidedDecisionTableEditorGraphRenameHelperTest {
     private Path destination;
 
     private List<org.uberfire.java.nio.file.Path> paths = new ArrayList<>();
-    private GuidedDTableResourceTypeDefinition dtableType = new GuidedDTableResourceTypeDefinition();
-    private GuidedDTableGraphResourceTypeDefinition dtableGraphType = new GuidedDTableGraphResourceTypeDefinition();
+    private GuidedDTableResourceTypeDefinition dtableType = new GuidedDTableResourceTypeDefinition(new Decision());
+    private GuidedDTableGraphResourceTypeDefinition dtableGraphType = new GuidedDTableGraphResourceTypeDefinition(new Decision());
 
     private GuidedDecisionTableEditorGraphRenameHelper helper;
 
