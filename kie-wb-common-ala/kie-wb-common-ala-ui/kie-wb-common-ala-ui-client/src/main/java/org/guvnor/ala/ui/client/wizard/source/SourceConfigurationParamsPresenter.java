@@ -143,7 +143,7 @@ public class SourceConfigurationParamsPresenter
         params.put(RUNTIME_NAME,
                    getRuntime());
         params.put(REPO_NAME,
-                   getRepository());
+                   getSpace().getName() + "/" + getRepository());
         params.put(BRANCH,
                    getBranch());
         params.put(MODULE_DIR,

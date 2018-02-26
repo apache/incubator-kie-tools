@@ -172,7 +172,7 @@ public class SourceConfigurationParamsPresenterTest {
         Map<String, String> params = presenter.buildParams();
         assertEquals(RUNTIME_NAME,
                      params.get(NewDeployWizard.RUNTIME_NAME));
-        assertEquals(REPOSITORY,
+        assertEquals(OU + "/" + REPOSITORY,
                      params.get(SourceConfigurationParamsPresenter.REPO_NAME));
         assertEquals(BRANCH,
                      params.get(SourceConfigurationParamsPresenter.BRANCH));
