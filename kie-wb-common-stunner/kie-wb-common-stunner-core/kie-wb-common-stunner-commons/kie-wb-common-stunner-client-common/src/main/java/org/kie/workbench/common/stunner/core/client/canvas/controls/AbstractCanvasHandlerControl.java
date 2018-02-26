@@ -31,8 +31,10 @@ public abstract class AbstractCanvasHandlerControl<H extends AbstractCanvasHandl
 
     @Override
     public void disable() {
-        doDisable();
-        this.canvasHandler = null;
+        if (isEnabled()) {
+            doDisable();
+            this.canvasHandler = null;
+        }
     }
 
     protected boolean isEnabled() {
