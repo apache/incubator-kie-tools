@@ -18,10 +18,7 @@ package org.kie.workbench.common.forms.processing.engine.handling;
 
 public interface FieldChangeHandlerManager {
 
-    void registerField(String fieldName);
-
-    void registerField(String fieldName,
-                       boolean validateOnChange);
+    void registerField(FormField formField);
 
     void addFieldChangeHandler(FieldChangeHandler changeHandler);
 

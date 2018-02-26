@@ -27,9 +27,7 @@ import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHand
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
 import org.kie.workbench.common.forms.processing.engine.handling.impl.model.Model;
 import org.kie.workbench.common.forms.processing.engine.handling.impl.model.User;
-import org.kie.workbench.common.forms.processing.engine.handling.impl.test.TestFormFieldProvider;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.mockito.verification.VerificationMode;
 
@@ -46,20 +44,20 @@ import static org.mockito.Mockito.withSettings;
 
 public abstract class AbstractFormEngineTest extends TestCase {
 
-    public static final String VALUE_FIELD = "value";
-    public static final String USER_NAME_FIELD = "user_name";
-    public static final String USER_LAST_NAME_FIELD = "user_lastName";
-    public static final String USER_BIRTHDAY_FIELD = "user_birthday";
-    public static final String USER_MARRIED_FIELD = "user_married";
-    public static final String USER_ADDRESS_FIELD = "user_address";
+    public static final String VALUE_FIELD_NAME = "value";
+    public static final String USER_NAME_FIELD_NAME = "user_name";
+    public static final String USER_LAST_NAME_FIELD_NAME = "user_lastName";
+    public static final String USER_BIRTHDAY_FIELD_NAME = "user_birthday";
+    public static final String USER_MARRIED_FIELD_NAME = "user_married";
+    public static final String USER_ADDRESS_FIELD_NAME = "user_address";
 
-    public static final String[] ALL_FIELDS = {
-            VALUE_FIELD,
-            USER_NAME_FIELD,
-            USER_LAST_NAME_FIELD,
-            USER_BIRTHDAY_FIELD,
-            USER_MARRIED_FIELD,
-            USER_ADDRESS_FIELD
+    public static final String[] ALL_FIELD_NAMES = {
+            VALUE_FIELD_NAME,
+            USER_NAME_FIELD_NAME,
+            USER_LAST_NAME_FIELD_NAME,
+            USER_BIRTHDAY_FIELD_NAME,
+            USER_MARRIED_FIELD_NAME,
+            USER_ADDRESS_FIELD_NAME
     };
 
     protected int executionCounts;
@@ -85,9 +83,14 @@ public abstract class AbstractFormEngineTest extends TestCase {
     @Mock
     protected FieldChangeHandler userAddress;
 
-    protected TestFormFieldProvider formFieldProvider;
-
     protected Model model;
+
+    protected FormField valueField;
+    protected FormField nameField;
+    protected FormField lastNameField;
+    protected FormField birthdayField;
+    protected FormField marriedField;
+    protected FormField addressField;
 
     protected void init() {
 
@@ -103,36 +106,36 @@ public abstract class AbstractFormEngineTest extends TestCase {
         model.setUser(user);
         model.setValue(25);
 
-        formFieldProvider = new TestFormFieldProvider();
 
-        formFieldProvider.addFormField(generateFormField(VALUE_FIELD,
+        valueField = generateFormField(VALUE_FIELD_NAME,
                                                          "value",
-                                                         true));
-        formFieldProvider.addFormField(generateFormField(USER_NAME_FIELD,
+                                                         true);
+        nameField = generateFormField(USER_NAME_FIELD_NAME,
                                                          "user.name",
-                                                         true));
-        formFieldProvider.addFormField(generateFormField(USER_LAST_NAME_FIELD,
+                                                         true);
+
+        lastNameField = generateFormField(USER_LAST_NAME_FIELD_NAME,
                                                          "user.lastName",
-                                                         true));
-        formFieldProvider.addFormField(generateFormField(USER_BIRTHDAY_FIELD,
+                                                         true);
+
+        birthdayField = generateFormField(USER_BIRTHDAY_FIELD_NAME,
                                                          "user.birthday",
-                                                         true));
-        formFieldProvider.addFormField(generateFormField(USER_MARRIED_FIELD,
+                                                         true);
+        marriedField = generateFormField(USER_MARRIED_FIELD_NAME,
                                                          "user.married",
-                                                         true));
-        formFieldProvider.addFormField(generateFormField(USER_ADDRESS_FIELD,
+                                                         true);
+
+        addressField = generateFormField(USER_ADDRESS_FIELD_NAME,
                                                          "user.address",
-                                                         true));
+                                                         true);
 
         executionCounts = 0;
 
-        Answer answer = new Answer() {
-            @Override
-            public Void answer(InvocationOnMock invocationOnMock) throws Throwable {
-                executionCounts++;
-                return null;
-            }
+        Answer answer = invocationOnMock -> {
+            executionCounts++;
+            return null;
         };
+
         doAnswer(answer).when(anonymous).onFieldChange(anyString(),
                                                        anyObject());
         doAnswer(answer).when(value).onFieldChange(anyString(),
@@ -172,16 +175,15 @@ public abstract class AbstractFormEngineTest extends TestCase {
         return field;
     }
 
-    protected void checkClearedFields(String... cleared) {
-        Arrays.stream(cleared).forEach(fieldName -> {
-            FormField field = formFieldProvider.findFormField(fieldName);
+    protected void checkClearedFields(FormField... clearedFields) {
+        Arrays.stream(clearedFields).forEach(field -> {
             assertNotNull(field);
             verify(field,
                    atLeastOnce()).clearError();
         });
     }
 
-    protected void checkWrongFields(String... wrongFields) {
+    protected void checkWrongFields(FormField... wrongFields) {
         /*
         Checking that the validation given fields has been successfull. The conditions to check:
         - Group Verification: VALIDATION_ERROR_CLASSNAME should be added to at least one time
@@ -193,7 +195,7 @@ public abstract class AbstractFormEngineTest extends TestCase {
                             wrongFields);
     }
 
-    protected void checkValidFields(String... validFields) {
+    protected void checkValidFields(FormField... validFields) {
 
         /*
         Checking that the validation given fields has been successfull. The conditions to check:
@@ -205,10 +207,9 @@ public abstract class AbstractFormEngineTest extends TestCase {
     }
 
     protected void doValidationFailure(VerificationMode setErrorTimes,
-                                       String... fields) {
+                                       FormField... clearedFields) {
 
-        Arrays.stream(fields).forEach(fieldName -> {
-            FormField field = formFieldProvider.findFormField(fieldName);
+        Arrays.stream(clearedFields).forEach(field -> {
             assertNotNull(field);
             verify(field,
                    atLeastOnce()).clearError();

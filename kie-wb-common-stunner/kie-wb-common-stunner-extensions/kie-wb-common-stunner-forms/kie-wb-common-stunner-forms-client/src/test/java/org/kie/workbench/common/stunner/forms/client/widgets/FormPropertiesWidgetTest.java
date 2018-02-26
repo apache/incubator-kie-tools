@@ -27,33 +27,30 @@ import org.jboss.errai.databinding.client.BindableProxyProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
-import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
-import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
-import org.kie.workbench.common.stunner.forms.context.PathAware;
-import org.mockito.ArgumentCaptor;
+import org.kie.workbench.common.stunner.forms.client.widgets.container.FormsContainer;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
 
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -61,46 +58,48 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class FormPropertiesWidgetTest {
 
+    private static final String GRAPH_UID = "graph1";
     private static final String DIAGRAM_NAME = "diagram1";
     private static final String ROOT_UUID = "root1";
 
     @Mock
     private FormPropertiesWidgetView view;
     @Mock
-    DefinitionUtils definitionUtils;
+    private DefinitionUtils definitionUtils;
     @Mock
-    CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
+    private CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
     @Mock
-    DynamicFormRenderer formRenderer;
+    private Event<FormPropertiesOpened> propertiesOpenedEvent;
     @Mock
-    Event<FormPropertiesOpened> propertiesOpenedEvent;
+    private FormsContainer formsContainer;
     @Mock
-    ClientFullSession session;
+    private ClientFullSession session;
     @Mock
-    SelectionControl selectionControl;
+    private SelectionControl selectionControl;
     @Mock
-    AbstractCanvasHandler canvasHandler;
+    private AbstractCanvasHandler canvasHandler;
     @Mock
-    Diagram diagram;
+    private Diagram diagram;
     @Mock
-    Metadata metadata;
+    private Graph graph;
     @Mock
-    NodeImpl node;
+    private Metadata metadata;
     @Mock
-    Definition nodeContent;
+    private NodeImpl node;
     @Mock
-    Object nodeDefObject;
+    private Definition nodeContent;
     @Mock
-    Index graphIndex;
+    private Object nodeDefObject;
     @Mock
-    DynamicFormModelGenerator modelGenerator;
+    private Index graphIndex;
     @Mock
-    Path path;
+    private Path path;
     @Mock
-    BindableProxyProvider proxyProvider;
+    private BindableProxyProvider proxyProvider;
     @Mock
-    BindableProxy<Object> proxy;
-    Object unmockedDef = new Object();
+    private BindableProxy<Object> proxy;
+
+    private Object unmockedDef = new Object();
 
     private FormPropertiesWidget tested;
 
@@ -114,6 +113,8 @@ public class FormPropertiesWidgetTest {
         when(graphIndex.get(eq(ROOT_UUID))).thenReturn(node);
         when(diagram.getMetadata()).thenReturn(metadata);
         when(diagram.getName()).thenReturn(DIAGRAM_NAME);
+        when(diagram.getGraph()).thenReturn(graph);
+        when(graph.getUUID()).thenReturn(GRAPH_UID);
         when(node.getUUID()).thenReturn(ROOT_UUID);
         when(node.getContent()).thenReturn(nodeContent);
         when(nodeContent.getDefinition()).thenReturn(nodeDefObject);
@@ -125,21 +126,18 @@ public class FormPropertiesWidgetTest {
         this.tested = new FormPropertiesWidget(view,
                                                definitionUtils,
                                                commandFactory,
-                                               formRenderer,
-                                               modelGenerator,
-                                               propertiesOpenedEvent);
+                                               propertiesOpenedEvent,
+                                               formsContainer);
     }
 
     @Test
     public void testShowEmpty() {
         when(canvasHandler.getDiagram()).thenReturn(null);
         final Command callback = mock(Command.class);
-        tested
-                .bind(session)
-                .show(callback);
-        // verify( formRenderer, times( 1 ) ).unBind(); - fix on class first.
-        verify(formRenderer,
-               times(0)).bind(anyObject());
+
+        tested.bind(session).show(callback);
+
+        verify(formsContainer, never()).render(anyString(), any(), any(), any());
     }
 
     /**
@@ -149,7 +147,7 @@ public class FormPropertiesWidgetTest {
      * that the logic to obtain selected items from the session is correct and at least, the code gets to the point where
      * it tries to introspect the model object ( selected ).
      */
-    @Test(expected = java.lang.RuntimeException.class)
+    @Test
     public void testShowSelectedItem() {
         final Collection<String> selectedItems = new ArrayList<String>(3) {{
             add(ROOT_UUID);
@@ -166,7 +164,7 @@ public class FormPropertiesWidgetTest {
     /**
      * Same as above.
      */
-    @Test(expected = java.lang.RuntimeException.class)
+    @Test
     public void testShowCanvasRoot() {
         when(selectionControl.getSelectedItems()).thenReturn(null);
         when(metadata.getCanvasRootUUID()).thenReturn(ROOT_UUID);
@@ -177,20 +175,31 @@ public class FormPropertiesWidgetTest {
     }
 
     @Test
-    public void testFormContextIsPathAware() throws Exception {
-        final ArgumentCaptor<FormRenderingContext> contextCaptor = ArgumentCaptor.forClass(FormRenderingContext.class);
+    public void testRenderElementForm() throws Exception {
         when(metadata.getPath()).thenReturn(path);
         when(nodeContent.getDefinition()).thenReturn(unmockedDef);
 
-        tested
-                .bind(session)
-                .showByUUID(ROOT_UUID,
-                            RenderMode.EDIT_MODE);
+        tested.bind(session).showByUUID(ROOT_UUID, RenderMode.EDIT_MODE);
 
-        verify(formRenderer).render(contextCaptor.capture());
-        assertTrue("FormRenderingContext was not PathAware.",
-                   contextCaptor.getValue() instanceof PathAware);
-        assertSame(path,
-                   ((PathAware) contextCaptor.getValue()).getPath());
+        verify(formsContainer).render(anyString(), any(), any(), any());
+        verify(propertiesOpenedEvent).fire(any());
+    }
+
+    @Test
+    public void testClickOnSameElement() {
+        when(metadata.getPath()).thenReturn(path);
+        when(nodeContent.getDefinition()).thenReturn(unmockedDef);
+
+        tested.bind(session).showByUUID(ROOT_UUID, RenderMode.EDIT_MODE);
+
+        verify(formsContainer, times(1)).render(anyString(), any(), any(), any());
+        verify(propertiesOpenedEvent, times(1)).fire(any());
+
+        tested.showByUUID(ROOT_UUID, RenderMode.EDIT_MODE);
+
+        verify(formsContainer, times(2)).render(anyString(), any(), any(), any());
+        verify(propertiesOpenedEvent, times(2)).fire(any());
+
+
     }
 }

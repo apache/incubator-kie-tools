@@ -22,20 +22,21 @@ import java.util.Collections;
 import java.util.List;
 
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
+import org.kie.workbench.common.forms.processing.engine.handling.FormField;
 
 public class FieldChangeProcessor {
 
-    private String fieldName;
-    private boolean requiresValidation = false;
+    private FormField formField;
 
     private List<FieldChangeHandler> changeHandlers = new ArrayList<>();
 
-    public FieldChangeProcessor(String fieldName,
-                                boolean requiresValidation) {
-        assert fieldName != null;
+    public FieldChangeProcessor(FormField formField) {
 
-        this.fieldName = fieldName;
-        this.requiresValidation = requiresValidation;
+        if(formField == null) {
+            throw new IllegalArgumentException("FormField cannot be null");
+        }
+
+        this.formField = formField;
     }
 
     public void addFieldChangeHandler(FieldChangeHandler handler) {
@@ -45,14 +46,18 @@ public class FieldChangeProcessor {
     }
 
     public String getFieldName() {
-        return fieldName;
+        return formField.getFieldName();
     }
 
     public boolean isRequiresValidation() {
-        return requiresValidation;
+        return formField.isValidateOnChange();
     }
 
     public Collection<FieldChangeHandler> getChangeHandlers() {
         return Collections.unmodifiableCollection(changeHandlers);
+    }
+
+    public FormField getField() {
+        return formField;
     }
 }

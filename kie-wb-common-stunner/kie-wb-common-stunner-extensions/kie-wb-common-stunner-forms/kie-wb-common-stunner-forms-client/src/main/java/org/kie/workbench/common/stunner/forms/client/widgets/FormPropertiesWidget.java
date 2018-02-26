@@ -29,16 +29,11 @@ import javax.inject.Inject;
 import com.google.gwt.logging.client.LogConfiguration;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.databinding.client.BindableProxy;
-import org.jboss.errai.databinding.client.BindableProxyFactory;
 import org.jboss.errai.databinding.client.HasProperties;
 import org.jboss.errai.databinding.client.api.DataBinder;
-import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
-import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
-import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
-import org.kie.workbench.common.forms.dynamic.service.shared.impl.StaticModelFormRenderingContext;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
@@ -54,39 +49,37 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
-import org.kie.workbench.common.stunner.forms.context.PathAwareFormContext;
-import org.uberfire.backend.vfs.Path;
+import org.kie.workbench.common.stunner.forms.client.widgets.container.FormsContainer;
 import org.uberfire.mvp.Command;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
-public class FormPropertiesWidget implements IsElement, FormPropertiesWidgetView.Presenter {
+public class FormPropertiesWidget implements IsElement,
+                                             FormPropertiesWidgetView.Presenter {
 
     private static Logger LOGGER = Logger.getLogger(FormPropertiesWidget.class.getName());
 
     private final FormPropertiesWidgetView view;
     private final DefinitionUtils definitionUtils;
     private final CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
-    private final DynamicFormRenderer formRenderer;
     private final Event<FormPropertiesOpened> propertiesOpenedEvent;
 
     private ClientSession session;
     private FormFeaturesSessionProvider featuresSessionProvider;
-    private final DynamicFormModelGenerator modelGenerator;
+    private final FormsContainer formsContainer;
 
     protected FormPropertiesWidget() {
-        this(null, null, null, null, null, null);
+        this(null, null, null, null, null);
     }
 
     @Inject
-    public FormPropertiesWidget(final FormPropertiesWidgetView view, final DefinitionUtils definitionUtils, final CanvasCommandFactory<AbstractCanvasHandler> commandFactory, final DynamicFormRenderer formRenderer, final DynamicFormModelGenerator modelGenerator, final Event<FormPropertiesOpened> propertiesOpenedEvent) {
+    public FormPropertiesWidget(final FormPropertiesWidgetView view, final DefinitionUtils definitionUtils, final CanvasCommandFactory<AbstractCanvasHandler> commandFactory, final Event<FormPropertiesOpened> propertiesOpenedEvent, FormsContainer formsContainer) {
         this.view = view;
         this.definitionUtils = definitionUtils;
         this.commandFactory = commandFactory;
-        this.formRenderer = formRenderer;
-        this.modelGenerator = modelGenerator;
         this.propertiesOpenedEvent = propertiesOpenedEvent;
+        this.formsContainer = formsContainer;
     }
 
     @PostConstruct
@@ -101,8 +94,8 @@ public class FormPropertiesWidget implements IsElement, FormPropertiesWidgetView
     }
 
     @Override
-    public DynamicFormRenderer getRenderer() {
-        return formRenderer;
+    public HTMLElement getDisplayerElement() {
+        return formsContainer.getElement();
     }
 
     /**
@@ -122,7 +115,6 @@ public class FormPropertiesWidget implements IsElement, FormPropertiesWidgetView
      */
     public FormPropertiesWidget unbind() {
         this.session = null;
-        doClear();
         return this;
     }
 
@@ -139,7 +131,6 @@ public class FormPropertiesWidget implements IsElement, FormPropertiesWidgetView
 
     @SuppressWarnings("unchecked")
     public void show(final Command callback) {
-        boolean done = false;
         if (null != session) {
             // Obtain first element selected on session, if any.
             String selectedItemUUID = null;
@@ -164,11 +155,7 @@ public class FormPropertiesWidget implements IsElement, FormPropertiesWidgetView
             }
             if (null != selectedItemUUID) {
                 showByUUID(selectedItemUUID, getSessionRenderMode(), callback);
-                done = true;
             }
-        }
-        if (!done) {
-            doClear();
         }
     }
 
@@ -182,14 +169,14 @@ public class FormPropertiesWidget implements IsElement, FormPropertiesWidgetView
     @SuppressWarnings("unchecked")
     public void showByUUID(final String uuid, final RenderMode renderMode, final Command callback) {
         final Element<? extends Definition<?>> element = (null != uuid && null != getCanvasHandler()) ? getCanvasHandler().getGraphIndex().get(uuid) : null;
+
         if (null != element) {
+
+            Diagram<?, ?> diagram = getDiagram();
+
             final Object definition = element.getContent().getDefinition();
-            final BindableProxy<?> proxy = (BindableProxy<?>) BindableProxyFactory.getBindableProxy(definition);
-            final Path diagramPath = session.getCanvasHandler().getDiagram().getMetadata().getPath();
-            final StaticModelFormRenderingContext generatedCtx = modelGenerator.getContextForModel(proxy.deepUnwrap());
-            final FormRenderingContext<?> pathAwareCtx = new PathAwareFormContext<>(generatedCtx, diagramPath);
-            formRenderer.render(pathAwareCtx);
-            formRenderer.addFieldChangeHandler((fieldName, newValue) -> {
+
+            formsContainer.render(diagram.getGraph().getUUID(), element, diagram.getMetadata().getPath(), (fieldName, newValue) -> {
                 try {
                     final HasProperties hasProperties = (HasProperties) DataBinder.forModel(definition).getModel();
                     final String pId = getModifiedPropertyId(hasProperties, fieldName);
@@ -206,7 +193,6 @@ public class FormPropertiesWidget implements IsElement, FormPropertiesWidgetView
             final String name = definitionUtils.getName(definition);
             propertiesOpenedEvent.fire(new FormPropertiesOpened(session, uuid, name));
         } else {
-            doClear();
             if (null != callback) {
                 callback.execute();
             }
@@ -238,15 +224,8 @@ public class FormPropertiesWidget implements IsElement, FormPropertiesWidgetView
                 final String uuid = event.getIdentifiers().iterator().next();
                 showByUUID(uuid,
                            getSessionRenderMode());
-            } else {
-                doClear();
             }
         }
-    }
-
-    void CanvasClearSelectionEvent(@Observes CanvasClearSelectionEvent clearSelectionEvent) {
-        checkNotNull("clearSelectionEvent", clearSelectionEvent);
-        doClear();
     }
 
     void onCanvasSessionOpened(@Observes SessionOpenedEvent sessionOpenedEvent) {
@@ -266,13 +245,6 @@ public class FormPropertiesWidget implements IsElement, FormPropertiesWidgetView
             // No writteable session. Do not show properties until read mode available.
             log(Level.INFO, "Session discarded for opening as not instance of full session.");
         }
-    }
-
-    private void doClear() {
-        if (formRenderer.isValid()) {
-            formRenderer.forceModelSynchronization();
-        }
-        formRenderer.unBind();
     }
 
     @SuppressWarnings("unchecked")

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.processing.engine.handling;
+package org.kie.workbench.common.stunner.forms.client.widgets.container;
 
-public interface IsNestedModel {
+import org.jboss.errai.common.client.api.IsElement;
+import org.kie.workbench.common.stunner.forms.client.widgets.container.displayer.FormDisplayer;
 
-    /**
-     * Clears the nested form if exists.
-     */
+public interface FormsContainerView extends IsElement {
+
+    void addDisplayer(FormDisplayer displayer);
+
     void clear();
 
-    /**
-     * Adds a {@link FieldChangeHandler} to notify the parent form that fields on the nested model have changed
-     * @param notifyParentField the change handler.
-     */
-    void addFieldChangeHandler(FieldChangeHandler notifyParentField);
+    void removeDisplayer(FormDisplayer displayer);
 }

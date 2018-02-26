@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.processing.engine.handling;
+package org.kie.workbench.common.stunner.forms.client.widgets.container.displayer;
 
-import java.util.Collection;
+import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
+import org.uberfire.client.mvp.UberElement;
 
-/**
- * Component that provides the FormFields
- */
-public interface FormFieldProvider {
+public interface FormDisplayerView extends UberElement<FormDisplayerView.Presenter> {
 
-    /**
-     * Retrieves the FormField identified by the given name
-     */
-    FormField findFormField(String fieldName);
+    void show();
 
-    /**
-     * Retrieves all the available fields on the Form
-     */
-    Collection<FormField> getAll();
+    void hide();
+
+    interface Presenter {
+
+        DynamicFormRenderer getRenderer();
+    }
 }

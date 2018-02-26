@@ -110,11 +110,12 @@ public class FieldPropertiesRendererViewImpl extends Composite implements FieldP
     private void maybeOk() {
         if (formRenderer.isValid()) {
             presenter.onPressOk();
-            modal.hide();
+            close();
         }
     }
 
     private void close() {
+        formRenderer.unBind();
         modal.hide();
     }
 

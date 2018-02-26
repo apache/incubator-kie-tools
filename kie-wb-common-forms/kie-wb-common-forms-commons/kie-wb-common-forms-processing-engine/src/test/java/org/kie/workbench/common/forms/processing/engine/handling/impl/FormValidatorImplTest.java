@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldStateValidator;
+import org.kie.workbench.common.forms.processing.engine.handling.Form;
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
 import org.kie.workbench.common.forms.processing.engine.handling.ModelValidator;
 import org.mockito.Mock;
@@ -44,6 +45,8 @@ public class FormValidatorImplTest extends AbstractFormEngineTest {
     @Mock
     protected FieldStateValidator fieldStateValidator;
 
+    private Form form = new Form();
+
     protected Validator validator;
 
     protected FormValidatorImpl formValidator;
@@ -57,7 +60,12 @@ public class FormValidatorImplTest extends AbstractFormEngineTest {
         formValidator = new FormValidatorImpl(new DefaultModelValidator(validator),
                                               fieldStateValidator);
 
-        formValidator.setFormFieldProvider(formFieldProvider);
+        form.addField(valueField);
+        form.addField(nameField);
+        form.addField(lastNameField);
+        form.addField(birthdayField);
+        form.addField(marriedField);
+        form.addField(addressField);
 
         when(fieldStateValidator.validate(any(FormField.class))).thenReturn(true);
         when(fieldStateValidator.validate(anyCollection())).thenReturn(true);
@@ -88,22 +96,26 @@ public class FormValidatorImplTest extends AbstractFormEngineTest {
         when(modelValidator.validate(anyCollection(), any())).thenReturn(modelSuccess);
         when(fieldStateValidator.validate(anyCollection())).thenReturn(fieldStateSuccess);
         formValidator.setModelValidator(modelValidator);
-        assertEquals(formValidator.validate(model), modelSuccess && fieldStateSuccess);
-        verify(fieldStateValidator).validate(formFieldProvider.getAll());
-        verify(modelValidator).validate(formFieldProvider.getAll(), model);
+        assertEquals(formValidator.validate(form, model), modelSuccess && fieldStateSuccess);
+        verify(fieldStateValidator).validate(form.getFields());
+        verify(modelValidator).validate(form.getFields(), model);
+    }
+
+    private FormField[] getAllFields() {
+        return form.getFields().toArray(new FormField[form.getFields().size()]);
     }
 
     @Test
     public void testFullModelSuccesfulValidation() {
-        assertTrue(formValidator.validate(model));
-        checkClearedFields(ALL_FIELDS);
-        checkValidFields(ALL_FIELDS);
+        assertTrue(formValidator.validate(form, model));
+        checkClearedFields(getAllFields());
+        checkValidFields(getAllFields());
     }
 
     @Test
     public void testModelStateFailedValidation() {
         when(fieldStateValidator.validate(anyCollection())).thenReturn(false);
-        assertFalse(formValidator.validate(model));
+        assertFalse(formValidator.validate(form, model));
     }
 
     @Test
@@ -112,34 +124,34 @@ public class FormValidatorImplTest extends AbstractFormEngineTest {
         model.getUser().setName(null);
         model.getUser().setLastName("");
 
-        assertFalse(formValidator.validate(model));
-        checkClearedFields(ALL_FIELDS);
-        checkWrongFields(VALUE_FIELD,
-                         USER_NAME_FIELD,
-                         USER_LAST_NAME_FIELD);
-        checkValidFields(USER_BIRTHDAY_FIELD,
-                         USER_MARRIED_FIELD);
+        assertFalse(formValidator.validate(form, model));
+        checkClearedFields();
+        checkWrongFields(valueField,
+                         nameField,
+                         lastNameField);
+        checkValidFields(birthdayField,
+                         marriedField);
     }
 
     @Test
     public void testpropertySuccesfullValidation() {
-        assertTrue(formValidator.validate(VALUE_FIELD,
+        assertTrue(formValidator.validate(valueField,
                                           model));
 
-        checkClearedFields(VALUE_FIELD);
-        checkValidFields(VALUE_FIELD);
+        checkClearedFields(valueField);
+        checkValidFields(valueField);
 
-        assertTrue(formValidator.validate(USER_NAME_FIELD,
+        assertTrue(formValidator.validate(nameField,
                                           model));
 
-        checkClearedFields(USER_NAME_FIELD);
-        checkValidFields(USER_NAME_FIELD);
+        checkClearedFields(nameField);
+        checkValidFields(nameField);
 
-        assertTrue(formValidator.validate(USER_ADDRESS_FIELD,
+        assertTrue(formValidator.validate(addressField,
                                           model));
 
-        checkClearedFields(USER_ADDRESS_FIELD);
-        checkValidFields(USER_ADDRESS_FIELD);
+        checkClearedFields(addressField);
+        checkValidFields(addressField);
     }
 
     @Test
@@ -148,23 +160,23 @@ public class FormValidatorImplTest extends AbstractFormEngineTest {
         model.getUser().setName("");
         model.getUser().setLastName("abc");
 
-        assertFalse(formValidator.validate(VALUE_FIELD,
+        assertFalse(formValidator.validate(valueField,
                                            model));
 
-        checkClearedFields(VALUE_FIELD);
-        checkWrongFields(VALUE_FIELD);
+        checkClearedFields(valueField);
+        checkWrongFields(valueField);
 
-        assertFalse(formValidator.validate(USER_NAME_FIELD,
+        assertFalse(formValidator.validate(nameField,
                                            model));
 
-        checkClearedFields(USER_NAME_FIELD);
-        checkWrongFields(USER_NAME_FIELD);
+        checkClearedFields(nameField);
+        checkWrongFields(nameField);
 
-        assertFalse(formValidator.validate(USER_LAST_NAME_FIELD,
+        assertFalse(formValidator.validate(lastNameField,
                                            model));
 
-        checkClearedFields(USER_LAST_NAME_FIELD);
-        checkWrongFields(USER_LAST_NAME_FIELD);
+        checkClearedFields(lastNameField);
+        checkWrongFields(lastNameField);
     }
 
     @Test
@@ -172,11 +184,11 @@ public class FormValidatorImplTest extends AbstractFormEngineTest {
 
         when(fieldStateValidator.validate(any(FormField.class))).thenReturn(false);
 
-        assertFalse(formValidator.validate(VALUE_FIELD,
+        assertFalse(formValidator.validate(valueField,
                                            model));
-        assertFalse(formValidator.validate(USER_NAME_FIELD,
+        assertFalse(formValidator.validate(nameField,
                                            model));
-        assertFalse(formValidator.validate(USER_LAST_NAME_FIELD,
+        assertFalse(formValidator.validate(lastNameField,
                                            model));
     }
 

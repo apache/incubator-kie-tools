@@ -18,6 +18,6 @@ package org.kie.workbench.common.forms.processing.engine.handling;
 
 public interface FieldChangeHandler {
 
-    public void onFieldChange(String fieldName,
-                              Object newValue);
+    void onFieldChange(String fieldName,
+                       Object newValue);
 }

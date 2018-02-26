@@ -24,20 +24,14 @@ public interface FormValidator<MODEL> {
     public static final String NESTED_PROPERTY_SEPARATOR = "_";
 
     /**
-     * Sets the {@link FormFieldProvider} for the given rendered form
-     */
-    void setFormFieldProvider(FormFieldProvider formFieldProvider);
-
-    /**
      * Validates the given form model
      * @return True or false depending on the validations
      */
-    boolean validate(MODEL model);
+    boolean validate(Form form, MODEL model);
 
     /**
      * Validates a specific field value.
      * @return True or false depending on the validation
      */
-    boolean validate(String fieldName,
-                     MODEL model);
+    boolean validate(FormField formField, MODEL model);
 }

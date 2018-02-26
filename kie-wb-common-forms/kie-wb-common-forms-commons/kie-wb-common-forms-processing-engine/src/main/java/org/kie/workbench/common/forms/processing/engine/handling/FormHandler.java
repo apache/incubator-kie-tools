@@ -112,12 +112,6 @@ public interface FormHandler<T> {
     void clear();
 
     /**
-     * Synchronize model data with UI. Should only be used in controlled
-     * environments.
-     */
-    void forceModelSynchronization();
-
-    /**
      * Adds FieldChangeHandler that will be notified when any of the form fields
      * value changes. Multiple handlers can be added.
      * 

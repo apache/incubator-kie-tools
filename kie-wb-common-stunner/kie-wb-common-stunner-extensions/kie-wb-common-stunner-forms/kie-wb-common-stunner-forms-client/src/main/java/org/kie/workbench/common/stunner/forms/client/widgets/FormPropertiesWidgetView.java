@@ -16,12 +16,14 @@
 
 package org.kie.workbench.common.stunner.forms.client.widgets;
 
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
 import org.uberfire.client.mvp.UberElement;
 
 public interface FormPropertiesWidgetView extends UberElement<FormPropertiesWidgetView.Presenter> {
 
     interface Presenter {
-        DynamicFormRenderer getRenderer();
+
+        HTMLElement getDisplayerElement();
     }
 }

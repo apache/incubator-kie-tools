@@ -27,6 +27,8 @@ import javax.enterprise.context.Dependent;
 import org.jboss.errai.common.client.api.Assert;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandlerManager;
+import org.kie.workbench.common.forms.processing.engine.handling.Form;
+import org.kie.workbench.common.forms.processing.engine.handling.FormField;
 import org.kie.workbench.common.forms.processing.engine.handling.FormValidator;
 
 @Dependent
@@ -43,17 +45,9 @@ public class FieldChangeHandlerManagerImpl implements FieldChangeHandlerManager 
     }
 
     @Override
-    public void registerField(String fieldName) {
-        registerField(fieldName,
-                      false);
-    }
-
-    @Override
-    public void registerField(String fieldName,
-                              boolean validateOnChange) {
-        fieldExecutors.put(fieldName,
-                           new FieldChangeProcessor(fieldName,
-                                                    validateOnChange));
+    public void registerField(FormField formField) {
+        fieldExecutors.put(formField.getFieldName(),
+                           new FieldChangeProcessor(formField));
     }
 
     @Override
@@ -112,7 +106,7 @@ public class FieldChangeHandlerManagerImpl implements FieldChangeHandlerManager 
 
         if (executor != null) {
             if (validate && executor.isRequiresValidation()) {
-                if (validator != null && !validator.validate(realFieldName,
+                if (validator != null && !validator.validate(executor.getField(),
                                                              model)) {
                     return;
                 }

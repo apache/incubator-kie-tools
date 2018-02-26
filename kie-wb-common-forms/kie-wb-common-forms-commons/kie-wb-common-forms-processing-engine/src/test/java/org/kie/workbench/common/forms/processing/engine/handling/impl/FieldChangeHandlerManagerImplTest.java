@@ -37,11 +37,12 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class FieldChangeHandlerManagerImplTest extends AbstractFormEngineTest {
 
-    public static final String MODIFIED_USER_NAME_FIELD = USER_NAME_FIELD + ".name";
+    public static final String MODIFIED_USER_NAME_FIELD = USER_NAME_FIELD_NAME + ".name";
 
     @Mock
     protected TranslationService translationService;
@@ -57,12 +58,17 @@ public class FieldChangeHandlerManagerImplTest extends AbstractFormEngineTest {
         FormValidatorImpl formValidator = new FormValidatorImpl(new DefaultModelValidator(validator),
                                                                 new FieldStateValidatorImpl(translationService));
 
-        formValidator.setFormFieldProvider(formFieldProvider);
-
-        fieldChangeHandlerManager = new FieldChangeHandlerManagerImpl();
+        fieldChangeHandlerManager = spy(new FieldChangeHandlerManagerImpl());
         fieldChangeHandlerManager.setValidator(formValidator);
 
         executionCounts = 0;
+
+        fieldChangeHandlerManager.registerField(valueField);
+        fieldChangeHandlerManager.registerField(nameField);
+        fieldChangeHandlerManager.registerField(lastNameField);
+        fieldChangeHandlerManager.registerField(birthdayField);
+        fieldChangeHandlerManager.registerField(marriedField);
+        fieldChangeHandlerManager.registerField(addressField);
     }
 
     @After
@@ -70,17 +76,6 @@ public class FieldChangeHandlerManagerImplTest extends AbstractFormEngineTest {
         fieldChangeHandlerManager.clear();
     }
 
-    @Test
-    public void testRegisterFieldName() {
-        fieldChangeHandlerManager = spy(fieldChangeHandlerManager);
-        Collection<FormField> fields = formFieldProvider.getAll();
-        for (FormField formField : fields) {
-            fieldChangeHandlerManager.registerField(formField.getFieldName());
-        }
-        verify(fieldChangeHandlerManager,
-               times(fields.size())).registerField(anyString(),
-                                                   eq(false));
-    }
 
     @Test
     public void testAnonymousFieldChangeProcessing() {
@@ -88,7 +83,7 @@ public class FieldChangeHandlerManagerImplTest extends AbstractFormEngineTest {
 
         fieldChangeHandlerManager.addFieldChangeHandler(anonymous);
 
-        fieldChangeHandlerManager.processFieldChange(VALUE_FIELD,
+        fieldChangeHandlerManager.processFieldChange(VALUE_FIELD_NAME,
                                                      model.getValue(),
                                                      model);
 
@@ -98,7 +93,7 @@ public class FieldChangeHandlerManagerImplTest extends AbstractFormEngineTest {
         verify(anonymous).onFieldChange(anyString(),
                                         anyObject());
 
-        fieldChangeHandlerManager.processFieldChange(USER_NAME_FIELD,
+        fieldChangeHandlerManager.processFieldChange(USER_NAME_FIELD_NAME,
                                                      model.getUser().getName(),
                                                      model);
 
@@ -109,10 +104,10 @@ public class FieldChangeHandlerManagerImplTest extends AbstractFormEngineTest {
                times(2)).onFieldChange(anyString(),
                                        anyObject());
 
-        fieldChangeHandlerManager.processFieldChange(USER_LAST_NAME_FIELD,
+        fieldChangeHandlerManager.processFieldChange(USER_LAST_NAME_FIELD_NAME,
                                                      model.getUser().getLastName(),
                                                      model);
-        fieldChangeHandlerManager.processFieldChange(USER_ADDRESS_FIELD,
+        fieldChangeHandlerManager.processFieldChange(USER_ADDRESS_FIELD_NAME,
                                                      model.getUser().getName(),
                                                      model);
 
@@ -129,7 +124,7 @@ public class FieldChangeHandlerManagerImplTest extends AbstractFormEngineTest {
 
         fieldChangeHandlerManager.addFieldChangeHandler(anonymous);
 
-        fieldChangeHandlerManager.processFieldChange(VALUE_FIELD,
+        fieldChangeHandlerManager.processFieldChange(VALUE_FIELD_NAME,
                                                      model.getValue(),
                                                      model);
 
@@ -150,10 +145,10 @@ public class FieldChangeHandlerManagerImplTest extends AbstractFormEngineTest {
                times(2)).onFieldChange(anyString(),
                                        anyObject());
 
-        fieldChangeHandlerManager.processFieldChange(USER_LAST_NAME_FIELD,
+        fieldChangeHandlerManager.processFieldChange(USER_LAST_NAME_FIELD_NAME,
                                                      model.getUser().getLastName(),
                                                      model);
-        fieldChangeHandlerManager.processFieldChange(USER_ADDRESS_FIELD,
+        fieldChangeHandlerManager.processFieldChange(USER_ADDRESS_FIELD_NAME,
                                                      model.getUser().getName(),
                                                      model);
 
@@ -171,7 +166,7 @@ public class FieldChangeHandlerManagerImplTest extends AbstractFormEngineTest {
         fieldChangeHandlerManager.addFieldChangeHandler(anonymous);
 
         model.setValue(60);
-        fieldChangeHandlerManager.processFieldChange(VALUE_FIELD,
+        fieldChangeHandlerManager.processFieldChange(VALUE_FIELD_NAME,
                                                      model.getValue(),
                                                      model);
 
@@ -182,7 +177,7 @@ public class FieldChangeHandlerManagerImplTest extends AbstractFormEngineTest {
                never()).onFieldChange(anyString(),
                                       anyObject());
 
-        fieldChangeHandlerManager.processFieldChange(USER_NAME_FIELD,
+        fieldChangeHandlerManager.processFieldChange(USER_NAME_FIELD_NAME,
                                                      model.getUser().getName(),
                                                      model);
 
@@ -194,14 +189,14 @@ public class FieldChangeHandlerManagerImplTest extends AbstractFormEngineTest {
 
         model.getUser().setAddress("Pentos");
 
-        fieldChangeHandlerManager.processFieldChange(USER_LAST_NAME_FIELD,
+        fieldChangeHandlerManager.processFieldChange(USER_LAST_NAME_FIELD_NAME,
                                                      model.getUser().getLastName(),
                                                      model);
-        fieldChangeHandlerManager.processFieldChange(USER_ADDRESS_FIELD,
+        fieldChangeHandlerManager.processFieldChange(USER_ADDRESS_FIELD_NAME,
                                                      model.getUser().getName(),
                                                      model);
 
-        // Validation must fail for USER_ADDRESS_FIELD -> address between 10 : 100
+        // Validation must fail for USER_ADDRESS_FIELD_NAME -> address between 10 : 100
         assertEquals(2,
                      executionCounts);
         verify(anonymous,
@@ -218,21 +213,21 @@ public class FieldChangeHandlerManagerImplTest extends AbstractFormEngineTest {
     public void testNamedFieldChangeProcessingWithValidation() {
         registerFields(true);
 
-        fieldChangeHandlerManager.addFieldChangeHandler(VALUE_FIELD,
+        fieldChangeHandlerManager.addFieldChangeHandler(VALUE_FIELD_NAME,
                                                         value);
-        fieldChangeHandlerManager.addFieldChangeHandler(USER_NAME_FIELD,
+        fieldChangeHandlerManager.addFieldChangeHandler(USER_NAME_FIELD_NAME,
                                                         userName);
-        fieldChangeHandlerManager.addFieldChangeHandler(USER_LAST_NAME_FIELD,
+        fieldChangeHandlerManager.addFieldChangeHandler(USER_LAST_NAME_FIELD_NAME,
                                                         userLastName);
-        fieldChangeHandlerManager.addFieldChangeHandler(USER_BIRTHDAY_FIELD,
+        fieldChangeHandlerManager.addFieldChangeHandler(USER_BIRTHDAY_FIELD_NAME,
                                                         userBirthday);
-        fieldChangeHandlerManager.addFieldChangeHandler(USER_MARRIED_FIELD,
+        fieldChangeHandlerManager.addFieldChangeHandler(USER_MARRIED_FIELD_NAME,
                                                         userMarried);
-        fieldChangeHandlerManager.addFieldChangeHandler(USER_ADDRESS_FIELD,
+        fieldChangeHandlerManager.addFieldChangeHandler(USER_ADDRESS_FIELD_NAME,
                                                         userAddress);
 
         // Validation must work here
-        fieldChangeHandlerManager.processFieldChange(VALUE_FIELD,
+        fieldChangeHandlerManager.processFieldChange(VALUE_FIELD_NAME,
                                                      model.getValue(),
                                                      model);
         assertEquals(1,
@@ -258,17 +253,17 @@ public class FieldChangeHandlerManagerImplTest extends AbstractFormEngineTest {
 
         model.getUser().setName(null);
         model.getUser().setLastName(null);
-        fieldChangeHandlerManager.processFieldChange(USER_NAME_FIELD,
+        fieldChangeHandlerManager.processFieldChange(USER_NAME_FIELD_NAME,
                                                      model.getUser().getName(),
                                                      model);
-        fieldChangeHandlerManager.processFieldChange(USER_LAST_NAME_FIELD,
+        fieldChangeHandlerManager.processFieldChange(USER_LAST_NAME_FIELD_NAME,
                                                      model.getUser().getName(),
                                                      model);
-        fieldChangeHandlerManager.processFieldChange(USER_MARRIED_FIELD,
+        fieldChangeHandlerManager.processFieldChange(USER_MARRIED_FIELD_NAME,
                                                      model.getUser().getName(),
                                                      model);
 
-        // Validation must fail for USER_NAME_FIELD && USER_LAST_NAME_FIELD (cannot be null or empty string)
+        // Validation must fail for USER_NAME_FIELD_NAME && USER_LAST_NAME_FIELD_NAME (cannot be null or empty string)
         assertEquals(2,
                      executionCounts);
 
@@ -298,24 +293,24 @@ public class FieldChangeHandlerManagerImplTest extends AbstractFormEngineTest {
     protected void testAnonymousFieldProcessing(boolean notifyOnly) {
         registerFields(false);
 
-        fieldChangeHandlerManager.addFieldChangeHandler(VALUE_FIELD,
+        fieldChangeHandlerManager.addFieldChangeHandler(VALUE_FIELD_NAME,
                                                         value);
-        fieldChangeHandlerManager.addFieldChangeHandler(USER_NAME_FIELD,
+        fieldChangeHandlerManager.addFieldChangeHandler(USER_NAME_FIELD_NAME,
                                                         userName);
-        fieldChangeHandlerManager.addFieldChangeHandler(USER_LAST_NAME_FIELD,
+        fieldChangeHandlerManager.addFieldChangeHandler(USER_LAST_NAME_FIELD_NAME,
                                                         userLastName);
-        fieldChangeHandlerManager.addFieldChangeHandler(USER_BIRTHDAY_FIELD,
+        fieldChangeHandlerManager.addFieldChangeHandler(USER_BIRTHDAY_FIELD_NAME,
                                                         userBirthday);
-        fieldChangeHandlerManager.addFieldChangeHandler(USER_MARRIED_FIELD,
+        fieldChangeHandlerManager.addFieldChangeHandler(USER_MARRIED_FIELD_NAME,
                                                         userMarried);
-        fieldChangeHandlerManager.addFieldChangeHandler(USER_ADDRESS_FIELD,
+        fieldChangeHandlerManager.addFieldChangeHandler(USER_ADDRESS_FIELD_NAME,
                                                         userAddress);
 
         if (notifyOnly) {
-            fieldChangeHandlerManager.notifyFieldChange(VALUE_FIELD,
+            fieldChangeHandlerManager.notifyFieldChange(VALUE_FIELD_NAME,
                                                         model.getValue());
         } else {
-            fieldChangeHandlerManager.processFieldChange(VALUE_FIELD,
+            fieldChangeHandlerManager.processFieldChange(VALUE_FIELD_NAME,
                                                          model.getValue(),
                                                          model);
         }
@@ -342,20 +337,20 @@ public class FieldChangeHandlerManagerImplTest extends AbstractFormEngineTest {
                                       anyObject());
 
         if (notifyOnly) {
-            fieldChangeHandlerManager.notifyFieldChange(USER_NAME_FIELD,
+            fieldChangeHandlerManager.notifyFieldChange(USER_NAME_FIELD_NAME,
                                                         model.getUser().getName());
-            fieldChangeHandlerManager.notifyFieldChange(USER_LAST_NAME_FIELD,
+            fieldChangeHandlerManager.notifyFieldChange(USER_LAST_NAME_FIELD_NAME,
                                                         model.getUser().getName());
-            fieldChangeHandlerManager.notifyFieldChange(USER_MARRIED_FIELD,
+            fieldChangeHandlerManager.notifyFieldChange(USER_MARRIED_FIELD_NAME,
                                                         model.getUser().getName());
         } else {
-            fieldChangeHandlerManager.processFieldChange(USER_NAME_FIELD,
+            fieldChangeHandlerManager.processFieldChange(USER_NAME_FIELD_NAME,
                                                          model.getUser().getName(),
                                                          model);
-            fieldChangeHandlerManager.processFieldChange(USER_LAST_NAME_FIELD,
+            fieldChangeHandlerManager.processFieldChange(USER_LAST_NAME_FIELD_NAME,
                                                          model.getUser().getName(),
                                                          model);
-            fieldChangeHandlerManager.processFieldChange(USER_MARRIED_FIELD,
+            fieldChangeHandlerManager.processFieldChange(USER_MARRIED_FIELD_NAME,
                                                          model.getUser().getName(),
                                                          model);
         }
@@ -380,9 +375,11 @@ public class FieldChangeHandlerManagerImplTest extends AbstractFormEngineTest {
     }
 
     protected void registerFields(boolean validateOnChange) {
-        for (FormField formField : formFieldProvider.getAll()) {
-            fieldChangeHandlerManager.registerField(formField.getFieldName(),
-                                                    validateOnChange);
-        }
+        when(valueField.isValidateOnChange()).thenReturn(validateOnChange);
+        when(nameField.isValidateOnChange()).thenReturn(validateOnChange);
+        when(lastNameField.isValidateOnChange()).thenReturn(validateOnChange);
+        when(birthdayField.isValidateOnChange()).thenReturn(validateOnChange);
+        when(marriedField.isValidateOnChange()).thenReturn(validateOnChange);
+        when(addressField.isValidateOnChange()).thenReturn(validateOnChange);
     }
 }

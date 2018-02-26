@@ -28,6 +28,7 @@ import javax.validation.Path;
 import javax.validation.Validator;
 
 import com.google.gwt.core.client.GWT;
+import org.jboss.errai.databinding.client.BindableProxy;
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
 import org.kie.workbench.common.forms.processing.engine.handling.ModelValidator;
 
@@ -48,6 +49,10 @@ public class DefaultModelValidator<MODEL> implements ModelValidator<MODEL> {
     public boolean validate(Collection<FormField> fields,
                             MODEL model) {
         boolean isValid = true;
+
+        if (model instanceof BindableProxy) {
+            model = ((BindableProxy<MODEL>)model).deepUnwrap();
+        }
 
         try {
             Set<ConstraintViolation<Object>> result = validator.validate(model);
@@ -97,6 +102,10 @@ public class DefaultModelValidator<MODEL> implements ModelValidator<MODEL> {
     public boolean validate(FormField formField,
                             MODEL model) {
         boolean isValid = true;
+
+        if (model instanceof BindableProxy) {
+            model = ((BindableProxy<MODEL>)model).deepUnwrap();
+        }
 
         try {
             Set<ConstraintViolation<Object>> result = validator.validate(model);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.forms.client.widgets;
+package org.kie.workbench.common.stunner.forms.client.widgets.container.displayer;
 
 import javax.inject.Inject;
 
@@ -25,19 +25,29 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
-public class FormPropertiesWidgetViewImpl implements FormPropertiesWidgetView,
-                                                     IsElement {
+public class FormDisplayerViewImpl implements FormDisplayerView,
+                                              IsElement {
+
+    private Presenter presenter;
 
     @Inject
     @DataField
-    private Div formContent;
+    private Div content;
 
-    private Presenter presenter;
+    @Override
+    public void show() {
+        getElement().setHidden(false);
+    }
+
+    @Override
+    public void hide() {
+        getElement().setHidden(true);
+    }
 
     @Override
     public void init(Presenter presenter) {
         this.presenter = presenter;
-        DOMUtil.removeAllChildren(formContent);
-        formContent.appendChild(presenter.getDisplayerElement());
+
+        DOMUtil.appendWidgetToElement(content, presenter.getRenderer());
     }
 }

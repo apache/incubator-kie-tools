@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.forms.client.widgets;
+package org.kie.workbench.common.stunner.forms.client.widgets.container;
 
 import javax.inject.Inject;
 
@@ -23,21 +23,27 @@ import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.stunner.forms.client.widgets.container.displayer.FormDisplayer;
 
 @Templated
-public class FormPropertiesWidgetViewImpl implements FormPropertiesWidgetView,
-                                                     IsElement {
-
+public class FormsContainerViewImpl implements FormsContainerView,
+                                               IsElement {
     @Inject
     @DataField
-    private Div formContent;
-
-    private Presenter presenter;
+    private Div content;
 
     @Override
-    public void init(Presenter presenter) {
-        this.presenter = presenter;
-        DOMUtil.removeAllChildren(formContent);
-        formContent.appendChild(presenter.getDisplayerElement());
+    public void addDisplayer(FormDisplayer displayer) {
+        content.appendChild(displayer.getElement());
+    }
+
+    @Override
+    public void clear() {
+        DOMUtil.removeAllChildren(content);
+    }
+
+    @Override
+    public void removeDisplayer(FormDisplayer displayer) {
+        DOMUtil.removeFromParent(displayer.getElement());
     }
 }

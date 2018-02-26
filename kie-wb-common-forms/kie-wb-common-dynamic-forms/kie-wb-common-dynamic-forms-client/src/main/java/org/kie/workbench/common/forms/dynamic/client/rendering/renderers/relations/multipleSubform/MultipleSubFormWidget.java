@@ -290,7 +290,7 @@ public class MultipleSubFormWidget extends Composite implements TakesValue<List<
     }
 
     @Override
-    public void forceModelSynchronization() {
+    public void clear() {
 
     }
 

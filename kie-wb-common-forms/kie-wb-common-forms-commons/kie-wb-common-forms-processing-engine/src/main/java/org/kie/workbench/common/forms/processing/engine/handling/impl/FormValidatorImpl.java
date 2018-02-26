@@ -19,16 +19,14 @@ package org.kie.workbench.common.forms.processing.engine.handling.impl;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.forms.processing.engine.handling.FieldStateValidator;
+import org.kie.workbench.common.forms.processing.engine.handling.Form;
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
-import org.kie.workbench.common.forms.processing.engine.handling.FormFieldProvider;
 import org.kie.workbench.common.forms.processing.engine.handling.FormValidator;
 import org.kie.workbench.common.forms.processing.engine.handling.ModelValidator;
 
 public class FormValidatorImpl implements FormValidator {
 
     private ModelValidator modelValidator;
-
-    private FormFieldProvider formFieldProvider;
 
     private FieldStateValidator fieldStateValidator;
 
@@ -40,47 +38,31 @@ public class FormValidatorImpl implements FormValidator {
     }
 
     @Override
-    public boolean validate(Object model) {
+    public boolean validate(Form form, Object model) {
 
-        clearAllFieldErrors();
+        form.getFields().forEach(FormField::clearError);
 
-        boolean isModelValid = modelValidator.validate(formFieldProvider.getAll(),
+        boolean isModelValid = modelValidator.validate(form.getFields(),
                                                        model);
-        boolean isFieldStateValid = fieldStateValidator.validate(formFieldProvider.getAll());
+        boolean isFieldStateValid = fieldStateValidator.validate(form.getFields());
 
         return isFieldStateValid && isModelValid;
     }
 
     @Override
-    public boolean validate(String fieldName,
+    public boolean validate(FormField formField,
                             Object model) {
 
-        clearFieldError(fieldName);
+        if(formField == null) {
+            throw new IllegalArgumentException("FormField cannot be null");
+        }
+        formField.clearError();
 
-        FormField field = formFieldProvider.findFormField(fieldName);
-        if (!fieldStateValidator.validate(field)) {
+        if (!fieldStateValidator.validate(formField)) {
             return false;
         }
 
-        return modelValidator.validate(field,
-                                       model);
-    }
-
-    public void setFormFieldProvider(FormFieldProvider formFieldProvider) {
-        this.formFieldProvider = formFieldProvider;
-    }
-
-    protected void clearAllFieldErrors() {
-        for (FormField formField : formFieldProvider.getAll()) {
-            formField.clearError();
-        }
-    }
-
-    protected void clearFieldError(String fieldName) {
-        FormField field = formFieldProvider.findFormField(fieldName);
-        if (field != null) {
-            field.clearError();
-        }
+        return modelValidator.validate(formField, model);
     }
 
     public ModelValidator getModelValidator() {

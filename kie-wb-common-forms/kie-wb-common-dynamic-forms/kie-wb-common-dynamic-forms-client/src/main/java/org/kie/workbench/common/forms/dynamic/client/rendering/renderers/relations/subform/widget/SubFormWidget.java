@@ -68,17 +68,13 @@ public class SubFormWidget extends Composite implements TakesValue<Object>,
     }
 
     @Override
-    public void addFieldChangeHandler(FieldChangeHandler handler) {
-        formRenderer.addFieldChangeHandler(handler);
+    public void clear() {
+        formRenderer.unBind();
     }
 
     @Override
-    public void forceModelSynchronization() {
-        formRenderer.forceModelSynchronization();
-    }
-
-    public void unBind() {
-        formRenderer.unBind();
+    public void addFieldChangeHandler(FieldChangeHandler handler) {
+        formRenderer.addFieldChangeHandler(handler);
     }
 
     public void setReadOnly(boolean readOnly) {
