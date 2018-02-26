@@ -16,15 +16,13 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies;
 
-
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
-public class DependencyLoaderViewImpl
-        implements DependencyLoaderView {
+public class DependencyLoaderViewImpl implements DependencyLoaderView {
 
     @Override
-    public void showBusyIndicator( final String message ) {
-        BusyPopup.showMessage( message );
+    public void showBusyIndicator(final String message) {
+        BusyPopup.showMessage(message);
     }
 
     @Override

@@ -16,9 +16,12 @@
 package org.kie.workbench.common.stunner.cm.resource;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import org.guvnor.common.services.project.categories.Process;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
 import org.kie.workbench.common.stunner.core.definition.AbstractDefinitionSetResourceType;
+import org.uberfire.workbench.category.Category;
 
 @ApplicationScoped
 public class CaseManagementDefinitionSetResourceType extends AbstractDefinitionSetResourceType {
@@ -26,6 +29,22 @@ public class CaseManagementDefinitionSetResourceType extends AbstractDefinitionS
     private static final String CM_EXTENSION = "bpmn-cm";
     private static final String NAME = "Case Management (Preview)";
     private static final String DESCRIPTION = "Case Management (Preview)";
+
+    private Category category;
+
+    public CaseManagementDefinitionSetResourceType() {
+
+    }
+
+    @Inject
+    public CaseManagementDefinitionSetResourceType(final Process category) {
+        this.category = category;
+    }
+
+    @Override
+    public Category getCategory() {
+        return this.category;
+    }
 
     @Override
     public String getShortName() {

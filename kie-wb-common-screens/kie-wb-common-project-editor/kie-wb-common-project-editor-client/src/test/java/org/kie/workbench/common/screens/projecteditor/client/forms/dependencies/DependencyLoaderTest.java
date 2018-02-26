@@ -27,6 +27,7 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.mocks.CallerMock;
+import org.uberfire.promise.SyncPromises;
 
 import static org.junit.Assert.*;
 import static org.kie.workbench.common.screens.projecteditor.client.forms.dependencies.Util.*;
@@ -54,6 +55,7 @@ public class DependencyLoaderTest {
     public void setUp() throws Exception {
 
         dependencyLoader = new DependencyLoader( view,
+                                                 new SyncPromises(),
                                                  new CallerMock<>( dependencyService ) );
         dependencyLoader.init( manager );
     }

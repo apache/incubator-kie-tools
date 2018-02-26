@@ -38,6 +38,7 @@ import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -64,6 +65,9 @@ public class GuvnorDefaultEditorPresenter
     private DefaultFileNameValidator fileNameValidator;
 
     @Inject
+    private Others category;
+
+    @Inject
     public GuvnorDefaultEditorPresenter(final GuvnorDefaultEditorView baseView) {
         super(baseView);
         view = baseView;
@@ -74,7 +78,7 @@ public class GuvnorDefaultEditorPresenter
                           final PlaceRequest place) {
         super.init(path,
                    place,
-                   new AnyResourceType());
+                   new AnyResourceType(category));
         view.onStartup(path);
     }
 

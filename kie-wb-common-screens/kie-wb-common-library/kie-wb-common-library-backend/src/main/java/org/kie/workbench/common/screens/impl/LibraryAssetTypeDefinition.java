@@ -16,15 +16,33 @@
 package org.kie.workbench.common.screens.impl;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.file.Files;
+import org.uberfire.workbench.category.Category;
+import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @ApplicationScoped
 public class LibraryAssetTypeDefinition
         implements ResourceTypeDefinition {
+
+    private Category category;
+
+    public LibraryAssetTypeDefinition() {
+    }
+
+    @Inject
+    public LibraryAssetTypeDefinition(final Others category) {
+        this.category = category;
+    }
+
+    @Override
+    public Category getCategory() {
+        return this.category;
+    }
 
     @Override
     public String getShortName() {

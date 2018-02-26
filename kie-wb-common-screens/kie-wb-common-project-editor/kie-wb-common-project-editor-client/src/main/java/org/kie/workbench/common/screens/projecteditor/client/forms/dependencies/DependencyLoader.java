@@ -19,41 +19,44 @@ package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.Dependency;
 import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.ErrorCallback;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.shared.dependencies.DependencyService;
 import org.kie.workbench.common.services.shared.dependencies.EnhancedDependencies;
 import org.kie.workbench.common.services.shared.dependencies.NormalEnhancedDependency;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.uberfire.client.promise.Promises;
 
 @Dependent
 public class DependencyLoader {
 
     private final List<Dependency> updateQueue = new ArrayList<>();
 
-    private       DependencyLoaderView        view;
-    private final Caller<DependencyService>   dependencyService;
-    private       EnhancedDependenciesManager manager;
+    private final DependencyLoaderView view;
+    private final Promises promises;
+    private final Caller<DependencyService> dependencyService;
+    private EnhancedDependenciesManager manager;
 
     @Inject
-    public DependencyLoader( final DependencyLoaderView view,
-                             final Caller<DependencyService> dependencyService ) {
+    public DependencyLoader(final DependencyLoaderView view,
+                            final Promises promises,
+                            final Caller<DependencyService> dependencyService) {
         this.view = view;
+        this.promises = promises;
         this.dependencyService = dependencyService;
     }
 
-    public void init( final EnhancedDependenciesManager manager ) {
+    public void init(final EnhancedDependenciesManager manager) {
         this.manager = manager;
         this.updateQueue.clear();
     }
 
     public void load() {
-        if ( !updateQueue.isEmpty() ) {
+        if (!updateQueue.isEmpty()) {
             loadFromServer();
         } else {
             returnDefault();
@@ -61,47 +64,40 @@ public class DependencyLoader {
     }
 
     private void returnDefault() {
-        EnhancedDependencies enhancedDependencies = new EnhancedDependencies();
-        for ( Dependency dependency : updateQueue ) {
-            enhancedDependencies.add( new NormalEnhancedDependency( dependency,
-                                                                    new HashSet<String>() ) );
+        final EnhancedDependencies enhancedDependencies = new EnhancedDependencies();
+        for (final Dependency dependency : updateQueue) {
+            enhancedDependencies.add(new NormalEnhancedDependency(dependency,
+                                                                  new HashSet<>()));
         }
 
         updateQueue.clear();
 
-        manager.onEnhancedDependenciesUpdated( enhancedDependencies );
+        manager.onEnhancedDependenciesUpdated(enhancedDependencies);
     }
 
     private void loadFromServer() {
 
-        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
 
-        dependencyService.call( new RemoteCallback<EnhancedDependencies>() {
-                                    @Override
-                                    public void callback( final EnhancedDependencies result ) {
-                                        onLoadSuccess( result );
-                                        view.hideBusyIndicator();
-                                    }
-                                },
-                                new ErrorCallback<Object>() {
-                                    @Override
-                                    public boolean error( final Object o,
-                                                          final Throwable throwable ) {
-
-
-                                        returnDefault();
-                                        view.hideBusyIndicator();
-                                        return false;
-                                    }
-                                } ).loadEnhancedDependencies( updateQueue );
+        promises.promisify(dependencyService, s -> {
+            return s.loadEnhancedDependencies(updateQueue);
+        }).then(result -> {
+            onLoadSuccess(result);
+            view.hideBusyIndicator();
+            return promises.resolve();
+        }).catch_(i -> {
+            returnDefault();
+            view.hideBusyIndicator();
+            return promises.resolve();
+        });
     }
 
-    private void onLoadSuccess( final EnhancedDependencies result ) {
+    private void onLoadSuccess(final EnhancedDependencies result) {
         updateQueue.clear();
-        manager.onEnhancedDependenciesUpdated( result );
+        manager.onEnhancedDependenciesUpdated(result);
     }
 
-    public void addToQueue( final Dependency dependency ) {
-        updateQueue.add( dependency );
+    public void addToQueue(final Dependency dependency) {
+        updateQueue.add(dependency);
     }
 }

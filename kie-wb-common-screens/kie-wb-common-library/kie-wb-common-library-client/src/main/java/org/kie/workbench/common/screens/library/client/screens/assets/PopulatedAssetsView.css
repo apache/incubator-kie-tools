@@ -1,0 +1,39 @@
+.content-view-pf-pagination.list-view-pf-pagination.clearfix {
+    border:none;
+}
+
+.content-view-pf-pagination.list-view-pf-pagination.clearfix .form-group {
+    margin-right:0px;
+    margin-left: 0px;
+}
+
+
+.nowrap{
+    white-space: nowrap;
+    padding-right: 1em;
+    padding-left: 1em;
+    margin-bottom: 0px;
+}
+
+.right-toolbar{
+    align-items: center;
+}
+
+.page-number {
+    width: 3em;
+    text-align: center;
+}
+
+.search-bar {
+    width: 50%;
+}
+
+.input-group .form-control.filter-text{
+    width: 30%;
+}
+
+.blank-slate-pf{
+    height:     100%;
+    width:      100%;
+    visibility: visible;
+}

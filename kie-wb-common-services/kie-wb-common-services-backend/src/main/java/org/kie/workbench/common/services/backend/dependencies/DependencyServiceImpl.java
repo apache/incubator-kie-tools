@@ -107,7 +107,7 @@ public class DependencyServiceImpl
 
                 if (pathName.endsWith(".class")) {
                     String fqcn = pathName.replace('/', '.').substring(0, pathName.lastIndexOf('.'));
-                    packageNames.add(fqcn.substring(0, fqcn.lastIndexOf('.')));
+                    packageNames.add(fqcn.contains(".") ? fqcn.substring(0, fqcn.lastIndexOf('.')) : "");
                 }
             }
         } catch (IOException e) {

@@ -92,7 +92,9 @@ public class LibraryToolbarPresenter {
     void onUpdateSelectedBranch() {
         if (placeManager.closeAllPlacesOrNothing()) {
 
-            Repository repository = projectContext.getActiveWorkspaceProject().get().getRepository();
+            Repository repository = projectContext.getActiveWorkspaceProject()
+                    .map(workspaceProject -> workspaceProject.getRepository())
+                    .orElseThrow(() -> new IllegalStateException("Cannot get repository without an active workspace project"));
             projectService.call(new RemoteCallback<WorkspaceProject>() {
                 @Override
                 public void callback(WorkspaceProject project) {

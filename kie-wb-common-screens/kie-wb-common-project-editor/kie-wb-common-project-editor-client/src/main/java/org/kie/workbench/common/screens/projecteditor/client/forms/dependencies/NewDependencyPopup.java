@@ -28,30 +28,30 @@ import org.uberfire.client.callbacks.Callback;
 public class NewDependencyPopup {
 
     private final NewDependencyPopupView view;
-    private       DependencyValidator    validator;
+    private DependencyValidator validator;
 
     private Dependency dependency;
 
     private Callback<Dependency> callback;
 
     @Inject
-    public NewDependencyPopup( final NewDependencyPopupView view ) {
+    public NewDependencyPopup(final NewDependencyPopupView view) {
         this.view = view;
-        view.setPresenter( this );
+        view.setPresenter(this);
     }
 
-    public void show( final Callback<Dependency> callback ) {
+    public void show(final Callback<Dependency> callback) {
         this.callback = callback;
         dependency = new Dependency();
-        validator = new DependencyValidator( dependency );
+        validator = new DependencyValidator(dependency);
         view.clean();
         view.show();
     }
 
     public void onOkClicked() {
 
-        if ( validator.validate() ) {
-            callback.callback( dependency );
+        if (validator.validate()) {
+            callback.callback(dependency);
             view.hide();
         } else {
             validateGroupId();
@@ -60,49 +60,48 @@ public class NewDependencyPopup {
         }
     }
 
-    public void onGroupIdChange( final String groupId ) {
-        dependency.setGroupId( groupId );
+    public void onGroupIdChange(final String groupId) {
+        dependency.setGroupId(groupId);
         validateGroupId();
     }
 
     public void validateGroupId() {
-        if ( validator.validateGroupId() ) {
-            view.invalidGroupId( "" );
-            view.setGroupIdValidationState( ValidationState.SUCCESS );
+        if (validator.validateGroupId()) {
+            view.invalidGroupId("");
+            view.setGroupIdValidationState(ValidationState.SUCCESS);
         } else {
-            view.invalidGroupId( validator.getMessage() );
-            view.setGroupIdValidationState( ValidationState.ERROR );
+            view.invalidGroupId(validator.getMessage());
+            view.setGroupIdValidationState(ValidationState.ERROR);
         }
     }
 
-    public void onArtifactIdChange( final String artifactId ) {
-        dependency.setArtifactId( artifactId );
+    public void onArtifactIdChange(final String artifactId) {
+        dependency.setArtifactId(artifactId);
         validateArtifactId();
     }
 
     public void validateArtifactId() {
-        if ( validator.validateArtifactId() ) {
-            view.invalidArtifactId( "" );
-            view.setArtifactIdValidationState( ValidationState.SUCCESS );
+        if (validator.validateArtifactId()) {
+            view.invalidArtifactId("");
+            view.setArtifactIdValidationState(ValidationState.SUCCESS);
         } else {
-            view.invalidArtifactId( validator.getMessage() );
-            view.setArtifactIdValidationState( ValidationState.ERROR );
+            view.invalidArtifactId(validator.getMessage());
+            view.setArtifactIdValidationState(ValidationState.ERROR);
         }
     }
 
-    public void onVersionChange( final String version ) {
-        dependency.setVersion( version );
+    public void onVersionChange(final String version) {
+        dependency.setVersion(version);
         validateVersion();
     }
 
     public void validateVersion() {
-        if ( validator.validateVersion() ) {
-            view.invalidVersion( "" );
-            view.setVersionValidationState( ValidationState.SUCCESS );
+        if (validator.validateVersion()) {
+            view.invalidVersion("");
+            view.setVersionValidationState(ValidationState.SUCCESS);
         } else {
-            view.invalidVersion( validator.getMessage() );
-            view.setVersionValidationState( ValidationState.ERROR );
+            view.invalidVersion(validator.getMessage());
+            view.setVersionValidationState(ValidationState.ERROR);
         }
     }
-
 }

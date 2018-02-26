@@ -1,0 +1,117 @@
+<!--
+  ~ Copyright 2018 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="list-group-item">
+
+
+    <div class="list-view-pf-checkbox">
+        <input type="radio" data-field="is-default" name="kieKnowledgeSessionDefaultRadio">
+    </div>
+
+    <div class="list-view-pf-actions">
+        <a href="#0" class="btn btn-link" data-field="remove-button">
+            <span class="fa fa-trash-o"></span>
+        </a>
+    </div>
+
+    <div class="list-view-pf-main-info">
+        <div class="list-view-pf-body">
+            <div class="list-view-pf-additional-info">
+                <div class="list-view-pf-additional-info-item">
+                    <input type="text" data-field="name">
+                </div>
+                <div class="list-view-pf-additional-info-item">
+                    <input type="text" data-field="type">
+                </div>
+                <div class="list-view-pf-additional-info-item" data-field="clock-select-container">
+                </div>
+            </div>
+            <div class="list-view-pf-additional-info">
+                <div class="list-view-pf-additional-info-item">
+                    <div class="list-view-pf-expand" data-field="listeners-button">
+                        <span class="fa fa-angle-right"></span>
+                        <strong data-field="listeners-count"></strong><span data-i18n-key="Listeners"></span>
+                    </div>
+                </div>
+                <div class="list-view-pf-additional-info-item">
+                    <div class="list-view-pf-expand" data-field="work-item-handlers-button">
+                        <span class="fa fa-angle-right"></span>
+                        <strong data-field="work-item-handlers-count"></strong><span data-i18n-key="WorkItemHandlers"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="list-group-item-container container-fluid hidden">
+        <div class="close">
+            <span class="pficon pficon-close"></span>
+        </div>
+
+        <br>
+        <br>
+
+        <table class="table table-hover kie-tablelist">
+            <thead>
+            <tr>
+                <th class="kie-tablelist__cell kie-tablelist__cell--header" data-i18n-key="Type"></th>
+                <th class="kie-tablelist__cell kie-tablelist__cell--header" data-i18n-key="Kind"></th>
+                <th class="kie-tablelist__cell kie-tablelist__cell--header kie-tablelist__cell--actions"></th>
+            </tr>
+            </thead>
+            <tbody data-field="listeners-container">
+            </tbody>
+        </table>
+
+        <hr>
+
+        <div>
+            <button type="button" class="btn btn-link" data-field="add-listener-button">
+                <span class="pficon pficon-add-circle-o"></span>
+                <span data-i18n-key="AddListener"></span>
+            </button>
+        </div>
+    </div>
+
+    <div class="list-group-item-container container-fluid hidden">
+        <div class="close">
+            <span class="pficon pficon-close"></span>
+        </div>
+
+        <br>
+        <br>
+
+        <table class="table table-hover kie-tablelist">
+            <thead>
+            <tr>
+                <th class="kie-tablelist__cell kie-tablelist__cell--header" data-i18n-key="Type"></th>
+                <th class="kie-tablelist__cell kie-tablelist__cell--header" data-i18n-key="Name"></th>
+                <th class="kie-tablelist__cell kie-tablelist__cell--header kie-tablelist__cell--actions"></th>
+            </tr>
+            </thead>
+            <tbody data-field="work-item-handlers-container">
+            </tbody>
+        </table>
+
+        <hr>
+
+        <div>
+            <button type="button" class="btn btn-link" data-field="add-work-item-handler-button">
+                <span class="pficon pficon-add-circle-o"></span>
+                <span data-i18n-key="AddWorkItemHandler"></span>
+            </button>
+        </div>
+    </div>
+</div>

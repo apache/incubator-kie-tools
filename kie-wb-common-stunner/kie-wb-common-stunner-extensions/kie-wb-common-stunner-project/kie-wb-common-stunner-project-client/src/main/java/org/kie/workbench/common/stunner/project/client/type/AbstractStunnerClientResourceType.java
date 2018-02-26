@@ -18,13 +18,18 @@ package org.kie.workbench.common.stunner.project.client.type;
 import org.kie.workbench.common.stunner.core.definition.DefinitionSetResourceType;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.workbench.category.Category;
 
 public abstract class AbstractStunnerClientResourceType<R extends DefinitionSetResourceType> implements ClientResourceType {
 
     private final R definitionSetResourceType;
+    private final Category category;
 
-    protected AbstractStunnerClientResourceType(final R definitionSetResourceType) {
+    protected AbstractStunnerClientResourceType(final R definitionSetResourceType,
+                                                final
+                                                Category category) {
         this.definitionSetResourceType = definitionSetResourceType;
+        this.category = category;
     }
 
     @Override
@@ -64,5 +69,10 @@ public abstract class AbstractStunnerClientResourceType<R extends DefinitionSetR
 
     private R getDefinitionSetResourceType() {
         return definitionSetResourceType;
+    }
+
+    @Override
+    public Category getCategory() {
+        return category;
     }
 }

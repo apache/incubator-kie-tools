@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -58,6 +59,7 @@ import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.OrganizationalUnitRepositoryInfo;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
+import org.kie.workbench.common.screens.library.api.index.LibraryValueFileExtensionIndexTerm;
 import org.kie.workbench.common.screens.library.api.index.LibraryValueFileNameIndexTerm;
 import org.kie.workbench.common.screens.library.api.index.LibraryValueModuleRootPathIndexTerm;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
@@ -162,7 +164,7 @@ public class LibraryServiceImpl implements LibraryService {
 
         for (final WorkspaceProject workspaceProject : result) {
             if (workspaceProject.getMainModule() != null) {
-                workspaceProject.getMainModule().setNumberOfAssets(getNumberOfAssets(workspaceProject.getMainModule()));
+                workspaceProject.getMainModule().setNumberOfAssets(getNumberOfAssets(workspaceProject));
             }
         }
 
@@ -190,7 +192,9 @@ public class LibraryServiceImpl implements LibraryService {
     public WorkspaceProject createProject(final OrganizationalUnit activeOrganizationalUnit,
                                           final POM pom,
                                           final DeploymentMode mode) {
-        return projectService.newProject(activeOrganizationalUnit, pom, mode);
+        return projectService.newProject(activeOrganizationalUnit,
+                                         pom,
+                                         mode);
     }
 
     @Override
@@ -208,14 +212,7 @@ public class LibraryServiceImpl implements LibraryService {
             return Collections.emptyList();
         }
 
-        final HashSet<ValueIndexTerm> queryTerms = new HashSet<>();
-
-        queryTerms.add(new LibraryValueModuleRootPathIndexTerm(query.getProject().getBranch().getPath().toURI()));
-
-        if (query.hasFilter()) {
-            queryTerms.add(new LibraryValueFileNameIndexTerm("*" + query.getFilter() + "*",
-                                                             ValueIndexTerm.TermSearchType.WILDCARD));
-        }
+        final HashSet<ValueIndexTerm> queryTerms = buildProjectAssetsQuery(query);
 
         final PageResponse<RefactoringPageRow> findRulesByProjectQuery = refactoringQueryService.query(new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
                                                                                                                                   queryTerms,
@@ -260,6 +257,22 @@ public class LibraryServiceImpl implements LibraryService {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
+    }
+
+    private HashSet<ValueIndexTerm> buildProjectAssetsQuery(ProjectAssetsQuery query) {
+        final HashSet<ValueIndexTerm> queryTerms = new HashSet<>();
+
+        queryTerms.add(new LibraryValueModuleRootPathIndexTerm(query.getProject().getRootPath().toURI()));
+
+        if (query.hasFilter()) {
+            queryTerms.add(new LibraryValueFileNameIndexTerm("*" + query.getFilter() + "*",
+                                                             ValueIndexTerm.TermSearchType.WILDCARD));
+        }
+
+        if (query.hasExtension()) {
+            queryTerms.add(new LibraryValueFileExtensionIndexTerm(query.getExtensions()));
+        }
+        return queryTerms;
     }
 
     @Override
@@ -322,7 +335,7 @@ public class LibraryServiceImpl implements LibraryService {
         final List<ExampleProject> exampleProjects = Collections.singletonList(exampleProject);
 
         final WorkspaceProjectContextChangeEvent projectContextChangeEvent = examplesService.setupExamples(exampleOrganizationalUnit,
-                                                                                                  exampleProjects);
+                                                                                                           exampleProjects);
 
         return projectContextChangeEvent.getWorkspaceProject();
     }
@@ -368,6 +381,7 @@ public class LibraryServiceImpl implements LibraryService {
                   final GAV gav) {
         return new POM(projectName,
                        projectDescription,
+                       "",
                        gav);
     }
 
@@ -379,7 +393,17 @@ public class LibraryServiceImpl implements LibraryService {
                 .findFirst();
     }
 
-    private int getNumberOfAssets(final Module module) {
+    @Override
+    public int getNumberOfAssets(final ProjectAssetsQuery query) {
+        HashSet<ValueIndexTerm> queryTerms = this.buildProjectAssetsQuery(query);
+        return refactoringQueryService.queryHitCount(new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
+                                                                                queryTerms,
+                                                                                0,
+                                                                                null));
+    }
+
+    @Override
+    public int getNumberOfAssets(final WorkspaceProject module) {
         final HashSet<ValueIndexTerm> queryTerms = new HashSet<>();
         queryTerms.add(new LibraryValueModuleRootPathIndexTerm((module.getRootPath().toURI())));
 

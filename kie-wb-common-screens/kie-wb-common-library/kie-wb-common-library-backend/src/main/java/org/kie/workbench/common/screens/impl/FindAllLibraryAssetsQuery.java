@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
+import org.kie.workbench.common.screens.library.api.index.LibraryFileExtensionIndexTerm;
 import org.kie.workbench.common.screens.library.api.index.LibraryValueFileNameIndexTerm;
 import org.kie.workbench.common.screens.library.api.index.LibraryValueModuleRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
@@ -77,13 +78,15 @@ public class FindAllLibraryAssetsQuery
                                      NAME,
                                      new String[]{
                                              LibraryValueModuleRootPathIndexTerm.TERM,
-                                             null // not required
+                                             null, // not required
+                                             null// not required
                                      },
                                      (t) -> (t instanceof LibraryValueModuleRootPathIndexTerm),
-                                     (t) -> (t instanceof LibraryValueFileNameIndexTerm)
+                                     (t) -> (t instanceof LibraryValueFileNameIndexTerm),
+                                     (t) -> (t instanceof LibraryFileExtensionIndexTerm)
         );
 
-        checkTermsSize(2,
+        checkTermsSize(3,
                        queryTerms);
     }
 }

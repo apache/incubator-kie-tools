@@ -17,20 +17,30 @@
 package org.kie.workbench.common.screens.datasource.management.client.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.screens.datasource.management.type.DataSourceDefTypeDefinition;
 import org.uberfire.client.resources.UberfireResources;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.workbench.category.Others;
 
 @ApplicationScoped
 public class DataSourceDefType
         extends DataSourceDefTypeDefinition
         implements ClientResourceType {
 
+    public DataSourceDefType() {
+    }
+
+    @Inject
+    public DataSourceDefType(Others category) {
+        super(category);
+    }
+
     @Override
     public IsWidget getIcon() {
-        return new Image( UberfireResources.INSTANCE.images().typeGenericFile() );
+        return new Image(UberfireResources.INSTANCE.images().typeGenericFile());
     }
 }

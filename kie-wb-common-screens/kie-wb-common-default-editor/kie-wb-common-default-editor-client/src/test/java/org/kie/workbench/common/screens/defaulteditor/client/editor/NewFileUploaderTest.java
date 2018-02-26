@@ -35,6 +35,7 @@ import org.uberfire.ext.widgets.core.client.editors.defaulteditor.DefaultEditorN
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
+import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.type.AnyResourceTypeDefinition;
 
@@ -56,7 +57,7 @@ public class NewFileUploaderTest {
     @GwtMock
     private DefaultEditorNewFileUpload options;
 
-    private AnyResourceTypeDefinition resourceType = new AnyResourceTypeDefinition();
+    private AnyResourceTypeDefinition resourceType = new AnyResourceTypeDefinition(new Others());
 
     @Mock
     private BusyIndicatorView busyIndicatorView;

@@ -44,6 +44,7 @@ import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -54,6 +55,7 @@ public class ProjectImportsScreenPresenter
     private ProjectImportsScreenView view;
 
     private Caller<ProjectImportsService> importsService;
+    private Others category;
 
     private ProjectImports model;
 
@@ -62,10 +64,12 @@ public class ProjectImportsScreenPresenter
 
     @Inject
     public ProjectImportsScreenPresenter(final ProjectImportsScreenView view,
-                                         final Caller<ProjectImportsService> importsService) {
+                                         final Caller<ProjectImportsService> importsService,
+                                         final Others category) {
         super(view);
         this.view = view;
         this.importsService = importsService;
+        this.category = category;
     }
 
     @OnStartup
@@ -74,7 +78,7 @@ public class ProjectImportsScreenPresenter
 
         super.init(path,
                    place,
-                   new ProjectImportsResourceType());
+                   new ProjectImportsResourceType(category));
     }
 
     private RemoteCallback<ProjectImportsContent> getModelSuccessCallback() {

@@ -17,10 +17,26 @@
 package org.kie.workbench.common.screens.datasource.management.type;
 
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.workbench.category.Category;
+import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 public class DataSourceDefTypeDefinition
         implements ResourceTypeDefinition {
+
+    private Category category;
+
+    public DataSourceDefTypeDefinition() {
+    }
+
+    public DataSourceDefTypeDefinition(final Others category) {
+        this.category = category;
+    }
+
+    @Override
+    public Category getCategory() {
+        return this.category;
+    }
 
     @Override
     public String getShortName() {
@@ -53,7 +69,7 @@ public class DataSourceDefTypeDefinition
     }
 
     @Override
-    public boolean accept( Path path ) {
-        return path.getFileName().endsWith( getPrefix() + "." + getSuffix() );
+    public boolean accept(Path path) {
+        return path.getFileName().endsWith(getPrefix() + "." + getSuffix());
     }
 }

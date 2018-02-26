@@ -26,6 +26,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.workbench.category.Category;
+import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 import static org.junit.Assert.*;
@@ -70,8 +72,13 @@ public class AbstractInvalidateDMOPackageCacheDeleteHelperTest {
         }
 
         @Override
-        public boolean accept( final Path path ) {
-            return path.getFileName().endsWith( "." + getSuffix() );
+        public boolean accept(final Path path) {
+            return path.getFileName().endsWith("." + getSuffix());
+        }
+
+        @Override
+        public Category getCategory() {
+            return new Others();
         }
     };
 
@@ -79,54 +86,52 @@ public class AbstractInvalidateDMOPackageCacheDeleteHelperTest {
 
     private static class MockInvalidateDMOPackageCacheDeleteHelper extends AbstractInvalidateDMOPackageCacheDeleteHelper<ResourceTypeDefinition> {
 
-        public MockInvalidateDMOPackageCacheDeleteHelper( final ResourceTypeDefinition resourceType,
-                                                          final Event<InvalidateDMOPackageCacheEvent> invalidateDMOPackageCache ) {
-            super( resourceType,
-                   invalidateDMOPackageCache );
+        public MockInvalidateDMOPackageCacheDeleteHelper(final ResourceTypeDefinition resourceType,
+                                                         final Event<InvalidateDMOPackageCacheEvent> invalidateDMOPackageCache) {
+            super(resourceType,
+                  invalidateDMOPackageCache);
         }
-
     }
 
     @Before
     public void setup() {
-        helper = new MockInvalidateDMOPackageCacheDeleteHelper( resourceType,
-                                                                invalidateDMOPackageCache );
+        helper = new MockInvalidateDMOPackageCacheDeleteHelper(resourceType,
+                                                               invalidateDMOPackageCache);
     }
 
     @Test
     public void checkMatchesResourceType() {
-        final Path path = mock( Path.class );
-        when( path.getFileName() ).thenReturn( "file." + resourceType.getSuffix() );
-        assertTrue( helper.supports( path ) );
+        final Path path = mock(Path.class);
+        when(path.getFileName()).thenReturn("file." + resourceType.getSuffix());
+        assertTrue(helper.supports(path));
     }
 
     @Test
     public void checkDoesNotMatchOtherResourceTypes() {
-        final Path path = mock( Path.class );
-        when( path.getFileName() ).thenReturn( "file.smurf" );
-        assertFalse( helper.supports( path ) );
+        final Path path = mock(Path.class);
+        when(path.getFileName()).thenReturn("file.smurf");
+        assertFalse(helper.supports(path));
     }
 
     @Test
     public void checkEventFiredWhenMatchesResourceType() {
-        final Path path = mock( Path.class );
-        when( path.getFileName() ).thenReturn( "file." + resourceType.getSuffix() );
+        final Path path = mock(Path.class);
+        when(path.getFileName()).thenReturn("file." + resourceType.getSuffix());
 
-        helper.postProcess( path );
+        helper.postProcess(path);
 
-        verify( invalidateDMOPackageCache,
-                times( 1 ) ).fire( any( InvalidateDMOPackageCacheEvent.class ) );
+        verify(invalidateDMOPackageCache,
+               times(1)).fire(any(InvalidateDMOPackageCacheEvent.class));
     }
 
     @Test
     public void checkEventNotFiredWhenNotMatchOtherResourceTypes() {
-        final Path path = mock( Path.class );
-        when( path.getFileName() ).thenReturn( "file.smurf" );
+        final Path path = mock(Path.class);
+        when(path.getFileName()).thenReturn("file.smurf");
 
-        helper.postProcess( path );
+        helper.postProcess(path);
 
-        verify( invalidateDMOPackageCache,
-                never() ).fire( any( InvalidateDMOPackageCacheEvent.class ) );
+        verify(invalidateDMOPackageCache,
+               never()).fire(any(InvalidateDMOPackageCacheEvent.class));
     }
-
 }

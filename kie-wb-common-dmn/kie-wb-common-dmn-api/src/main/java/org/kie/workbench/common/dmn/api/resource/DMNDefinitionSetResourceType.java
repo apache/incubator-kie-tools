@@ -16,9 +16,13 @@
 package org.kie.workbench.common.dmn.api.resource;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import org.guvnor.common.services.project.categories.Process;
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
+import org.guvnor.common.services.project.categories.Decision;
 import org.kie.workbench.common.stunner.core.definition.AbstractDefinitionSetResourceType;
+import org.uberfire.workbench.category.Category;
 
 @ApplicationScoped
 public class DMNDefinitionSetResourceType extends AbstractDefinitionSetResourceType {
@@ -26,6 +30,22 @@ public class DMNDefinitionSetResourceType extends AbstractDefinitionSetResourceT
     private static final String DMN_EXTENSION = "dmn";
     private static final String NAME = "DMN (Preview)";
     private static final String DESCRIPTION = "DMN (Preview)";
+
+    private Category category;
+
+    public DMNDefinitionSetResourceType() {
+
+    }
+
+    @Inject
+    public DMNDefinitionSetResourceType(final Process category) {
+        this.category = category;
+    }
+
+    @Override
+    public Category getCategory() {
+        return this.category;
+    }
 
     @Override
     public String getShortName() {

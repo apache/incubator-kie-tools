@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.screens.library.api;
 
+import java.util.List;
+
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -28,11 +30,13 @@ public class ProjectAssetsQuery {
     private final int startIndex;
     private final int amount;
     private String filter;
+    private List<String> extensions;
 
     public ProjectAssetsQuery(@MapsTo("project") final WorkspaceProject project,
                               @MapsTo("filter") final String filter,
                               @MapsTo("startIndex") final int startIndex,
-                              @MapsTo("amount") final int amount) {
+                              @MapsTo("amount") final int amount,
+                              @MapsTo("extensions") final List<String> extensions) {
         this.project = checkNotNull("ProjectAssetsQuery.project",
                                     project);
         this.filter = checkNotNull("filter",
@@ -41,6 +45,7 @@ public class ProjectAssetsQuery {
                                        startIndex);
         this.amount = checkNotNull("amount",
                                    amount);
+        this.extensions = extensions;
     }
 
     public WorkspaceProject getProject() {
@@ -61,5 +66,13 @@ public class ProjectAssetsQuery {
 
     public boolean hasFilter() {
         return filter != null && !filter.trim().isEmpty();
+    }
+
+    public boolean hasExtension() {
+        return this.extensions != null && !this.extensions.isEmpty();
+    }
+
+    public List<String> getExtensions() {
+        return extensions;
     }
 }

@@ -271,7 +271,7 @@ public class LibraryServiceImplTest {
 
     @Test
     public void emptyFirstPage() throws Exception {
-        final WorkspaceProject project = mock(WorkspaceProject.class);
+        final WorkspaceProject project = spy(WorkspaceProject.class);
         final Branch branch = mock(Branch.class);
         final Path path = mock(Path.class);
 
@@ -284,7 +284,8 @@ public class LibraryServiceImplTest {
         final ProjectAssetsQuery query = new ProjectAssetsQuery(project,
                                                                 "",
                                                                 0,
-                                                                10);
+                                                                10,
+                                                                Collections.emptyList());
 
         final PageResponse<RefactoringPageRow> pageRowPageResponse = new PageResponse<>();
         pageRowPageResponse.setPageRowList(new ArrayList<>());
@@ -313,24 +314,24 @@ public class LibraryServiceImplTest {
     @Test
     public void queryWithAFilter() throws Exception {
 
-        final WorkspaceProject project = mock(WorkspaceProject.class);
+        final WorkspaceProject project = spy(WorkspaceProject.class);
         final Branch branch = mock(Branch.class);
         final Path path = mockPath("file://the_project");
 
-        when(project.getBranch()).thenReturn(branch);
         when(branch.getPath()).thenReturn(path);
+        when(project.getBranch()).thenReturn(branch);
 
         doReturn(true).when(ioService).exists(any());
 
         final ProjectAssetsQuery query = new ProjectAssetsQuery(project,
                                                                 "helloo",
                                                                 10,
-                                                                20);
+                                                                20,
+                                                                Arrays.asList("xml"));
 
         final PageResponse<RefactoringPageRow> pageRowPageResponse = new PageResponse<>();
         pageRowPageResponse.setPageRowList(new ArrayList<>());
         when(refactoringQueryService.query(any(RefactoringPageRequest.class))).thenReturn(pageRowPageResponse);
-
         libraryService.getProjectAssets(query);
 
         verify(refactoringQueryService).query(pageRequestArgumentCaptor.capture());
@@ -339,13 +340,15 @@ public class LibraryServiceImplTest {
 
         assertEquals(FindAllLibraryAssetsQuery.NAME,
                      pageRequest.getQueryName());
-        assertEquals(2,
+        assertEquals(3,
                      pageRequest.getQueryTerms().size());
 
         assertQueryTermsContains(pageRequest.getQueryTerms(),
                                  "file://the_project");
         assertQueryTermsContains(pageRequest.getQueryTerms(),
                                  "*helloo*");
+        assertQueryTermsContains(pageRequest.getQueryTerms(),
+                                 ".*(xml)");
 
         assertEquals(10,
                      pageRequest.getStartRowIndex());
@@ -358,7 +361,7 @@ public class LibraryServiceImplTest {
 
         final Path path = mockPath("file://the_project");
 
-        final WorkspaceProject project = mock(WorkspaceProject.class);
+        final WorkspaceProject project = spy(WorkspaceProject.class);
         final Branch branch = mock(Branch.class);
 
         when(project.getBranch()).thenReturn(branch);
@@ -369,7 +372,8 @@ public class LibraryServiceImplTest {
         final ProjectAssetsQuery query = new ProjectAssetsQuery(project,
                                                                 "",
                                                                 10,
-                                                                20);
+                                                                20,
+                                                                Collections.emptyList());
 
         final PageResponse<RefactoringPageRow> pageRowPageResponse = new PageResponse<>();
         final ArrayList<RefactoringPageRow> assetPageRowList = new ArrayList<>();

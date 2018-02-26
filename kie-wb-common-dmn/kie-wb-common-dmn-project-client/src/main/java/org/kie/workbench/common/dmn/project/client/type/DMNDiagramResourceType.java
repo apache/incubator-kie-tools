@@ -20,9 +20,12 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.project.categories.Process;
 import org.kie.workbench.common.dmn.api.resource.DMNDefinitionSetResourceType;
 import org.kie.workbench.common.dmn.project.client.resources.DMNProjectImageResources;
+import org.guvnor.common.services.project.categories.Decision;
 import org.kie.workbench.common.stunner.project.client.type.AbstractStunnerClientResourceType;
+import org.uberfire.workbench.category.Category;
 
 @ApplicationScoped
 public class DMNDiagramResourceType extends AbstractStunnerClientResourceType<DMNDefinitionSetResourceType> {
@@ -30,12 +33,15 @@ public class DMNDiagramResourceType extends AbstractStunnerClientResourceType<DM
     private static final Image ICON = new Image(DMNProjectImageResources.INSTANCE.dmnIcon());
 
     protected DMNDiagramResourceType() {
-        this(null);
+        this(null,
+             null);
     }
 
     @Inject
-    public DMNDiagramResourceType(final DMNDefinitionSetResourceType definitionSetResourceType) {
-        super(definitionSetResourceType);
+    public DMNDiagramResourceType(final DMNDefinitionSetResourceType definitionSetResourceType,
+                                  final Process category) {
+        super(definitionSetResourceType,
+              category);
     }
 
     @Override

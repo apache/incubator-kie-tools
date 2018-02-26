@@ -16,15 +16,25 @@
 package org.kie.workbench.common.screens.projectimportsscreen.client.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.screens.projectimportsscreen.type.ProjectImportsResourceTypeDefinition;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.workbench.category.Others;
 
 @ApplicationScoped
 public class ProjectImportsResourceType
         extends ProjectImportsResourceTypeDefinition
         implements ClientResourceType {
+
+    public ProjectImportsResourceType() {
+    }
+
+    @Inject
+    public ProjectImportsResourceType(final Others category) {
+        super(category);
+    }
 
     @Override
     public IsWidget getIcon() {

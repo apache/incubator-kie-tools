@@ -27,5 +27,4 @@ public class LibraryFileNameIndexTerm implements IndexTerm {
     public String getTerm() {
         return TERM;
     }
-
 }

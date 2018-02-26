@@ -16,15 +16,25 @@
 package org.kie.workbench.common.screens.projecteditor.client.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.screens.projecteditor.type.KModuleResourceTypeDefinition;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.workbench.category.Others;
 
 @ApplicationScoped
 public class KModuleResourceType
         extends KModuleResourceTypeDefinition
         implements ClientResourceType {
+
+    public KModuleResourceType() {
+    }
+
+    @Inject
+    public KModuleResourceType(final Others category) {
+        super(category);
+    }
 
     @Override
     public IsWidget getIcon() {

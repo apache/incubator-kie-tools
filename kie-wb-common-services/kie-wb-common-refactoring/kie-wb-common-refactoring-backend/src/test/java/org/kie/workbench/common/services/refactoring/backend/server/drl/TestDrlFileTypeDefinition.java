@@ -16,13 +16,32 @@
 package org.kie.workbench.common.services.refactoring.backend.server.drl;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import org.guvnor.common.services.project.categories.Decision;
+import org.guvnor.common.services.project.categories.Model;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.workbench.category.Category;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @ApplicationScoped
 public class TestDrlFileTypeDefinition
         implements ResourceTypeDefinition {
+
+    private Category category;
+
+    public TestDrlFileTypeDefinition() {
+    }
+
+    @Inject
+    public TestDrlFileTypeDefinition(final Decision category) {
+        this.category = category;
+    }
+
+    @Override
+    public Category getCategory() {
+        return this.category;
+    }
 
     @Override
     public String getShortName() {
@@ -55,7 +74,7 @@ public class TestDrlFileTypeDefinition
     }
 
     @Override
-    public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( "." + getSuffix() );
+    public boolean accept(final Path path) {
+        return path.getFileName().endsWith("." + getSuffix());
     }
 }

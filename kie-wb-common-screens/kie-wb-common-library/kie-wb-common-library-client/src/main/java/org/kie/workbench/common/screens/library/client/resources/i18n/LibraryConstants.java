@@ -282,6 +282,117 @@ public class LibraryConstants {
     public static final String RepositoryURL = "RepositoryURL";
 
     @TranslationKey(defaultValue = "")
+    public static final String DeleteProject = "DeleteProject";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DeletingProject = "DeletingProject";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DeleteProjectSuccess = "DeleteProjectSuccess";
+
+    @TranslationKey(defaultValue = "")
+    public static final String WrongProjectConfirmedName = "WrongProjectConfirmedName";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DeleteProjectDescription = "DeleteProjectDescription";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ConfirmProjectName = "ConfirmProjectName";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ImportAsset = "ImportAsset";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AddAsset = "AddAsset";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Renaming = "Renaming";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Rename = "Rename";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RenameSuccess = "RenameSuccess";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ForkTitle = "ForkTitle";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Fork = "Fork";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ForkDescription = "ForkDescription";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ALL = "ALL";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Of = "Of";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AllPackagesIncluded = "AllPackagesIncluded";
+
+    @TranslationKey(defaultValue = "")
+    public static final String PackagesNotIncluded = "PackagesNotIncluded";
+
+    @TranslationKey(defaultValue = "")
+    public static final String SomePackagesIncluded = "SomePackagesIncluded";
+
+    @TranslationKey(defaultValue = "")
+    public static final String SettingsSaveSuccess = "SettingsSaveSuccess";
+
+    @TranslationKey(defaultValue = "")
+    public static final String SettingsLoadError = "SettingsLoadError";
+
+    @TranslationKey(defaultValue = "")
+    public static final String SettingsSectionSetupError = "SettingsSectionSetupError";
+
+    @TranslationKey(defaultValue = "")
+    public static final String PersistenceXmlConcurrentUpdate = "PersistenceXmlConcurrentUpdate";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Class = "Class";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AddPersistableDataObject = "AddPersistableDataObject";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AddMarshallingStrategy = "AddMarshallingStrategy";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AddEventListener = "AddEventListener";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AddGlobal = "AddGlobal";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AddRequiredRole = "AddRequiredRole";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AddKnowledgeBase = "AddKnowledgeBase";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Id = "Id";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Role = "Role";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AddIncludedKnowledgeBase = "AddIncludedKnowledgeBase";
+
+    @TranslationKey(defaultValue = "")
+    public static final String PackageName = "PackageName";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AddPackage = "AddPackage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Value = "Value";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AddProperty = "AddProperty";
+
+    @TranslationKey(defaultValue = "")
     public static final String MigrationWasSuccessful = "MigrationWasSuccessful";
 
     @TranslationKey(defaultValue = "")
@@ -289,4 +400,7 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String HideAuthenticationOptions = "HideAuthenticationOptions";
+
+    @TranslationKey(defaultValue = "")
+    public static final String PreferenceDisableGAVConflictCheck_Tooltip = "PreferenceDisableGAVConflictCheck.Tooltip";
 }

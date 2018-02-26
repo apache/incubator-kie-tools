@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies;
 
 import java.util.Collection;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -41,35 +42,35 @@ public class EnhancedDependenciesManager {
     private final DependencyLoader loader;
 
     private Callback<EnhancedDependencies> callback;
-    private Dependencies                   originalSetOfDependencies;
+    private Dependencies originalSetOfDependencies;
 
     @Inject
-    public EnhancedDependenciesManager( final DependencyLoader loader ) {
+    public EnhancedDependenciesManager(final DependencyLoader loader) {
         this.loader = loader;
     }
 
-    public void init( final POM pom,
-                      final Callback<EnhancedDependencies> callback ) {
+    public void init(final POM pom,
+                     final Callback<EnhancedDependencies> callback) {
 
-        loader.init( this );
+        loader.init(this);
 
         this.originalSetOfDependencies = pom.getDependencies();
         this.enhancedDependencies.clear();
 
-        addToQueue( originalSetOfDependencies.getCompileScopedGavs() );
+        addToQueue(originalSetOfDependencies.getCompileScopedGavs());
 
         this.callback = callback;
     }
 
-    private void addToQueue( final Collection<GAV> originalSetOfDependencies ) {
-        for ( final GAV gav : originalSetOfDependencies ) {
-            loader.addToQueue( getDependency( gav ) );
+    private void addToQueue(final Collection<GAV> originalSetOfDependencies) {
+        for (final GAV gav : originalSetOfDependencies) {
+            loader.addToQueue(getDependency(gav));
         }
     }
 
-    private Dependency getDependency( final GAV gav ) {
-        for ( final Dependency originalSetOfDependency : originalSetOfDependencies ) {
-            if ( originalSetOfDependency.isGAVEqual( gav ) ) {
+    private Dependency getDependency(final GAV gav) {
+        for (final Dependency originalSetOfDependency : originalSetOfDependencies) {
+            if (originalSetOfDependency.isGAVEqual(gav)) {
                 return originalSetOfDependency;
             }
         }
@@ -81,45 +82,45 @@ public class EnhancedDependenciesManager {
         loader.load();
     }
 
-    void onEnhancedDependenciesUpdated( final EnhancedDependencies loadedEnhancedDependencies ) {
-        for ( final EnhancedDependency enhancedDependency : loadedEnhancedDependencies ) {
+    void onEnhancedDependenciesUpdated(final EnhancedDependencies loadedEnhancedDependencies) {
+        for (final EnhancedDependency enhancedDependency : loadedEnhancedDependencies) {
 
-            updateOriginal( enhancedDependency );
+            updateOriginal(enhancedDependency);
 
-            updateEnhanced( enhancedDependency );
+            updateEnhanced(enhancedDependency);
         }
 
-        callback.callback( this.enhancedDependencies );
+        callback.callback(this.enhancedDependencies);
     }
 
-    private void updateEnhanced( final EnhancedDependency enhancedDependency ) {
-        if ( this.enhancedDependencies.contains( enhancedDependency ) ) {
-            this.enhancedDependencies.update( enhancedDependency );
+    private void updateEnhanced(final EnhancedDependency enhancedDependency) {
+        if (this.enhancedDependencies.contains(enhancedDependency)) {
+            this.enhancedDependencies.update(enhancedDependency);
         } else {
-            this.enhancedDependencies.add( enhancedDependency );
+            this.enhancedDependencies.add(enhancedDependency);
         }
     }
 
-    private void updateOriginal( final EnhancedDependency enhancedDependency ) {
-        if ( enhancedDependency instanceof NormalEnhancedDependency ) {
-            updateWithOriginalDependency( ( NormalEnhancedDependency ) enhancedDependency );
+    private void updateOriginal(final EnhancedDependency enhancedDependency) {
+        if (enhancedDependency instanceof NormalEnhancedDependency) {
+            updateWithOriginalDependency((NormalEnhancedDependency) enhancedDependency);
         }
     }
 
-    private void updateWithOriginalDependency( final NormalEnhancedDependency enhancedDependency ) {
-        final Dependency originalDependency = originalSetOfDependencies.get( enhancedDependency.getDependency() );
-        enhancedDependency.setDependency( originalDependency );
+    private void updateWithOriginalDependency(final NormalEnhancedDependency enhancedDependency) {
+        final Dependency originalDependency = originalSetOfDependencies.get(enhancedDependency.getDependency());
+        enhancedDependency.setDependency(originalDependency);
     }
 
-    public void delete( final EnhancedDependency enhancedDependency ) {
-        enhancedDependencies.remove( enhancedDependency );
-        originalSetOfDependencies.remove( enhancedDependency.getDependency() );
+    public void delete(final EnhancedDependency enhancedDependency) {
+        enhancedDependencies.remove(enhancedDependency);
+        originalSetOfDependencies.remove(enhancedDependency.getDependency());
         update();
     }
 
-    public void addNew( final Dependency dependency ) {
-        originalSetOfDependencies.add( dependency );
-        loader.addToQueue( dependency );
+    public void addNew(final Dependency dependency) {
+        originalSetOfDependencies.add(dependency);
+        loader.addToQueue(dependency);
         update();
     }
 }

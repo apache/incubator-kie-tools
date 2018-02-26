@@ -52,6 +52,7 @@ import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.junit.Assert.assertEquals;
@@ -215,7 +216,7 @@ public class ProjectImportsScreenPresenterTest {
 
     private ProjectImportsScreenPresenter makeProjectImportsScreen() {
 
-        return new ProjectImportsScreenPresenter(view, serviceCaller) {
+        return new ProjectImportsScreenPresenter(view, serviceCaller, new Others()) {
             @Override
             protected Command getSaveAndRename() {
                 return mock(Command.class);

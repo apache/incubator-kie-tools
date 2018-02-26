@@ -106,7 +106,7 @@ public class ProjectsDetailScreen {
     }
 
     public void gotoProjectMetrics() {
-        if (projectContext.getActiveWorkspaceProject() != null) {
+        if (projectContext.getActiveWorkspaceProject().isPresent()) {
             libraryPlaces.goToProjectMetrics();
         }
     }

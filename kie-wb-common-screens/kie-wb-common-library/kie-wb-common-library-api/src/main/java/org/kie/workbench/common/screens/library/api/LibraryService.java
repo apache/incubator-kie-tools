@@ -55,6 +55,10 @@ public interface LibraryService {
 
     Boolean hasProjects(final OrganizationalUnit organizationalUnit);
 
+    int getNumberOfAssets(final ProjectAssetsQuery query);
+
+    int getNumberOfAssets(final WorkspaceProject project);
+
     Boolean hasAssets(final WorkspaceProject project);
 
     Set<ExampleProject> getExampleProjects();

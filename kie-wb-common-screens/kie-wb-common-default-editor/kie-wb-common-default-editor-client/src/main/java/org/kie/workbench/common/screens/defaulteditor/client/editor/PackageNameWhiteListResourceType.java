@@ -16,21 +16,30 @@
 package org.kie.workbench.common.screens.defaulteditor.client.editor;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.screens.defaulteditor.service.PackageNameWhiteListResourceTypeDefinition;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.widgets.core.client.resources.CoreImages;
+import org.uberfire.workbench.category.Others;
 
 @ApplicationScoped
 public class PackageNameWhiteListResourceType extends PackageNameWhiteListResourceTypeDefinition implements ClientResourceType {
 
-    private static final Image IMAGE = new Image( CoreImages.INSTANCE.file() );
+    private static final Image IMAGE = new Image(CoreImages.INSTANCE.file());
+
+    public PackageNameWhiteListResourceType() {
+    }
+
+    @Inject
+    public PackageNameWhiteListResourceType(final Others category) {
+        super(category);
+    }
 
     @Override
     public IsWidget getIcon() {
         return IMAGE;
     }
-
 }

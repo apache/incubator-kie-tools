@@ -16,9 +16,11 @@
 package org.kie.workbench.common.screens.javaeditor.client.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.project.categories.Model;
 import org.kie.workbench.common.screens.javaeditor.client.resources.JavaEditorResources;
 import org.kie.workbench.common.screens.javaeditor.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.javaeditor.type.JavaResourceTypeDefinition;
@@ -29,7 +31,15 @@ public class JavaResourceType
         extends JavaResourceTypeDefinition
         implements ClientResourceType {
 
-    private static final Image IMAGE = new Image( JavaEditorResources.INSTANCE.images().typeJava() );
+    private static final Image IMAGE = new Image(JavaEditorResources.INSTANCE.images().typeJava());
+
+    public JavaResourceType() {
+    }
+
+    @Inject
+    public JavaResourceType(final Model category) {
+        super(category);
+    }
 
     @Override
     public IsWidget getIcon() {
@@ -39,7 +49,9 @@ public class JavaResourceType
     @Override
     public String getDescription() {
         String desc = Constants.INSTANCE.javaResourceTypeDescription();
-        if ( desc == null || desc.isEmpty() ) return super.getDescription();
+        if (desc == null || desc.isEmpty()) {
+            return super.getDescription();
+        }
         return desc;
     }
 }

@@ -16,12 +16,30 @@
 package org.kie.workbench.common.forms.editor.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import org.guvnor.common.services.project.categories.Form;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.workbench.category.Category;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @ApplicationScoped
 public class FormResourceTypeDefinition implements ResourceTypeDefinition {
+
+    private Category category;
+
+    public FormResourceTypeDefinition() {
+    }
+
+    @Inject
+    public FormResourceTypeDefinition(final Form category) {
+        this.category = category;
+    }
+
+    @Override
+    public Category getCategory() {
+        return this.category;
+    }
 
     public static final String EXTENSION = "frm";
 

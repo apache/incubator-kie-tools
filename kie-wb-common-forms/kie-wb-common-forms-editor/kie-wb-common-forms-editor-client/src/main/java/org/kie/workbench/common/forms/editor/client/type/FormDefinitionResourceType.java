@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.project.categories.Form;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.editor.client.resources.FormModelerEditorResources;
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
@@ -31,8 +32,13 @@ public class FormDefinitionResourceType extends FormResourceTypeDefinition imple
 
     private TranslationService translationService;
 
+    public FormDefinitionResourceType() {
+    }
+
     @Inject
-    public FormDefinitionResourceType(TranslationService translationService) {
+    public FormDefinitionResourceType(TranslationService translationService,
+                                      Form category) {
+        super(category);
         this.translationService = translationService;
     }
 

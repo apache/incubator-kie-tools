@@ -32,6 +32,7 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.promise.SyncPromises;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -59,6 +60,7 @@ public class DependencyLoaderLoadFailureTest {
     @Before
     public void setUp() throws Exception {
         dependencyLoader = new DependencyLoader( view,
+                                                 new SyncPromises(),
                                                  dependencyServiceCaller );
         dependencyLoader.init( manager );
 

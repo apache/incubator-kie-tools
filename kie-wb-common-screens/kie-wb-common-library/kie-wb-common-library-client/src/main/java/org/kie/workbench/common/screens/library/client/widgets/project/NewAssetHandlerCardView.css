@@ -1,0 +1,18 @@
+.library .card-pf-body .flex-content{
+    display: flex;
+    justify-content: flex-start !important;
+    align-items: center;
+}
+
+.library .card-pf-view .card-pf-title.card-title {
+     font-size: 16px;
+     -o-text-overflow: ellipsis;
+     text-overflow: ellipsis !important;
+     overflow: hidden;
+     white-space: nowrap;
+     width:300px;
+}
+
+.card-center-content {
+    padding-left:1em;
+}

@@ -21,9 +21,12 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.project.categories.Model;
+import org.guvnor.common.services.project.categories.Process;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementImageResources;
 import org.kie.workbench.common.stunner.cm.resource.CaseManagementDefinitionSetResourceType;
 import org.kie.workbench.common.stunner.project.client.type.AbstractStunnerClientResourceType;
+import org.uberfire.workbench.category.Category;
 
 @ApplicationScoped
 public class CaseManagementDiagramResourceType extends AbstractStunnerClientResourceType<CaseManagementDefinitionSetResourceType> {
@@ -31,12 +34,15 @@ public class CaseManagementDiagramResourceType extends AbstractStunnerClientReso
     private static final Image ICON = new Image(CaseManagementImageResources.INSTANCE.cmicon());
 
     protected CaseManagementDiagramResourceType() {
-        this(null);
+        this(null,
+             null);
     }
 
     @Inject
-    public CaseManagementDiagramResourceType(final CaseManagementDefinitionSetResourceType definitionSetResourceType) {
-        super(definitionSetResourceType);
+    public CaseManagementDiagramResourceType(final CaseManagementDefinitionSetResourceType definitionSetResourceType,
+                                             final Process category) {
+        super(definitionSetResourceType,
+              category);
     }
 
     @Override

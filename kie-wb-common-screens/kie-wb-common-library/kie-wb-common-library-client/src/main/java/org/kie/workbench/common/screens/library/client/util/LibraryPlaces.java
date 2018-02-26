@@ -86,10 +86,11 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     public static final String ORG_UNITS_METRICS_SCREEN = "OrgUnitsMetricsScreen";
     public static final String PROJECT_METRICS_SCREEN = "ProjectMetricsScreen";
     public static final String ORGANIZATIONAL_UNITS_SCREEN = "LibraryOrganizationalUnitsScreen";
-    public static final String PROJECT_SETTINGS = "projectScreen";
+    public static final String PROJECT_SETTINGS = "ProjectSettings";
     public static final String PROJECT_EXPLORER = "org.kie.guvnor.explorer";
     public static final String MESSAGES = "org.kie.workbench.common.screens.messageconsole.MessageConsole";
     public static final String REPOSITORY_STRUCTURE_SCREEN = "repositoryStructureScreen";
+    public static final String ADD_ASSET_SCREEN = "AddAssetsScreen";
 
     public static final List<String> LIBRARY_PLACES = Collections.unmodifiableList(new ArrayList<String>(7) {{
         add(LIBRARY_SCREEN);
@@ -99,6 +100,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         add(PROJECT_DETAIL_SCREEN);
         add(ORGANIZATIONAL_UNITS_SCREEN);
         add(PROJECT_SETTINGS);
+        add(ADD_ASSET_SCREEN);
         add(IMPORT_PROJECTS_SCREEN);
         add(PreferencesRootScreen.IDENTIFIER);
     }});
@@ -251,6 +253,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
             assetDetailEvent.fire(new AssetDetailEvent(projectContext.getActiveWorkspaceProject()
                                                                .orElseThrow(() -> new IllegalStateException("Cannot fire asset detail event without an active project.")),
                                                        newResourceSuccessEvent.getPath()));
+            placeManager.closePlace(LibraryPlaces.ADD_ASSET_SCREEN);
         }
     }
 
@@ -629,6 +632,14 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         }).resolvePackage(path);
     }
 
+    public void goToAddAsset() {
+        final PlaceRequest addAssetScreen = new DefaultPlaceRequest(LibraryPlaces.ADD_ASSET_SCREEN);
+        final PartDefinitionImpl part = new PartDefinitionImpl(addAssetScreen);
+        part.setSelectable(false);
+        placeManager.goTo(part,
+                          libraryPerspective.getRootPanel());
+    }
+
     public void goToTrySamples() {
         if (closeAllPlacesOrNothing()) {
             Map<String, String> params = new HashMap<>();
@@ -671,9 +682,13 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     }
 
     public void goToSettings() {
-        assetDetailEvent.fire(new AssetDetailEvent(projectContext.getActiveWorkspaceProject()
-                                                           .orElseThrow(() -> new IllegalStateException("Cannot fire asset detail event without an active project.")),
-                                                   null));
+        final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(PROJECT_SETTINGS);
+        final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
+        part.setSelectable(false);
+
+        closeLibraryPlaces();
+        placeManager.goTo(part,
+                          libraryPerspective.getRootPanel());
     }
 
     public void goToMessages() {
@@ -729,6 +744,10 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         closingLibraryPlaces = true;
         placeManager.closeAllPlaces();
         closingLibraryPlaces = false;
+    }
+
+    public WorkspaceProject getActiveWorkspaceContext(){
+        return this.projectContext.getActiveWorkspaceProject().orElseThrow(() -> new IllegalStateException("No active workspace project found"));
     }
 
     public void init(final LibraryPerspective libraryPerspective) {

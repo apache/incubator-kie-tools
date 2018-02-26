@@ -16,13 +16,32 @@
 package org.kie.workbench.common.screens.projecteditor.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import org.guvnor.common.services.project.categories.Model;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.workbench.category.Category;
+import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @ApplicationScoped
 public class KModuleResourceTypeDefinition
         implements ResourceTypeDefinition {
+
+    private Category category;
+
+    public KModuleResourceTypeDefinition() {
+    }
+
+    @Inject
+    public KModuleResourceTypeDefinition(final Others category) {
+        this.category = category;
+    }
+
+    @Override
+    public Category getCategory() {
+        return this.category;
+    }
 
     @Override
     public String getShortName() {
@@ -55,7 +74,7 @@ public class KModuleResourceTypeDefinition
     }
 
     @Override
-    public boolean accept( final Path path ) {
-        return path.getFileName().equals( getPrefix() + "." + getSuffix() );
+    public boolean accept(final Path path) {
+        return path.getFileName().equals(getPrefix() + "." + getSuffix());
     }
 }

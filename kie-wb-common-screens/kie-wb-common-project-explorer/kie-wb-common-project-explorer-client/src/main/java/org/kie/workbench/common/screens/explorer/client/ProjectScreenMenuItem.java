@@ -37,8 +37,8 @@ public class ProjectScreenMenuItem
         view.setText(ProjectExplorerConstants.INSTANCE.openProjectEditor());
         view.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick(ClickEvent event) {
-                placeManager.goTo("projectScreen");
+            public void onClick( ClickEvent event ) {
+                placeManager.goTo( "ProjectSettings" );
             }
         });
 

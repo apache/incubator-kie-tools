@@ -20,9 +20,11 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.project.categories.Process;
 import org.kie.workbench.common.stunner.bpmn.project.client.resources.BPMNProjectImageResources;
 import org.kie.workbench.common.stunner.bpmn.resource.BPMNDefinitionSetResourceType;
 import org.kie.workbench.common.stunner.project.client.type.AbstractStunnerClientResourceType;
+import org.uberfire.workbench.category.Category;
 
 @ApplicationScoped
 public class BPMNDiagramResourceType extends AbstractStunnerClientResourceType<BPMNDefinitionSetResourceType> {
@@ -30,12 +32,20 @@ public class BPMNDiagramResourceType extends AbstractStunnerClientResourceType<B
     private static final Image ICON = new Image(BPMNProjectImageResources.INSTANCE.bpmn2Icon());
 
     protected BPMNDiagramResourceType() {
-        this(null);
+        this(null,
+             null);
     }
 
     @Inject
-    public BPMNDiagramResourceType(final BPMNDefinitionSetResourceType definitionSetResourceType) {
-        super(definitionSetResourceType);
+    public BPMNDiagramResourceType(final BPMNDefinitionSetResourceType definitionSetResourceType,
+                                   final Process category) {
+        super(definitionSetResourceType,
+              category);
+    }
+
+    @Override
+    public Category getCategory() {
+        return new Process();
     }
 
     @Override

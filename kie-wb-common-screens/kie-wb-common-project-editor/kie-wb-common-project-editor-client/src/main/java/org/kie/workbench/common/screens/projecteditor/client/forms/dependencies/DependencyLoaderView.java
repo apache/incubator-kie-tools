@@ -18,6 +18,6 @@ package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies
 
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
-public interface DependencyLoaderView
-        extends HasBusyIndicator {
+public interface DependencyLoaderView extends HasBusyIndicator {
+
 }

@@ -78,6 +78,12 @@
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-data-modeller-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.kie.workbench.services</groupId>
+          <artifactId>kie-wb-common-datamodel-backend</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>

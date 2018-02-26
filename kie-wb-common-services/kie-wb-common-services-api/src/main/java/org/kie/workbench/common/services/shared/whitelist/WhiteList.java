@@ -109,4 +109,9 @@ public class WhiteList
         }
         return false;
     }
+
+    @Override
+    public int hashCode() {
+        return whiteList.hashCode();
+    }
 }

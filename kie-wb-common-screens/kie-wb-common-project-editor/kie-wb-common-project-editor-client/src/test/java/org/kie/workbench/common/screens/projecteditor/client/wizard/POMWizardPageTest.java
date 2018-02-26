@@ -154,7 +154,7 @@ public class POMWizardPageTest {
 
     @Test
     public void testNameChangeHandlersRegistered() {
-        when( pomEditor.getPom() ).thenReturn( new POM( "name", "description", new GAV( "g", "a", "v" ) ) );
+        when( pomEditor.getPom() ).thenReturn( new POM( "name", "description","url",  new GAV( "g", "a", "v" ) ) );
         doNothing().when( pomEditor ).setArtifactID( anyString() );
 
         verify( pomEditor, times( 1 ) ).addNameChangeHandler( nameChangeCaptor.capture() );
@@ -164,7 +164,7 @@ public class POMWizardPageTest {
 
     @Test
     public void testVersionChangeHandlersRegistered() {
-        when( pomEditor.getPom() ).thenReturn( new POM( "name", "description", new GAV( "g", "a", "v" ) ) );
+        when( pomEditor.getPom() ).thenReturn( new POM( "name", "description", "url", new GAV( "g", "a", "v" ) ) );
 
         verify( pomEditor, times( 1 ) ).addVersionChangeHandler( versionChangeCaptor.capture() );
         versionChangeCaptor.getValue().onChange( "any new value" );
@@ -173,7 +173,7 @@ public class POMWizardPageTest {
 
     @Test
     public void testGroupChangeHandlersRegistered() {
-        when( pomEditor.getPom() ).thenReturn( new POM( "name", "description", new GAV( "g", "a", "v" ) ) );
+        when( pomEditor.getPom() ).thenReturn( new POM( "name", "description","url", new GAV( "g", "a", "v" ) ) );
 
         verify( pomEditor, times( 1 ) ).addGroupIdChangeHandler( groupChangeCaptor.capture() );
         groupChangeCaptor.getValue().onChange( "any new value" );
@@ -182,7 +182,7 @@ public class POMWizardPageTest {
 
     @Test
     public void testArtifactChangeHandlersRegistered() {
-        when( pomEditor.getPom() ).thenReturn( new POM( "name", "description", new GAV( "g", "a", "v" ) ) );
+        when( pomEditor.getPom() ).thenReturn( new POM( "name", "description","url", new GAV( "g", "a", "v" ) ) );
 
         verify( pomEditor, times( 1 ) ).addArtifactIdChangeHandler( artifactChangeCaptor.capture() );
         artifactChangeCaptor.getValue().onChange( "any new value" );

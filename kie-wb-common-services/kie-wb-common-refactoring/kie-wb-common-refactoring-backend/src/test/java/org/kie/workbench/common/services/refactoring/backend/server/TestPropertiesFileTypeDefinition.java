@@ -17,7 +17,9 @@ package org.kie.workbench.common.services.refactoring.backend.server;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.guvnor.common.services.project.categories.Model;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.workbench.category.Category;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @ApplicationScoped
@@ -52,6 +54,11 @@ public class TestPropertiesFileTypeDefinition
     @Override
     public String getSimpleWildcardPattern() {
         return "*." + getSuffix();
+    }
+
+    @Override
+    public Category getCategory() {
+        return new Model();
     }
 
     @Override

@@ -34,6 +34,7 @@ public class ProjectScreenModelTests {
         final ProjectScreenModel model = new ProjectScreenModel();
         model.setPOM(new POM("test",
                              "test",
+                             "url",
                              new GAV("groupID",
                                      "artifactID",
                                      "version")));
