@@ -101,7 +101,7 @@ public class PermissionTreeSetupTest {
         verify(perspectiveTreeProvider).setPerspectiveName(eq(EXECUTION_ERRORS),
                                                            eq("ExecutionErrors"));
         verify(perspectiveTreeProvider).setPerspectiveName(eq(TASKS),
-                                                           eq("Tasks"));
+                                                           eq("Task_Inbox"));
         verify(perspectiveTreeProvider).setPerspectiveName(eq(PROCESS_DASHBOARD),
                                                            eq("Process_Dashboard"));
         verify(perspectiveTreeProvider).setPerspectiveName(eq(APPS),

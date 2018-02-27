@@ -117,7 +117,7 @@ public class PermissionTreeSetup {
         perspectiveTreeProvider.setPerspectiveName(EXECUTION_ERRORS,
                                                    i18n.ExecutionErrors());
         perspectiveTreeProvider.setPerspectiveName(TASKS,
-                                                   i18n.Tasks());
+                                                   i18n.Task_Inbox());
         perspectiveTreeProvider.setPerspectiveName(PROCESS_DASHBOARD,
                                                    i18n.Process_Dashboard());
         perspectiveTreeProvider.setPerspectiveName(APPS,

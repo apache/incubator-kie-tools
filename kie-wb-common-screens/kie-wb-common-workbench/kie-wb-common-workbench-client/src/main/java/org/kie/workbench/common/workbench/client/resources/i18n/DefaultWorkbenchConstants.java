@@ -67,7 +67,7 @@ public interface DefaultWorkbenchConstants
 
     String ExecutionErrors();
 
-    String Tasks();
+    String Task_Inbox();
 
     String Process_Dashboard();
 
