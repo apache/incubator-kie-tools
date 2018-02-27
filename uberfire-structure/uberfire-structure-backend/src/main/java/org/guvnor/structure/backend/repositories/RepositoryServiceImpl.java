@@ -115,8 +115,10 @@ public class RepositoryServiceImpl implements RepositoryService {
     private SpacesAPI spacesAPI;
 
     @Override
-    public RepositoryInfo getRepositoryInfo(final Space space, final String alias) {
-        Repository repo = getRepositoryFromSpace(space, alias);
+    public RepositoryInfo getRepositoryInfo(final Space space,
+                                            final String alias) {
+        Repository repo = getRepositoryFromSpace(space,
+                                                 alias);
 
         return new RepositoryInfo(repo.getIdentifier(),
                                   alias,
@@ -152,7 +154,8 @@ public class RepositoryServiceImpl implements RepositoryService {
                                                     final String alias,
                                                     int startIndex,
                                                     int endIndex) {
-        final Repository repo = getRepositoryFromSpace(space, alias);
+        final Repository repo = getRepositoryFromSpace(space,
+                                                       alias);
 
         //This is a work-around for https://bugzilla.redhat.com/show_bug.cgi?id=1199215
         //org.kie.workbench.common.screens.contributors.backend.dataset.ContributorsManager is trying to
@@ -206,11 +209,13 @@ public class RepositoryServiceImpl implements RepositoryService {
     @Override
     public Repository getRepository(final Path root) {
         Space space = spacesAPI.resolveSpace(root.toURI()).orElseThrow(() -> new IllegalArgumentException("Cannot resolve space from given path: " + root));
-        return configuredRepositories.getRepositoryByRootPath(space, root);
+        return configuredRepositories.getRepositoryByRootPath(space,
+                                                              root);
     }
 
     @Override
-    public Repository getRepository(Space space, Path root) {
+    public Repository getRepository(final Space space,
+                                    final Path root) {
         return configuredRepositories.getRepositoryByRootPath(space,
                                                               root);
     }
@@ -262,15 +267,19 @@ public class RepositoryServiceImpl implements RepositoryService {
         try {
             repositoryEnvironmentConfigurations.setSpace(organizationalUnit.getName());
 
+            Space space = spacesAPI.getSpace(organizationalUnit.getName());
+            String newAlias = createFreshRepositoryAlias(alias,
+                                                         space);
+
             final Repository repository = createRepository(scheme,
-                                                           alias,
+                                                           newAlias,
                                                            new Space(organizationalUnit.getName()),
                                                            repositoryEnvironmentConfigurations);
             if (organizationalUnit != null && repository != null) {
                 organizationalUnitService.addRepository(organizationalUnit,
                                                         repository);
             }
-            metadataStore.write(alias,
+            metadataStore.write(newAlias,
                                 (String) repositoryEnvironmentConfigurations.getOrigin());
             return repository;
         } catch (final Exception e) {
@@ -278,6 +287,18 @@ public class RepositoryServiceImpl implements RepositoryService {
                          e);
             throw ExceptionUtilities.handleException(e);
         }
+    }
+
+    protected String createFreshRepositoryAlias(final String alias,
+                                                final Space space) {
+        int index = 0;
+        String suffix = "";
+        while (this.getRepositoryFromSpace(space,
+                                           alias + suffix) != null) {
+            suffix = "-" + ++index;
+        }
+
+        return alias + suffix;
     }
 
     protected ConfigGroup findRepositoryConfig(final String alias) {
@@ -293,17 +314,21 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     @Override
-    public void removeRepository(Space space, String alias) {
+    public void removeRepository(final Space space,
+                                 final String alias) {
         final ConfigGroup thisRepositoryConfig = findRepositoryConfig(alias);
 
         try {
             configurationService.startBatch();
             OrganizationalUnit orgUnit = Optional
-                                                 .ofNullable(organizationalUnitService.getOrganizationalUnit(space.getName()))
-                                                 .orElseThrow(() -> new IllegalArgumentException(String
-                                                                                                       .format("The given space [%s] does not correspond to any known organizational unit.",
-                                                                                                               space.getName())));
-            doRemoveRepository(orgUnit, alias, thisRepositoryConfig, repo -> repositoryRemovedEvent.fire(new RepositoryRemovedEvent(repo)));
+                    .ofNullable(organizationalUnitService.getOrganizationalUnit(space.getName()))
+                    .orElseThrow(() -> new IllegalArgumentException(String
+                                                                            .format("The given space [%s] does not exist.",
+                                                                                    space.getName())));
+            doRemoveRepository(orgUnit,
+                               alias,
+                               thisRepositoryConfig,
+                               repo -> repositoryRemovedEvent.fire(new RepositoryRemovedEvent(repo)));
         } catch (final Exception e) {
             logger.error("Error during remove repository",
                          e);
@@ -314,17 +339,21 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     @Override
-    public void removeRepositories(Space space, Set<String> aliases) {
+    public void removeRepositories(final Space space,
+                                   final Set<String> aliases) {
         try {
             configurationService.startBatch();
             OrganizationalUnit orgUnit = Optional
                     .ofNullable(organizationalUnitService.getOrganizationalUnit(space.getName()))
-                    .orElseThrow(() -> new IllegalArgumentException(String
-                                                                    .format("The given space [%s] does not correspond to any known organizational unit.",
-                                                                            space.getName())));
+                    .orElseThrow(() -> new IllegalArgumentException(String.format("The given space [%s] does not exist.",
+                                                                                  space.getName())));
 
             for (final String alias : aliases) {
-                doRemoveRepository(orgUnit, alias, findRepositoryConfig(alias), repo -> {});
+                doRemoveRepository(orgUnit,
+                                   alias,
+                                   findRepositoryConfig(alias),
+                                   repo -> {
+                                   });
             }
         } catch (final Exception e) {
             logger.error("Error while removing repositories",
@@ -355,7 +384,8 @@ public class RepositoryServiceImpl implements RepositoryService {
         //Remove reference to Repository from Organizational Units
         for (Repository repository : orgUnit.getRepositories()) {
             if (repository.getAlias().equals(alias)) {
-                organizationalUnitService.removeRepository(orgUnit, repository);
+                organizationalUnitService.removeRepository(orgUnit,
+                                                           repository);
                 metadataStore.delete(alias);
             }
         }
@@ -400,7 +430,8 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     @Override
-    public List<VersionRecord> getRepositoryHistoryAll(final Space space, final String alias) {
+    public List<VersionRecord> getRepositoryHistoryAll(final Space space,
+                                                       final String alias) {
         return getRepositoryHistory(space,
                                     alias,
                                     0,
@@ -435,7 +466,8 @@ public class RepositoryServiceImpl implements RepositoryService {
                 repositoryConfig.addConfigItem(getRepositoryConfigItem(configuration));
             }
 
-            repo = createRepository(repositoryConfig, space);
+            repo = createRepository(repositoryConfig,
+                                    space);
             return repo;
         } catch (final Exception e) {
             logger.error("Error during create repository",
@@ -449,7 +481,8 @@ public class RepositoryServiceImpl implements RepositoryService {
         }
     }
 
-    private Repository createRepository(final ConfigGroup repositoryConfig, Space space) {
+    private Repository createRepository(final ConfigGroup repositoryConfig,
+                                        final Space space) {
         final Repository repository = repositoryFactory.newRepository(repositoryConfig);
         configurationService.addConfiguration(repositoryConfig);
         configuredRepositories.add(space,

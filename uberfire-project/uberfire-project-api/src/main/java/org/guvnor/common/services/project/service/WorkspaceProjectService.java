@@ -44,6 +44,9 @@ public interface WorkspaceProjectService {
                                 final POM pom,
                                 final DeploymentMode mode);
 
+    String createFreshProjectName(final OrganizationalUnit organizationalUnit,
+                                  final String name);
+
     WorkspaceProject resolveProject(final Repository repository);
 
     WorkspaceProject resolveProject(final Space space, final Branch branch);

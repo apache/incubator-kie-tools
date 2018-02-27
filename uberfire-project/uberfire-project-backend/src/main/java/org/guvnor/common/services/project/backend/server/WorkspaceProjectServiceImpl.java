@@ -134,6 +134,9 @@ public class WorkspaceProjectServiceImpl
                                        final POM pom,
                                        final DeploymentMode mode) {
 
+        String newName = this.createFreshProjectName(organizationalUnit,
+                                                     pom.getName());
+
         final Repository repository = repositoryService.createRepository(organizationalUnit,
                                                                          "git",
                                                                          checkNotNull("project name in pom model",
@@ -143,6 +146,8 @@ public class WorkspaceProjectServiceImpl
         if (!repository.getDefaultBranch().isPresent()) {
             throw new IllegalStateException("New repository should always have a branch.");
         }
+
+        pom.setName(newName);
 
         final Module module = moduleService.newModule(repository.getDefaultBranch().get().getPath(),
                                                       pom,
@@ -157,6 +162,19 @@ public class WorkspaceProjectServiceImpl
         newProjectEvent.fire(new NewProjectEvent(workspaceProject));
 
         return workspaceProject;
+    }
+
+    @Override
+    public String createFreshProjectName(final OrganizationalUnit organizationalUnit,
+                                         final String name) {
+        int index = 0;
+        String suffix = "";
+        while (!this.getAllWorkspaceProjectsByName(organizationalUnit,
+                                                   name + suffix).isEmpty()) {
+            suffix = " [" + ++index + "]";
+        }
+
+        return name + suffix;
     }
 
     @Override

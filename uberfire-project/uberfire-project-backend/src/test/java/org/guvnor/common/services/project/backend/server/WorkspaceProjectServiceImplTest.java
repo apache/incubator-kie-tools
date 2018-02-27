@@ -24,6 +24,7 @@ import java.util.Optional;
 import javax.enterprise.inject.Instance;
 
 import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
@@ -200,6 +201,57 @@ public class WorkspaceProjectServiceImplTest {
         doReturn(organizationalUnit).when(organizationalUnitService).getOrganizationalUnit("myOU");
 
         assertTrue(workspaceProjectService.getAllWorkspaceProjects(organizationalUnit).isEmpty());
+    }
+
+    @Test
+    public void testReturnSameNameIfRepositoryDoesNotExist() {
+        String projectName = "projectA";
+        POM pom = new POM(projectName,
+                          "description",
+                          "url",
+                          null);
+
+        WorkspaceProjectServiceImpl impl = (WorkspaceProjectServiceImpl) this.workspaceProjectService;
+        String newName = impl.createFreshProjectName(this.ou1,
+                                                     pom.getName());
+
+        assertEquals(projectName,
+                     newName);
+    }
+
+    @Test
+    public void testCreateNewNameIfRepositoryExists() {
+        {
+            POM pom = new POM("repository1",
+                              "description",
+                              "url",
+                              null);
+
+            WorkspaceProjectServiceImpl impl = (WorkspaceProjectServiceImpl) this.workspaceProjectService;
+            String newName = impl.createFreshProjectName(this.ou1,
+                                                         pom.getName());
+
+            assertEquals("repository1 [1]",
+                         newName);
+        }
+
+        {
+
+            doReturn(Optional.of(mock(Branch.class))).when(repository2).getDefaultBranch();
+            doReturn("repository1 [1]").when(repository2).getAlias();
+
+            POM pom = new POM("repository1",
+                              "description",
+                              "url",
+                              null);
+
+            WorkspaceProjectServiceImpl impl = (WorkspaceProjectServiceImpl) this.workspaceProjectService;
+            String newName = impl.createFreshProjectName(this.ou1,
+                                                         pom.getName());
+
+            assertEquals("repository1 [2]",
+                         newName);
+        }
     }
 
     private void assertContains(final Repository repository,
