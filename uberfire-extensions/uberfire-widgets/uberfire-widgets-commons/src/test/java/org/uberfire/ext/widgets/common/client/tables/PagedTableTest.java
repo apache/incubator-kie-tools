@@ -46,7 +46,7 @@ public class PagedTableTest {
     @Test
     public void testDataGridFixedHeight() throws Exception {
         final int PAGE_SIZE = 10;
-        final int EXPECTED_HEIGHT_PX = (PAGE_SIZE * PagedTable.ROW_HEIGHT_PX) + PagedTable.FIXED_HEIGHT_OFFSET_PX;
+        final int EXPECTED_HEIGHT_PX = (PAGE_SIZE * PagedTable.ROW_HEIGHT_PX) + PagedTable.HEIGHT_OFFSET_PX;
         PagedTable pagedTable = new PagedTable(PAGE_SIZE);
         pagedTable.dataGrid = spy(pagedTable.dataGrid);
 

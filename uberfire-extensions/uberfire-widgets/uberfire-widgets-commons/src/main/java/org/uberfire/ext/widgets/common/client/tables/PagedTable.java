@@ -41,9 +41,8 @@ public class PagedTable<T>
         extends SimpleTable<T> {
 
     public static final int DEFAULT_PAGE_SIZE = 10;
-    public static final int ROW_HEIGHT_PX = 30;
-    public static final int FIXED_HEIGHT_OFFSET_PX = 56;
-    public static final int HEIGHT_OFFSET_PX = 30;
+    public static final int ROW_HEIGHT_PX = 33;
+    public static final int HEIGHT_OFFSET_PX = 56;
     private static Binder uiBinder = GWT.create(Binder.class);
 
     @UiField
@@ -140,7 +139,7 @@ public class PagedTable<T>
         if (useFixedHeight == false) {
             dataGrid.addRangeChangeHandler(e -> Scheduler.get().scheduleDeferred(() -> setTableHeight()));
             dataGrid.addRowCountChangeHandler(e -> Scheduler.get().scheduleDeferred(() -> setTableHeight()));
-            dataGrid.getElement().getStyle().setMarginBottom(10,
+            dataGrid.getElement().getStyle().setMarginBottom(0,
                                                              Style.Unit.PX);
         }
     }
@@ -177,7 +176,7 @@ public class PagedTable<T>
 
     protected void setTableHeight() {
         int base = useFixedHeight ? pageSize : dataGrid.getRowCount() - dataGrid.getVisibleRange().getStart();
-        int height = ((base <= 0 ? 1 : base) * ROW_HEIGHT_PX) + (useFixedHeight ? FIXED_HEIGHT_OFFSET_PX : HEIGHT_OFFSET_PX);
+        int height = ((base <= 0 ? 1 : base) * ROW_HEIGHT_PX) + HEIGHT_OFFSET_PX;
         this.dataGrid.setHeight(height + "px");
     }
 
