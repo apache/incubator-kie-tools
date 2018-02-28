@@ -36,7 +36,7 @@ public class TestPaths {
                          Paths.convert(Paths.convert(path)).getFileName().toString());
             System.out.println(path.toUri().toString());
             System.out.println(Paths.convert(path).toURI());
-            System.out.println(Paths.convert(Paths.convert(path)).toUri().toString());
+            System.out.println(Paths.normalizePath(path).toUri().toString());
         }
 
         {
@@ -51,7 +51,7 @@ public class TestPaths {
                          Paths.convert(Paths.convert(path)).getFileName().toString());
             System.out.println(path.toUri().toString());
             System.out.println(Paths.convert(path).toURI());
-            System.out.println(Paths.convert(Paths.convert(path)).toUri().toString());
+            System.out.println(Paths.normalizePath(path).toUri().toString());
         }
 
         {
@@ -67,7 +67,7 @@ public class TestPaths {
 
             System.out.println(path.toUri().toString());
             System.out.println(Paths.convert(path).toURI());
-            System.out.println(Paths.convert(Paths.convert(path)).toUri().toString());
+            System.out.println(Paths.normalizePath(path).toUri().toString());
         }
     }
 }

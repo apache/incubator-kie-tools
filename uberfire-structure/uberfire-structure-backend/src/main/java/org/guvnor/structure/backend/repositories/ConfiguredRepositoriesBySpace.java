@@ -43,7 +43,7 @@ public class ConfiguredRepositoriesBySpace {
 
         if (repository.getBranches() != null) {
             for (final Branch branch : repository.getBranches()) {
-                repositoriesByBranchRoot.put(Paths.convert(Paths.convert(branch.getPath())),
+                repositoriesByBranchRoot.put(Paths.normalizePath(branch.getPath()),
                                              repository);
             }
         }
@@ -58,7 +58,7 @@ public class ConfiguredRepositoriesBySpace {
     }
 
     public Repository get(Path root) {
-        return repositoriesByBranchRoot.get(Paths.convert(Paths.convert(root)));
+        return repositoriesByBranchRoot.get(Paths.normalizePath(root));
     }
 
     public boolean containsRepository(String alias) {

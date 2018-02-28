@@ -20,6 +20,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.backend.vfs.FileSystem;
 import org.uberfire.backend.vfs.FileSystemFactory;
 import org.uberfire.backend.vfs.Path;
@@ -88,5 +89,49 @@ public final class Paths {
 
     public static boolean isLock(final Path path) {
         return path.toURI().endsWith(PathFactory.LOCK_FILE_EXTENSION);
+    }
+
+    /**
+     * Substring the second path from the first. This can be used to for example to substring the repository prefix from a Path.
+     * @param wholePath What we want to substring from the first Path
+     * @param prefixToRemove The Path we want to substring
+     * @return The result. For example the File URI from the Repository root or from a submodule root.
+     * @throws IllegalStateException When the the prefix is longer than the URI where it is removed from.
+     */
+    public static String removePrefix(final Path wholePath,
+                                      final Path prefixToRemove) {
+        PortablePreconditions.checkNotNull("prefixToRemove", prefixToRemove);
+        PortablePreconditions.checkNotNull("wholePath", wholePath);
+
+        if (prefixToRemove.toURI().length() > wholePath.toURI().length()) {
+            throw new IllegalArgumentException("Prefix is longer than the URI where it is being removed from.");
+        }
+
+        final org.uberfire.java.nio.file.Path nioWholePath = convert(wholePath);
+        final org.uberfire.java.nio.file.Path nioPrefixToRemove = convert(prefixToRemove);
+
+        if (!nioWholePath.startsWith(nioPrefixToRemove)) {
+            throw new IllegalArgumentException("The beginning of the whole  Path " + nioWholePath + " does not match the prefix path " + nioPrefixToRemove + ".");
+        }
+
+        return nioPrefixToRemove.relativize(nioWholePath).toString();
+    }
+
+    /**
+     * git:// and default:// can point to the same location. This normalizes the Paths for easier use with length and removePrefix functions.
+     * @param path
+     * @return
+     */
+    public static org.uberfire.java.nio.file.Path normalizePath(final org.uberfire.java.nio.file.Path path) {
+        return Paths.convert(Paths.convert(path));
+    }
+
+    /**
+     * git:// and default:// can point to the same location. This normalizes the Paths for easier use with length and removePrefix functions.
+     * @param path
+     * @return
+     */
+    public static Path normalizePath(final Path path) {
+        return Paths.convert(Paths.convert(path));
     }
 }
