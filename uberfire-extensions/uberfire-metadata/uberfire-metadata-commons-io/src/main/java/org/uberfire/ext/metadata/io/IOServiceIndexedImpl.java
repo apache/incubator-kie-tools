@@ -16,6 +16,10 @@
 
 package org.uberfire.ext.metadata.io;
 
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.java.nio.file.StandardWatchEventKind.ENTRY_CREATE;
+import static org.uberfire.java.nio.file.StandardWatchEventKind.ENTRY_MODIFY;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -54,22 +58,16 @@ import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.java.nio.file.StandardWatchEventKind.ENTRY_CREATE;
-import static org.uberfire.java.nio.file.StandardWatchEventKind.ENTRY_MODIFY;
-
 public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IOServiceIndexedImpl.class);
 
     private final MetaIndexEngine indexEngine;
-    private final BatchIndex batchIndex;
 
     private final Class<? extends FileAttributeView>[] views;
     private final List<String> watchedList = new ArrayList<>();
-    private final List<WatchService> watchServices = new ArrayList<WatchService>();
+    private final List<WatchService> watchServices = new ArrayList<>();
 
-    private final Observer observer;
     private ExecutorService executorService;
 
     public IOServiceIndexedImpl(final MetaIndexEngine indexEngine,
@@ -123,13 +121,6 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         super();
         this.indexEngine = checkNotNull("indexEngine",
                                         indexEngine);
-        this.observer = checkNotNull("observer",
-                                     observer);
-        this.batchIndex = new BatchIndex(indexEngine,
-                                         this,
-                                         observer,
-                                         executorService,
-                                         views);
         this.views = views;
 
         this.executorService = executorService;
@@ -143,13 +134,6 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         super(id);
         this.indexEngine = checkNotNull("indexEngine",
                                         indexEngine);
-        this.observer = checkNotNull("observer",
-                                     observer);
-        this.batchIndex = new BatchIndex(indexEngine,
-                                         this,
-                                         observer,
-                                         executorService,
-                                         views);
         this.views = views;
         this.executorService = executorService;
     }
@@ -162,13 +146,6 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         super(watchService);
         this.indexEngine = checkNotNull("indexEngine",
                                         indexEngine);
-        this.observer = checkNotNull("observer",
-                                     observer);
-        this.batchIndex = new BatchIndex(indexEngine,
-                                         this,
-                                         observer,
-                                         executorService,
-                                         views);
         this.views = views;
 
         this.executorService = executorService;
@@ -184,13 +161,6 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
               watchService);
         this.indexEngine = checkNotNull("indexEngine",
                                         indexEngine);
-        this.observer = checkNotNull("observer",
-                                     observer);
-        this.batchIndex = new BatchIndex(indexEngine,
-                                         this,
-                                         observer,
-                                         executorService,
-                                         views);
         this.views = views;
 
         this.executorService = executorService;
@@ -201,7 +171,6 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
             throws IllegalArgumentException, FileSystemNotFoundException,
             ProviderNotFoundException, SecurityException {
         final FileSystem fs = super.getFileSystem(uri);
-        indexIfFresh(fs);
         setupWatchService(fs);
         return fs;
     }
@@ -213,7 +182,6 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
             ProviderNotFoundException, IOException, SecurityException {
         final FileSystem fs = super.newFileSystem(uri,
                                                   env);
-        index(fs);
         setupWatchService(fs);
         return fs;
     }
@@ -266,6 +234,131 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
 
                         @Override
                         public void run() {
+                            final KCluster kCluster = KObjectUtil.toKCluster(fs);
+                            final Set<Path> eventRealPaths = getRealCreatedPaths(events);
+                            try {
+                                indexEngine.startBatch(kCluster);
+                                processEvents(events, eventRealPaths);
+                                indexEngine.commit(kCluster);
+                            } catch (DisposedException e) {
+                                return;
+                            } finally {
+                                indexEngine.abort(kCluster);
+                            }
+                        }
+
+                        private void processEvents(final List<WatchEvent<?>> events, final Set<Path> eventRealPaths) throws DisposedException {
+                            for (WatchEvent event : events) {
+                                if (isDisposed()) {
+                                    throw new DisposedException();
+                                }
+                                try {
+                                    final WatchContext context = ((WatchContext) event.context());
+                                    processEvent(eventRealPaths, event, context);
+                                } catch (final Exception ex) {
+                                    LOGGER.error("Error during indexing. { " + event.toString() + " }",
+                                                 ex);
+                                }
+                            }
+                        }
+
+                        private void processEvent(final Set<Path> eventRealPaths, WatchEvent event, final WatchContext context) throws DisposedException {
+                            if (event.kind() == ENTRY_MODIFY || event.kind() == ENTRY_CREATE) {
+                                processCreationAndModificationEvent(eventRealPaths, context);
+                            }
+
+                            if (event.kind() == StandardWatchEventKind.ENTRY_RENAME) {
+                                processRenameEvent(context);
+                            }
+
+                            if (event.kind() == StandardWatchEventKind.ENTRY_DELETE) {
+                                processDeleteEvent(event, context);
+                            }
+                        }
+
+                        private void processDeleteEvent(WatchEvent object, final WatchContext context) throws DisposedException {
+                            //Default indexing
+                            final Path oldPath = context.getOldPath();
+                            indexEngine.delete(KObjectUtil.toKObjectKey(oldPath));
+
+                            //Additional indexing
+                            for (Indexer indexer : IndexersFactory.getIndexers()) {
+                                if (isDisposed()) {
+                                    throw new DisposedException();
+                                }
+                                if (indexer.supportsPath(oldPath)) {
+                                    final KObjectKey kObject = indexer.toKObjectKey(oldPath);
+                                    if (kObject != null) {
+                                        indexEngine.delete(kObject);
+                                    }
+                                }
+                            }
+                        }
+
+                        private void processRenameEvent(final WatchContext context) throws DisposedException {
+                            //Default indexing
+                            final Path sourcePath = context.getOldPath();
+                            final Path destinationPath = context.getPath();
+                            indexEngine.rename(KObjectUtil.toKObjectKey(sourcePath),
+                                               KObjectUtil.toKObject(destinationPath));
+
+                            //Additional indexing
+                            for (Indexer indexer : IndexersFactory.getIndexers()) {
+                                if (isDisposed()) {
+                                    throw new DisposedException();
+                                }
+                                if (indexer.supportsPath(destinationPath)) {
+                                    final KObjectKey kObjectSource = indexer.toKObjectKey(sourcePath);
+                                    final KObject kObjectDestination = indexer.toKObject(destinationPath);
+                                    if (kObjectSource != null && kObjectDestination != null) {
+                                        indexEngine.rename(kObjectSource,
+                                                           kObjectDestination);
+                                    }
+                                }
+                            }
+                        }
+
+                        private void processCreationAndModificationEvent(final Set<Path> eventRealPaths, final WatchContext context) throws DisposedException {
+                            // If the path to be indexed is a "dot path" but does not have an associated
+                            // "real path" index the "real path" instead. This ensures when only a
+                            // "dot path" is updated the FileAttributeView(s) are re-indexed.
+                            Path path = context.getPath();
+                            if (path.getFileName().toString().startsWith(".")) {
+                                if (!IOServiceIndexedUtil.isBlackListed(path)) {
+                                    final Path realPath = DotFileUtils.undot(path);
+                                    if (!eventRealPaths.contains(realPath)) {
+                                        path = realPath;
+                                    }
+                                }
+                            }
+
+                            if (!path.getFileName().toString().startsWith(".")) {
+
+                                //Default indexing
+                                for (final Class<? extends FileAttributeView> view : views) {
+                                    getFileAttributeView(path,
+                                                         view);
+                                }
+                                final FileAttribute<?>[] allAttrs = convert(readAttributes(path));
+                                indexEngine.index(KObjectUtil.toKObject(path,
+                                                                        allAttrs));
+
+                                //Additional indexing
+                                for (Indexer indexer : IndexersFactory.getIndexers()) {
+                                    if (isDisposed()) {
+                                        throw new DisposedException();
+                                    }
+                                    if (indexer.supportsPath(path)) {
+                                        final KObject kObject = indexer.toKObject(path);
+                                        if (kObject != null) {
+                                            indexEngine.index(kObject);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        private Set<Path> getRealCreatedPaths(final List<WatchEvent<?>> events) {
                             // Get a set of "real paths" to be indexed. The "dot path" associated with the "real path"
                             // is automatically indexed because the "dot path" contains content for FileAttributeView(s)
                             // linked to the "real path".
@@ -279,100 +372,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                                     }
                                 }
                             }
-
-                            for (WatchEvent object : events) {
-                                if (isDisposed()) {
-                                    return;
-                                }
-                                try {
-                                    final WatchContext context = ((WatchContext) object.context());
-                                    if (object.kind() == ENTRY_MODIFY || object.kind() == ENTRY_CREATE) {
-
-                                        // If the path to be indexed is a "dot path" but does not have an associated
-                                        // "real path" index the "real path" instead. This ensures when only a
-                                        // "dot path" is updated the FileAttributeView(s) are re-indexed.
-                                        Path path = context.getPath();
-                                        if (path.getFileName().toString().startsWith(".")) {
-                                            if (!IOServiceIndexedUtil.isBlackListed(path)) {
-                                                final Path realPath = DotFileUtils.undot(path);
-                                                if (!eventRealPaths.contains(realPath)) {
-                                                    path = realPath;
-                                                }
-                                            }
-                                        }
-
-                                        if (!path.getFileName().toString().startsWith(".")) {
-
-                                            //Default indexing
-                                            for (final Class<? extends FileAttributeView> view : views) {
-                                                getFileAttributeView(path,
-                                                                     view);
-                                            }
-                                            final FileAttribute<?>[] allAttrs = convert(readAttributes(path));
-                                            indexEngine.index(KObjectUtil.toKObject(path,
-                                                                                    allAttrs));
-
-                                            //Additional indexing
-                                            for (Indexer indexer : IndexersFactory.getIndexers()) {
-                                                if (isDisposed()) {
-                                                    return;
-                                                }
-                                                if (indexer.supportsPath(path)) {
-                                                    final KObject kObject = indexer.toKObject(path);
-                                                    if (kObject != null) {
-                                                        indexEngine.index(kObject);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    if (object.kind() == StandardWatchEventKind.ENTRY_RENAME) {
-                                        //Default indexing
-                                        final Path sourcePath = context.getOldPath();
-                                        final Path destinationPath = context.getPath();
-                                        indexEngine.rename(KObjectUtil.toKObjectKey(sourcePath),
-                                                           KObjectUtil.toKObject(destinationPath));
-
-                                        //Additional indexing
-                                        for (Indexer indexer : IndexersFactory.getIndexers()) {
-                                            if (isDisposed()) {
-                                                return;
-                                            }
-                                            if (indexer.supportsPath(destinationPath)) {
-                                                final KObjectKey kObjectSource = indexer.toKObjectKey(sourcePath);
-                                                final KObject kObjectDestination = indexer.toKObject(destinationPath);
-                                                if (kObjectSource != null && kObjectDestination != null) {
-                                                    indexEngine.rename(kObjectSource,
-                                                                       kObjectDestination);
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    if (object.kind() == StandardWatchEventKind.ENTRY_DELETE) {
-                                        //Default indexing
-                                        final Path oldPath = context.getOldPath();
-                                        indexEngine.delete(KObjectUtil.toKObjectKey(oldPath));
-
-                                        //Additional indexing
-                                        for (Indexer indexer : IndexersFactory.getIndexers()) {
-                                            if (isDisposed()) {
-                                                return;
-                                            }
-                                            if (indexer.supportsPath(oldPath)) {
-                                                final KObjectKey kObject = indexer.toKObjectKey(oldPath);
-                                                if (kObject != null) {
-                                                    indexEngine.delete(kObject);
-                                                }
-                                            }
-                                        }
-                                    }
-                                } catch (final Exception ex) {
-                                    LOGGER.error("Error during indexing. { " + object.toString() + " }",
-                                                 ex);
-                                }
-                            }
+                            return eventRealPaths;
                         }
 
                         private boolean isDisposed() {
@@ -383,21 +383,6 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                 }
             }
         });
-    }
-
-    private synchronized void indexIfFresh(final FileSystem fs) {
-        final KCluster cluster = KObjectUtil.toKCluster(fs);
-        if (indexEngine.freshIndex(cluster)) {
-            // See https://bugzilla.redhat.com/show_bug.cgi?id=1288132
-            // Record batch index as being started before the async indexing actually runs to
-            // prevent multiple batch indexes for the same FileSystem being scheduled.
-            indexEngine.startBatch(cluster);
-            index(fs);
-        }
-    }
-
-    private void index(final FileSystem fs) {
-        batchIndex.runAsync(fs);
     }
 
     @Override
@@ -425,6 +410,10 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
 
     public MetaIndexEngine getIndexEngine() {
         return indexEngine;
+    }
+
+    private static class DisposedException extends Exception {
+        private static final long serialVersionUID = 1L;
     }
 
     /**

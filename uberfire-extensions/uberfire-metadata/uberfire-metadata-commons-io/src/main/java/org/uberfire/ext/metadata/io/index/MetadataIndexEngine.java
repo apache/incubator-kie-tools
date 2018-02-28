@@ -16,15 +16,18 @@
 
 package org.uberfire.ext.metadata.io.index;
 
+import static org.kie.soup.commons.validation.PortablePreconditions.checkCondition;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
-import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
@@ -37,28 +40,28 @@ import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.model.KObjectKey;
 import org.uberfire.ext.metadata.provider.IndexProvider;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkCondition;
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-
 public class MetadataIndexEngine implements MetaIndexEngine {
 
     private final MetaModelBuilder metaModelBuilder;
     private Logger logger = LoggerFactory.getLogger(MetadataIndexEngine.class);
     private final IndexProvider provider;
-    private final Map<KCluster, AtomicInteger> batchMode = new ConcurrentHashMap<>();
-    private final Map<KCluster, List<KObject>> batchSet = new ConcurrentHashMap<>();
+    private final Map<KCluster, Object> batchLocks = new ConcurrentHashMap<>();
+    private final ThreadLocal<Map<KCluster, List<KObject>>> batchSets = ThreadLocal.withInitial(() -> new HashMap<>());
     private final Collection<Runnable> beforeDispose = new ArrayList<>();
+    private final Consumer<List<KObject>> kObectBatchObserver;
 
     public MetadataIndexEngine(IndexProvider provider,
-                               MetaModelStore metaModelStore) {
+                               MetaModelStore metaModelStore,
+                               Consumer<List<KObject>> kObectBatchObserver) {
         this.provider = provider;
+        this.kObectBatchObserver = kObectBatchObserver;
         this.metaModelBuilder = new MetaModelBuilder(metaModelStore);
         PriorityDisposableRegistry.register(this);
     }
 
     @Override
     public boolean freshIndex(KCluster cluster) {
-        boolean isFreshIndex = this.provider.isFreshIndex(cluster) && !batchMode.containsKey(cluster);
+        boolean isFreshIndex = this.provider.isFreshIndex(cluster) && !batchLocks.containsKey(cluster);
         if (logger.isDebugEnabled()) {
             logger.debug("Is fresh index? " + isFreshIndex);
         }
@@ -66,17 +69,20 @@ public class MetadataIndexEngine implements MetaIndexEngine {
     }
 
     @Override
+    public void prepareBatch(KCluster cluster) {
+        batchLocks.putIfAbsent(cluster, new Object());
+    }
+
+    @Override
     public void startBatch(KCluster cluster) {
-        final AtomicInteger batchStack = batchMode.get(cluster);
-        if (batchStack == null) {
-            batchMode.put(cluster,
-                          new AtomicInteger());
+        prepareBatch(cluster);
+        Map<KCluster, List<KObject>> batchSet = batchSets.get();
+        if (batchSet.containsKey(cluster)) {
+            throw new IllegalStateException(String.format("Cannot start a batch for cluster [id=%s] when there is already a batch started on this tread [%s]",
+                                                          cluster.getClusterId(),
+                                                          Thread.currentThread().getName()));
         } else {
-            if (batchStack.get() < 0) {
-                batchStack.set(1);
-            } else {
-                batchStack.incrementAndGet();
-            }
+            batchSet.put(cluster, new ArrayList<>());
         }
     }
 
@@ -85,28 +91,26 @@ public class MetadataIndexEngine implements MetaIndexEngine {
 
         if (this.isBatch(kObject)) {
             KClusterImpl index = new KClusterImpl(kObject.getClusterId());
-            this.batchSet.putIfAbsent(index,
-                                      new ArrayList<>());
-            List<KObject> store = this.batchSet.get(index);
+            List<KObject> store = this.batchSets.get().get(index);
             store.add(kObject);
-            this.batchSet.put(index,
-                              store);
         } else {
-            this.metaModelBuilder.updateMetaModel(kObject);
-            this.provider.index(kObject);
+            doIndex(kObject);
         }
     }
 
-    private boolean isBatch(KObject object) {
-        final AtomicInteger batchStack = batchMode.get(new KClusterImpl(object.getClusterId()));
-        return batchStack != null && batchStack.get() > 0;
+    private void doIndex(KObject kObject) {
+        this.metaModelBuilder.updateMetaModel(kObject);
+        this.provider.index(kObject);
     }
 
-    @Override
-    public void index(KObject... objects) {
-        List<KObject> kObjects = Lists.newArrayList(objects);
-        kObjects.forEach(kObject -> this.metaModelBuilder.updateMetaModel(kObject));
-        this.provider.index(kObjects);
+    private boolean isBatch(KObject object) {
+        KClusterImpl cluster = new KClusterImpl(object.getClusterId());
+        Map<KCluster, List<KObject>> batchSet = batchSets.get();
+        if (batchSet.isEmpty()) {
+            // Don't hold reference to this map if there are no batches in the thread.
+            batchSets.remove();
+        }
+        return batchSet.containsKey(cluster);
     }
 
     @Override
@@ -148,14 +152,45 @@ public class MetadataIndexEngine implements MetaIndexEngine {
 
     @Override
     public void commit(KCluster cluster) {
-        final AtomicInteger batchStack = batchMode.get(cluster);
-        if (batchStack != null) {
-            int value = batchStack.decrementAndGet();
-            if (value > 0) {
-                this.provider.index(this.batchSet.get(cluster));
-                batchMode.remove(cluster);
-                batchSet.remove(cluster);
+        prepareBatch(cluster);
+        Object lock = batchLocks.get(cluster);
+        List<KObject> batchSet = batchSets.get().get(cluster);
+
+        try {
+            if (batchSet == null) {
+                throw new IllegalStateException(String.format("Cannot commit batch for cluster [id=%s] when no batch has been started in thread [%s].",
+                                                              cluster.getClusterId(),
+                                                              Thread.currentThread().getName()));
             }
+            else if (batchSet.isEmpty()) {
+                removeThreadLocalBatchState(cluster);
+            } else {
+                doCommit(cluster, batchSet, lock);
+            }
+        } catch (Throwable t) {
+            abort(cluster);
+            throw t;
+        }
+    }
+
+    private void doCommit(KCluster cluster, List<KObject> kobjects, Object lock) {
+        synchronized (lock) {
+            kobjects.forEach(this::doIndex);
+            removeThreadLocalBatchState(cluster);
+            kObectBatchObserver.accept(kobjects);
+        }
+    }
+
+    @Override
+    public void abort(KCluster cluster) {
+        removeThreadLocalBatchState(cluster);
+    }
+
+    private void removeThreadLocalBatchState(KCluster cluster) {
+        Map<KCluster, List<KObject>> batchSet = batchSets.get();
+        batchSet.remove(cluster);
+        if (batchSet.isEmpty()) {
+            batchSets.remove();
         }
     }
 

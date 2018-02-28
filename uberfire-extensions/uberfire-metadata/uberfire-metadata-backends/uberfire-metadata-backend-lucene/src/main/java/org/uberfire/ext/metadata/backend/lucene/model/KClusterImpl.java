@@ -53,4 +53,9 @@ public class KClusterImpl implements KCluster {
     public int hashCode() {
         return clusterId.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return "KClusterImpl [clusterId=" + clusterId + "]";
+    }
 }
