@@ -300,7 +300,7 @@ public class DataSetLookupEditor implements IsWidget {
         List<Integer> result = new ArrayList<Integer>();
         for (int i = 0; i < dataSetMetadata.getNumberOfColumns(); i++) {
             ColumnType columnType = dataSetMetadata.getColumnType(i);
-            if (ColumnType.LABEL.equals(columnType) || ColumnType.DATE.equals(columnType)) {
+            if (ColumnType.LABEL.equals(columnType) || ColumnType.DATE.equals(columnType) || ColumnType.NUMBER.equals(columnType)) {
                 result.add(i);
             }
         }

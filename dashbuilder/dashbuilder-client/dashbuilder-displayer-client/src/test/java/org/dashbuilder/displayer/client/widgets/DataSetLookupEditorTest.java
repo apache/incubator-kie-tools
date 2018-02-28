@@ -245,7 +245,7 @@ public class DataSetLookupEditorTest {
         verify(view).addGroupColumnItem("continent");
         verify(view).addGroupColumnItem("country");
         verify(view).addGroupColumnItem("year");
-        verify(view, never()).addGroupColumnItem("population");
+        verify(view).addGroupColumnItem("population");
 
         verify(view).setColumnsSectionEnabled(true);
         verify(view, never()).setGroupByDateEnabled(true);
