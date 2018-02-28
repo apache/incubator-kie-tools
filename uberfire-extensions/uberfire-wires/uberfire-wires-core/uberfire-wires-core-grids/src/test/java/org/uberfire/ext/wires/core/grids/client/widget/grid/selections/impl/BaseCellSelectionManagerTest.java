@@ -37,6 +37,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseBounds;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridTest;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
@@ -46,6 +47,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.Selection
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
@@ -508,19 +510,33 @@ public class BaseCellSelectionManagerTest {
                never()).edit(any(GridCell.class),
                              any(GridBodyCellRenderContext.class),
                              any(Callback.class));
+
+        verify(col1,
+               never()).edit(any(GridCell.class),
+                             any(GridBodyCellEditContext.class),
+                             any(Callback.class));
+        verify(col2,
+               never()).edit(any(GridCell.class),
+                             any(GridBodyCellEditContext.class),
+                             any(Callback.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void startEditingCellPointCoordinateWithinGridBounds() {
         final ArgumentCaptor<GridBodyCellRenderContext> contextArgumentCaptor = ArgumentCaptor.forClass(GridBodyCellRenderContext.class);
+        final ArgumentCaptor<GridBodyCellEditContext> editContextArgumentCaptor = ArgumentCaptor.forClass(GridBodyCellEditContext.class);
+        final Point2D editedAtPoint = new Point2D(150, 42);
 
-        cellSelectionManager.startEditingCell(new Point2D(150,
-                                                          42));
+        cellSelectionManager.startEditingCell(editedAtPoint);
 
         verify(col2,
                times(1)).edit(any(GridCell.class),
                               contextArgumentCaptor.capture(),
+                              any(Callback.class));
+        verify(col2,
+               times(1)).edit(any(GridCell.class),
+                              editContextArgumentCaptor.capture(),
                               any(Callback.class));
 
         final GridBodyCellRenderContext context = contextArgumentCaptor.getValue();
@@ -528,6 +544,11 @@ public class BaseCellSelectionManagerTest {
                      context.getRowIndex());
         assertEquals(1,
                      context.getColumnIndex());
+
+        final GridBodyCellEditContext editContext = editContextArgumentCaptor.getValue();
+        assertTrue(editContext.getRelativeLocation().isPresent());
+        assertEquals(editedAtPoint,
+                     editContext.getRelativeLocation().get());
     }
 
     @Test
@@ -543,12 +564,22 @@ public class BaseCellSelectionManagerTest {
                never()).edit(any(GridCell.class),
                              any(GridBodyCellRenderContext.class),
                              any(Callback.class));
+
+        verify(col1,
+               never()).edit(any(GridCell.class),
+                             any(GridBodyCellEditContext.class),
+                             any(Callback.class));
+        verify(col2,
+               never()).edit(any(GridCell.class),
+                             any(GridBodyCellEditContext.class),
+                             any(Callback.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void startEditingCoordinateWithinGridBounds() {
         final ArgumentCaptor<GridBodyCellRenderContext> contextArgumentCaptor = ArgumentCaptor.forClass(GridBodyCellRenderContext.class);
+        final ArgumentCaptor<GridBodyCellEditContext> editContextArgumentCaptor = ArgumentCaptor.forClass(GridBodyCellEditContext.class);
 
         cellSelectionManager.startEditingCell(0,
                                               1);
@@ -557,11 +588,18 @@ public class BaseCellSelectionManagerTest {
                times(1)).edit(any(GridCell.class),
                               contextArgumentCaptor.capture(),
                               any(Callback.class));
+        verify(col2,
+               times(1)).edit(any(GridCell.class),
+                              editContextArgumentCaptor.capture(),
+                              any(Callback.class));
 
         final GridBodyCellRenderContext context = contextArgumentCaptor.getValue();
         assertEquals(0,
                      context.getRowIndex());
         assertEquals(1,
                      context.getColumnIndex());
+
+        final GridBodyCellEditContext editContext = editContextArgumentCaptor.getValue();
+        assertFalse(editContext.getRelativeLocation().isPresent());
     }
 }

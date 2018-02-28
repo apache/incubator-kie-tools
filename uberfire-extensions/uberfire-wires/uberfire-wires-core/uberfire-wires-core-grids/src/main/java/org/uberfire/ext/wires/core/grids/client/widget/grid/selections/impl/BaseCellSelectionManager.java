@@ -17,6 +17,7 @@
 package org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -28,7 +29,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
@@ -226,24 +227,25 @@ public class BaseCellSelectionManager implements CellSelectionManager {
     }
 
     @Override
-    public boolean startEditingCell(final Point2D ap) {
+    public boolean startEditingCell(final Point2D rp) {
         //Get row information
         final Integer uiRowIndex = CoordinateUtilities.getUiRowIndex(gridWidget,
-                                                                     ap.getY());
+                                                                     rp.getY());
         if (uiRowIndex == null) {
             return false;
         }
 
         //Get column information
         final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
-        final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(ap.getX());
+        final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(rp.getX());
         final GridColumn<?> column = ci.getColumn();
         if (column == null) {
             return false;
         }
 
         return edit(uiRowIndex,
-                    ci);
+                    ci,
+                    Optional.of(rp));
     }
 
     @Override
@@ -263,7 +265,8 @@ public class BaseCellSelectionManager implements CellSelectionManager {
         }
 
         return edit(uiRowIndex,
-                    ci);
+                    ci,
+                    Optional.empty());
     }
 
     private BaseGridRendererHelper.ColumnInformation getFloatingColumnInformation(final int uiColumnIndex) {
@@ -301,7 +304,8 @@ public class BaseCellSelectionManager implements CellSelectionManager {
     }
 
     private boolean edit(final int uiRowIndex,
-                         final BaseGridRendererHelper.ColumnInformation ci) {
+                         final BaseGridRendererHelper.ColumnInformation ci,
+                         final Optional<Point2D> rp) {
         final GridColumn<?> column = ci.getColumn();
         final int uiColumnIndex = ci.getUiColumnIndex();
         final double offsetX = ci.getOffsetX();
@@ -330,17 +334,18 @@ public class BaseCellSelectionManager implements CellSelectionManager {
         final double clipMinY = gridWidget.getAbsoluteY() + header.getY() + renderer.getHeaderHeight();
         final double clipMinX = gridWidget.getAbsoluteX() + floatingX + floatingWidth;
 
-        final GridBodyCellRenderContext context = new GridBodyCellRenderContext(cellX,
-                                                                                cellY,
-                                                                                column.getWidth(),
-                                                                                cellHeight,
-                                                                                clipMinY,
-                                                                                clipMinX,
-                                                                                uiRowIndex,
-                                                                                uiColumnIndex,
-                                                                                floatingBlockInformation.getColumns().contains(column),
-                                                                                gridWidget.getViewport().getTransform(),
-                                                                                renderer);
+        final GridBodyCellEditContext context = new GridBodyCellEditContext(cellX,
+                                                                            cellY,
+                                                                            column.getWidth(),
+                                                                            cellHeight,
+                                                                            clipMinY,
+                                                                            clipMinX,
+                                                                            uiRowIndex,
+                                                                            uiColumnIndex,
+                                                                            floatingBlockInformation.getColumns().contains(column),
+                                                                            gridWidget.getViewport().getTransform(),
+                                                                            renderer,
+                                                                            rp);
 
         doEdit(context);
 
@@ -419,7 +424,7 @@ public class BaseCellSelectionManager implements CellSelectionManager {
     }
 
     @SuppressWarnings("unchecked")
-    protected void doEdit(final GridBodyCellRenderContext context) {
+    protected void doEdit(final GridBodyCellEditContext context) {
         final int uiRowIndex = context.getRowIndex();
         final int uiColumnIndex = context.getColumnIndex();
 

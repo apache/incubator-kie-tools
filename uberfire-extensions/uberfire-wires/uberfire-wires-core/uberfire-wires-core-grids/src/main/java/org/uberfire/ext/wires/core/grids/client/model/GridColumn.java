@@ -18,6 +18,7 @@ package org.uberfire.ext.wires.core.grids.client.model;
 import java.util.List;
 
 import org.uberfire.client.callbacks.Callback;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
 
@@ -48,6 +49,20 @@ public interface GridColumn<T> {
     default void edit(final GridCell<T> cell,
                       final GridBodyCellRenderContext context,
                       final Callback<GridCellValue<T>> callback) {
+    }
+
+    /**
+     * Edit the cell (normally in response to a mouse double-click event)
+     * @param cell
+     * @param context
+     * @param callback
+     */
+    default void edit(final GridCell<T> cell,
+                      final GridBodyCellEditContext context,
+                      final Callback<GridCellValue<T>> callback) {
+        edit(cell,
+             (GridBodyCellRenderContext) context,
+             callback);
     }
 
     /**

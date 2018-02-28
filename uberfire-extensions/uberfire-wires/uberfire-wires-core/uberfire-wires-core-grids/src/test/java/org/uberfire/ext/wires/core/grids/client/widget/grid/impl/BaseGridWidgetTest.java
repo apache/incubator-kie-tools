@@ -116,17 +116,17 @@ public class BaseGridWidgetTest {
 
     @Test
     public void startEditingCellMouseClick() {
-        final Point2D cp = new Point2D(10,
+        final Point2D rp = new Point2D(10,
                                        20);
 
-        gridWidget.startEditingCell(cp);
+        gridWidget.startEditingCell(rp);
 
         final ArgumentCaptor<Point2D> pointArgumentCaptor = ArgumentCaptor.forClass(Point2D.class);
 
         verify(cellSelectionManager,
                times(1)).startEditingCell(pointArgumentCaptor.capture());
         final Point2D point = pointArgumentCaptor.getValue();
-        assertEquals(cp,
+        assertEquals(rp,
                      point);
     }
 

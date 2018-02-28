@@ -117,10 +117,10 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
 
     protected boolean handleBodyCellDoubleClick(final NodeMouseDoubleClickEvent event) {
         //Convert Canvas co-ordinate to Grid co-ordinate
-        final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate(gridWidget,
+        final Point2D rp = CoordinateUtilities.convertDOMToGridCoordinate(gridWidget,
                                                                           new Point2D(event.getX(),
                                                                                       event.getY()));
 
-        return gridWidget.startEditingCell(ap);
+        return gridWidget.startEditingCell(rp);
     }
 }

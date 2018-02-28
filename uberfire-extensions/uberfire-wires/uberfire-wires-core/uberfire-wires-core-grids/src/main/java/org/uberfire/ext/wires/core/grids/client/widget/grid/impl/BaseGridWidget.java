@@ -727,7 +727,7 @@ public class BaseGridWidget extends Group implements GridWidget {
     }
 
     @Override
-    public boolean startEditingCell(final Point2D ap) {
-        return cellSelectionManager.startEditingCell(ap);
+    public boolean startEditingCell(final Point2D rp) {
+        return cellSelectionManager.startEditingCell(rp);
     }
 }

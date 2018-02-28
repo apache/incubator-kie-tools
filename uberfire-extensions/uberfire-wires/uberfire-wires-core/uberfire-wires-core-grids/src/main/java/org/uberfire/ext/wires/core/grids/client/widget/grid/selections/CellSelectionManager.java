@@ -65,10 +65,10 @@ public interface CellSelectionManager {
     /**
      * Handles initiation of editing a cell. If the provided Canvas coordinate
      * does not resolve to a cell in the Grid no operation if performed.
-     * @param ap Canvas coordinate relative to the GridWidget.
+     * @param rp Canvas coordinate relative to the GridWidget.
      * @return true if an edit operation was successfully initiated.
      */
-    boolean startEditingCell(final Point2D ap);
+    boolean startEditingCell(final Point2D rp);
 
     /**
      * Handles initiation of editing a cell. If the provided Canvas coordinate
