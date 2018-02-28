@@ -201,17 +201,6 @@ public class UndefinedExpressionGridTest {
     }
 
     @Test
-    public void testGetItemsWithNoParent() {
-        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
-
-        assertThat(items.size()).isEqualTo(1);
-        assertThat(items.get(0)).isInstanceOf(ListSelectorTextItem.class);
-
-        final ListSelectorTextItem ti = (ListSelectorTextItem) items.get(0);
-        assertThat(ti.getText()).isEqualTo(LiteralExpression.class.getSimpleName());
-    }
-
-    @Test
     public void testGetItemsWithParentWithoutCellControls() {
         final GridData parentGridData = mock(GridData.class);
         final BaseExpressionGrid parentGridWidget = mock(BaseExpressionGrid.class);
@@ -221,11 +210,7 @@ public class UndefinedExpressionGridTest {
 
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
 
-        assertThat(items.size()).isEqualTo(1);
-        assertThat(items.get(0)).isInstanceOf(ListSelectorTextItem.class);
-
-        final ListSelectorTextItem ti = (ListSelectorTextItem) items.get(0);
-        assertThat(ti.getText()).isEqualTo(LiteralExpression.class.getSimpleName());
+        assertThat(items).isEmpty();
     }
 
     @Test
@@ -243,14 +228,8 @@ public class UndefinedExpressionGridTest {
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
 
         assertThat(items).isNotEmpty();
-        assertThat(items.size()).isEqualTo(3);
-
-        assertThat(items.get(0)).isInstanceOf(ListSelectorTextItem.class);
-        final ListSelectorTextItem ti = (ListSelectorTextItem) items.get(0);
-        assertThat(ti.getText()).isEqualTo(LiteralExpression.class.getSimpleName());
-
-        assertThat(items.get(1)).isInstanceOf(HasListSelectorControl.ListSelectorDividerItem.class);
-        assertThat(items.get(2)).isSameAs(listSelectorItem);
+        assertThat(items.size()).isEqualTo(1);
+        assertThat(items.get(0)).isSameAs(listSelectorItem);
     }
 
     @Test
@@ -267,12 +246,7 @@ public class UndefinedExpressionGridTest {
 
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
 
-        assertThat(items).isNotEmpty();
-        assertThat(items.size()).isEqualTo(1);
-
-        assertThat(items.get(0)).isInstanceOf(ListSelectorTextItem.class);
-        final ListSelectorTextItem ti = (ListSelectorTextItem) items.get(0);
-        assertThat(ti.getText()).isEqualTo(LiteralExpression.class.getSimpleName());
+        assertThat(items).isEmpty();
     }
 
     @Test
@@ -285,12 +259,7 @@ public class UndefinedExpressionGridTest {
 
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
 
-        assertThat(items).isNotEmpty();
-        assertThat(items.size()).isEqualTo(1);
-
-        assertThat(items.get(0)).isInstanceOf(ListSelectorTextItem.class);
-        final ListSelectorTextItem ti = (ListSelectorTextItem) items.get(0);
-        assertThat(ti.getText()).isEqualTo(LiteralExpression.class.getSimpleName());
+        assertThat(items).isEmpty();
     }
 
     @Test
@@ -316,22 +285,12 @@ public class UndefinedExpressionGridTest {
     @Test
     public void testOnItemSelected() {
         final Command command = mock(Command.class);
-        final HasListSelectorControl.ListSelectorTextItem listSelectorItem = mock(HasListSelectorControl.ListSelectorTextItem.class);
+        final ListSelectorTextItem listSelectorItem = mock(ListSelectorTextItem.class);
         when(listSelectorItem.getCommand()).thenReturn(command);
 
         grid.onItemSelected(listSelectorItem);
 
         verify(command).execute();
-    }
-
-    @Test
-    public void testOnItemSelectedWithExpressionTypeSelected() {
-        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
-        final ListSelectorTextItem ti = (ListSelectorTextItem) items.get(0);
-
-        grid.onItemSelected(ti);
-
-        verify(grid).onExpressionTypeChanged(eq(ExpressionType.LITERAL_EXPRESSION));
     }
 
     @Test

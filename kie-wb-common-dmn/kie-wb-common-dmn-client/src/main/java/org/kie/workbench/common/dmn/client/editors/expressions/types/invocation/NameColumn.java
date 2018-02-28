@@ -32,7 +32,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRende
 import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
 
-public class NameColumn extends DMNGridColumn<String> implements HasSingletonDOMElementResource {
+public class NameColumn extends DMNGridColumn<InvocationGrid, String> implements HasSingletonDOMElementResource {
 
     private final TextBoxSingletonDOMElementFactory factory;
 

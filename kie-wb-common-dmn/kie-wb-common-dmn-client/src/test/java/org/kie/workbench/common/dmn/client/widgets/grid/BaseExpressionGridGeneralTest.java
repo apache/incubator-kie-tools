@@ -23,7 +23,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.assertj.core.api.Assertions;
 import org.jboss.errai.common.client.api.IsElement;
@@ -32,16 +31,12 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridCell;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
@@ -51,11 +46,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -183,7 +175,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     public void testDeselect() {
         grid.getModel().appendRow(new DMNGridRow());
         appendColumns(GridColumn.class);
-        
+
         //Select a cell so we can check deselection clears selections
         grid.getModel().selectCell(0, 0);
         assertFalse(grid.getModel().getSelectedCells().isEmpty());
@@ -230,89 +222,6 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
         assertThat(grid.getModel().getSelectedCells()).isNotEmpty();
         assertThat(grid.getModel().getSelectedCells()).contains(new GridData.SelectedCell(0, 1));
-    }
-
-    @Test
-    public void testSelectNullCell() {
-        grid.getModel().appendRow(new DMNGridRow());
-        appendColumns(RowNumberColumn.class);
-
-        final Point2D point = new Point2D(10, 20);
-        grid.selectCell(point, true, false);
-
-        verify(cellEditorControls, never()).show(any(HasCellEditorControls.Editor.class),
-                                                 anyInt(),
-                                                 anyInt());
-    }
-
-    @Test
-    public void testSelectNonEditorCell() {
-        grid.getModel().appendRow(new DMNGridRow());
-        appendColumns(RowNumberColumn.class);
-        grid.getModel().setCellValue(0, 0, new BaseGridCellValue<>(1));
-
-        final Point2D point = new Point2D(10, 20);
-        grid.selectCell(point, true, false);
-
-        verify(cellEditorControls, never()).show(any(HasCellEditorControls.Editor.class),
-                                                 anyInt(),
-                                                 anyInt());
-    }
-
-    @Test
-    public void testSelectEditorCellNoAssociatedEditor() {
-        grid.getModel().appendRow(new DMNGridRow());
-        appendColumns(RowNumberColumn.class);
-        grid.getModel().setCell(0, 0, () -> new DMNGridCell<>(new BaseGridCellValue<>(1)));
-
-        final Point2D point = new Point2D(10, 20);
-        grid.selectCell(point, true, false);
-
-        verify(cellEditorControls, never()).show(any(HasCellEditorControls.Editor.class),
-                                                 anyInt(),
-                                                 anyInt());
-    }
-
-    @Test
-    public void testSelectEditorCellWithAssociatedEditor() {
-        grid.getModel().appendRow(new DMNGridRow());
-        appendColumns(RowNumberColumn.class);
-
-        final HasCellEditorControls.Editor editor = mock(HasCellEditorControls.Editor.class);
-        final DMNGridCell<Integer> cell = new DMNGridCell<Integer>(new BaseGridCellValue<>(1)) {
-            @Override
-            public Optional<Editor> getEditor() {
-                return Optional.of(editor);
-            }
-        };
-
-        grid.getModel().setCell(0, 0, () -> cell);
-
-        final Point2D point = new Point2D(10, 20);
-        grid.selectCell(point, true, false);
-
-        verify(cellEditorControls).show(eq(editor),
-                                        eq(10),
-                                        eq(20));
-    }
-
-    @Test
-    public void testSelectEditorCellWithContainsNestedEditor() {
-        grid.getModel().appendRow(new DMNGridRow());
-        appendColumns(RowNumberColumn.class);
-
-        final ExpressionCellValue value = mock(ExpressionCellValue.class);
-        final DMNGridCell<Optional<BaseExpressionGrid>> cell = new DMNGridCell<>(value);
-        doReturn(Optional.empty()).when(value).getValue();
-
-        grid.getModel().setCell(0, 0, () -> cell);
-
-        final Point2D point = new Point2D(10, 20);
-        grid.selectCell(point, true, false);
-
-        verify(cellEditorControls, never()).show(any(HasCellEditorControls.Editor.class),
-                                                 anyInt(),
-                                                 anyInt());
     }
 
     @Test

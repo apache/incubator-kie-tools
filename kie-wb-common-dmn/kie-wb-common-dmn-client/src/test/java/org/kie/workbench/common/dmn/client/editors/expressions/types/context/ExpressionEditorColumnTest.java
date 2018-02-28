@@ -393,7 +393,7 @@ public class ExpressionEditorColumnTest {
             @Override
             protected void initialiseUiColumns() {
                 for (double width : widthOfCells) {
-                    model.appendColumn(new DMNGridColumn<Object>(headerMetaData, gridColumnRenderer, gridWidget) {{
+                    model.appendColumn(new DMNGridColumn<GridWidget, Object>(headerMetaData, gridColumnRenderer, gridWidget) {{
                         setMinimumWidth(width);
                         setWidth(width);
                     }});

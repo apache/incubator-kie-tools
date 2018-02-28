@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.event.dom.client.ContextMenuHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,6 +48,9 @@ public class DMNGridPanelTest {
     private RestrictedMousePanMediator mousePanMediator;
 
     @Mock
+    private ContextMenuHandler contextMenuHandler;
+
+    @Mock
     private TransformMediator transformMediator;
 
     @Mock
@@ -63,7 +67,8 @@ public class DMNGridPanelTest {
     @Before
     public void setup() {
         this.gridPanel = spy(new DMNGridPanel(gridLayer,
-                                              mousePanMediator));
+                                              mousePanMediator,
+                                              contextMenuHandler));
         doAnswer((o) -> {
             ((Scheduler.ScheduledCommand) o.getArguments()[0]).execute();
             return null;

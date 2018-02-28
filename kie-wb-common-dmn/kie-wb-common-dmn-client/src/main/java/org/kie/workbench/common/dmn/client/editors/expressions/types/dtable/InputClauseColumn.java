@@ -31,7 +31,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRende
 import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
 
-public class InputClauseColumn extends DMNGridColumn<String> implements HasSingletonDOMElementResource {
+public class InputClauseColumn extends DMNGridColumn<DecisionTableGrid, String> implements HasSingletonDOMElementResource {
 
     private final TextAreaSingletonDOMElementFactory factory;
 

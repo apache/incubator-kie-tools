@@ -20,6 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import com.google.gwt.event.dom.client.ContextMenuHandler;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
@@ -35,9 +36,11 @@ public class DMNGridPanelProducer {
 
     @Inject
     public DMNGridPanelProducer(final @DMNEditor DMNGridLayer gridLayer,
-                                final @DMNEditor RestrictedMousePanMediator mousePanMediator) {
+                                final @DMNEditor RestrictedMousePanMediator mousePanMediator,
+                                final @DMNEditor ContextMenuHandler contextMenuHandler) {
         this.panel = new DMNGridPanel(gridLayer,
-                                      mousePanMediator);
+                                      mousePanMediator,
+                                      contextMenuHandler);
     }
 
     @Produces

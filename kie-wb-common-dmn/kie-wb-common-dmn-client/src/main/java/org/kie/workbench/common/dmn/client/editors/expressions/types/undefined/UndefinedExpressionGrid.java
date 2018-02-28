@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import javax.enterprise.event.Event;
 
@@ -120,7 +119,9 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
     protected void initialiseUiColumns() {
         final GridColumn undefinedExpressionColumn = new UndefinedExpressionColumn(new BaseHeaderMetaData("",
                                                                                                           EXPRESSION_COLUMN_GROUP),
-                                                                                   this);
+                                                                                   this,
+                                                                                   cellEditorControls,
+                                                                                   expressionEditorDefinitionsSupplier);
         undefinedExpressionColumn.setMovable(false);
         undefinedExpressionColumn.setResizable(false);
 
@@ -149,13 +150,6 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
     public List<ListSelectorItem> getItems(final int uiRowIndex,
                                            final int uiColumnIndex) {
         final List<ListSelectorItem> items = new ArrayList<>();
-        items.addAll(expressionEditorDefinitionsSupplier
-                             .get()
-                             .stream()
-                             .filter(definition -> definition.getModelClass().isPresent())
-                             .map(this::makeListSelectorItem)
-                             .collect(Collectors.toList()));
-
         final Optional<BaseExpressionGrid> parent = findParentGrid();
         parent.ifPresent(grid -> {
             if (grid instanceof HasListSelectorControl) {
@@ -167,7 +161,6 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
                     final List<ListSelectorItem> parentItems = ((HasListSelectorControl) grid).getItems(parentUiRowIndex,
                                                                                                         parentUiColumnIndex);
                     if (!parentItems.isEmpty()) {
-                        items.add(new ListSelectorDividerItem());
                         items.addAll(parentItems);
                     }
                 }
@@ -175,15 +168,6 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
         });
 
         return items;
-    }
-
-    ListSelectorTextItem makeListSelectorItem(final ExpressionEditorDefinition definition) {
-        return ListSelectorTextItem.build(definition.getName(),
-                                          true,
-                                          () -> {
-                                              cellEditorControls.hide();
-                                              onExpressionTypeChanged(definition.getType());
-                                          });
     }
 
     @Override

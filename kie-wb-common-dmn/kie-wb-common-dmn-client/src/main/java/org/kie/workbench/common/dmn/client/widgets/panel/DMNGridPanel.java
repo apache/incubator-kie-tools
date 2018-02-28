@@ -18,6 +18,8 @@ package org.kie.workbench.common.dmn.client.widgets.panel;
 
 import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.event.dom.client.ContextMenuEvent;
+import com.google.gwt.event.dom.client.ContextMenuHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -36,7 +38,8 @@ public class DMNGridPanel extends GridLienzoPanel {
     private RestrictedMousePanMediator mousePanMediator;
 
     public DMNGridPanel(final DMNGridLayer gridLayer,
-                        final RestrictedMousePanMediator mousePanMediator) {
+                        final RestrictedMousePanMediator mousePanMediator,
+                        final ContextMenuHandler contextMenuHandler) {
         super(LIENZO_PANEL_WIDTH,
               LIENZO_PANEL_HEIGHT);
         this.gridLayer = gridLayer;
@@ -44,6 +47,8 @@ public class DMNGridPanel extends GridLienzoPanel {
 
         getDomElementContainer().addDomHandler(destroyDOMElements(),
                                                MouseWheelEvent.getType());
+        getDomElementContainer().addDomHandler(contextMenuHandler,
+                                               ContextMenuEvent.getType());
     }
 
     private MouseWheelHandler destroyDOMElements() {

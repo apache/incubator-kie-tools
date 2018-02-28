@@ -32,8 +32,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResource
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridWidgetRegistry;
 
-public class ExpressionEditorColumn extends DMNGridColumn<Optional<BaseExpressionGrid>> implements RequiresResize,
-                                                                                                   HasDOMElementResources {
+public class ExpressionEditorColumn extends DMNGridColumn<GridWidget, Optional<BaseExpressionGrid>> implements RequiresResize,
+                                                                                                               HasDOMElementResources {
 
     public ExpressionEditorColumn(final GridWidgetRegistry registry,
                                   final HeaderMetaData headerMetaData,

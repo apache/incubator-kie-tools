@@ -20,7 +20,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.impl.StringColumnRenderer;
 
-public class NameColumn extends DMNGridColumn<String> {
+public class NameColumn extends DMNGridColumn<FunctionSupplementaryGrid, String> {
 
     public NameColumn(final FunctionSupplementaryGrid gridWidget) {
         super(new BaseHeaderMetaData(""),

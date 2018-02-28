@@ -26,15 +26,15 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
 
-public class DMNGridColumn<T> extends BaseGridColumn<T> {
+public class DMNGridColumn<G extends GridWidget, T> extends BaseGridColumn<T> {
 
     public static final double DEFAULT_WIDTH = 100.0;
 
-    protected final GridWidget gridWidget;
+    protected final G gridWidget;
 
     public DMNGridColumn(final HeaderMetaData headerMetaData,
                          final GridColumnRenderer<T> columnRenderer,
-                         final GridWidget gridWidget) {
+                         final G gridWidget) {
         this(new ArrayList<HeaderMetaData>() {{
                  add(headerMetaData);
              }},
@@ -44,7 +44,7 @@ public class DMNGridColumn<T> extends BaseGridColumn<T> {
 
     public DMNGridColumn(final List<HeaderMetaData> headerMetaData,
                          final GridColumnRenderer<T> columnRenderer,
-                         final GridWidget gridWidget) {
+                         final G gridWidget) {
         super(headerMetaData,
               columnRenderer,
               DEFAULT_WIDTH);

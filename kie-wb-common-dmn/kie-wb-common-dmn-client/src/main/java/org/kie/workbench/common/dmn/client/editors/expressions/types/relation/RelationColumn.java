@@ -35,7 +35,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRende
 import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
 
-public class RelationColumn extends DMNGridColumn<String> implements HasSingletonDOMElementResource {
+public class RelationColumn extends DMNGridColumn<RelationGrid, String> implements HasSingletonDOMElementResource {
 
     private final TextAreaSingletonDOMElementFactory factory;
 
@@ -63,7 +63,7 @@ public class RelationColumn extends DMNGridColumn<String> implements HasSingleto
     }
 
     private double getMinimumWidthOfPeers() {
-        final GridCellTuple parent = ((RelationGrid) gridWidget).getParentInformation();
+        final GridCellTuple parent = gridWidget.getParentInformation();
         final GridData parentUiModel = parent.getGridWidget().getModel();
         final int parentUiRowIndex = parent.getRowIndex();
         final int parentUiColumnIndex = parent.getColumnIndex();

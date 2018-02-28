@@ -30,7 +30,6 @@ import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
-import com.ait.lienzo.client.core.types.Point2D;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -39,11 +38,9 @@ import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueComma
 import org.kie.workbench.common.dmn.client.commands.general.DeleteHeaderValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueCommand;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderGridWidgetMouseDoubleClickHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
@@ -57,11 +54,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.uberfire.commons.data.Pair;
-import org.uberfire.ext.wires.core.grids.client.model.GridCell;
-import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
@@ -324,44 +318,6 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
     protected void fireExpressionEditorSelectedEvent() {
         editorSelectedEvent.fire(new ExpressionEditorSelectedEvent(sessionManager.getCurrentSession(),
                                                                    Optional.of(this)));
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public boolean selectCell(final Point2D ap,
-                              final boolean isShiftKeyDown,
-                              final boolean isControlKeyDown) {
-        final Integer uiRowIndex = CoordinateUtilities.getUiRowIndex(this,
-                                                                     ap.getY());
-        final Integer uiColumnIndex = CoordinateUtilities.getUiColumnIndex(this,
-                                                                           ap.getX());
-
-        if (!(uiRowIndex == null || uiColumnIndex == null)) {
-            final GridCell<?> cell = getModel().getCell(uiRowIndex, uiColumnIndex);
-            if (cell == null) {
-                return false;
-            }
-            final GridCellValue<?> value = cell.getValue();
-            if (value instanceof ExpressionCellValue) {
-                return false;
-            }
-            if (cell instanceof HasCellEditorControls) {
-                final HasCellEditorControls hasControls = (HasCellEditorControls) cell;
-                final Optional<HasCellEditorControls.Editor> editor = hasControls.getEditor();
-                editor.ifPresent(e -> {
-                    e.bind(this,
-                           uiRowIndex,
-                           uiColumnIndex);
-                    cellEditorControls.show(e,
-                                            (int) (ap.getX() + getAbsoluteX()),
-                                            (int) (ap.getY() + getAbsoluteY()));
-                });
-            }
-        }
-
-        return super.selectCell(ap,
-                                isShiftKeyDown,
-                                isControlKeyDown);
     }
 
     @Override
