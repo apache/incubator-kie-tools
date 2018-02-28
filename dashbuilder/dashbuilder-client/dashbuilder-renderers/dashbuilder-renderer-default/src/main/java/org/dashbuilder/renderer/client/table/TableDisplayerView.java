@@ -29,6 +29,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.AsyncDataProvider;
@@ -45,7 +46,8 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.uberfire.ext.widgets.common.client.tables.PagedTable;
 
-import static com.google.gwt.dom.client.BrowserEvents.*;
+import static com.google.gwt.dom.client.BrowserEvents.CLICK;
+import static com.google.gwt.dom.client.BrowserEvents.MOUSEOVER;
 
 public class TableDisplayerView extends AbstractGwtDisplayerView<TableDisplayer> implements TableDisplayer.View {
 
@@ -94,10 +96,21 @@ public class TableDisplayerView extends AbstractGwtDisplayerView<TableDisplayer>
         exportToCsvButton.setTitle(TableConstants.INSTANCE.tableDisplayer_export_to_csv());
         exportToXlsButton.setTitle(TableConstants.INSTANCE.tableDisplayer_export_to_xls());
 
-        HorizontalPanel rightToolbar = (HorizontalPanel) table.getRightToolbar();
-        rightToolbar.insert(exportToCsvButton, 0);
-        rightToolbar.insert(exportToXlsButton, 1);
+        setupToolbar();
         rootPanel.add(table);
+    }
+
+    protected void setupToolbar() {
+        HasWidgets rightToolbar = table.getRightToolbar();
+        if (rightToolbar instanceof HorizontalPanel) {
+            ((HorizontalPanel) rightToolbar).insert(exportToCsvButton,
+                                                    0);
+            ((HorizontalPanel) rightToolbar).insert(exportToXlsButton,
+                                                    1);
+        } else {
+            rightToolbar.add(exportToCsvButton);
+            rightToolbar.add(exportToXlsButton);
+        }
     }
 
     @Override
