@@ -170,7 +170,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
              hasName,
              gridPanel,
              gridLayer,
-             new DMNGridData(gridLayer),
+             new DMNGridData(),
              gridRenderer,
              sessionManager,
              sessionCommandManager,
@@ -311,7 +311,14 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
     @Override
     public void select() {
         fireExpressionEditorSelectedEvent();
+        selectFirstCell();
         super.select();
+    }
+
+    @Override
+    public void deselect() {
+        getModel().clearSelections();
+        super.deselect();
     }
 
     protected void fireExpressionEditorSelectedEvent() {
@@ -434,7 +441,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
     public void selectFirstCell() {
         final GridData uiModel = getModel();
         if (uiModel.getRowCount() == 0 || uiModel.getColumnCount() == 0) {
-            gridLayer.clearAllSelections();
+            gridLayer.getGridWidgets().forEach(gw -> gw.getModel().clearSelections());
         }
         uiModel.getColumns()
                 .stream()

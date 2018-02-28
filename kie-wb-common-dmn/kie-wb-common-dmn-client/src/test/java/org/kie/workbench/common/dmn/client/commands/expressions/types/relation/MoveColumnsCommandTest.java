@@ -47,7 +47,7 @@ public class MoveColumnsCommandTest extends BaseMoveCommandsTest<MoveColumnsComm
     @Before
     public void setup() {
         this.relation = new Relation();
-        this.uiModel = new DMNGridData(gridLayer);
+        this.uiModel = new DMNGridData();
         doReturn(ruleManager).when(handler).getRuleManager();
         doReturn(0).when(uiRowNumberColumn).getIndex();
         doReturn(1).when(uiModelColumn1).getIndex();

@@ -78,7 +78,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
               hasName,
               gridPanel,
               gridLayer,
-              new InvocationGridData(new DMNGridData(gridLayer),
+              new InvocationGridData(new DMNGridData(),
                                      sessionManager,
                                      sessionCommandManager,
                                      expression,

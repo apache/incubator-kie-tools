@@ -86,7 +86,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
               hasName,
               gridPanel,
               gridLayer,
-              new DecisionTableGridData(new DMNGridData(gridLayer),
+              new DecisionTableGridData(new DMNGridData(),
                                         sessionManager,
                                         sessionCommandManager,
                                         expression,

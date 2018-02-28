@@ -71,8 +71,6 @@ public class SetKindCommand extends AbstractCanvasGraphCommand implements VetoEx
         this.oldCellValue = extractGridCellValue(cellTuple);
     }
 
-
-
     @Override
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler handler) {
         return new AbstractGraphCommand() {

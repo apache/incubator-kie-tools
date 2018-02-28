@@ -18,7 +18,6 @@ package org.kie.workbench.common.dmn.client.widgets.grid.model;
 
 import java.util.function.Supplier;
 
-import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -26,31 +25,8 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 
 public class DMNGridData extends BaseGridData {
 
-    private final DMNGridLayer selectionManager;
-
-    public DMNGridData(final DMNGridLayer selectionManager) {
+    public DMNGridData() {
         super(false);
-        this.selectionManager = selectionManager;
-    }
-
-    @Override
-    public Range selectCell(final int rowIndex,
-                            final int columnIndex) {
-        selectionManager.clearAllSelections();
-        return super.selectCell(rowIndex,
-                                columnIndex);
-    }
-
-    @Override
-    public Range selectCells(final int rowIndex,
-                             final int columnIndex,
-                             final int width,
-                             final int height) {
-        selectionManager.clearAllSelections();
-        return super.selectCells(rowIndex,
-                                 columnIndex,
-                                 width,
-                                 height);
     }
 
     @Override

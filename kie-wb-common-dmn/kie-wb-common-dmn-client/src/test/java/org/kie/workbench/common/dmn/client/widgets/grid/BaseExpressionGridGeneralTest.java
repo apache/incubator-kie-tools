@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
+import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridCell;
@@ -47,6 +48,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.Gr
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
@@ -165,6 +168,29 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     public void testGetLayerGridNotAttachedToLayer() {
         assertEquals(gridLayer,
                      grid.getLayer());
+    }
+
+    @Test
+    public void testSelect() {
+        grid.select();
+
+        verify(editorSelectedEvent).fire(any(ExpressionEditorSelectedEvent.class));
+
+        verify(grid).selectFirstCell();
+    }
+
+    @Test
+    public void testDeselect() {
+        grid.getModel().appendRow(new DMNGridRow());
+        appendColumns(GridColumn.class);
+        
+        //Select a cell so we can check deselection clears selections
+        grid.getModel().selectCell(0, 0);
+        assertFalse(grid.getModel().getSelectedCells().isEmpty());
+
+        grid.deselect();
+
+        assertTrue(grid.getModel().getSelectedCells().isEmpty());
     }
 
     @Test

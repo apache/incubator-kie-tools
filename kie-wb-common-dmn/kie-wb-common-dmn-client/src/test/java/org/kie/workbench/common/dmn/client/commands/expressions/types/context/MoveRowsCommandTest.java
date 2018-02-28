@@ -30,7 +30,6 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Exp
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.NameColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
-import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -58,9 +57,6 @@ public class MoveRowsCommandTest {
     protected static final String II1 = "ii1";
     protected static final String II2 = "ii2";
     protected static final String II3 = "ii3";
-
-    @Mock
-    protected DMNGridLayer gridLayer;
 
     @Mock
     protected RowNumberColumn uiRowNumberColumn;
@@ -92,7 +88,7 @@ public class MoveRowsCommandTest {
     @Before
     public void setup() {
         this.context = new Context();
-        this.uiModel = new DMNGridData(gridLayer);
+        this.uiModel = new DMNGridData();
         doReturn(ruleManager).when(handler).getRuleManager();
         doReturn(0).when(uiRowNumberColumn).getIndex();
         doReturn(1).when(uiNameColumn).getIndex();

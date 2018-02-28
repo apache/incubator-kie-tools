@@ -31,7 +31,6 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.Inpu
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.OutputClauseColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
-import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -67,9 +66,6 @@ public class AddDecisionRuleCommandTest {
     private AddDecisionRuleCommand command;
 
     @Mock
-    private DMNGridLayer selectionManager;
-
-    @Mock
     private RowNumberColumn uiRowNumberColumn;
 
     @Mock
@@ -94,7 +90,7 @@ public class AddDecisionRuleCommandTest {
     public void setup() {
         this.dtable = new DecisionTable();
         this.rule = new DecisionRule();
-        this.uiModel = new DMNGridData(selectionManager);
+        this.uiModel = new DMNGridData();
         this.uiModel.appendColumn(uiRowNumberColumn);
         this.uiModelRow = new DMNGridRow();
         this.uiModelMapper = new DecisionTableUIModelMapper(() -> uiModel,

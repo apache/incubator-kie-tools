@@ -24,7 +24,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
-import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
@@ -32,7 +31,6 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -45,14 +43,11 @@ public class DMNGridDataTest {
     @Mock
     private DMNGridCell uiCell;
 
-    private DMNGridLayer gridLayer;
-
     private DMNGridData uiModel;
 
     @Before
     public void setup() {
-        this.gridLayer = spy(new DMNGridLayer());
-        this.uiModel = new DMNGridData(gridLayer);
+        this.uiModel = new DMNGridData();
         IntStream.range(0, 3).forEach(i -> uiModel.appendRow(new DMNGridRow()));
         IntStream.range(0, 2).forEach(i -> {
             final DMNGridColumn uiColumn = mock(DMNGridColumn.class);
@@ -70,8 +65,6 @@ public class DMNGridDataTest {
         assertThat(r.getMinRowIndex()).isEqualTo(0);
         assertThat(r.getMaxRowIndex()).isEqualTo(0);
 
-        verify(gridLayer).clearAllSelections();
-
         final List<GridData.SelectedCell> selections = uiModel.getSelectedCells();
 
         assertThat(selections).isNotEmpty();
@@ -86,8 +79,6 @@ public class DMNGridDataTest {
 
         assertThat(r.getMinRowIndex()).isEqualTo(0);
         assertThat(r.getMaxRowIndex()).isEqualTo(0);
-
-        verify(gridLayer).clearAllSelections();
 
         final List<GridData.SelectedCell> selections = uiModel.getSelectedCells();
 

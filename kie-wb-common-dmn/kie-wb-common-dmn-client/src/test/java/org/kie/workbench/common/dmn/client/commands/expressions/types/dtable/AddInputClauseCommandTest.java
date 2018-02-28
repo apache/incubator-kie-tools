@@ -29,7 +29,6 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.InputClauseColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
-import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -50,9 +49,6 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AddInputClauseCommandTest {
-
-    @Mock
-    private DMNGridLayer selectionManager;
 
     @Mock
     private RowNumberColumn uiRowNumberColumn;
@@ -82,7 +78,7 @@ public class AddInputClauseCommandTest {
     @Before
     public void setUp() throws Exception {
         this.dtable = new DecisionTable();
-        this.uiModel = new DMNGridData(selectionManager);
+        this.uiModel = new DMNGridData();
         this.uiModel.appendColumn(uiRowNumberColumn);
         this.inputClause = new InputClause();
         this.uiModelMapper = new DecisionTableUIModelMapper(() -> uiModel,

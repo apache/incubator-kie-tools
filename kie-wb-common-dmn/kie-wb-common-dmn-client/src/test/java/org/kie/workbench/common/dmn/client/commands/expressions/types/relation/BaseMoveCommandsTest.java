@@ -24,7 +24,6 @@ import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
-import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
@@ -38,9 +37,6 @@ public abstract class BaseMoveCommandsTest<C extends AbstractCanvasGraphCommand>
 
     protected static final String II1 = "ii1";
     protected static final String II2 = "ii2";
-
-    @Mock
-    protected DMNGridLayer gridLayer;
 
     @Mock
     protected RowNumberColumn uiRowNumberColumn;

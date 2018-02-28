@@ -84,7 +84,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
               hasName,
               gridPanel,
               gridLayer,
-              new ContextGridData(new DMNGridData(gridLayer),
+              new ContextGridData(new DMNGridData(),
                                   sessionManager,
                                   sessionCommandManager,
                                   expression,

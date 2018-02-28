@@ -31,7 +31,7 @@ public class ExpressionContainer extends BaseGridWidget {
     private static final String COLUMN_GROUP = "ExpressionContainer$Expression0";
 
     public ExpressionContainer(final DMNGridLayer gridLayer) {
-        super(new DMNGridData(gridLayer),
+        super(new DMNGridData(),
               gridLayer,
               gridLayer,
               new ExpressionContainerRenderer());

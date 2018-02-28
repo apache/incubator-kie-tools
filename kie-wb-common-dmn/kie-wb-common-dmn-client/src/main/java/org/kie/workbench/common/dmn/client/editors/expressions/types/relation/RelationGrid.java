@@ -79,7 +79,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
               hasName,
               gridPanel,
               gridLayer,
-              new RelationGridData(new DMNGridData(gridLayer),
+              new RelationGridData(new DMNGridData(),
                                    sessionManager,
                                    sessionCommandManager,
                                    expression,

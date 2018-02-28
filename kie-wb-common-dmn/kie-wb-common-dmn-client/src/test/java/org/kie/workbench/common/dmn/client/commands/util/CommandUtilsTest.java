@@ -104,7 +104,7 @@ public class CommandUtilsTest {
 
         rowsToMove.clear();
 
-        uiModel = new DMNGridData(gridLayer);
+        uiModel = new DMNGridData();
         gridWidget = new BaseGridWidget(uiModel,
                                         selectionManager,
                                         pinnedModeManager,

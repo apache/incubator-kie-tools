@@ -27,7 +27,6 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.MoveRowsCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.MoveColumnsCommand;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
-import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
@@ -55,9 +54,6 @@ public class RelationGridDataTest {
     private GridColumn gridColumn;
 
     @Mock
-    private DMNGridLayer gridLayer;
-
-    @Mock
     private SessionManager sessionManager;
 
     @Mock
@@ -80,7 +76,7 @@ public class RelationGridDataTest {
 
     @Before
     public void setup() {
-        this.delegate = spy(new DMNGridData(gridLayer));
+        this.delegate = spy(new DMNGridData());
         this.uiModel = new RelationGridData(delegate,
                                             sessionManager,
                                             sessionCommandManager,

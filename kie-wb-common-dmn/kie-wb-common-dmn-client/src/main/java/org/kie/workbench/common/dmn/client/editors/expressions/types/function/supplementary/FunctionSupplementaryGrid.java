@@ -76,7 +76,7 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Conte
               hasName,
               gridPanel,
               gridLayer,
-              new FunctionSupplementaryGridData(new DMNGridData(gridLayer),
+              new FunctionSupplementaryGridData(new DMNGridData(),
                                                 sessionManager,
                                                 sessionCommandManager,
                                                 expression,

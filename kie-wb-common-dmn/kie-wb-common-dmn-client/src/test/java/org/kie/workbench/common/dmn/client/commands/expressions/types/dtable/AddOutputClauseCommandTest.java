@@ -32,7 +32,6 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.Deci
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.InputClauseColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.OutputClauseColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
-import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -53,9 +52,6 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AddOutputClauseCommandTest {
-
-    @Mock
-    private DMNGridLayer selectionManager;
 
     @Mock
     private RowNumberColumn uiRowNumberColumn;
@@ -88,7 +84,7 @@ public class AddOutputClauseCommandTest {
     @Before
     public void setUp() throws Exception {
         this.dtable = new DecisionTable();
-        this.uiModel = new DMNGridData(selectionManager);
+        this.uiModel = new DMNGridData();
         this.uiModel.appendColumn(uiRowNumberColumn);
         this.outputClause = new OutputClause();
         this.uiModelMapper = new DecisionTableUIModelMapper(() -> uiModel,

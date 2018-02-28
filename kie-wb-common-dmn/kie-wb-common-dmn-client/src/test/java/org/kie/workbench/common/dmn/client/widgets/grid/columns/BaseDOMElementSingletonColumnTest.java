@@ -23,7 +23,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
-import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -51,9 +50,6 @@ public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonD
     @Mock
     protected GridBodyCellRenderContext context;
 
-    @Mock
-    protected DMNGridLayer gridLayer;
-
     @Captor
     protected ArgumentCaptor<Callback<D>> domElementOnCreationCallbackCaptor;
 
@@ -74,7 +70,7 @@ public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonD
 
     @Before
     public void setup() {
-        this.model = new DMNGridData(gridLayer);
+        this.model = new DMNGridData();
         this.factory = getFactory();
         this.domElement = getDomElement();
         this.widget = getWidget();
