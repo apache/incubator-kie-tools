@@ -16,10 +16,9 @@
 
 package org.uberfire.ext.metadata.io;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.uberfire.ext.metadata.backend.lucene.fields.FieldFactory;
 import org.uberfire.ext.metadata.backend.lucene.model.KClusterImpl;
 import org.uberfire.ext.metadata.model.KCluster;
@@ -42,21 +41,12 @@ import static org.apache.commons.io.FilenameUtils.getExtension;
  */
 public final class KObjectUtil {
 
-    private static final MessageDigest DIGEST;
     private static final MetaType META_TYPE = new MetaType() {
         @Override
         public String getName() {
             return Path.class.getName();
         }
     };
-
-    static {
-        try {
-            DIGEST = MessageDigest.getInstance("SHA1");
-        } catch (final NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     private KObjectUtil() {
 
@@ -262,6 +252,6 @@ public final class KObjectUtil {
         if (input == null || input.trim().length() == 0) {
             return "--";
         }
-        return encodeBase64String(DIGEST.digest(input.getBytes()));
+        return encodeBase64String(DigestUtils.sha1(input));
     }
 }
