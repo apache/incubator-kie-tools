@@ -16,110 +16,56 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import org.gwtbootstrap3.client.ui.constants.ColumnSize;
-import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.Window;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutInstance;
-import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
-import org.uberfire.ext.layout.editor.client.generator.BootstrapLayoutGenerator;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
+import org.uberfire.ext.layout.editor.client.generator.AbstractLayoutGenerator;
 
 @Any
 @Dependent
-public class FormLayoutGenerator extends BootstrapLayoutGenerator {
+public class FormLayoutGenerator extends AbstractLayoutGenerator {
 
-    private List<FieldLayoutComponent> layoutComponents = new ArrayList<>();
-
-    private Map<String, Class<? extends LayoutDragComponent>> componentsCache = new HashMap<>();
-
-    private SyncBeanManager beanManager;
-
-    private ManagedInstance<LayoutDragComponent> instance;
-
-    private FormRenderingContext renderingContext;
+    private FormGeneratorDriver driver;
 
     @Inject
-    public FormLayoutGenerator(SyncBeanManager beanManager,
-                               ManagedInstance<LayoutDragComponent> instance) {
-        this.beanManager = beanManager;
-        this.instance = instance;
-    }
-
-    public HTMLElement buildLayout(FormRenderingContext renderingContext) {
-        this.renderingContext = renderingContext;
-        layoutComponents.clear();
-        if (renderingContext == null || renderingContext.getRootForm() == null) {
-            return createContainer();
-        }
-        LayoutInstance layoutInstance = build(renderingContext.getRootForm().getLayoutTemplate());
-        return layoutInstance.getElement();
-    }
-
-    protected HTMLElement createContainer() {
-        Div column = (Div) Window.getDocument().createElement("div");
-        column.setClassName(ColumnSize.MD_12.getCssName());
-        return column;
+    public FormLayoutGenerator(FormGeneratorDriver driver) {
+        this.driver = driver;
     }
 
     @Override
-    public LayoutDragComponent lookupLayoutDragComponent(LayoutComponent layoutComponent) {
+    public LayoutInstance build(LayoutTemplate layoutTemplate) {
+        return super.build(layoutTemplate, driver);
+    }
 
-        Class<? extends LayoutDragComponent> clazz = componentsCache.get(layoutComponent.getDragTypeName());
-        if (clazz == null) {
-            SyncBeanDef dragTypeDef = beanManager.lookupBeans(layoutComponent.getDragTypeName()).iterator().next();
+    public HTMLElement buildLayout(FormRenderingContext renderingContext) {
+        driver.clear();
+        driver.setRenderingContext(renderingContext);
 
-            componentsCache.put(layoutComponent.getDragTypeName(),
-                                dragTypeDef.getBeanClass());
-
-            clazz = dragTypeDef.getBeanClass();
+        if (renderingContext == null || renderingContext.getRootForm() == null) {
+            return driver.createContainer();
         }
 
-        LayoutDragComponent dragComponent = instance.select(clazz).get();
-
-        if (dragComponent instanceof FieldLayoutComponent) {
-            FieldLayoutComponent fieldComponent = (FieldLayoutComponent) dragComponent;
-
-            FieldDefinition field = renderingContext.getRootForm().getFieldById(layoutComponent.getProperties().get(
-                    FieldLayoutComponent.FIELD_ID));
-            fieldComponent.init(renderingContext,
-                                field);
-
-            layoutComponents.add(fieldComponent);
-        }
-
-        return dragComponent;
+        LayoutInstance layoutInstance = super.build(renderingContext.getRootForm().getLayoutTemplate(), driver);
+        return layoutInstance.getElement();
     }
 
     public List<FieldLayoutComponent> getLayoutFields() {
-        return layoutComponents;
+        return driver.getLayoutFields();
     }
 
     public FieldLayoutComponent getFieldLayoutComponentForField(FieldDefinition field) {
-        for (FieldLayoutComponent component : layoutComponents) {
-            if (component.getField().equals(field)) {
-                return component;
-            }
-        }
-        return null;
+        return driver.getFieldLayoutComponentForField(field);
     }
 
     public void clear() {
-        layoutComponents.clear();
-        instance.destroyAll();
+        driver.clear();
     }
 }
