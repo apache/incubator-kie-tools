@@ -17,6 +17,7 @@
 package org.uberfire.ext.properties.editor.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -133,6 +134,15 @@ public class PropertyEditorFieldInfo {
      * @return
      */
     public PropertyEditorFieldInfo withValidators(PropertyFieldValidator... validators) {
+        checkNotNull("validators",
+                     validators);
+        for (PropertyFieldValidator field : validators) {
+            this.validators.add(field);
+        }
+        return this;
+    }
+
+    public PropertyEditorFieldInfo withValidators(Collection<PropertyFieldValidator> validators) {
         checkNotNull("validators",
                      validators);
         for (PropertyFieldValidator field : validators) {

@@ -34,6 +34,8 @@ import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
 import org.uberfire.ext.layout.editor.client.LayoutComponentPaletteScreen;
+import org.uberfire.ext.layout.editor.client.LayoutEditorPropertiesScreen;
+import org.uberfire.ext.layout.editor.client.widgets.LayoutEditorPropertiesPresenter;
 import org.uberfire.ext.plugin.client.perspective.editor.PerspectiveEditorPresenter;
 import org.uberfire.ext.plugin.client.perspective.editor.events.PerspectiveEditorFocusEvent;
 import org.uberfire.lifecycle.*;
@@ -53,10 +55,15 @@ public class ContentManagerPerspective {
     @Inject
     UberfireDocks uberfireDocks;
 
+    @Inject
+    LayoutEditorPropertiesPresenter propertiesPresenter;
+
     UberfireDock perspectivesExplorerDock;
     UberfireDock navigationExplorerDock;
     UberfireDock componentPaletteDock;
-    boolean componentDockVisible = true;
+    UberfireDock propertiesEditorDock;
+    boolean perspectiveVisible = true;
+    boolean propertiesEditorVisible = false;
 
     @Perspective
     public PerspectiveDefinition getPerspective() {
@@ -87,42 +94,65 @@ public class ContentManagerPerspective {
                 new DefaultPlaceRequest(LayoutComponentPaletteScreen.SCREEN_ID), PERSPECTIVE_ID).withSize(330)
                 .withLabel(ContentManagerConstants.INSTANCE.componentPalette());
 
+        propertiesEditorDock = new UberfireDock(UberfireDockPosition.EAST,
+                IconType.PENCIL.toString(),
+                new DefaultPlaceRequest(LayoutEditorPropertiesScreen.SCREEN_ID), PERSPECTIVE_ID).withSize(300)
+                .withLabel(ContentManagerConstants.INSTANCE.propertiesEditor());
+
         uberfireDocks.add(perspectivesExplorerDock);
         uberfireDocks.add(navigationExplorerDock);
-        uberfireDocks.add(componentPaletteDock);
     }
 
-    @OnOpen
-    public void onOpen() {
-        refreshDocks(false, perspectivesExplorerDock);
-    }
+    private void refreshWestDocks(boolean show, UberfireDock dockToOpen) {
 
-    private void refreshDocks(boolean showComponentPalette, UberfireDock dockToOpen) {
-
-        if (showComponentPalette && !componentDockVisible) {
+        if (show && !perspectiveVisible) {
             uberfireDocks.add(componentPaletteDock);
-            componentDockVisible = true;
+            perspectiveVisible = true;
         }
-        if (!showComponentPalette && componentDockVisible) {
+        if (!show && perspectiveVisible) {
             uberfireDocks.remove(componentPaletteDock);
-            componentDockVisible = false;
+            perspectiveVisible = false;
         }
 
         uberfireDocks.show(UberfireDockPosition.WEST, PERSPECTIVE_ID);
-
         if (dockToOpen != null) {
             uberfireDocks.open(dockToOpen);
         }
     }
 
-    public void onPerspectiveEditorFocus(@Observes PerspectiveEditorFocusEvent event) {
-        refreshDocks(true, componentPaletteDock);
+    private void refreshEastDocks(boolean show, UberfireDock dockToOpen) {
+        if (show && !propertiesEditorVisible) {
+            uberfireDocks.add(propertiesEditorDock);
+            propertiesEditorVisible = true;
+            uberfireDocks.show(UberfireDockPosition.EAST, PERSPECTIVE_ID);
+
+            if (dockToOpen != null) {
+                uberfireDocks.open(dockToOpen);
+            }
+        }
+        if (!show && propertiesEditorVisible) {
+            uberfireDocks.remove(propertiesEditorDock);
+            propertiesEditorVisible = false;
+            uberfireDocks.hide(UberfireDockPosition.EAST, PERSPECTIVE_ID);
+        }
     }
 
-    public void oonPerspectiveEditorHidden(@Observes PlaceHiddenEvent event) {
+    @OnOpen
+    public void onOpen() {
+        refreshWestDocks(false, perspectivesExplorerDock);
+    }
+
+    public void onPerspectiveEditorFocus(@Observes PerspectiveEditorFocusEvent event) {
+        refreshWestDocks(true, componentPaletteDock);
+        refreshEastDocks(true, propertiesEditorDock);
+        propertiesPresenter.edit(event.getLayoutEditor());
+    }
+
+    public void onPerspectiveEditorHidden(@Observes PlaceHiddenEvent event) {
         String placeId = event.getPlace().getIdentifier();
         if (PerspectiveEditorPresenter.ID.equals(placeId)) {
-            refreshDocks(false, null);
+            refreshWestDocks(false, null);
+            refreshEastDocks(false, null);
         }
     }
 }

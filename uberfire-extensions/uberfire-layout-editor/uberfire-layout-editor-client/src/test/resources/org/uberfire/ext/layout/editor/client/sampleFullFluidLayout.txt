@@ -8,10 +8,12 @@
   "rows": [
     {
       "height": "12",
+      "properties": {},
       "layoutColumns": [
         {
           "span": "4",
           "height": "12",
+          "properties": {},
           "rows": [],
           "layoutComponents": [
             {
@@ -25,6 +27,7 @@
         {
           "span": "2",
           "height": "12",
+          "properties": {},
           "rows": [],
           "layoutComponents": [
             {
@@ -38,6 +41,7 @@
         {
           "span": "3",
           "height": "12",
+          "properties": {},
           "rows": [],
           "layoutComponents": [
             {
@@ -51,6 +55,7 @@
         {
           "span": "3",
           "height": "12",
+          "properties": {},
           "rows": [],
           "layoutComponents": [
             {
@@ -65,10 +70,12 @@
     },
     {
       "height": "12",
+      "properties": {},
       "layoutColumns": [
         {
           "span": "3",
           "height": "12",
+          "properties": {},
           "rows": [],
           "layoutComponents": [
             {
@@ -82,6 +89,7 @@
         {
           "span": "3",
           "height": "12",
+          "properties": {},
           "rows": [],
           "layoutComponents": [
             {
@@ -95,13 +103,16 @@
         {
           "span": "6",
           "height": "12",
+          "properties": {},
           "rows": [
             {
               "height": "12",
+              "properties": {},
               "layoutColumns": [
                 {
                   "span": "12",
                   "height": "12",
+                  "properties": {},
                   "rows": [],
                   "layoutComponents": [
                     {
@@ -115,6 +126,7 @@
                 {
                   "span": "12",
                   "height": "12",
+                  "properties": {},
                   "rows": [],
                   "layoutComponents": [
                     {
@@ -134,10 +146,12 @@
     },
     {
       "height": "12",
+      "properties": {},
       "layoutColumns": [
         {
           "span": "12",
           "height": "12",
+          "properties": {},
           "rows": [],
           "layoutComponents": [
             {
@@ -152,10 +166,12 @@
     },
     {
       "height": "12",
+      "properties": {},
       "layoutColumns": [
         {
           "span": "12",
           "height": "12",
+          "properties": {},
           "rows": [],
           "layoutComponents": [
             {

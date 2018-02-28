@@ -23,6 +23,7 @@ import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Element;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.Window;
+import org.uberfire.ext.layout.editor.client.generator.AbstractLayoutGenerator;
 
 public abstract class TargetDivNavWidgetView<T extends TargetDivNavWidget> extends BaseNavWidgetView<T>
         implements TargetDivNavWidget.View<T> {
@@ -93,7 +94,7 @@ public abstract class TargetDivNavWidgetView<T extends TargetDivNavWidget> exten
             return null;
         }
         String id = el.getAttribute("id");
-        if (id != null && (id.equals("mainContainer") || id.equals("layout"))) {
+        if (id != null && (id.equals(AbstractLayoutGenerator.CONTAINER_ID) || id.equals("layout"))) {
             return el;
         } else {
             return getLayoutRootElement(el.getParentElement());

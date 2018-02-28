@@ -34,6 +34,7 @@ import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.uberfire.client.mvp.ActivityBeansInfo;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.layout.editor.client.api.HasModalConfiguration;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorCoreComponent;
@@ -46,8 +47,11 @@ import org.uberfire.ext.properties.editor.model.PropertyEditorChangeEvent;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
+/**
+ * Disable for the time being => More details at https://issues.jboss.org/browse/AF-904
+ */
 @ApplicationScoped
-public class ScreenLayoutDragComponent implements PerspectiveEditorCoreComponent,
+public class ScreenLayoutDragComponent implements /*PerspectiveEditorCoreComponent*/ LayoutDragComponent,
                                                   HasModalConfiguration {
 
     public static final String PLACE_NAME_PARAMETER = "Place Name";

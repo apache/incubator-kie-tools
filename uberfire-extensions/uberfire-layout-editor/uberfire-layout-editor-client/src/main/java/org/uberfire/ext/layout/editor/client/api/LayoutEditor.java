@@ -43,4 +43,11 @@ public interface LayoutEditor {
     String getLayoutProperty(String key);
 
     void setPreviewEnabled(boolean enabled);
+
+    void setElementSelectionEnabled(boolean enabled);
+
+    List<LayoutEditorElement> getLayoutElements();
+
+    void visit(LayoutElementVisitor visitor);
+
 }

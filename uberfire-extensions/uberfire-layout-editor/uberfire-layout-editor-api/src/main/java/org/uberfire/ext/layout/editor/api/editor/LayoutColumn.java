@@ -17,7 +17,9 @@
 package org.uberfire.ext.layout.editor.api.editor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -28,10 +30,9 @@ public class LayoutColumn {
     public static final String DEFAULT_COLUMN_HEIGHT = "12";
     private String span;
     private String height;
-
-    private List<LayoutRow> rows = new ArrayList<LayoutRow>();
-
-    private List<LayoutComponent> layoutComponents = new ArrayList<LayoutComponent>();
+    private Map<String,String> properties = new HashMap<>();
+    private List<LayoutRow> rows = new ArrayList<>();
+    private List<LayoutComponent> layoutComponents = new ArrayList<>();
 
     public LayoutColumn(String span) {
         this.span = span;
@@ -39,9 +40,11 @@ public class LayoutColumn {
     }
 
     public LayoutColumn(@MapsTo("span") String span,
-                        @MapsTo("height") String height) {
+                        @MapsTo("height") String height,
+                        @MapsTo("properties") Map<String,String> properties) {
         this.span = span;
         this.height = height;
+        this.properties = properties;
     }
 
     public void addRow(LayoutRow layoutRow) {
@@ -62,6 +65,10 @@ public class LayoutColumn {
 
     public String getHeight() {
         return height;
+    }
+
+    public Map<String, String> getProperties() {
+        return properties;
     }
 
     public List<LayoutComponent> getLayoutComponents() {

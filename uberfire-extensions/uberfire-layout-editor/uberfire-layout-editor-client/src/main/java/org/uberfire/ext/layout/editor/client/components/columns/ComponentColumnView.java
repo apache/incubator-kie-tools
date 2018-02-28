@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.layout.editor.client.components.columns;
 
+import java.util.List;
 import java.util.function.Supplier;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
@@ -39,7 +40,9 @@ import org.uberfire.ext.layout.editor.client.infra.ColumnDrop;
 import org.uberfire.ext.layout.editor.client.infra.ContainerResizeEvent;
 import org.uberfire.ext.layout.editor.client.infra.DragComponentEndEvent;
 import org.uberfire.ext.layout.editor.client.infra.DragHelperComponentColumn;
+import org.uberfire.ext.layout.editor.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.layout.editor.client.widgets.KebabWidget;
+import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.mvp.Command;
 
 import static org.jboss.errai.common.client.dom.DOMUtil.addCSSClass;
@@ -100,7 +103,14 @@ public class ComponentColumnView
     }
 
     @Override
+    public List<PropertyEditorCategory> getPropertyCategories() {
+        return helper.getLayoutDragComponentProperties();
+    }
+
+    @Override
     public void setupWidget() {
+        String txt = presenter.isSelectable() ? CommonConstants.INSTANCE.SelectColumnHint() : CommonConstants.INSTANCE.DragColumnHint();
+        content.setTitle(txt);
         setupEvents();
         setupKebabWidget();
         setupOnResize();
@@ -342,16 +352,19 @@ public class ComponentColumnView
             removeCSSClass(colDown,
                            "componentDropInColumnPreview");
         });
+        content.setOnclick(e -> {
+            e.preventDefault();
+            presenter.onSelected();
+        });
         content.setOnmouseout(e -> {
             removeCSSClass(content,
-                           "componentMovePreview");
+                    "componentMovePreview");
         });
         content.setOnmouseover(e -> {
             e.preventDefault();
             addCSSClass(content,
                         "componentMovePreview");
         });
-
         content.setOndragend(e -> {
             e.stopPropagation();
             removeCSSClass(row,
@@ -536,6 +549,17 @@ public class ComponentColumnView
     public void setup(LayoutComponent layoutComponent,
                       LayoutTemplate.Style pageStyle) {
         helper.setup(layoutComponent, pageStyle);
+    }
+
+    @Override
+    public void setSelected(boolean selected) {
+        removeCSSClass(content, "componentMovePreview");
+        String txt = presenter.isSelectable() ? CommonConstants.INSTANCE.SelectColumnHint() : CommonConstants.INSTANCE.DragColumnHint();
+        content.setTitle(txt);
+        if (selected) {
+            addCSSClass(content, "componentMovePreview");
+            content.setTitle(CommonConstants.INSTANCE.UnselectColumnHint());
+        }
     }
 
     private HTMLElement getPreviewElement() {

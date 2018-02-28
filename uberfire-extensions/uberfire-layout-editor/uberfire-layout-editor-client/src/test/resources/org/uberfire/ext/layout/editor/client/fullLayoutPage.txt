@@ -8,10 +8,12 @@
   "rows": [
     {
       "height": "8",
+      "properties": {},
       "layoutColumns": [
         {
           "span": "8",
           "height": "12",
+          "properties": {},
           "rows": [],
           "layoutComponents": [
             {
@@ -25,13 +27,16 @@
         {
           "span": "4",
           "height": "12",
+          "properties": {},
           "rows": [
             {
               "height": "12",
+              "properties": {},
               "layoutColumns": [
                 {
                   "span": "12",
                   "height": "6",
+                  "properties": {},
                   "rows": [],
                   "layoutComponents": [
                     {
@@ -45,6 +50,7 @@
                 {
                   "span": "12",
                   "height": "6",
+                  "properties": {},
                   "rows": [],
                   "layoutComponents": [
                     {
@@ -65,10 +71,12 @@
     },
     {
       "height": "4",
+      "properties": {},
       "layoutColumns": [
         {
           "span": "12",
           "height": "12",
+          "properties": {},
           "rows": [],
           "layoutComponents": [
             {

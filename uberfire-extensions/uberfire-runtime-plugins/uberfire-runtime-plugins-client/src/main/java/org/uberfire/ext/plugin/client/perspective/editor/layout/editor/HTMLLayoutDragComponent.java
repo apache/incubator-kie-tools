@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.plugin.client.perspective.editor.layout.editor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -23,18 +25,25 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.Modal;
+import org.uberfire.ext.layout.editor.api.css.CssProperty;
+import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.HasModalConfiguration;
 import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
+import org.uberfire.ext.layout.editor.client.infra.LayoutEditorCssHelper;
 import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorCoreComponent;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.popups.EditHTMLPresenter;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
+import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 
 @Dependent
 public class HTMLLayoutDragComponent implements PerspectiveEditorCoreComponent,
                                                 HasModalConfiguration {
 
     public static final String HTML_CODE_PARAMETER = "HTML_CODE";
+
+    @Inject
+    private LayoutEditorCssHelper layoutCssHelper;
 
     @Inject
     private EditHTMLPresenter htmlEditor;
@@ -50,6 +59,21 @@ public class HTMLLayoutDragComponent implements PerspectiveEditorCoreComponent,
     }
 
     @Override
+    public List<PropertyEditorCategory> getPropertyCategories(LayoutComponent layoutComponent) {
+        Map<String, String> propertyMap = layoutComponent.getProperties();
+        List<PropertyEditorCategory> result = new ArrayList<>();
+
+        PropertyEditorCategory category = layoutCssHelper.createCategory(LayoutEditorCssHelper.CSS_CATEGORY_TEXT);
+        category.withField(layoutCssHelper.createField(propertyMap, CssProperty.TEXT_ALIGN));
+        category.withField(layoutCssHelper.createField(propertyMap, CssProperty.TEXT_DECORATION));
+        category.withField(layoutCssHelper.createField(propertyMap, CssProperty.COLOR));
+        category.withField(layoutCssHelper.createField(propertyMap, CssProperty.FONT_SIZE));
+        category.withField(layoutCssHelper.createField(propertyMap, CssProperty.FONT_WEIGHT));
+        result.add(category);
+        return result;
+    }
+
+    @Override
     public IsWidget getPreviewWidget(RenderingContext container) {
         return getShowWidget(container);
     }
@@ -58,7 +82,10 @@ public class HTMLLayoutDragComponent implements PerspectiveEditorCoreComponent,
     public IsWidget getShowWidget(RenderingContext context) {
         Map<String, String> properties = context.getComponent().getProperties();
         String html = properties.get(HTMLLayoutDragComponent.HTML_CODE_PARAMETER);
-        return html == null ? null : new HTMLPanel(html);
+        if (html == null) {
+            return null;
+        }
+        return new HTMLPanel(html);
     }
 
     @Override

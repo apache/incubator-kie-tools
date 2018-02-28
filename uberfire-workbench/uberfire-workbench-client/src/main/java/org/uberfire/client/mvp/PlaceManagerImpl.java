@@ -15,13 +15,7 @@
  */
 package org.uberfire.client.mvp;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -222,7 +216,7 @@ public class PlaceManagerImpl
     }
 
     private void closeOpenPlacesAt(Predicate<CustomPanelDefinition> filterPanels) {
-        customPanels.values().stream()
+        new HashSet<>(customPanels.values()).stream()
                 .filter(filterPanels)
                 .flatMap(p -> p.getParts().stream())
                 .forEach(part -> closePlace(part.getPlace()));

@@ -48,10 +48,10 @@ public class DisplayerDragComponent implements LayoutDragComponent, HasModalConf
     DisplayerSettingsJSONMarshaller marshaller;
 
     @Inject
-    public DisplayerDragComponent( SyncBeanManager beanManager,
-                                   DisplayerViewer viewer,
-                                   PlaceManager placeManager,
-                                   PerspectiveCoordinator perspectiveCoordinator ) {
+    public DisplayerDragComponent(SyncBeanManager beanManager,
+                                  DisplayerViewer viewer,
+                                  PlaceManager placeManager,
+                                  PerspectiveCoordinator perspectiveCoordinator) {
 
         this.beanManager = beanManager;
         this.viewer = viewer;
@@ -98,9 +98,9 @@ public class DisplayerDragComponent implements LayoutDragComponent, HasModalConf
             }
         });
         int containerWidth = ctx.getContainer().getOffsetWidth() - 40;
-        adjustSize( settings, containerWidth );
+        adjustSize(settings, containerWidth);
         Displayer displayer = viewer.draw();
-        perspectiveCoordinator.addDisplayer( displayer );
+        perspectiveCoordinator.addDisplayer(displayer);
         return viewer;
     }
 
@@ -128,22 +128,18 @@ public class DisplayerDragComponent implements LayoutDragComponent, HasModalConf
     }
 
     protected Command getSaveCommand( final DisplayerEditorPopup editor, final ModalConfigurationContext ctx ) {
-        return new Command() {
-            public void execute() {
-                String json = marshaller.toJsonString( editor.getDisplayerSettings() );
-                ctx.setComponentProperty( "json", json );
-                ctx.configurationFinished();
-                beanManager.destroyBean( editor );
-            }
+        return () -> {
+            String json = marshaller.toJsonString( editor.getDisplayerSettings() );
+            ctx.setComponentProperty( "json", json );
+            ctx.configurationFinished();
+            beanManager.destroyBean( editor );
         };
     }
 
     protected Command getCloseCommand( final DisplayerEditorPopup editor, final ModalConfigurationContext ctx ) {
-        return new Command() {
-            public void execute() {
-                ctx.configurationCancelled();
-                beanManager.destroyBean( editor );
-            }
+        return () -> {
+            ctx.configurationCancelled();
+            beanManager.destroyBean( editor );
         };
     }
 

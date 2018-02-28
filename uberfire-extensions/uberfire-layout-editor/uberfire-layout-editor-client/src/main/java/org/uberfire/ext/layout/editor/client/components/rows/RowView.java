@@ -24,7 +24,11 @@ import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.mvp.UberElement;
+import org.uberfire.ext.layout.editor.api.css.CssValue;
 import org.uberfire.ext.layout.editor.client.components.columns.ComponentColumn;
+import org.uberfire.ext.layout.editor.client.resources.i18n.CommonConstants;
+
+import java.util.List;
 
 import static org.jboss.errai.common.client.dom.DOMUtil.*;
 import static org.uberfire.ext.layout.editor.client.infra.HTML5DnDHelper.extractDndData;
@@ -61,6 +65,7 @@ public class RowView
     @Override
     public void init(Row presenter) {
         this.presenter = presenter;
+        upper.setTitle(CommonConstants.INSTANCE.DragRowHint());
         setupEvents();
     }
 
@@ -168,7 +173,7 @@ public class RowView
             }
         });
         upper.setOnmouseout(e -> {
-            if (presenter.isDropEnable()) {
+            if (presenter.isDropEnable() && !presenter.isSelected()) {
                 removeCSSClass(upper,
                                "rowMovePreview");
                 removeCSSClass(row,
@@ -180,6 +185,10 @@ public class RowView
                 removeCSSClass(upper,
                                "rowDropPreview");
             }
+        });
+        upper.setOnclick(e -> {
+            e.preventDefault();
+            presenter.onSelected();
         });
         upper.setOnmouseover(e -> {
             if (presenter.isDropEnable()) {
@@ -265,6 +274,35 @@ public class RowView
     public void setupResize() {
         setupUpperCenter();
         setupBottomCenter();
+    }
+
+    @Override
+    public void setSelectEnabled(boolean enabled) {
+        upper.setTitle(enabled ? CommonConstants.INSTANCE.SelectRowHint() : CommonConstants.INSTANCE.DragRowHint());
+    }
+
+    @Override
+    public void setSelected(boolean selected) {
+        removeCSSClass(upper, "rowMovePreview");
+        removeCSSClass(row, "rowMovePreview");
+        removeCSSClass(bottom, "rowMovePreview");
+        upper.setTitle(CommonConstants.INSTANCE.SelectRowHint());
+        if (selected) {
+            addCSSClass(upper, "rowMovePreview");
+            addCSSClass(row, "rowMovePreview");
+            addCSSClass(bottom, "rowMovePreview");
+            upper.setTitle(CommonConstants.INSTANCE.UnselectRowHint());
+        }
+    }
+
+    @Override
+    public void applyCssValues(List<CssValue> cssValues) {
+        mainRow.getStyle().setCssText("");
+        cssValues.forEach(cssValue -> {
+            String prop = cssValue.getProperty();
+            String val = cssValue.getValue();
+            mainRow.getStyle().setProperty(prop, val);
+        });
     }
 
     private void setupMainRowSize(String span) {

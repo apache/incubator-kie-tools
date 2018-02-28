@@ -15,6 +15,17 @@
  */
 package org.uberfire.ext.plugin.client.perspective.editor.events;
 
+import org.uberfire.ext.layout.editor.client.api.LayoutEditor;
+
 public class PerspectiveEditorFocusEvent {
 
+    private LayoutEditor layoutEditor;
+
+    public PerspectiveEditorFocusEvent(LayoutEditor layoutEditor) {
+        this.layoutEditor = layoutEditor;
+    }
+
+    public LayoutEditor getLayoutEditor() {
+        return layoutEditor;
+    }
 }

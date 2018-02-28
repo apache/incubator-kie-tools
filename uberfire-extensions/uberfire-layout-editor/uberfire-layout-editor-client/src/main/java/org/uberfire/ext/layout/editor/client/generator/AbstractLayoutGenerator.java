@@ -16,48 +16,60 @@
 package org.uberfire.ext.layout.editor.client.generator;
 
 import java.util.List;
+import java.util.Map;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.common.client.dom.CSSStyleDeclaration;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutInstance;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
-import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
-import org.uberfire.ext.layout.editor.client.api.RenderingContext;
+import org.uberfire.ext.layout.editor.client.infra.LayoutEditorCssHelper;
 import org.uberfire.ext.layout.editor.client.infra.RowSizeBuilder;
+
+import javax.inject.Inject;
 
 public abstract class AbstractLayoutGenerator implements LayoutGenerator {
 
+    public static final String CONTAINER_ID = "mainContainer";
+
+    @Inject
+    private LayoutEditorCssHelper cssPropertiesHelper;
+
     @Override
-    public LayoutInstance build(LayoutTemplate layoutTemplate) {
-        HTMLElement container = createContainer(layoutTemplate);
+    public LayoutInstance build(LayoutTemplate layoutTemplate, LayoutGeneratorDriver driver) {
+        HTMLElement container = driver.createContainer();
+        container.setId(CONTAINER_ID);
         container.getClassList().add("uf-perspective-container");
         container.getClassList().add("uf-perspective-rendered-container");
+        applyCssToElement(layoutTemplate.getLayoutProperties(), container);
 
         LayoutInstance layoutInstance = new LayoutInstance(container);
         List<LayoutRow> rows = layoutTemplate.getRows();
-        generateRows(layoutTemplate, layoutInstance, rows, container);
+        generateRows(layoutTemplate, layoutInstance, driver, rows, container);
         return layoutInstance;
     }
 
-    private void generateRows(LayoutTemplate layoutTemplate,
+    protected void generateRows(LayoutTemplate layoutTemplate,
                               LayoutInstance layoutInstance,
+                              LayoutGeneratorDriver driver,
                               List<LayoutRow> rows,
                               HTMLElement parentWidget) {
         for (LayoutRow layoutRow : rows) {
-            HTMLElement row = createRow(layoutRow);
+            HTMLElement row = driver.createRow(layoutRow);
+            applyCssToElement(layoutRow.getProperties(), row);
 
             if (layoutTemplate.isPageStyle()) {
                 row.getClassList().add(RowSizeBuilder.buildRowSize(layoutRow.getHeight()));
                 row.getClassList().add("uf-le-overflow");
             }
             for (LayoutColumn layoutColumn : layoutRow.getLayoutColumns()) {
-                HTMLElement column = createColumn(layoutColumn);
+                HTMLElement column = driver.createColumn(layoutColumn);
+                applyCssToElement(layoutColumn.getProperties(), column);
 
                 if (layoutTemplate.isPageStyle() && layoutColumn.getHeight().isEmpty()) {
                     column.getClassList().add("uf-perspective-col");
@@ -70,11 +82,13 @@ public abstract class AbstractLayoutGenerator implements LayoutGenerator {
                     }
                     generateRows(layoutTemplate,
                                  layoutInstance,
+                                 driver,
                                  layoutColumn.getRows(),
                                  column);
                 } else {
                     generateComponents(layoutTemplate,
                                        layoutInstance,
+                                       driver,
                                        layoutColumn,
                                        column);
                 }
@@ -86,41 +100,51 @@ public abstract class AbstractLayoutGenerator implements LayoutGenerator {
         }
     }
 
-    private void generateComponents(LayoutTemplate layoutTemplate,
+    protected void generateComponents(LayoutTemplate layoutTemplate,
                                     final LayoutInstance layoutInstance,
+                                    final LayoutGeneratorDriver driver,
                                     final LayoutColumn layoutColumn,
                                     final HTMLElement column) {
         for (final LayoutComponent layoutComponent : layoutColumn.getLayoutComponents()) {
-            final LayoutDragComponent dragComponent = lookupLayoutDragComponent(layoutComponent);
-            if (dragComponent != null) {
-                Widget columnWidget = ElementWrapperWidget.getWidget(column);
-                RenderingContext componentContext = new RenderingContext(layoutComponent, columnWidget);
-                IsWidget componentWidget = dragComponent.getShowWidget(componentContext);
-
+            final IsWidget componentWidget = driver.createComponent(column, layoutComponent);
+            if (componentWidget != null) {
                 if (layoutTemplate.isPageStyle() && layoutColumn.getHeight().isEmpty()) {
                     componentWidget.asWidget().getElement().addClassName("uf-perspective-col");
                 }
                 else if (!layoutColumn.getHeight().isEmpty()) {
                     column.getClassList().add("uf-perspective-row-" + layoutColumn.getHeight());
                 }
-                if (componentWidget != null) {
-                    DOMUtil.appendWidgetToElement(column, componentWidget);
-                }
+                DOMUtil.appendWidgetToElement(column, componentWidget);
+                applyCssToElement(layoutComponent.getProperties(), componentWidget);
             }
         }
     }
 
-    private boolean columnHasNestedRows(LayoutColumn layoutColumn) {
+    protected boolean columnHasNestedRows(LayoutColumn layoutColumn) {
         return layoutColumn.getRows() != null && !layoutColumn.getRows().isEmpty();
     }
 
-    // Abstract methods
+    protected void applyCssToElement(Map<String,String> properties, HTMLElement element) {
+        if (properties != null && !properties.isEmpty()) {
+            CSSStyleDeclaration style = element.getStyle();
+            cssPropertiesHelper.readCssValues(properties)
+                    .stream().forEach(cssValue -> {
+                String prop = cssValue.getProperty();
+                String val = cssValue.getValue();
+                style.setProperty(prop, val);
+            });
+        }
+    }
 
-    protected abstract LayoutDragComponent lookupLayoutDragComponent(LayoutComponent layoutComponent);
-
-    protected abstract HTMLElement createContainer(LayoutTemplate layoutTemplate);
-
-    protected abstract HTMLElement createRow(LayoutRow layoutRow);
-
-    protected abstract HTMLElement createColumn(LayoutColumn layoutColumn);
+    protected void applyCssToElement(Map<String,String> properties, IsWidget element) {
+        if (properties != null && !properties.isEmpty()) {
+            final Style style = element.asWidget().getElement().getStyle();
+            cssPropertiesHelper.readCssValues(properties)
+                    .stream().forEach(cssValue -> {
+                String prop = cssValue.getPropertyInCamelCase();
+                String val = cssValue.getValue();
+                style.setProperty(prop, val);
+            });
+        }
+    }
 }

@@ -1,0 +1,10 @@
+.af-lep-main-panel {
+    padding: 0px 10px 0px 10px;
+    overflow: auto;
+    height: 100%;
+}
+
+.af-lep-clear-anchor {
+    margin-top: -27px;
+    margin-right: 10px;
+}

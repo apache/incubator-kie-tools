@@ -22,4 +22,6 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 public interface LayoutGenerator {
 
     LayoutInstance build(LayoutTemplate layoutTemplate);
+
+    LayoutInstance build(LayoutTemplate layoutTemplate, LayoutGeneratorDriver driver);
 }

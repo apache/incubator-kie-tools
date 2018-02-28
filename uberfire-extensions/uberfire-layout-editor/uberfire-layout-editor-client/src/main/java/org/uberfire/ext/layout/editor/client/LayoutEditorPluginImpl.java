@@ -29,8 +29,9 @@ import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.layout.editor.api.PerspectiveServices;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
-import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
+import org.uberfire.ext.layout.editor.client.api.LayoutEditorElement;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditorPlugin;
+import org.uberfire.ext.layout.editor.client.api.LayoutElementVisitor;
 import org.uberfire.mvp.Command;
 
 @Dependent
@@ -108,6 +109,11 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
     }
 
     @Override
+    public void setElementSelectionEnabled(boolean enabled) {
+        layoutEditorPresenter.setElementSelectionEnabled(enabled);
+    }
+
+    @Override
     public void load(Path currentPath,
                      Command loadCallBack) {
 
@@ -136,5 +142,15 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
             perspectiveServices.call(saveSuccessCallback)
                     .saveLayoutTemplate(path, layoutTemplate, commitMessage);
         });
+    }
+
+    @Override
+    public List<LayoutEditorElement> getLayoutElements() {
+        return layoutEditorPresenter.getLayoutElements();
+    }
+
+    @Override
+    public void visit(LayoutElementVisitor visitor) {
+        layoutEditorPresenter.visit(visitor);
     }
 }

@@ -44,6 +44,8 @@ public interface ContentManagerConstants extends Messages {
 
     String componentPalette();
 
+    String propertiesEditor();
+
     String perspective();
 
     String perspectives();

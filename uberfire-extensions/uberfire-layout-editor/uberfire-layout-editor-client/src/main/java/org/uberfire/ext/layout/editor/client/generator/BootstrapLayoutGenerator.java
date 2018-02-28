@@ -15,20 +15,14 @@
  */
 package org.uberfire.ext.layout.editor.client.generator;
 
-import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.Window;
-import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
-import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
-import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
+import org.uberfire.ext.layout.editor.api.editor.LayoutInstance;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
-import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
-import org.uberfire.ext.layout.editor.client.infra.ColumnSizeBuilder;
-import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
+
+
 
 /**
  * A bootstrap based layout generator
@@ -38,32 +32,10 @@ import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
 public class BootstrapLayoutGenerator extends AbstractLayoutGenerator {
 
     @Inject
-    private LayoutDragComponentHelper dragTypeHelper;
+    private BootstrapLayoutGeneratorDriver bootstrapDriver;
 
     @Override
-    protected HTMLElement createContainer(LayoutTemplate layoutTemplate) {
-        Div div = (Div) Window.getDocument().createElement("div");
-        div.setId("mainContainer");
-        return div;
-    }
-
-    @Override
-    protected HTMLElement createRow(LayoutRow layoutRow) {
-        Div div = (Div) Window.getDocument().createElement("div");
-        div.setClassName("row");
-        return div;
-    }
-
-    @Override
-    protected HTMLElement createColumn(LayoutColumn layoutColumn) {
-        Div div = (Div) Window.getDocument().createElement("div");
-        String colSize = ColumnSizeBuilder.buildColumnSize(new Integer(layoutColumn.getSpan()));
-        div.setClassName(colSize);
-        return div;
-    }
-
-    @Override
-    public LayoutDragComponent lookupLayoutDragComponent(LayoutComponent layoutComponent) {
-        return dragTypeHelper.lookupDragTypeBean(layoutComponent.getDragTypeName());
+    public LayoutInstance build(LayoutTemplate layoutTemplate) {
+        return super.build(layoutTemplate, bootstrapDriver);
     }
 }

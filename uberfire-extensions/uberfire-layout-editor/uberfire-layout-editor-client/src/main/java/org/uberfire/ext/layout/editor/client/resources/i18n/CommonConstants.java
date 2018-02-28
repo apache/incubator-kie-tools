@@ -54,4 +54,22 @@ public interface CommonConstants
     String Editor();
 
     String Preview();
+
+    String LayoutEditorProperties();
+
+    String SelectContainerHint();
+
+    String SelectRowHint();
+
+    String DragRowHint();
+
+    String SelectColumnHint();
+
+    String DragColumnHint();
+
+    String UnselectContainerHint();
+
+    String UnselectRowHint();
+
+    String UnselectColumnHint();
 }

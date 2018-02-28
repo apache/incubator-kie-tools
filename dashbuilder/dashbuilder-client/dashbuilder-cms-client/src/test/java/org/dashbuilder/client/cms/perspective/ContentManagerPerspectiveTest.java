@@ -26,6 +26,8 @@ import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.client.workbench.events.PlaceHiddenEvent;
+import org.uberfire.ext.layout.editor.client.api.LayoutEditor;
+import org.uberfire.ext.layout.editor.client.widgets.LayoutEditorPropertiesPresenter;
 import org.uberfire.ext.plugin.client.perspective.editor.PerspectiveEditorPresenter;
 import org.uberfire.ext.plugin.client.perspective.editor.events.PerspectiveEditorFocusEvent;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -43,6 +45,12 @@ public class ContentManagerPerspectiveTest {
 
     @Mock
     PerspectiveChange perspectiveChangeEvent;
+
+    @Mock
+    LayoutEditorPropertiesPresenter propertiesPresenter;
+
+    @Mock
+    LayoutEditor layoutEditor;
 
     @InjectMocks
     ContentManagerPerspective perspective;
@@ -66,7 +74,7 @@ public class ContentManagerPerspectiveTest {
     @Test
     public void testOnLayoutEditorFocus() {
         reset(uberfireDocks);
-        perspective.onPerspectiveEditorFocus(new PerspectiveEditorFocusEvent());
+        perspective.onPerspectiveEditorFocus(new PerspectiveEditorFocusEvent(layoutEditor));
         verify(uberfireDocks).add(perspective.componentPaletteDock);
         verify(uberfireDocks).open(perspective.componentPaletteDock);
         verify(uberfireDocks).show(UberfireDockPosition.WEST, ContentManagerPerspective.PERSPECTIVE_ID);
@@ -74,9 +82,9 @@ public class ContentManagerPerspectiveTest {
 
     @Test
     public void testOnLayoutEditorHidden() {
-        perspective.onPerspectiveEditorFocus(new PerspectiveEditorFocusEvent());
+        perspective.onPerspectiveEditorFocus(new PerspectiveEditorFocusEvent(layoutEditor));
         reset(uberfireDocks);
-        perspective.oonPerspectiveEditorHidden(new PlaceHiddenEvent(new DefaultPlaceRequest(PerspectiveEditorPresenter.ID)));
+        perspective.onPerspectiveEditorHidden(new PlaceHiddenEvent(new DefaultPlaceRequest(PerspectiveEditorPresenter.ID)));
         verify(uberfireDocks).remove(perspective.componentPaletteDock);
     }
 }

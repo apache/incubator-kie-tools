@@ -16,9 +16,7 @@
 
 package org.uberfire.ext.layout.editor.client.components.rows;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Supplier;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -30,40 +28,40 @@ import javax.inject.Inject;
 
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.client.mvp.UberElement;
+import org.uberfire.ext.layout.editor.api.css.CssProperty;
+import org.uberfire.ext.layout.editor.api.css.CssValue;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
-import org.uberfire.ext.layout.editor.client.api.ComponentDropEvent;
-import org.uberfire.ext.layout.editor.client.api.ComponentDropType;
-import org.uberfire.ext.layout.editor.client.api.ComponentRemovedEvent;
+import org.uberfire.ext.layout.editor.client.api.*;
 import org.uberfire.ext.layout.editor.client.components.columns.Column;
 import org.uberfire.ext.layout.editor.client.components.columns.ColumnWithComponents;
 import org.uberfire.ext.layout.editor.client.components.columns.ComponentColumn;
-import org.uberfire.ext.layout.editor.client.infra.BeanHelper;
-import org.uberfire.ext.layout.editor.client.infra.ColumnDrop;
-import org.uberfire.ext.layout.editor.client.infra.ColumnResizeEvent;
-import org.uberfire.ext.layout.editor.client.infra.DnDManager;
-import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
-import org.uberfire.ext.layout.editor.client.infra.RowResizeEvent;
-import org.uberfire.ext.layout.editor.client.infra.UniqueIDGenerator;
+import org.uberfire.ext.layout.editor.client.event.LayoutEditorElementSelectEvent;
+import org.uberfire.ext.layout.editor.client.event.LayoutEditorElementUnselectEvent;
+import org.uberfire.ext.layout.editor.client.infra.*;
+import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
-public class Row {
+public class Row implements LayoutEditorElement {
 
     public static final Integer ROW_DEFAULT_HEIGHT = 12;
     public static final int ROW_MIN_HEIGHT = 2;
 
     private final LayoutDragComponentHelper layoutDragComponentHelper;
+    private LayoutEditorCssHelper layoutCssHelper;
     private UniqueIDGenerator idGenerator = new UniqueIDGenerator();
 
+    private LayoutEditorElement parentElement;
     private String id;
+    private Map<String,String> properties = new HashMap<>();
     private LayoutTemplate.Style pageStyle;
 
     private View view;
 
-    private List<Column> columns = new ArrayList<Column>();
+    private List<Column> columns = new ArrayList<>();
 
     private Instance<ComponentColumn> columnInstance;
 
@@ -81,9 +79,13 @@ public class Row {
     private DnDManager dndManager;
 
     private boolean dropEnable = true;
+    private boolean selectable = false;
+    private boolean selected = false;
     private Event<ComponentDropEvent> componentDropEvent;
     private Event<ComponentRemovedEvent> componentRemovedEvent;
     private Event<RowResizeEvent> rowResizeEvent;
+    private Event<LayoutEditorElementSelectEvent> rowSelectEvent;
+    private Event<LayoutEditorElementUnselectEvent> rowUnselectEvent;
 
     private Integer height;
     private boolean canResizeUp;
@@ -95,18 +97,24 @@ public class Row {
                Instance<ColumnWithComponents> columnWithComponentsInstance,
                DnDManager dndManager,
                LayoutDragComponentHelper layoutDragComponentHelper,
+               LayoutEditorCssHelper layoutCssHelper,
                Event<ComponentDropEvent> componentDropEvent,
                Event<ComponentRemovedEvent> componentRemovedEvent,
-               Event<RowResizeEvent> rowResizeEvent) {
+               Event<RowResizeEvent> rowResizeEvent,
+               Event<LayoutEditorElementSelectEvent> rowSelectEvent,
+               Event<LayoutEditorElementUnselectEvent> rowUnselectEvent) {
 
         this.view = view;
         this.columnInstance = columnInstance;
         this.columnWithComponentsInstance = columnWithComponentsInstance;
         this.dndManager = dndManager;
         this.layoutDragComponentHelper = layoutDragComponentHelper;
+        this.layoutCssHelper = layoutCssHelper;
         this.componentDropEvent = componentDropEvent;
         this.componentRemovedEvent = componentRemovedEvent;
         this.rowResizeEvent = rowResizeEvent;
+        this.rowSelectEvent = rowSelectEvent;
+        this.rowUnselectEvent = rowUnselectEvent;
     }
 
     public void init(ParameterizedCommand<RowDrop> dropOnRowCommand,
@@ -148,9 +156,11 @@ public class Row {
         this.removeComponentCommand = removeComponentCommand;
         this.currentLayoutTemplateSupplier = currentLayoutTemplateSupplier;
         this.height = getHeight(layoutRow.getHeight());
+        this.properties = layoutRow.getProperties();
         setupPageLayout(height);
         extractColumns(layoutRow);
         setupColumnResizeActions();
+        setupCssProperties();
     }
 
     private int getHeight(String layoutRow) {
@@ -191,7 +201,7 @@ public class Row {
             final ColumnWithComponents columnWithComponents = createColumnWithComponentsInstance();
 
             columnWithComponents
-                    .init(id,
+                    .init(this,
                           columnWidth,
                           pageStyle,
                           dropCommand(),
@@ -245,7 +255,7 @@ public class Row {
 
     public void addColumns(ComponentColumn... _columns) {
         for (ComponentColumn column : _columns) {
-            column.setParentId(id);
+            column.setParentElement(this);
             column.setId(idGenerator.createColumnID(id));
             column.setDropCommand(dropCommand());
             columns.add(column);
@@ -256,7 +266,7 @@ public class Row {
                               boolean newComponent) {
         final ComponentColumn column = createComponentColumnInstance();
 
-        column.init(id,
+        column.init(this,
                     Column.DEFAULT_COLUMN_WIDTH,
                     layoutComponent,
                     dropCommand(),
@@ -269,6 +279,7 @@ public class Row {
 
     protected ComponentColumn createComponentColumnInstance() {
         final ComponentColumn column = columnInstance.get();
+        column.setSelectable(selectable);
         column.setup(idGenerator.createColumnID(id),
                      pageStyle);
         return column;
@@ -642,7 +653,7 @@ public class Row {
                                                  Integer innerColumnHeight) {
         final ComponentColumn newColumn = createComponentColumnInstance();
 
-        newColumn.init(currentColumn.getParentId(),
+        newColumn.init(currentColumn.getParentElement(),
                        Column.DEFAULT_COLUMN_WIDTH,
                        drop.getComponent(),
                        dropCommand(),
@@ -662,7 +673,7 @@ public class Row {
             Integer width = currentColumn.getColumnWidth();
             final ColumnWithComponents columnWithComponents = createColumnWithComponentsInstance();
             columnWithComponents
-                    .init(id,
+                    .init(this,
                           width,
                           pageStyle,
                           dropCommand(),
@@ -718,7 +729,7 @@ public class Row {
                                                      boolean newComponent) {
         final ComponentColumn newColumn = createComponentColumnInstance();
 
-        newColumn.init(id,
+        newColumn.init(this,
                        columnSize,
                        layoutComponent,
                        dropCommand(),
@@ -855,6 +866,39 @@ public class Row {
         }
     }
 
+    private void setupCssProperties() {
+        List<CssValue> cssValueList = layoutCssHelper.readCssValues(properties);
+        view.applyCssValues(cssValueList);
+    }
+
+    @Override
+    public Map<String, String> getProperties() {
+        return properties;
+    }
+
+    @Override
+    public void setProperty(String property, String value) {
+        properties.put(property, value);
+        setupCssProperties();
+    }
+
+    @Override
+    public void removeProperty(String property) {
+        properties.remove(property);
+        setupCssProperties();
+    }
+
+    @Override
+    public void clearProperties() {
+        properties.clear();
+        setupCssProperties();
+    }
+
+    @Override
+    public List<PropertyEditorCategory> getPropertyCategories() {
+        return layoutCssHelper.getRowPropertyCategories(this);
+    }
+
     private void setupColumnResizeActions(List<Column> columns,
                                           Column currentColumn,
                                           int index) {
@@ -909,6 +953,32 @@ public class Row {
         return dropEnable && canISplitMySize();
     }
 
+    @Override
+    public void setSelectable(boolean selectable) {
+        this.selectable = selectable;
+        view.setSelectEnabled(selectable);
+    }
+
+    public boolean isSelectable() {
+        return selectable;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        if (isSelectable()) {
+            if (selected) {
+                this.selected = true;
+                view.setSelected(true);
+            } else {
+                this.selected = false;
+                view.setSelected(false);
+            }
+        }
+    }
+
     private boolean canISplitMySize() {
         if (pageStyle == LayoutTemplate.Style.PAGE) {
             Integer size = Integer.valueOf(getHeight());
@@ -927,12 +997,25 @@ public class Row {
         }
     }
 
+    @Override
     public String getId() {
         return id;
     }
 
-    public void setup(String id,
+    @Override
+    public LayoutEditorElementType geElementType() {
+        return LayoutEditorElementType.ROW;
+    }
+
+    @Override
+    public LayoutEditorElement getParentElement() {
+        return parentElement;
+    }
+
+    public void setup(LayoutEditorElement parent,
+                      String id,
                       LayoutTemplate.Style pageStyle) {
+        this.parentElement = parent;
         this.id = id;
         this.pageStyle = pageStyle;
     }
@@ -986,6 +1069,20 @@ public class Row {
         return parentColumnWithComponents;
     }
 
+    public void onSelected() {
+        if (isSelectable()) {
+            if (selected) {
+                rowUnselectEvent.fire(new LayoutEditorElementUnselectEvent(this));
+            } else {
+                rowSelectEvent.fire(new LayoutEditorElementSelectEvent(this));
+            }
+        }
+    }
+
+    public List<Column> getChildElements() {
+        return columns;
+    }
+
     public interface View extends UberElement<Row> {
 
         void addColumn(UberElement<ComponentColumn> view);
@@ -997,5 +1094,11 @@ public class Row {
         void setHeight(Integer height);
 
         void setupResize();
+
+        void setSelectEnabled(boolean enabled);
+
+        void setSelected(boolean selected);
+
+        void applyCssValues(List<CssValue> cssValues);
     }
 }

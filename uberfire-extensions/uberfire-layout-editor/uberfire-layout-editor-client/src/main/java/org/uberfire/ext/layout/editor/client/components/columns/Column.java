@@ -18,15 +18,15 @@ package org.uberfire.ext.layout.editor.client.components.columns;
 
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
+import org.uberfire.ext.layout.editor.client.api.LayoutEditorElement;
+import org.uberfire.ext.layout.editor.client.api.LayoutEditorElementType;
 
-public interface Column<T> {
+public interface Column<T> extends LayoutEditorElement {
 
     Integer DEFAULT_COLUMN_HEIGHT = 12;
     Integer DEFAULT_COLUMN_WIDTH = 12;
 
     UberElement<T> getView();
-
-    String getParentId();
 
     Integer getColumnWidth();
 
@@ -44,8 +44,6 @@ public interface Column<T> {
     boolean hasInnerRows();
 
     void calculateWidth();
-
-    String getId();
 
     Integer getColumnHeight();
 

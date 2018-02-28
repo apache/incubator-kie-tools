@@ -44,7 +44,7 @@ public class LayoutTemplateAdapter {
     private static void extractRows(List<Row> rows,
                                     LayoutTemplate layoutTemplate) {
         for (Row row : rows) {
-            LayoutRow layoutRow = new LayoutRow(row.getHeight().toString());
+            LayoutRow layoutRow = new LayoutRow(row.getHeight().toString(), row.getProperties());
             extractColumns(row.getColumns(),
                            layoutRow);
             layoutTemplate.addRow(layoutRow);
@@ -55,7 +55,8 @@ public class LayoutTemplateAdapter {
                                        LayoutRow layoutRow) {
         for (Column col : columns) {
             LayoutColumn layoutColumn = new LayoutColumn(col.getColumnWidth().toString(),
-                                                         col.getColumnHeight().toString());
+                                                         col.getColumnHeight().toString(),
+                                                         col.getProperties());
             if (col.hasInnerRows()) {
                 extractColumnWithComponents(col,
                                             layoutColumn);
@@ -71,7 +72,8 @@ public class LayoutTemplateAdapter {
                                                     LayoutColumn layoutColumn) {
         if (col instanceof ColumnWithComponents) {
             ColumnWithComponents columnWithComponents = (ColumnWithComponents) col;
-            LayoutRow layoutRow = new LayoutRow(Row.ROW_DEFAULT_HEIGHT.toString());
+            Row row = columnWithComponents.getRow();
+            LayoutRow layoutRow = new LayoutRow(Row.ROW_DEFAULT_HEIGHT.toString(), row.getProperties());
             extractColumns(columnWithComponents.getRow().getColumns(),
                            layoutRow);
             layoutColumn.addRow(layoutRow);

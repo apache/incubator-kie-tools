@@ -7,6 +7,7 @@
   },
   "rows": [
     {
+      "properties": {},
       "layoutColumns": [
         {
           "span": "12",
@@ -23,6 +24,7 @@
       ]
     },
     {
+      "properties": {},
       "layoutColumns": [
         {
           "span": "12",
@@ -39,6 +41,7 @@
       ]
     },
     {
+      "properties": {},
       "layoutColumns": [
         {
           "span": "6",
@@ -67,6 +70,7 @@
       ]
     },
     {
+      "properties": {},
       "layoutColumns": [
         {
           "span": "12",

@@ -16,7 +16,6 @@
 package org.uberfire.ext.plugin.client.perspective.editor;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.function.Supplier;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -57,6 +56,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.eq;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class PerspectiveEditorPresenterTest {
@@ -160,6 +160,15 @@ public class PerspectiveEditorPresenterTest {
                 .thenReturn(Arrays.asList(perspectiveEditorGroupBeanB, perspectiveEditorGroupBeanA));
 
         mockSaveAndRenameCommandBuilder();
+    }
+
+    @Test
+    public void testInitLayoutEditor() {
+        presenter.onStartup(observablePath, placeRequest);
+
+        verify(layoutEditorPlugin).init(anyString(), anyString(), anyString(), eq(LayoutTemplate.Style.PAGE));
+        verify(layoutEditorPlugin).setPreviewEnabled(true);
+        verify(layoutEditorPlugin).setElementSelectionEnabled(true);
     }
 
     @Test

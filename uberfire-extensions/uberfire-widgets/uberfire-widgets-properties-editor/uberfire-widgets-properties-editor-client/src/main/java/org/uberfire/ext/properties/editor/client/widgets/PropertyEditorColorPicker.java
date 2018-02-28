@@ -54,7 +54,7 @@ public class PropertyEditorColorPicker extends AbstractPropertyEditorWidget {
     }
 
     public void setValue(String value) {
-        if (ColorValidator.isValid(value)) {
+        if (value.isEmpty() || ColorValidator.isValid(value)) {
             colorTextBox.setValue(value);
         }
     }

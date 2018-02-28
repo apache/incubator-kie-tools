@@ -21,6 +21,16 @@
     height:100%;
 }
 
+.container-header {
+    height: 15px;
+    cursor: pointer;
+    margin-top: -15px;
+}
+
+.container-selected {
+    border-color: #33a6cc !important;
+}
+
 .resolution {
     text-align: center;
     font-size: 20px;

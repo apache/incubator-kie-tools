@@ -8,6 +8,7 @@
   "rows": [
     {
       "height": "12",
+      "properties": {},
       "layoutColumns": [
         {
           "span": "12",

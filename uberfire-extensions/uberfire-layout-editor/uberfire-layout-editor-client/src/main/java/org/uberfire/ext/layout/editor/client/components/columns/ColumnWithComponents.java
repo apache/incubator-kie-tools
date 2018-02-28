@@ -16,6 +16,10 @@
 
 package org.uberfire.ext.layout.editor.client.components.columns;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -27,6 +31,8 @@ import javax.inject.Inject;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
+import org.uberfire.ext.layout.editor.client.api.LayoutEditorElement;
+import org.uberfire.ext.layout.editor.client.api.LayoutEditorElementType;
 import org.uberfire.ext.layout.editor.client.components.rows.Row;
 import org.uberfire.ext.layout.editor.client.components.rows.RowDrop;
 import org.uberfire.ext.layout.editor.client.infra.BeanHelper;
@@ -35,6 +41,7 @@ import org.uberfire.ext.layout.editor.client.infra.ColumnResizeEvent;
 import org.uberfire.ext.layout.editor.client.infra.DnDManager;
 import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
 import org.uberfire.ext.layout.editor.client.infra.UniqueIDGenerator;
+import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
@@ -42,7 +49,8 @@ public class ColumnWithComponents implements Column {
 
     private final View view;
     private String id;
-    private String parentId;
+    private LayoutEditorElement parentElement;
+    private Map<String,String> properties = new HashMap<>();
     private ParameterizedCommand<ColumnDrop> dropCommand;
     private ParameterizedCommand<ColumnDrop> removeComponentCommand;
     private ParameterizedCommand<Column> removeColumnCommand;
@@ -58,6 +66,8 @@ public class ColumnWithComponents implements Column {
     private Supplier<LayoutTemplate> currentLayoutTemplateSupplier;
     private Integer columnHeight = DEFAULT_COLUMN_HEIGHT;
     private Integer columnWidth;
+    private boolean selected = false;
+    private boolean selectable = true;
 
     @Inject
     public ColumnWithComponents(final View view,
@@ -82,7 +92,7 @@ public class ColumnWithComponents implements Column {
         destroy(row);
     }
 
-    public void init(String parentId,
+    public void init(LayoutEditorElement parent,
                      Integer columnWidth,
                      LayoutTemplate.Style pageStyle,
                      ParameterizedCommand<ColumnDrop> dropCommand,
@@ -91,7 +101,7 @@ public class ColumnWithComponents implements Column {
                      Supplier<LayoutTemplate> currentLayoutTemplateSupplier,
                      Integer columnHeight) {
         this.columnWidth = columnWidth;
-        this.parentId = parentId;
+        this.parentElement = parent;
         this.dropCommand = dropCommand;
         this.removeComponentCommand = removeComponentCommand;
         this.removeColumnCommand = removeCommand;
@@ -102,7 +112,7 @@ public class ColumnWithComponents implements Column {
         setupPageLayout();
         row = createInstanceRow();
         row.disableDrop();
-        row.setup(idGenerator.createRowID(id),
+        row.setup(this, idGenerator.createRowID(id),
                   pageStyle);
         row.init(createDropCommand(),
                  createRowRemoveCommand(),
@@ -110,6 +120,61 @@ public class ColumnWithComponents implements Column {
                  this,
                  currentLayoutTemplateSupplier,
                  Row.ROW_DEFAULT_HEIGHT);
+    }
+
+    @Override
+    public LayoutEditorElementType geElementType() {
+        return LayoutEditorElementType.COLUMN_WITH_COMPONENTS;
+    }
+
+    @Override
+    public LayoutEditorElement getParentElement() {
+        return parentElement;
+    }
+
+    @Override
+    public List<? extends LayoutEditorElement> getChildElements() {
+        return Collections.singletonList(row);
+    }
+
+    @Override
+    public void setSelectable(boolean selectable) {
+        this.selectable = selectable;
+    }
+
+    @Override
+    public boolean isSelected() {
+        return selected;
+    }
+
+    @Override
+    public void setSelected(boolean status) {
+        selected = status;
+    }
+
+    @Override
+    public Map<String, String> getProperties() {
+        return properties;
+    }
+
+    @Override
+    public void setProperty(String property, String value) {
+        properties.put(property, value);
+    }
+
+    @Override
+    public void removeProperty(String property) {
+        properties.remove(property);
+    }
+
+    @Override
+    public void clearProperties() {
+        properties.clear();
+    }
+
+    @Override
+    public List<PropertyEditorCategory> getPropertyCategories() {
+        return null;
     }
 
     private void setupPageLayout() {
@@ -147,7 +212,7 @@ public class ColumnWithComponents implements Column {
 
     public void resizeLeft() {
         columnResizeEvent.fire(new ColumnResizeEvent(id,
-                                                     parentId).left());
+                                                     parentElement.getId()).left());
     }
 
     public boolean canResizeRight() {
@@ -156,12 +221,13 @@ public class ColumnWithComponents implements Column {
 
     public void resizeRight() {
         columnResizeEvent.fire(new ColumnResizeEvent(id,
-                                                     parentId).right());
+                                                     parentElement.getId()).right());
     }
 
     protected Row createInstanceRow() {
         Row row = rowInstance.get();
-        row.setup(idGenerator.createRowID(id),
+        row.setSelectable(selectable);
+        row.setup(this, idGenerator.createRowID(id),
                   pageStyle);
         return row;
     }
@@ -239,11 +305,6 @@ public class ColumnWithComponents implements Column {
 
     public Row getRow() {
         return row;
-    }
-
-    @Override
-    public String getParentId() {
-        return parentId;
     }
 
     protected void destroy(Object o) {

@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.layout.editor.client.infra;
 
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -27,12 +29,15 @@ import org.gwtbootstrap3.client.ui.Modal;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Document;
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.uberfire.ext.layout.editor.api.css.CssProperty;
+import org.uberfire.ext.layout.editor.api.css.CssValue;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.HasModalConfiguration;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
+import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.mvp.Command;
 
 import static org.jboss.errai.common.client.dom.DOMUtil.addCSSClass;
@@ -41,7 +46,10 @@ import static org.jboss.errai.common.client.dom.DOMUtil.addCSSClass;
 public class DragHelperComponentColumn {
 
     @Inject
-    LayoutDragComponentHelper helper;
+    LayoutDragComponentHelper dragHelper;
+
+    @Inject
+    LayoutEditorCssHelper layoutCssHelper;
 
     @Inject
     Document document;
@@ -55,9 +63,15 @@ public class DragHelperComponentColumn {
     public LayoutDragComponent getLayoutDragComponent() {
         if (layoutDragComponent == null) {
             layoutDragComponent =
-                    helper.lookupDragTypeBean(layoutComponent.getDragTypeName());
+                    dragHelper.lookupDragTypeBean(layoutComponent.getDragTypeName());
         }
         return layoutDragComponent;
+    }
+
+    public List<PropertyEditorCategory> getLayoutDragComponentProperties() {
+        List<PropertyEditorCategory> result = layoutCssHelper.getComponentPropertyCategories(layoutComponent);
+        result.addAll(getLayoutDragComponent().getPropertyCategories(layoutComponent));
+        return result;
     }
 
     public boolean hasModalConfiguration() {
@@ -72,6 +86,7 @@ public class DragHelperComponentColumn {
 
     public HTMLElement getPreviewElement(Widget context) {
         HTMLElement div = document.createElement("div");
+        applyCssProperties(div);
         addCSSClass(div,
                     "uf-perspective-col");
 
@@ -98,5 +113,15 @@ public class DragHelperComponentColumn {
         Modal configModal = ((HasModalConfiguration)
                 getLayoutDragComponent()).getConfigurationModal(ctx);
         configModal.show();
+    }
+
+
+    protected void applyCssProperties(HTMLElement widget) {
+        List<CssValue> cssValues = layoutCssHelper.readCssValues(layoutComponent.getProperties());
+        cssValues.forEach(cssValue -> {
+            String prop = cssValue.getProperty();
+            String val = cssValue.getValue();
+            widget.getStyle().setProperty(prop, val);
+        });
     }
 }

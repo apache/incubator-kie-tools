@@ -161,12 +161,13 @@ public class PerspectiveEditorPresenter extends BaseEditor<LayoutTemplate, Defau
 
         // Enable the preview feature in the perspective editor
         this.layoutEditorPlugin.setPreviewEnabled(true);
+        this.layoutEditorPlugin.setElementSelectionEnabled(true);
         this.perspectiveEditorView.setupLayoutEditor(layoutEditorPlugin.asWidget());
     }
 
     @OnFocus
     public void onFocus() {
-        perspectiveEditorFocusEvent.fire(new PerspectiveEditorFocusEvent());
+        perspectiveEditorFocusEvent.fire(new PerspectiveEditorFocusEvent(layoutEditorPlugin));
     }
 
     @OnClose

@@ -32,9 +32,9 @@ public final class LayoutTemplate {
 
     private Style style = Style.FLUID;
 
-    private Map<String, String> layoutProperties = new HashMap<String, String>();
+    private Map<String, String> layoutProperties = new HashMap<>();
 
-    private List<LayoutRow> rows = new ArrayList<LayoutRow>();
+    private List<LayoutRow> rows = new ArrayList<>();
 
     public LayoutTemplate() {
 

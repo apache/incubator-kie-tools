@@ -30,12 +30,14 @@ import org.uberfire.client.mvp.ActivityBeansInfo;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
+import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorCoreComponent;
 import org.uberfire.ext.plugin.event.NewPluginRegistered;
 import org.uberfire.ext.plugin.event.PluginUnregistered;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 import static org.jgroups.util.Util.assertEquals;
+import static org.jgroups.util.Util.assertFalse;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -149,5 +151,14 @@ public class ScreenLayoutDragComponentTest {
         screenLayoutDragComponent.createCleanupPlaceRequest(dora).execute();
 
         verify(placeManager).closePlace(dora);
+    }
+
+    /**
+     * Screen component remains disabled in the perspective editor
+     * => https://issues.jboss.org/browse/AF-904
+     */
+    @Test
+    public void componentDisabledTest() {
+        assertFalse(screenLayoutDragComponent instanceof PerspectiveEditorCoreComponent);
     }
 }

@@ -16,6 +16,9 @@
 
 package org.uberfire.ext.layout.editor.client.components.columns;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -25,10 +28,12 @@ import javax.inject.Inject;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
-import org.uberfire.ext.layout.editor.client.infra.ColumnDrop;
-import org.uberfire.ext.layout.editor.client.infra.ColumnResizeEvent;
-import org.uberfire.ext.layout.editor.client.infra.DnDManager;
-import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
+import org.uberfire.ext.layout.editor.client.api.LayoutEditorElement;
+import org.uberfire.ext.layout.editor.client.api.LayoutEditorElementType;
+import org.uberfire.ext.layout.editor.client.event.LayoutEditorElementSelectEvent;
+import org.uberfire.ext.layout.editor.client.event.LayoutEditorElementUnselectEvent;
+import org.uberfire.ext.layout.editor.client.infra.*;
+import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -37,7 +42,8 @@ public class ComponentColumn implements Column {
 
     private final View view;
     private String id;
-    private String parentId;
+    private LayoutEditorElement parentElement;
+    private Map<String,String> properties = new HashMap<>();
     private DnDManager dndManager;
     private Integer columnWidth;
     private Integer columnHeight = DEFAULT_COLUMN_HEIGHT;
@@ -53,16 +59,25 @@ public class ComponentColumn implements Column {
     private boolean canResizeLeft;
     private boolean canResizeRight;
     private LayoutTemplate.Style pageStyle;
+    private boolean selected = false;
+    private boolean selectable = true;
+    private Event<LayoutEditorElementSelectEvent> columnSelectEvent;
+    private Event<LayoutEditorElementUnselectEvent> columnUnselectEvent;
 
     @Inject
     public ComponentColumn(final View view,
                            DnDManager dndManager,
                            LayoutDragComponentHelper layoutDragComponentHelper,
-                           Event<ColumnResizeEvent> columnResizeEvent) {
+                           Event<ColumnResizeEvent> columnResizeEvent,
+                           Event<LayoutEditorElementSelectEvent> columnSelectEvent,
+                           Event<LayoutEditorElementUnselectEvent> columnUnselectEvent
+    ) {
         this.view = view;
         this.dndManager = dndManager;
         this.layoutDragComponentHelper = layoutDragComponentHelper;
         this.columnResizeEvent = columnResizeEvent;
+        this.columnSelectEvent = columnSelectEvent;
+        this.columnUnselectEvent = columnUnselectEvent;
     }
 
     @PostConstruct
@@ -70,7 +85,7 @@ public class ComponentColumn implements Column {
         view.init(this);
     }
 
-    public void init(String parentId,
+    public void init(LayoutEditorElement parent,
                      Integer columnWidth,
                      LayoutComponent layoutComponent,
                      ParameterizedCommand<ColumnDrop> dropCommand,
@@ -80,7 +95,7 @@ public class ComponentColumn implements Column {
         this.layoutComponent = layoutComponent;
         this.currentLayoutTemplateSupplier = currentLayoutTemplateSupplier;
         view.setup(layoutComponent, pageStyle);
-        this.parentId = parentId;
+        this.parentElement = parent;
         this.columnWidth = columnWidth;
         this.dropCommand = dropCommand;
         this.removeCommand = removeCommand;
@@ -94,8 +109,79 @@ public class ComponentColumn implements Column {
         view.setupWidget();
     }
 
+    @Override
+    public LayoutEditorElementType geElementType() {
+        return LayoutEditorElementType.COLUMN;
+    }
+
+    @Override
+    public LayoutEditorElement getParentElement() {
+        return parentElement;
+    }
+
+    public void setParentElement(LayoutEditorElement parentElement) {
+        this.parentElement = parentElement;
+    }
+
+    public boolean isSelectable() {
+        return selectable;
+    }
+
+    public void setSelectable(boolean selectable) {
+        this.selectable = selectable;
+    }
+
+    @Override
+    public boolean isSelected() {
+        return selected;
+    }
+
+    @Override
+    public void setSelected(boolean selected) {
+        if (isSelectable()) {
+            if (selected) {
+                this.selected = true;
+                view.setSelected(true);
+            } else {
+                this.selected = false;
+                view.setSelected(false);
+            }
+        }
+    }
+
     private void setupPageLayout() {
         view.setupPageLayout();
+    }
+
+    @Override
+    public Map<String, String> getProperties() {
+        return properties;
+    }
+
+    @Override
+    public void setProperty(String property, String value) {
+        properties.put(property, value);
+        layoutComponent.getProperties().put(property, value);
+        this.updateView();
+    }
+
+    @Override
+    public void removeProperty(String property) {
+        properties.remove(property);
+        layoutComponent.getProperties().remove(property);
+        this.updateView();
+    }
+
+    @Override
+    public void clearProperties() {
+        properties.clear();
+        layoutComponent.getProperties().clear();
+        this.updateView();
+    }
+
+    @Override
+    public List<PropertyEditorCategory> getPropertyCategories() {
+        return view.getPropertyCategories();
     }
 
     protected boolean hasConfiguration() {
@@ -154,7 +240,7 @@ public class ComponentColumn implements Column {
 
     public void dragStartComponent() {
         dndManager.dragComponent(layoutComponent,
-                                 parentId,
+                                 parentElement.getId(),
                                  this);
     }
 
@@ -205,7 +291,7 @@ public class ComponentColumn implements Column {
 
     public void resizeLeft() {
         columnResizeEvent.fire(new ColumnResizeEvent(id,
-                                                     parentId).left());
+                                                     parentElement.getId()).left());
     }
 
     public boolean canResizeRight() {
@@ -217,7 +303,7 @@ public class ComponentColumn implements Column {
 
     public void resizeRight() {
         columnResizeEvent.fire(new ColumnResizeEvent(id,
-                                                     parentId).right());
+                                                     parentElement.getId()).right());
     }
 
     public void recalculateWidth() {
@@ -289,14 +375,6 @@ public class ComponentColumn implements Column {
         return view;
     }
 
-    @Override
-    public String getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
 
     public LayoutDragComponentHelper getLayoutDragComponentHelper() {
         return layoutDragComponentHelper;
@@ -325,6 +403,18 @@ public class ComponentColumn implements Column {
         return columnHeight;
     }
 
+    public void onSelected() {
+        if (isSelectable()) {
+            if (selected) {
+                selected = false;
+                columnUnselectEvent.fire(new LayoutEditorElementUnselectEvent(this));
+            } else {
+                selected = true;
+                columnSelectEvent.fire(new LayoutEditorElementSelectEvent(this));
+            }
+        }
+    }
+
     public interface View extends UberElement<ComponentColumn> {
 
         void setWidth(String size);
@@ -349,5 +439,9 @@ public class ComponentColumn implements Column {
         void setupPageLayout();
 
         void setColumnHeight(Integer columnHeight);
+
+        void setSelected(boolean selected);
+
+        List<PropertyEditorCategory> getPropertyCategories();
     }
 }

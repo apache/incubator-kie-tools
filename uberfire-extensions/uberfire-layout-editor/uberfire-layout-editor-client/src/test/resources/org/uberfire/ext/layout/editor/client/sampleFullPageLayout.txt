@@ -8,10 +8,12 @@
   "rows": [
     {
       "height": "2",
+      "properties": {},
       "layoutColumns": [
         {
           "span": "12",
           "height": "12",
+          "properties": {},
           "rows": [],
           "layoutComponents": [
             {
@@ -26,10 +28,12 @@
     },
     {
       "height": "10",
+      "properties": {},
       "layoutColumns": [
         {
           "span": "4",
           "height": "12",
+          "properties": {},
           "rows": [],
           "layoutComponents": [
             {
@@ -43,13 +47,16 @@
         {
           "span": "8",
           "height": "12",
+          "properties": {},
           "rows": [
             {
               "height": "12",
+              "properties": {},
               "layoutColumns": [
                 {
                   "span": "12",
                   "height": "3",
+                  "properties": {},
                   "rows": [],
                   "layoutComponents": [
                     {
@@ -63,6 +70,7 @@
                 {
                   "span": "12",
                   "height": "3",
+                  "properties": {},
                   "rows": [],
                   "layoutComponents": [
                     {
@@ -76,6 +84,7 @@
                 {
                   "span": "12",
                   "height": "6",
+                  "properties": {},
                   "rows": [],
                   "layoutComponents": [
                     {
