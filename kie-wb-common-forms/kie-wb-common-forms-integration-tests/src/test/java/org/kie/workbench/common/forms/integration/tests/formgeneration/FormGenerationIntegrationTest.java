@@ -24,7 +24,6 @@ import java.util.stream.Stream;
 
 import org.eclipse.bpmn2.Definitions;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
-import org.jbpm.simulation.util.BPMN2Utils;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -51,6 +50,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.type.SubFormFieldType;
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.kie.workbench.common.forms.fields.test.TestMetaDataEntryManager;
+import org.kie.workbench.common.forms.integration.tests.TestUtils;
 import org.kie.workbench.common.forms.jbpm.model.authoring.AbstractJBPMFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.document.provider.DocumentFieldProvider;
 import org.kie.workbench.common.forms.jbpm.model.authoring.document.type.DocumentFieldType;
@@ -114,7 +114,7 @@ public class FormGenerationIntegrationTest {
             PREPARED_NESTED_FORMS_FOLDER = "nestedforms",
             JAVA_MODEL_FOLDER = "data-object-sources",
             DEFINITIONS_FOLDER = "definitions",
-            PROCESS_DEFINITION = DEFINITIONS_FOLDER + "/" + PROCESS_NAME + ".bpmn2";
+            DEFINITION_PATH = DEFINITIONS_FOLDER + "/" + PROCESS_NAME + ".bpmn2";
 
     private static BPMNVFSFormDefinitionGeneratorService service;
 
@@ -176,9 +176,7 @@ public class FormGenerationIntegrationTest {
 
         moduleClassLoader = FormGenerationIntegrationTest.class.getClassLoader();
 
-        formGenerationProcessDefinitions = BPMN2Utils.getDefinitions(
-                FormGenerationIntegrationTest.class.getResourceAsStream(PROCESS_DEFINITION)
-        );
+        formGenerationProcessDefinitions = TestUtils.getDefinitionsFromResources(FormGenerationIntegrationTest.class, DEFINITION_PATH);
 
         formModelerContent = new FormModelerContent();
         formEditorHelper = new FormEditorHelper(fieldManager, null);
