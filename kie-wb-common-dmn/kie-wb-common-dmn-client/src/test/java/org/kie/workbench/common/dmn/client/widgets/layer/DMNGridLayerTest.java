@@ -33,9 +33,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionContainer;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.dnd.DelegatingGridWidgetDndMouseMoveHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -46,6 +49,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -163,10 +167,44 @@ public class DMNGridLayerTest {
         GwtMockito.useProviderForType(Group.class, clazz -> ghostGroup);
         doReturn(new HashSet<>(Arrays.asList(container, expressionGrid))).when(gridLayer).getGridWidgets();
         doReturn(ghostRectangle).when(gridLayer).getGhostRectangle();
-        when(expressionGrid.isSelected()).thenReturn(true);
+        doReturn(true).when(expressionGrid).isSelected();
 
         gridLayer.doBatch();
 
+        assertGhostRendering();
+    }
+
+    @Test
+    public void testGhostRenderingLiteralExpression() {
+        final LiteralExpressionGrid literalExpressionGrid = mock(LiteralExpressionGrid.class);
+        final GridCellTuple parentGridCellTuple = new GridCellTuple(0, 0, container);
+        GwtMockito.useProviderForType(Group.class, clazz -> ghostGroup);
+        doReturn(new HashSet<>(Arrays.asList(container, literalExpressionGrid))).when(gridLayer).getGridWidgets();
+        doReturn(ghostRectangle).when(gridLayer).getGhostRectangle();
+        doReturn(true).when(literalExpressionGrid).isSelected();
+        doReturn(parentGridCellTuple).when(literalExpressionGrid).getParentInformation();
+
+        gridLayer.doBatch();
+
+        assertGhostRendering();
+    }
+
+    @Test
+    public void testGhostRenderingUndefinedExpression() {
+        final UndefinedExpressionGrid undefinedExpressionGrid = mock(UndefinedExpressionGrid.class);
+        final GridCellTuple parentGridCellTuple = new GridCellTuple(0, 0, container);
+        GwtMockito.useProviderForType(Group.class, clazz -> ghostGroup);
+        doReturn(new HashSet<>(Arrays.asList(container, undefinedExpressionGrid))).when(gridLayer).getGridWidgets();
+        doReturn(ghostRectangle).when(gridLayer).getGhostRectangle();
+        doReturn(true).when(undefinedExpressionGrid).isSelected();
+        doReturn(parentGridCellTuple).when(undefinedExpressionGrid).getParentInformation();
+
+        gridLayer.doBatch();
+
+        assertGhostRendering();
+    }
+
+    private void assertGhostRendering() {
         verify(ghostRectangle).setWidth(eq(CONTAINER_WIDTH + BaseExpressionGridTheme.STROKE_WIDTH));
         verify(ghostRectangle).setHeight(eq(CONTAINER_HEIGHT + BaseExpressionGridTheme.STROKE_WIDTH));
         verify(ghostRectangle).setFillColor(ColorName.WHITE);
