@@ -39,7 +39,8 @@ public interface PerspectiveIds {
     String EXECUTION_ERRORS = "ExecutionErrors";
     String TASKS = "Tasks";
     String TASKS_ADMIN = "TaskAdmin";
-    String PROCESS_DASHBOARD = "DashboardPerspective";
+    String PROCESS_DASHBOARD = "ProcessDashboardPerspective";
+    String TASK_DASHBOARD = "TaskDashboardPerspective";
     String CONTENT_MANAGEMENT = "ContentManagerPerspective";
     String DATASOURCE_MANAGEMENT = "DataSourceManagementPerspective";
     String ADMIN = "AdminPagePerspective";
