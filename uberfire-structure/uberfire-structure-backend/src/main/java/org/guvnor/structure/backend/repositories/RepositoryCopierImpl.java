@@ -96,11 +96,14 @@ public class RepositoryCopierImpl
         final org.uberfire.java.nio.file.Path originRepositoryRoot = Paths.convert(originRoot);
 
         ioService.startBatch(nioTargetRepositoryRoot.getFileSystem());
-
-        copyFolders(nioTargetRepositoryRoot,
-                    originRepositoryRoot);
-        copyRootFiles(targetRoot,
-                      originRepositoryRoot);
+        try {
+            copyFolders(nioTargetRepositoryRoot,
+                        originRepositoryRoot);
+            copyRootFiles(targetRoot,
+                          originRepositoryRoot);
+        } finally {
+            ioService.endBatch();
+        }
 
         if (!branchExisted) {
             fireNewBranchEvent(targetRoot,

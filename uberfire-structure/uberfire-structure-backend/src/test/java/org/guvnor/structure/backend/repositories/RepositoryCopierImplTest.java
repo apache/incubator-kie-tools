@@ -18,16 +18,17 @@ package org.guvnor.structure.backend.repositories;
 import java.net.URI;
 
 import org.guvnor.structure.repositories.NewBranchEvent;
+import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mocks.FileSystemTestingUtils;
 
@@ -52,11 +53,14 @@ public class RepositoryCopierImplTest {
 
     private RepositoryCopierImpl copier;
 
+    private IOService ioService;
+
     @Before
     public void setUp() throws Exception {
         fileSystemTestingUtils.setup();
+        ioService = spy(fileSystemTestingUtils.getIoService());
 
-        copier = new RepositoryCopierImpl(fileSystemTestingUtils.getIoService(),
+        copier = new RepositoryCopierImpl(ioService,
                                           newBranchEventEvent,
                                           configuredRepositories,
                                           repositoryService);
@@ -74,9 +78,7 @@ public class RepositoryCopierImplTest {
     }
 
     @Test
-    @Ignore
-    public void noBranch() throws Exception {
-
+    public void withExistingBranch() throws Exception {
         final org.uberfire.java.nio.file.Path nioFrom = fileSystemTestingUtils.getIoService().get(URI.create(PATH_PREFIX + "from"));
         final Path from = Paths.convert(nioFrom);
 
@@ -91,11 +93,14 @@ public class RepositoryCopierImplTest {
 
         fileSystemTestingUtils.getIoService().createDirectory(nioTo);
 
-        doReturn(null).when(repositoryService).getRepository(to);
+        doReturn(mock(Repository.class)).when(repositoryService).getRepository(to);
 
         copier.copy(from,
                     to);
 
-        verify(newBranchEventEvent).fire(any(NewBranchEvent.class));
+        verify(ioService).startBatch(fileSystemTestingUtils.getFileSystem());
+        verify(ioService).endBatch();
+        verify(newBranchEventEvent,
+               never()).fire(any(NewBranchEvent.class));
     }
 }
