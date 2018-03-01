@@ -34,12 +34,10 @@
       <module name="org.jboss.xnio"/>
       <module name="org.slf4j"/>
       <module name="org.slf4j.ext"/>
-      <module name="org.slf4j.jcl-over-slf4j"/>
 
       <!-- Module dependencies for Wildfly security management provider. -->
       <module name="org.jboss.as.controller-client"/>
       <module name="org.jboss.as.domain-management"/>
-      <module name="org.jboss.sasl"/>
       <module name="org.jboss.msc"/>
       <module name="org.jboss.dmr"/>
     </dependencies>

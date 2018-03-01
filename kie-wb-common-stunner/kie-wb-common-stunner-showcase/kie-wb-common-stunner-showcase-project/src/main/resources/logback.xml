@@ -14,7 +14,7 @@
   <logger name="org.guvnor" level="info"/>
   <logger name="org.uberfire.backend" level="debug"/>
 
-  <root level="error">
+  <root level="info">
     <appender-ref ref="consoleAppender" />
   </root>
 

@@ -1,0 +1,15 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie.workbench</groupId>
+    <artifactId>kie-wb-common</artifactId>
+    <version>7.7.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>kie-wb-common-dev</artifactId>
+  <packaging>pom</packaging>
+  <name>Kie Workbench - Common - Dev</name>
+  <description>Kie Workbench - Common - Dev</description>
+  <modules>
+   <module>kie-wb-common-wf-sdm-extensions</module>
+  </modules>
+</project>

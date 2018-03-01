@@ -27,7 +27,7 @@ Running the application
         -Xms1g
         -Xss1M
         -XX:CompileThreshold=7000
-        -Derrai.jboss.home=$PATH_OF_YOUR_CLONED_KIE_WB_COMMON_REPO/kie-wb-common-stunner/kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-standalone/target/wildfly-10.1.0.Final
+        -Derrai.jboss.home=$PATH_OF_YOUR_CLONED_KIE_WB_COMMON_REPO/kie-wb-common-stunner/kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-standalone/target/wildfly-11.0.0.Final
         -Derrai.server.classOutput=$PATH_OF_YOUR_CLONED_KIE_WB_COMMON_REPO/kie-wb-common-stunner/kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-standalone/target
         -Djava.util.prefs.syncInterval=2000000
         -Dorg.uberfire.async.executor.safemode=true

@@ -16,17 +16,13 @@
   -->
 <jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.0">
   <deployment>
-    <exclusions>
-      <!-- Need to exclude the ecj jar in Wildfly 8 that does not support Java 8. -->
-      <module name="io.undertow.jsp"/>
-    </exclusions>
     <dependencies>
       <!-- IMPORTANT: when adding dependency (module) here, make sure it is a public one.
            Do not add private modules as there is no guarantee they won't be changed or
            removed in future. WildFly also generates warning(s) during the deployment if
            the WAR depends on private modules. -->
       <!-- Keep the alphabetical order! -->
-      <module name="deployment.jsp"/>
+      <module name="io.undertow.jsp"/>
       <module name="javax.activation.api"/>
       <module name="javax.ejb.api"/>
       <module name="javax.faces.api"/>
@@ -43,16 +39,10 @@
       <module name="org.hibernate.commons-annotations"/>
       <module name="org.hibernate.validator"/>
       <module name="org.jboss.ejb-client"/>
-      <module name="org.jboss.logging"/>
-      <module name="org.jboss.logmanager"/>
       <module name="org.jboss.marshalling"/>
       <module name="org.jboss.remote-naming"/>
       <module name="org.jboss.remoting3"/>
       <module name="org.jboss.xnio"/>
-      <module name="org.slf4j"/>
-      <module name="org.slf4j.ext"/>
-      <module name="org.slf4j.jcl-over-slf4j"/>
-
 
       <!-- ******************************************************************************************** -->
       <!-- EXCEPTIONS - private/unsupported modules that can not be directly added into the WEB-INF/lib -->
@@ -70,20 +60,9 @@
            required if using the concrete Wildfly/EAP provider for the user system management, as this webapp does by default. -->
       <module name="org.jboss.as.controller-client"/>
       <module name="org.jboss.as.domain-management"/>
-      <module name="org.jboss.sasl"/>
       <module name="org.jboss.msc"/>
       <module name="org.jboss.dmr"/>
     </dependencies>
   </deployment>
 
-  <!-- A dependency for all classes in io.undertow.jsp *except* those in Wildfly's ecj jar. -->
-  <module name="deployment.jsp">
-    <dependencies>
-      <module name="io.undertow.jsp" export="true">
-        <imports>
-          <exclude path="org/eclipse/jdt/**"/>
-        </imports>
-      </module>
-    </dependencies>
-  </module>
 </jboss-deployment-structure>

@@ -35,7 +35,7 @@
 
   <properties>
     <!-- Add the absolute path for $JBOSS_HOME below to manage another instance -->
-    <errai.jboss.home>${project.build.directory}/wildfly-${version.org.wildfly.gwt.sdm}</errai.jboss.home>
+    <errai.jboss.home>${project.build.directory}/wildfly-${version.org.jboss.errai.wildfly}</errai.jboss.home>
   </properties>
 
   <dependencies>
@@ -89,7 +89,12 @@
         </exclusion>
       </exclusions>
     </dependency>
-
+    <!-- Disables WF logging subsystem in SDM -->
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-wf-sdm-extensions</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <!-- dependencies added because of new illegal transitive dependency check -->
     <dependency>
       <groupId>org.apache.lucene</groupId>
