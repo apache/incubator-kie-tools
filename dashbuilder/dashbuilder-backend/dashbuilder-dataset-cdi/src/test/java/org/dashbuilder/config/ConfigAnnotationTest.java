@@ -31,7 +31,7 @@ import org.junit.runner.RunWith;
 import org.dashbuilder.pojo.Bean;
 import org.dashbuilder.pojo.BeanExt;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
 public class ConfigAnnotationTest extends BaseCDITest {
