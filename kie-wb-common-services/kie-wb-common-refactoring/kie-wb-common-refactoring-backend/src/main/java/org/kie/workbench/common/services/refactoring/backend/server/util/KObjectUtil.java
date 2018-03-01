@@ -16,10 +16,9 @@
 
 package org.kie.workbench.common.services.refactoring.backend.server.util;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Set;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.model.KObjectKey;
 import org.uberfire.ext.metadata.model.KProperty;
@@ -31,16 +30,6 @@ import org.uberfire.java.nio.file.Path;
 import static org.apache.commons.codec.binary.Base64.encodeBase64String;
 
 public class KObjectUtil {
-
-    private static final MessageDigest DIGEST;
-
-    static {
-        try {
-            DIGEST = MessageDigest.getInstance("SHA1");
-        } catch (final NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     private static final MetaType META_TYPE = new MetaType() {
         @Override
@@ -161,6 +150,7 @@ public class KObjectUtil {
         if (input == null || input.trim().length() == 0) {
             return "--";
         }
-        return encodeBase64String(DIGEST.digest(input.getBytes()));
+
+        return encodeBase64String(DigestUtils.sha1(input));
     }
 }
