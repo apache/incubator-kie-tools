@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconPosition;
+import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.html.Span;
 import org.uberfire.client.util.CSSLocatorsUtils;
@@ -67,6 +68,7 @@ public abstract class AbstractDockItem extends Composite {
         if (getDock().getIconType() != null) {
             itemButton.setIcon(getIcon());
             itemButton.setIconFixedWidth(true);
+            itemButton.setIconSize(IconSize.LARGE);
             itemButton.setIconPosition(IconPosition.LEFT);
         } else {
             configureImageIcon(itemButton,
