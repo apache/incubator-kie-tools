@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Optional;
 import javax.enterprise.event.Event;
 
-import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
@@ -231,61 +230,70 @@ public class ExamplesServiceImplRepositoryNamesTest {
 
     @Test
     public void nameIsTaken() {
-        doReturn(mock(Repository.class)).when(repositoryService).getRepositoryFromSpace(any(Space.class), eq("module1"));
+        String module1 = "module1";
+        String module1_1 = "module1 [1]";
+        doReturn(mock(Repository.class)).when(repositoryService).getRepositoryFromSpace(any(Space.class),
+                                                                                        eq(module1));
 
         WorkspaceProject project1 = mock(WorkspaceProject.class);
-        doReturn("module1").when(project1).getName();
+        doReturn(module1).when(project1).getName();
         List<WorkspaceProject> projects = new ArrayList<>();
         projects.add(project1);
         projects.add(project1);
         doReturn(projects).when(projectService).getAllWorkspaceProjectsByName(any(),
-                                                                              eq("module1"));
+                                                                              eq(module1));
+
+        doReturn(module1_1).when(projectService).createFreshProjectName(any(),
+                                                                        eq(module1));
 
         service.setupExamples(exampleOrganizationalUnit,
                               exampleProjects);
 
-        verify(repositoryCopier).copy(any(OrganizationalUnit.class),
-                                      eq("module1-2"),
-                                      any(Path.class));
         verify(projectScreenService).save(any(),
                                           modelCapture.capture(),
                                           any());
         final ProjectScreenModel model = modelCapture.getValue();
-        assertEquals("module1 [2]",
+        assertEquals(module1_1,
                      model.getPOM().getName());
     }
 
     @Test
     public void evenTheSecundaryNameIsTaken() {
-        doReturn(mock(Repository.class)).when(repositoryService).getRepositoryFromSpace(any(Space.class), eq("module1"));
-        doReturn(mock(Repository.class)).when(repositoryService).getRepositoryFromSpace(any(Space.class), eq("module1-2"));
+        String module = "module1";
+        String module_1 = "module1 [1]";
+        String module_2 = "module1 [2]";
+
+        doReturn(mock(Repository.class)).when(repositoryService).getRepositoryFromSpace(any(Space.class),
+                                                                                        eq(module));
+        doReturn(mock(Repository.class)).when(repositoryService).getRepositoryFromSpace(any(Space.class),
+                                                                                        eq(module_1));
+
+        doReturn(module_2).when(projectService).createFreshProjectName(any(),
+                                                                       eq(module));
 
         WorkspaceProject project1 = mock(WorkspaceProject.class);
-        doReturn("module1").when(project1).getName();
+        doReturn(module).when(project1).getName();
         List<WorkspaceProject> projects1 = new ArrayList<>();
         projects1.add(project1);
         projects1.add(project1);
         doReturn(projects1).when(projectService).getAllWorkspaceProjectsByName(any(),
-                                                                              eq("module1"));
+                                                                               eq(module));
 
         WorkspaceProject project2 = mock(WorkspaceProject.class);
-        doReturn("module1 [2]").when(project2).getName();
+        doReturn(module_1).when(project2).getName();
         List<WorkspaceProject> projects2 = new ArrayList<>();
         projects2.add(project2);
         doReturn(projects2).when(projectService).getAllWorkspaceProjectsByName(any(),
-                                                                              eq("module1 [2]"));
+                                                                               eq(module_1));
 
         service.setupExamples(exampleOrganizationalUnit,
                               exampleProjects);
 
-        verify(repositoryCopier).copy(any(OrganizationalUnit.class),
-                                      eq("module1-3"),
-                                      any(Path.class));
         verify(projectScreenService).save(any(),
                                           modelCapture.capture(),
                                           any());
         final ProjectScreenModel model = modelCapture.getValue();
-        assertEquals("module1 [3]",
+        assertEquals(module_2,
                      model.getPOM().getName());
     }
 }

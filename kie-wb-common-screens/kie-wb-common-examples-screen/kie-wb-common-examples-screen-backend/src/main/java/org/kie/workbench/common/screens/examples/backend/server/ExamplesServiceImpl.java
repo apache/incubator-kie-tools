@@ -72,7 +72,6 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
-import org.uberfire.spaces.Space;
 import org.uberfire.spaces.SpacesAPI;
 
 import static org.guvnor.structure.repositories.EnvironmentParameters.SCHEME;
@@ -383,10 +382,8 @@ public class ExamplesServiceImpl implements ExamplesService {
 
         for (final ExampleProject exampleProject : exampleProjects) {
             try {
-                final String newRepositoryName = resolveRepositoryName(targetOU,
-                                                                       exampleProject);
                 final Repository targetRepository = repositoryCopier.copy(targetOU,
-                                                                          newRepositoryName,
+                                                                          exampleProject.getName(),
                                                                           exampleProject.getRoot());
 
                 // Signal creation of new Project (Creation of OU and Repository, if applicable,
@@ -414,18 +411,14 @@ public class ExamplesServiceImpl implements ExamplesService {
 
     private WorkspaceProject renameIfNecessary(final OrganizationalUnit ou,
                                                final WorkspaceProject project) {
-        int i = 1;
+
         String name = project.getName();
         Collection<WorkspaceProject> projectsWithSameName = projectService.getAllWorkspaceProjectsByName(ou,
                                                                                                          name);
 
         if (projectsWithSameName.size() > 1) {
-            while (!projectsWithSameName.isEmpty()) {
-                i++;
-                name = project.getName() + " [" + i + "]";
-                projectsWithSameName = projectService.getAllWorkspaceProjectsByName(ou,
-                                                                                    name);
-            }
+            name = this.projectService.createFreshProjectName(ou,
+                                                              project.getName());
         }
 
         if (!name.equals(project.getName())) {
@@ -439,20 +432,6 @@ public class ExamplesServiceImpl implements ExamplesService {
         }
 
         return project;
-    }
-
-    private String resolveRepositoryName(final OrganizationalUnit targetOU,
-                                         final ExampleProject exampleProject) {
-        final Space space = spaces.getSpace(targetOU.getName());
-        final String newRepositoryName = exampleProject.getName().replace(' ', '-');
-
-        int index = 1;
-        String suffix = "";
-        while (repositoryService.getRepositoryFromSpace(space, newRepositoryName + suffix) != null) {
-            suffix = "-" + ++index;
-        }
-
-        return newRepositoryName + suffix;
     }
 
     private OrganizationalUnit getOrganizationalUnit(String targetOUName) {
