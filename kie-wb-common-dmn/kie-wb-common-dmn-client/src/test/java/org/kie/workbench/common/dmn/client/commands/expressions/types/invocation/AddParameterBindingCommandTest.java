@@ -29,6 +29,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.NameColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.InvocationUIModelMapper;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
@@ -75,6 +76,9 @@ public class AddParameterBindingCommandTest {
     private ExpressionEditorDefinitions expressionEditorDefinitions;
 
     @Mock
+    private ListSelector listSelector;
+
+    @Mock
     private org.uberfire.mvp.Command canvasOperation;
 
     @Mock
@@ -116,14 +120,8 @@ public class AddParameterBindingCommandTest {
         this.uiModelMapper = new InvocationUIModelMapper(gridWidget,
                                                          () -> uiModel,
                                                          () -> Optional.of(invocation),
-                                                         () -> expressionEditorDefinitions);
-
-        this.command = new AddParameterBindingCommand(invocation,
-                                                      binding,
-                                                      uiModel,
-                                                      uiModelRow,
-                                                      uiModelMapper,
-                                                      canvasOperation);
+                                                         () -> expressionEditorDefinitions,
+                                                         listSelector);
 
         doReturn(ruleManager).when(handler).getRuleManager();
         doReturn(0).when(uiRowNumberColumn).getIndex();
@@ -134,8 +132,20 @@ public class AddParameterBindingCommandTest {
         doReturn(Optional.empty()).when(expressionEditorDefinitions).getExpressionEditorDefinition(any(Optional.class));
     }
 
+    private void makeCommand() {
+        this.command = new AddParameterBindingCommand(invocation,
+                                                      binding,
+                                                      uiModel,
+                                                      uiModelRow,
+                                                      invocation.getBinding().size(),
+                                                      uiModelMapper,
+                                                      canvasOperation);
+    }
+
     @Test
     public void testGraphCommandAllow() {
+        makeCommand();
+
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
@@ -146,6 +156,8 @@ public class AddParameterBindingCommandTest {
     public void testGraphCommandExecuteWithParameters() {
         final Binding otherBinding = new Binding();
         invocation.getBinding().add(otherBinding);
+
+        makeCommand();
 
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
@@ -158,6 +170,8 @@ public class AddParameterBindingCommandTest {
 
     @Test
     public void testGraphCommandExecuteWithNoParameters() {
+        makeCommand();
+
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
@@ -171,6 +185,8 @@ public class AddParameterBindingCommandTest {
     public void testGraphCommandUndoWithParameters() {
         final Binding otherBinding = new Binding();
         invocation.getBinding().add(otherBinding);
+
+        makeCommand();
 
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
@@ -186,6 +202,8 @@ public class AddParameterBindingCommandTest {
 
     @Test
     public void testGraphCommandUndoWithNoParameters() {
+        makeCommand();
+
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
         //Add parameter and then undo
@@ -209,6 +227,8 @@ public class AddParameterBindingCommandTest {
 
     @Test
     public void testCanvasCommandAllow() {
+        makeCommand();
+
         //There are no Canvas mutations by the
         final Command<AbstractCanvasHandler, CanvasViolation> c = command.newCanvasCommand(handler);
 
@@ -218,6 +238,8 @@ public class AddParameterBindingCommandTest {
 
     @Test
     public void testCanvasCommandExecute() {
+        makeCommand();
+
         //Add Graph entry first as InvocationUIModelMapper relies on the model being first updated
         command.newGraphCommand(handler).execute(gce);
 
@@ -250,6 +272,8 @@ public class AddParameterBindingCommandTest {
 
     @Test
     public void testCanvasCommandExecuteMultipleEntries() {
+        makeCommand();
+
         // first row
         command.newGraphCommand(handler).execute(gce);
         final Command<AbstractCanvasHandler, CanvasViolation> firstEntryCanvasCommand = command.newCanvasCommand(handler);
@@ -266,6 +290,7 @@ public class AddParameterBindingCommandTest {
                                                  secondRowEntry,
                                                  uiModel,
                                                  uiSecondModelRow,
+                                                 1,
                                                  uiModelMapper,
                                                  canvasOperation);
         command.newGraphCommand(handler).execute(gce);
@@ -305,6 +330,8 @@ public class AddParameterBindingCommandTest {
 
     @Test
     public void testCanvasCommandUndo() {
+        makeCommand();
+
         //Add Graph entry first as InvocationUIModelMapper relies on the model being first updated
         command.newGraphCommand(handler).execute(gce);
 

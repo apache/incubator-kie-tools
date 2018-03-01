@@ -24,7 +24,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
 public class UndefinedExpressionCell extends DMNGridCell<String> {
 
-    private ListSelector listSelector;
+    private final ListSelector listSelector;
 
     public UndefinedExpressionCell(final ListSelector listSelector) {
         super(new BaseGridCellValue<>("--"));

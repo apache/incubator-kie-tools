@@ -24,7 +24,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 
 public class RelationGridCell<T> extends DMNGridCell<T> {
 
-    private ListSelector listSelector;
+    private final ListSelector listSelector;
 
     public RelationGridCell(final GridCellValue<T> value,
                             final ListSelector listSelector) {

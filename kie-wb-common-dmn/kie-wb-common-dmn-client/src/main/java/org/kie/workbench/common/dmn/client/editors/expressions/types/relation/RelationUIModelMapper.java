@@ -31,7 +31,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowS
 
 public class RelationUIModelMapper extends BaseUIModelMapper<Relation> {
 
-    private ListSelector listSelector;
+    private final ListSelector listSelector;
 
     public RelationUIModelMapper(final Supplier<GridData> uiModel,
                                  final Supplier<Optional<Relation>> dmnModel,

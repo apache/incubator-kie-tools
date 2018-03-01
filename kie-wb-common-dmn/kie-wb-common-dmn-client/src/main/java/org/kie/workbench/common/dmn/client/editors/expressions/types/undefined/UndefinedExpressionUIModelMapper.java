@@ -29,9 +29,9 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 public class UndefinedExpressionUIModelMapper extends BaseUIModelMapper<Expression> {
 
-    private ListSelector listSelector;
+    private final ListSelector listSelector;
 
-    private HasExpression hasExpression;
+    private final HasExpression hasExpression;
 
     public UndefinedExpressionUIModelMapper(final Supplier<GridData> uiModel,
                                             final Supplier<Optional<Expression>> dmnModel,

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.invocation;
 
 import java.util.Optional;
 
@@ -22,12 +22,12 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelect
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 
-public class ContextGridCell<T> extends DMNGridCell<T> {
+public class InvocationGridCell<T> extends DMNGridCell<T> {
 
     private final ListSelector listSelector;
 
-    public ContextGridCell(final GridCellValue<T> value,
-                           final ListSelector listSelector) {
+    public InvocationGridCell(final GridCellValue<T> value,
+                              final ListSelector listSelector) {
         super(value);
         this.listSelector = listSelector;
     }

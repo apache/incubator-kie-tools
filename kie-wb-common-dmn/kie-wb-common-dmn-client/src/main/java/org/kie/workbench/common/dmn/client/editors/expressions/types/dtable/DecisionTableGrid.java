@@ -61,12 +61,12 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
 
     public static final String DESCRIPTION_GROUP = "DecisionTable$Description";
 
-    private TextBoxSingletonDOMElementFactory textBoxFactory;
-    private TextAreaSingletonDOMElementFactory textAreaFactory;
-    private TextBoxSingletonDOMElementFactory headerTextBoxFactory;
-    private TextAreaSingletonDOMElementFactory headerTextAreaFactory;
+    private final TextBoxSingletonDOMElementFactory textBoxFactory;
+    private final TextAreaSingletonDOMElementFactory textAreaFactory;
+    private final TextBoxSingletonDOMElementFactory headerTextBoxFactory;
+    private final TextAreaSingletonDOMElementFactory headerTextAreaFactory;
 
-    private DecisionTableGridControls controls;
+    private final DecisionTableGridControls controls;
 
     public DecisionTableGrid(final GridCellTuple parent,
                              final HasExpression hasExpression,

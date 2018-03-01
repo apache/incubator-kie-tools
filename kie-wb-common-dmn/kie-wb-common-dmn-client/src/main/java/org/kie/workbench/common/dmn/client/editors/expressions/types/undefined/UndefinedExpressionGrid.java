@@ -58,9 +58,9 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
 
     private static final double PADDING = 0.0;
 
-    private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
-    private ListSelector listSelector;
-    private boolean isNested;
+    private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+    private final ListSelector listSelector;
+    private final boolean isNested;
 
     public UndefinedExpressionGrid(final GridCellTuple parent,
                                    final HasExpression hasExpression,

@@ -21,7 +21,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,13 +32,17 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.AddParameterBindingCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.DeleteParameterBindingCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.NameColumnHeaderMetaData;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -53,22 +56,36 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mvp.Command;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class InvocationGridTest {
+
+    private final static int INSERT_PARAMETER_ABOVE = 0;
+
+    private final static int INSERT_PARAMETER_BELOW = 1;
+
+    private final static int DELETE_PARAMETER = 2;
 
     @Mock
     private DMNGridPanel gridPanel;
@@ -83,7 +100,7 @@ public class InvocationGridTest {
     private ClientSession session;
 
     @Mock
-    private AbstractCanvasHandler canvasContext;
+    private AbstractCanvasHandler handler;
 
     @Mock
     private GraphCommandExecutionContext graphContext;
@@ -98,16 +115,13 @@ public class InvocationGridTest {
     private EventSourceMock<ExpressionEditorSelectedEvent> editorSelectedEvent;
 
     @Mock
-    private ManagedInstance<InvocationGridControls> controlsProvider;
-
-    @Mock
-    private InvocationGridControls controls;
-
-    @Mock
     private CellEditorControls cellEditorControls;
 
     @Mock
     private TranslationService translationService;
+
+    @Mock
+    private ListSelector listSelector;
 
     @Mock
     private GridCellTuple parent;
@@ -127,6 +141,9 @@ public class InvocationGridTest {
     @Captor
     private ArgumentCaptor<AddParameterBindingCommand> addParameterBindingCommandCaptor;
 
+    @Captor
+    private ArgumentCaptor<DeleteParameterBindingCommand> deleteParameterBindingCommandCaptor;
+
     private LiteralExpression literalExpression = new LiteralExpression();
 
     private InvocationGrid grid;
@@ -142,7 +159,7 @@ public class InvocationGridTest {
                                                                                      editorSelectedEvent,
                                                                                      cellEditorControls,
                                                                                      translationService,
-                                                                                     controlsProvider);
+                                                                                     listSelector);
 
         final Optional<Invocation> expression = definition.getModelClass();
         expression.ifPresent(invocation -> ((LiteralExpression) invocation.getExpression()).setText("invocation-expression"));
@@ -150,7 +167,6 @@ public class InvocationGridTest {
         expressionEditorDefinitions.add((ExpressionEditorDefinition) definition);
         expressionEditorDefinitions.add(literalExpressionEditorDefinition);
 
-        doReturn(controls).when(controlsProvider).get();
         doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
         doReturn(Optional.of(literalExpression)).when(literalExpressionEditorDefinition).getModelClass();
         doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
@@ -160,18 +176,20 @@ public class InvocationGridTest {
                                                                                                          anyBoolean());
 
         doReturn(session).when(sessionManager).getCurrentSession();
-        doReturn(canvasContext).when(session).getCanvasHandler();
-        doReturn(graphContext).when(canvasContext).getGraphExecutionContext();
+        doReturn(handler).when(session).getCanvasHandler();
+        doReturn(graphContext).when(handler).getGraphExecutionContext();
 
         final Decision decision = new Decision();
         decision.setName(new Name("name"));
         final Optional<HasName> hasName = Optional.of(decision);
 
-        this.grid = (InvocationGrid) definition.getEditor(parent,
-                                                          hasExpression,
-                                                          expression,
-                                                          hasName,
-                                                          false).get();
+        this.grid = spy((InvocationGrid) definition.getEditor(parent,
+                                                              hasExpression,
+                                                              expression,
+                                                              hasName,
+                                                              false).get());
+
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
     }
 
     @Test
@@ -234,15 +252,113 @@ public class InvocationGridTest {
     }
 
     @Test
-    public void testAddParameterBinding() {
-        grid.addParameterBinding();
+    public void testGetItems() {
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
 
-        verify(sessionCommandManager).execute(eq(canvasContext),
+        assertThat(items.size()).isEqualTo(3);
+        assertListSelectorItem(items.get(INSERT_PARAMETER_ABOVE),
+                               DMNEditorConstants.InvocationEditor_InsertParameterAbove);
+        assertListSelectorItem(items.get(INSERT_PARAMETER_BELOW),
+                               DMNEditorConstants.InvocationEditor_InsertParameterBelow);
+        assertListSelectorItem(items.get(DELETE_PARAMETER),
+                               DMNEditorConstants.InvocationEditor_DeleteParameter);
+    }
+
+    private void assertListSelectorItem(final HasListSelectorControl.ListSelectorItem item,
+                                        final String text) {
+        assertThat(item).isInstanceOf(HasListSelectorControl.ListSelectorTextItem.class);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) item;
+        assertThat(ti.getText()).isEqualTo(text);
+    }
+
+    @Test
+    public void testOnItemSelected() {
+        final Command command = mock(Command.class);
+        final HasListSelectorControl.ListSelectorTextItem listSelectorItem = mock(HasListSelectorControl.ListSelectorTextItem.class);
+        when(listSelectorItem.getCommand()).thenReturn(command);
+
+        grid.onItemSelected(listSelectorItem);
+
+        verify(command).execute();
+    }
+
+    @Test
+    public void testOnItemSelectedInsertParameterAbove() {
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_PARAMETER_ABOVE);
+
+        grid.onItemSelected(ti);
+
+        verify(cellEditorControls).hide();
+        verify(grid).addParameterBinding(eq(0));
+    }
+
+    @Test
+    public void testOnItemSelectedInsertParameterBelow() {
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_PARAMETER_BELOW);
+
+        grid.onItemSelected(ti);
+
+        verify(cellEditorControls).hide();
+        verify(grid).addParameterBinding(eq(1));
+    }
+
+    @Test
+    public void testOnItemSelectedDeleteParameter() {
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(DELETE_PARAMETER);
+
+        grid.onItemSelected(ti);
+
+        verify(cellEditorControls).hide();
+        verify(grid).deleteParameterBinding(eq(0));
+    }
+
+    @Test
+    public void testOnItemSelectedDeleteParameterEnabled() {
+        //Grid has one row from Invocation model. It cannot be deleted.
+        assertDeleteParameterEnabled(0, false);
+
+        //Grid has two rows. Rows 1 and 2 can be deleted.
+        grid.getModel().appendRow(new BaseGridRow());
+        assertDeleteParameterEnabled(0, true);
+        assertDeleteParameterEnabled(1, true);
+    }
+
+    private void assertDeleteParameterEnabled(final int uiRowIndex, final boolean enabled) {
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(uiRowIndex, 0);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(DELETE_PARAMETER);
+        assertThat(ti.isEnabled()).isEqualTo(enabled);
+    }
+
+    @Test
+    public void testAddParameterBinding() {
+        grid.addParameterBinding(0);
+
+        verify(sessionCommandManager).execute(eq(handler),
                                               addParameterBindingCommandCaptor.capture());
 
         final AddParameterBindingCommand addParameterBindingCommand = addParameterBindingCommandCaptor.getValue();
-        addParameterBindingCommand.execute(canvasContext);
+        addParameterBindingCommand.execute(handler);
 
+        verify(parent).onResize();
+        verify(gridPanel).refreshScrollPosition();
+        verify(gridPanel).updatePanelSize();
+        verify(gridLayer).batch();
+    }
+
+    @Test
+    public void testDeleteParameterBinding() {
+        grid.deleteParameterBinding(0);
+
+        verify(sessionCommandManager).execute(eq(handler),
+                                              deleteParameterBindingCommandCaptor.capture());
+
+        final DeleteParameterBindingCommand deleteParameterBindingCommand = deleteParameterBindingCommandCaptor.getValue();
+        deleteParameterBindingCommand.execute(handler);
+
+        verify(parent).onResize();
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
         verify(gridLayer).batch();

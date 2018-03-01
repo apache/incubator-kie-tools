@@ -53,8 +53,8 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Conte
 
     private static final String EXPRESSION_COLUMN_GROUP = "FunctionSupplementaryGrid$ExpressionColumn1";
 
-    private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
-    private ListSelector listSelector;
+    private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+    private final ListSelector listSelector;
 
     public FunctionSupplementaryGrid(final GridCellTuple parent,
                                      final HasExpression hasExpression,

@@ -35,9 +35,9 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition> {
 
-    private GridWidget gridWidget;
-    private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
-    private Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
+    private final GridWidget gridWidget;
+    private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+    private final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
 
     public FunctionUIModelMapper(final GridWidget gridWidget,
                                  final Supplier<GridData> uiModel,

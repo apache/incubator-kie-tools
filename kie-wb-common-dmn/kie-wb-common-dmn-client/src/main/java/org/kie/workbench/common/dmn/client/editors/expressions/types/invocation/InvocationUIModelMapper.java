@@ -28,6 +28,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
@@ -44,18 +45,22 @@ public class InvocationUIModelMapper extends BaseUIModelMapper<Invocation> {
 
     public static final int BINDING_EXPRESSION_COLUMN_INDEX = 2;
 
-    private GridWidget gridWidget;
+    private final GridWidget gridWidget;
 
-    private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+    private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+
+    private final ListSelector listSelector;
 
     public InvocationUIModelMapper(final GridWidget gridWidget,
                                    final Supplier<GridData> uiModel,
                                    final Supplier<Optional<Invocation>> dmnModel,
-                                   final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
+                                   final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
+                                   final ListSelector listSelector) {
         super(uiModel,
               dmnModel);
         this.gridWidget = gridWidget;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
+        this.listSelector = listSelector;
     }
 
     @Override
@@ -64,18 +69,20 @@ public class InvocationUIModelMapper extends BaseUIModelMapper<Invocation> {
         dmnModel.get().ifPresent(invocation -> {
             switch (columnIndex) {
                 case ROW_NUMBER_COLUMN_INDEX:
-                    uiModel.get().setCellValue(rowIndex,
-                                               columnIndex,
-                                               new BaseGridCellValue<>(rowIndex + 1));
+                    uiModel.get().setCell(rowIndex,
+                                          columnIndex,
+                                          () -> new InvocationGridCell<>(new BaseGridCellValue<>(rowIndex + 1),
+                                                                         listSelector));
                     uiModel.get().getCell(rowIndex,
                                           columnIndex).setSelectionStrategy(RowSelectionStrategy.INSTANCE);
                     break;
                 case BINDING_PARAMETER_COLUMN_INDEX:
                     final InformationItem variable = invocation.getBinding().get(rowIndex).getParameter();
                     final String name = variable.getName().getValue();
-                    uiModel.get().setCellValue(rowIndex,
-                                               columnIndex,
-                                               new BaseGridCellValue<>(name));
+                    uiModel.get().setCell(rowIndex,
+                                          columnIndex,
+                                          () -> new InvocationGridCell<>(new BaseGridCellValue<>(name),
+                                                                         listSelector));
                     break;
                 case BINDING_EXPRESSION_COLUMN_INDEX:
                     final Binding binding = invocation.getBinding().get(rowIndex);
@@ -90,9 +97,10 @@ public class InvocationUIModelMapper extends BaseUIModelMapper<Invocation> {
                                                                                  expression,
                                                                                  Optional.ofNullable(binding.getParameter()),
                                                                                  true);
-                        uiModel.get().setCellValue(rowIndex,
-                                                   columnIndex,
-                                                   new ExpressionCellValue(editor));
+                        uiModel.get().setCell(rowIndex,
+                                              columnIndex,
+                                              () -> new InvocationGridCell<>(new ExpressionCellValue(editor),
+                                                                             listSelector));
                     });
             }
         });

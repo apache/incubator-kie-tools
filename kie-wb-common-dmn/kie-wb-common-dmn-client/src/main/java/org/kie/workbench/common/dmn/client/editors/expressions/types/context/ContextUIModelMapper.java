@@ -40,11 +40,11 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
 
     public static final String DEFAULT_ROW_CAPTION = "default";
 
-    private GridWidget gridWidget;
+    private final GridWidget gridWidget;
 
-    private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+    private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
-    private ListSelector listSelector;
+    private final ListSelector listSelector;
 
     public ContextUIModelMapper(final GridWidget gridWidget,
                                 final Supplier<GridData> uiModel,

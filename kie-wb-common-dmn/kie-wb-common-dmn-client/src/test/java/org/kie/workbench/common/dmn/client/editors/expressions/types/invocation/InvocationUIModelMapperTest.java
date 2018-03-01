@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.mockito.Mock;
@@ -68,6 +69,9 @@ public class InvocationUIModelMapperTest {
 
     @Mock
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+
+    @Mock
+    private ListSelector listSelector;
 
     @Mock
     private ExpressionEditorDefinition literalExpressionEditorDefinition;
@@ -128,7 +132,8 @@ public class InvocationUIModelMapperTest {
         this.mapper = new InvocationUIModelMapper(gridWidget,
                                                   () -> uiModel,
                                                   () -> Optional.of(invocation),
-                                                  expressionEditorDefinitionsSupplier);
+                                                  expressionEditorDefinitionsSupplier,
+                                                  listSelector);
         this.cellValueSupplier = Optional::empty;
     }
 

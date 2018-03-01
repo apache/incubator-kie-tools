@@ -28,7 +28,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
 public class LiteralExpressionUIModelMapper extends BaseUIModelMapper<LiteralExpression> {
 
-    private ListSelector listSelector;
+    private final ListSelector listSelector;
 
     public LiteralExpressionUIModelMapper(final Supplier<GridData> uiModel,
                                           final Supplier<Optional<LiteralExpression>> dmnModel,

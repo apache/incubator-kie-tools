@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.invocation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -33,13 +35,17 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.AddParameterBindingCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.DeleteParameterBindingCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.NameColumnHeaderMetaData;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -51,12 +57,12 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
-public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIModelMapper> implements InvocationGridControls.Presenter {
+public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIModelMapper> implements HasListSelectorControl {
 
     private static final String EXPRESSION_COLUMN_GROUP = "InvocationGrid$ExpressionColumn1";
 
-    private final InvocationGridControls controls;
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+    private final ListSelector listSelector;
 
     public InvocationGrid(final GridCellTuple parent,
                           final HasExpression hasExpression,
@@ -70,7 +76,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
                           final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                           final CellEditorControls cellEditorControls,
                           final TranslationService translationService,
-                          final InvocationGridControls controls,
+                          final ListSelector listSelector,
                           final boolean isNested) {
         super(parent,
               hasExpression,
@@ -90,14 +96,12 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
               cellEditorControls,
               translationService,
               false);
-        this.controls = controls;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
+        this.listSelector = listSelector;
 
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
 
         super.doInitialisation();
-
-        this.controls.init(this);
     }
 
     @Override
@@ -111,7 +115,8 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
         return new InvocationUIModelMapper(this,
                                            this::getModel,
                                            () -> expression,
-                                           expressionEditorDefinitionsSupplier);
+                                           expressionEditorDefinitionsSupplier,
+                                           listSelector);
     }
 
     @Override
@@ -178,11 +183,42 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
 
     @Override
     public Optional<IsElement> getEditorControls() {
-        return Optional.of(controls);
+        return Optional.empty();
     }
 
     @Override
-    public void addParameterBinding() {
+    @SuppressWarnings("unused")
+    public List<ListSelectorItem> getItems(final int uiRowIndex,
+                                           final int uiColumnIndex) {
+        final List<ListSelectorItem> items = new ArrayList<>();
+        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.InvocationEditor_InsertParameterAbove),
+                                             true,
+                                             () -> {
+                                                 cellEditorControls.hide();
+                                                 expression.ifPresent(e -> addParameterBinding(uiRowIndex));
+                                             }));
+        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.InvocationEditor_InsertParameterBelow),
+                                             true,
+                                             () -> {
+                                                 cellEditorControls.hide();
+                                                 expression.ifPresent(e -> addParameterBinding(uiRowIndex + 1));
+                                             }));
+        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.InvocationEditor_DeleteParameter),
+                                             model.getRowCount() > 1,
+                                             () -> {
+                                                 cellEditorControls.hide();
+                                                 deleteParameterBinding(uiRowIndex);
+                                             }));
+        return items;
+    }
+
+    @Override
+    public void onItemSelected(final ListSelectorItem item) {
+        final ListSelectorTextItem li = (ListSelectorTextItem) item;
+        li.getCommand().execute();
+    }
+
+    void addParameterBinding(final int index) {
         expression.ifPresent(invocation -> {
             final Binding binding = new Binding();
             final InformationItem parameter = new InformationItem();
@@ -193,12 +229,29 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
                                                                          binding,
                                                                          model,
                                                                          new DMNGridRow(),
+                                                                         index,
                                                                          uiModelMapper,
                                                                          () -> {
+                                                                             parent.onResize();
                                                                              gridPanel.refreshScrollPosition();
                                                                              gridPanel.updatePanelSize();
                                                                              gridLayer.batch();
                                                                          }));
+        });
+    }
+
+    void deleteParameterBinding(final int index) {
+        expression.ifPresent(invocation -> {
+            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                          new DeleteParameterBindingCommand(invocation,
+                                                                            model,
+                                                                            index,
+                                                                            () -> {
+                                                                                parent.onResize();
+                                                                                gridPanel.refreshScrollPosition();
+                                                                                gridPanel.updatePanelSize();
+                                                                                gridLayer.batch();
+                                                                            }));
         });
     }
 }

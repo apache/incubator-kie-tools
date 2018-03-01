@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,6 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.InvocationUIModelMapper;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
@@ -37,32 +35,30 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBui
 import org.kie.workbench.common.stunner.core.graph.command.impl.AbstractGraphCommand;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
-public class AddParameterBindingCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
-                                                                                      VetoUndoCommand {
+public class DeleteParameterBindingCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
+                                                                                         VetoUndoCommand {
 
     private final Invocation invocation;
-    private final Binding binding;
     private final GridData uiModel;
-    private final DMNGridRow uiModelRow;
     private final int uiRowIndex;
-    private final InvocationUIModelMapper uiModelMapper;
     private final org.uberfire.mvp.Command canvasOperation;
 
-    public AddParameterBindingCommand(final Invocation invocation,
-                                      final Binding binding,
-                                      final GridData uiModel,
-                                      final DMNGridRow uiModelRow,
-                                      final int uiRowIndex,
-                                      final InvocationUIModelMapper uiModelMapper,
-                                      final org.uberfire.mvp.Command canvasOperation) {
+    private final Binding oldParameterBinding;
+    private final GridRow oldUiModelRow;
+
+    public DeleteParameterBindingCommand(final Invocation invocation,
+                                         final GridData uiModel,
+                                         final int uiRowIndex,
+                                         final org.uberfire.mvp.Command canvasOperation) {
         this.invocation = invocation;
-        this.binding = binding;
         this.uiModel = uiModel;
-        this.uiModelRow = uiModelRow;
         this.uiRowIndex = uiRowIndex;
-        this.uiModelMapper = uiModelMapper;
         this.canvasOperation = canvasOperation;
+
+        this.oldParameterBinding = invocation.getBinding().get(uiRowIndex);
+        this.oldUiModelRow = uiModel.getRow(uiRowIndex);
     }
 
     @Override
@@ -75,15 +71,14 @@ public class AddParameterBindingCommand extends AbstractCanvasGraphCommand imple
 
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
-                invocation.getBinding().add(uiRowIndex,
-                                            binding);
+                invocation.getBinding().remove(uiRowIndex);
 
                 return GraphCommandResultBuilder.SUCCESS;
             }
 
             @Override
             public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext gce) {
-                invocation.getBinding().remove(binding);
+                invocation.getBinding().add(uiRowIndex, oldParameterBinding);
 
                 return GraphCommandResultBuilder.SUCCESS;
             }
@@ -95,14 +90,7 @@ public class AddParameterBindingCommand extends AbstractCanvasGraphCommand imple
         return new AbstractCanvasCommand() {
             @Override
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler handler) {
-                uiModel.insertRow(uiRowIndex,
-                                  uiModelRow);
-                uiModelMapper.fromDMNModel(uiRowIndex,
-                                           InvocationUIModelMapper.ROW_NUMBER_COLUMN_INDEX);
-                uiModelMapper.fromDMNModel(uiRowIndex,
-                                           InvocationUIModelMapper.BINDING_PARAMETER_COLUMN_INDEX);
-                uiModelMapper.fromDMNModel(uiRowIndex,
-                                           InvocationUIModelMapper.BINDING_EXPRESSION_COLUMN_INDEX);
+                uiModel.deleteRow(uiRowIndex);
 
                 updateRowNumbers();
                 updateParentInformation();
@@ -114,8 +102,7 @@ public class AddParameterBindingCommand extends AbstractCanvasGraphCommand imple
 
             @Override
             public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler handler) {
-                final int rowIndex = uiModel.getRows().indexOf(uiModelRow);
-                uiModel.deleteRow(rowIndex);
+                uiModel.insertRow(uiRowIndex, oldUiModelRow);
 
                 updateRowNumbers();
                 updateParentInformation();

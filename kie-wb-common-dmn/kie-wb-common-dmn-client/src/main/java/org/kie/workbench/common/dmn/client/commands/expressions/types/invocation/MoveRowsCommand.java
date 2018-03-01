@@ -149,7 +149,7 @@ public class MoveRowsCommand extends AbstractCanvasGraphCommand implements VetoE
     public void updateRowNumbers() {
         CommandUtils.updateRowNumbers(uiModel,
                                       IntStream.range(0,
-                                                      uiModel.getRowCount() - 1));
+                                                      uiModel.getRowCount()));
     }
 
     public void updateParentInformation() {

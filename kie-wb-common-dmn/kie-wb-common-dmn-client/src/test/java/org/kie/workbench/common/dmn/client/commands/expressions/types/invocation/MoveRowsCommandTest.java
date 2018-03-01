@@ -375,12 +375,9 @@ public class MoveRowsCommandTest {
 
     private void assertUiModelDefinition(final int[] rowIndexes) {
         int rowIndexesIterator = 0;
-        for (int rowIndex : rowIndexes) {
-            // row number not updated for last row
-            if (rowIndex != rowIndexes[rowIndexes.length - 1]) {
-                assertEquals(rowIndexesIterator + 1,
-                             uiModel.getCell(rowIndexesIterator, 0).getValue().getValue());
-            }
+        for (@SuppressWarnings("unused") int rowIndex : rowIndexes) {
+            assertEquals(rowIndexesIterator + 1,
+                         uiModel.getCell(rowIndexesIterator, 0).getValue().getValue());
             assertEquals("name" + rowIndexes[rowIndexesIterator],
                          uiModel.getCell(rowIndexesIterator, 1).getValue().getValue());
             assertEquals("editor" + rowIndexes[rowIndexesIterator],

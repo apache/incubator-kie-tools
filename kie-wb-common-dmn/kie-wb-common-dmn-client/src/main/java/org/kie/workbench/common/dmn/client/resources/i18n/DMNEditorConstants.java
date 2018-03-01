@@ -75,4 +75,13 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String RelationEditor_DeleteColumn = "RelationEditor.DeleteColumn";
+
+    @TranslationKey(defaultValue = "")
+    public static final String InvocationEditor_InsertParameterAbove = "InvocationEditor.InsertParameterAbove";
+
+    @TranslationKey(defaultValue = "")
+    public static final String InvocationEditor_InsertParameterBelow = "InvocationEditor.InsertParameterBelow";
+
+    @TranslationKey(defaultValue = "")
+    public static final String InvocationEditor_DeleteParameter = "InvocationEditor.DeleteParameter";
 }

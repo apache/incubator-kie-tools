@@ -79,10 +79,10 @@ public abstract class BaseContextUIModelMapperTest<M extends ContextUIModelMappe
     private Supplier<Optional<GridCellValue<?>>> cellValueSupplier;
 
     @Mock
-    protected ListSelector listSelector;
+    protected Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
     @Mock
-    protected Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+    protected ListSelector listSelector;
 
     @Mock
     protected GridWidget gridWidget;
