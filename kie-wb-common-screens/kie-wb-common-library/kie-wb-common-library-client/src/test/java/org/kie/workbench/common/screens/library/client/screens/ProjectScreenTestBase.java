@@ -90,6 +90,8 @@ public class ProjectScreenTestBase {
         doReturn("mainModuleName").when(module).getModuleName();
         doReturn("modulePath").when(module).getIdentifier();
         doReturn(rootPath).when(module).getRootPath();
+        final Path pomPath = mock(Path.class);
+        doReturn(pomPath).when(module).getPomXMLPath();
 
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
         final Repository repository = mock(Repository.class);
