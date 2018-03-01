@@ -47,7 +47,6 @@ import javax.inject.Singleton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.backend.server.spaces.SpacesAPIImpl;
 import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.commons.services.cdi.Startable;
 import org.uberfire.commons.services.cdi.Startup;
@@ -179,14 +178,14 @@ public class SystemConfigProducer implements Extension {
                           bm);
         }
 
-        if (pluginsFSNotExists) {
-            buildPluginsFS(abd,
-                           bm);
-        }
-
         if (ioStrategyBeanNotFound) {
             buildIOStrategy(abd,
                             bm);
+        }
+
+        if (pluginsFSNotExists) {
+            buildPluginsFS(abd,
+                           bm);
         }
 
         if (!CDI_METHOD.equalsIgnoreCase(START_METHOD)) {
@@ -195,28 +194,31 @@ public class SystemConfigProducer implements Extension {
         }
     }
 
-    private void buildPluginsFS(final AfterBeanDiscovery abd,
-                                final BeanManager bm) {
+    void buildPluginsFS(final AfterBeanDiscovery abd,
+                        final BeanManager bm) {
         final InjectionTarget<DummyFileSystem> it = bm.createInjectionTarget(bm.createAnnotatedType(DummyFileSystem.class));
 
         abd.addBean(createFileSystemBean(bm,
                                          it,
+                                         "ioStrategy",
                                          "pluginsFS",
                                          "plugins"));
     }
 
-    private void buildSystemFS(final AfterBeanDiscovery abd,
-                               final BeanManager bm) {
+    void buildSystemFS(final AfterBeanDiscovery abd,
+                       final BeanManager bm) {
         final InjectionTarget<DummyFileSystem> it = bm.createInjectionTarget(bm.createAnnotatedType(DummyFileSystem.class));
 
         abd.addBean(createFileSystemBean(bm,
                                          it,
+                                         "configIO",
                                          "systemFS",
                                          "system"));
     }
 
     Bean<FileSystem> createFileSystemBean(final BeanManager bm,
                                           final InjectionTarget<DummyFileSystem> it,
+                                          String ioService,
                                           String beanName,
                                           String fsName) {
         return new Bean<FileSystem>() {
@@ -279,7 +281,7 @@ public class SystemConfigProducer implements Extension {
 
             @Override
             public FileSystem create(CreationalContext<FileSystem> ctx) {
-                final Bean<IOService> bean = (Bean<IOService>) bm.getBeans("configIO").iterator().next();
+                final Bean<IOService> bean = (Bean<IOService>) bm.getBeans(ioService).iterator().next();
                 final CreationalContext<IOService> _ctx = bm.createCreationalContext(bean);
                 final IOService ioService = (IOService) bm.getReference(bean,
                                                                         IOService.class,

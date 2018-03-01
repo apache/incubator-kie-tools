@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
-
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -293,7 +292,12 @@ public abstract class BaseEditor<T, M> {
             final M metadata = getMetadataSupplier().get();
 
             setOriginalHash(content.hashCode());
-            setMetadataOriginalHash(metadata.hashCode());
+
+            Optional<M> optionalMetadata = Optional.ofNullable(getMetadataSupplier().get());
+
+            if (optionalMetadata.isPresent()) {
+                setMetadataOriginalHash(metadata.hashCode());
+            }
         };
     }
 

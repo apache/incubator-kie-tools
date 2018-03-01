@@ -301,6 +301,25 @@ public class BaseEditorTest {
     }
 
     @Test
+    public void testOnSuccessShouldNotCallMetadataHashIfNotAvailable() {
+
+        final Path path = mock(Path.class);
+        final String content = "dora";
+        final int contentHash = content.hashCode();
+        final int metadataHash = 456;
+        final Supplier<String> contentSupplier = () -> content;
+        final Supplier<DefaultMetadata> metadataSupplier = () -> null;
+
+        doReturn(contentSupplier).when(editor).getContentSupplier();
+        doReturn(metadataSupplier).when(editor).getMetadataSupplier();
+
+        editor.onSuccess().execute(path);
+
+        verify(editor).setOriginalHash(contentHash);
+        verify(editor, never()).setMetadataOriginalHash(metadataHash);
+    }
+
+    @Test
     public void testMakeMenuBarWhenItContainsAllMenuItems() {
 
         final ObservablePath path = mock(ObservablePath.class);
