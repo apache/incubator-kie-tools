@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.commands.expressions.types.invocation;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +26,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.NameColumn;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -39,10 +41,13 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.InvocationUIModelMapper.BINDING_EXPRESSION_COLUMN_INDEX;
+import static org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.InvocationUIModelMapper.BINDING_PARAMETER_COLUMN_INDEX;
+import static org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.InvocationUIModelMapper.ROW_NUMBER_COLUMN_INDEX;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
@@ -50,9 +55,6 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DeleteParameterBindingCommandTest {
-
-    @Mock
-    private GridWidget gridWidget;
 
     @Mock
     private RowNumberColumn uiRowNumberColumn;
@@ -88,31 +90,50 @@ public class DeleteParameterBindingCommandTest {
     @Before
     public void setup() {
         this.invocation = new Invocation();
-        this.binding = new Binding();
-        final InformationItem parameter = new InformationItem();
-        parameter.setName(new Name("p" + invocation.getBinding().size()));
-        binding.setParameter(parameter);
+        this.binding = makeBinding("p" + invocation.getBinding().size());
         this.invocation.getBinding().add(binding);
 
-        this.uiModel = new BaseGridData();
+        this.uiModel = new BaseGridData(false);
         this.uiGridRow = new BaseGridRow();
         this.uiModel.appendRow(uiGridRow);
         this.uiModel.appendColumn(uiRowNumberColumn);
         this.uiModel.appendColumn(uiNameColumn);
         this.uiModel.appendColumn(uiExpressionEditorColumn);
 
-        this.command = spy(new DeleteParameterBindingCommand(invocation,
-                                                             uiModel,
-                                                             0,
-                                                             canvasOperation));
         doReturn(ruleManager).when(handler).getRuleManager();
         doReturn(0).when(uiRowNumberColumn).getIndex();
         doReturn(1).when(uiNameColumn).getIndex();
         doReturn(2).when(uiExpressionEditorColumn).getIndex();
     }
 
+    private void makeCommand(final int uiRowIndex) {
+        this.command = spy(new DeleteParameterBindingCommand(invocation,
+                                                             uiModel,
+                                                             uiRowIndex,
+                                                             canvasOperation));
+    }
+
+    private Binding makeBinding(final String bindingName) {
+        final Binding newBinding = new Binding();
+        final InformationItem parameter = new InformationItem();
+        parameter.setName(new Name(bindingName));
+        newBinding.setParameter(parameter);
+        return newBinding;
+    }
+
+    private void assertRowValues(final int rowNumberIndex, final int rowNumberValue, final String nameColumnValue) {
+        assertEquals(2,
+                     uiModel.getRows().get(rowNumberIndex).getCells().size());
+        assertEquals(rowNumberValue,
+                     uiModel.getCell(rowNumberIndex, ROW_NUMBER_COLUMN_INDEX).getValue().getValue());
+        assertEquals(nameColumnValue,
+                     uiModel.getCell(rowNumberIndex, BINDING_PARAMETER_COLUMN_INDEX).getValue().getValue());
+        assertNull(uiModel.getCell(rowNumberIndex, BINDING_EXPRESSION_COLUMN_INDEX));
+    }
+
     @Test
     public void testGraphCommandAllow() {
+        makeCommand(0);
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
@@ -121,6 +142,7 @@ public class DeleteParameterBindingCommandTest {
 
     @Test
     public void testGraphCommandExecute() {
+        makeCommand(0);
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
@@ -130,7 +152,26 @@ public class DeleteParameterBindingCommandTest {
     }
 
     @Test
+    public void testGraphCommandExecuteRemoveFromMiddle() {
+        final Binding firstBinding = new Binding();
+        final Binding lastBinding = new Binding();
+        invocation.getBinding().add(0, firstBinding);
+        invocation.getBinding().add(lastBinding);
+        uiModel.appendRow(new DMNGridRow());
+        uiModel.appendRow(new DMNGridRow());
+
+        makeCommand(1);
+
+        final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
+
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     c.execute(gce));
+        Assertions.assertThat(invocation.getBinding()).containsExactly(firstBinding, lastBinding);
+    }
+
+    @Test
     public void testGraphCommandUndo() {
+        makeCommand(0);
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
         //Delete row and then undo
@@ -146,6 +187,7 @@ public class DeleteParameterBindingCommandTest {
 
     @Test
     public void testCanvasCommandAllow() {
+        makeCommand(0);
         final Command<AbstractCanvasHandler, CanvasViolation> c = command.newCanvasCommand(handler);
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
@@ -154,6 +196,7 @@ public class DeleteParameterBindingCommandTest {
 
     @Test
     public void testCanvasCommandExecute() {
+        makeCommand(0);
         final Command<AbstractCanvasHandler, CanvasViolation> cc = command.newCanvasCommand(handler);
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
@@ -176,7 +219,46 @@ public class DeleteParameterBindingCommandTest {
     }
 
     @Test
+    public void testCanvasCommandExecuteDeleteOneOfThree() {
+        final Binding secondBinding = new Binding();
+        final Binding thirdBinding = new Binding();
+        invocation.getBinding().add(secondBinding);
+        invocation.getBinding().add(thirdBinding);
+        final BaseGridRow secondRow = new BaseGridRow();
+        final BaseGridRow thirdRow = new BaseGridRow();
+        uiModel.appendRow(secondRow);
+        uiModel.appendRow(thirdRow);
+
+        makeCommand(1);
+
+        final Command<AbstractCanvasHandler, CanvasViolation> cc = command.newCanvasCommand(handler);
+
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     cc.execute(handler));
+        assertEquals(2,
+                     uiModel.getRowCount());
+        assertEquals(uiGridRow,
+                     uiModel.getRow(0));
+        assertEquals(thirdRow,
+                     uiModel.getRow(1));
+        assertEquals(3,
+                     uiModel.getColumnCount());
+        assertEquals(uiRowNumberColumn,
+                     uiModel.getColumns().get(0));
+        assertEquals(uiNameColumn,
+                     uiModel.getColumns().get(1));
+        assertEquals(uiExpressionEditorColumn,
+                     uiModel.getColumns().get(2));
+
+        verify(command).updateRowNumbers();
+        verify(command).updateParentInformation();
+
+        verify(canvasOperation).execute();
+    }
+
+    @Test
     public void testCanvasCommandUndoWithNoColumns() {
+        makeCommand(0);
         //Delete Parameter Binding and then undo
         final Command<AbstractCanvasHandler, CanvasViolation> cc = command.newCanvasCommand(handler);
 
