@@ -25,42 +25,35 @@ import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.gwtbootstrap3.client.ui.DropDownMenu;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.IconPosition;
-import org.gwtbootstrap3.client.ui.constants.IconRotate;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.kie.workbench.common.stunner.client.widgets.menu.MenuUtils;
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.MenuDevCommandsBuilder;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
+import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
+import org.kie.workbench.common.stunner.project.client.resources.i18n.StunnerProjectClientConstants;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
 
-// TODO: I18n.
 @ApplicationScoped
 public class ProjectDiagramEditorMenuItemsBuilder {
 
     private final MenuDevCommandsBuilder menuDevCommandsBuilder;
 
+    private final ClientTranslationService translationService;
+
     protected ProjectDiagramEditorMenuItemsBuilder() {
-        this(null);
+        this(null,
+             null);
     }
 
     @Inject
-    public ProjectDiagramEditorMenuItemsBuilder(final MenuDevCommandsBuilder menuDevCommandsBuilder) {
+    public ProjectDiagramEditorMenuItemsBuilder(final MenuDevCommandsBuilder menuDevCommandsBuilder,
+                                                final ClientTranslationService translationService) {
         this.menuDevCommandsBuilder = menuDevCommandsBuilder;
-    }
-
-    public MenuItem newClearSelectionItem(final Command command) {
-        return buildItem(buildClearSelectionItem(command));
-    }
-
-    private IsWidget buildClearSelectionItem(final Command command) {
-        return new Button() {{
-            setSize(ButtonSize.SMALL);
-            setIcon(IconType.BAN);
-            setTitle("Clear shapes state");
-            addClickHandler(clickEvent -> command.execute());
-        }};
+        this.translationService = translationService;
     }
 
     public MenuItem newVisitGraphItem(final Command command) {
@@ -68,12 +61,13 @@ public class ProjectDiagramEditorMenuItemsBuilder {
     }
 
     private IsWidget buildVisitGraphItem(final Command command) {
-        return new Button() {{
-            setSize(ButtonSize.SMALL);
-            setIcon(IconType.AUTOMOBILE);
-            setTitle("Visit graph");
-            addClickHandler(clickEvent -> command.execute());
-        }};
+        return MenuUtils.buildHasEnabledWidget(
+                new Button() {{
+                    setSize(ButtonSize.SMALL);
+                    setIcon(IconType.PLAY);
+                    setTitle(translationService.getKeyValue(CoreTranslationMessages.VISIT_GRAPH));
+                    addClickHandler(clickEvent -> command.execute());
+                }});
     }
 
     public MenuItem newSwitchGridItem(final Command command) {
@@ -81,12 +75,13 @@ public class ProjectDiagramEditorMenuItemsBuilder {
     }
 
     private IsWidget buildSwitchGridItem(final Command command) {
-        return new Button() {{
-            setSize(ButtonSize.SMALL);
-            setIcon(IconType.TH);
-            setTitle("Switch grid");
-            addClickHandler(clickEvent -> command.execute());
-        }};
+        return MenuUtils.buildHasEnabledWidget(
+                new Button() {{
+                    setSize(ButtonSize.SMALL);
+                    setIcon(IconType.TH);
+                    setTitle(translationService.getKeyValue(CoreTranslationMessages.SWITCH_GRID));
+                    addClickHandler(clickEvent -> command.execute());
+                }});
     }
 
     /**
@@ -99,14 +94,15 @@ public class ProjectDiagramEditorMenuItemsBuilder {
     }
 
     private IsWidget buildClearItem(final Command command) {
-        return new Button() {{
-            setSize(ButtonSize.SMALL);
-            setIcon(IconType.ERASER);
-            setTitle("Clear");
-            addClickHandler(clickEvent ->
-                                    ProjectDiagramEditorMenuItemsBuilder.this.executeWithConfirm(command,
-                                                                                                 getConfirmMessage() + " This operation cannot be reverted."));
-        }};
+        return MenuUtils.buildHasEnabledWidget(
+                new Button() {{
+                    setSize(ButtonSize.SMALL);
+                    setIcon(IconType.ERASER);
+                    setTitle(translationService.getKeyValue(CoreTranslationMessages.CLEAR_DIAGRAM));
+                    addClickHandler(clickEvent ->
+                                            ProjectDiagramEditorMenuItemsBuilder.this.executeWithConfirm(command,
+                                                                                                         translationService.getKeyValue(CoreTranslationMessages.CONFIRM_CLEAR_DIAGRAM)));
+                }});
     }
 
     public MenuItem newCopyItem(final Command command) {
@@ -114,12 +110,13 @@ public class ProjectDiagramEditorMenuItemsBuilder {
     }
 
     private IsWidget buildCopyItem(final Command command) {
-        return new Button() {{
-            setSize(ButtonSize.SMALL);
-            setIcon(IconType.COPY);
-            setTitle("Copy selection");
-            addClickHandler(clickEvent -> command.execute());
-        }};
+        return MenuUtils.buildHasEnabledWidget(
+                new Button() {{
+                    setSize(ButtonSize.SMALL);
+                    setIcon(IconType.COPY);
+                    setTitle(translationService.getKeyValue(CoreTranslationMessages.COPY_SELECTION));
+                    addClickHandler(clickEvent -> command.execute());
+                }});
     }
 
     public MenuItem newPasteItem(final Command command) {
@@ -127,12 +124,13 @@ public class ProjectDiagramEditorMenuItemsBuilder {
     }
 
     private IsWidget buildPasteItem(final Command command) {
-        return new Button() {{
-            setSize(ButtonSize.SMALL);
-            setIcon(IconType.PASTE);
-            setTitle("Paste selection");
-            addClickHandler(clickEvent -> command.execute());
-        }};
+        return MenuUtils.buildHasEnabledWidget(
+                new Button() {{
+                    setSize(ButtonSize.SMALL);
+                    setIcon(IconType.PASTE);
+                    setTitle(translationService.getKeyValue(CoreTranslationMessages.PASTE_SELECTION));
+                    addClickHandler(clickEvent -> command.execute());
+                }});
     }
 
     public MenuItem newCutItem(final Command command) {
@@ -140,12 +138,13 @@ public class ProjectDiagramEditorMenuItemsBuilder {
     }
 
     private IsWidget buildCutItem(final Command command) {
-        return new Button() {{
-            setSize(ButtonSize.SMALL);
-            setIcon(IconType.CUT);
-            setTitle("Cut selection");
-            addClickHandler(clickEvent -> command.execute());
-        }};
+        return MenuUtils.buildHasEnabledWidget(
+                new Button() {{
+                    setSize(ButtonSize.SMALL);
+                    setIcon(IconType.CUT);
+                    setTitle(translationService.getKeyValue(CoreTranslationMessages.CUT_SELECTION));
+                    addClickHandler(clickEvent -> command.execute());
+                }});
     }
 
     public MenuItem newDeleteSelectionItem(final Command command) {
@@ -153,12 +152,13 @@ public class ProjectDiagramEditorMenuItemsBuilder {
     }
 
     private IsWidget buildDeleteSelectionItem(final Command command) {
-        return new Button() {{
-            setSize(ButtonSize.SMALL);
-            setIcon(IconType.TRASH_O);
-            setTitle("Delete selected [DEL]");
-            addClickHandler(clickEvent -> ProjectDiagramEditorMenuItemsBuilder.this.executeWithConfirm(command));
-        }};
+        return MenuUtils.buildHasEnabledWidget(
+                new Button() {{
+                    setSize(ButtonSize.SMALL);
+                    setIcon(IconType.TRASH_O);
+                    setTitle(translationService.getKeyValue(CoreTranslationMessages.DELETE_SELECTION));
+                    addClickHandler(clickEvent -> command.execute());
+                }});
     }
 
     public MenuItem newUndoItem(final Command command) {
@@ -166,12 +166,13 @@ public class ProjectDiagramEditorMenuItemsBuilder {
     }
 
     private IsWidget buildUndoItem(final Command command) {
-        return new Button() {{
-            setSize(ButtonSize.SMALL);
-            setIcon(IconType.UNDO);
-            setTitle("Undo [Ctrl+z]");
-            addClickHandler(clickEvent -> command.execute());
-        }};
+        return MenuUtils.buildHasEnabledWidget(
+                new Button() {{
+                    setSize(ButtonSize.SMALL);
+                    setIcon(IconType.UNDO);
+                    setTitle(translationService.getKeyValue(CoreTranslationMessages.UNDO));
+                    addClickHandler(clickEvent -> command.execute());
+                }});
     }
 
     public MenuItem newRedoItem(final Command command) {
@@ -179,13 +180,17 @@ public class ProjectDiagramEditorMenuItemsBuilder {
     }
 
     private IsWidget buildRedoItem(final Command command) {
-        return new Button() {{
-            setSize(ButtonSize.SMALL);
-            setIcon(IconType.UNDO);
-            setIconRotate(IconRotate.ROTATE_180);
-            setTitle("Redo [Ctrl+Shift+z]");
-            addClickHandler(clickEvent -> command.execute());
-        }};
+        return MenuUtils.buildHasEnabledWidget(
+                new Button() {{
+                    setSize(ButtonSize.SMALL);
+                    setIcon(IconType.UNDO);
+                    //Let's add the icon "manually" since the required icon is not available as IconType value. But the icon
+                    //class is available. This assignment is ok for now, since this stuff will sooner or later be refactored to
+                    //elemental2.
+                    addStyleName("fa-flip-horizontal");
+                    setTitle(translationService.getKeyValue(CoreTranslationMessages.REDO));
+                    addClickHandler(clickEvent -> command.execute());
+                }});
     }
 
     public MenuItem newExportsItem(final Command exportPNGCommand,
@@ -195,28 +200,28 @@ public class ProjectDiagramEditorMenuItemsBuilder {
         final DropDownMenu menu = new DropDownMenu() {{
             setPull(Pull.RIGHT);
         }};
-        menu.add(new AnchorListItem("Download as PNG") {{
+        menu.add(new AnchorListItem(translationService.getKeyValue(CoreTranslationMessages.EXPORT_PNG)) {{
             setIcon(IconType.FILE_IMAGE_O);
             setIconPosition(IconPosition.LEFT);
-            setTitle("Download as PNG");
+            setTitle(translationService.getKeyValue(CoreTranslationMessages.EXPORT_PNG));
             addClickHandler(event -> exportPNGCommand.execute());
         }});
-        menu.add(new AnchorListItem("Download as JPG") {{
+        menu.add(new AnchorListItem(translationService.getKeyValue(CoreTranslationMessages.EXPORT_JPG)) {{
             setIcon(IconType.FILE_IMAGE_O);
             setIconPosition(IconPosition.LEFT);
-            setTitle("Download as JPG");
+            setTitle(translationService.getKeyValue(CoreTranslationMessages.EXPORT_JPG));
             addClickHandler(event -> exportJPGCommand.execute());
         }});
-        menu.add(new AnchorListItem("Download as PDF") {{
+        menu.add(new AnchorListItem(translationService.getKeyValue(CoreTranslationMessages.EXPORT_PDF)) {{
             setIcon(IconType.FILE_PDF_O);
             setIconPosition(IconPosition.LEFT);
-            setTitle("Download as PDF");
+            setTitle(translationService.getKeyValue(CoreTranslationMessages.EXPORT_PDF));
             addClickHandler(event -> exportPDFCommand.execute());
         }});
-        menu.add(new AnchorListItem("Download as BPMN") {{
+        menu.add(new AnchorListItem(translationService.getKeyValue(CoreTranslationMessages.EXPORT_BPMN)) {{
             setIcon(IconType.FILE_TEXT_O);
             setIconPosition(IconPosition.LEFT);
-            setTitle("Download as BPMN");
+            setTitle(translationService.getKeyValue(CoreTranslationMessages.EXPORT_BPMN));
             addClickHandler(event -> exportBPMNCommand.execute());
         }});
 
@@ -224,9 +229,9 @@ public class ProjectDiagramEditorMenuItemsBuilder {
             add(new Button() {{
                 setToggleCaret(true);
                 setDataToggle(Toggle.DROPDOWN);
-                setIcon(IconType.IMAGE);
+                setIcon(IconType.DOWNLOAD);
                 setSize(ButtonSize.SMALL);
-                setTitle("Download diagram");
+                setTitle(translationService.getKeyValue(StunnerProjectClientConstants.DOWNLOAD_DIAGRAM));
             }});
             add(menu);
         }};
@@ -238,12 +243,13 @@ public class ProjectDiagramEditorMenuItemsBuilder {
     }
 
     private IsWidget buildValidateItem(final Command command) {
-        return new Button() {{
-            setSize(ButtonSize.SMALL);
-            setIcon(IconType.CHECK);
-            setTitle("Validate");
-            addClickHandler(clickEvent -> command.execute());
-        }};
+        return MenuUtils.buildHasEnabledWidget(
+                new Button() {{
+                    setSize(ButtonSize.SMALL);
+                    setIcon(IconType.CHECK);
+                    setTitle(translationService.getKeyValue(CoreTranslationMessages.VALIDATE));
+                    addClickHandler(clickEvent -> command.execute());
+                }});
     }
 
     public boolean isDevItemsEnabled() {
@@ -252,49 +258,6 @@ public class ProjectDiagramEditorMenuItemsBuilder {
 
     public MenuItem newDevItems() {
         return menuDevCommandsBuilder.build();
-    }
-
-    private IsWidget buildDevItems(final Command switchLogLevelCommand,
-                                   final Command logGraphCommand,
-                                   final Command logCommandHistoryCommand,
-                                   final Command logSessionCommand) {
-        final AnchorListItem switchLogLevelItem = new AnchorListItem("Switch log level") {{
-            setIcon(IconType.REFRESH);
-            addClickHandler(event -> switchLogLevelCommand.execute());
-        }};
-        final AnchorListItem logSessionItem = new AnchorListItem("Log session") {{
-            setIcon(IconType.PRINT);
-            addClickHandler(event -> logSessionCommand.execute());
-        }};
-        final AnchorListItem logGraphItem = new AnchorListItem("Log Graph") {{
-            setIcon(IconType.PRINT);
-            addClickHandler(event -> logGraphCommand.execute());
-        }};
-        final AnchorListItem logCommandHistoryItem = new AnchorListItem("Log Command History") {{
-            setIcon(IconType.PRINT);
-            addClickHandler(event -> logCommandHistoryCommand.execute());
-        }};
-        return new ButtonGroup() {{
-            add(new Button() {{
-                setToggleCaret(false);
-                setDataToggle(Toggle.DROPDOWN);
-                setIcon(IconType.COG);
-                setSize(ButtonSize.SMALL);
-                setTitle("Development");
-            }});
-            add(new DropDownMenu() {{
-                addStyleName("pull-right");
-                add(switchLogLevelItem);
-                add(logSessionItem);
-                add(logGraphItem);
-                add(logCommandHistoryItem);
-            }});
-        }};
-    }
-
-    private void executeWithConfirm(final Command command) {
-        this.executeWithConfirm(command,
-                                getConfirmMessage());
     }
 
     private void executeWithConfirm(final Command command,
@@ -306,15 +269,12 @@ public class ProjectDiagramEditorMenuItemsBuilder {
                                                                             yesCommand,
                                                                             noCommand,
                                                                             noCommand);
+        popup.clearScrollHeight();
         popup.show();
     }
 
     private String getConfirmTitle() {
-        return "Confirm action";
-    }
-
-    private String getConfirmMessage() {
-        return "Are you sure?";
+        return translationService.getKeyValue(StunnerProjectClientConstants.CONFIRM_ACTION);
     }
 
     private MenuItem buildItem(final IsWidget widget) {

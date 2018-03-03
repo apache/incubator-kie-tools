@@ -24,7 +24,6 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.LocalClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
@@ -33,9 +32,12 @@ import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.mocks.EventSourceMock;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -45,17 +47,19 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CopySelectionSessionCommandTest extends BaseSessionCommandKeyboardTest {
+public class CopySelectionSessionCommandTest extends BaseSessionCommandKeyboardSelectionAwareTest {
 
     private CopySelectionSessionCommand copySelectionSessionCommand;
+
+    @Mock
+    private EventSourceMock<CopySelectionSessionCommandExecutedEvent> commandExecutedEvent;
+
+    private ArgumentCaptor<CopySelectionSessionCommandExecutedEvent> eventArgumentCaptor;
 
     private ClipboardControl<Element, AbstractCanvas, ClientSession> clipboardControl;
 
     @Mock
     private SelectionControl selectionControl;
-
-    @Mock
-    private AbstractCanvasHandler canvasHandler;
 
     @Mock
     private ClientSessionCommand.Callback callback;
@@ -66,6 +70,7 @@ public class CopySelectionSessionCommandTest extends BaseSessionCommandKeyboardT
 
     @Before
     public void setUp() throws Exception {
+        eventArgumentCaptor = ArgumentCaptor.forClass(CopySelectionSessionCommandExecutedEvent.class);
         clipboardControl = spy(new LocalClipboardControl());
 
         super.setup();
@@ -90,6 +95,9 @@ public class CopySelectionSessionCommandTest extends BaseSessionCommandKeyboardT
         verify(selectionControl, atLeastOnce()).getSelectedItems();
         verify(clipboardControl, times(1)).set(node);
         verify(callback, times(1)).onSuccess();
+        verify(commandExecutedEvent, times(1)).fire(eventArgumentCaptor.capture());
+        assertEquals(session, eventArgumentCaptor.getValue().getClientSession());
+        assertEquals(copySelectionSessionCommand, eventArgumentCaptor.getValue().getExecutedCommand());
 
         //error
         reset(callback);
@@ -112,7 +120,7 @@ public class CopySelectionSessionCommandTest extends BaseSessionCommandKeyboardT
 
     @Override
     protected CopySelectionSessionCommand getCommand() {
-        return new CopySelectionSessionCommand();
+        return new CopySelectionSessionCommand(commandExecutedEvent);
     }
 
     @Override

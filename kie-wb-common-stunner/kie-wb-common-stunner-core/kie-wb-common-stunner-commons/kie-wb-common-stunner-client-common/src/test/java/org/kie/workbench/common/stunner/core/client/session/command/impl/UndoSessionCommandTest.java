@@ -16,33 +16,61 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UndoSessionCommandTest extends BaseSessionCommandKeyboardTest {
 
     @Mock
+    private AbstractCanvasHandler canvasHandler;
+
+    @Mock
+    private ClientSessionCommand.Callback callback;
+
+    @Mock
     private CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
 
+    @Mock
+    private CommandResult commandResult;
+
+    @Mock
+    private org.uberfire.mvp.Command statusCallback;
+
+    private List commandHistory;
+
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() {
         super.setup();
         when(sessionCommandManager.getRegistry()).thenReturn(commandRegistry);
-        when(commandRegistry.getCommandHistory()).thenReturn(Collections.emptyList());
+        commandHistory = new ArrayList<>();
+        when(commandRegistry.getCommandHistory()).thenReturn(commandHistory);
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
     }
 
     @Override
@@ -58,5 +86,100 @@ public class UndoSessionCommandTest extends BaseSessionCommandKeyboardTest {
     @Override
     protected KeyboardEvent.Key[] getUnexpectedKeys() {
         return new KeyboardEvent.Key[]{KeyboardEvent.Key.ESC};
+    }
+
+    @Test
+    public void testExecuteSuccess() {
+        command.bind(session);
+        when(sessionCommandManager.undo(canvasHandler)).thenReturn(null);
+
+        command.execute(callback);
+
+        verify(sessionCommandManager,
+               times(1)).undo(canvasHandler);
+        verify(selectionControl,
+               times(1)).clearSelection();
+        verify(callback,
+               times(1)).onSuccess();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testExecuteWithErrors() {
+        command.bind(session);
+        when(sessionCommandManager.undo(canvasHandler)).thenReturn(commandResult);
+        when(commandResult.getType()).thenReturn(CommandResult.Type.ERROR);
+
+        command.execute(callback);
+
+        verify(sessionCommandManager,
+               times(1)).undo(canvasHandler);
+        verify(selectionControl,
+               times(1)).clearSelection();
+        verify(callback,
+               times(1)).onError(commandResult);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testOnCommandExecuted() {
+        command.bind(session);
+        command.listen(statusCallback);
+
+        ((UndoSessionCommand) command).onCommandExecuted(new CanvasCommandExecutedEvent(null,
+                                                                                        null,
+                                                                                        null));
+        assertFalse(command.isEnabled());
+
+        commandHistory.add(mock(Command.class));
+
+        ((UndoSessionCommand) command).onCommandExecuted(new CanvasCommandExecutedEvent(null,
+                                                                                        null,
+                                                                                        null));
+        assertTrue(command.isEnabled());
+        verify(statusCallback,
+               times(2)).execute();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testOnCommandUndoExecuted() {
+        command.bind(session);
+        command.listen(statusCallback);
+
+        ((UndoSessionCommand) command).onCommandUndoExecuted(new CanvasUndoCommandExecutedEvent(null,
+                                                                                                null,
+                                                                                                null));
+        assertFalse(command.isEnabled());
+
+        commandHistory.add(mock(Command.class));
+
+        ((UndoSessionCommand) command).onCommandUndoExecuted(new CanvasUndoCommandExecutedEvent(null,
+                                                                                                null,
+                                                                                                null));
+        assertTrue(command.isEnabled());
+
+        verify(statusCallback,
+               times(2)).execute();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testOnClearSessionExecuted() {
+        command.bind(session);
+        command.listen(statusCallback);
+
+        ((UndoSessionCommand) command).onClearSessionExecuted(new ClearSessionCommandExecutedEvent(mock(ClearSessionCommand.class),
+                                                                                                   session));
+        assertFalse(command.isEnabled());
+
+        commandHistory.add(mock(Command.class));
+
+        ((UndoSessionCommand) command).onClearSessionExecuted(new ClearSessionCommandExecutedEvent(mock(ClearSessionCommand.class),
+                                                                                                   session));
+        assertTrue(command.isEnabled());
+
+        verify(statusCallback,
+               times(2)).execute();
     }
 }

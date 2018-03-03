@@ -31,6 +31,7 @@ import java.util.stream.StreamSupport;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
@@ -253,6 +254,22 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<C
             return CommandUtils.toList(result.getViolations()).stream().map(Objects::toString).collect(Collectors.joining());
         }
         return "";
+    }
+
+    protected void onCopySelectionCommandExecuted(@Observes CopySelectionSessionCommandExecutedEvent event) {
+        checkNotNull("event", event);
+        if (Objects.equals(getSession(), event.getClientSession())) {
+            setEnabled(true);
+            fire();
+        }
+    }
+
+    protected void onCutSelectionCommandExecuted(@Observes CutSelectionSessionCommandExecutedEvent event) {
+        checkNotNull("event", event);
+        if (Objects.equals(getSession(), event.getClientSession())) {
+            setEnabled(true);
+            fire();
+        }
     }
 
     private Consumer<Node> cloneNodeCallback(Node candidate, Counter processedNodesCountdown) {

@@ -31,7 +31,9 @@ import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.mocks.EventSourceMock;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -39,7 +41,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CutSelectionSessionCommandTest extends BaseSessionCommandKeyboardTest {
+public class CutSelectionSessionCommandTest extends BaseSessionCommandKeyboardSelectionAwareTest {
 
     private CutSelectionSessionCommand cutSelectionSessionCommand;
 
@@ -48,6 +50,12 @@ public class CutSelectionSessionCommandTest extends BaseSessionCommandKeyboardTe
 
     @Mock
     private DeleteSelectionSessionCommand deleteSelectionSessionCommand;
+
+    @Mock
+    private EventSourceMock<CutSelectionSessionCommandExecutedEvent> commandExecutedEvent;
+
+    @Mock
+    private ArgumentCaptor<CutSelectionSessionCommandExecutedEvent> commandExecutedEventCaptor;
 
     @Mock
     private ClientSessionCommand.Callback mainCallback;
@@ -71,6 +79,7 @@ public class CutSelectionSessionCommandTest extends BaseSessionCommandKeyboardTe
         when(sessionCommandManager.getRegistry()).thenReturn(commandRegistry);
         when(commandRegistry.peek()).thenReturn(deleteNodeCommand);
         when(session.getClipboardControl()).thenReturn(clipboardControl);
+        commandExecutedEventCaptor = ArgumentCaptor.forClass(CutSelectionSessionCommandExecutedEvent.class);
         super.setup();
         this.cutSelectionSessionCommand = getCommand();
     }
@@ -87,6 +96,9 @@ public class CutSelectionSessionCommandTest extends BaseSessionCommandKeyboardTe
         verify(deleteSelectionSessionCommand, times(1)).execute(mainCallback);
         verify(sessionCommandManager.getRegistry(), atLeastOnce()).peek();
         verify(clipboardControl, atLeastOnce()).setRollbackCommand(deleteNodeCommand);
+        verify(commandExecutedEvent, times(1)).fire(commandExecutedEventCaptor.capture());
+        assertEquals(session, commandExecutedEventCaptor.getValue().getClientSession());
+        assertEquals(cutSelectionSessionCommand, commandExecutedEventCaptor.getValue().getExecutedCommand());
 
         //error
         Object error = new Object();
@@ -96,7 +108,7 @@ public class CutSelectionSessionCommandTest extends BaseSessionCommandKeyboardTe
 
     @Override
     protected CutSelectionSessionCommand getCommand() {
-        return new CutSelectionSessionCommand(sessionCommandFactory, sessionCommandManager);
+        return new CutSelectionSessionCommand(sessionCommandFactory, sessionCommandManager, commandExecutedEvent);
     }
 
     @Override

@@ -23,14 +23,12 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasHandlerEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementsClearEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
@@ -40,7 +38,6 @@ import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.Session;
-import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -52,7 +49,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
  * It also captures the <code>DELETE</code> keyboard event and fires the delete operation as well.
  */
 @Dependent
-public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<ClientFullSession> {
+public class DeleteSelectionSessionCommand extends AbstractSelectionAwareSessionCommand<ClientFullSession> {
 
     private static Logger LOGGER = Logger.getLogger(DeleteSelectionSessionCommand.class.getName());
 
@@ -133,39 +130,22 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
         }
     }
 
-    void onCanvasSelectionEvent(final @Observes CanvasSelectionEvent event) {
-        checkNotNull("event",
-                     event);
-        handleCanvasSelectionEvent(event);
-    }
-
-    void onCanvasClearSelectionEvent(final @Observes CanvasClearSelectionEvent event) {
-        checkNotNull("event",
-                     event);
-        handleCanvasClearSelectionEvent(event);
-    }
-
-    private void handleCanvasSelectionEvent(final CanvasSelectionEvent event) {
-        if (checkEventContext(event)) {
+    @Override
+    protected void handleCanvasSelectionEvent(final CanvasSelectionEvent event) {
+        if (event.getIdentifiers().isEmpty() || onlyCanvasRootSelected(event)) {
+            enable(false);
+        } else {
             enable(true);
         }
     }
 
-    private void handleCanvasClearSelectionEvent(final CanvasClearSelectionEvent event) {
-        if (checkEventContext(event)) {
-            enable(false);
-        }
+    @Override
+    protected void handleCanvasClearSelectionEvent(final CanvasClearSelectionEvent event) {
+        enable(false);
     }
 
-    private void enable(boolean enable) {
-        setEnabled(enable);
-        fire();
-    }
-
-    private boolean checkEventContext(final AbstractCanvasHandlerEvent canvasHandlerEvent) {
-        final CanvasHandler _canvasHandler = canvasHandlerEvent.getCanvasHandler();
-        return null != getSession() &&
-                getSession().getCanvasHandler() != null
-                && getSession().getCanvasHandler().equals(_canvasHandler);
+    @Override
+    protected void handleCanvasElementsClearEvent(final CanvasElementsClearEvent event) {
+        enable(false);
     }
 }

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import java.util.Objects;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -94,6 +96,15 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<ClientFullS
         checkNotNull("commandUndoExecutedEvent",
                      commandUndoExecutedEvent);
         checkState();
+    }
+
+    void onClearSessionExecuted(final @Observes ClearSessionCommandExecutedEvent event) {
+        checkNotNull("event",
+                     event);
+        if (Objects.equals(getSession(),
+                           event.getClientSession())) {
+            checkState();
+        }
     }
 
     private void checkState() {

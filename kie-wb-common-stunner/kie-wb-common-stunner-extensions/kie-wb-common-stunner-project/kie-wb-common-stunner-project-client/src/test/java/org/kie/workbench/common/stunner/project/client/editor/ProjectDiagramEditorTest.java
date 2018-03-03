@@ -28,13 +28,13 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearStatesSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.DeleteSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
@@ -125,8 +125,6 @@ public class ProjectDiagramEditorTest {
     @Mock
     ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder;
     @Mock
-    ClearStatesSessionCommand sessionClearStatesCommand;
-    @Mock
     VisitGraphSessionCommand sessionVisitGraphCommand;
     @Mock
     SwitchGridSessionCommand sessionSwitchGridCommand;
@@ -162,6 +160,8 @@ public class ProjectDiagramEditorTest {
     ProjectMessagesListener projectMessagesListener;
     @Mock
     DiagramClientErrorHandler diagramClientErrorHandler;
+    @Mock
+    ClientTranslationService translationService;
 
     private ProjectDiagramEditorStub tested;
 
@@ -170,7 +170,6 @@ public class ProjectDiagramEditorTest {
         VersionRecordManager versionRecordManagerMock = versionRecordManager;
         when(versionRecordManager.getCurrentPath()).thenReturn(path);
         when(sessionCommandFactory.newClearCommand()).thenReturn(sessionClearCommand);
-        when(sessionCommandFactory.newClearStatesCommand()).thenReturn(sessionClearStatesCommand);
         when(sessionCommandFactory.newVisitGraphCommand()).thenReturn(sessionVisitGraphCommand);
         when(sessionCommandFactory.newSwitchGridCommand()).thenReturn(sessionSwitchGridCommand);
         when(sessionCommandFactory.newDeleteSelectedElementsCommand()).thenReturn(sessionDeleteSelectionCommand);
@@ -209,7 +208,8 @@ public class ProjectDiagramEditorTest {
                                                    onDiagramFocusEvent,
                                                    onDiagramLostFocusEven,
                                                    projectMessagesListener,
-                                                   diagramClientErrorHandler
+                                                   diagramClientErrorHandler,
+                                                   translationService
         ) {
             {
                 overviewWidget = overviewWidgetMock;
@@ -225,8 +225,6 @@ public class ProjectDiagramEditorTest {
         tested.init();
         verify(view,
                times(1)).init(eq(tested));
-        verify(sessionClearStatesCommand,
-               times(0)).bind(eq(fullSession));
         verify(sessionVisitGraphCommand,
                times(0)).bind(eq(fullSession));
         verify(sessionSwitchGridCommand,
@@ -266,16 +264,22 @@ public class ProjectDiagramEditorTest {
 
         tested.loadContent();
 
-        verify(projectDiagramServices, times(1)).getByPath(eq(path), callbackArgumentCaptor.capture());
+        verify(projectDiagramServices,
+               times(1)).getByPath(eq(path),
+                                   callbackArgumentCaptor.capture());
 
         callbackArgumentCaptor.getValue().onError(new ClientRuntimeError(new DefinitionNotFoundException()));
 
-        verify(placeManager, times(1)).forceClosePlace(any(PathPlaceRequest.class));
+        verify(placeManager,
+               times(1)).forceClosePlace(any(PathPlaceRequest.class));
 
         ArgumentCaptor<Consumer> consumerArgumentCaptor = forClass(Consumer.class);
-        verify(diagramClientErrorHandler, times(1)).handleError(any(ClientRuntimeError.class), consumerArgumentCaptor.capture());
+        verify(diagramClientErrorHandler,
+               times(1)).handleError(any(ClientRuntimeError.class),
+                                     consumerArgumentCaptor.capture());
         consumerArgumentCaptor.getValue().accept("error message");
-        verify(errorPopupPresenter, times(1)).showMessage("error message");
+        verify(errorPopupPresenter,
+               times(1)).showMessage("error message");
     }
 
     @Test

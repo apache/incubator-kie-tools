@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
@@ -81,7 +82,8 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
                                        final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
                                        final Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent,
                                        final ProjectMessagesListener projectMessagesListener,
-                                       final DiagramClientErrorHandler diagramClientErrorHandler) {
+                                       final DiagramClientErrorHandler diagramClientErrorHandler,
+                                       final ClientTranslationService translationService) {
         super(view,
               placeManager,
               errorPopupPresenter,
@@ -96,7 +98,8 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
               onDiagramFocusEvent,
               onDiagramLostFocusEvent,
               projectMessagesListener,
-              diagramClientErrorHandler);
+              diagramClientErrorHandler,
+              translationService);
     }
 
     @OnStartup

@@ -36,13 +36,13 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearStatesSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.CopySelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.CutSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.DeleteSelectionSessionCommand;
@@ -69,6 +69,7 @@ import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.kie.workbench.common.stunner.core.validation.impl.ValidationUtils;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
+import org.kie.workbench.common.stunner.project.client.resources.i18n.StunnerProjectClientConstants;
 import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesListener;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
@@ -94,7 +95,6 @@ import org.uberfire.workbench.model.menu.Menus;
 
 import static java.util.logging.Level.FINE;
 
-// TODO: i18n.
 public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType> extends KieEditor<ProjectDiagram> {
 
     private static Logger LOGGER = Logger.getLogger(AbstractProjectDiagramEditor.class.getName());
@@ -123,6 +123,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent;
     protected SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter;
     private final DiagramClientErrorHandler diagramClientErrorHandler;
+    private final ClientTranslationService translationService;
 
     private String title = "Project Diagram Editor";
 
@@ -141,7 +142,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                         final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
                                         final Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent,
                                         final ProjectMessagesListener projectMessagesListener,
-                                        final DiagramClientErrorHandler diagramClientErrorHandler) {
+                                        final DiagramClientErrorHandler diagramClientErrorHandler,
+                                        final ClientTranslationService translationService) {
         super(view);
         this.placeManager = placeManager;
         this.errorPopupPresenter = errorPopupPresenter;
@@ -157,13 +159,13 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
         this.onDiagramFocusEvent = onDiagramFocusEvent;
         this.onDiagramLostFocusEvent = onDiagramLostFocusEvent;
+        this.translationService = translationService;
 
         initializeCommands(sessionCommandFactory);
     }
 
     private void initializeCommands(SessionCommandFactory sessionCommandFactory) {
         this.commands = new HashMap<>();
-        commands.put(ClearStatesSessionCommand.class, sessionCommandFactory.newClearStatesCommand());
         commands.put(VisitGraphSessionCommand.class, sessionCommandFactory.newVisitGraphCommand());
         commands.put(SwitchGridSessionCommand.class, sessionCommandFactory.newSwitchGridCommand());
         commands.put(ClearSessionCommand.class, sessionCommandFactory.newClearCommand());
@@ -187,6 +189,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     @PostConstruct
     @SuppressWarnings("unchecked")
     public void init() {
+        title = translationService.getKeyValue(StunnerProjectClientConstants.DIAGRAM_EDITOR_DEFAULT_TITLE);
         getView().init(this);
         projectMessagesListener.enable();
     }
@@ -331,42 +334,49 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     @Override
     protected void makeMenuBar() {
-        // TODO: fix - menu items not getting disabled/enabled?
-        final MenuItem clearItem = menuItemsBuilder.newClearItem(AbstractProjectDiagramEditor.this::menu_clear);
+        final MenuItem clearItem = menuItemsBuilder.newClearItem(this::menu_clear);
         getCommand(ClearSessionCommand.class).listen(() -> clearItem.setEnabled(getCommand(ClearSessionCommand.class).isEnabled()));
-        final MenuItem clearStatesItem = menuItemsBuilder.newClearSelectionItem(AbstractProjectDiagramEditor.this::menu_clearStates);
-        getCommand(ClearStatesSessionCommand.class).listen(() -> clearStatesItem.setEnabled(getCommand(ClearStatesSessionCommand.class).isEnabled()));
-        final MenuItem visitGraphItem = menuItemsBuilder.newVisitGraphItem(AbstractProjectDiagramEditor.this::menu_visitGraph);
+        final MenuItem visitGraphItem = menuItemsBuilder.newVisitGraphItem(this::menu_visitGraph);
         getCommand(VisitGraphSessionCommand.class).listen(() -> visitGraphItem.setEnabled(getCommand(VisitGraphSessionCommand.class).isEnabled()));
-        final MenuItem switchGridItem = menuItemsBuilder.newSwitchGridItem(AbstractProjectDiagramEditor.this::menu_switchGrid);
+        final MenuItem switchGridItem = menuItemsBuilder.newSwitchGridItem(this::menu_switchGrid);
         getCommand(SwitchGridSessionCommand.class).listen(() -> switchGridItem.setEnabled(getCommand(SwitchGridSessionCommand.class).isEnabled()));
-        final MenuItem deleteSelectionItem = menuItemsBuilder.newDeleteSelectionItem(AbstractProjectDiagramEditor.this::menu_deleteSelected);
+        final MenuItem deleteSelectionItem = menuItemsBuilder.newDeleteSelectionItem(this::menu_deleteSelected);
         getCommand(DeleteSelectionSessionCommand.class).listen(() -> deleteSelectionItem.setEnabled(getCommand(DeleteSelectionSessionCommand.class).isEnabled()));
-        final MenuItem undoItem = menuItemsBuilder.newUndoItem(AbstractProjectDiagramEditor.this::menu_undo);
+        final MenuItem undoItem = menuItemsBuilder.newUndoItem(this::menu_undo);
         getCommand(UndoSessionCommand.class).listen(() -> undoItem.setEnabled(getCommand(UndoSessionCommand.class).isEnabled()));
-        final MenuItem redoItem = menuItemsBuilder.newRedoItem(AbstractProjectDiagramEditor.this::menu_redo);
+        final MenuItem redoItem = menuItemsBuilder.newRedoItem(this::menu_redo);
         getCommand(RedoSessionCommand.class).listen(() -> redoItem.setEnabled(getCommand(RedoSessionCommand.class).isEnabled()));
 
         final MenuItem validateItem = menuItemsBuilder.newValidateItem(() -> validate(() -> hideLoadingViews()));
         getCommand(ValidateSessionCommand.class).listen(() -> validateItem.setEnabled(getCommand(ValidateSessionCommand.class).isEnabled()));
 
-        final MenuItem exportsItem = menuItemsBuilder.newExportsItem(AbstractProjectDiagramEditor.this::export_imagePNG,
-                                                                     AbstractProjectDiagramEditor.this::export_imageJPG,
-                                                                     AbstractProjectDiagramEditor.this::export_imagePDF,
-                                                                     AbstractProjectDiagramEditor.this::export_fileBPMN);
+        final MenuItem exportsItem = menuItemsBuilder.newExportsItem(this::export_imagePNG,
+                                                                     this::export_imageJPG,
+                                                                     this::export_imagePDF,
+                                                                     this::export_fileBPMN);
         getCommand(ExportToPngSessionCommand.class).listen(() -> exportsItem.setEnabled(getCommand(ExportToPngSessionCommand.class).isEnabled()));
         getCommand(ExportToJpgSessionCommand.class).listen(() -> exportsItem.setEnabled(getCommand(ExportToJpgSessionCommand.class).isEnabled()));
         getCommand(ExportToPdfSessionCommand.class).listen(() -> exportsItem.setEnabled(getCommand(ExportToPdfSessionCommand.class).isEnabled()));
         getCommand(ExportToBpmnSessionCommand.class).listen(() -> exportsItem.setEnabled(getCommand(ExportToBpmnSessionCommand.class).isEnabled()));
-        final MenuItem copyItem = menuItemsBuilder.newCopyItem(() -> getCommand(CopySelectionSessionCommand.class).execute());
-        final MenuItem cutItem = menuItemsBuilder.newCutItem(() -> getCommand(CutSelectionSessionCommand.class).execute());
+
         final MenuItem pasteItem = menuItemsBuilder.newPasteItem(() -> getCommand(PasteSelectionSessionCommand.class).execute());
+        getCommand(PasteSelectionSessionCommand.class).listen(() -> pasteItem.setEnabled(getCommand(PasteSelectionSessionCommand.class).isEnabled()));
+        final MenuItem copyItem = menuItemsBuilder.newCopyItem(this::menu_copy);
+        getCommand(CopySelectionSessionCommand.class).listen(() -> copyItem.setEnabled(getCommand(CopySelectionSessionCommand.class).isEnabled()));
+        final MenuItem cutItem = menuItemsBuilder.newCutItem(this::menu_cut);
+        getCommand(CutSelectionSessionCommand.class).listen(() -> cutItem.setEnabled(getCommand(CutSelectionSessionCommand.class).isEnabled()));
+
+        deleteSelectionItem.setEnabled(false);
+        undoItem.setEnabled(false);
+        redoItem.setEnabled(false);
+        copyItem.setEnabled(false);
+        cutItem.setEnabled(false);
+        pasteItem.setEnabled(false);
 
         // Build the menu.
         fileMenuBuilder
                 // Specific Stunner toolbar items.
                 .addNewTopLevelMenu(clearItem)
-                .addNewTopLevelMenu(clearStatesItem)
                 .addNewTopLevelMenu(visitGraphItem)
                 .addNewTopLevelMenu(switchGridItem)
                 .addNewTopLevelMenu(deleteSelectionItem)
@@ -397,7 +407,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                 .addNewTopLevelMenu(versionRecordManager.buildMenu());
     }
 
-    private <T> T getCommand(Class<T> key){
+    private <T> T getCommand(Class<T> key) {
         return (T) commands.get(key);
     }
 
@@ -418,10 +428,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     private void menu_clear() {
         getCommand(ClearSessionCommand.class).execute();
-    }
-
-    private void menu_clearStates() {
-        getCommand(ClearStatesSessionCommand.class).execute();
     }
 
     private void menu_visitGraph() {
@@ -460,6 +466,14 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         getCommand(ExportToBpmnSessionCommand.class).execute();
     }
 
+    private void menu_copy() {
+        getCommand(CopySelectionSessionCommand.class).execute();
+    }
+
+    private void menu_cut() {
+        getCommand(CutSelectionSessionCommand.class).execute();
+    }
+
     protected void doOpen() {
         if (null != getSession()) {
             sessionManager.resume(getSession());
@@ -494,8 +508,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     void onSessionErrorEvent(final @Observes OnSessionErrorEvent errorEvent) {
         if (isSameSession(errorEvent.getSession())) {
-            executeWithConfirm("An error happened [" + errorEvent.getError() + "]. Do you want" +
-                                       "to undo the last action?",
+            executeWithConfirm(translationService.getKeyValue(StunnerProjectClientConstants.ON_ERROR_CONFIRM_UNDO_LAST_ACTION,
+                                                              errorEvent.getError()),
                                this::menu_undo);
         }
     }
@@ -547,7 +561,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     private void destroySession() {
         unbindCommands();
-        if(Objects.nonNull(presenter)) {
+        if (Objects.nonNull(presenter)) {
             presenter.clear();
             presenter.destroy();
         }
@@ -634,7 +648,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     }
 
     private void onSaveSuccess() {
-        final String message = "Diagram saved successfully.";
+        final String message = translationService.getKeyValue(StunnerProjectClientConstants.DIAGRAM_SAVE_SUCCESSFUL);
         log(Level.INFO,
             message);
         presenter.getView().showMessage(message);

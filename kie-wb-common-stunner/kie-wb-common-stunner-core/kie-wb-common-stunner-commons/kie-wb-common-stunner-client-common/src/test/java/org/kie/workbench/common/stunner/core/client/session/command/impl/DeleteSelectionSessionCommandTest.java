@@ -27,7 +27,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DeleteSelectionSessionCommandTest extends BaseSessionCommandKeyboardTest {
+public class DeleteSelectionSessionCommandTest extends BaseSessionCommandKeyboardSelectionAwareTest {
 
     @Mock
     private Event<CanvasClearSelectionEvent> canvasClearSelectionEventEvent;

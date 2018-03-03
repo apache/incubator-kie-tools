@@ -19,17 +19,18 @@ package org.kie.workbench.common.stunner.core.client.session.command.impl;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementsClearEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
-import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
-import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.Node;
 
 import static org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher.doKeysMatch;
 
@@ -37,14 +38,22 @@ import static org.kie.workbench.common.stunner.core.client.canvas.controls.keybo
  * This session command obtains the selected elements on session and copy the elements to a clipboard.
  */
 @Dependent
-public class CopySelectionSessionCommand extends AbstractClientSessionCommand<ClientFullSession> {
+public class CopySelectionSessionCommand extends AbstractSelectionAwareSessionCommand<ClientFullSession> {
 
     private static Logger LOGGER = Logger.getLogger(CopySelectionSessionCommand.class.getName());
 
     private ClipboardControl clipboardControl;
 
+    final private Event<CopySelectionSessionCommandExecutedEvent> commandExecutedEvent;
+
     public CopySelectionSessionCommand() {
+        this(null);
+    }
+
+    @Inject
+    public CopySelectionSessionCommand(final Event<CopySelectionSessionCommandExecutedEvent> commandExecutedEvent) {
         super(true);
+        this.commandExecutedEvent = commandExecutedEvent;
     }
 
     @Override
@@ -59,7 +68,9 @@ public class CopySelectionSessionCommand extends AbstractClientSessionCommand<Cl
     }
 
     private void handleCtrlC(Key[] keys) {
-        if (doKeysMatch(keys, Key.CONTROL, Key.C)) {
+        if (doKeysMatch(keys,
+                        Key.CONTROL,
+                        Key.C)) {
             this.execute(newDefaultCallback("Error while trying to copy selected items."));
         }
     }
@@ -75,12 +86,32 @@ public class CopySelectionSessionCommand extends AbstractClientSessionCommand<Cl
                 clipboardControl.set(selectionControl.getSelectedItems().stream()
                                              .map(this::getElement)
                                              .toArray(Element[]::new));
-
+                commandExecutedEvent.fire(new CopySelectionSessionCommandExecutedEvent(this,
+                                                                                       getSession()));
                 callback.onSuccess();
             } catch (Exception e) {
-                LOGGER.severe("Error on paste selection." + e.getMessage());
+                LOGGER.severe("Error on copy selection." + e.getMessage());
                 return;
             }
         }
+    }
+
+    @Override
+    protected void handleCanvasSelectionEvent(final CanvasSelectionEvent event) {
+        if (event.getIdentifiers().isEmpty() || onlyCanvasRootSelected(event)) {
+            enable(false);
+        } else {
+            enable(true);
+        }
+    }
+
+    @Override
+    protected void handleCanvasClearSelectionEvent(final CanvasClearSelectionEvent event) {
+        enable(false);
+    }
+
+    @Override
+    protected void handleCanvasElementsClearEvent(final CanvasElementsClearEvent event) {
+        enable(false);
     }
 }

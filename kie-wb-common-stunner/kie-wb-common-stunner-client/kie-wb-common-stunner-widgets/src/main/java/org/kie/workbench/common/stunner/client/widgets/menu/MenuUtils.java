@@ -17,11 +17,20 @@
 package org.kie.workbench.common.stunner.client.widgets.menu;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Button;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
 public class MenuUtils {
+
+    public interface HasEnabledIsWidget extends IsWidget {
+
+        void setEnabled(boolean enabled);
+
+        boolean isEnabled();
+    }
 
     public static MenuItem buildItem(final IsWidget widget) {
         return new MenuFactory.CustomMenuBuilder() {
@@ -31,13 +40,50 @@ public class MenuUtils {
 
             @Override
             public MenuItem build() {
-                return new BaseMenuCustom() {
+                return new BaseMenuCustom<Widget>() {
                     @Override
-                    public IsWidget build() {
-                        return widget;
+                    public Widget build() {
+                        return widget.asWidget();
+                    }
+
+                    @Override
+                    public boolean isEnabled() {
+                        if (widget instanceof HasEnabledIsWidget) {
+                            return ((HasEnabledIsWidget) widget).isEnabled();
+                        } else {
+                            return super.isEnabled();
+                        }
+                    }
+
+                    @Override
+                    public void setEnabled(boolean enabled) {
+                        if (widget instanceof HasEnabledIsWidget) {
+                            ((HasEnabledIsWidget) widget).setEnabled(enabled);
+                        } else {
+                            super.setEnabled(enabled);
+                        }
                     }
                 };
             }
         }.build();
+    }
+
+    public static HasEnabledIsWidget buildHasEnabledWidget(final Button button) {
+        return new HasEnabledIsWidget() {
+            @Override
+            public void setEnabled(boolean enabled) {
+                button.setEnabled(enabled);
+            }
+
+            @Override
+            public boolean isEnabled() {
+                return button.isEnabled();
+            }
+
+            @Override
+            public Widget asWidget() {
+                return button;
+            }
+        };
     }
 }

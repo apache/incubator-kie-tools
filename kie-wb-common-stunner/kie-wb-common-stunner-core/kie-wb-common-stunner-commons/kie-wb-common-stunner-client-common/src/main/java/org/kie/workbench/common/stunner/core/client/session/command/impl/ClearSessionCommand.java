@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.session.command.impl;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -46,18 +47,22 @@ public class ClearSessionCommand extends AbstractClientSessionCommand<ClientFull
 
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+    private final Event<ClearSessionCommandExecutedEvent> commandExecutedEvent;
 
     protected ClearSessionCommand() {
         this(null,
+             null,
              null);
     }
 
     @Inject
     public ClearSessionCommand(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
-                               final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager) {
+                               final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                               final Event<ClearSessionCommandExecutedEvent> commandExecutedEvent) {
         super(true);
         this.canvasCommandFactory = canvasCommandFactory;
         this.sessionCommandManager = sessionCommandManager;
+        this.commandExecutedEvent = commandExecutedEvent;
     }
 
     @Override
@@ -76,6 +81,8 @@ public class ClearSessionCommand extends AbstractClientSessionCommand<ClientFull
                          canvasCommandFactory.clearCanvas());
         if (!CommandUtils.isError(result)) {
             cleanSessionRegistry();
+            commandExecutedEvent.fire(new ClearSessionCommandExecutedEvent(this,
+                                                                           getSession()));
             callback.onSuccess();
         } else {
             callback.onError((V) result);

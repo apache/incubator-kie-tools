@@ -67,6 +67,7 @@ import static org.kie.workbench.common.stunner.core.client.session.command.impl.
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
@@ -154,6 +155,9 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
 
     @Mock
     private CopySelectionSessionCommand copySelectionSessionCommand;
+
+    @Mock
+    private org.uberfire.mvp.Command statusCallback;
 
     private static final String CLONE_UUID = UUID.uuid();
 
@@ -316,5 +320,25 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
     @Override
     protected KeyboardEvent.Key[] getUnexpectedKeys() {
         return new KeyboardEvent.Key[]{KeyboardEvent.Key.ESC};
+    }
+
+    @Test
+    public void testOnCopySelectionCommandExecuted() {
+        pasteSelectionSessionCommand.bind(session);
+        pasteSelectionSessionCommand.listen(statusCallback);
+        pasteSelectionSessionCommand.onCopySelectionCommandExecuted(new CopySelectionSessionCommandExecutedEvent(mock(CopySelectionSessionCommand.class),
+                                                                                                                 session));
+        verify(statusCallback, times(1)).execute();
+        assertTrue(command.isEnabled());
+    }
+
+    @Test
+    public void testOnCutSelectionCommandExecuted() {
+        pasteSelectionSessionCommand.bind(session);
+        pasteSelectionSessionCommand.listen(statusCallback);
+        pasteSelectionSessionCommand.onCutSelectionCommandExecuted(new CutSelectionSessionCommandExecutedEvent(mock(CutSelectionSessionCommand.class),
+                                                                                                               session));
+        verify(statusCallback, times(1)).execute();
+        assertTrue(command.isEnabled());
     }
 }
