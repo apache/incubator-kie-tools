@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -69,8 +70,8 @@ public class DefaultGridLayer extends Layer implements GridLayer,
     private final GridWidgetDnDHandlersState state = new GridWidgetDnDHandlersState();
     private final TransformMediator defaultTransformMediator = new BoundaryTransformMediator();
     private final DefaultPinnedModeManager pinnedModeManager = new DefaultPinnedModeManager(this);
-    private Set<GridWidget> explicitGridWidgets = new HashSet<>();
-    private Set<GridWidget> registeredGridWidgets = new HashSet<>();
+    private Set<GridWidget> explicitGridWidgets = new LinkedHashSet<>();
+    private Set<GridWidget> registeredGridWidgets = new LinkedHashSet<>();
     private Map<GridWidgetConnector, Line> gridWidgetConnectors = new HashMap<>();
     private final GridLayerRedrawManager.PrioritizedCommand REDRAW = new GridLayerRedrawManager.PrioritizedCommand(Integer.MIN_VALUE) {
         @Override
@@ -149,6 +150,7 @@ public class DefaultGridLayer extends Layer implements GridLayer,
     public Layer draw() {
         //Clear all transient registrations added as the Layer is rendered
         registeredGridWidgets.clear();
+        registeredGridWidgets.addAll(explicitGridWidgets);
 
         //We use Layer.batch() to ensure rendering is tied to the browser's requestAnimationFrame()
         //however this calls back into Layer.draw() so update dependent Shapes here.
@@ -211,6 +213,7 @@ public class DefaultGridLayer extends Layer implements GridLayer,
         for (IPrimitive<?> c : all) {
             if (c instanceof GridWidget) {
                 final GridWidget gridWidget = (GridWidget) c;
+                register(gridWidget);
                 explicitGridWidgets.add(gridWidget);
                 addGridWidgetConnectors();
             }
@@ -316,6 +319,7 @@ public class DefaultGridLayer extends Layer implements GridLayer,
             if (c instanceof GridWidget) {
                 final GridWidget gridWidget = (GridWidget) c;
                 deregister(gridWidget);
+                explicitGridWidgets.remove(gridWidget);
                 removeGridWidgetConnectors(gridWidget);
             }
         }
@@ -427,10 +431,7 @@ public class DefaultGridLayer extends Layer implements GridLayer,
 
     @Override
     public Set<GridWidget> getGridWidgets() {
-        final Set<GridWidget> allGridWidgets = new HashSet<>();
-        allGridWidgets.addAll(explicitGridWidgets);
-        allGridWidgets.addAll(registeredGridWidgets);
-        return Collections.unmodifiableSet(allGridWidgets);
+        return Collections.unmodifiableSet(registeredGridWidgets);
     }
 
     @Override
