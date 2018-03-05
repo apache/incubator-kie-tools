@@ -17,25 +17,31 @@
 package org.kie.workbench.common.dmn.client.editors.expressions;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
+import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.EditorToolbar;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.mockito.Mock;
+import org.uberfire.mvp.Command;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class ExpressionEditorTest {
@@ -47,19 +53,61 @@ public class ExpressionEditorTest {
     private SessionManager sessionManager;
 
     @Mock
-    private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+    private SessionPresenter sessionPresenter;
 
     @Mock
-    private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitions;
+    private EditorToolbar editorToolbar;
+
+    @Mock
+    private HasName hasName;
+
+    @Mock
+    private HasExpression hasExpression;
+
+    @Mock
+    private Command command;
 
     private ExpressionEditor testedEditor;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         testedEditor = new ExpressionEditor(view,
-                                            sessionManager,
-                                            sessionCommandManager,
-                                            expressionEditorDefinitions);
+                                            sessionManager);
+        when(sessionPresenter.getToolbar()).thenReturn(editorToolbar);
+        when(editorToolbar.isEnabled(any(ToolbarCommand.class))).thenReturn(true);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testInit() {
+        testedEditor.init(sessionPresenter);
+
+        verify(sessionPresenter).getToolbar();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSetExpression() {
+        testedEditor.init(sessionPresenter);
+
+        testedEditor.setExpression(Optional.of(hasName), hasExpression);
+
+        verify(view).setExpression(eq(Optional.of(hasName)), eq(hasExpression));
+        verify(editorToolbar, atLeast(1)).disable(any(ToolbarCommand.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testExitWithCommand() {
+        testedEditor.init(sessionPresenter);
+        testedEditor.setExpression(Optional.of(hasName), hasExpression);
+        testedEditor.setExitCommand(command);
+
+        testedEditor.exit();
+
+        verify(editorToolbar, atLeast(1)).enable(any(ToolbarCommand.class));
+        verify(command).execute();
     }
 
     @Test

@@ -32,7 +32,7 @@ import com.google.gwtmockito.GwtMockito;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionContainer;
+import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionContainerGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.dnd.DelegatingGridWidgetDndMouseMoveHandler;
@@ -74,7 +74,7 @@ public class DMNGridLayerTest {
     private Context2D context2D;
 
     @Mock
-    private ExpressionContainer container;
+    private ExpressionContainerGrid container;
 
     @Mock
     private BaseExpressionGrid expressionGrid;
@@ -138,7 +138,7 @@ public class DMNGridLayerTest {
         gridLayer.doBatch();
 
         verify(gridLayer, never()).findSelectedExpressionGrid();
-        verify(gridLayer, never()).addGhost(any(ExpressionContainer.class), any(BaseExpressionGrid.class));
+        verify(gridLayer, never()).addGhost(any(ExpressionContainerGrid.class), any(BaseExpressionGrid.class));
     }
 
     @Test
@@ -148,7 +148,7 @@ public class DMNGridLayerTest {
         gridLayer.doBatch();
 
         verify(gridLayer).findSelectedExpressionGrid();
-        verify(gridLayer, never()).addGhost(any(ExpressionContainer.class), any(BaseExpressionGrid.class));
+        verify(gridLayer, never()).addGhost(any(ExpressionContainerGrid.class), any(BaseExpressionGrid.class));
     }
 
     @Test

@@ -53,6 +53,16 @@ import org.kie.workbench.common.stunner.core.client.session.Session;
 @ApplicationScoped
 public class DecisionTableEditorDefinition extends BaseEditorDefinition<DecisionTable> {
 
+    static final String INPUT_CLAUSE_EXPRESSION_TEXT = "input";
+
+    static final String INPUT_CLAUSE_UNARY_TEST_TEXT = "unary test";
+
+    static final String OUTPUT_CLAUSE_NAME = "output";
+
+    static final String OUTPUT_CLAUSE_EXPRESSION_TEXT = "literal expression";
+
+    static final String RULE_DESCRIPTION = "A rule";
+
     private ManagedInstance<DecisionTableGridControls> controlsProvider;
 
     public DecisionTableEditorDefinition() {
@@ -96,25 +106,25 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
 
         final InputClause ic = new InputClause();
         final LiteralExpression le = new LiteralExpression();
-        le.setText("input");
+        le.setText(INPUT_CLAUSE_EXPRESSION_TEXT);
         ic.setInputExpression(le);
         dtable.getInput().add(ic);
 
         final OutputClause oc = new OutputClause();
-        oc.setName("output");
+        oc.setName(OUTPUT_CLAUSE_NAME);
         dtable.getOutput().add(oc);
 
         final DecisionRule dr = new DecisionRule();
         final UnaryTests drut = new UnaryTests();
-        drut.setText("unary test");
+        drut.setText(INPUT_CLAUSE_UNARY_TEST_TEXT);
         dr.getInputEntry().add(drut);
 
         final LiteralExpression drle = new LiteralExpression();
-        drle.setText("literal expression");
+        drle.setText(OUTPUT_CLAUSE_EXPRESSION_TEXT);
         dr.getOutputEntry().add(drle);
 
         final Description d = new Description();
-        d.setValue("A rule");
+        d.setValue(RULE_DESCRIPTION);
         dr.setDescription(d);
 
         dtable.getRule().add(dr);

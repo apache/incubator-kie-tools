@@ -54,13 +54,12 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 
 public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, UndefinedExpressionUIModelMapper> implements HasListSelectorControl {
 
-    private static final String EXPRESSION_COLUMN_GROUP = "UndefinedExpressionGrid$ExpressionColumn";
+    public static final double PADDING = 0.0;
 
-    private static final double PADDING = 0.0;
+    private static final String EXPRESSION_COLUMN_GROUP = "UndefinedExpressionGrid$ExpressionColumn";
 
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private final ListSelector listSelector;
-    private final boolean isNested;
 
     public UndefinedExpressionGrid(final GridCellTuple parent,
                                    final HasExpression hasExpression,
@@ -88,10 +87,9 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
               editorSelectedEvent,
               cellEditorControls,
               translationService,
-              true);
+              isNested);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.listSelector = listSelector;
-        this.isNested = isNested;
 
         //Render the cell content to Lienzo's SelectionLayer so we can handle Events on child elements
         getRenderer().setColumnRenderConstraint((isSelectionLayer, gridColumn) -> true);
@@ -193,7 +191,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
                                                                      hasExpression,
                                                                      expression,
                                                                      hasName,
-                                                                     isNested);
+                                                                     isNested.get());
             final GridCellValueTuple gcv = new GridCellValueTuple<>(parent.getRowIndex(),
                                                                     parent.getColumnIndex(),
                                                                     parent.getGridWidget(),

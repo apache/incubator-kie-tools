@@ -33,10 +33,14 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.AddParameterBindingCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.DeleteParameterBindingCommand;
+import org.kie.workbench.common.dmn.client.commands.general.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.NameColumnHeaderMetaData;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionEditorDefinition;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -60,12 +64,12 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -86,6 +90,10 @@ public class InvocationGridTest {
     private final static int INSERT_PARAMETER_BELOW = 1;
 
     private final static int DELETE_PARAMETER = 2;
+
+    private final static int DIVIDER = 3;
+
+    private final static int CLEAR_EXPRESSION_TYPE = 4;
 
     @Mock
     private DMNGridPanel gridPanel;
@@ -136,6 +144,12 @@ public class InvocationGridTest {
     private BaseExpressionGrid literalExpressionEditor;
 
     @Mock
+    private UndefinedExpressionEditorDefinition undefinedExpressionEditorDefinition;
+
+    @Mock
+    private UndefinedExpressionGrid undefinedExpressionEditor;
+
+    @Mock
     private GridWidgetDnDHandlersState dndHandlersState;
 
     @Captor
@@ -143,6 +157,12 @@ public class InvocationGridTest {
 
     @Captor
     private ArgumentCaptor<DeleteParameterBindingCommand> deleteParameterBindingCommandCaptor;
+
+    @Captor
+    private ArgumentCaptor<ClearExpressionTypeCommand> clearExpressionTypeCommandCaptor;
+
+    @Captor
+    private ArgumentCaptor<GridLayerRedrawManager.PrioritizedCommand> redrawCommandCaptor;
 
     private LiteralExpression literalExpression = new LiteralExpression();
 
@@ -166,6 +186,7 @@ public class InvocationGridTest {
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add((ExpressionEditorDefinition) definition);
         expressionEditorDefinitions.add(literalExpressionEditorDefinition);
+        expressionEditorDefinitions.add(undefinedExpressionEditorDefinition);
 
         doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
         doReturn(Optional.of(literalExpression)).when(literalExpressionEditorDefinition).getModelClass();
@@ -174,6 +195,14 @@ public class InvocationGridTest {
                                                                                                          any(Optional.class),
                                                                                                          any(Optional.class),
                                                                                                          anyBoolean());
+
+        doReturn(parent).when(undefinedExpressionEditor).getParentInformation();
+        doReturn(Optional.empty()).when(undefinedExpressionEditorDefinition).getModelClass();
+        doReturn(Optional.of(undefinedExpressionEditor)).when(undefinedExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
+                                                                                                             any(HasExpression.class),
+                                                                                                             any(Optional.class),
+                                                                                                             any(Optional.class),
+                                                                                                             anyBoolean());
 
         doReturn(session).when(sessionManager).getCurrentSession();
         doReturn(handler).when(session).getCanvasHandler();
@@ -210,7 +239,10 @@ public class InvocationGridTest {
                      uiModel.getCell(0, 0).getValue().getValue());
         assertEquals("p0",
                      uiModel.getCell(0, 1).getValue().getValue());
-        assertNull(uiModel.getCell(0, 2));
+        assertTrue(uiModel.getCell(0, 2).getValue() instanceof ExpressionCellValue);
+        final ExpressionCellValue dcv0 = (ExpressionCellValue) uiModel.getCell(0, 2).getValue();
+        assertEquals(undefinedExpressionEditor,
+                     dcv0.getValue().get());
     }
 
     @Test
@@ -252,9 +284,43 @@ public class InvocationGridTest {
     }
 
     @Test
-    public void testGetItems() {
-        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+    public void testGetItemsRowNumberColumn() {
+        assertDefaultListItems(grid.getItems(0, 0));
+    }
 
+    @Test
+    public void testOnItemSelectedNameColumn() {
+        assertDefaultListItems(grid.getItems(0, 1));
+    }
+
+    @Test
+    public void testOnItemSelectedExpressionColumnUndefinedExpressionType() {
+        //The default model from ContextEditorDefinition has an undefined expression at (0, 2)
+        assertDefaultListItems(grid.getItems(0, 2));
+    }
+
+    @Test
+    public void testOnItemSelectedExpressionColumnDefinedExpressionType() {
+        //Set an editor for expression at (0, 2)
+        final BaseExpressionGrid editor = mock(BaseExpressionGrid.class);
+        grid.getModel().setCellValue(0, 2, new ExpressionCellValue(Optional.of(editor)));
+
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 2);
+
+        assertThat(items.size()).isEqualTo(5);
+        assertDefaultListItems(items.subList(0, 3));
+
+        assertThat(items.get(DIVIDER)).isInstanceOf(HasListSelectorControl.ListSelectorDividerItem.class);
+        assertListSelectorItem(items.get(CLEAR_EXPRESSION_TYPE),
+                               DMNEditorConstants.ExpressionEditor_Clear);
+
+        ((HasListSelectorControl.ListSelectorTextItem) items.get(CLEAR_EXPRESSION_TYPE)).getCommand().execute();
+        verify(cellEditorControls).hide();
+        verify(sessionCommandManager).execute(eq(handler),
+                                              any(ClearExpressionTypeCommand.class));
+    }
+
+    private void assertDefaultListItems(final List<HasListSelectorControl.ListSelectorItem> items) {
         assertThat(items.size()).isEqualTo(3);
         assertListSelectorItem(items.get(INSERT_PARAMETER_ABOVE),
                                DMNEditorConstants.InvocationEditor_InsertParameterAbove);
@@ -345,7 +411,12 @@ public class InvocationGridTest {
         verify(parent).onResize();
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
-        verify(gridLayer).batch();
+        verify(gridLayer).batch(redrawCommandCaptor.capture());
+
+        final GridLayerRedrawManager.PrioritizedCommand redrawCommand = redrawCommandCaptor.getValue();
+        redrawCommand.execute();
+
+        verify(gridLayer).draw();
     }
 
     @Test
@@ -361,6 +432,32 @@ public class InvocationGridTest {
         verify(parent).onResize();
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
-        verify(gridLayer).batch();
+        verify(gridLayer).batch(redrawCommandCaptor.capture());
+
+        final GridLayerRedrawManager.PrioritizedCommand redrawCommand = redrawCommandCaptor.getValue();
+        redrawCommand.execute();
+
+        verify(gridLayer).draw();
+    }
+
+    @Test
+    public void testClearExpressionType() {
+        grid.clearExpressionType(0);
+
+        verify(sessionCommandManager).execute(eq(handler),
+                                              clearExpressionTypeCommandCaptor.capture());
+
+        final ClearExpressionTypeCommand clearExpressionTypeCommand = clearExpressionTypeCommandCaptor.getValue();
+        clearExpressionTypeCommand.execute(handler);
+
+        verify(parent).onResize();
+        verify(gridPanel).refreshScrollPosition();
+        verify(gridPanel).updatePanelSize();
+        verify(gridLayer).batch(redrawCommandCaptor.capture());
+
+        final GridLayerRedrawManager.PrioritizedCommand redrawCommand = redrawCommandCaptor.getValue();
+        redrawCommand.execute();
+
+        verify(gridLayer).draw();
     }
 }

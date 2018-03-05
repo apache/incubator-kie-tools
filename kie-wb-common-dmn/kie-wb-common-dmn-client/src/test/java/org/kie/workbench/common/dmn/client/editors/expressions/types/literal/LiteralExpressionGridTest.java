@@ -17,7 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.literal;
 
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -157,12 +157,26 @@ public class LiteralExpressionGridTest {
     }
 
     @Test
+    public void testPaddingWithParent() {
+        doReturn(Optional.of(mock(BaseExpressionGrid.class))).when(grid).findParentGrid();
+
+        assertThat(grid.getPadding()).isEqualTo(LiteralExpressionGrid.PADDING);
+    }
+
+    @Test
+    public void testPaddingWithNoParent() {
+        doReturn(Optional.empty()).when(grid).findParentGrid();
+
+        assertThat(grid.getPadding()).isEqualTo(BaseExpressionGrid.DEFAULT_PADDING);
+    }
+
+    @Test
     public void testFireExpressionEditorSelectedEventSelectsParentGridWidget() {
         final GridData mockParentUiModel = mock(GridData.class);
         final BaseExpressionGrid mockParentGrid = mock(BaseExpressionGrid.class);
         doReturn(mockParentGrid).when(parent).getGridWidget();
         doReturn(mockParentUiModel).when(mockParentGrid).getModel();
-        doReturn(new HashSet<GridWidget>() {{
+        doReturn(new LinkedHashSet<GridWidget>() {{
             add(mockParentGrid);
             add(grid);
         }}).when(gridLayer).getGridWidgets();

@@ -21,6 +21,7 @@ public class ContextUIModelMapperHelper {
     public static final int ROW_INDEX_COLUMN_COUNT = 1;
     public static final int NAME_COLUMN_COUNT = 1;
     public static final int EXPRESSION_COLUMN_COUNT = 1;
+    public static final int EXPRESSION_COLUMN_INDEX = ROW_INDEX_COLUMN_COUNT + NAME_COLUMN_COUNT + EXPRESSION_COLUMN_COUNT - 1;
 
     public enum ContextSection {
         NONE,

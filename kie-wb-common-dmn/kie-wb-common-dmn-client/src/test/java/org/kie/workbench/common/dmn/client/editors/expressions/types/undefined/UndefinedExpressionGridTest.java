@@ -77,6 +77,8 @@ import static org.mockito.Mockito.when;
 @RunWith(LienzoMockitoTestRunner.class)
 public class UndefinedExpressionGridTest {
 
+    private static final boolean NESTED = false;
+
     @Mock
     private DMNGridPanel gridPanel;
 
@@ -177,7 +179,7 @@ public class UndefinedExpressionGridTest {
                                                                        hasExpression,
                                                                        expression,
                                                                        hasName,
-                                                                       false).get());
+                                                                       NESTED).get());
     }
 
     @Test
@@ -198,6 +200,20 @@ public class UndefinedExpressionGridTest {
     @Test
     public void testGetEditorControls() {
         assertThat(grid.getEditorControls().isPresent()).isFalse();
+    }
+
+    @Test
+    public void testPaddingWithParent() {
+        doReturn(Optional.of(mock(BaseExpressionGrid.class))).when(grid).findParentGrid();
+
+        assertThat(grid.getPadding()).isEqualTo(UndefinedExpressionGrid.PADDING);
+    }
+
+    @Test
+    public void testPaddingWithNoParent() {
+        doReturn(Optional.empty()).when(grid).findParentGrid();
+
+        assertThat(grid.getPadding()).isEqualTo(UndefinedExpressionGrid.PADDING);
     }
 
     @Test
@@ -294,8 +310,15 @@ public class UndefinedExpressionGridTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testOnExpressionTypeChanged() {
         grid.onExpressionTypeChanged(ExpressionType.LITERAL_EXPRESSION);
+
+        verify(literalExpressionEditorDefinition).getEditor(eq(parent),
+                                                            eq(hasExpression),
+                                                            eq(Optional.of(literalExpression)),
+                                                            eq(hasName),
+                                                            eq(NESTED));
 
         verify(sessionCommandManager).execute(eq(handler),
                                               setCellValueCommandArgumentCaptor.capture());

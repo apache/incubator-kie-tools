@@ -17,7 +17,6 @@ package org.kie.workbench.common.dmn.client.editors.expressions;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
@@ -26,19 +25,12 @@ import javax.inject.Inject;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
-import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.EditorToolbar;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.uberfire.mvp.Command;
@@ -48,13 +40,8 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
 
     private ExpressionEditorView view;
     private SessionManager sessionManager;
-    private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitions;
 
     private Optional<Command> exitCommand;
-
-    private Optional<HasName> hasName = Optional.empty();
-    private HasExpression hasExpression;
 
     private ToolbarCommandStateHandler toolbarCommandStateHandler;
 
@@ -65,13 +52,9 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
     @Inject
     @SuppressWarnings("unchecked")
     public ExpressionEditor(final ExpressionEditorView view,
-                            final SessionManager sessionManager,
-                            final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                            final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitions) {
+                            final SessionManager sessionManager) {
         this.view = view;
         this.sessionManager = sessionManager;
-        this.sessionCommandManager = sessionCommandManager;
-        this.expressionEditorDefinitions = expressionEditorDefinitions;
         this.view.init(this);
     }
 
@@ -91,27 +74,12 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
     }
 
     @Override
-    public void setHasName(final Optional<HasName> hasName) {
-        this.hasName = hasName;
-    }
+    public void setExpression(final Optional<HasName> hasName,
+                              final HasExpression hasExpression) {
+        view.setExpression(hasName,
+                           hasExpression);
 
-    @Override
-    public void setHasExpression(final HasExpression hasExpression) {
-        this.hasExpression = hasExpression;
-        final Expression e = hasExpression.getExpression();
-        setExpression(Optional.ofNullable(e));
         toolbarCommandStateHandler.enter();
-    }
-
-    @Override
-    public void setExpression(final Optional<Expression> expression) {
-        final Optional<ExpressionEditorDefinition<Expression>> expressionEditorDefinition = expressionEditorDefinitions.get().getExpressionEditorDefinition(expression);
-        expressionEditorDefinition.ifPresent(ed -> {
-            view.setEditor(ed,
-                           hasExpression,
-                           hasName,
-                           expression);
-        });
     }
 
     @Override

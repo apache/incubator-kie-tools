@@ -42,6 +42,7 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.Add
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.AddInputClauseCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.AddOutputClauseCommand;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
@@ -158,7 +159,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                 e::getAggregation));
             e.getInput().forEach(ic -> model.appendColumn(makeInputClauseColumn(ic)));
             e.getOutput().forEach(oc -> model.appendColumn(makeOutputClauseColumn(oc)));
-            model.appendColumn(new DescriptionColumn(new BaseHeaderMetaData("Description",
+            model.appendColumn(new DescriptionColumn(new BaseHeaderMetaData(translationService.format(DMNEditorConstants.DecisionTableEditor_DescriptionColumnHeader),
                                                                             DESCRIPTION_GROUP),
                                                      textBoxFactory,
                                                      this));
@@ -267,7 +268,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                     makeInputClauseColumn(clause),
                                                                     uiModelMapper,
                                                                     () -> {
-                                                                        parent.assertWidth(DecisionTableGrid.this.getWidth());
+                                                                        parent.assertWidth(DecisionTableGrid.this.getWidth() + getPadding() * 2);
                                                                         gridPanel.refreshScrollPosition();
                                                                         gridPanel.updatePanelSize();
                                                                         gridLayer.batch();
@@ -288,7 +289,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                      makeOutputClauseColumn(clause),
                                                                      uiModelMapper,
                                                                      () -> {
-                                                                         parent.assertWidth(DecisionTableGrid.this.getWidth());
+                                                                         parent.assertWidth(DecisionTableGrid.this.getWidth() + getPadding() * 2);
                                                                          gridPanel.refreshScrollPosition();
                                                                          gridPanel.updatePanelSize();
                                                                          gridLayer.batch();

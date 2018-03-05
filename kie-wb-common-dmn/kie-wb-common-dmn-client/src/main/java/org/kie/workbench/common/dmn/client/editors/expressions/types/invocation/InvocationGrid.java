@@ -36,9 +36,12 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.AddParameterBindingCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.DeleteParameterBindingCommand;
+import org.kie.workbench.common.dmn.client.commands.general.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.NameColumnHeaderMetaData;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -54,6 +57,7 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
@@ -209,6 +213,31 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
                                                  cellEditorControls.hide();
                                                  deleteParameterBinding(uiRowIndex);
                                              }));
+
+        //If not ExpressionEditor column don't add extra items
+        if (uiColumnIndex != InvocationUIModelMapper.BINDING_EXPRESSION_COLUMN_INDEX) {
+            return items;
+        }
+
+        //If cell editor is UndefinedExpressionGrid don't add extra items
+        final GridCell<?> cell = model.getCell(uiRowIndex, uiColumnIndex);
+        final ExpressionCellValue ecv = (ExpressionCellValue) cell.getValue();
+        if (!ecv.getValue().isPresent()) {
+            return items;
+        }
+        final BaseExpressionGrid grid = ecv.getValue().get();
+        if (grid instanceof UndefinedExpressionGrid) {
+            return items;
+        }
+
+        items.add(new ListSelectorDividerItem());
+        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.ExpressionEditor_Clear),
+                                             true,
+                                             () -> {
+                                                 cellEditorControls.hide();
+                                                 clearExpressionType(uiRowIndex);
+                                             }));
+
         return items;
     }
 
@@ -231,12 +260,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
                                                                          new DMNGridRow(),
                                                                          index,
                                                                          uiModelMapper,
-                                                                         () -> {
-                                                                             parent.onResize();
-                                                                             gridPanel.refreshScrollPosition();
-                                                                             gridPanel.updatePanelSize();
-                                                                             gridLayer.batch();
-                                                                         }));
+                                                                         () -> synchroniseViewWhenExpressionEditorChanged(Optional.empty())));
         });
     }
 
@@ -246,12 +270,19 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
                                           new DeleteParameterBindingCommand(invocation,
                                                                             model,
                                                                             index,
-                                                                            () -> {
-                                                                                parent.onResize();
-                                                                                gridPanel.refreshScrollPosition();
-                                                                                gridPanel.updatePanelSize();
-                                                                                gridLayer.batch();
-                                                                            }));
+                                                                            () -> synchroniseViewWhenExpressionEditorChanged(Optional.empty())));
         });
+    }
+
+    void clearExpressionType(final int uiRowIndex) {
+        final GridCellTuple gc = new GridCellTuple(uiRowIndex,
+                                                   InvocationUIModelMapper.BINDING_EXPRESSION_COLUMN_INDEX,
+                                                   this);
+        final HasExpression hasExpression = expression.get().getBinding().get(uiRowIndex);
+        sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                      new ClearExpressionTypeCommand(gc,
+                                                                     hasExpression,
+                                                                     uiModelMapper,
+                                                                     () -> synchroniseViewWhenExpressionEditorChanged(Optional.empty())));
     }
 }

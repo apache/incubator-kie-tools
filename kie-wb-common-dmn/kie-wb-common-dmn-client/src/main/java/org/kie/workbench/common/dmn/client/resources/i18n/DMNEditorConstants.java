@@ -50,6 +50,9 @@ public class DMNEditorConstants {
     public static final String ExpressionEditor_InvocationType = "ExpressionEditor.InvocationType";
 
     @TranslationKey(defaultValue = "")
+    public static final String ExpressionEditor_Clear = "ExpressionEditor.Clear";
+
+    @TranslationKey(defaultValue = "")
     public static final String ContextEditor_InsertContextEntryAbove = "ContextEditor.InsertContextEntryAbove";
 
     @TranslationKey(defaultValue = "")
@@ -84,4 +87,7 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String InvocationEditor_DeleteParameter = "InvocationEditor.DeleteParameter";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DecisionTableEditor_DescriptionColumnHeader = "DecisionTableEditor.DescriptionColumnHeader";
 }

@@ -26,7 +26,7 @@ import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
-import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionContainer;
+import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionContainerGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.dnd.DelegatingGridWidgetDndMouseMoveHandler;
@@ -73,10 +73,10 @@ public class DMNGridLayer extends DefaultGridLayer {
         return layer;
     }
 
-    Optional<ExpressionContainer> findExpressionContainer() {
+    Optional<ExpressionContainerGrid> findExpressionContainer() {
         return getGridWidgets().stream()
-                .filter(gw -> gw instanceof ExpressionContainer)
-                .map(gw -> (ExpressionContainer) gw)
+                .filter(gw -> gw instanceof ExpressionContainerGrid)
+                .map(gw -> (ExpressionContainerGrid) gw)
                 .findFirst();
     }
 
@@ -88,7 +88,7 @@ public class DMNGridLayer extends DefaultGridLayer {
                 .findFirst();
     }
 
-    void addGhost(final ExpressionContainer container,
+    void addGhost(final ExpressionContainerGrid container,
                   final BaseExpressionGrid gridWidget) {
         GridWidget gw = gridWidget;
         // LiteralExpression and UndefinedExpression are not handled as grids in
@@ -99,7 +99,7 @@ public class DMNGridLayer extends DefaultGridLayer {
             gw = gridWidget.getParentInformation().getGridWidget();
         }
 
-        //Rectangle the size of the ExpressionContainer
+        //Rectangle the size of the ExpressionContainerGrid
         final Rectangle r = getGhostRectangle();
         r.setWidth(container.getWidth() + BaseExpressionGridTheme.STROKE_WIDTH);
         r.setHeight(container.getHeight() + BaseExpressionGridTheme.STROKE_WIDTH);

@@ -51,7 +51,6 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
-import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMapper> implements HasListSelectorControl {
@@ -233,7 +232,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
                                                                        index,
                                                                        uiModelMapper,
                                                                        () -> {
-                                                                           relationColumn.updateWidthOfPeers();
+                                                                           parent.assertWidth(RelationGrid.this.getWidth() + getPadding() * 2);
                                                                            gridPanel.refreshScrollPosition();
                                                                            gridPanel.updatePanelSize();
                                                                            gridLayer.batch();
@@ -266,11 +265,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
                                                                           index,
                                                                           uiModelMapper,
                                                                           () -> {
-                                                                              final int parentColumnIndex = getParentInformation().getColumnIndex();
-                                                                              final GridData parentGridData = getParentInformation().getGridWidget().getModel();
-                                                                              final GridColumn<?> parentColumn = parentGridData.getColumns().get(parentColumnIndex);
-                                                                              parentColumn.setWidth(getWidth() + getPadding() * 2);
-
+                                                                              parent.assertWidth(RelationGrid.this.getWidth() + getPadding() * 2);
                                                                               gridPanel.refreshScrollPosition();
                                                                               gridPanel.updatePanelSize();
                                                                               gridLayer.batch();

@@ -33,9 +33,11 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.AddContextEntryCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.DeleteContextEntryCommand;
+import org.kie.workbench.common.dmn.client.commands.general.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionEditorDefinition;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -59,6 +61,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlers
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState.GridWidgetHandlersOperation;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
@@ -86,6 +89,10 @@ public class ContextGridTest {
     private final static int INSERT_ROW_BELOW = 1;
 
     private final static int DELETE_ROW = 2;
+
+    private final static int DIVIDER = 3;
+
+    private final static int CLEAR_EXPRESSION_TYPE = 4;
 
     @Mock
     private DMNGridPanel gridPanel;
@@ -136,7 +143,7 @@ public class ContextGridTest {
     private UndefinedExpressionEditorDefinition undefinedExpressionEditorDefinition;
 
     @Mock
-    private BaseExpressionGrid undefinedExpressionEditor;
+    private UndefinedExpressionGrid undefinedExpressionEditor;
 
     @Mock
     private GridWidgetDnDHandlersState dndHandlersState;
@@ -146,6 +153,12 @@ public class ContextGridTest {
 
     @Captor
     private ArgumentCaptor<DeleteContextEntryCommand> deleteContextEntryCommandCaptor;
+
+    @Captor
+    private ArgumentCaptor<ClearExpressionTypeCommand> clearExpressionTypeCommandCaptor;
+
+    @Captor
+    private ArgumentCaptor<GridLayerRedrawManager.PrioritizedCommand> redrawCommandCaptor;
 
     private LiteralExpression literalExpression = new LiteralExpression();
 
@@ -220,6 +233,9 @@ public class ContextGridTest {
         assertEquals(Name.DEFAULT_NAME,
                      uiModel.getCell(0, 1).getValue().getValue());
         assertTrue(uiModel.getCell(0, 2).getValue() instanceof ExpressionCellValue);
+        final ExpressionCellValue dcv0 = (ExpressionCellValue) uiModel.getCell(0, 2).getValue();
+        assertEquals(undefinedExpressionEditor,
+                     dcv0.getValue().get());
 
         assertNotNull(uiModel.getCell(1, 0));
         assertNull(uiModel.getCell(1, 0).getValue().getValue());
@@ -228,9 +244,9 @@ public class ContextGridTest {
         assertEquals(ContextUIModelMapper.DEFAULT_ROW_CAPTION,
                      uiModel.getCell(1, 1).getValue().getValue());
         assertTrue(uiModel.getCell(1, 2).getValue() instanceof ExpressionCellValue);
-        final ExpressionCellValue dcv = (ExpressionCellValue) uiModel.getCell(1, 2).getValue();
+        final ExpressionCellValue dcv1 = (ExpressionCellValue) uiModel.getCell(1, 2).getValue();
         assertEquals(literalExpressionEditor,
-                     dcv.getValue().get());
+                     dcv1.getValue().get());
     }
 
     @Test
@@ -264,9 +280,43 @@ public class ContextGridTest {
     }
 
     @Test
-    public void testGetItems() {
-        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+    public void testGetItemsRowNumberColumn() {
+        assertDefaultListItems(grid.getItems(0, 0));
+    }
 
+    @Test
+    public void testOnItemSelectedNameColumn() {
+        assertDefaultListItems(grid.getItems(0, 1));
+    }
+
+    @Test
+    public void testOnItemSelectedExpressionColumnUndefinedExpressionType() {
+        //The default model from ContextEditorDefinition has an undefined expression at (0, 2)
+        assertDefaultListItems(grid.getItems(0, 2));
+    }
+
+    @Test
+    public void testOnItemSelectedExpressionColumnDefinedExpressionType() {
+        //Set an editor for expression at (0, 2)
+        final BaseExpressionGrid editor = mock(BaseExpressionGrid.class);
+        grid.getModel().setCellValue(0, 2, new ExpressionCellValue(Optional.of(editor)));
+
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 2);
+
+        assertThat(items.size()).isEqualTo(5);
+        assertDefaultListItems(items.subList(0, 3));
+
+        assertThat(items.get(DIVIDER)).isInstanceOf(HasListSelectorControl.ListSelectorDividerItem.class);
+        assertListSelectorItem(items.get(CLEAR_EXPRESSION_TYPE),
+                               DMNEditorConstants.ExpressionEditor_Clear);
+
+        ((HasListSelectorControl.ListSelectorTextItem) items.get(CLEAR_EXPRESSION_TYPE)).getCommand().execute();
+        verify(cellEditorControls).hide();
+        verify(sessionCommandManager).execute(eq(handler),
+                                              any(ClearExpressionTypeCommand.class));
+    }
+
+    private void assertDefaultListItems(final List<HasListSelectorControl.ListSelectorItem> items) {
         assertThat(items.size()).isEqualTo(3);
         assertListSelectorItem(items.get(INSERT_ROW_ABOVE),
                                DMNEditorConstants.ContextEditor_InsertContextEntryAbove);
@@ -331,19 +381,24 @@ public class ContextGridTest {
     public void testOnItemSelectedDeleteRowEnabled() {
         //Grid has two rows from Context model. Neither can be deleted.
         assertDeleteRowEnabled(0, false);
-        assertDeleteRowEnabled(1, false);
+        assertLastRowHasNoListItems();
 
         //Grid has three rows. Rows 1 and 2 can be deleted.
         grid.getModel().appendRow(new BaseGridRow());
         assertDeleteRowEnabled(0, true);
         assertDeleteRowEnabled(1, true);
-        assertDeleteRowEnabled(2, false);
+        assertLastRowHasNoListItems();
     }
 
     private void assertDeleteRowEnabled(final int uiRowIndex, final boolean enabled) {
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(uiRowIndex, 0);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(DELETE_ROW);
         assertThat(ti.isEnabled()).isEqualTo(enabled);
+    }
+
+    private void assertLastRowHasNoListItems() {
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(grid.getModel().getRowCount() - 1, 0);
+        assertThat(items).isEmpty();
     }
 
     @Test
@@ -359,7 +414,12 @@ public class ContextGridTest {
         verify(parent).onResize();
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
-        verify(gridLayer).batch();
+        verify(gridLayer).batch(redrawCommandCaptor.capture());
+
+        final GridLayerRedrawManager.PrioritizedCommand redrawCommand = redrawCommandCaptor.getValue();
+        redrawCommand.execute();
+
+        verify(gridLayer).draw();
     }
 
     @Test
@@ -375,6 +435,32 @@ public class ContextGridTest {
         verify(parent).onResize();
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
-        verify(gridLayer).batch();
+        verify(gridLayer).batch(redrawCommandCaptor.capture());
+
+        final GridLayerRedrawManager.PrioritizedCommand redrawCommand = redrawCommandCaptor.getValue();
+        redrawCommand.execute();
+
+        verify(gridLayer).draw();
+    }
+
+    @Test
+    public void testClearExpressionType() {
+        grid.clearExpressionType(0);
+
+        verify(sessionCommandManager).execute(eq(handler),
+                                              clearExpressionTypeCommandCaptor.capture());
+
+        final ClearExpressionTypeCommand clearExpressionTypeCommand = clearExpressionTypeCommandCaptor.getValue();
+        clearExpressionTypeCommand.execute(handler);
+
+        verify(parent).onResize();
+        verify(gridPanel).refreshScrollPosition();
+        verify(gridPanel).updatePanelSize();
+        verify(gridLayer).batch(redrawCommandCaptor.capture());
+
+        final GridLayerRedrawManager.PrioritizedCommand redrawCommand = redrawCommandCaptor.getValue();
+        redrawCommand.execute();
+
+        verify(gridLayer).draw();
     }
 }

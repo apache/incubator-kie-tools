@@ -66,7 +66,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedM
 
 public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIModelMapper<E>> extends BaseGridWidget implements HasExpressionEditorControls {
 
-    static final double DEFAULT_PADDING = 10.0;
+    public static final double DEFAULT_PADDING = 10.0;
 
     protected final GridCellTuple parent;
 
@@ -84,7 +84,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
 
     protected M uiModelMapper;
 
-    private final Supplier<Boolean> isHeaderHidden;
+    protected final Supplier<Boolean> isNested;
 
     public BaseExpressionGrid(final GridCellTuple parent,
                               final HasExpression hasExpression,
@@ -98,7 +98,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
                               final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                               final CellEditorControls cellEditorControls,
                               final TranslationService translationService,
-                              final boolean isHeaderHidden) {
+                              final boolean isNested) {
         this(parent,
              hasExpression,
              expression,
@@ -111,7 +111,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
              editorSelectedEvent,
              cellEditorControls,
              translationService,
-             () -> isHeaderHidden);
+             () -> isNested);
     }
 
     public BaseExpressionGrid(final GridCellTuple parent,
@@ -127,7 +127,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
                               final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                               final CellEditorControls cellEditorControls,
                               final TranslationService translationService,
-                              final boolean isHeaderHidden) {
+                              final boolean isNested) {
         this(parent,
              hasExpression,
              expression,
@@ -141,10 +141,10 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
              editorSelectedEvent,
              cellEditorControls,
              translationService,
-             () -> isHeaderHidden);
+             () -> isNested);
     }
 
-    // Constructor used for Unit Testing with a Supplier<Boolean> for isHeaderHidden
+    // Constructor used for Unit Testing with a Supplier<Boolean> for isNested
     BaseExpressionGrid(final GridCellTuple parent,
                        final HasExpression hasExpression,
                        final Optional<E> expression,
@@ -157,7 +157,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
                        final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                        final CellEditorControls cellEditorControls,
                        final TranslationService translationService,
-                       final Supplier<Boolean> isHeaderHidden) {
+                       final Supplier<Boolean> isNested) {
         this(parent,
              hasExpression,
              expression,
@@ -171,7 +171,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
              editorSelectedEvent,
              cellEditorControls,
              translationService,
-             isHeaderHidden);
+             isNested);
     }
 
     BaseExpressionGrid(final GridCellTuple parent,
@@ -187,7 +187,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
                        final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                        final CellEditorControls cellEditorControls,
                        final TranslationService translationService,
-                       final Supplier<Boolean> isHeaderHidden) {
+                       final Supplier<Boolean> isNested) {
         super(gridData,
               gridLayer,
               gridLayer,
@@ -204,7 +204,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
         this.hasExpression = hasExpression;
         this.expression = expression;
         this.hasName = hasName;
-        this.isHeaderHidden = isHeaderHidden;
+        this.isNested = isNested;
 
         doInitialisation();
     }
@@ -249,7 +249,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
     }
 
     public double getPadding() {
-        return findParentGrid().isPresent() ? DEFAULT_PADDING : 0.0;
+        return DEFAULT_PADDING;
     }
 
     protected EditableHeaderMetaData extractEditableHeaderMetaData(final GridCellTuple gc) {
@@ -343,7 +343,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
 
         final Predicate<Pair<Group, GridRenderer.RendererCommand>> renderHeader = (p) -> {
             final GridRenderer.RendererCommand command = p.getK2();
-            if (isHeaderHidden.get()) {
+            if (isNested.get()) {
                 return !(command instanceof GridRenderer.RendererHeaderCommand);
             }
             return true;
@@ -389,7 +389,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
             @Override
             public void execute() {
                 gridLayer.draw();
-                gridLayer.select(oEditor.get());
+                oEditor.ifPresent(gridLayer::select);
             }
         });
     }
@@ -407,7 +407,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
                 .ifPresent(index -> uiModel.selectCell(0, index));
     }
 
-    protected Optional<BaseExpressionGrid> findParentGrid() {
+    public Optional<BaseExpressionGrid> findParentGrid() {
         final GridWidget gridWidget = parent.getGridWidget();
         if (gridWidget instanceof BaseExpressionGrid) {
             return Optional.of((BaseExpressionGrid) gridWidget);

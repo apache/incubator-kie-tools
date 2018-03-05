@@ -64,8 +64,8 @@ public class NavigateToExpressionEditorCommand extends BaseNavigateCommand imple
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
                 enableHandlers(false);
                 hidePaletteWidget(true);
-                editor.setHasName(hasName);
-                editor.setHasExpression(hasExpression);
+                editor.setExpression(hasName,
+                                     hasExpression);
                 editor.setExitCommand(() -> navigateToDRGEditor(hasName,
                                                                 hasExpression));
                 addExpressionEditorToCanvasWidget();

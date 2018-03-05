@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.expressions;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.mediator.Mediators;
 import com.ait.lienzo.client.core.shape.Viewport;
@@ -38,7 +39,12 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionEditorDefinition;
+import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -52,6 +58,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
+import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -79,9 +86,6 @@ public class ExpressionEditorViewImplTest {
     private Document document;
 
     @Mock
-    private TranslationService translationService;
-
-    @Mock
     private DMNGridPanel gridPanel;
 
     @Mock
@@ -91,10 +95,31 @@ public class ExpressionEditorViewImplTest {
     private RestrictedMousePanMediator mousePanMediator;
 
     @Mock
+    private EventSourceMock<ExpressionEditorSelectedEvent> editorSelectedEvent;
+
+    @Mock
+    private CellEditorControls cellEditorControls;
+
+    @Mock
+    private TranslationService translationService;
+
+    @Mock
+    private ListSelector listSelector;
+
+    @Mock
     private SessionManager sessionManager;
 
     @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+
+    @Mock
+    private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+
+    @Mock
+    private UndefinedExpressionEditorDefinition undefinedExpressionEditorDefinition;
+
+    @Mock
+    private BaseExpressionGrid undefinedExpressionEditor;
 
     @Mock
     private Viewport viewport;
@@ -123,8 +148,6 @@ public class ExpressionEditorViewImplTest {
     @Captor
     private ArgumentCaptor<TransformMediator> transformMediatorArgumentCaptor;
 
-    private GridCellTuple expressionContainerTuple;
-
     private ExpressionEditorViewImpl view;
 
     @Before
@@ -144,17 +167,29 @@ public class ExpressionEditorViewImplTest {
         this.view = spy(new ExpressionEditorViewImpl(returnToDRG,
                                                      expressionEditorControls,
                                                      document,
-                                                     translationService,
                                                      gridPanel,
                                                      gridLayer,
                                                      mousePanMediator,
+                                                     editorSelectedEvent,
+                                                     cellEditorControls,
+                                                     translationService,
+                                                     listSelector,
                                                      sessionManager,
-                                                     sessionCommandManager));
+                                                     sessionCommandManager,
+                                                     expressionEditorDefinitionsSupplier));
 
-        doAnswer((i) -> {
-            expressionContainerTuple = (GridCellTuple) spy(i.callRealMethod());
-            return expressionContainerTuple;
-        }).when(view).getExpressionContainerTuple();
+        final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
+        expressionEditorDefinitions.add(undefinedExpressionEditorDefinition);
+
+        doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
+        doReturn(Optional.empty()).when(undefinedExpressionEditorDefinition).getModelClass();
+        doReturn(Optional.empty()).when(undefinedExpressionEditor).getEditorControls();
+        doReturn(new BaseGridData()).when(undefinedExpressionEditor).getModel();
+        doReturn(Optional.of(undefinedExpressionEditor)).when(undefinedExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
+                                                                                                             any(HasExpression.class),
+                                                                                                             any(Optional.class),
+                                                                                                             any(Optional.class),
+                                                                                                             anyBoolean());
 
         doAnswer((i) -> i.getArguments()[1]).when(translationService).format(anyString(), anyObject());
     }
@@ -205,32 +240,15 @@ public class ExpressionEditorViewImplTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void testSetEditorResizesContainer() {
-        final Optional<HasName> hasName = Optional.empty();
-        final Optional<Expression> expression = Optional.empty();
-
-        view.setEditor(editorDefinition,
-                       hasExpression,
-                       hasName,
-                       expression);
-
-        verify(expressionContainerTuple).onResize();
-    }
-
-    @Test
     public void testSetEditorDoesUpdateReturnToDRGTextWhenHasNameIsNotEmpty() {
         final String NAME = "NAME";
         final Name name = new Name(NAME);
         final HasName hasNameMock = mock(HasName.class);
         doReturn(name).when(hasNameMock).getName();
         final Optional<HasName> hasName = Optional.of(hasNameMock);
-        final Optional<Expression> expression = Optional.empty();
 
-        view.setEditor(editorDefinition,
-                       hasExpression,
-                       hasName,
-                       expression);
+        view.setExpression(hasName,
+                           hasExpression);
 
         verify(returnToDRG).setTextContent(eq(NAME));
     }
@@ -238,12 +256,9 @@ public class ExpressionEditorViewImplTest {
     @Test
     public void testSetEditorDoesNotUpdateReturnToDRGTextWhenHasNameIsEmpty() {
         final Optional<HasName> hasName = Optional.empty();
-        final Optional<Expression> expression = Optional.empty();
 
-        view.setEditor(editorDefinition,
-                       hasExpression,
-                       hasName,
-                       expression);
+        view.setExpression(hasName,
+                           hasExpression);
 
         verify(returnToDRG, never()).setTextContent(any(String.class));
     }

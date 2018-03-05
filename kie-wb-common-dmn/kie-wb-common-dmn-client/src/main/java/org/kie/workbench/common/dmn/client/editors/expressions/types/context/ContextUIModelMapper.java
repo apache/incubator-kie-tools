@@ -29,6 +29,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridCell;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -72,9 +73,9 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                                               () -> new ContextGridCell<>(new BaseGridCellValue<>(rowIndex + 1),
                                                                           listSelector));
                     } else {
-                        uiModel.get().setCellValue(rowIndex,
-                                                   columnIndex,
-                                                   new BaseGridCellValue<>((Integer) null));
+                        uiModel.get().setCell(rowIndex,
+                                              columnIndex,
+                                              () -> new DMNGridCell<>(new BaseGridCellValue<>((Integer) null)));
                     }
                     uiModel.get().getCell(rowIndex,
                                           columnIndex).setSelectionStrategy(RowSelectionStrategy.INSTANCE);
@@ -88,9 +89,9 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                                               () -> new ContextGridCell<>(new BaseGridCellValue<>(name),
                                                                           listSelector));
                     } else {
-                        uiModel.get().setCellValue(rowIndex,
-                                                   columnIndex,
-                                                   new BaseGridCellValue<>(name));
+                        uiModel.get().setCell(rowIndex,
+                                              columnIndex,
+                                              () -> new DMNGridCell<>(new BaseGridCellValue<>(name)));
                     }
                     break;
                 case EXPRESSION:
@@ -112,9 +113,9 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                                                   () -> new ContextGridCell<>(new ExpressionCellValue(editor),
                                                                               listSelector));
                         } else {
-                            uiModel.get().setCellValue(rowIndex,
-                                                       columnIndex,
-                                                       new ExpressionCellValue(editor));
+                            uiModel.get().setCell(rowIndex,
+                                                  columnIndex,
+                                                  () -> new DMNGridCell<>(new ExpressionCellValue(editor)));
                         }
                     });
             }

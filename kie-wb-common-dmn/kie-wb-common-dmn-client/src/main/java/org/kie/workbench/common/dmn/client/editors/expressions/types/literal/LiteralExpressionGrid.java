@@ -48,7 +48,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
 public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression, LiteralExpressionUIModelMapper> implements HasListSelectorControl {
 
-    private static final double PADDING = 0.0;
+    public static final double PADDING = 0.0;
 
     private final ListSelector listSelector;
 
@@ -139,7 +139,7 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
 
     @Override
     public double getPadding() {
-        return PADDING;
+        return findParentGrid().isPresent() ? PADDING : DEFAULT_PADDING;
     }
 
     @Override

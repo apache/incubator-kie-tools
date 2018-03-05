@@ -35,23 +35,30 @@ import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
+
+    @Captor
+    private ArgumentCaptor<GridLayerRedrawManager.PrioritizedCommand> redrawCommandCaptor;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -235,7 +242,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     public void testPaddingWithNoParent() {
         doReturn(Optional.empty()).when(grid).findParentGrid();
 
-        assertThat(grid.getPadding()).isEqualTo(0.0);
+        assertThat(grid.getPadding()).isEqualTo(BaseExpressionGrid.DEFAULT_PADDING);
     }
 
     @Test
@@ -279,6 +286,40 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     @Test
     public void testWidthDecreasedMultipleChildColumnsLastUpdated() throws Exception {
         testUpdateWidthOfPeers(1, 35, 45);
+    }
+
+    @Test
+    public void synchroniseViewWhenExpressionEditorChangedWithEditor() {
+        final BaseExpressionGrid editor = mock(BaseExpressionGrid.class);
+
+        grid.synchroniseViewWhenExpressionEditorChanged(Optional.of(editor));
+
+        verify(parentCell).onResize();
+        verify(gridPanel).refreshScrollPosition();
+        verify(gridPanel).updatePanelSize();
+        verify(editor).selectFirstCell();
+        verify(gridLayer).batch(redrawCommandCaptor.capture());
+
+        final GridLayerRedrawManager.PrioritizedCommand redrawCommand = redrawCommandCaptor.getValue();
+        redrawCommand.execute();
+
+        verify(gridLayer).draw();
+        verify(gridLayer).select(eq(editor));
+    }
+
+    @Test
+    public void synchroniseViewWhenExpressionEditorChangedWithoutEditor() {
+        grid.synchroniseViewWhenExpressionEditorChanged(Optional.empty());
+
+        verify(parentCell).onResize();
+        verify(gridPanel).refreshScrollPosition();
+        verify(gridPanel).updatePanelSize();
+        verify(gridLayer).batch(redrawCommandCaptor.capture());
+
+        final GridLayerRedrawManager.PrioritizedCommand redrawCommand = redrawCommandCaptor.getValue();
+        redrawCommand.execute();
+
+        verify(gridLayer).draw();
     }
 
     /*

@@ -87,9 +87,6 @@ public class RelationGridTest {
     private final static int DELETE_ROW = 5;
 
     @Mock
-    private GridCellTuple parent;
-
-    @Mock
     private GridWidget parentGridWidget;
 
     @Mock
@@ -100,6 +97,8 @@ public class RelationGridTest {
 
     @Mock
     private HasExpression hasExpression;
+
+    private GridCellTuple parent;
 
     private Relation relation = new Relation();
 
@@ -156,6 +155,7 @@ public class RelationGridTest {
         doReturn(abstractCanvasHandler).when(dmnClientFullSession).getCanvasHandler();
         doReturn(dmnClientFullSession).when(sessionManager).getCurrentSession();
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
+        parent = spy(new GridCellTuple(0, 0, parentGridWidget));
     }
 
     private void makeRelationGrid() {
@@ -171,7 +171,6 @@ public class RelationGridTest {
                                             cellEditorControls,
                                             translationService,
                                             listSelector));
-        doReturn(parentGridWidget).when(parent).getGridWidget();
         doReturn(parentGridData).when(parentGridWidget).getModel();
         doReturn(Collections.singletonList(parentGridColumn)).when(parentGridData).getColumns();
     }
@@ -416,6 +415,8 @@ public class RelationGridTest {
         verify(sessionCommandManager).execute(eq(abstractCanvasHandler), addColumnCommand.capture());
 
         addColumnCommand.getValue().execute(abstractCanvasHandler);
+        verify(parent).assertWidth(relationGrid.getWidth() + relationGrid.getPadding() * 2);
+        verify(parentGridColumn).setWidth(relationGrid.getWidth() + relationGrid.getPadding() * 2);
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
         verify(gridLayer).batch();
@@ -432,6 +433,7 @@ public class RelationGridTest {
         verify(sessionCommandManager).execute(eq(abstractCanvasHandler), deleteColumnCommand.capture());
 
         deleteColumnCommand.getValue().execute(abstractCanvasHandler);
+        verify(parent).assertWidth(relationGrid.getWidth() + relationGrid.getPadding() * 2);
         verify(parentGridColumn).setWidth(relationGrid.getWidth() + relationGrid.getPadding() * 2);
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();

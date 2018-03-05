@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.dmn.client.widgets.panel;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -27,12 +29,10 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.dom.client.ContextMenuHandler;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
-import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridData.SelectedCell;
@@ -47,6 +47,27 @@ public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
 
     private DMNGridLayer gridLayer;
     private CellEditorControls cellEditorControls;
+
+    private class CandidateGridWidget {
+
+        final Point2D ap;
+        final int uiRowIndex;
+        final int uiColumnIndex;
+        final GridWidget gridWidget;
+        final HasCellEditorControls hasCellEditorControls;
+
+        public CandidateGridWidget(final Point2D ap,
+                                   final int uiRowIndex,
+                                   final int uiColumnIndex,
+                                   final GridWidget gridWidget,
+                                   final HasCellEditorControls hasCellEditorControls) {
+            this.ap = ap;
+            this.uiRowIndex = uiRowIndex;
+            this.uiColumnIndex = uiColumnIndex;
+            this.gridWidget = gridWidget;
+            this.hasCellEditorControls = hasCellEditorControls;
+        }
+    }
 
     public DMNGridPanelContextMenuHandler() {
         //CDI proxy
@@ -69,9 +90,9 @@ public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
         final int canvasX = getRelativeX(event);
         final int canvasY = getRelativeY(event);
 
+        final List<CandidateGridWidget> candidateGridWidgets = new ArrayList<>();
         for (GridWidget gridWidget : gridLayer.getGridWidgets()) {
             final GridData gridModel = gridWidget.getModel();
-
             final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate(gridWidget,
                                                                               new Point2D(canvasX,
                                                                                           canvasY));
@@ -79,43 +100,59 @@ public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
                                                                          ap.getY());
             final Integer uiColumnIndex = CoordinateUtilities.getUiColumnIndex(gridWidget,
                                                                                ap.getX());
+
             if (uiRowIndex == null || uiColumnIndex == null) {
                 continue;
             }
-
-            final GridCell<?> cell = gridWidget.getModel().getCell(uiRowIndex, uiColumnIndex);
+            final GridCell<?> cell = gridModel.getCell(uiRowIndex, uiColumnIndex);
             if (cell == null) {
                 continue;
             }
-            final GridCellValue<?> value = cell.getValue();
-            if (value instanceof ExpressionCellValue) {
-                continue;
-            }
+
             if (cell instanceof HasCellEditorControls) {
                 final HasCellEditorControls hasControls = (HasCellEditorControls) cell;
-                final Optional<HasCellEditorControls.Editor> editor = hasControls.getEditor();
-                editor.ifPresent(e -> {
-                    e.bind(gridWidget,
-                           uiRowIndex,
-                           uiColumnIndex);
-                    cellEditorControls.show(e,
-                                            (int) (ap.getX() + gridWidget.getAbsoluteX()),
-                                            (int) (ap.getY() + gridWidget.getAbsoluteY()));
-                });
+                candidateGridWidgets.add(new CandidateGridWidget(ap,
+                                                                 uiRowIndex,
+                                                                 uiColumnIndex,
+                                                                 gridWidget,
+                                                                 hasControls));
             }
+        }
 
-            //If the right-click did not occur in an already selected cell, ensure the cell is selected
-            final GridColumn<?> column = gridModel.getColumns().get(uiColumnIndex);
-            final int modelColumnIndex = column.getIndex();
-            final Stream<SelectedCell> modelColumnSelectedCells = gridModel.getSelectedCells().stream().filter(sc -> sc.getColumnIndex() == modelColumnIndex);
-            final boolean isContextMenuCellSelectedCell = modelColumnSelectedCells.map(SelectedCell::getRowIndex).anyMatch(uiRowIndex::equals);
-            if (!isContextMenuCellSelectedCell) {
-                selectCell(uiRowIndex,
-                           uiColumnIndex,
-                           gridWidget,
-                           isShiftKeyDown,
-                           isControlKeyDown);
-            }
+        if (candidateGridWidgets.isEmpty()) {
+            return;
+        }
+
+        //Candidate Grids are ordered bottom (least nested) to top (most nested). Therefore the last element is the more specific match.
+        final CandidateGridWidget candidateGridWidget = candidateGridWidgets.get(candidateGridWidgets.size() - 1);
+        final Point2D ap = candidateGridWidget.ap;
+        final int uiRowIndex = candidateGridWidget.uiRowIndex;
+        final int uiColumnIndex = candidateGridWidget.uiColumnIndex;
+        final GridWidget gridWidget = candidateGridWidget.gridWidget;
+        final HasCellEditorControls hasCellEditorControls = candidateGridWidget.hasCellEditorControls;
+        final Optional<HasCellEditorControls.Editor> editor = hasCellEditorControls.getEditor();
+
+        editor.ifPresent(e -> {
+            e.bind(gridWidget,
+                   uiRowIndex,
+                   uiColumnIndex);
+            cellEditorControls.show(e,
+                                    (int) (ap.getX() + gridWidget.getAbsoluteX()),
+                                    (int) (ap.getY() + gridWidget.getAbsoluteY()));
+        });
+
+        //If the right-click did not occur in an already selected cell, ensure the cell is selected
+        final GridData gridData = gridWidget.getModel();
+        final GridColumn<?> column = gridData.getColumns().get(uiColumnIndex);
+        final int modelColumnIndex = column.getIndex();
+        final Stream<SelectedCell> modelColumnSelectedCells = gridData.getSelectedCells().stream().filter(sc -> sc.getColumnIndex() == modelColumnIndex);
+        final boolean isContextMenuCellSelectedCell = modelColumnSelectedCells.map(SelectedCell::getRowIndex).anyMatch(ri -> ri == uiRowIndex);
+        if (!isContextMenuCellSelectedCell) {
+            selectCell(uiRowIndex,
+                       uiColumnIndex,
+                       gridWidget,
+                       isShiftKeyDown,
+                       isControlKeyDown);
         }
     }
 
@@ -150,6 +187,8 @@ public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
         if (selectionStrategy == null) {
             return;
         }
+
+        gridLayer.select(gridWidget);
 
         // Handle selection
         if (selectionStrategy.handleSelection(gridModel,

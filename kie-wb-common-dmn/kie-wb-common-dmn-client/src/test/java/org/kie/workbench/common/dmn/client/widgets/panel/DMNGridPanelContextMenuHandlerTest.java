@@ -17,7 +17,9 @@
 package org.kie.workbench.common.dmn.client.widgets.panel;
 
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -254,6 +256,44 @@ public class DMNGridPanelContextMenuHandlerTest {
                                                            anyInt(),
                                                            anyBoolean(),
                                                            anyBoolean());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void onContextMenu_WithMultipleOverlappingGridWidgets() {
+        final int EVENT_X = (int) (COLUMN0_WIDTH / 2);
+        final int EVENT_Y = (int) (ROW_HEIGHT + ROW_HEIGHT / 2);
+        when(nativeEvent.getClientX()).thenReturn(EVENT_X);
+        when(nativeEvent.getClientY()).thenReturn(EVENT_Y);
+
+        final GridWidget gridWidget1 = mockGridWidget();
+        final GridWidget gridWidget2 = mockGridWidget();
+        // Without stubbing mocks to death this requires some knowledge of the internals of
+        // DefaultGridLayer that maintains a LinkedHashSet of GridWidgets added to the Layer.
+        // LinkedHashSet returns items in the order in which they were added.
+        final Set<GridWidget> gridWidgets = new LinkedHashSet<>();
+        gridWidgets.add(gridWidget1);
+        gridWidgets.add(gridWidget2);
+        when(gridLayer.getGridWidgets()).thenReturn(gridWidgets);
+
+        final MockCell cell1 = mock(MockCell.class);
+        gridWidget1.getModel().setCell(1, 0, () -> cell1);
+        when(cell1.getEditor()).thenReturn(Optional.of(editor));
+
+        final MockCell cell2 = mock(MockCell.class);
+        gridWidget2.getModel().setCell(1, 0, () -> cell2);
+        when(cell2.getEditor()).thenReturn(Optional.of(editor));
+
+        handler.onContextMenu(event);
+
+        // gridWidget2 was added second and is therefore considered "on top of" gridWidget1
+        verify(editor).bind(eq(gridWidget2),
+                            eq(1),
+                            eq(0));
+
+        verify(cellEditorControls).show(eq(editor),
+                                        eq(EVENT_X),
+                                        eq(EVENT_Y));
     }
 
     private GridWidget mockGridWidget() {
