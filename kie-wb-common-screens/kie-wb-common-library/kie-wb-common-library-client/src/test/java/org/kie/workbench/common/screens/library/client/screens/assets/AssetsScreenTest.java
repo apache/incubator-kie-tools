@@ -31,6 +31,8 @@ import org.uberfire.mocks.CallerMock;
 
 import static org.mockito.Mockito.*;
 
+import elemental2.dom.HTMLElement;
+
 @RunWith(MockitoJUnitRunner.class)
 public class AssetsScreenTest {
 
@@ -63,8 +65,17 @@ public class AssetsScreenTest {
         WorkspaceProject projectInfo = mock(WorkspaceProject.class);
         when(libraryPlaces.getActiveWorkspaceContext()).thenReturn(projectInfo);
 
-        when(emptyAssetsScreen.getView()).thenReturn(mock(EmptyAssetsView.class));
-        when(populatedAssetsScreen.getView()).thenReturn(mock(PopulatedAssetsView.class));
+        EmptyAssetsView emptyView = mock(EmptyAssetsView.class);
+        PopulatedAssetsView populatedView = mock(PopulatedAssetsView.class);
+
+        HTMLElement emptyElement = mock(HTMLElement.class);
+        HTMLElement populatedElement = mock(HTMLElement.class);
+
+        when(emptyAssetsScreen.getView()).thenReturn(emptyView);
+        when(emptyView.getElement()).thenReturn(emptyElement);
+
+        when(populatedAssetsScreen.getView()).thenReturn(populatedView);
+        when(populatedView.getElement()).thenReturn(populatedElement);
 
         this.assetsScreen = new AssetsScreen(view,
                                              libraryPlaces,
@@ -83,6 +94,7 @@ public class AssetsScreenTest {
                times(1)).getView();
         verify(populatedAssetsScreen,
                never()).getView();
+        verify(view).setContent(emptyAssetsScreen.getView().getElement());
     }
 
     @Test
@@ -93,5 +105,22 @@ public class AssetsScreenTest {
                never()).getView();
         verify(populatedAssetsScreen,
                times(1)).getView();
+        verify(view).setContent(populatedAssetsScreen.getView().getElement());
+    }
+
+    @Test
+    public void testSetContentNotCalledWhenAlreadyDisplayed() throws Exception {
+        try {
+            testShowEmptyScreenAssets();
+        } catch (AssertionError ae) {
+            throw new AssertionError("Precondition failed. Could not set empty asset screen.", ae);
+        }
+
+        HTMLElement emptyElement = emptyAssetsScreen.getView().getElement();
+        emptyElement.parentNode = mock(HTMLElement.class);
+        reset(view);
+
+        assetsScreen.init();
+        verify(view, never()).setContent(any());
     }
 }

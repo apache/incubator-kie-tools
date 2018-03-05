@@ -30,7 +30,6 @@ import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.guvnor.common.services.project.project.WorkspaceProjectMigrationService;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -46,9 +45,11 @@ import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
 import org.kie.workbench.common.screens.explorer.backend.server.ExplorerServiceHelper;
 import org.kie.workbench.common.screens.library.api.AssetInfo;
+import org.kie.workbench.common.screens.library.api.AssetQueryResult;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.OrganizationalUnitRepositoryInfo;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
+import org.kie.workbench.common.screens.library.api.AssetQueryResult.ResultType;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryOrganizationalUnitPreferences;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
@@ -109,6 +110,9 @@ public class LibraryServiceImplTest {
     private SocialUserRepositoryAPI socialUserRepositoryAPI;
 
     @Mock
+    private IndexStatusOracle indexOracle;
+
+    @Mock
     private OrganizationalUnit ou1;
 
     @Mock
@@ -150,6 +154,8 @@ public class LibraryServiceImplTest {
         when(ou2.getRepositories()).thenReturn(Arrays.asList(repo1,
                                                              repo2Default));
 
+        when(indexOracle.isIndexed(any())).thenReturn(true);
+
         modulesMock = new HashSet<>();
         modulesMock.add(mock(Module.class));
         modulesMock.add(mock(Module.class));
@@ -167,11 +173,29 @@ public class LibraryServiceImplTest {
                                                     projectService,
                                                     moduleService,
                                                     examplesService,
-                                                    mock(WorkspaceProjectMigrationService.class),
                                                     ioService,
                                                     internalPreferences,
-                                                    socialUserRepositoryAPI
+                                                    socialUserRepositoryAPI,
+                                                    indexOracle
         ));
+    }
+
+    @Test
+    public void queryingUnindexedProjectGivesUnindexedResult() throws Exception {
+        Branch branch = new Branch("fake-branch", mockPath("default:///a/b/c"));
+        final WorkspaceProject project = new WorkspaceProject(ou1, repo1, branch, mock(Module.class));
+        when(indexOracle.isIndexed(project)).thenReturn(false);
+        when(ioService.exists(any())).thenReturn(true);
+
+        final ProjectAssetsQuery query = new ProjectAssetsQuery(project,
+                                                                "",
+                                                                0,
+                                                                10,
+                                                                Collections.emptyList());
+
+        AssetQueryResult result = libraryService.getProjectAssets(query);
+        assertEquals(ResultType.Unindexed, result.getResultType());
+        assertFalse(result.getAssetInfos().isPresent());
     }
 
     @Test
@@ -388,8 +412,11 @@ public class LibraryServiceImplTest {
 
         when(ioService.readAttributes(any())).thenThrow(new NoSuchFileException());
 
-        final List<AssetInfo> projectAssets = libraryService.getProjectAssets(query);
+        final AssetQueryResult result = libraryService.getProjectAssets(query);
 
+        assertEquals(ResultType.Normal, result.getResultType());
+        assertTrue(result.getAssetInfos().isPresent());
+        List<AssetInfo> projectAssets = result.getAssetInfos().get();
         assertTrue(projectAssets.isEmpty());
     }
 

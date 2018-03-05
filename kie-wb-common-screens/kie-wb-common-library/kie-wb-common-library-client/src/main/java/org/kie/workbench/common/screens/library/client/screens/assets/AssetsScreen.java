@@ -87,15 +87,17 @@ public class AssetsScreen {
     protected void showAssets() {
         busyIndicatorView.showBusyIndicator(ts.getTranslation(LibraryConstants.LoadingAssets));
         libraryService.call((Boolean hasAssets) -> {
-                                if (hasAssets) {
-                                    this.view.setContent(populatedAssetsScreen.getView().getElement());
-                                } else {
-                                    this.view.setContent(emptyAssetsScreen.getView().getElement());
-                                }
+            final HTMLElement element =
+                    (hasAssets) ? populatedAssetsScreen.getView().getElement() : emptyAssetsScreen.getView().getElement();
+            ensureContentSet(element);
+            busyIndicatorView.hideBusyIndicator();
+        }, new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).hasAssets(this.projectInfo);
+    }
 
-                                busyIndicatorView.hideBusyIndicator();
-                            },
-                            new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).hasAssets(this.projectInfo);
+    private void ensureContentSet(final HTMLElement element) {
+        if (element.parentNode == null) {
+            this.view.setContent(element);
+        }
     }
 
     public View getView() {

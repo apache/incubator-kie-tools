@@ -26,6 +26,7 @@ import javax.inject.Inject;
 
 import org.ext.uberfire.social.activities.client.widgets.utils.SocialDateFormatter;
 import org.guvnor.common.services.project.client.security.ProjectController;
+import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -36,6 +37,7 @@ import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.library.api.AssetInfo;
+import org.kie.workbench.common.screens.library.api.AssetQueryResult;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetListUpdated;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
@@ -86,6 +88,7 @@ public class PopulatedAssetsScreen {
     private String filter;
     private int totalPages;
     private String filterType;
+    private final Event<WorkspaceProjectContextChangeEvent> contextChangeEvent;
 
     public interface View extends UberElemental<PopulatedAssetsScreen> {
 
@@ -131,7 +134,8 @@ public class PopulatedAssetsScreen {
                                  final Event<UpdatedAssetsEvent> updatedAssetsEventEvent,
                                  final EmptyState emptyState,
                                  final CategoryUtils categoryUtils,
-                                 final Caller<LibraryService> libraryService) {
+                                 final Caller<LibraryService> libraryService,
+                                 final Event<WorkspaceProjectContextChangeEvent> contextChangeEvent) {
         this.view = view;
         this.categoriesManagerCache = categoriesManagerCache;
         this.resourceTypeManagerCache = resourceTypeManagerCache;
@@ -147,6 +151,7 @@ public class PopulatedAssetsScreen {
         this.emptyState = emptyState;
         this.categoryUtils = categoryUtils;
         this.libraryService = libraryService;
+        this.contextChangeEvent = contextChangeEvent;
     }
 
     @PostConstruct
@@ -166,34 +171,47 @@ public class PopulatedAssetsScreen {
         }
     }
 
-    private void addAssetsToView(List<AssetInfo> assetInfos) {
+    private void addAssetsToView(AssetQueryResult result) {
+        switch (result.getResultType()) {
+            case Normal: {
+                List<AssetInfo> assetInfos = result.getAssetInfos().get();
+                if (assetInfos.isEmpty()) {
+                    this.showSearchHitNothing();
+                } else {
+                    this.hideEmptyState();
+                    assetInfos.forEach(asset -> {
+                        if (!asset.getFolderItem().getType().equals(FolderItemType.FOLDER)) {
+                            AssetItemWidget item = assetItemWidget.get();
+                            final ClientResourceType assetResourceType = getResourceType(asset);
+                            final String assetName = getAssetName(asset,
+                                                                  assetResourceType);
 
-        if (assetInfos.isEmpty()) {
-            this.showSearchHitNothing();
-        } else {
-            this.hideEmptyState();
-            assetInfos.forEach(asset -> {
-                if (!asset.getFolderItem().getType().equals(FolderItemType.FOLDER)) {
-                    AssetItemWidget item = assetItemWidget.get();
-                    final ClientResourceType assetResourceType = getResourceType(asset);
-                    final String assetName = getAssetName(asset,
-                                                          assetResourceType);
-
-                    item.init(assetName,
-                              getAssetPath(asset),
-                              assetResourceType.getDescription(),
-                              assetResourceType.getIcon(),
-                              getLastModifiedTime(asset),
-                              getCreatedTime(asset),
-                              detailsCommand((Path) asset.getFolderItem().getItem()),
-                              selectCommand((Path) asset.getFolderItem().getItem()));
-                    this.view.addAssetItem(item);
+                            item.init(assetName,
+                                      getAssetPath(asset),
+                                      assetResourceType.getDescription(),
+                                      assetResourceType.getIcon(),
+                                      getLastModifiedTime(asset),
+                                      getCreatedTime(asset),
+                                      detailsCommand((Path) asset.getFolderItem().getItem()),
+                                      selectCommand((Path) asset.getFolderItem().getItem()));
+                            this.view.addAssetItem(item);
+                        }
+                    });
                 }
-            });
-        }
 
-        this.updatedAssetsEventEvent.fire(new UpdatedAssetsEvent(assetInfos));
-        busyIndicatorView.hideBusyIndicator();
+                this.updatedAssetsEventEvent.fire(new UpdatedAssetsEvent(assetInfos));
+                busyIndicatorView.hideBusyIndicator();
+            }
+            break;
+            case Unindexed:
+                showIndexingNotFinished();
+                break;
+            case DoesNotExist:
+                contextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(workspaceProject.getOrganizationalUnit()));
+                break;
+            default:
+                throw new UnsupportedOperationException("No case for " + result.getResultType());
+        }
     }
 
     public void importAsset() {
@@ -344,7 +362,7 @@ public class PopulatedAssetsScreen {
                            String filterType,
                            int startIndex,
                            int amount,
-                           RemoteCallback<List<AssetInfo>> callback) {
+                           RemoteCallback<AssetQueryResult> callback) {
 
         if (!isProjectNull()) {
             ProjectAssetsQuery query = this.createProjectQuery(filter,
@@ -352,8 +370,12 @@ public class PopulatedAssetsScreen {
                                                                startIndex,
                                                                amount);
 
-            libraryService.call(callback,
-                                new DefaultErrorCallback()).getProjectAssets(query);
+            /*
+             * Leave this so that we get a compile error if the return type is changed.
+             */
+            @SuppressWarnings("unused")
+            AssetQueryResult canary = libraryService.call(callback,
+                                                          new DefaultErrorCallback()).getProjectAssets(query);
         }
     }
 

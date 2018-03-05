@@ -128,16 +128,14 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-metadata-api</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-core</artifactId>
-    </dependency>
-
-    <!-- Test dependencies -->
+    <!--  Need this for KObjectUtil -->
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-metadata-commons-io</artifactId>
-      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-core</artifactId>
     </dependency>
   </dependencies>
 </project>

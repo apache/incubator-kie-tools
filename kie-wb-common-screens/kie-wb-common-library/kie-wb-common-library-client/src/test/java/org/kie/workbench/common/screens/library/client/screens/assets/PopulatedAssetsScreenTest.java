@@ -20,7 +20,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.enterprise.event.Event;
+
 import org.guvnor.common.services.project.client.security.ProjectController;
+import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
@@ -99,6 +102,9 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
     @Mock
     private CategoryUtils categoryUtils;
 
+    @Mock
+    private Event<WorkspaceProjectContextChangeEvent> contextChangeEvent;
+
     @Before
     public void setUp() {
         populatedAssetsScreen = spy(new PopulatedAssetsScreen(view,
@@ -115,7 +121,8 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
                                                               new EventSourceMock<>(),
                                                               emptyState,
                                                               categoryUtils,
-                                                              new CallerMock<>(libraryService)));
+                                                              new CallerMock<>(libraryService),
+                                                              contextChangeEvent));
     }
 
     @Test

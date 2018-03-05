@@ -51,7 +51,7 @@ public interface LibraryService {
 
     Boolean thereIsAProjectInTheWorkbench();
 
-    List<AssetInfo> getProjectAssets(final ProjectAssetsQuery query);
+    AssetQueryResult getProjectAssets(final ProjectAssetsQuery query);
 
     Boolean hasProjects(final OrganizationalUnit organizationalUnit);
 
@@ -80,6 +80,4 @@ public interface LibraryService {
                   final OrganizationalUnit selectedOrganizationalUnit);
 
     List<SocialUser> getAllUsers();
-
-    void migrate(final WorkspaceProject activeProject);
 }

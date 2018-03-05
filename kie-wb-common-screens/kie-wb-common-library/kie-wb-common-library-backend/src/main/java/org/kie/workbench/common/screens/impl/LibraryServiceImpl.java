@@ -17,7 +17,6 @@
 package org.kie.workbench.common.screens.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -35,11 +34,9 @@ import org.ext.uberfire.social.activities.model.SocialUser;
 import org.ext.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.GAV;
-import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.guvnor.common.services.project.project.WorkspaceProjectMigrationService;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -55,6 +52,7 @@ import org.kie.workbench.common.screens.explorer.backend.server.ExplorerServiceH
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.library.api.AssetInfo;
+import org.kie.workbench.common.screens.library.api.AssetQueryResult;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.OrganizationalUnitRepositoryInfo;
@@ -101,9 +99,9 @@ public class LibraryServiceImpl implements LibraryService {
     private WorkspaceProjectService projectService;
     private KieModuleService moduleService;
     private ExamplesService examplesService;
-    private WorkspaceProjectMigrationService projectMigrationService;
     private IOService ioService;
     private SocialUserRepositoryAPI socialUserRepositoryAPI;
+    private IndexStatusOracle indexOracle;
 
     public LibraryServiceImpl() {
     }
@@ -118,10 +116,10 @@ public class LibraryServiceImpl implements LibraryService {
                               final WorkspaceProjectService projectService,
                               final KieModuleService moduleService,
                               final ExamplesService examplesService,
-                              final WorkspaceProjectMigrationService projectMigrationService,
                               @Named("ioStrategy") final IOService ioService,
                               final LibraryInternalPreferences internalPreferences,
-                              final SocialUserRepositoryAPI socialUserRepositoryAPI) {
+                              final SocialUserRepositoryAPI socialUserRepositoryAPI,
+                              final IndexStatusOracle indexOracle) {
         this.ouService = ouService;
         this.refactoringQueryService = refactoringQueryService;
         this.preferences = preferences;
@@ -131,10 +129,10 @@ public class LibraryServiceImpl implements LibraryService {
         this.projectService = projectService;
         this.moduleService = moduleService;
         this.examplesService = examplesService;
-        this.projectMigrationService = projectMigrationService;
         this.ioService = ioService;
         this.internalPreferences = internalPreferences;
         this.socialUserRepositoryAPI = socialUserRepositoryAPI;
+        this.indexOracle = indexOracle;
     }
 
     @Override
@@ -203,13 +201,15 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
-    public List<AssetInfo> getProjectAssets(final ProjectAssetsQuery query) {
+    public AssetQueryResult getProjectAssets(final ProjectAssetsQuery query) {
         checkNotNull("query",
                      query);
 
         final boolean projectStillExists = ioService.exists(Paths.convert(query.getProject().getBranch().getPath()));
         if (!projectStillExists) {
-            return Collections.emptyList();
+            return AssetQueryResult.nonexistent();
+        } else if (!indexOracle.isIndexed(query.getProject())) {
+            return AssetQueryResult.unindexed();
         }
 
         final HashSet<ValueIndexTerm> queryTerms = buildProjectAssetsQuery(query);
@@ -234,29 +234,29 @@ public class LibraryServiceImpl implements LibraryService {
                 })
                 .collect(Collectors.toList());
 
-        return assets.stream()
-                .map(asset -> {
-                    AssetInfo info = null;
-                    try {
-                        final Map<String, Object> attributes = ioService.readAttributes(Paths.convert((Path) asset.getItem()));
+        return AssetQueryResult.normal(assets.stream()
+                                             .map(asset -> {
+                                                 AssetInfo info = null;
+                                                 try {
+                                                     final Map<String, Object> attributes = ioService.readAttributes(Paths.convert((Path) asset.getItem()));
 
-                        final FileTime lastModifiedFileTime = (FileTime) getAttribute(LibraryService.LAST_MODIFIED_TIME,
-                                                                                      attributes).get();
-                        final FileTime createdFileTime = (FileTime) getAttribute(LibraryService.CREATED_TIME,
-                                                                                 attributes).get();
-                        final Date lastModifiedTime = new Date(lastModifiedFileTime.toMillis());
-                        final Date createdTime = new Date(createdFileTime.toMillis());
-                        info = new AssetInfo(asset,
-                                             lastModifiedTime,
-                                             createdTime);
-                    } catch (NoSuchFileException nfe) {
-                        log.debug("File '" + asset.getFileName() + "' in LibraryIndex but not VFS. Suspected deletion. Skipping.");
-                    }
-                    return Optional.ofNullable(info);
-                })
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
+                                                     final FileTime lastModifiedFileTime = (FileTime) getAttribute(LibraryService.LAST_MODIFIED_TIME,
+                                                                                                                   attributes).get();
+                                                     final FileTime createdFileTime = (FileTime) getAttribute(LibraryService.CREATED_TIME,
+                                                                                                              attributes).get();
+                                                     final Date lastModifiedTime = new Date(lastModifiedFileTime.toMillis());
+                                                     final Date createdTime = new Date(createdFileTime.toMillis());
+                                                     info = new AssetInfo(asset,
+                                                                          lastModifiedTime,
+                                                                          createdTime);
+                                                 } catch (NoSuchFileException nfe) {
+                                                     log.debug("File '" + asset.getFileName() + "' in LibraryIndex but not VFS. Suspected deletion. Skipping.");
+                                                 }
+                                                 return Optional.ofNullable(info);
+                                             })
+                                             .filter(Optional::isPresent)
+                                             .map(Optional::get)
+                                             .collect(Collectors.toList()));
     }
 
     private HashSet<ValueIndexTerm> buildProjectAssetsQuery(ProjectAssetsQuery query) {
@@ -432,11 +432,6 @@ public class LibraryServiceImpl implements LibraryService {
         } else {
             return createDefaultOrganizationalUnit();
         }
-    }
-
-    @Override
-    public void migrate(final WorkspaceProject activeProject) {
-        projectMigrationService.migrate(activeProject);
     }
 
     private OrganizationalUnit createDefaultOrganizationalUnit() {

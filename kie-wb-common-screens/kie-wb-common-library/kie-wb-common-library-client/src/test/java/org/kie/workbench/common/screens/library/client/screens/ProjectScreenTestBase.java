@@ -31,6 +31,7 @@ import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.library.api.AssetInfo;
+import org.kie.workbench.common.screens.library.api.AssetQueryResult;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
 import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
@@ -135,6 +136,6 @@ public class ProjectScreenTestBase {
                                 FolderItemType.FILE,
                                 "file3.txt"));
 
-        doReturn(assets).when(libraryService).getProjectAssets(any(ProjectAssetsQuery.class));
+        when(libraryService.getProjectAssets(any(ProjectAssetsQuery.class))).thenReturn(AssetQueryResult.normal(assets));
     }
 }
