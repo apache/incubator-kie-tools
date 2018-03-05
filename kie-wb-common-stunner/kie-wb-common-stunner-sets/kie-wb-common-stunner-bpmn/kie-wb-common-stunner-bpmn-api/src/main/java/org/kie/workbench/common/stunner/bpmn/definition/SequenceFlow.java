@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import java.util.Objects;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -80,7 +82,7 @@ public class SequenceFlow extends BaseConnector {
 
         @Override
         public SequenceFlow build() {
-            return new SequenceFlow(new BPMNGeneralSet("Sequence"),
+            return new SequenceFlow(new BPMNGeneralSet(),
                                     new SequenceFlowExecutionSet(),
                                     new BackgroundSet(COLOR,
                                                       BORDER_COLOR,
@@ -113,7 +115,7 @@ public class SequenceFlow extends BaseConnector {
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
-                                         executionSet.hashCode());
+                                         Objects.hashCode(executionSet));
     }
 
     @Override
@@ -121,7 +123,8 @@ public class SequenceFlow extends BaseConnector {
         if (o instanceof SequenceFlow) {
             SequenceFlow other = (SequenceFlow) o;
             return super.equals(other) &&
-                    executionSet.equals(other.executionSet);
+                    Objects.equals(executionSet,
+                                   other.executionSet);
         }
         return false;
     }
