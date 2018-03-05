@@ -16,8 +16,10 @@
 
 package org.guvnor.common.services.project.backend.server;
 
+import static java.util.Optional.ofNullable;
 import static org.guvnor.common.services.project.utils.ModuleResourcePaths.POM_PATH;
 
+import java.util.Optional;
 import java.util.Set;
 
 import javax.enterprise.event.Event;
@@ -36,6 +38,8 @@ import org.guvnor.common.services.project.project.ModuleFactory;
 import org.guvnor.common.services.project.service.ModuleServiceCore;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.structure.repositories.Branch;
+import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -49,6 +53,7 @@ public abstract class AbstractModuleService<T extends Module>
 
     protected IOService ioService;
     protected POMService pomService;
+    private RepositoryService repoService;
     protected Event<NewModuleEvent> newModuleEvent;
     protected Event<NewPackageEvent> newPackageEvent;
     protected CommentedOptionFactory commentedOptionFactory;
@@ -64,6 +69,7 @@ public abstract class AbstractModuleService<T extends Module>
 
     public AbstractModuleService(final IOService ioService,
                                  final POMService pomService,
+                                 final RepositoryService repoService,
                                  final Event<NewModuleEvent> newModuleEvent,
                                  final Event<NewPackageEvent> newPackageEvent,
                                  final Event<RenameModuleEvent> renameModuleEvent,
@@ -74,6 +80,7 @@ public abstract class AbstractModuleService<T extends Module>
                                  final ResourceResolver resourceResolver) {
         this.ioService = ioService;
         this.pomService = pomService;
+        this.repoService = repoService;
         this.newModuleEvent = newModuleEvent;
         this.newPackageEvent = newPackageEvent;
         this.renameModuleEvent = renameModuleEvent;
@@ -168,24 +175,31 @@ public abstract class AbstractModuleService<T extends Module>
             final org.uberfire.java.nio.file.Path projectDirectory = Paths.convert(pathToPomXML).getParent();
             final Module module2Delete = resourceResolver.resolveModule(Paths.convert(projectDirectory));
 
-            final org.uberfire.java.nio.file.Path parentPom = projectDirectory.getParent().resolve(POM_PATH);
-            POM parent = null;
-            if (ioService.exists(parentPom)) {
-                parent = pomService.load(Paths.convert(parentPom));
-            }
+            final Optional<org.uberfire.java.nio.file.Path> parentPomPath =
+                    ofNullable(projectDirectory).flatMap(dir -> ofNullable(dir.getParent()))
+                                                .map(dir -> dir.resolve(POM_PATH))
+                                                .filter(pom -> ioService.exists(pom));
+            final Optional<POM> parentPom = parentPomPath.map(pom -> pomService.load(Paths.convert(pom)));
 
-            ioService.delete(projectDirectory,
-                             StandardDeleteOption.NON_EMPTY_DIRECTORIES,
-                             commentedOptionFactory.makeCommentedOption(comment));
-            //Note we do *not* raise a DeleteModuleEvent here, as that is handled by DeleteModuleObserverBridge
 
-            if (parent != null) {
-                parent.setPackaging("pom");
-                parent.getModules().remove(module2Delete.getModuleName());
-                pomService.save(Paths.convert(parentPom),
-                                parent,
+            // If this is the top module of the project, we should delete the whole repository.
+            if (parentPomPath.isPresent() && parentPom.isPresent()) {
+                //Note we do *not* raise a DeleteModuleEvent here, as that is handled by DeleteModuleObserverBridge
+                ioService.delete(projectDirectory,
+                                 StandardDeleteOption.NON_EMPTY_DIRECTORIES,
+                                 commentedOptionFactory.makeCommentedOption(comment));
+
+                org.uberfire.java.nio.file.Path pomPath = parentPomPath.get();
+                POM pom = parentPom.get();
+                pom.setPackaging("pom");
+                pom.getModules().remove(module2Delete.getModuleName());
+                pomService.save(Paths.convert(pomPath),
+                                pom,
                                 null,
                                 "Removing child module " + module2Delete.getModuleName());
+            } else {
+                Repository repo = repoService.getRepository(Paths.convert(projectDirectory));
+                repoService.removeRepository(repo.getSpace(), repo.getAlias());
             }
         } catch (final Exception e) {
             throw ExceptionUtilities.handleException(e);

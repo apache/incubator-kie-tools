@@ -27,6 +27,8 @@ import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,8 +37,10 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.Paths;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.spaces.Space;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -50,6 +54,8 @@ public class AbstractModuleServiceTest {
     private IOService ioService;
     @Mock
     private POMService pomService;
+    @Mock
+    private RepositoryService repoService;
     @Mock
     private Event<NewModuleEvent> newProjectEvent;
     @Mock
@@ -70,29 +76,31 @@ public class AbstractModuleServiceTest {
     private Path path;
     @Mock
     private Module module;
-    private AbstractModuleService abstractProjectService;
+    private AbstractModuleService<Module> abstractProjectService;
 
     @Before
     public void setup() {
-        abstractProjectService = spy(new AbstractModuleService(ioService,
-                                                               pomService,
-                                                               newProjectEvent,
-                                                               newPackageEvent,
-                                                               renameProjectEvent,
-                                                               invalidateDMOCache,
-                                                               sessionInfo,
-                                                               commentedOptionFactory,
-                                                               moduleFinder,
-                                                               resourceResolver) {
+        abstractProjectService = new AbstractModuleService<Module>(ioService,
+                                                                   pomService,
+                                                                   repoService,
+                                                                   newProjectEvent,
+                                                                   newPackageEvent,
+                                                                   renameProjectEvent,
+                                                                   invalidateDMOCache,
+                                                                   sessionInfo,
+                                                                   commentedOptionFactory,
+                                                                   moduleFinder,
+                                                                   resourceResolver) {
+
             @Override
-            public Object newModule(final org.uberfire.backend.vfs.Path repositoryRoot,
+            public Module newModule(final org.uberfire.backend.vfs.Path repositoryRoot,
                                     final POM pom,
                                     final String baseURL) {
                 return null;
             }
 
             @Override
-            public Object newModule(final org.uberfire.backend.vfs.Path repositoryRoot,
+            public Module newModule(final org.uberfire.backend.vfs.Path repositoryRoot,
                                     final POM pom,
                                     final String baseURL,
                                     final DeploymentMode mode) {
@@ -103,7 +111,7 @@ public class AbstractModuleServiceTest {
             public Module simpleModuleInstance(final org.uberfire.java.nio.file.Path parent) {
                 return null;
             }
-        });
+        };
     }
 
     @Test
@@ -133,5 +141,44 @@ public class AbstractModuleServiceTest {
 
         inOrder.verify(renameProjectEvent).fire(any());
         inOrder.verify(ioService).endBatch();
+    }
+
+    @Test
+    public void testUseRepoServiceToDeleteRootModule() {
+        when(path.getFileName()).thenReturn("pom.xml");
+        when(path.toURI()).thenReturn("file:///space/project1/pom.xml");
+        when(resourceResolver.resolveModule(any(Path.class))).thenReturn(module);
+        when(pomService.load(any())).thenReturn(mock(POM.class));
+        Repository repo = mock(Repository.class);
+        when(repoService.getRepository(eq(org.uberfire.backend.server.util.Paths.convert(Paths.get("file:///space/project1"))))).thenReturn(repo);
+        String alias = "repo-alias";
+        when(repo.getAlias()).thenReturn(alias);
+        Space space = new Space("space");
+        when(repo.getSpace()).thenReturn(space);
+
+        abstractProjectService.delete(path, "");
+
+        verify(repoService).removeRepository(eq(space), eq(alias));
+        verify(ioService, times(0)).delete(any(), any());
+    }
+
+    @Test
+    public void testUseIOServiceToDeleteSubModule() {
+        when(path.getFileName()).thenReturn("pom.xml");
+        when(path.toURI()).thenReturn("file://space/project1/subproject/pom.xml");
+        when(ioService.exists(any())).thenReturn(true);
+        when(resourceResolver.resolveModule(any(Path.class))).thenReturn(module);
+        when(pomService.load(any())).thenReturn(mock(POM.class));
+        Repository repo = mock(Repository.class);
+        when(repoService.getRepository(path)).thenReturn(repo);
+        String alias = "repo-alias";
+        when(repo.getAlias()).thenReturn(alias);
+        Space space = new Space("space");
+        when(repo.getSpace()).thenReturn(space);
+
+        abstractProjectService.delete(path, "");
+
+        verify(repoService, times(0)).removeRepository(any(), any());
+        verify(ioService).delete(eq(Paths.get("file://space/project1/subproject")), anyVararg());
     }
 }
