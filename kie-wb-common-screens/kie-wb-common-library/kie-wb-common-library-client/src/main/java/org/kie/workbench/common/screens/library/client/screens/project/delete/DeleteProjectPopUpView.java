@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.library.client.screens.project.delete;
 
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -99,6 +100,7 @@ public class DeleteProjectPopUpView implements DeleteProjectPopUpScreen.View,
     }
 
     @Override
+    @PreDestroy
     public void hide() {
         modal.hide();
     }

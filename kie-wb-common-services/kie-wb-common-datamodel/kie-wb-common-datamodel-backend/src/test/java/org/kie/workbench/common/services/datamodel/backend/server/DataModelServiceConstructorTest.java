@@ -53,6 +53,7 @@ import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.m2repo.backend.server.M2RepoServiceImpl;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.security.RepositoryAction;
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
@@ -148,6 +149,7 @@ public class DataModelServiceConstructorTest {
         final RenameService renameService = mock(RenameService.class);
         final SaveAndRenameServiceImpl saveAndRenameService = mock(SaveAndRenameServiceImpl.class);
 
+        RepositoryService repoService = mock(RepositoryService.class);
         IOService ioService = new IOServiceDotFileImpl();
         Collection<Role> roles = new ArrayList<>();
         Collection<Group> groups = new ArrayList<>();
@@ -222,6 +224,7 @@ public class DataModelServiceConstructorTest {
         moduleService = new HackedKieModuleServiceImpl(ioService,
                                                        moduleSaver,
                                                        pomService,
+                                                       repoService,
                                                        newModuleEvent,
                                                        newPackageEvent,
                                                        renameModuleEvent,
@@ -384,6 +387,7 @@ public class DataModelServiceConstructorTest {
                   moduleContentHandler);
         }
 
+        @Override
         public void setModuleService(KieModuleService moduleService) {
             super.setModuleService(moduleService);
         }
@@ -402,6 +406,7 @@ public class DataModelServiceConstructorTest {
         public HackedKieModuleServiceImpl(IOService ioService,
                                           ModuleSaver moduleSaver,
                                           POMService pomService,
+                                          RepositoryService repoService,
                                           Event<NewModuleEvent> newModuleEvent,
                                           Event<NewPackageEvent> newPackageEvent,
                                           Event<RenameModuleEvent> renameModuleEvent,
@@ -414,6 +419,7 @@ public class DataModelServiceConstructorTest {
             super(ioService,
                   moduleSaver,
                   pomService,
+                  repoService,
                   newModuleEvent,
                   newPackageEvent,
                   renameModuleEvent,

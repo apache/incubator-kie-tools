@@ -41,6 +41,7 @@ import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -96,6 +97,7 @@ public class ModuleServiceImplNewModuleTest {
         moduleService = new KieModuleServiceImpl(ioService,
                                                  saver,
                                                  mock(POMService.class),
+                                                 mock(RepositoryService.class),
                                                  newModuleEvent,
                                                  newPackageEvent,
                                                  renameModuleEvent,

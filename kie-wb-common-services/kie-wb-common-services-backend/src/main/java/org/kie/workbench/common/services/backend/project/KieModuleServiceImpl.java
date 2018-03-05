@@ -37,6 +37,7 @@ import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.uberfire.backend.vfs.Path;
@@ -60,6 +61,7 @@ public class KieModuleServiceImpl
     public KieModuleServiceImpl(final @Named("ioStrategy") IOService ioService,
                                 final ModuleSaver moduleSaver,
                                 final POMService pomService,
+                                final RepositoryService repoService,
                                 final Event<NewModuleEvent> newModuleEvent,
                                 final Event<NewPackageEvent> newPackageEvent,
                                 final Event<RenameModuleEvent> renameModuleEvent,
@@ -71,6 +73,7 @@ public class KieModuleServiceImpl
                                 final ModuleRepositoryResolver repositoryResolver) {
         super(ioService,
               pomService,
+              repoService,
               newModuleEvent,
               newPackageEvent,
               renameModuleEvent,
