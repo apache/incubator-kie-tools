@@ -51,6 +51,10 @@ public class LibraryIndexer extends AbstractFileIndexer {
 
     private LibraryAssetTypeDefinition filter;
 
+    // For proxying
+    public LibraryIndexer() {
+    }
+
     @Inject
     public LibraryIndexer(final LibraryAssetTypeDefinition filter) {
         this.filter = filter;

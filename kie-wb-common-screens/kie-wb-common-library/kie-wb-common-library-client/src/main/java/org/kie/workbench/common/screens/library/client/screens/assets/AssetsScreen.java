@@ -25,6 +25,8 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.library.api.LibraryService;
+import org.kie.workbench.common.screens.library.api.ProjectAssetListUpdated;
+import org.kie.workbench.common.screens.library.api.Routed;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
@@ -72,8 +74,14 @@ public class AssetsScreen {
         this.showAssets();
     }
 
-    private void observeAddAsset(@Observes NewResourceSuccessEvent event) {
+    public void observeAddAsset(@Observes NewResourceSuccessEvent event) {
         this.showAssets();
+    }
+
+    public void onAssetListUpdated(@Observes @Routed ProjectAssetListUpdated event) {
+        if (event.getProject().getRepository().getIdentifier().equals(projectInfo.getRepository().getIdentifier())) {
+            this.showAssets();
+        }
     }
 
     protected void showAssets() {

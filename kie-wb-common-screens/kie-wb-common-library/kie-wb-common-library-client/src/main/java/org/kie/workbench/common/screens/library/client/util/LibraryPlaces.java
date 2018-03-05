@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -46,6 +47,9 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.screens.library.api.LibraryService;
+import org.kie.workbench.common.screens.library.api.ProjectAssetListUpdated;
+import org.kie.workbench.common.screens.library.api.Remote;
+import org.kie.workbench.common.screens.library.api.Routed;
 import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
 import org.kie.workbench.common.screens.library.client.events.WorkbenchProjectMetricsEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
@@ -145,6 +149,8 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
     private ManagedInstance<ImportRepositoryPopUpPresenter> importRepositoryPopUpPresenters;
 
+    private Event<ProjectAssetListUpdated> assetListUpdatedEvent;
+
     private boolean docksReady = false;
 
     private boolean docksHidden = true;
@@ -173,7 +179,8 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
                          final Caller<VFSService> vfsService,
                          final ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier,
                          final Event<PreferencesCentralInitializationEvent> preferencesCentralInitializationEvent,
-                         final ManagedInstance<ImportRepositoryPopUpPresenter> importRepositoryPopUpPresenters) {
+                         final ManagedInstance<ImportRepositoryPopUpPresenter> importRepositoryPopUpPresenters,
+                         final @Routed Event<ProjectAssetListUpdated> assetListUpdatedEvent) {
         this.breadcrumbs = breadcrumbs;
         this.ts = ts;
         this.projectMetricsEvent = projectMetricsEvent;
@@ -193,6 +200,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         this.projectScopedResolutionStrategySupplier = projectScopedResolutionStrategySupplier;
         this.preferencesCentralInitializationEvent = preferencesCentralInitializationEvent;
         this.importRepositoryPopUpPresenters = importRepositoryPopUpPresenters;
+        this.assetListUpdatedEvent = assetListUpdatedEvent;
     }
 
     @PostConstruct
@@ -223,6 +231,14 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
                 }
             }
         }
+    }
+
+    /*
+     * Re-reroutes this event for project screen. If we tried to observe this directly from the project screen,
+     * there are timing issues involved with subscribing to the event.
+     */
+    public void onAssetListUpdateEvent(@Observes @Remote final ProjectAssetListUpdated event) {
+        assetListUpdatedEvent.fire(event);
     }
 
     public void hideDocks() {
@@ -372,10 +388,18 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     }
 
     PlaceRequest getLibraryPlaceRequestWithoutRefresh() {
+        return getPlaceRequestWithoutRefresh(LIBRARY_PERSPECTIVE);
+    }
+
+    PlaceRequest getProjectScreenRequestWithoutRefresh() {
+        return getPlaceRequestWithoutRefresh(PROJECT_SCREEN);
+    }
+
+    private PlaceRequest getPlaceRequestWithoutRefresh(String placeId) {
         final Map<String, String> params = new HashMap<>();
         params.put("refresh",
                    "false");
-        return new DefaultPlaceRequest(LIBRARY_PERSPECTIVE,
+        return new DefaultPlaceRequest(placeId,
                                        params);
     }
 

@@ -43,6 +43,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.explorer.model.URIStructureExplorerModel;
 import org.kie.workbench.common.screens.library.api.LibraryService;
+import org.kie.workbench.common.screens.library.api.ProjectAssetListUpdated;
 import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
 import org.kie.workbench.common.screens.library.client.events.WorkbenchProjectMetricsEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
@@ -152,6 +153,9 @@ public class LibraryPlacesTest {
     @Mock
     private WorkspaceProjectContextChangeEvent current;
 
+    @Mock
+    private Event<ProjectAssetListUpdated> assetListUpdateEvent;
+
     @Captor
     private ArgumentCaptor<WorkspaceProjectContextChangeEvent> projectContextChangeEventArgumentCaptor;
 
@@ -189,7 +193,8 @@ public class LibraryPlacesTest {
                                               vfsServiceCaller,
                                               projectScopedResolutionStrategySupplier,
                                               preferencesCentralInitializationEvent,
-                                              importRepositoryPopUpPresenters));
+                                              importRepositoryPopUpPresenters,
+                                              assetListUpdateEvent));
         libraryPlaces.setup();
 
         verify(libraryToolBarView).getElement();
