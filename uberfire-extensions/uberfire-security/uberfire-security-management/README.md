@@ -21,7 +21,7 @@ Due to this fact, the UF users management feature is based on services and their
 * JBoss KeyCloak based realms           
 * Tomcat XML based realms            
 
-NOTE: If you are using the application against another security system, you can build you own users, groups and roles service provider implementations.               
+NOTE: If you are using the application against another security system, you can build your own users, groups and roles service provider implementations.               
 
 In addition, note that each security realm can allow different features, for example, 
 when using the properties realm in Wildfly, the user entity does not have name neither address, etc, 
@@ -39,7 +39,7 @@ UberFire's security system provides an entities model based on users, groups and
 * The roles are the groups or roles, depending on what the concrete realm provides, that come from the security realm and are registered in the Roles Registry (see `org.uberfire.ext.security.server.RolesRegistry`)               
 * The groups are the groups or roles, depending on what the concrete realm provides, that come from the security realm and are not registered as roles in the Roles Registry                   
 
-So keep in mind that if the security realm being used does not support both groups and roles, 
+So keep in mind that if the security realm being used it does not support both groups and roles, 
 the user assignments will be performed with no differentiation, so all groups and roles assigned to a given user will be added in the security realm, 
 no matter if it's a group or a role. At user load time, UF will check the Roles Registry and will apply the right assignment behaviour.             
 
