@@ -5,7 +5,7 @@ Introduction
 ------------
 The classes in this package contain the user and group manager provider implementation for JBoss KeyCloak.              
 
-There exist two implementation for this provider:           
+There are two implementation for this provider:           
 
 **Based on username/password credentials**                
 
@@ -79,7 +79,7 @@ just by adding the dependencies below in *jboss-deployment-descriptor.xml*:
 Step 2 - Provider settings
 --------------------------
 
-NOTE: If the workbench's user system manager feature if not configured for the distribution you are using, please take a look at the [Workbench installation instructions](../uberfire-security-management-client-wb/README.md).                        
+NOTE: If the workbench's user system manager feature is not configured for the distribution you are using, please take a look at the [Workbench installation instructions](../uberfire-security-management-client-wb/README.md).                        
 
 Once dependencies have been specified as above, let's configure the Keycloak provider. To do it, please choose one of the following options:               
 
