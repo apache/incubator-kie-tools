@@ -333,6 +333,11 @@
 
     <dependency>
       <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
       <artifactId>errai-ui</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -514,11 +519,6 @@
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-forms-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
-      <artifactId>kie-wb-common-stunner-forms-backend</artifactId>
     </dependency>
 
     <dependency>

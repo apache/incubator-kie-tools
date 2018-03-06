@@ -64,7 +64,6 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.def
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPaletteBuilder;
 import org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService;
 
-// TODO: i18n.
 @Dependent
 public class BPMNPaletteDefinitionFactory extends BindableDefSetPaletteDefinitionFactory<DefinitionSetPalette, BS3PaletteWidget<DefinitionSetPalette>> {
 

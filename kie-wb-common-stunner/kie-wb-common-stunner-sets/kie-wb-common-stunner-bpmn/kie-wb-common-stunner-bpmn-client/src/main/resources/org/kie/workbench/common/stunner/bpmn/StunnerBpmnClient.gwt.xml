@@ -26,6 +26,7 @@
   <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnApi"/>
   <inherits name="org.kie.workbench.common.stunner.shapes.StunnerShapesClient"/>
   <inherits name="org.kie.workbench.common.stunner.svg.StunnerSvgClient"/>
+  <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient"/>
   <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
 
   <source path="client"/>

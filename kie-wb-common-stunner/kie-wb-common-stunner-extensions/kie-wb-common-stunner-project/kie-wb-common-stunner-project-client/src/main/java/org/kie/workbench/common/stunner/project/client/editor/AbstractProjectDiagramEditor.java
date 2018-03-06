@@ -43,6 +43,7 @@ import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearStatesSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.CopySelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.CutSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.DeleteSelectionSessionCommand;
@@ -73,6 +74,7 @@ import org.kie.workbench.common.stunner.project.client.resources.i18n.StunnerPro
 import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesListener;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
+import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
@@ -114,6 +116,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private ClientProjectDiagramService projectDiagramServices;
     private SessionManager sessionManager;
     private SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory;
+    private SessionCommandFactory sessionCommandFactory;
     private ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder;
     private ProjectMessagesListener projectMessagesListener;
 
@@ -153,33 +156,14 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.projectDiagramServices = projectDiagramServices;
         this.sessionManager = sessionManager;
         this.sessionPresenterFactory = sessionPresenterFactory;
+        this.sessionCommandFactory = sessionCommandFactory;
         this.menuItemsBuilder = menuItemsBuilder;
         this.projectMessagesListener = projectMessagesListener;
         this.diagramClientErrorHandler = diagramClientErrorHandler;
-
         this.onDiagramFocusEvent = onDiagramFocusEvent;
         this.onDiagramLostFocusEvent = onDiagramLostFocusEvent;
         this.translationService = translationService;
-
-        initializeCommands(sessionCommandFactory);
-    }
-
-    private void initializeCommands(SessionCommandFactory sessionCommandFactory) {
         this.commands = new HashMap<>();
-        commands.put(VisitGraphSessionCommand.class, sessionCommandFactory.newVisitGraphCommand());
-        commands.put(SwitchGridSessionCommand.class, sessionCommandFactory.newSwitchGridCommand());
-        commands.put(ClearSessionCommand.class, sessionCommandFactory.newClearCommand());
-        commands.put(DeleteSelectionSessionCommand.class, sessionCommandFactory.newDeleteSelectedElementsCommand());
-        commands.put(UndoSessionCommand.class, sessionCommandFactory.newUndoCommand());
-        commands.put(RedoSessionCommand.class, sessionCommandFactory.newRedoCommand());
-        commands.put(ValidateSessionCommand.class, sessionCommandFactory.newValidateCommand());
-        commands.put(ExportToPngSessionCommand.class, sessionCommandFactory.newExportToPngSessionCommand());
-        commands.put(ExportToJpgSessionCommand.class, sessionCommandFactory.newExportToJpgSessionCommand());
-        commands.put(ExportToPdfSessionCommand.class, sessionCommandFactory.newExportToPdfSessionCommand());
-        commands.put(ExportToBpmnSessionCommand.class, sessionCommandFactory.newExportToBpmnSessionCommand());
-        commands.put(CopySelectionSessionCommand.class, sessionCommandFactory.newCopySelectionCommand());
-        commands.put(PasteSelectionSessionCommand.class, sessionCommandFactory.newPasteSelectionCommand());
-        commands.put(CutSelectionSessionCommand.class, sessionCommandFactory.newCutSelectionCommand());
     }
 
     protected abstract int getCanvasWidth();
@@ -189,6 +173,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     @PostConstruct
     @SuppressWarnings("unchecked")
     public void init() {
+        initializeCommands(commands);
         title = translationService.getKeyValue(StunnerProjectClientConstants.DIAGRAM_EDITOR_DEFAULT_TITLE);
         getView().init(this);
         projectMessagesListener.enable();
@@ -332,6 +317,18 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                             });
     }
 
+    public void hideDiagramEditorDocks(@Observes PlaceHiddenEvent event) {
+        if (verifyEventIdentifier(event)) {
+            onDiagramLostFocusEvent.fire(new OnDiagramLoseFocusEvent());
+        }
+    }
+
+    public void showDiagramEditorDocks(@Observes PlaceGainFocusEvent event) {
+        if (verifyEventIdentifier(event)) {
+            onDiagramFocusEvent.fire(new OnDiagramFocusEvent());
+        }
+    }
+
     @Override
     protected void makeMenuBar() {
         final MenuItem clearItem = menuItemsBuilder.newClearItem(this::menu_clear);
@@ -388,6 +385,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                 .addNewTopLevelMenu(cutItem)
                 .addNewTopLevelMenu(pasteItem);
 
+        makeAdditionalStunnerMenus(fileMenuBuilder);
+
         if (menuItemsBuilder.isDevItemsEnabled()) {
             fileMenuBuilder.addNewTopLevelMenu(menuItemsBuilder.newDevItems());
         }
@@ -407,7 +406,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                 .addNewTopLevelMenu(versionRecordManager.buildMenu());
     }
 
-    private <T> T getCommand(Class<T> key) {
+    protected <T> T getCommand(Class<T> key) {
         return (T) commands.get(key);
     }
 
@@ -678,12 +677,12 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                                           getEditorIdentifier()));
     }
 
-    private void showError(final ClientRuntimeError error) {
+    protected void showError(final ClientRuntimeError error) {
         diagramClientErrorHandler.handleError(error, message -> showError(message));
         log(Level.SEVERE, error.toString());
     }
 
-    private void showError(final String message) {
+    protected void showError(final String message) {
         errorPopupPresenter.showMessage(message);
         hideLoadingViews();
     }
@@ -707,15 +706,28 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                event.getPlace()));
     }
 
-    public void hideDiagramEditorDocks(@Observes PlaceHiddenEvent event) {
-        if (verifyEventIdentifier(event)) {
-            onDiagramLostFocusEvent.fire(new OnDiagramLoseFocusEvent());
-        }
+    protected ClientTranslationService getTranslationService() {
+        return translationService;
     }
 
-    public void showDiagramEditorDocks(@Observes PlaceGainFocusEvent event) {
-        if (verifyEventIdentifier(event)) {
-            onDiagramFocusEvent.fire(new OnDiagramFocusEvent());
-        }
+    protected void makeAdditionalStunnerMenus(final FileMenuBuilder fileMenuBuilder) {
+    }
+
+    protected void initializeCommands(final Map<Class, ClientSessionCommand> commands) {
+        commands.put(ClearStatesSessionCommand.class, sessionCommandFactory.newClearStatesCommand());
+        commands.put(VisitGraphSessionCommand.class, sessionCommandFactory.newVisitGraphCommand());
+        commands.put(SwitchGridSessionCommand.class, sessionCommandFactory.newSwitchGridCommand());
+        commands.put(ClearSessionCommand.class, sessionCommandFactory.newClearCommand());
+        commands.put(DeleteSelectionSessionCommand.class, sessionCommandFactory.newDeleteSelectedElementsCommand());
+        commands.put(UndoSessionCommand.class, sessionCommandFactory.newUndoCommand());
+        commands.put(RedoSessionCommand.class, sessionCommandFactory.newRedoCommand());
+        commands.put(ValidateSessionCommand.class, sessionCommandFactory.newValidateCommand());
+        commands.put(ExportToPngSessionCommand.class, sessionCommandFactory.newExportToPngSessionCommand());
+        commands.put(ExportToJpgSessionCommand.class, sessionCommandFactory.newExportToJpgSessionCommand());
+        commands.put(ExportToPdfSessionCommand.class, sessionCommandFactory.newExportToPdfSessionCommand());
+        commands.put(ExportToBpmnSessionCommand.class, sessionCommandFactory.newExportToBpmnSessionCommand());
+        commands.put(CopySelectionSessionCommand.class, sessionCommandFactory.newCopySelectionCommand());
+        commands.put(PasteSelectionSessionCommand.class, sessionCommandFactory.newPasteSelectionCommand());
+        commands.put(CutSelectionSessionCommand.class, sessionCommandFactory.newCutSelectionCommand());
     }
 }

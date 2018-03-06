@@ -168,8 +168,17 @@ public class DefinitionUtils {
         return false;
     }
 
+    public String getDefinitionSetId(final Class<?> type) {
+        return definitionManager
+                .adapters()
+                .forDefinitionSet()
+                .getId(definitionManager
+                               .definitionSets()
+                               .getDefinitionSetByType(type));
+    }
+
     /**
-     * Returns the identifiers for the defintion type and its parent, if any.
+     * Returns the identifiers for the definition type and its parent, if any.
      */
     public <T> String[] getDefinitionIds(final T definition) {
         final Class<?> type = definition.getClass();

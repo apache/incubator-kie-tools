@@ -45,6 +45,13 @@ public class CommonActionsToolboxFactory
     private final Supplier<DeleteNodeAction> deleteNodeActions;
     private final Supplier<ActionsToolboxView> views;
 
+    // CDI proxy.
+    protected CommonActionsToolboxFactory() {
+        this(null,
+             (Supplier) null,
+             (Supplier) null);
+    }
+
     @Inject
     public CommonActionsToolboxFactory(final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
                                        final @Any ManagedInstance<DeleteNodeAction> deleteNodeActions,

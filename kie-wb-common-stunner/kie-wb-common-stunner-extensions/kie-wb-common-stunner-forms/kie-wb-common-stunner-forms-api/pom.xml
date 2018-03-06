@@ -41,6 +41,11 @@
 
     <dependency>
       <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
       <artifactId>errai-data-binding</artifactId>
     </dependency>
 
@@ -68,6 +73,12 @@
       <groupId>org.kie.workbench.forms</groupId>
       <artifactId>kie-wb-common-dynamic-forms-api</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-core-api</artifactId>
+    </dependency>
+
   </dependencies>
 
 </project>

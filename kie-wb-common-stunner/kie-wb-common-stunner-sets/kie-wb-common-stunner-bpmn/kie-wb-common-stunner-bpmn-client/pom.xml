@@ -120,6 +120,16 @@
       <artifactId>kie-wb-common-forms-processing-engine</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-forms-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-forms-client</artifactId>
+    </dependency>
+
     <!-- TODO: Really necessary? . -->
 
     <dependency>

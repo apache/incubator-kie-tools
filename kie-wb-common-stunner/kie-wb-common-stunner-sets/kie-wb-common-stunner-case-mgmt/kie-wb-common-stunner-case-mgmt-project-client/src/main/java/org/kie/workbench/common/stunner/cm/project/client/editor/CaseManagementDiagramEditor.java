@@ -76,7 +76,7 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
                                        final CaseManagementDiagramResourceType resourceType,
                                        final ClientProjectDiagramService projectDiagramServices,
                                        final SessionManager sessionManager,
-                                       final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory,
+                                       final @CaseManagementEditor SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory,
                                        final @CaseManagementEditor SessionCommandFactory sessionCommandFactory,
                                        final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder,
                                        final Event<OnDiagramFocusEvent> onDiagramFocusEvent,

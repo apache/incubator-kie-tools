@@ -217,12 +217,12 @@ public class ProjectDiagramEditorTest {
                 place = placeRequest;
             }
         };
+        tested.init();
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testInit() {
-        tested.init();
         verify(view,
                times(1)).init(eq(tested));
         verify(sessionVisitGraphCommand,

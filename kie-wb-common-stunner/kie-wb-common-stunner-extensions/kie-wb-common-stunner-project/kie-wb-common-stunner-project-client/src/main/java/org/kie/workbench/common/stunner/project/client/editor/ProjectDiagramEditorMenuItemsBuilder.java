@@ -277,7 +277,7 @@ public class ProjectDiagramEditorMenuItemsBuilder {
         return translationService.getKeyValue(StunnerProjectClientConstants.CONFIRM_ACTION);
     }
 
-    private MenuItem buildItem(final IsWidget widget) {
+    public static MenuItem buildItem(final IsWidget widget) {
         return MenuUtils.buildItem(widget);
     }
 }

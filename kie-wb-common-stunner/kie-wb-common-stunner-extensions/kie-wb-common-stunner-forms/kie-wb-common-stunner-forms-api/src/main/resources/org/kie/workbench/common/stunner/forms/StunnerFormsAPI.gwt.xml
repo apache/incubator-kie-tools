@@ -21,6 +21,7 @@
 <module>
 
   <inherits name="org.kie.workbench.common.forms.FormsAPI"/>
+  <inherits name="org.kie.workbench.common.stunner.core.StunnerCoreApi"/>
 
   <source path="model"/>
   <source path="service"/>

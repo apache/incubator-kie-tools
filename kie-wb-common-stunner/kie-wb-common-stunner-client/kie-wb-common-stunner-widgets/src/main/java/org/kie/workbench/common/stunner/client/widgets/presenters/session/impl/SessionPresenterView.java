@@ -218,7 +218,7 @@ public class SessionPresenterView extends Composite
         this.removeFromParent();
     }
 
-    private String buildHtmlEscapedText(final String message) {
+    private static String buildHtmlEscapedText(final String message) {
         return new SafeHtmlBuilder().appendEscapedLines(message).toSafeHtml().asString();
     }
 }

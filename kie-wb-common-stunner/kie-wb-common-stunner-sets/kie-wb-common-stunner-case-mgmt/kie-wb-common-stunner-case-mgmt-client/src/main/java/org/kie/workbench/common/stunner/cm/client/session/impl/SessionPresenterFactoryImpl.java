@@ -40,6 +40,21 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientS
 @ApplicationScoped
 public class SessionPresenterFactoryImpl extends org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionPresenterFactoryImpl {
 
+    // CDI proxy.
+    protected SessionPresenterFactoryImpl() {
+        this(null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null,
+             null);
+    }
+
     @Inject
     public SessionPresenterFactoryImpl(final SessionManager sessionManager,
                                        final ManagedInstance<CanvasCommandManager<AbstractCanvasHandler>> commandManagerInstances,
@@ -51,8 +66,7 @@ public class SessionPresenterFactoryImpl extends org.kie.workbench.common.stunne
                                        final ManagedInstance<NotificationsObserver> notificationsObserverInstances,
                                        final BS3PaletteFactory paletteWidgetFactory,
                                        final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEventInstances,
-                                       final ScreenResizeEventObserver screenResizeEventObserver
-    ) {
+                                       final ScreenResizeEventObserver screenResizeEventObserver) {
         super(sessionManager,
               commandManagerInstances,
               viewerToolbarFactoryInstances,
@@ -64,6 +78,6 @@ public class SessionPresenterFactoryImpl extends org.kie.workbench.common.stunne
               paletteWidgetFactory,
               sessionDiagramOpenedEventInstances,
               screenResizeEventObserver
-              );
+        );
     }
 }
