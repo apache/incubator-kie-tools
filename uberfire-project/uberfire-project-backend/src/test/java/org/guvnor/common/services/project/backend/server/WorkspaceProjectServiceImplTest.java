@@ -254,6 +254,34 @@ public class WorkspaceProjectServiceImplTest {
         }
     }
 
+    @Test
+    public void testErrorWhenNewProject() {
+        String repository1 = "repository1";
+        POM pom = new POM(repository1,
+                          "description",
+                          "url",
+                          null);
+        when(this.repositoryService.createRepository(eq(this.ou1),
+                                                     eq("git"),
+                                                     eq(pom.getName()),
+                                                     any()))
+                .thenReturn(this.repository1);
+
+        when(this.moduleService.newModule(any(),
+                                          any(),
+                                          any(),
+                                          any()))
+                .thenThrow(new RuntimeException("Expected error"));
+
+        try {
+            this.workspaceProjectService.newProject(this.ou1,
+                                                    pom);
+        } catch (Exception e) {
+            verify(this.repositoryService).removeRepository(new Space(this.ou1.getName()),
+                                                            repository1);
+        }
+    }
+
     private void assertContains(final Repository repository,
                                 final Collection<WorkspaceProject> allWorkspaceProjects) {
 

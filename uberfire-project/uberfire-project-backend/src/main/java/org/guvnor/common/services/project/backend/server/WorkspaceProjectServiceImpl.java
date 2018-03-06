@@ -22,6 +22,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
@@ -149,19 +150,26 @@ public class WorkspaceProjectServiceImpl
 
         pom.setName(newName);
 
-        final Module module = moduleService.newModule(repository.getDefaultBranch().get().getPath(),
-                                                      pom,
-                                                      "",
-                                                      mode);
+        try {
 
-        final WorkspaceProject workspaceProject = new WorkspaceProject(organizationalUnit,
-                                                                       repository,
-                                                                       repository.getDefaultBranch().get(),
-                                                                       module);
+            final Module module = moduleService.newModule(repository.getDefaultBranch().get().getPath(),
+                                                          pom,
+                                                          "",
+                                                          mode);
 
-        newProjectEvent.fire(new NewProjectEvent(workspaceProject));
+            final WorkspaceProject workspaceProject = new WorkspaceProject(organizationalUnit,
+                                                                           repository,
+                                                                           repository.getDefaultBranch().get(),
+                                                                           module);
 
-        return workspaceProject;
+            newProjectEvent.fire(new NewProjectEvent(workspaceProject));
+
+            return workspaceProject;
+        } catch (Exception e) {
+            this.repositoryService.removeRepository(this.spaces.getSpace(organizationalUnit.getName()),
+                                                    repository.getAlias());
+            throw ExceptionUtilities.handleException(e);
+        }
     }
 
     @Override
