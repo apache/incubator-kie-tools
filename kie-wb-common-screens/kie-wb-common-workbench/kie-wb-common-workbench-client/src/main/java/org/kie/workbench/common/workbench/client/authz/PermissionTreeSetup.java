@@ -89,7 +89,7 @@ public class PermissionTreeSetup {
         perspectiveTreeProvider.setPerspectiveName(PROCESS_INSTANCES,
                                                    i18n.ProcessInstances());
         perspectiveTreeProvider.setPerspectiveName(TASKS_ADMIN,
-                                                   i18n.Tasks_Admin());
+                                                   i18n.Tasks());
         perspectiveTreeProvider.setPerspectiveName(JOBS,
                                                    i18n.Jobs());
         perspectiveTreeProvider.setPerspectiveName(EXECUTION_ERRORS,

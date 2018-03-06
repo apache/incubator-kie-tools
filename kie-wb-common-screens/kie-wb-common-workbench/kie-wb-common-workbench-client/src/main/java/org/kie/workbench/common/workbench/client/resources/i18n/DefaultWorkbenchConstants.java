@@ -141,7 +141,7 @@ public interface DefaultWorkbenchConstants
 
     String Languages();
 
-    String Tasks_Admin();
+    String Tasks();
 
     String GuidedDecisionTree();
 
