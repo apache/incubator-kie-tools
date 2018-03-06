@@ -91,6 +91,7 @@ public class DropDownEditor implements IsWidget, LeafAttributeEditor<String> {
     public void init() {
         view.init(this);
         view.setDropDown(dropDown);
+        dropDown.setClearSelectionEnabled(false);
         dropDown.setSearchEnabled(false);
         dropDown.init(this::getDropDownEntries, selectionHandler);
         dropDown.setOnChange(this::onEntrySelected);

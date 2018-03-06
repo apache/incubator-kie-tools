@@ -300,7 +300,7 @@ public class PlaceManagerImpl
         boolean result = true;
         for (final PlaceRequest placeRequest : placeRequests) {
             final Activity activity = existingWorkbenchActivities.get(placeRequest);
-            if (activity.isType(ActivityResourceType.SCREEN.name()) || activity.isType(ActivityResourceType.EDITOR.name())) {
+            if (activity != null && (activity.isType(ActivityResourceType.SCREEN.name()) || activity.isType(ActivityResourceType.EDITOR.name()))) {
                 if (((WorkbenchActivity) activity).onMayClose()) {
                     onMayCloseList.put(placeRequest,
                                        activity);

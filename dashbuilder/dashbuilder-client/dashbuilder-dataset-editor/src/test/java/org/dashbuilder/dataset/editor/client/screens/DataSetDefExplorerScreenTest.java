@@ -20,7 +20,9 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -46,20 +48,24 @@ public class DataSetDefExplorerScreenTest {
         presenter.services = services;
         assertEquals(explorerWidget, presenter.getView());
 
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                RemoteCallback callback = (RemoteCallback) invocationOnMock.getArguments()[0];
-                callback.callback(mock(Path.class));
-                return null;
-            }
+        doAnswer(invocationOnMock -> {
+            Command callback = (Command ) invocationOnMock.getArguments()[1];
+            callback.execute();
+            return null;
+        }).when(placeManager).tryClosePlace(any(), any());
+
+        doAnswer(invocationOnMock -> {
+            RemoteCallback callback = (RemoteCallback) invocationOnMock.getArguments()[0];
+            callback.callback(mock(Path.class));
+            return null;
         }).when(services).call(any(RemoteCallback.class));
     }
     
     @Test
     public void testNewDataSet() {
         presenter.newDataSet();
-        verify(placeManager, times(1)).goTo("DataSetDefWizard");
+        verify(placeManager).tryClosePlace(eq(new DefaultPlaceRequest("DataSetDefWizard")), any(Command.class));
+        verify(placeManager).goTo("DataSetDefWizard");
     }
     
     // Cannot mock constructor for PathPlaceRequest, but having the classcast exception when mocking it implies that placeManager#goTo is called....

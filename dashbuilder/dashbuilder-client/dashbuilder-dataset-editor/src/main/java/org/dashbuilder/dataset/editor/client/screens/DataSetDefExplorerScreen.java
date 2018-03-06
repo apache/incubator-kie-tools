@@ -33,8 +33,8 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
@@ -100,21 +100,15 @@ public class DataSetDefExplorerScreen {
     private Menus makeMenuBar() {
         return MenuFactory
                 .newTopLevelMenu(DataSetExplorerConstants.INSTANCE.newDataSet())
-                .respondsWith(getNewCommand())
+                .respondsWith(this::newDataSet)
                 .endMenu()
                 .build();
     }
 
-    private Command getNewCommand() {
-        return new Command() {
-            public void execute() {
-                newDataSet();
-            }
-        };
-    }
-
     void newDataSet() {
-        placeManager.goTo("DataSetDefWizard");
+        placeManager.tryClosePlace(new DefaultPlaceRequest("DataSetDefWizard"), () -> {
+            placeManager.goTo("DataSetDefWizard");
+        });
     }
 
     private void showError(final ClientRuntimeError error) {
