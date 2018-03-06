@@ -32,6 +32,7 @@ import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.tooling.common.api.java.util.function.Predicate;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -140,6 +141,8 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
 
             m_events = null;
         }
+
+        getElement().getStyle().setOutlineStyle(Style.OutlineStyle.NONE);
     }
 
     @Override
