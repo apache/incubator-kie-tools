@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.event;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
@@ -24,6 +26,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18n
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
@@ -53,14 +56,15 @@ public class IsInterrupting implements BPMNProperty {
 
     @Override
     public int hashCode() {
-        return (null != value) ? value.hashCode() : 0;
+        return HashUtil.combineHashCodes(Objects.hashCode(value));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof IsInterrupting) {
             IsInterrupting other = (IsInterrupting) o;
-            return (null != value) ? value.equals(other.value) : null == other.value;
+            return Objects.equals(value,
+                                  other.value);
         }
         return false;
     }

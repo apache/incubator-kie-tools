@@ -163,12 +163,12 @@ public abstract class BaseStartEvent implements BPMNViewDefinition,
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(general.hashCode(),
-                                         backgroundSet.hashCode(),
-                                         fontSet.hashCode(),
-                                         dimensionsSet.hashCode(),
-                                         simulationSet.hashCode(),
-                                         labels.hashCode());
+        return HashUtil.combineHashCodes(Objects.hashCode(general),
+                                         Objects.hashCode(backgroundSet),
+                                         Objects.hashCode(fontSet),
+                                         Objects.hashCode(dimensionsSet),
+                                         Objects.hashCode(simulationSet),
+                                         Objects.hashCode(labels));
     }
 
     @Override

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -25,13 +27,16 @@ import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationAttributeSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
@@ -43,6 +48,9 @@ import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 )
 public class StartNoneEvent extends BaseStartEvent {
 
+    @Property
+    private IsInterrupting isInterrupting = new IsInterrupting(true);
+
     @NonPortable
     public static class StartNoneEventBuilder implements Builder<StartNoneEvent> {
 
@@ -52,7 +60,8 @@ public class StartNoneEvent extends BaseStartEvent {
                                       new BackgroundSet(),
                                       new FontSet(),
                                       new CircleDimensionSet(new Radius()),
-                                      new SimulationAttributeSet());
+                                      new SimulationAttributeSet(),
+                                      new IsInterrupting(true));
         }
     }
 
@@ -63,11 +72,38 @@ public class StartNoneEvent extends BaseStartEvent {
                           final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                           final @MapsTo("fontSet") FontSet fontSet,
                           final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
-                          final @MapsTo("simulationSet") SimulationAttributeSet simulationSet) {
+                          final @MapsTo("simulationSet") SimulationAttributeSet simulationSet,
+                          final @MapsTo("isInterrupting") IsInterrupting isInterrupting) {
         super(general,
               backgroundSet,
               fontSet,
               dimensionsSet,
               simulationSet);
+        this.isInterrupting = isInterrupting;
+    }
+
+    public IsInterrupting getIsInterrupting() {
+        return isInterrupting;
+    }
+
+    public void setIsInterrupting(IsInterrupting isInterrupting) {
+        this.isInterrupting = isInterrupting;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(super.hashCode(),
+                                         Objects.hashCode(isInterrupting));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof StartNoneEvent) {
+            StartNoneEvent other = (StartNoneEvent) o;
+            return super.equals(other) &&
+                    Objects.equals(isInterrupting,
+                                   other.isInterrupting);
+        }
+        return false;
     }
 }

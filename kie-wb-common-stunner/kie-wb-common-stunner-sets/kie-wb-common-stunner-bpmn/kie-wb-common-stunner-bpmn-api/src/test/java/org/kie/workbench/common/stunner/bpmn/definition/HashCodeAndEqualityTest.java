@@ -55,6 +55,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.gateway.Gateway
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationAttributeSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocCompletionCondition;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocOrdering;
@@ -750,25 +751,37 @@ public class HashCodeAndEqualityTest {
     }
 
     @Test
-    public void testStartNoneEventEquals() {
-        StartNoneEvent.StartNoneEventBuilder builder = new StartNoneEvent.StartNoneEventBuilder();
-        StartNoneEvent a = builder.build();
-        builder = new StartNoneEvent.StartNoneEventBuilder();
-        StartNoneEvent b = builder.build();
-        assertEquals(a,
-                     b);
-        assertFalse(a.equals(19));
-        assertFalse(a.equals(null));
-    }
-
-    @Test
-    public void testStartNoneEventHashCode() {
-        StartNoneEvent.StartNoneEventBuilder builder = new StartNoneEvent.StartNoneEventBuilder();
-        StartNoneEvent a = builder.build();
-        builder = new StartNoneEvent.StartNoneEventBuilder();
-        StartNoneEvent b = builder.build();
-        assertEquals(a.hashCode(),
-                     b.hashCode());
+    public void testStartNoneEventEqualsAndHasCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new StartNoneEvent(),
+                             new StartNoneEvent())
+                .addTrueCase(new StartNoneEvent(new BPMNGeneralSet(),
+                                                new BackgroundSet(),
+                                                new FontSet(),
+                                                new CircleDimensionSet(),
+                                                new SimulationAttributeSet(),
+                                                new IsInterrupting()),
+                             new StartNoneEvent(new BPMNGeneralSet(),
+                                                new BackgroundSet(),
+                                                new FontSet(),
+                                                new CircleDimensionSet(),
+                                                new SimulationAttributeSet(),
+                                                new IsInterrupting()))
+                .addFalseCase(new StartNoneEvent(),
+                              new StartNoneEvent(new BPMNGeneralSet(),
+                                                 new BackgroundSet(),
+                                                 new FontSet(),
+                                                 new CircleDimensionSet(),
+                                                 new SimulationAttributeSet(),
+                                                 new IsInterrupting()))
+                .addFalseCase(new StartNoneEvent(new BPMNGeneralSet(),
+                                                 new BackgroundSet(),
+                                                 new FontSet(),
+                                                 new CircleDimensionSet(),
+                                                 new SimulationAttributeSet(),
+                                                 new IsInterrupting()),
+                              new StartNoneEvent())
+                .test();
     }
 
     @Test
@@ -1401,6 +1414,53 @@ public class HashCodeAndEqualityTest {
                 .test();
     }
 
+    @Test
+    public void testIsInterruptingEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new IsInterrupting(),
+                             new IsInterrupting())
+                .addTrueCase(new IsInterrupting(true),
+                             new IsInterrupting(true))
+                .addTrueCase(new IsInterrupting(false),
+                             new IsInterrupting(false))
+                .addFalseCase(new IsInterrupting(true),
+                              new IsInterrupting(false))
+                .addFalseCase(new IsInterrupting(false),
+                              new IsInterrupting(true))
+                .test();
+    }
+
+    @Test
+    public void testBaseStartEventEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new BaseStartEventStub(),
+                             new BaseStartEventStub())
+                .addTrueCase(new BaseStartEventStub(new BPMNGeneralSet(),
+                                                    new BackgroundSet(),
+                                                    new FontSet(),
+                                                    new CircleDimensionSet(),
+                                                    new SimulationAttributeSet()),
+                             new BaseStartEventStub(new BPMNGeneralSet(),
+                                                    new BackgroundSet(),
+                                                    new FontSet(),
+                                                    new CircleDimensionSet(),
+                                                    new SimulationAttributeSet()))
+                .addFalseCase(new BaseStartEventStub(),
+                              new BaseStartEventStub(new BPMNGeneralSet(),
+                                                     new BackgroundSet(),
+                                                     new FontSet(),
+                                                     new CircleDimensionSet(),
+                                                     new SimulationAttributeSet()))
+
+                .addFalseCase(new BaseStartEventStub(new BPMNGeneralSet(),
+                                                     new BackgroundSet(),
+                                                     new FontSet(),
+                                                     new CircleDimensionSet(),
+                                                     new SimulationAttributeSet()),
+                              new BaseStartEventStub())
+                .test();
+    }
+
     public static class HashCodeAndEqualityTestCase {
 
         private Object a;
@@ -1479,6 +1539,25 @@ public class HashCodeAndEqualityTest {
                                 Objects.hashCode(testCase.getB()));
             }
             index++;
+        }
+    }
+
+    private class BaseStartEventStub extends BaseStartEvent {
+
+        public BaseStartEventStub() {
+            super();
+        }
+
+        public BaseStartEventStub(BPMNGeneralSet general,
+                                  BackgroundSet backgroundSet,
+                                  FontSet fontSet,
+                                  CircleDimensionSet dimensionsSet,
+                                  SimulationAttributeSet simulationSet) {
+            super(general,
+                  backgroundSet,
+                  fontSet,
+                  dimensionsSet,
+                  simulationSet);
         }
     }
 }

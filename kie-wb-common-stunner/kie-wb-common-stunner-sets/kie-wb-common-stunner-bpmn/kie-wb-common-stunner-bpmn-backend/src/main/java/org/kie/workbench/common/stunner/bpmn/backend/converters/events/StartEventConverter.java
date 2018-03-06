@@ -91,6 +91,7 @@ public class StartEventConverter {
                 definition.setDimensionsSet(p.getCircleDimensionSet());
                 definition.setFontSet(p.getFontSet());
                 definition.setBackgroundSet(p.getBackgroundSet());
+                definition.setIsInterrupting(new IsInterrupting(event.isIsInterrupting()));
 
                 return node;
             }
