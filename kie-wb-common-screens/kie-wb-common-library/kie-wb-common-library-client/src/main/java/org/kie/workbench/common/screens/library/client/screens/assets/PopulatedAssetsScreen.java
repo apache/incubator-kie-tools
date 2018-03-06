@@ -28,7 +28,6 @@ import org.ext.uberfire.social.activities.client.widgets.utils.SocialDateFormatt
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -38,7 +37,6 @@ import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.library.api.AssetInfo;
 import org.kie.workbench.common.screens.library.api.AssetQueryResult;
-import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetListUpdated;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
 import org.kie.workbench.common.screens.library.api.Routed;
@@ -53,7 +51,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.CategoriesManagerCache;
 import org.uberfire.client.mvp.ResourceTypeManagerCache;
 import org.uberfire.client.mvp.UberElemental;
-import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
@@ -81,7 +78,6 @@ public class PopulatedAssetsScreen {
     private Event<UpdatedAssetsEvent> updatedAssetsEventEvent;
     private EmptyState emptyState;
     private CategoryUtils categoryUtils;
-    private Caller<LibraryService> libraryService;
     private WorkspaceProject workspaceProject;
     private int currentPage;
     private int pageSize;
@@ -89,6 +85,7 @@ public class PopulatedAssetsScreen {
     private int totalPages;
     private String filterType;
     private final Event<WorkspaceProjectContextChangeEvent> contextChangeEvent;
+    private AssetQueryService assetQueryService;
 
     public interface View extends UberElemental<PopulatedAssetsScreen> {
 
@@ -134,7 +131,7 @@ public class PopulatedAssetsScreen {
                                  final Event<UpdatedAssetsEvent> updatedAssetsEventEvent,
                                  final EmptyState emptyState,
                                  final CategoryUtils categoryUtils,
-                                 final Caller<LibraryService> libraryService,
+                                 final AssetQueryService assetQueryService,
                                  final Event<WorkspaceProjectContextChangeEvent> contextChangeEvent) {
         this.view = view;
         this.categoriesManagerCache = categoriesManagerCache;
@@ -150,7 +147,7 @@ public class PopulatedAssetsScreen {
         this.updatedAssetsEventEvent = updatedAssetsEventEvent;
         this.emptyState = emptyState;
         this.categoryUtils = categoryUtils;
-        this.libraryService = libraryService;
+        this.assetQueryService = assetQueryService;
         this.contextChangeEvent = contextChangeEvent;
     }
 
@@ -370,12 +367,8 @@ public class PopulatedAssetsScreen {
                                                                startIndex,
                                                                amount);
 
-            /*
-             * Leave this so that we get a compile error if the return type is changed.
-             */
-            @SuppressWarnings("unused")
-            AssetQueryResult canary = libraryService.call(callback,
-                                                          new DefaultErrorCallback()).getProjectAssets(query);
+            assetQueryService.getAssets(query)
+                             .call(callback, new DefaultErrorCallback());
         }
     }
 
@@ -453,7 +446,8 @@ public class PopulatedAssetsScreen {
                                                                0,
                                                                0);
 
-            this.libraryService.call((Integer numberOfAssets) -> {
+            assetQueryService.getNumberOfAssets(query)
+                             .call((Integer numberOfAssets) -> {
                                          int offset = getOffset();
                                          this.view.setPageIndicator(offset + 1,
                                                                     this.getAssetsCount(numberOfAssets,
@@ -465,7 +459,7 @@ public class PopulatedAssetsScreen {
                                          this.view.setTotalPages(this.getTotalPages());
                                          this.checkPaginationButtons();
                                      },
-                                     new DefaultErrorCallback()).getNumberOfAssets(query);
+                                   new DefaultErrorCallback());
         }
     }
 

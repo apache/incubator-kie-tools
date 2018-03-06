@@ -16,6 +16,19 @@
 
 package org.kie.workbench.common.screens.library.client.screens.assets;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -49,11 +62,6 @@ import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.workbench.category.Others;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
@@ -121,7 +129,7 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
                                                               new EventSourceMock<>(),
                                                               emptyState,
                                                               categoryUtils,
-                                                              new CallerMock<>(libraryService),
+                                                              new AssetQueryService(new CallerMock<>(libraryService)),
                                                               contextChangeEvent));
     }
 
