@@ -26,6 +26,7 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.slf4j.Logger;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.ext.metadata.MetadataConfig;
+import org.uberfire.ext.metadata.engine.MetaIndexEngine;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.ext.metadata.model.KCluster;
 import org.uberfire.java.nio.file.FileSystem;
@@ -34,8 +35,8 @@ import org.uberfire.java.nio.file.Path;
 @Dependent
 public class IndexStatusOracle {
 
-    private final MetadataConfig config;
     private final Logger logger;
+    private final MetaIndexEngine indexEngine;
 
     // Proxying
     public IndexStatusOracle() {
@@ -44,14 +45,14 @@ public class IndexStatusOracle {
 
     @Inject
     public IndexStatusOracle(MetadataConfig config, Logger logger) {
-        this.config = config;
         this.logger = logger;
+        this.indexEngine = config.getIndexEngine();
     }
 
     public boolean isIndexed(WorkspaceProject project) {
         Optional<KCluster> clusterOf = kClusterOf(project);
 
-        return clusterOf.map(cluster -> !config.getIndexProvider().isFreshIndex(cluster))
+        return clusterOf.map(cluster -> indexEngine.isIndexReady(cluster))
                         .orElse(false);
     }
 
