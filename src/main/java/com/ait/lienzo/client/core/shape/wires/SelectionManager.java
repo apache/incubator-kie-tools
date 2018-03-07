@@ -174,6 +174,11 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
                                          wiresManager);
     }
 
+    protected boolean isSelectionCreationInProcess()
+    {
+        return m_selectionCreationInProcess;
+    }
+
     public void setSelectionShapeProvider(SelectionShapeProvider m_selectionShapeProvider) {
         this.m_selectionShapeProvider = m_selectionShapeProvider;
     }
@@ -394,6 +399,10 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
 
     @Override public void onNodeMouseDown(NodeMouseDownEvent event)
     {
+        if (!event.isButtonLeft()) {
+            return;
+        }
+
         Node<?> node = m_layer.getViewport().findShapeAtPoint(event.getX(), event.getY());
         if (node == null)
         {
@@ -405,7 +414,6 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             destroySelectionShape();
             m_layer.draw();
         }
-
     }
 
     public void clearSelection() {
