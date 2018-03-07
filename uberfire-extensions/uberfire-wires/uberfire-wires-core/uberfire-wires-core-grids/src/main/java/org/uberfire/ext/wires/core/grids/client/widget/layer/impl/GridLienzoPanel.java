@@ -19,6 +19,7 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.widget.LienzoPanel;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.logical.shared.AttachEvent;
@@ -96,6 +97,7 @@ public class GridLienzoPanel extends FocusPanel implements RequiresResize,
         setupRootPanel();
 
         add(getRootPanel());
+        getElement().getStyle().setOutlineStyle(Style.OutlineStyle.NONE);
     }
 
     void setupScrollPanel() {

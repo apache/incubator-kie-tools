@@ -60,6 +60,7 @@ public class Layouts {
                    Unit.PCT);
         s.setHeight(100.0,
                     Unit.PCT);
+        s.setOutlineStyle(Style.OutlineStyle.NONE);
     }
 
     /**
