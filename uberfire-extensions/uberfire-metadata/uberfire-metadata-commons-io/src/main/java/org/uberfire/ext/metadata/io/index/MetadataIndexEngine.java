@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -45,7 +46,7 @@ public class MetadataIndexEngine implements MetaIndexEngine {
     private final MetaModelBuilder metaModelBuilder;
     private Logger logger = LoggerFactory.getLogger(MetadataIndexEngine.class);
     private final IndexProvider provider;
-    private final Map<KCluster, Object> batchLocks = new ConcurrentHashMap<>();
+    private final Map<KCluster, ReentrantLock> batchLocks = new ConcurrentHashMap<>();
     private final ThreadLocal<Map<KCluster, List<KObject>>> batchSets = ThreadLocal.withInitial(() -> new HashMap<>());
     private final Collection<Runnable> beforeDispose = new ArrayList<>();
     private final Consumer<List<KObject>> kObectBatchObserver;
@@ -69,8 +70,14 @@ public class MetadataIndexEngine implements MetaIndexEngine {
     }
 
     @Override
+    public boolean isIndexReady(KCluster cluster) {
+        final ReentrantLock lock;
+        return !provider.isFreshIndex(cluster) && (lock = batchLocks.get(cluster)) != null && !lock.isLocked();
+    }
+
+    @Override
     public void prepareBatch(KCluster cluster) {
-        batchLocks.putIfAbsent(cluster, new Object());
+        batchLocks.putIfAbsent(cluster, new ReentrantLock());
     }
 
     @Override
@@ -78,7 +85,7 @@ public class MetadataIndexEngine implements MetaIndexEngine {
         prepareBatch(cluster);
         Map<KCluster, List<KObject>> batchSet = batchSets.get();
         if (batchSet.containsKey(cluster)) {
-            throw new IllegalStateException(String.format("Cannot start a batch for cluster [id=%s] when there is already a batch started on this tread [%s]",
+            throw new IllegalStateException(String.format("Cannot start a batch for cluster [id=%s] when there is already a batch started on this thread [%s]",
                                                           cluster.getClusterId(),
                                                           Thread.currentThread().getName()));
         } else {
@@ -153,7 +160,7 @@ public class MetadataIndexEngine implements MetaIndexEngine {
     @Override
     public void commit(KCluster cluster) {
         prepareBatch(cluster);
-        Object lock = batchLocks.get(cluster);
+        ReentrantLock lock = batchLocks.get(cluster);
         List<KObject> batchSet = batchSets.get().get(cluster);
 
         try {
@@ -173,11 +180,14 @@ public class MetadataIndexEngine implements MetaIndexEngine {
         }
     }
 
-    private void doCommit(KCluster cluster, List<KObject> kobjects, Object lock) {
-        synchronized (lock) {
+    private void doCommit(KCluster cluster, List<KObject> kobjects, ReentrantLock lock) {
+        try {
+            lock.lock();
             kobjects.forEach(this::doIndex);
             removeThreadLocalBatchState(cluster);
             kObectBatchObserver.accept(kobjects);
+        } finally {
+            lock.unlock();
         }
     }
 

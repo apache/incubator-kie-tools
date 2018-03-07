@@ -27,6 +27,8 @@ public interface MetaIndexEngine extends PriorityDisposable {
 
     boolean freshIndex(final KCluster cluster);
 
+    boolean isIndexReady(final KCluster cluster);
+
     void prepareBatch(final KCluster cluster);
 
     void startBatch(final KCluster cluster);

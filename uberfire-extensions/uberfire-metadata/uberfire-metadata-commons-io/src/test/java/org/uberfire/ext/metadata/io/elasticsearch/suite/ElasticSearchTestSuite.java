@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.uberfire.ext.metadata.io.elasticsearch.BatchIndexConcurrencyTest;
 import org.uberfire.ext.metadata.io.elasticsearch.BatchIndexSingleThreadTest;
+import org.uberfire.ext.metadata.io.elasticsearch.BatchIndexTest;
 import org.uberfire.ext.metadata.io.elasticsearch.ComplexFieldsTest;
 import org.uberfire.ext.metadata.io.elasticsearch.ElasticFullTextSearchIndexTest;
 import org.uberfire.ext.metadata.io.elasticsearch.ElasticSearchIndexTest;
@@ -40,6 +41,7 @@ import pl.domzal.junit.docker.rule.WaitFor;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({BatchIndexConcurrencyTest.class,
         BatchIndexSingleThreadTest.class,
+        BatchIndexTest.class,
         ComplexFieldsTest.class,
         ElasticFullTextSearchIndexTest.class,
         ElasticSearchIndexTest.class,

@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +47,7 @@ import org.uberfire.java.nio.base.WatchContext;
 import org.uberfire.java.nio.base.dotfiles.DotFileUtils;
 import org.uberfire.java.nio.file.DeleteOption;
 import org.uberfire.java.nio.file.DirectoryNotEmptyException;
+import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystemNotFoundException;
@@ -67,6 +70,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     private final Class<? extends FileAttributeView>[] views;
     private final List<String> watchedList = new ArrayList<>();
     private final List<WatchService> watchServices = new ArrayList<>();
+    private final BatchIndex batchIndex;
 
     private ExecutorService executorService;
 
@@ -124,6 +128,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         this.views = views;
 
         this.executorService = executorService;
+        this.batchIndex = new BatchIndex(indexEngine, this, observer, executorService, views);
     }
 
     public IOServiceIndexedImpl(final String id,
@@ -136,6 +141,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                                         indexEngine);
         this.views = views;
         this.executorService = executorService;
+        this.batchIndex = new BatchIndex(indexEngine, this, observer, executorService, views);
     }
 
     public IOServiceIndexedImpl(final IOWatchService watchService,
@@ -149,6 +155,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         this.views = views;
 
         this.executorService = executorService;
+        this.batchIndex = new BatchIndex(indexEngine, this, observer, executorService, views);
     }
 
     public IOServiceIndexedImpl(final String id,
@@ -164,6 +171,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         this.views = views;
 
         this.executorService = executorService;
+        this.batchIndex = new BatchIndex(indexEngine, this, observer, executorService, views);
     }
 
     @Override
@@ -171,6 +179,9 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
             throws IllegalArgumentException, FileSystemNotFoundException,
             ProviderNotFoundException, SecurityException {
         final FileSystem fs = super.getFileSystem(uri);
+        if (shouldPerformInitialIndex(fs)) {
+            setupBatchIndex(fs);
+        }
         setupWatchService(fs);
         return fs;
     }
@@ -182,8 +193,28 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
             ProviderNotFoundException, IOException, SecurityException {
         final FileSystem fs = super.newFileSystem(uri,
                                                   env);
+        if (shouldPerformInitialIndex(fs)) {
+            setupBatchIndex(fs);
+        }
         setupWatchService(fs);
         return fs;
+    }
+
+    private boolean shouldPerformInitialIndex(FileSystem fs) {
+        return rootDirStream(fs).filter(dir -> hasContent(dir))
+                                .findAny()
+                                .isPresent() && indexEngine.freshIndex(KObjectUtil.toKCluster(fs));
+    }
+
+    private boolean hasContent(Path dir) {
+        // TODO remove this filter when AF-1073 is resolved
+        try (DirectoryStream<Path> children = newDirectoryStream(dir, path -> !path.endsWith("readme.md"))) {
+            return children.iterator().hasNext();
+        }
+    }
+
+    private Stream<Path> rootDirStream(FileSystem fs) {
+        return StreamSupport.stream(fs.getRootDirectories().spliterator(), false);
     }
 
     @Override
@@ -197,6 +228,11 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
             watchService.close();
         }
         super.dispose();
+    }
+
+    private void setupBatchIndex(FileSystem fs) {
+        indexEngine.prepareBatch(KObjectUtil.toKCluster(fs));
+        batchIndex.runAsync(fs);
     }
 
     protected void setupWatchService(final FileSystem fs) {
