@@ -789,6 +789,10 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         checkURI("uri",
                  uri);
 
+	if(LOG.isDebugEnabled()) {
+	    LOG.debug("Accessing uri " + uri.toString());
+	}
+
         Path path;
 
         JGitFileSystem fileSystem = deepLookupFSFrom(uri);
