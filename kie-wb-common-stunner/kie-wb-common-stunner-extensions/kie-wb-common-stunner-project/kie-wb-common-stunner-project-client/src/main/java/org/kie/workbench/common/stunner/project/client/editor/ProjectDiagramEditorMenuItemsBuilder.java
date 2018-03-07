@@ -30,10 +30,10 @@ import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.kie.workbench.common.stunner.client.widgets.menu.MenuUtils;
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.MenuDevCommandsBuilder;
+import org.kie.workbench.common.stunner.client.widgets.popups.PopupUtil;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.kie.workbench.common.stunner.project.client.resources.i18n.StunnerProjectClientConstants;
-import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
 
@@ -44,16 +44,21 @@ public class ProjectDiagramEditorMenuItemsBuilder {
 
     private final ClientTranslationService translationService;
 
+    private final PopupUtil popupUtil;
+
     protected ProjectDiagramEditorMenuItemsBuilder() {
         this(null,
+             null,
              null);
     }
 
     @Inject
     public ProjectDiagramEditorMenuItemsBuilder(final MenuDevCommandsBuilder menuDevCommandsBuilder,
-                                                final ClientTranslationService translationService) {
+                                                final ClientTranslationService translationService,
+                                                final PopupUtil popupUtil) {
         this.menuDevCommandsBuilder = menuDevCommandsBuilder;
         this.translationService = translationService;
+        this.popupUtil = popupUtil;
     }
 
     public MenuItem newVisitGraphItem(final Command command) {
@@ -101,6 +106,8 @@ public class ProjectDiagramEditorMenuItemsBuilder {
                     setTitle(translationService.getKeyValue(CoreTranslationMessages.CLEAR_DIAGRAM));
                     addClickHandler(clickEvent ->
                                             ProjectDiagramEditorMenuItemsBuilder.this.executeWithConfirm(command,
+                                                                                                         translationService.getKeyValue(CoreTranslationMessages.CLEAR_DIAGRAM),
+                                                                                                         translationService.getKeyValue(CoreTranslationMessages.CLEAR_DIAGRAM),
                                                                                                          translationService.getKeyValue(CoreTranslationMessages.CONFIRM_CLEAR_DIAGRAM)));
                 }});
     }
@@ -261,20 +268,13 @@ public class ProjectDiagramEditorMenuItemsBuilder {
     }
 
     private void executeWithConfirm(final Command command,
-                                    final String message) {
-        final Command yesCommand = command::execute;
-        final Command noCommand = () -> {/*Do nothing*/};
-        final YesNoCancelPopup popup = YesNoCancelPopup.newYesNoCancelPopup(getConfirmTitle(),
-                                                                            message,
-                                                                            yesCommand,
-                                                                            noCommand,
-                                                                            noCommand);
-        popup.clearScrollHeight();
-        popup.show();
-    }
-
-    private String getConfirmTitle() {
-        return translationService.getKeyValue(StunnerProjectClientConstants.CONFIRM_ACTION);
+                                    final String title,
+                                    final String okButtonText,
+                                    final String confirmMessage) {
+        popupUtil.showConfirmPopup(title,
+                                   okButtonText,
+                                   confirmMessage,
+                                   command);
     }
 
     public static MenuItem buildItem(final IsWidget widget) {
