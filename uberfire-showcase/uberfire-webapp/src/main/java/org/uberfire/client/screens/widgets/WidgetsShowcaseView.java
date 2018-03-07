@@ -21,6 +21,8 @@ import java.util.Random;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import elemental2.dom.DomGlobal;
+import elemental2.dom.Element;
 import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.common.client.dom.Div;
@@ -93,9 +95,16 @@ public class WidgetsShowcaseView implements UberElement<WidgetsShowcasePresenter
                                      "New content!");
         jQueryPopover.wrap(popoverOverride).popover();
         //Ex 4
-        jQueryPopover.wrap(popoverButton).popover();
-        jQueryPopover.wrap(popoverButton).addShowListener(() -> logger.info("popover show callback"));
-        jQueryPopover.wrap(popoverButton).addHideListener(() -> logger.info("popover hide callback"));
+        final PopoverOptions popoverButtonOptions = new PopoverOptions();
+        popoverButtonOptions.setContent(e -> {
+            final Element span = DomGlobal.document.createElement("span");
+            span.textContent = "dynamic element text";
+            return span;
+        });
+        final Popover popover = jQueryPopover.wrap(popoverButton);
+        popover.popover(popoverButtonOptions);
+        popover.addShowListener(() -> logger.info("popover show callback"));
+        popover.addHideListener(() -> logger.info("popover hide callback"));
         //Date range ex
         final DateRangePickerOptions options = getDateRangePickerOptions();
 

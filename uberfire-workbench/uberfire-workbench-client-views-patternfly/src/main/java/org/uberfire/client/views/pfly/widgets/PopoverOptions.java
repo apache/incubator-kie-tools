@@ -16,11 +16,11 @@
 
 package org.uberfire.client.views.pfly.widgets;
 
+import elemental2.dom.HTMLElement;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
-import org.jboss.errai.common.client.dom.HTMLElement;
 
 @JsType(isNative = true, name = "Object", namespace = JsPackage.GLOBAL)
 public class PopoverOptions {
@@ -74,6 +74,6 @@ public class PopoverOptions {
     @FunctionalInterface
     public interface PopoverCallback {
 
-        String getValue(HTMLElement element);
+        Object getValue(HTMLElement element);
     }
 }
