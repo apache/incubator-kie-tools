@@ -25,6 +25,6 @@ import org.kie.workbench.common.stunner.core.factory.graph.GraphFactory;
 public interface BPMNGraphFactory extends BPMNFactory,
                                           GraphFactory {
 
-    double GRAPH_DEFAULT_WIDTH = 1400d;
-    double GRAPH_DEFAULT_HEIGHT = 700d;
+    double GRAPH_DEFAULT_WIDTH = 2800d;
+    double GRAPH_DEFAULT_HEIGHT = 1400d;
 }
