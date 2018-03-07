@@ -71,6 +71,13 @@ public class GuidedRuleEditorServiceImplCDITest extends CDITestSetup {
     }
 
     @Test
+    public void testValidateRuleAlphabeticallyComparesStrings() throws Exception {
+        final String resourcePath = RULES_ROOT + "nameOrderingRule.rdrl";
+        final List<ValidationMessage> messages = validateResource(resourcePath);
+        Assertions.assertThat(messages).isEmpty();
+    }
+
+    @Test
     public void testAbbreviatedCondition() throws Exception {
         final String resourcePath = RULES_ROOT + "matchPeopleAbbreviatedCondition.rdrl";
         final GuidedEditorContent content = guidedRuleService.loadContent(getPath(resourcePath));

@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -52,7 +53,6 @@ import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 import org.drools.workbench.models.datamodel.rule.builder.DRLConstraintValueBuilder;
 import org.drools.workbench.models.datamodel.rule.visitors.ToStringExpressionVisitor;
-import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.ConstraintValueEditor;
 import org.drools.workbench.screens.guided.rule.client.editor.ExpressionTypeChangeEvent;
@@ -64,10 +64,10 @@ import org.drools.workbench.screens.guided.rule.client.editor.factPattern.PopupC
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.drools.workbench.screens.guided.rule.client.util.RefreshUtil;
+import org.drools.workbench.screens.guided.rule.client.widget.operator.SingleFieldConstraintOperatorSelector;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.ModelField;
-import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
 import org.uberfire.client.callbacks.Callback;
@@ -92,10 +92,9 @@ public class FactPatternWidget extends RuleModellerWidget {
 
     /**
      * Creates a new FactPatternWidget
-     *
      * @param canBind
      * @param readOnly if the widget should be in RO mode. If this parameter is null,
-     *                 the readOnly attribute is calculated.
+     * the readOnly attribute is calculated.
      */
     public FactPatternWidget(RuleModeller ruleModeller,
                              EventBus eventBus,
@@ -178,7 +177,6 @@ public class FactPatternWidget extends RuleModellerWidget {
      * may themselves depend on members of constraint objects. With this code,
      * the GUI enables clicking rules of the form: $result = RoutingResult(
      * NerOption.types contains "arzt" )
-     *
      * @param sortedConst a sorted list of constraints to display.
      */
     protected void drawConstraints(List<FieldConstraint> sortedConst,
@@ -269,7 +267,6 @@ public class FactPatternWidget extends RuleModellerWidget {
     /**
      * Sort the rule constraints such that parent rules are inserted directly
      * before their child rules.
-     *
      * @param constraints the list of inheriting constraints to sort.
      * @return a sorted list of constraints ready for display.
      */
@@ -298,9 +295,8 @@ public class FactPatternWidget extends RuleModellerWidget {
 
     /**
      * Recursively add constraints and their parents.
-     *
      * @param sortedConst the array to fill.
-     * @param fieldConst  the constraint to investigate.
+     * @param fieldConst the constraint to investigate.
      */
     private void insertSingleFieldConstraint(SingleFieldConstraint fieldConst,
                                              List<FieldConstraint> sortedConst) {
@@ -664,145 +660,27 @@ public class FactPatternWidget extends RuleModellerWidget {
 
     private Widget operatorDropDown(final SingleFieldConstraint constraint,
                                     final FlexTable inner,
-                                    final int row,
-                                    final int col) {
-        final HorizontalPanel hp = new HorizontalPanel();
+                                    final int rowIndex,
+                                    final int colIndex) {
+        final HorizontalPanel dropdownContainer = new HorizontalPanel();
         if (!this.readOnly) {
 
-            getOperatorDropDown(constraint,
-                                inner,
-                                row,
-                                col,
-                                new Callback<CEPOperatorsDropdown>() {
-                                    @Override
-                                    public void callback(CEPOperatorsDropdown result) {
-                                        hp.add(result);
-                                    }
-                                });
+            final SingleFieldConstraintOperatorSelector operatorSelectorBuilder =
+                    GWT.create(SingleFieldConstraintOperatorSelector.class);
+            operatorSelectorBuilder.configure(constraint,
+                                              () -> constraintValueEditor,
+                                              this::createValueEditor,
+                                              this,
+                                              dropdownContainer,
+                                              inner,
+                                              rowIndex,
+                                              colIndex,
+                                              getConnectives().getDataModelOracle());
         } else {
             final SmallLabel sl = new SmallLabel("<b>" + (constraint.getOperator() == null ? GuidedRuleEditorResources.CONSTANTS.pleaseChoose() : HumanReadable.getOperatorDisplayName(constraint.getOperator())) + "</b>");
-            hp.add(sl);
+            dropdownContainer.add(sl);
         }
-        return hp;
-    }
-
-    private void getOperatorDropDown(final SingleFieldConstraint constraint,
-                                     final FlexTable inner,
-                                     final int row,
-                                     final int col,
-                                     final Callback<CEPOperatorsDropdown> callback) {
-        String fieldName;
-        String factType;
-
-        //Connectives Operators are handled in class Connectives
-        if (constraint instanceof SingleFieldConstraintEBLeftSide) {
-            SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) constraint;
-            factType = sfexp.getExpressionLeftSide().getPreviousClassType();
-            if (factType == null) {
-                factType = sfexp.getExpressionLeftSide().getClassType();
-            }
-            fieldName = sfexp.getExpressionLeftSide().getFieldName();
-        } else {
-            factType = constraint.getFactType();
-            fieldName = constraint.getFieldName();
-        }
-
-        getOperatorCompletions(constraint,
-                               inner,
-                               row,
-                               col,
-                               callback,
-                               fieldName,
-                               factType);
-    }
-
-    private void getOperatorCompletions(final SingleFieldConstraint constraint,
-                                        final FlexTable inner,
-                                        final int row,
-                                        final int col,
-                                        final Callback<CEPOperatorsDropdown> callback,
-                                        String fieldName,
-                                        String factType) {
-        getConnectives().getDataModelOracle().getOperatorCompletions(factType,
-                                                                     fieldName,
-                                                                     new Callback<String[]>() {
-                                                                         @Override
-                                                                         public void callback(final String[] operators) {
-                                                                             CEPOperatorsDropdown dropdown = getNewOperatorDropdown(operators,
-                                                                                                                                    constraint);
-
-                                                                             dropdown.addPlaceholder(GuidedRuleEditorResources.CONSTANTS.pleaseChoose(),
-                                                                                                     "");
-
-                                                                             callback.callback(dropdown);
-
-                                                                             dropdown.addValueChangeHandler(new ValueChangeHandler<OperatorSelection>() {
-
-                                                                                 public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
-                                                                                     onDropDownValueChanged(event,
-                                                                                                            constraint,
-                                                                                                            inner,
-                                                                                                            row,
-                                                                                                            col);
-                                                                                 }
-                                                                             });
-                                                                         }
-                                                                     });
-    }
-
-    private void onDropDownValueChanged(ValueChangeEvent<OperatorSelection> event,
-                                        SingleFieldConstraint constraint,
-                                        FlexTable inner,
-                                        int row,
-                                        int col) {
-        setModified(true);
-        final String selected = event.getValue().getValue();
-        final String selectedText = event.getValue().getDisplayText();
-        final String originalOperator = constraint.getOperator();
-
-        //Prevent recursion once operator change has been applied
-        if (selectedText.equals(constraint.getOperator())) {
-            return;
-        }
-
-        constraint.setOperator(selected);
-        if (constraint.getOperator().equals("")) {
-            constraint.setOperator(null);
-            constraintValueEditor.hideError();
-        } else {
-            constraintValueEditor.showError();
-        }
-
-        if (inner != null) {
-            if (isWidgetForValueNeeded(selectedText)) {
-                inner.getWidget(row,
-                                col).setVisible(false);
-            } else {
-                inner.getWidget(row,
-                                col).setVisible(true);
-            }
-        }
-
-        //If new operator requires a comma separated list and old did not, or vice-versa
-        //we need to redraw the ConstraintValueEditor for the constraint
-        if (OperatorsOracle.operatorRequiresList(selected) != OperatorsOracle.operatorRequiresList(originalOperator)) {
-            if (OperatorsOracle.operatorRequiresList(selected) == false) {
-                final String[] oldValueList = constraint.getValue().split(",");
-                if (oldValueList.length > 0) {
-                    constraint.setValue(oldValueList[0]);
-                }
-            }
-
-            //Redraw ConstraintValueEditor
-            inner.setWidget(
-                    row,
-                    col,
-                    createValueEditor(constraint));
-        }
-    }
-
-    private boolean isWidgetForValueNeeded(String selectedText) {
-        return selectedText.equals(HumanReadableConstants.INSTANCE.isEqualToNull()) || selectedText.equals(HumanReadableConstants.INSTANCE.isNotEqualToNull());
+        return dropdownContainer;
     }
 
     private HorizontalPanel expressionBuilderLS(final SingleFieldConstraintEBLeftSide con,
@@ -918,12 +796,6 @@ public class FactPatternWidget extends RuleModellerWidget {
 
     Connectives getConnectives() {
         return connectives;
-    }
-
-    CEPOperatorsDropdown getNewOperatorDropdown(String[] operators,
-                                                SingleFieldConstraint constraint) {
-        return new CEPOperatorsDropdown(operators,
-                                        constraint);
     }
 
     ConstraintValueEditor constraintValueEditor(final SingleFieldConstraint constraint) {
