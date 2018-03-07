@@ -133,7 +133,7 @@ public class NewFileUploader
                                busyIndicatorView.hideBusyIndicator();
                                presenter.complete();
                                notifySuccess();
-                               newResourceSuccessEvent.fire(new NewResourceSuccessEvent(path));
+                               newResourceSuccessEvent.fire(new NewResourceSuccessEvent(newPath));
                                placeManager.goTo(newPath);
                            },
                            () -> busyIndicatorView.hideBusyIndicator());
