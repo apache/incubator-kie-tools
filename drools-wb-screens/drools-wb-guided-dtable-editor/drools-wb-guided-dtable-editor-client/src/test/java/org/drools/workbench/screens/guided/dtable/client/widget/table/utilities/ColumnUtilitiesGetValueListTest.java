@@ -56,7 +56,7 @@ public class ColumnUtilitiesGetValueListTest {
     public static Iterable<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {"a,b,c", DataType.TYPE_STRING, 3, new String[]{"a", "b", "c"}},
-                {"a, b b b  ,c", DataType.TYPE_STRING, 3, new String[]{"a", " b b b  ", "c"}},
+                {"a, ' b b b ' ,c", DataType.TYPE_STRING, 3, new String[]{"a", " b b b ", "c"}},
                 {"a,1,b", DataType.TYPE_STRING, 3, new String[]{"a", "1", "b"}},
                 {"@,#,$", DataType.TYPE_STRING, 3, new String[]{"@", "#", "$"}},
                 {",a", DataType.TYPE_STRING, 2, new String[]{"", "a"}},

@@ -143,7 +143,7 @@ public class ColumnUtilities
     private String[] parseValueList(String fieldType,
                                     String valueList) {
 
-        final String[] values = ListSplitter.split(valueList);
+        final String[] values = ListSplitter.split("'", true, valueList);
 
         return Stream.of(values).filter(value -> isValueValidForType(value,
                                                                      convertToTypeSafeType(fieldType)))

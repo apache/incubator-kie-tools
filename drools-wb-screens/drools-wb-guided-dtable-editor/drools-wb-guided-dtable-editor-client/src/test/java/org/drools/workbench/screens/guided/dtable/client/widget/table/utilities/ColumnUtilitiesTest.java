@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.utilities
 import java.util.Arrays;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.assertj.core.api.Assertions;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
@@ -140,14 +141,9 @@ public class ColumnUtilitiesTest {
     public void testGetValueConditionColumn() throws Exception {
         column.setFactField(FIELD_NAME);
         column.setFieldType(DataType.TYPE_NUMERIC_INTEGER);
-        column.setValueList("a,1,1.1, ,-1");
-        String[] valueList = utilities.getValueList(column);
-        assertEquals(2,
-                     valueList.length);
-        assertEquals("1",
-                     valueList[0]);
-        assertEquals("-1",
-                     valueList[1]);
+        column.setValueList("a,1,1.1, ,-1, 123,456 , -789 ");
+        final String[] valueList = utilities.getValueList(column);
+        Assertions.assertThat(valueList).containsExactly("1", "-1", "123", "456", "-789");
     }
 
     @Test
@@ -159,17 +155,12 @@ public class ColumnUtilitiesTest {
         final ActionSetFieldCol52 column = new ActionSetFieldCol52();
         column.setFactField(FIELD_NAME);
         column.setBoundName("$a");
-        column.setValueList("a,1,1.1, ,-1");
+        column.setValueList("a,1,1.1, ,-1, 123,456 , -789 ");
         when(oracle.getFieldType(FACT_TYPE,
                                  FIELD_NAME)).thenReturn("Integer");
 
-        String[] valueList = utilities.getValueList(column);
-        assertEquals(2,
-                     valueList.length);
-        assertEquals("1",
-                     valueList[0]);
-        assertEquals("-1",
-                     valueList[1]);
+        final String[] valueList = utilities.getValueList(column);
+        Assertions.assertThat(valueList).containsExactly("1", "-1", "123", "456", "-789");
     }
 
     @Test
@@ -177,17 +168,12 @@ public class ColumnUtilitiesTest {
         final ActionInsertFactCol52 column = new ActionInsertFactCol52();
         column.setFactField(FIELD_NAME);
         column.setFactType(FACT_TYPE);
-        column.setValueList("a,1,1.1, ,-1");
+        column.setValueList("a,1,1.1, ,-1, 123,456 , -789 ");
         when(oracle.getFieldType(FACT_TYPE,
                                  FIELD_NAME)).thenReturn(DataType.TYPE_NUMERIC_INTEGER);
 
-        String[] valueList = utilities.getValueList(column);
-        assertEquals(2,
-                     valueList.length);
-        assertEquals("1",
-                     valueList[0]);
-        assertEquals("-1",
-                     valueList[1]);
+        final String[] valueList = utilities.getValueList(column);
+        Assertions.assertThat(valueList).containsExactly("1", "-1", "123", "456", "-789");
     }
 
     @Test
