@@ -22,21 +22,24 @@ import org.junit.Test;
 import org.uberfire.java.nio.file.api.FileSystemProviders;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class FileSystemProvidersTest {
 
     @Test
     public void generalTests() {
-        assertThat(FileSystemProviders.installedProviders()).isNotNull().isNotEmpty().hasSize(1);
-        assertThat(FileSystemProviders.getDefaultProvider()).isNotNull().isInstanceOf(SimpleFileSystemProvider.class);
+        assertThat(FileSystemProviders.installedProviders()).hasSize(1);
+        assertThat(FileSystemProviders.getDefaultProvider()).isInstanceOf(SimpleFileSystemProvider.class);
 
-        assertThat(FileSystemProviders.resolveProvider(URI.create("default:///"))).isNotNull().isInstanceOf(SimpleFileSystemProvider.class);
-        assertThat(FileSystemProviders.resolveProvider(URI.create("file:///"))).isNotNull().isInstanceOf(SimpleFileSystemProvider.class);
+        assertThat(FileSystemProviders.resolveProvider(URI.create("default:///"))).isInstanceOf(SimpleFileSystemProvider.class);
+        assertThat(FileSystemProviders.resolveProvider(URI.create("file:///"))).isInstanceOf(SimpleFileSystemProvider.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void resolveProviderNull() {
-        FileSystemProviders.resolveProvider(null);
+        assertThatThrownBy(() -> FileSystemProviders.resolveProvider(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Parameter named 'uri' should be not null!");
     }
 }

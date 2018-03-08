@@ -29,9 +29,9 @@ import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.Path;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.fail;
-import static org.fest.assertions.api.Assertions.failBecauseExceptionWasNotThrown;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.fail;
 
 public class JGitFileSystemImplProviderCpMvTest extends AbstractTestInfra {
 
@@ -75,22 +75,14 @@ public class JGitFileSystemImplProviderCpMvTest extends AbstractTestInfra {
 
         assertThat(stream).isNotNull().hasSize(2);
 
-        try {
-            provider.copy(source,
-                          target);
-            failBecauseExceptionWasNotThrown(FileAlreadyExistsException.class);
-        } catch (FileAlreadyExistsException e) {
-        }
+        assertThatThrownBy(() -> provider.copy(source, target))
+                .isInstanceOf(FileAlreadyExistsException.class);
 
         final Path notExists = provider.getPath(URI.create("git://xxx_user_branch@copybranch-test-repo"));
         final Path notExists2 = provider.getPath(URI.create("git://xxx_other_branch@copybranch-test-repo"));
 
-        try {
-            provider.copy(notExists,
-                          notExists2);
-            failBecauseExceptionWasNotThrown(NoSuchFileException.class);
-        } catch (NoSuchFileException e) {
-        }
+        assertThatThrownBy(() -> provider.copy(notExists, notExists2))
+                .isInstanceOf(NoSuchFileException.class);
     }
 
     @Test
@@ -168,7 +160,7 @@ public class JGitFileSystemImplProviderCpMvTest extends AbstractTestInfra {
             final DirectoryStream<Path> stream = provider.newDirectoryStream(target,
                                                                              null);
 
-            assertThat(stream).isNotNull().hasSize(3);
+            assertThat(stream).hasSize(3);
         }
 
         {
@@ -181,7 +173,7 @@ public class JGitFileSystemImplProviderCpMvTest extends AbstractTestInfra {
             final DirectoryStream<Path> stream = provider.newDirectoryStream(target,
                                                                              null);
 
-            assertThat(stream).isNotNull().hasSize(2);
+            assertThat(stream).hasSize(2);
         }
 
         {
@@ -194,7 +186,7 @@ public class JGitFileSystemImplProviderCpMvTest extends AbstractTestInfra {
             final DirectoryStream<Path> stream = provider.newDirectoryStream(target,
                                                                              null);
 
-            assertThat(stream).isNotNull().hasSize(2);
+            assertThat(stream).hasSize(2);
         }
 
         {
@@ -207,31 +199,23 @@ public class JGitFileSystemImplProviderCpMvTest extends AbstractTestInfra {
             final DirectoryStream<Path> stream = provider.newDirectoryStream(target,
                                                                              null);
 
-            assertThat(stream).isNotNull().hasSize(1);
+            assertThat(stream).hasSize(1);
         }
 
         {
             final Path source = provider.getPath(URI.create("git://user_branch@copydir-test-repo/not_exists"));
             final Path target = provider.getPath(URI.create("git://master@copydir-test-repo/xxxxxxxxother_here/"));
 
-            try {
-                provider.copy(source,
-                              target);
-                failBecauseExceptionWasNotThrown(NoSuchFileException.class);
-            } catch (NoSuchFileException e) {
-            }
+            assertThatThrownBy(() -> provider.copy(source, target))
+                    .isInstanceOf(NoSuchFileException.class);
         }
 
         {
             final Path source = provider.getPath(URI.create("git://user_branch@copydir-test-repo/"));
             final Path target = provider.getPath(URI.create("git://master@copydir-test-repo/other_here/"));
 
-            try {
-                provider.copy(source,
-                              target);
-                failBecauseExceptionWasNotThrown(FileAlreadyExistsException.class);
-            } catch (FileAlreadyExistsException e) {
-            }
+            assertThatThrownBy(() -> provider.copy(source, target))
+                    .isInstanceOf(FileAlreadyExistsException.class);
         }
     }
 
@@ -339,24 +323,16 @@ public class JGitFileSystemImplProviderCpMvTest extends AbstractTestInfra {
             final Path source = provider.getPath(URI.create("git://master@copydir-test-repo1/not_exists"));
             final Path target = provider.getPath(URI.create("git://master@copydir-test-repo2/xxxxxxxxother_here/"));
 
-            try {
-                provider.copy(source,
-                              target);
-                failBecauseExceptionWasNotThrown(NoSuchFileException.class);
-            } catch (NoSuchFileException e) {
-            }
+            assertThatThrownBy(() -> provider.copy(source, target))
+                    .isInstanceOf(NoSuchFileException.class);
         }
 
         {
             final Path source = provider.getPath(URI.create("git://master@copydir-test-repo2/path"));
             final Path target = provider.getPath(URI.create("git://master@copydir-test-repo1/some/place/here/"));
 
-            try {
-                provider.copy(source,
-                              target);
-                failBecauseExceptionWasNotThrown(FileAlreadyExistsException.class);
-            } catch (FileAlreadyExistsException e) {
-            }
+            assertThatThrownBy(() -> provider.copy(source, target))
+                    .isInstanceOf(FileAlreadyExistsException.class);
         }
     }
 
@@ -392,12 +368,8 @@ public class JGitFileSystemImplProviderCpMvTest extends AbstractTestInfra {
         final Path source = provider.getPath(URI.create("git://user_branch@movebranch-test-repo/"));
         final Path target = provider.getPath(URI.create("git://master@movebranch-test-repo/"));
 
-        try {
-            provider.move(source,
-                          target);
-            failBecauseExceptionWasNotThrown(FileAlreadyExistsException.class);
-        } catch (org.uberfire.java.nio.IOException e) {
-        }
+        assertThatThrownBy(() -> provider.move(source, target))
+                .isInstanceOf(FileAlreadyExistsException.class);
 
         final Path source2 = provider.getPath(URI.create("git://user_branch@movebranch-test-repo/"));
         final Path target2 = provider.getPath(URI.create("git://xxxxddddkh@movebranch-test-repo/"));
@@ -485,7 +457,7 @@ public class JGitFileSystemImplProviderCpMvTest extends AbstractTestInfra {
     }
 
     @Test
-    public void testCherryPick() throws IOException, InterruptedException {
+    public void testCherryPick() throws IOException {
         final URI newRepo = URI.create("git://cherrypick-test-repo");
         provider.newFileSystem(newRepo,
                                EMPTY_ENV);
@@ -578,7 +550,7 @@ public class JGitFileSystemImplProviderCpMvTest extends AbstractTestInfra {
         }
     }
 
-    static String convertStreamToString(java.io.InputStream is) {
+    private static String convertStreamToString(java.io.InputStream is) {
         java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
     }

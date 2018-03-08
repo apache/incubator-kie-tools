@@ -41,6 +41,7 @@ import org.uberfire.security.impl.authz.AuthorizationPolicyBuilder;
 import org.uberfire.security.impl.authz.DefaultPermissionManager;
 import org.uberfire.security.impl.authz.DefaultPermissionTypeRegistry;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -85,7 +86,7 @@ public class AuthzPolicyMarshallerTest {
 
     @Test
     public void testOverwriteDefault() {
-        Map input = new HashMap<>();
+        Map<String, String> input = new HashMap<>();
         input.put("default.permission.perspective.read",
                   "false");
         input.put("default.permission.perspective.read.HomePerspective",
@@ -173,23 +174,29 @@ public class AuthzPolicyMarshallerTest {
                      "repository.update.git://repo1");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRoleMissing() {
-        marshaller.parse("role..priority");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testTypeMissing() {
-        marshaller.parse(".admin.priority");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testIncompleteEntry() {
-        marshaller.parse("role");
+        assertThatThrownBy(() -> marshaller.parse("role..priority"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Role value is empty");
     }
 
     @Test
-    public void testReadDefaultEntries() throws Exception {
+    public void testTypeMissing() {
+        assertThatThrownBy(() -> marshaller.parse(".admin.priority"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Key must start with [default|role|group]");
+    }
+
+    @Test
+    public void testIncompleteEntry() {
+        assertThatThrownBy(() -> marshaller.parse("role"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Role value is empty");
+    }
+
+    @Test
+    public void testReadDefaultEntries() {
         AuthorizationPolicy policy = builder.bydefault().home("B")
                 .permission("p1",
                             false)
@@ -311,7 +318,7 @@ public class AuthzPolicyMarshallerTest {
     }
 
     @Test
-    public void testPolicyWrite() throws Exception {
+    public void testPolicyWrite() {
         builder.role("admin").priority(5).home("A")
                 .permission("p1",
                             true)

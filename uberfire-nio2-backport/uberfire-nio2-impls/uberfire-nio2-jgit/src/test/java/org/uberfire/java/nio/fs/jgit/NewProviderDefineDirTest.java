@@ -17,7 +17,6 @@
 package org.uberfire.java.nio.fs.jgit;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,7 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_NIO_DIR;
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_NIO_DIR_NAME;
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.REPOSITORIES_CONTAINER_DIR;
@@ -65,7 +64,7 @@ public class NewProviderDefineDirTest extends AbstractTestInfra {
     }
 
     @Test
-    public void testUsingProvidedPath() throws IOException {
+    public void testUsingProvidedPath() {
         final URI newRepo = URI.create("git://repo-name");
 
         JGitFileSystemProxy fileSystem = (JGitFileSystemProxy) provider.newFileSystem(newRepo,
@@ -86,11 +85,11 @@ public class NewProviderDefineDirTest extends AbstractTestInfra {
 
         names = tempDir.list();
 
-        assertThat(names).isNotEmpty().contains(dirPathName);
+        assertThat(names).contains(dirPathName);
 
         repos = new File(tempDir,
                          dirPathName).list();
 
-        assertThat(repos).isNotEmpty().contains("repo-name.git");
+        assertThat(repos).contains("repo-name.git");
     }
 }

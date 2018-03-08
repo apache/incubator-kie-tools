@@ -21,7 +21,6 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.util.List;
 
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.junit.Test;
 import org.uberfire.java.nio.base.options.MergeCopyOption;
@@ -31,12 +30,12 @@ import org.uberfire.java.nio.fs.jgit.util.commands.GetTreeFromRef;
 import org.uberfire.java.nio.fs.jgit.util.commands.ListDiffs;
 import org.uberfire.java.nio.fs.jgit.util.exceptions.GitException;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class JGitFileSystemImplProviderMergeTest extends AbstractTestInfra {
 
     @Test
-    public void testMergeSuccessful() throws IOException, GitAPIException {
+    public void testMergeSuccessful() throws IOException {
         final URI newRepo = URI.create("git://merge-test-repo");
         provider.newFileSystem(newRepo,
                                EMPTY_ENV);
@@ -86,7 +85,7 @@ public class JGitFileSystemImplProviderMergeTest extends AbstractTestInfra {
     }
 
     @Test(expected = GitException.class)
-    public void testMergeConflicts() throws IOException, GitAPIException {
+    public void testMergeConflicts() throws IOException {
         final URI newRepo = URI.create("git://merge-test-repo");
         provider.newFileSystem(newRepo,
                                EMPTY_ENV);
@@ -140,7 +139,7 @@ public class JGitFileSystemImplProviderMergeTest extends AbstractTestInfra {
     }
 
     @Test
-    public void testMergeBinarySuccessful() throws IOException, GitAPIException {
+    public void testMergeBinarySuccessful() throws IOException {
         final URI newRepo = URI.create("git://merge-test-repo");
         provider.newFileSystem(newRepo,
                                EMPTY_ENV);
@@ -189,7 +188,7 @@ public class JGitFileSystemImplProviderMergeTest extends AbstractTestInfra {
     }
 
     @Test(expected = GitException.class)
-    public void testBinaryMergeConflicts() throws IOException, GitAPIException {
+    public void testBinaryMergeConflicts() throws IOException {
         final URI newRepo = URI.create("git://merge-test-repo");
         provider.newFileSystem(newRepo,
                                EMPTY_ENV);
@@ -243,7 +242,7 @@ public class JGitFileSystemImplProviderMergeTest extends AbstractTestInfra {
     }
 
     @Test(expected = GitException.class)
-    public void testTryToMergeNonexistentBranch() throws IOException, GitAPIException {
+    public void testTryToMergeNonexistentBranch() throws IOException {
         final URI newRepo = URI.create("git://merge-test-repo");
         provider.newFileSystem(newRepo,
                                EMPTY_ENV);
@@ -265,7 +264,7 @@ public class JGitFileSystemImplProviderMergeTest extends AbstractTestInfra {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testMissingParemeter() throws IOException, GitAPIException {
+    public void testMissingParemeter() throws IOException {
         final URI newRepo = URI.create("git://merge-test-repo");
         provider.newFileSystem(newRepo,
                                EMPTY_ENV);

@@ -21,12 +21,9 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
-import org.uberfire.java.nio.file.FileSystemNotFoundException;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class JGitFileSystemImplProviderMigrationTest extends AbstractTestInfra {
 
@@ -47,8 +44,7 @@ public class JGitFileSystemImplProviderMigrationTest extends AbstractTestInfra {
 
         provider.getFileSystem(newUri);
         assertThat(new File(provider.getGitRepoContainerDir(),
-                            "test/old" + ".git").exists()).isTrue();
+                            "test/old" + ".git")).exists();
         assertThat(provider.getFileSystem(newUri)).isNotNull();
     }
-
 }

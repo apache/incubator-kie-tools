@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 public class GeneralPathValidationTest {
@@ -34,161 +35,210 @@ public class GeneralPathValidationTest {
         when(fs.getSeparator()).thenReturn("/");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void createNull1() {
-        GeneralPathImpl.create(null,
-                               "/path/to/file.txt",
-                               false);
+        assertThatThrownBy(() -> GeneralPathImpl.create(null,
+                                                        "/path/to/file.txt",
+                                                        false))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'fs' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void createNull2() {
-        GeneralPathImpl.create(fs,
-                               null,
-                               false);
+        assertThatThrownBy(() -> GeneralPathImpl.create(fs,
+                                                        null,
+                                                        false))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void newFromFileNull1() {
-        GeneralPathImpl.newFromFile(null,
-                                    new File(""));
+        assertThatThrownBy(() -> GeneralPathImpl.newFromFile(null,
+                                                             new File("")))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'fs' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void newFromFileNull2() {
-        GeneralPathImpl.newFromFile(fs,
-                                    null);
+        assertThatThrownBy(() -> GeneralPathImpl.newFromFile(fs,
+                                                             null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'file' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void getNameNegative() {
         final Path path = GeneralPathImpl.create(fs,
                                                  "/path/to/file.txt",
                                                  false);
-        path.getName(-1);
+
+        assertThatThrownBy(() -> path.getName(-1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Invalid index argument: -1");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void subpathInvaligRange1() {
         final Path path = GeneralPathImpl.create(fs,
                                                  "/path/to/file.txt",
                                                  false);
-        path.subpath(-1,
-                     1);
+
+        assertThatThrownBy(() -> path.subpath(-1, 1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Invalid beginIndex argument: -1");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void subpathInvaligRange2() {
         final Path path = GeneralPathImpl.create(fs,
                                                  "/path/to/file.txt",
                                                  false);
-        path.subpath(5,
-                     7);
+        assertThatThrownBy(() -> path.subpath(5, 7))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Invalid beginIndex argument: 5");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void subpathInvaligRange3() {
         final Path path = GeneralPathImpl.create(fs,
                                                  "/path/to/file.txt",
                                                  false);
-        path.subpath(0,
-                     7);
+        assertThatThrownBy(() -> path.subpath(0, 7))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Invalid endIndex argument: 7");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void subpathInvaligRange4() {
         final Path path = GeneralPathImpl.create(fs,
                                                  "/path/to/file.txt",
                                                  false);
-        path.subpath(2,
-                     1);
+        assertThatThrownBy(() -> path.subpath(2, 1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Invalid arguments, beginIndex must be < endIndex, but they were: bI 2, eI 1");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void startsWith() {
         final Path path = GeneralPathImpl.create(fs,
                                                  "/path/to/file.txt",
                                                  false);
-        path.startsWith((String) null);
+
+        assertThatThrownBy(() -> path.startsWith((String) null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'other' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void startsWithPath() {
         final Path path = GeneralPathImpl.create(fs,
                                                  "/path/to/file.txt",
                                                  false);
-        path.startsWith((Path) null);
+
+        assertThatThrownBy(() -> path.startsWith((Path) null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'other' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void endsWith() {
         final Path path = GeneralPathImpl.create(fs,
                                                  "/path/to/file.txt",
                                                  false);
-        path.endsWith((String) null);
+
+        assertThatThrownBy(() -> path.endsWith((String) null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'other' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void endsWithPath() {
         final Path path = GeneralPathImpl.create(fs,
                                                  "/path/to/file.txt",
                                                  false);
-        path.endsWith((Path) null);
+
+        assertThatThrownBy(() -> path.endsWith((Path) null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'other' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void resolve() {
         final Path path = GeneralPathImpl.create(fs,
                                                  "/path/to/file.txt",
                                                  false);
-        path.resolve((String) null);
+
+        assertThatThrownBy(() -> path.resolve((String) null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'other' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void resolvePath() {
         final Path path = GeneralPathImpl.create(fs,
                                                  "/path/to/file.txt",
                                                  false);
-        path.resolve((Path) null);
+
+        assertThatThrownBy(() -> path.resolve((Path) null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'other' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void resolveSibling() {
         final Path path = GeneralPathImpl.create(fs,
                                                  "/path/to/file.txt",
                                                  false);
-        path.resolveSibling((String) null);
+
+        assertThatThrownBy(() -> path.resolveSibling((String) null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'other' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void resolveSiblingPath() {
         final Path path = GeneralPathImpl.create(fs,
                                                  "/path/to/file.txt",
                                                  false);
-        path.resolveSibling((Path) null);
+
+        assertThatThrownBy(() -> path.resolveSibling((Path) null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'other' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void relativize() {
         final Path path = GeneralPathImpl.create(fs,
                                                  "/path/to/file.txt",
                                                  false);
-        path.relativize(null);
+
+        assertThatThrownBy(() -> path.relativize(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'otherx' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void compareTo() {
         final Path path = GeneralPathImpl.create(fs,
                                                  "/path/to/file.txt",
                                                  false);
-        path.compareTo(null);
+
+        assertThatThrownBy(() -> path.compareTo(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'other' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void checkEquals() {
         final Path path = GeneralPathImpl.create(fs,
                                                  "/path/to/file.txt",
                                                  false);
-        path.equals(null);
+
+        assertThatThrownBy(() -> path.equals(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'o' should be not null!");
     }
 }

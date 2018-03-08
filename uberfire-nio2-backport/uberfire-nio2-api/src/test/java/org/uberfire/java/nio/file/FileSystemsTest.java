@@ -18,74 +18,73 @@ package org.uberfire.java.nio.file;
 
 import java.net.URI;
 import java.util.Collections;
-import java.util.Map;
 
 import org.junit.Test;
 import org.uberfire.java.nio.fs.file.BaseSimpleFileSystem;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class FileSystemsTest {
 
     @Test
     public void testGetDefault() {
-        assertThat(FileSystems.getDefault()).isNotNull().isInstanceOf(BaseSimpleFileSystem.class);
+        assertThat(FileSystems.getDefault())
+                .isInstanceOf(BaseSimpleFileSystem.class);
     }
 
     @Test
     public void testGetFileSystemByURI() {
-        assertThat(FileSystems.getFileSystem(URI.create("default:///"))).isNotNull().isInstanceOf(BaseSimpleFileSystem.class);
-        assertThat(FileSystems.getFileSystem(URI.create("file:///"))).isNotNull().isInstanceOf(BaseSimpleFileSystem.class);
+        assertThat(FileSystems.getFileSystem(URI.create("default:///"))).isInstanceOf(BaseSimpleFileSystem.class);
+        assertThat(FileSystems.getFileSystem(URI.create("file:///"))).isInstanceOf(BaseSimpleFileSystem.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void getFileSystemNull() {
-        FileSystems.getFileSystem(null);
+        assertThatThrownBy(() -> FileSystems.getFileSystem(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'uri' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void newFileSystemNull1() {
-        final Map<String, ?> emptyMap = Collections.emptyMap();
-        FileSystems.newFileSystem(null,
-                                  emptyMap);
+        assertThatThrownBy(() -> FileSystems.newFileSystem(null, Collections.emptyMap()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'uri' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void newFileSystemNull2() {
-        FileSystems.newFileSystem(URI.create("jgit:///test"),
-                                  null);
+        assertThatThrownBy(() -> FileSystems.newFileSystem(URI.create("jgit:///test"), null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'env' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void newFileSystemNull3() {
-        FileSystems.newFileSystem((URI) null,
-                                  null);
+        assertThatThrownBy(() -> FileSystems.newFileSystem((URI) null, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'uri' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void newFileSystemNull4() {
-        FileSystems.newFileSystem((Path) null,
-                                  null);
+        assertThatThrownBy(() -> FileSystems.newFileSystem((Path) null, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void newFileSystemNull5() {
-        FileSystems.newFileSystem(URI.create("jgit:///test"),
-                                  null,
-                                  null);
+        assertThatThrownBy(() -> FileSystems.newFileSystem(URI.create("jgit:///test"), null, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'env' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void newFileSystemNull6() {
-        FileSystems.newFileSystem(URI.create("jgit:///test"),
-                                  null,
-                                  null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void newFileSystemNull7() {
-        FileSystems.newFileSystem(null,
-                                  null,
-                                  null);
+        assertThatThrownBy(() -> FileSystems.newFileSystem(null, null, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'uri' should be not null!");
     }
 }

@@ -28,7 +28,7 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.jgit.util.commands.Commit;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class JGitFileSystemImplProviderEncodingTest extends AbstractTestInfra {
 

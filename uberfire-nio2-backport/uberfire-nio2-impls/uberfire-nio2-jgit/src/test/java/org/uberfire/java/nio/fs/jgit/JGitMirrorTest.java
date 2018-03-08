@@ -21,20 +21,20 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.assertj.core.api.Condition;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.URIish;
-import org.fest.assertions.core.Condition;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.fs.jgit.util.commands.Clone;
 import org.uberfire.java.nio.fs.jgit.util.commands.ListRefs;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -133,9 +133,9 @@ public class JGitMirrorTest extends AbstractTestInfra {
 
         assertThat(cloned).isNotNull();
 
-        assertThat(new ListRefs(cloned.getRepository()).execute()).is(new Condition<List<Ref>>() {
+        assertThat(new ListRefs(cloned.getRepository()).execute()).is(new Condition<List<? extends Ref>>() {
             @Override
-            public boolean matches(final List<Ref> refs) {
+            public boolean matches(final List<? extends Ref> refs) {
                 return refs.size() > 0;
             }
         });

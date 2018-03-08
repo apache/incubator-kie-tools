@@ -37,7 +37,7 @@ import org.junit.Test;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class JGitFileSystemImplProviderHookTest extends AbstractTestInfra {
 

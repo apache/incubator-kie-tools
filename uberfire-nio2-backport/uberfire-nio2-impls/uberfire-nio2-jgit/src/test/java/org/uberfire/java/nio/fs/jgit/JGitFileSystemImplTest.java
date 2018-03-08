@@ -19,6 +19,7 @@ package org.uberfire.java.nio.fs.jgit;
 import java.io.File;
 import java.io.IOException;
 
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
@@ -29,8 +30,12 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.GitImpl;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class JGitFileSystemImplTest extends AbstractTestInfra {
 
@@ -169,7 +174,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
 
         final Path path = fileSystem.getPath("/path/to/some/place.txt");
 
-        assertThat(path).isNotNull();
+        AssertionsForClassTypes.assertThat(path).isNotNull();
         assertThat(path.isAbsolute()).isTrue();
         assertThat(path.toString()).isEqualTo("/path/to/some/place.txt");
         assertThat(path.toUri().toString()).isEqualTo("git://master@my-repo/path/to/some/place.txt");
@@ -197,7 +202,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
 
         final Path path = fileSystem.getPath("path/to/some/place.txt");
 
-        assertThat(path).isNotNull();
+        AssertionsForClassTypes.assertThat(path).isNotNull();
         assertThat(path.isAbsolute()).isFalse();
         assertThat(path.toString()).isEqualTo("path/to/some/place.txt");
         assertThat(path.toUri().toString()).isEqualTo("git://master@my-repo/:path/to/some/place.txt");
@@ -226,7 +231,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
         final Path path = fileSystem.getPath("test-branch",
                                              "/path/to/some/place.txt");
 
-        assertThat(path).isNotNull();
+        AssertionsForClassTypes.assertThat(path).isNotNull();
         assertThat(path.isAbsolute()).isTrue();
         assertThat(path.toString()).isEqualTo("/path/to/some/place.txt");
         assertThat(path.toUri().toString()).isEqualTo("git://test-branch@my-repo/path/to/some/place.txt");
@@ -255,7 +260,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
         final Path path = fileSystem.getPath("test-branch",
                                              "path/to/some/place.txt");
 
-        assertThat(path).isNotNull();
+        AssertionsForClassTypes.assertThat(path).isNotNull();
         assertThat(path.isAbsolute()).isFalse();
         assertThat(path.toString()).isEqualTo("path/to/some/place.txt");
         assertThat(path.toUri().toString()).isEqualTo("git://test-branch@my-repo/:path/to/some/place.txt");
@@ -285,7 +290,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
                                              "/path/to",
                                              "some/place.txt");
 
-        assertThat(path).isNotNull();
+        AssertionsForClassTypes.assertThat(path).isNotNull();
         assertThat(path.isAbsolute()).isTrue();
         assertThat(path.toString()).isEqualTo("/path/to/some/place.txt");
         assertThat(path.toUri().toString()).isEqualTo("git://test-branch@my-repo/path/to/some/place.txt");
@@ -315,7 +320,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
                                              "path/to",
                                              "some/place.txt");
 
-        assertThat(path).isNotNull();
+        AssertionsForClassTypes.assertThat(path).isNotNull();
         assertThat(path.isAbsolute()).isFalse();
         assertThat(path.toString()).isEqualTo("path/to/some/place.txt");
         assertThat(path.toUri().toString()).isEqualTo("git://test-branch@my-repo/:path/to/some/place.txt");
@@ -375,9 +380,9 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
         final Path path2 = fileSystem2.getPath("master",
                                                "/path/to/some.txt");
 
-        assertThat(path1).isNotEqualTo(path2);
+        AssertionsForClassTypes.assertThat(path1).isNotEqualTo(path2);
 
-        assertThat(path1).isEqualTo(fileSystem1.getPath("/path/to/some.txt"));
+        AssertionsForClassTypes.assertThat(path1).isEqualTo(fileSystem1.getPath("/path/to/some.txt"));
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -427,7 +432,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
     }
 
     @Test
-    public void lockShouldSupportMultiplieInnerLocksForTheSameThreadTest() throws IOException, GitAPIException {
+    public void lockShouldSupportMultipleInnerLocksForTheSameThreadTest() throws IOException, GitAPIException {
         final JGitFileSystemProvider fsProvider = mock(JGitFileSystemProvider.class);
 
         final Git git = setupGit();

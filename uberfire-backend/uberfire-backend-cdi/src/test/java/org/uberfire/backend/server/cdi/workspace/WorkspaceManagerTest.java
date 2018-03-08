@@ -25,6 +25,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.cdi.workspace.Workspace;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -46,9 +47,11 @@ public class WorkspaceManagerTest {
         this.workspaceManager.initialize();
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void testWorkspaceNotFound() {
-        this.workspaceManager.getWorkspace("none");
+        assertThatThrownBy(() -> workspaceManager.getWorkspace("none"))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage("Workspace <<none>> not found");
     }
 
     @Test

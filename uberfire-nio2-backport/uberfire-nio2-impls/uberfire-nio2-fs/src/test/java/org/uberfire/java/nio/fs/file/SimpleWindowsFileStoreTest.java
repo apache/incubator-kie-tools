@@ -31,8 +31,8 @@ import org.uberfire.java.nio.file.attribute.FileStoreAttributeView;
 import org.uberfire.java.nio.file.attribute.FileTime;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class SimpleWindowsFileStoreTest {
 

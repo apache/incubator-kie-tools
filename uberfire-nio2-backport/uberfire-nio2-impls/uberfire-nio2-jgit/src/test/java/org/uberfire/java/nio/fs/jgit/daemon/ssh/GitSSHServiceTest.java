@@ -31,13 +31,15 @@ import org.junit.Test;
 import org.uberfire.commons.concurrent.ExecutorServiceProducer;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
 public class GitSSHServiceTest {
 
-    private static final List<File> tempFiles = new ArrayList<File>();
+    private static final List<File> tempFiles = new ArrayList<>();
 
     private final ExecutorService executorService = new ExecutorServiceProducer().produceUnmanagedExecutorService();
 
@@ -65,7 +67,7 @@ public class GitSSHServiceTest {
             try {
                 FileUtils.delete(tempFile,
                                  FileUtils.RECURSIVE);
-            } catch (IOException e) {
+            } catch (IOException ignore) {
             }
         }
     }
@@ -117,9 +119,10 @@ public class GitSSHServiceTest {
         final GitSSHService sshService = new GitSSHService();
         final File certDir = createTempDirectory();
 
+        String idleTimeout = "10000";
         sshService.setup(certDir,
                          null,
-                         "10000",
+                         idleTimeout,
                          "RSA",
                          mock(ReceivePackFactory.class),
                          mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
@@ -128,7 +131,7 @@ public class GitSSHServiceTest {
         sshService.start();
         assertTrue(sshService.isRunning());
 
-        assertTrue("10000".equals(sshService.getSshServer().getProperties().get(SshServer.IDLE_TIMEOUT)));
+        assertThat(sshService.getSshServer().getProperties().get(SshServer.IDLE_TIMEOUT)).isEqualTo(idleTimeout);
 
         sshService.stop();
 

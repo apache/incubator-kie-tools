@@ -1309,7 +1309,7 @@
 	<artifactId>log4j-to-slf4j</artifactId>
 	<version>${version.org.apache.logging.log4j.log4j-to-slf4j}</version>
       </dependency>
-      
+
       <!-- Test deps -->
       <dependency>
         <groupId>mysql</groupId>
@@ -1346,8 +1346,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.easytesting</groupId>
-      <artifactId>fest-assert-core</artifactId>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

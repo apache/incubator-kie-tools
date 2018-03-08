@@ -27,7 +27,7 @@ import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileStoreAttributeView;
 import org.uberfire.java.nio.file.attribute.FileTime;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SimpleUnixFileStoreTest {
 
@@ -35,7 +35,7 @@ public class SimpleUnixFileStoreTest {
     public void simpleTests() {
         final FileStore fileStore = new SimpleUnixFileStore(null);
 
-        assertThat(fileStore.name()).isNotNull().isEqualTo("/");
+        assertThat(fileStore.name()).isEqualTo("/");
         assertThat(fileStore.type()).isNull();
         assertThat(fileStore.isReadOnly()).isFalse();
         assertThat(fileStore.getTotalSpace()).isEqualTo(File.listRoots()[0].getTotalSpace());
@@ -50,10 +50,10 @@ public class SimpleUnixFileStoreTest {
         assertThat(fileStore.supportsFileAttributeView(MyAlsoInvalidFileAttributeView.class.getName())).isFalse();
         assertThat(fileStore.getFileStoreAttributeView(FileStoreAttributeView.class)).isNull();
 
-        assertThat(fileStore.getAttribute("name")).isNotNull().isEqualTo(fileStore.name());
-        assertThat(fileStore.getAttribute("totalSpace")).isNotNull().isEqualTo(fileStore.getTotalSpace());
-        assertThat(fileStore.getAttribute("usableSpace")).isNotNull().isEqualTo(fileStore.getUsableSpace());
-        assertThat(fileStore.getAttribute("readOnly")).isNotNull().isEqualTo(fileStore.isReadOnly());
+        assertThat(fileStore.getAttribute("name")).isEqualTo(fileStore.name());
+        assertThat(fileStore.getAttribute("totalSpace")).isEqualTo(fileStore.getTotalSpace());
+        assertThat(fileStore.getAttribute("usableSpace")).isEqualTo(fileStore.getUsableSpace());
+        assertThat(fileStore.getAttribute("readOnly")).isEqualTo(fileStore.isReadOnly());
     }
 
     @Test(expected = UnsupportedOperationException.class)

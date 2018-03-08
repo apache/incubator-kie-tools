@@ -22,11 +22,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.nio.channels.FileChannel;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.io.FileUtils;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,8 +42,8 @@ import org.uberfire.java.nio.file.NotDirectoryException;
 import org.uberfire.java.nio.file.NotLinkException;
 import org.uberfire.java.nio.file.Path;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.uberfire.java.nio.file.StandardDeleteOption.NON_EMPTY_DIRECTORIES;
 
 public class SimpleFileSystemProviderTest {
@@ -74,7 +75,7 @@ public class SimpleFileSystemProviderTest {
 
         final Path path = fsProvider.getPath(uri);
 
-        assertThat(path).isNotNull();
+        AssertionsForClassTypes.assertThat(path).isNotNull();
         assertThat(path.isAbsolute()).isTrue();
         assertThat(path.getFileSystem()).isEqualTo(fsProvider.getFileSystem(uri));
         assertThat(path.getFileSystem().provider()).isEqualTo(fsProvider);
@@ -99,7 +100,7 @@ public class SimpleFileSystemProviderTest {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         fsProvider.newFileSystem(URI.create("file:///"),
-                                 new HashMap<String, Object>());
+                                 Collections.emptyMap());
     }
 
     @Test(expected = FileSystemAlreadyExistsException.class)
@@ -111,7 +112,7 @@ public class SimpleFileSystemProviderTest {
                                                  false);
 
         fsProvider.newFileSystem(path,
-                                 new HashMap<String, Object>());
+                                 Collections.emptyMap());
     }
 
     @Test
@@ -130,7 +131,7 @@ public class SimpleFileSystemProviderTest {
     }
 
     @Test(expected = NoSuchFileException.class)
-    public void inputStreamFileDoesntExists() throws IOException {
+    public void inputStreamFileDoesntExists() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         final Path path = GeneralPathImpl.create(fsProvider.getFileSystem(URI.create("file:///")),
@@ -141,7 +142,7 @@ public class SimpleFileSystemProviderTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void inputStreamNull() throws IOException {
+    public void inputStreamNull() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         fsProvider.newInputStream(null);
@@ -163,7 +164,7 @@ public class SimpleFileSystemProviderTest {
     }
 
     @Test(expected = org.uberfire.java.nio.IOException.class)
-    public void outputStreamFileDoesntExists() throws IOException {
+    public void outputStreamFileDoesntExists() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         final Path path = GeneralPathImpl.create(fsProvider.getFileSystem(URI.create("file:///")),
@@ -174,7 +175,7 @@ public class SimpleFileSystemProviderTest {
     }
 
     @Test(expected = org.uberfire.java.nio.IOException.class)
-    public void outputStreamOnDirectory() throws IOException {
+    public void outputStreamOnDirectory() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         final Path path = GeneralPathImpl.create(fsProvider.getFileSystem(URI.create("file:///")),
@@ -185,7 +186,7 @@ public class SimpleFileSystemProviderTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void outputStreamNull() throws IOException {
+    public void outputStreamNull() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         fsProvider.newOutputStream(null);
@@ -208,7 +209,7 @@ public class SimpleFileSystemProviderTest {
     }
 
     @Test(expected = org.uberfire.java.nio.IOException.class)
-    public void fileChannelFileDoesntExists() throws IOException {
+    public void fileChannelFileDoesntExists() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         final Path path = GeneralPathImpl.create(fsProvider.getFileSystem(URI.create("file:///")),
@@ -220,7 +221,7 @@ public class SimpleFileSystemProviderTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void fileChannelNull() throws IOException {
+    public void fileChannelNull() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         fsProvider.newFileChannel(null,
@@ -236,14 +237,14 @@ public class SimpleFileSystemProviderTest {
         final Path path = GeneralPathImpl.create(fsProvider.getFileSystem(URI.create("file:///")),
                                                  userBasedPath,
                                                  false);
-        assertThat(path.toFile().exists()).isFalse();
+        assertThat(path.toFile()).doesNotExist();
 
         try (final SeekableByteChannel channel = fsProvider.newByteChannel(path, null)) {
             assertThat(channel).isNotNull();
-            assertThat(path.toFile().exists()).isTrue();
+            assertThat(path.toFile()).exists();
         }
         path.toFile().delete();
-        assertThat(path.toFile().exists()).isFalse();
+        assertThat(path.toFile()).doesNotExist();
     }
 
     @Test(expected = FileAlreadyExistsException.class)
@@ -255,7 +256,7 @@ public class SimpleFileSystemProviderTest {
         final Path path = GeneralPathImpl.newFromFile(fsProvider.getFileSystem(URI.create("file:///")),
                                                       tempFile);
 
-        assertThat(path.toFile().exists()).isTrue();
+        assertThat(path.toFile()).exists();
         assertThat(path.toFile()).isEqualTo(tempFile);
 
         fsProvider.newByteChannel(path,
@@ -263,7 +264,7 @@ public class SimpleFileSystemProviderTest {
     }
 
     @Test(expected = org.uberfire.java.nio.IOException.class)
-    public void newByteChannelInvalidPath() throws IOException {
+    public void newByteChannelInvalidPath() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         final String userBasedPath = System.getProperty("user.dir") + "path/to/some_file_here.txt";
@@ -271,14 +272,14 @@ public class SimpleFileSystemProviderTest {
         final Path path = GeneralPathImpl.create(fsProvider.getFileSystem(URI.create("file:///")),
                                                  userBasedPath,
                                                  false);
-        assertThat(path.toFile().exists()).isFalse();
+        assertThat(path.toFile()).doesNotExist();
 
         fsProvider.newByteChannel(path,
                                   null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void newByteChannelNull() throws IOException {
+    public void newByteChannelNull() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         fsProvider.newByteChannel(null,
@@ -286,7 +287,7 @@ public class SimpleFileSystemProviderTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void newAsynchronousFileChannelUnsupportedOp() throws IOException {
+    public void newAsynchronousFileChannelUnsupportedOp() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         final Path path = GeneralPathImpl.create(fsProvider.getFileSystem(URI.create("file:///")),
@@ -299,7 +300,7 @@ public class SimpleFileSystemProviderTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void newAsynchronousFileChannelNull() throws IOException {
+    public void newAsynchronousFileChannelNull() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         fsProvider.newAsynchronousFileChannel(null,
@@ -316,13 +317,13 @@ public class SimpleFileSystemProviderTest {
         final Path path = GeneralPathImpl.create(fsProvider.getFileSystem(URI.create("file:///")),
                                                  userBasedPath,
                                                  false);
-        assertThat(path.toFile().exists()).isFalse();
+        assertThat(path.toFile()).doesNotExist();
 
         final SeekableByteChannel channel = fsProvider.newByteChannel(path,
                                                                       null);
 
         assertThat(channel).isNotNull();
-        assertThat(path.toFile().exists()).isTrue();
+        assertThat(path.toFile()).exists();
 
         assertThat(channel.isOpen()).isTrue();
 
@@ -367,7 +368,7 @@ public class SimpleFileSystemProviderTest {
 //        }
 
         path.toFile().delete();
-        assertThat(path.toFile().exists()).isFalse();
+        assertThat(path.toFile()).doesNotExist();
     }
 
     @Test
@@ -380,13 +381,13 @@ public class SimpleFileSystemProviderTest {
                                                  userBasedPath,
                                                  false);
         path.toFile().delete();
-        assertThat(path.toFile().exists()).isFalse();
+        assertThat(path.toFile()).doesNotExist();
 
         fsProvider.createDirectory(path);
 
-        assertThat(path.toFile().exists()).isTrue();
+        assertThat(path.toFile()).exists();
         path.toFile().delete();
-        assertThat(path.toFile().exists()).isFalse();
+        assertThat(path.toFile()).doesNotExist();
     }
 
     @Test(expected = FileAlreadyExistsException.class)
@@ -398,10 +399,10 @@ public class SimpleFileSystemProviderTest {
         final Path path = GeneralPathImpl.create(fsProvider.getFileSystem(URI.create("file:///")),
                                                  userBasedPath,
                                                  false);
-        assertThat(path.toFile().exists()).isFalse();
+        assertThat(path.toFile()).doesNotExist();
 
         fsProvider.createDirectory(path);
-        assertThat(path.toFile().exists()).isTrue();
+        assertThat(path.toFile()).exists();
         fsProvider.createDirectory(path);
     }
 
@@ -457,7 +458,7 @@ public class SimpleFileSystemProviderTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void createSymbolicLinkTargetMustExists() throws IOException {
+    public void createSymbolicLinkTargetMustExists() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
         final Path path = GeneralPathImpl.create(fsProvider.getFileSystem(URI.create("file:///")),
                                                  "/path/to/file.txt",
@@ -555,20 +556,20 @@ public class SimpleFileSystemProviderTest {
         final Path path = GeneralPathImpl.newFromFile(fsProvider.getFileSystem(URI.create("file:///")),
                                                       tempFile);
 
-        assertThat(path.toFile().exists()).isTrue();
+        assertThat(path.toFile()).exists();
         fsProvider.delete(path);
-        assertThat(path.toFile().exists()).isFalse();
+        assertThat(path.toFile()).doesNotExist();
     }
 
     @Test(expected = NoSuchFileException.class)
-    public void checkDeleteNonExistent() throws IOException {
+    public void checkDeleteNonExistent() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         final Path path = GeneralPathImpl.create(fsProvider.getFileSystem(URI.create("file:///")),
                                                  "/path/to/file.txt",
                                                  false);
 
-        assertThat(path.toFile().exists()).isFalse();
+        assertThat(path.toFile()).doesNotExist();
         fsProvider.delete(path);
     }
 
@@ -588,22 +589,22 @@ public class SimpleFileSystemProviderTest {
         final Path path = GeneralPathImpl.newFromFile(fsProvider.getFileSystem(URI.create("file:///")),
                                                       tempFile);
 
-        assertThat(path.toFile().exists()).isTrue();
+        assertThat(path.toFile()).exists();
         assertThat(fsProvider.deleteIfExists(path)).isTrue();
-        assertThat(path.toFile().exists()).isFalse();
+        assertThat(path.toFile()).doesNotExist();
     }
 
     @Test
-    public void checkDeleteIfExistsNonExistent() throws IOException {
+    public void checkDeleteIfExistsNonExistent() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         final Path path = GeneralPathImpl.create(fsProvider.getFileSystem(URI.create("file:///")),
                                                  "/path/to/file.txt",
                                                  false);
 
-        assertThat(path.toFile().exists()).isFalse();
+        assertThat(path.toFile()).doesNotExist();
         assertThat(fsProvider.deleteIfExists(path)).isFalse();
-        assertThat(path.toFile().exists()).isFalse();
+        assertThat(path.toFile()).doesNotExist();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -710,8 +711,8 @@ public class SimpleFileSystemProviderTest {
         fsProvider.copy(source,
                         dest);
 
-        assertThat(dest.toFile().exists()).isTrue();
-        assertThat(source.toFile().exists()).isTrue();
+        assertThat(dest.toFile()).exists();
+        assertThat(source.toFile()).exists();
 
         source.toFile().delete();
         dest.toFile().delete();
@@ -737,8 +738,8 @@ public class SimpleFileSystemProviderTest {
         fsProvider.copy(source,
                         dest);
 
-        assertThat(dest.toFile().exists()).isTrue();
-        assertThat(source.toFile().exists()).isTrue();
+        assertThat(dest.toFile()).exists();
+        assertThat(source.toFile()).exists();
         assertThat(dest.toFile().length()).isEqualTo(source.toFile().length());
 
         source.toFile().delete();
@@ -768,39 +769,26 @@ public class SimpleFileSystemProviderTest {
         stream.write('a');
         stream.close();
 
-        try {
-            fsProvider.copy(source,
-                            dest);
-            fail("source isn't empty");
-        } catch (Exception ex) {
-        }
+        assertThatThrownBy(() -> fsProvider.copy(source, dest))
+                .isInstanceOf(DirectoryNotEmptyException.class);
 
         sourceFile.toFile().delete();
         fsProvider.copy(source,
                         dest);
 
-        try {
-            fsProvider.copy(source,
-                            dest);
-            fail("dest already exists");
-        } catch (Exception ex) {
-        }
+        assertThatThrownBy(() -> fsProvider.copy(source, dest))
+                .isInstanceOf(FileAlreadyExistsException.class);
 
         dest.toFile().delete();
         source.toFile().delete();
 
-        try {
-            fsProvider.copy(source,
-                            dest);
-            fail("source doesn't exists");
-        } catch (Exception ex) {
-
-        } finally {
-        }
+        assertThatThrownBy(() -> fsProvider.copy(source, dest))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Condition 'source must exist' is invalid!");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void copyFileNull1() throws IOException {
+    public void copyFileNull1() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         final String userPath = System.getProperty("user.dir") + "/temp";
@@ -813,7 +801,7 @@ public class SimpleFileSystemProviderTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void copyFileNull2() throws IOException {
+    public void copyFileNull2() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         final String userPath = System.getProperty("user.dir") + "/temp";
@@ -826,7 +814,7 @@ public class SimpleFileSystemProviderTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void copyFileNull3() throws IOException {
+    public void copyFileNull3() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         fsProvider.copy(null,
@@ -851,8 +839,8 @@ public class SimpleFileSystemProviderTest {
         fsProvider.move(source,
                         dest);
 
-        assertThat(source.toFile().exists()).isFalse();
-        assertThat(dest.toFile().exists()).isTrue();
+        assertThat(source.toFile()).doesNotExist();
+        assertThat(dest.toFile()).exists();
 
         dest.toFile().delete();
     }
@@ -878,8 +866,8 @@ public class SimpleFileSystemProviderTest {
         fsProvider.move(source,
                         dest);
 
-        assertThat(dest.toFile().exists()).isTrue();
-        assertThat(source.toFile().exists()).isFalse();
+        assertThat(dest.toFile()).exists();
+        assertThat(source.toFile()).doesNotExist();
         assertThat(dest.toFile().length()).isEqualTo(lenght);
 
         dest.toFile().delete();
@@ -908,39 +896,26 @@ public class SimpleFileSystemProviderTest {
         stream.write('a');
         stream.close();
 
-        try {
-            fsProvider.move(source,
-                            dest);
-            fail("source isn't empty");
-        } catch (Exception ex) {
-        }
+        assertThatThrownBy(() -> fsProvider.move(source, dest))
+                .isInstanceOf(DirectoryNotEmptyException.class);
 
         sourceFile.toFile().delete();
         fsProvider.copy(source,
                         dest);
 
-        try {
-            fsProvider.move(source,
-                            dest);
-            fail("dest already exists");
-        } catch (Exception ex) {
-        }
+        assertThatThrownBy(() -> fsProvider.move(source, dest))
+                .isInstanceOf(FileAlreadyExistsException.class);
 
         dest.toFile().delete();
         source.toFile().delete();
 
-        try {
-            fsProvider.move(source,
-                            dest);
-            fail("source doesn't exists");
-        } catch (Exception ex) {
-
-        } finally {
-        }
+        assertThatThrownBy(() -> fsProvider.move(source, dest))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Condition 'source must exist' is invalid!");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void moveFileNull1() throws IOException {
+    public void moveFileNull1() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         final String userPath = System.getProperty("user.dir") + "/temp";
@@ -953,7 +928,7 @@ public class SimpleFileSystemProviderTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void moveFileNull2() throws IOException {
+    public void moveFileNull2() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         final String userPath = System.getProperty("user.dir") + "/temp";
@@ -966,7 +941,7 @@ public class SimpleFileSystemProviderTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void moveFileNull3() throws IOException {
+    public void moveFileNull3() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         fsProvider.move(null,
@@ -986,20 +961,12 @@ public class SimpleFileSystemProviderTest {
         fsProvider.createDirectory(dir);
 
         final DirectoryStream<Path> stream = fsProvider.newDirectoryStream(dir,
-                                                                           new DirectoryStream.Filter<Path>() {
-                                                                               @Override
-                                                                               public boolean accept(Path entry) throws org.uberfire.java.nio.IOException {
-                                                                                   return true;
-                                                                               }
-                                                                           });
+                                                                           entry -> true);
 
         assertThat(stream).hasSize(0);
 
-        try {
-            stream.iterator().next();
-            fail("can't navigate to next on empty iterator");
-        } catch (NoSuchElementException ex) {
-        }
+        assertThatThrownBy(() -> stream.iterator().next())
+                .isInstanceOf(NoSuchElementException.class);
 
         final File tempFile = File.createTempFile("foo",
                                                   "bar",
@@ -1008,30 +975,20 @@ public class SimpleFileSystemProviderTest {
                                                       tempFile);
 
         final DirectoryStream<Path> stream2 = fsProvider.newDirectoryStream(dir,
-                                                                            new DirectoryStream.Filter<Path>() {
-                                                                                @Override
-                                                                                public boolean accept(Path entry) throws org.uberfire.java.nio.IOException {
-                                                                                    return true;
-                                                                                }
-                                                                            });
+                                                                            entry -> true);
 
         assertThat(stream2).hasSize(1);
 
         final Iterator<Path> iterator = stream2.iterator();
         iterator.next();
-        try {
-            iterator.remove();
-            fail("can't remove elements");
-        } catch (UnsupportedOperationException ex) {
-        }
+        assertThatThrownBy(() -> iterator.remove())
+                .isInstanceOf(UnsupportedOperationException.class);
 
         stream2.close();
 
-        try {
-            stream2.close();
-            fail("stram already closed");
-        } catch (Exception ex) {
-        }
+        assertThatThrownBy(() -> stream2.close())
+                .isInstanceOf(org.uberfire.java.nio.IOException.class)
+                .hasMessage("This stream is closed.");
 
         final File tempFile2 = File.createTempFile("bar",
                                                    "foo",
@@ -1040,34 +997,19 @@ public class SimpleFileSystemProviderTest {
                                                        tempFile2);
 
         final DirectoryStream<Path> stream3 = fsProvider.newDirectoryStream(dir,
-                                                                            new DirectoryStream.Filter<Path>() {
-                                                                                @Override
-                                                                                public boolean accept(Path entry) throws org.uberfire.java.nio.IOException {
-                                                                                    return true;
-                                                                                }
-                                                                            });
+                                                                            entry -> true);
 
         assertThat(stream3).hasSize(2).contains(path,
                                                 path2);
 
         stream3.close();
 
-        try {
-            stream3.iterator().next();
-            fail("can't interact in an already closed stream");
-        } catch (Exception ex) {
-        }
+        assertThatThrownBy(() -> stream3.iterator().next())
+                .isInstanceOf(org.uberfire.java.nio.IOException.class)
+                .hasMessage("This stream is closed.");
 
         final DirectoryStream<Path> stream4 = fsProvider.newDirectoryStream(dir,
-                                                                            new DirectoryStream.Filter<Path>() {
-                                                                                @Override
-                                                                                public boolean accept(final Path entry) throws org.uberfire.java.nio.IOException {
-                                                                                    if (entry.getFileName().toString().startsWith("foo")) {
-                                                                                        return true;
-                                                                                    }
-                                                                                    return false;
-                                                                                }
-                                                                            });
+                                                                            entry -> entry.getFileName().toString().startsWith("foo"));
 
         assertThat(stream4).hasSize(1).contains(path);
 
@@ -1098,20 +1040,12 @@ public class SimpleFileSystemProviderTest {
         fsProvider.createDirectory(dir.resolve("other_dir"));
 
         final DirectoryStream<Path> stream5 = fsProvider.newDirectoryStream(dir,
-                                                                            new DirectoryStream.Filter<Path>() {
-                                                                                @Override
-                                                                                public boolean accept(final Path entry) throws org.uberfire.java.nio.IOException {
-                                                                                    return true;
-                                                                                }
-                                                                            });
+                                                                            entry -> true);
 
         assertThat(stream5).hasSize(4).contains(dir.resolve("other_dir"));
 
-        try {
-            fsProvider.delete(dir);
-            fail("must throw error");
-        } catch (final DirectoryNotEmptyException expection) {
-        }
+        assertThatThrownBy(() -> fsProvider.delete(dir))
+                .isInstanceOf(org.uberfire.java.nio.file.DirectoryNotEmptyException.class);
 
         fsProvider.delete(dir,
                           NON_EMPTY_DIRECTORIES);
@@ -1120,7 +1054,7 @@ public class SimpleFileSystemProviderTest {
     }
 
     @Test(expected = NotDirectoryException.class)
-    public void newDirectoryStreamInvalidDir() throws IOException {
+    public void newDirectoryStreamInvalidDir() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         final String userSourcePath = System.getProperty("user.dir") + "/xxxxxx";
@@ -1130,29 +1064,19 @@ public class SimpleFileSystemProviderTest {
                                                 false);
 
         fsProvider.newDirectoryStream(dir,
-                                      new DirectoryStream.Filter<Path>() {
-                                          @Override
-                                          public boolean accept(Path entry) throws org.uberfire.java.nio.IOException {
-                                              return true;
-                                          }
-                                      });
+                                      entry -> true);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void newDirectoryStreamNull1() throws IOException {
+    public void newDirectoryStreamNull1() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         fsProvider.newDirectoryStream(null,
-                                      new DirectoryStream.Filter<Path>() {
-                                          @Override
-                                          public boolean accept(Path entry) throws org.uberfire.java.nio.IOException {
-                                              return true;
-                                          }
-                                      });
+                                      entry -> true);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void newDirectoryStreamNull2() throws IOException {
+    public void newDirectoryStreamNull2() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         final String userSourcePath = System.getProperty("user.dir") + "/xxxxxx";
@@ -1166,7 +1090,7 @@ public class SimpleFileSystemProviderTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void newDirectoryStreamNull3() throws IOException {
+    public void newDirectoryStreamNull3() {
         final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider();
 
         final String userSourcePath = System.getProperty("user.dir") + "/xxxxxx";

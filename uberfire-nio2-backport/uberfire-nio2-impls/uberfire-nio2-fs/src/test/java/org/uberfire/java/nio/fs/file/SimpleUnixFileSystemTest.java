@@ -21,6 +21,7 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.uberfire.java.nio.base.GeneralPathImpl;
 import org.uberfire.java.nio.file.FileStore;
@@ -28,9 +29,10 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.fail;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class SimpleUnixFileSystemTest {
 
@@ -45,37 +47,34 @@ public class SimpleUnixFileSystemTest {
         assertThat(fileSystem.isReadOnly()).isFalse();
         assertThat(fileSystem.getSeparator()).isEqualTo(System.getProperty("file.separator"));
         assertThat(fileSystem.provider()).isEqualTo(fsProvider);
-        assertThat(fileSystem.supportedFileAttributeViews()).isNotEmpty().hasSize(1).contains("basic");
+        Assertions.assertThat(fileSystem.supportedFileAttributeViews()).hasSize(1).contains("basic");
 
-        assertThat(fileSystem.getPath("/path/to/file.txt")).isNotNull().isEqualTo(GeneralPathImpl.create(fileSystem,
-                                                                                                         "/path/to/file.txt",
-                                                                                                         false));
+        assertThat(fileSystem.getPath("/path/to/file.txt")).isEqualTo(GeneralPathImpl.create(fileSystem,
+                                                                                             "/path/to/file.txt",
+                                                                                             false));
         assertThat(fileSystem.getPath("/path/to/file.txt",
-                                      null)).isNotNull().isEqualTo(GeneralPathImpl.create(fileSystem,
-                                                                                          "/path/to/file.txt",
-                                                                                          false));
+                                      null)).isEqualTo(GeneralPathImpl.create(fileSystem,
+                                                                              "/path/to/file.txt",
+                                                                              false));
         assertThat(fileSystem.getPath("/path",
                                       "to",
-                                      "file.txt")).isNotNull().isEqualTo(GeneralPathImpl.create(fileSystem,
-                                                                                                "/path/to/file.txt",
-                                                                                                false));
+                                      "file.txt")).isEqualTo(GeneralPathImpl.create(fileSystem,
+                                                                                    "/path/to/file.txt",
+                                                                                    false));
         assertThat(fileSystem.getPath("/",
                                       "path",
                                       "to",
-                                      "file.txt")).isNotNull().isEqualTo(GeneralPathImpl.create(fileSystem,
-                                                                                                "/path/to/file.txt",
-                                                                                                false));
+                                      "file.txt")).isEqualTo(GeneralPathImpl.create(fileSystem,
+                                                                                    "/path/to/file.txt",
+                                                                                    false));
 
-        try {
-            fileSystem.close();
-            fail("can't close this fileSystem");
-        } catch (UnsupportedOperationException ex) {
-        }
+        assertThatThrownBy(() -> fileSystem.close())
+                .isInstanceOf(UnsupportedOperationException.class);
 
-        assertThat(fileSystem.getFileStores()).isNotNull().hasSize(1);
+        Assertions.assertThat(fileSystem.getFileStores()).hasSize(1);
         assertThat(fileSystem.getFileStores().iterator().next().name()).isEqualTo("/");
 
-        assertThat(fileSystem.getRootDirectories()).isNotNull().hasSize(1);
+        Assertions.assertThat(fileSystem.getRootDirectories()).hasSize(1);
         assertThat(fileSystem.getRootDirectories().iterator().next().toString()).isEqualTo("/");
         assertThat(fileSystem.getRootDirectories().iterator().next().isAbsolute()).isTrue();
     }
@@ -94,8 +93,6 @@ public class SimpleUnixFileSystemTest {
         final URL childUrl = this.getClass().getResource("/Folder");
         final Path childNioPath = fs.getPath(childUrl.toURI());
         final Path childParentNioPath = childNioPath.getParent();
-
-        System.out.println(parentNioPath);
 
         assertThat(parentNioPath).isEqualTo(childParentNioPath);
     }

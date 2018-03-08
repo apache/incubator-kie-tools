@@ -33,6 +33,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.server.cdi.UberFireGeneralFactory;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -68,7 +69,7 @@ public class UberFireGeneralFactoryTest {
     }
 
     @Test
-    public void returnDefaultUserOutsideOfSessionThread() throws Exception {
+    public void returnDefaultUserOutsideOfSessionThread() {
         when(userInstance.isAmbiguous()).thenReturn(false);
         when(userInstance.isUnsatisfied()).thenReturn(false);
         when(userInstance.get()).thenReturn(defaultUser);
@@ -79,7 +80,7 @@ public class UberFireGeneralFactoryTest {
     }
 
     @Test
-    public void returnAuthenticatedUserInSessionThread() throws Exception {
+    public void returnAuthenticatedUserInSessionThread() {
         when(userInstance.isAmbiguous()).thenReturn(false);
         when(userInstance.isUnsatisfied()).thenReturn(false);
         when(userInstance.get()).thenReturn(defaultUser);
@@ -92,12 +93,14 @@ public class UberFireGeneralFactoryTest {
                    sessionInfo.getIdentity());
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void throwIllegalStateExceptionOutsideOfSessionThreadWithoutDefaultUser() throws Exception {
+    @Test
+    public void throwIllegalStateExceptionOutsideOfSessionThreadWithoutDefaultUser() {
         when(userInstance.isAmbiguous()).thenReturn(false);
         when(userInstance.isUnsatisfied()).thenReturn(true);
         when(userInstance.get()).thenReturn(defaultUser);
 
-        factory.getSessionInfo(authService);
+        assertThatThrownBy(() -> factory.getSessionInfo(authService))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Cannot get session info outside of servlet thread when no default user is provided.");
     }
 }

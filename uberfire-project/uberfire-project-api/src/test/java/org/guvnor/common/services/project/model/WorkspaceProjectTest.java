@@ -21,49 +21,52 @@ import org.guvnor.structure.repositories.Repository;
 import org.junit.Test;
 import org.uberfire.backend.vfs.Path;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class WorkspaceProjectTest {
 
-    @Test(expected = IllegalArgumentException.class)
-    public void OUCanNotBeNull() throws Exception {
-        new WorkspaceProject(null,
-                             mock(Repository.class),
-                             mock(Branch.class),
-                             mock(Module.class));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void ProjectCanNotBeNull() throws Exception {
-        new WorkspaceProject(mock(OrganizationalUnit.class),
-                             null,
-                             mock(Branch.class),
-                             mock(Module.class));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void BranchCanNotBeNull() throws Exception {
-        new WorkspaceProject(mock(OrganizationalUnit.class),
-                             mock(Repository.class),
-                             null,
-                             mock(Module.class));
+    @Test
+    public void OUCanNotBeNull() {
+        assertThatThrownBy(() -> new WorkspaceProject(null,
+                                                      mock(Repository.class),
+                                                      mock(Branch.class),
+                                                      mock(Module.class)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'organizationalUnit' should be not null!");
     }
 
     @Test
-    public void ModuleCanBeNull() throws Exception {
-        try {
-            new WorkspaceProject(mock(OrganizationalUnit.class),
-                                 mock(Repository.class),
-                                 mock(Branch.class),
-                                 null);
-        } catch (final Exception e) {
-            fail();
-        }
+    public void ProjectCanNotBeNull() {
+        assertThatThrownBy(() -> new WorkspaceProject(mock(OrganizationalUnit.class),
+                                                      null,
+                                                      mock(Branch.class),
+                                                      mock(Module.class)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'repository' should be not null!");
     }
 
     @Test
-    public void getNameNoModule() throws Exception {
+    public void BranchCanNotBeNull() {
+        assertThatThrownBy(() -> new WorkspaceProject(mock(OrganizationalUnit.class),
+                                                      mock(Repository.class),
+                                                      null,
+                                                      mock(Module.class)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'branch' should be not null!");
+    }
+
+    @Test
+    public void ModuleCanBeNull() {
+        new WorkspaceProject(mock(OrganizationalUnit.class),
+                             mock(Repository.class),
+                             mock(Branch.class),
+                             null);
+    }
+
+    @Test
+    public void getNameNoModule() {
         final Repository repository = mock(Repository.class);
         doReturn("my-repo").when(repository).getAlias();
 
@@ -77,7 +80,7 @@ public class WorkspaceProjectTest {
     }
 
     @Test
-    public void getName() throws Exception {
+    public void getName() {
         final Repository repository = mock(Repository.class);
         doReturn("my-repo").when(repository).getAlias();
 
@@ -94,7 +97,7 @@ public class WorkspaceProjectTest {
     }
 
     @Test
-    public void getNameNoModuleName() throws Exception {
+    public void getNameNoModuleName() {
         final Repository repository = mock(Repository.class);
         doReturn("my-repo").when(repository).getAlias();
 
@@ -111,10 +114,10 @@ public class WorkspaceProjectTest {
     }
 
     @Test
-    public void getRootPath() throws Exception {
+    public void getRootPath() {
         final Branch branch = mock(Branch.class);
         final Path branchPath = mock(Path.class);
-        doReturn(branchPath).when(branch).getPath();
+        when(branch.getPath()).thenReturn(branchPath);
 
         final WorkspaceProject workspaceProject = new WorkspaceProject(mock(OrganizationalUnit.class),
                                                                        mock(Repository.class),
@@ -126,7 +129,7 @@ public class WorkspaceProjectTest {
     }
 
     @Test
-    public void requiresRefresh() throws Exception {
+    public void requiresRefresh() {
         final WorkspaceProject workspaceProject = new WorkspaceProject(mock(OrganizationalUnit.class),
                                                                        mock(Repository.class),
                                                                        mock(Branch.class),

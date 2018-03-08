@@ -21,11 +21,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.GitImpl;
 import org.uberfire.java.nio.fs.jgit.util.commands.Commit;
@@ -36,15 +33,14 @@ import org.uberfire.java.nio.fs.jgit.util.commands.ListDiffs;
 import org.uberfire.java.nio.fs.jgit.util.commands.Merge;
 import org.uberfire.java.nio.fs.jgit.util.exceptions.GitException;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class JGitMergeTest extends AbstractTestInfra {
 
-    private static Logger logger = LoggerFactory.getLogger(JGitMergeTest.class);
-    public static final String SOURCE_GIT = "source/source";
+    private static final String SOURCE_GIT = "source/source";
 
     @Test
-    public void testMergeSuccessful() throws IOException, GitAPIException {
+    public void testMergeSuccessful() throws IOException {
         final File parentFolder = createTempDirectory();
 
         final File gitSource = new File(parentFolder,
@@ -130,11 +126,11 @@ public class JGitMergeTest extends AbstractTestInfra {
                                                      new GetTreeFromRef(origin,
                                                                         "develop").execute()).execute();
 
-        assertThat(result.size()).isEqualTo(0);
+        assertThat(result).isEmpty();
     }
 
     @Test
-    public void testMergeConflict() throws IOException, GitAPIException {
+    public void testMergeConflict() throws IOException {
         final File parentFolder = createTempDirectory();
 
         final File gitSource = new File(parentFolder,
@@ -181,11 +177,11 @@ public class JGitMergeTest extends AbstractTestInfra {
                                                      new GetTreeFromRef(origin,
                                                                         "develop").execute()).execute();
 
-        assertThat(result.size()).isEqualTo(0);
+        assertThat(result).isEmpty();
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testParametersNotNull() throws IOException, GitAPIException {
+    public void testParametersNotNull() {
 
         new Merge(null,
                   "develop",
@@ -193,7 +189,7 @@ public class JGitMergeTest extends AbstractTestInfra {
     }
 
     @Test(expected = GitException.class)
-    public void testTryToMergeNonexistentBranch() throws IOException, GitAPIException {
+    public void testTryToMergeNonexistentBranch() throws IOException {
         final File parentFolder = createTempDirectory();
 
         final File gitSource = new File(parentFolder,
@@ -275,7 +271,7 @@ public class JGitMergeTest extends AbstractTestInfra {
     }
 
     @Test(expected = GitException.class)
-    public void testMergeBinaryInformationButHasConflicts() throws IOException, GitAPIException {
+    public void testMergeBinaryInformationButHasConflicts() throws IOException {
 
         final byte[] contentA = this.loadImage("images/drools.png");
         final byte[] contentB = this.loadImage("images/jbpm.png");
@@ -340,11 +336,11 @@ public class JGitMergeTest extends AbstractTestInfra {
                                                      new GetTreeFromRef(origin,
                                                                         "develop").execute()).execute();
 
-        assertThat(result.size()).isEqualTo(0);
+        assertThat(result).isEmpty();
     }
 
     @Test
-    public void testMergeBinaryInformationSuccessful() throws IOException, GitAPIException {
+    public void testMergeBinaryInformationSuccessful() throws IOException {
 
         final byte[] contentA = this.loadImage("images/drools.png");
         final byte[] contentB = this.loadImage("images/jbpm.png");
@@ -395,6 +391,6 @@ public class JGitMergeTest extends AbstractTestInfra {
                                                      new GetTreeFromRef(origin,
                                                                         "develop").execute()).execute();
 
-        assertThat(result.size()).isEqualTo(0);
+        assertThat(result).isEmpty();
     }
 }

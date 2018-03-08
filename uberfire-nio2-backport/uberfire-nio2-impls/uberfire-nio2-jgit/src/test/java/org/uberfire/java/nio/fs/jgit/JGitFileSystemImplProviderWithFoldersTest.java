@@ -32,7 +32,7 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.jgit.util.GitImpl;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class JGitFileSystemImplProviderWithFoldersTest extends AbstractTestInfra {
 
@@ -46,7 +46,7 @@ public class JGitFileSystemImplProviderWithFoldersTest extends AbstractTestInfra
 
         final DirectoryStream<Path> stream = provider.newDirectoryStream(provider.getPath(newRepo),
                                                                          null);
-        assertThat(stream).isNotNull().hasSize(0);
+        assertThat(stream).isEmpty();
     }
 
     @Test
@@ -72,7 +72,7 @@ public class JGitFileSystemImplProviderWithFoldersTest extends AbstractTestInfra
         outStream.close();
 
         assertThat(new File(provider.getGitRepoContainerDir(),
-                            "test/old" + ".git").exists()).isTrue();
+                            "test/old" + ".git")).exists();
 
         int commitsCount = 0;
         for (RevCommit com : ((GitImpl) fs.getGit())._log().all().call()) {

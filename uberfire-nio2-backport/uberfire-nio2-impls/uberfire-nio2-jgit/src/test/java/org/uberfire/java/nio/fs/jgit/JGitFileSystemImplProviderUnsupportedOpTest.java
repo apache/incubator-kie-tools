@@ -25,7 +25,7 @@ import org.uberfire.java.nio.file.OpenOption;
 import org.uberfire.java.nio.file.Path;
 
 import static java.util.Collections.emptySet;
-import static org.fest.assertions.api.Assertions.failBecauseExceptionWasNotThrown;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class JGitFileSystemImplProviderUnsupportedOpTest extends AbstractTestInfra {
 
@@ -41,12 +41,8 @@ public class JGitFileSystemImplProviderUnsupportedOpTest extends AbstractTestInf
                                               "repo2-name",
                                               false);
 
-        try {
-            provider.newFileSystem(path,
-                                   EMPTY_ENV);
-            failBecauseExceptionWasNotThrown(UnsupportedOperationException.class);
-        } catch (Exception e) {
-        }
+        assertThatThrownBy(() -> provider.newFileSystem(path, EMPTY_ENV))
+                .isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test
@@ -59,12 +55,8 @@ public class JGitFileSystemImplProviderUnsupportedOpTest extends AbstractTestInf
         final Path path = provider.getPath(URI.create("git://newfcrepo-name/file.txt"));
 
         final Set<? extends OpenOption> options = emptySet();
-        try {
-            provider.newFileChannel(path,
-                                    options);
-            failBecauseExceptionWasNotThrown(UnsupportedOperationException.class);
-        } catch (Exception e) {
-        }
+        assertThatThrownBy(() -> provider.newFileChannel(path, options))
+                .isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test
@@ -77,13 +69,8 @@ public class JGitFileSystemImplProviderUnsupportedOpTest extends AbstractTestInf
         final Path path = provider.getPath(URI.create("git://newasyncrepo-name/file.txt"));
 
         final Set<? extends OpenOption> options = emptySet();
-        try {
-            provider.newAsynchronousFileChannel(path,
-                                                options,
-                                                null);
-            failBecauseExceptionWasNotThrown(UnsupportedOperationException.class);
-        } catch (Exception e) {
-        }
+        assertThatThrownBy(() -> provider.newAsynchronousFileChannel(path, options, null))
+                .isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test
@@ -96,12 +83,8 @@ public class JGitFileSystemImplProviderUnsupportedOpTest extends AbstractTestInf
         final Path link = provider.getPath(URI.create("git://symbolic-repo-name/link.lnk"));
         final Path path = provider.getPath(URI.create("git://symbolic-repo-name/file.txt"));
 
-        try {
-            provider.createSymbolicLink(link,
-                                        path);
-            failBecauseExceptionWasNotThrown(UnsupportedOperationException.class);
-        } catch (Exception e) {
-        }
+        assertThatThrownBy(() -> provider.createSymbolicLink(link, path))
+                .isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test
@@ -114,12 +97,8 @@ public class JGitFileSystemImplProviderUnsupportedOpTest extends AbstractTestInf
         final Path link = provider.getPath(URI.create("git://link-repo-name/link.lnk"));
         final Path path = provider.getPath(URI.create("git://link-repo-name/file.txt"));
 
-        try {
-            provider.createLink(link,
-                                path);
-            failBecauseExceptionWasNotThrown(UnsupportedOperationException.class);
-        } catch (Exception e) {
-        }
+        assertThatThrownBy(() -> provider.createLink(link, path))
+                .isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test
@@ -131,10 +110,7 @@ public class JGitFileSystemImplProviderUnsupportedOpTest extends AbstractTestInf
 
         final Path link = provider.getPath(URI.create("git://read-link-repo-name/link.lnk"));
 
-        try {
-            provider.readSymbolicLink(link);
-            failBecauseExceptionWasNotThrown(UnsupportedOperationException.class);
-        } catch (Exception e) {
-        }
+        assertThatThrownBy(() -> provider.readSymbolicLink(link))
+                .isInstanceOf(UnsupportedOperationException.class);
     }
 }

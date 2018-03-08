@@ -25,8 +25,9 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.failBecauseExceptionWasNotThrown;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.uberfire.java.nio.base.GeneralPathImpl.create;
@@ -524,7 +525,7 @@ public class GeneralPathTest {
     }
 
     @Test
-    public void testAbsloluteSimpleToURIUnix() throws Exception {
+    public void testAbsloluteSimpleToURIUnix() {
         final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
         when(fsprovider.isDefault()).thenReturn(false);
         when(fsprovider.getScheme()).thenReturn("file");
@@ -543,7 +544,7 @@ public class GeneralPathTest {
     }
 
     @Test
-    public void testAbsoluteToURIUnix() throws Exception {
+    public void testAbsoluteToURIUnix() {
         final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
         when(fsprovider.isDefault()).thenReturn(true);
         when(fsprovider.getScheme()).thenReturn("file");
@@ -568,7 +569,7 @@ public class GeneralPathTest {
     }
 
     @Test
-    public void testRelativeToURIUnix() throws Exception {
+    public void testRelativeToURIUnix() {
         final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
         when(fsprovider.isDefault()).thenReturn(true);
         when(fsprovider.getScheme()).thenReturn("file");
@@ -590,7 +591,7 @@ public class GeneralPathTest {
     }
 
     @Test
-    public void testAbsoluteToURIWindows() throws Exception {
+    public void testAbsoluteToURIWindows() {
         final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
         when(fsprovider.isDefault()).thenReturn(true);
         when(fsprovider.getScheme()).thenReturn("file");
@@ -616,7 +617,7 @@ public class GeneralPathTest {
     }
 
     @Test
-    public void testRelativeToURIWindows() throws Exception {
+    public void testRelativeToURIWindows() {
         final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
         when(fsprovider.isDefault()).thenReturn(true);
         when(fsprovider.getScheme()).thenReturn("file");
@@ -681,7 +682,7 @@ public class GeneralPathTest {
         assertThat(resolvedPath5).isEqualTo(path2);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void checkResolveNull() {
         final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
         when(fsprovider.isDefault()).thenReturn(true);
@@ -694,10 +695,12 @@ public class GeneralPathTest {
                                  "/path/to/",
                                  false);
 
-        path.resolve((String) null);
+        assertThatThrownBy(() -> path.resolve((String) null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'other' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void checkResolveNull2() {
         final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
         when(fsprovider.isDefault()).thenReturn(true);
@@ -710,7 +713,9 @@ public class GeneralPathTest {
                                  "/path/to/",
                                  false);
 
-        path.resolve((Path) null);
+        assertThatThrownBy(() -> path.resolve((Path) null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'other' should be not null!");
     }
 
     @Test
@@ -934,7 +939,7 @@ public class GeneralPathTest {
         assertThat(relative11).isNotNull().isEqualTo(other11);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRelativizeIlegal1() {
         final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
         when(fsprovider.isDefault()).thenReturn(true);
@@ -950,10 +955,12 @@ public class GeneralPathTest {
                                   "some/place",
                                   false);
 
-        path.relativize(other);
+        assertThatThrownBy(() -> path.relativize(other))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Could not relativize path 'otherx', 'isAbsolute()' for 'this' and 'otherx' should be equal.");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRelativizeIlegal2() {
         final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
         when(fsprovider.isDefault()).thenReturn(true);
@@ -969,10 +976,12 @@ public class GeneralPathTest {
                                   "/path/to",
                                   false);
 
-        path.relativize(other);
+        assertThatThrownBy(() -> path.relativize(other))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Could not relativize path 'otherx', 'isAbsolute()' for 'this' and 'otherx' should be equal.");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRelativizeIlegal3() {
         final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
         when(fsprovider.isDefault()).thenReturn(true);
@@ -988,7 +997,9 @@ public class GeneralPathTest {
                                   "/path/to",
                                   false);
 
-        path.relativize(other);
+        assertThatThrownBy(() -> path.relativize(other))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Could not relativize path 'otherx', 'isAbsolute()' for 'this' and 'otherx' should be equal.");
     }
 
     @Test
@@ -1188,7 +1199,7 @@ public class GeneralPathTest {
         assertThat(other17.relativize(path17).toString().isEmpty());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRelativizeWindowsIllegal1() {
         final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
         when(fsprovider.isDefault()).thenReturn(true);
@@ -1204,10 +1215,12 @@ public class GeneralPathTest {
                                   "some\\place",
                                   false);
 
-        path.relativize(other);
+        assertThatThrownBy(() -> path.relativize(other))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Could not relativize path 'otherx', 'isAbsolute()' for 'this' and 'otherx' should be equal.");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRelativizeWindowsIllegal2() {
         final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
         when(fsprovider.isDefault()).thenReturn(true);
@@ -1223,10 +1236,12 @@ public class GeneralPathTest {
                                   "c:\\path\\to",
                                   false);
 
-        path.relativize(other);
+        assertThatThrownBy(() -> path.relativize(other))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Could not relativize path 'otherx', 'isAbsolute()' for 'this' and 'otherx' should be equal.");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRelativizeWindowsIllegal3() {
         final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
         when(fsprovider.isDefault()).thenReturn(true);
@@ -1242,10 +1257,12 @@ public class GeneralPathTest {
                                   "c:\\path\\to",
                                   false);
 
-        path.relativize(other);
+        assertThatThrownBy(() -> path.relativize(other))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Could not relativize path 'otherx', 'isAbsolute()' for 'this' and 'otherx' should be equal.");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRelativizeWindowsIllegal4() {
         final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
         when(fsprovider.isDefault()).thenReturn(true);
@@ -1261,10 +1278,12 @@ public class GeneralPathTest {
                                   "c:\\path\\to",
                                   false);
 
-        path.relativize(other);
+        assertThatThrownBy(() -> path.relativize(other))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Could not relativize path 'otherx', 'getRoot()' for 'this' and 'otherx' should be equal.");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRelativizeWindowsIllegal5() {
         final FileSystemProvider fsprovider = mock(FileSystemProvider.class);
         when(fsprovider.isDefault()).thenReturn(true);
@@ -1274,13 +1293,15 @@ public class GeneralPathTest {
         when(fs.getSeparator()).thenReturn("\\");
 
         final Path path = create(fs,
-                "/d:/path/to",
-                false);
+                                 "/d:/path/to",
+                                 false);
         final Path other = create(fs,
-                "c:\\path\\to",
-                false);
+                                  "c:\\path\\to",
+                                  false);
 
-        path.relativize(other);
+        assertThatThrownBy(() -> path.relativize(other))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Could not relativize path 'otherx', 'getRoot()' for 'this' and 'otherx' should be equal.");
     }
 
     private void assertWindowsUri(String actualUri,

@@ -24,12 +24,9 @@ import org.uberfire.workbench.model.menu.MenuItemCommand;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.uberfire.workbench.model.menu.MenuFactory.newTopLevelMenu;
 
-/**
- *
- */
 public class TestBehavior {
 
     private static Command DUMMY = new Command() {

@@ -43,6 +43,7 @@ import org.uberfire.security.authz.PermissionTypeRegistry;
 import org.uberfire.security.impl.authz.DefaultPermissionManager;
 import org.uberfire.security.impl.authz.DefaultPermissionTypeRegistry;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -69,7 +70,7 @@ public class AuthzPolicyDeployerTest {
     }
 
     @Test
-    public void testPolicyDir() throws Exception {
+    public void testPolicyDir() {
         WebAppSettings.get().setRootDir("/test");
         Path path = deployer.getPolicyDir();
         Path expected = Paths.get(URI.create("file:///test/WEB-INF/classes"));
@@ -77,9 +78,11 @@ public class AuthzPolicyDeployerTest {
                      expected);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testInvalidPolicy() throws Exception {
-        testPolicyLoad("WEB-INF/classes/invalid/security-policy.properties");
+    @Test
+    public void testInvalidPolicy() {
+        assertThatThrownBy(() -> testPolicyLoad("WEB-INF/classes/invalid/security-policy.properties"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Key must start with [default|role|group]");
     }
 
     @Test
@@ -181,7 +184,7 @@ public class AuthzPolicyDeployerTest {
     }
 
     @Test
-    public void testNothingToDeploy() throws Exception {
+    public void testNothingToDeploy() {
         deployer.deployPolicy(null);
         verify(storage,
                never()).loadPolicy();
@@ -190,7 +193,7 @@ public class AuthzPolicyDeployerTest {
     }
 
     @Test
-    public void testAlreadyDeployed() throws Exception {
+    public void testAlreadyDeployed() {
         when(storage.loadPolicy()).thenReturn(mock(AuthorizationPolicy.class));
         deployer.deployPolicy(Paths.get(""));
 

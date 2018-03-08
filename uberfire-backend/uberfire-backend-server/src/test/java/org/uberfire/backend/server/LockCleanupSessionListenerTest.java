@@ -30,6 +30,7 @@ import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -44,10 +45,13 @@ public class LockCleanupSessionListenerTest {
     @Mock
     private IOService ioService;
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void throwExceptionWhenIOProducerNotInitialized() {
         final LockCleanupSessionListener listener = new LockCleanupSessionListener();
-        listener.sessionDestroyed(evt);
+
+        assertThatThrownBy(() -> listener.sessionDestroyed(evt))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("org.uberfire.backend.server.io.ConfigIOServiceProducer not initialized on startup");
     }
 
     @Test

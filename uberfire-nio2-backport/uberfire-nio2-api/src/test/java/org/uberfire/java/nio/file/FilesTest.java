@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.util.HashSet;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Assume;
 import org.junit.Test;
 import org.uberfire.java.nio.base.BasicFileAttributesImpl;
@@ -31,8 +32,8 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class FilesTest extends AbstractBaseTest {
 
@@ -40,95 +41,107 @@ public class FilesTest extends AbstractBaseTest {
     public void newIOStreams() throws IOException {
         final Path dir = newTempDir();
 
-        final OutputStream out = Files.newOutputStream(dir.resolve("file.txt"));
-        assertThat(out).isNotNull();
-
-        out.write("content".getBytes());
-        out.close();
-
-        final InputStream in = Files.newInputStream(dir.resolve("file.txt"));
-
-        assertThat(in).isNotNull();
-
-        final StringBuilder sb = new StringBuilder();
-        while (true) {
-            int i = in.read();
-            if (i == -1) {
-                break;
-            }
-            sb.append((char) i);
+        try (final OutputStream out = Files.newOutputStream(dir.resolve("file.txt"))) {
+            assertThat(out).isNotNull();
+            out.write("content".getBytes());
         }
-        in.close();
-        assertThat(sb.toString()).isEqualTo("content");
+
+        try (final InputStream in = Files.newInputStream(dir.resolve("file.txt"))) {
+
+            assertThat(in).isNotNull();
+
+            final StringBuilder sb = new StringBuilder();
+            while (true) {
+                int i = in.read();
+                if (i == -1) {
+                    break;
+                }
+                sb.append((char) i);
+            }
+            assertThat(sb.toString()).isEqualTo("content");
+        }
     }
 
-    @Test(expected = NoSuchFileException.class)
+    @Test
     public void newInputStreamNonExistent() {
-        Files.newInputStream(Paths.get("/path/to/some/file.txt"));
+        assertThatThrownBy(() -> Files.newInputStream(Paths.get("/path/to/some/file.txt")))
+                .isInstanceOf(NoSuchFileException.class);
     }
 
-    @Test(expected = NoSuchFileException.class)
+    @Test
     public void newInputStreamOnDir() {
         final Path dir = newTempDir();
-        Files.newInputStream(dir);
+        assertThatThrownBy(() -> Files.newInputStream(dir))
+                .isInstanceOf(NoSuchFileException.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void newInputStreamNull() {
-        Files.newInputStream(null);
+        assertThatThrownBy(() -> Files.newInputStream(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
     }
 
-    @Test(expected = org.uberfire.java.nio.IOException.class)
+    @Test
     public void newOutputStreamOnExistent() {
         final Path dir = newTempDir();
-        Files.newOutputStream(dir);
+
+        assertThatThrownBy(() -> Files.newOutputStream(dir))
+                .isInstanceOf(org.uberfire.java.nio.IOException.class)
+                .hasMessage("Could not open output stream.");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void newOutpurStreamNull() {
-        Files.newOutputStream(null);
+        assertThatThrownBy(() -> Files.newOutputStream(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
     }
 
     @Test
     public void newByteChannel() throws IOException {
-        final SeekableByteChannel sbc = Files.newByteChannel(newTempDir().resolve("file.temp.txt"),
-                                                             new HashSet<OpenOption>());
-        assertThat(sbc).isNotNull();
-        sbc.close();
+        try (final SeekableByteChannel sbc = Files.newByteChannel(newTempDir().resolve("file.temp.txt"),
+                                                                  new HashSet<>())) {
+            assertThat(sbc).isNotNull();
+        }
 
-        final SeekableByteChannel sbc2 = Files.newByteChannel(newTempDir().resolve("file.temp2.txt"));
-        assertThat(sbc2).isNotNull();
-        sbc2.close();
-    }
-
-    @Test(expected = FileAlreadyExistsException.class)
-    public void newByteChannelFileAlreadyExists() {
-        Files.newByteChannel(Files.createTempFile("foo",
-                                                  "bar"));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void newByteChannelNull() {
-        Files.newByteChannel(null);
+        try (final SeekableByteChannel sbc2 = Files.newByteChannel(newTempDir().resolve("file.temp2.txt"))) {
+            assertThat(sbc2).isNotNull();
+        }
     }
 
     @Test
-    public void createFile() throws IOException {
+    public void newByteChannelFileAlreadyExists() {
+        assertThatThrownBy(() -> Files.newByteChannel(Files.createTempFile("foo", "bar")))
+                .isInstanceOf(FileAlreadyExistsException.class);
+    }
+
+    @Test
+    public void newByteChannelNull() {
+        assertThatThrownBy(() -> Files.newByteChannel(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
+    }
+
+    @Test
+    public void createFile() {
         final Path path = Files.createFile(newTempDir().resolve("file.temp.txt"));
 
         assertThat(path).isNotNull();
-        assertThat(path.toFile().exists()).isTrue();
+        assertThat(path.toFile()).exists();
     }
 
-    @Test(expected = FileAlreadyExistsException.class)
+    @Test
     public void createFileAlreadyExists() {
-        Files.createFile(Files.createTempFile("foo",
-                                              "bar"));
+        assertThatThrownBy(() -> Files.createFile(Files.createTempFile("foo", "bar")))
+                .isInstanceOf(FileAlreadyExistsException.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void createFileNull() {
-        Files.createFile(null);
+        assertThatThrownBy(() -> Files.createFile(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
     }
 
     @Test
@@ -138,24 +151,26 @@ public class FilesTest extends AbstractBaseTest {
         final Path dir = Files.createDirectory(path.resolve("myNewDir"));
 
         assertThat(dir).isNotNull();
-        assertThat(dir.toFile().exists()).isTrue();
-        assertThat(dir.toFile().isDirectory()).isTrue();
+        assertThat(dir.toFile()).exists();
+        assertThat(dir.toFile()).isDirectory();
 
         final Path file = Files.createFile(dir.resolve("new.file.txt"));
         assertThat(file).isNotNull();
-        assertThat(file.toFile().exists()).isTrue();
-        assertThat(file.toFile().isDirectory()).isFalse();
-        assertThat(file.toFile().isFile()).isTrue();
+        assertThat(file.toFile()).exists();
+        assertThat(file.toFile()).isFile();
     }
 
-    @Test(expected = FileAlreadyExistsException.class)
+    @Test
     public void createDirectoryFileAlreadyExists() {
-        Files.createDirectory(newTempDir());
+        assertThatThrownBy(() -> Files.createDirectory(newTempDir()))
+                .isInstanceOf(FileAlreadyExistsException.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void createDirectoryNull() {
-        Files.createDirectory(null);
+        assertThatThrownBy(() -> Files.createDirectory(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'dir' should be not null!");
     }
 
     @Test
@@ -165,24 +180,26 @@ public class FilesTest extends AbstractBaseTest {
         final Path dir = Files.createDirectories(path.resolve("myNewDir/mysubDir1/mysubDir2"));
 
         assertThat(dir).isNotNull();
-        assertThat(dir.toFile().exists()).isTrue();
-        assertThat(dir.toFile().isDirectory()).isTrue();
+        assertThat(dir.toFile()).exists();
+        assertThat(dir.toFile()).isDirectory();
 
         final Path file = Files.createFile(dir.resolve("new.file.txt"));
         assertThat(file).isNotNull();
-        assertThat(file.toFile().exists()).isTrue();
-        assertThat(file.toFile().isDirectory()).isFalse();
-        assertThat(file.toFile().isFile()).isTrue();
+        assertThat(file.toFile()).exists();
+        assertThat(file.toFile()).isFile();
     }
 
-    @Test(expected = FileAlreadyExistsException.class)
+    @Test
     public void createDirectoriesFileAlreadyExists() {
-        Files.createDirectories(newTempDir());
+        assertThatThrownBy(() -> Files.createDirectories(newTempDir()))
+                .isInstanceOf(FileAlreadyExistsException.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void createDirectoriesNull() {
-        Files.createDirectories(null);
+        assertThatThrownBy(() -> Files.createDirectories(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'dir' should be not null!");
     }
 
     @Test
@@ -190,40 +207,44 @@ public class FilesTest extends AbstractBaseTest {
         final Path path = Files.createFile(newTempDir().resolve("file.temp.txt"));
 
         assertThat(path).isNotNull();
-        assertThat(path.toFile().exists()).isTrue();
+        assertThat(path.toFile()).exists();
 
         Files.delete(path);
 
         assertThat(path).isNotNull();
-        assertThat(path.toFile().exists()).isFalse();
+        assertThat(path.toFile()).doesNotExist();
 
         final Path dir = newTempDir();
 
         assertThat(dir).isNotNull();
-        assertThat(dir.toFile().exists()).isTrue();
+        assertThat(dir.toFile()).exists();
 
         Files.delete(dir);
 
         assertThat(dir).isNotNull();
-        assertThat(dir.toFile().exists()).isFalse();
+        assertThat(dir.toFile()).doesNotExist();
     }
 
-    @Test(expected = DirectoryNotEmptyException.class)
+    @Test
     public void deleteDirectoryNotEmpty() {
         final Path dir = newTempDir();
         Files.createFile(dir.resolve("file.temp.txt"));
 
-        Files.delete(dir);
+        assertThatThrownBy(() -> Files.delete(dir))
+                .isInstanceOf(DirectoryNotEmptyException.class);
     }
 
-    @Test(expected = NoSuchFileException.class)
+    @Test
     public void deleteNoSuchFileException() {
-        Files.delete(newTempDir().resolve("file.temp.txt"));
+        assertThatThrownBy(() -> Files.delete(newTempDir().resolve("file.temp.txt")))
+                .isInstanceOf(NoSuchFileException.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void deleteNull() {
-        Files.delete(null);
+        assertThatThrownBy(() -> Files.delete(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
     }
 
     @Test
@@ -231,37 +252,40 @@ public class FilesTest extends AbstractBaseTest {
         final Path path = Files.createFile(newTempDir().resolve("file.temp.txt"));
 
         assertThat(path).isNotNull();
-        assertThat(path.toFile().exists()).isTrue();
+        assertThat(path.toFile()).exists();
 
         assertThat(Files.deleteIfExists(path)).isTrue();
 
         assertThat(path).isNotNull();
-        assertThat(path.toFile().exists()).isFalse();
+        assertThat(path.toFile()).doesNotExist();
 
         final Path dir = newTempDir();
 
         assertThat(dir).isNotNull();
-        assertThat(dir.toFile().exists()).isTrue();
+        assertThat(dir.toFile()).exists();
 
         assertThat(Files.deleteIfExists(dir)).isTrue();
 
         assertThat(dir).isNotNull();
-        assertThat(dir.toFile().exists()).isFalse();
+        assertThat(dir.toFile()).doesNotExist();
 
         assertThat(Files.deleteIfExists(newTempDir().resolve("file.temp.txt"))).isFalse();
     }
 
-    @Test(expected = DirectoryNotEmptyException.class)
+    @Test
     public void deleteIfExistsDirectoryNotEmpty() {
         final Path dir = newTempDir();
         Files.createFile(dir.resolve("file.temp.txt"));
 
-        Files.deleteIfExists(dir);
+        assertThatThrownBy(() -> Files.deleteIfExists(dir))
+                .isInstanceOf(DirectoryNotEmptyException.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void deleteIfExistsNull() {
-        Files.deleteIfExists(null);
+        assertThatThrownBy(() -> Files.deleteIfExists(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
     }
 
     @Test
@@ -270,42 +294,41 @@ public class FilesTest extends AbstractBaseTest {
                                                    null);
         assertThat(tempFile).isNotNull();
         assertThat(tempFile.getFileName().toString()).endsWith("tmp");
-        assertThat(tempFile.toFile().exists()).isTrue();
+        assertThat(tempFile.toFile()).exists();
 
         final Path tempFile2 = Files.createTempFile("",
                                                     "");
         assertThat(tempFile2).isNotNull();
         assertThat(tempFile2.getFileName().toString()).endsWith("tmp");
-        assertThat(tempFile2.toFile().exists()).isTrue();
+        assertThat(tempFile2.toFile()).exists();
 
-        final Path tempFile3 = Files.createTempFile("foo",
-                                                    "bar");
+        final Path tempFile3 = Files.createTempFile("foo", "bar");
         assertThat(tempFile3).isNotNull();
-        assertThat(tempFile3.toFile().exists()).isTrue();
+        assertThat(tempFile3.toFile()).exists();
         assertThat(tempFile3.getFileName().toString()).startsWith("foo").endsWith(".bar");
 
         final Path tempFile4 = Files.createTempFile("",
                                                     "bar");
         assertThat(tempFile4).isNotNull();
-        assertThat(tempFile4.toFile().exists()).isTrue();
+        assertThat(tempFile4.toFile()).exists();
         assertThat(tempFile4.getFileName().toString()).endsWith(".bar");
 
         final Path tempFile5 = Files.createTempFile("",
                                                     ".bar");
         assertThat(tempFile5).isNotNull();
-        assertThat(tempFile5.toFile().exists()).isTrue();
+        assertThat(tempFile5.toFile()).exists();
         assertThat(tempFile5.getFileName().toString()).endsWith(".bar");
 
         final Path tempFile6 = Files.createTempFile("",
                                                     "bar.temp");
         assertThat(tempFile6).isNotNull();
-        assertThat(tempFile6.toFile().exists()).isTrue();
+        assertThat(tempFile6.toFile()).exists();
         assertThat(tempFile6.getFileName().toString()).endsWith(".bar.temp");
 
         final Path tempFile7 = Files.createTempFile("",
                                                     ".bar.temp");
         assertThat(tempFile7).isNotNull();
-        assertThat(tempFile7.toFile().exists()).isTrue();
+        assertThat(tempFile7.toFile()).exists();
         assertThat(tempFile7.getFileName().toString()).endsWith(".bar.temp");
     }
 
@@ -313,7 +336,7 @@ public class FilesTest extends AbstractBaseTest {
     public void createTempFileInsideDir() {
         final Path dir = newTempDir();
 
-        assertThat(dir.toFile().list()).isNotNull().isEmpty();
+        assertThat(dir.toFile().list()).isEmpty();
 
         final Path tempFile = Files.createTempFile(dir,
                                                    null,
@@ -321,70 +344,73 @@ public class FilesTest extends AbstractBaseTest {
 
         assertThat(tempFile).isNotNull();
         assertThat(tempFile.getFileName().toString()).endsWith("tmp");
-        assertThat(tempFile.toFile().exists()).isTrue();
+        assertThat(tempFile.toFile()).exists();
 
-        assertThat(dir.toFile().list()).isNotNull().isNotEmpty();
+        assertThat(dir.toFile().list()).isNotEmpty();
     }
 
-    @Test(expected = NoSuchFileException.class)
+    @Test
     public void createTempFileNoSuchFile() {
-        Files.createTempFile(Paths.get("/path/to/"),
-                             null,
-                             null);
+        assertThatThrownBy(() -> Files.createTempFile(Paths.get("/path/to/"),
+                                                      null,
+                                                      null))
+                .isInstanceOf(NoSuchFileException.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void createTempFileNull() {
-        Files.createTempFile((Path) null,
-                             null,
-                             null);
+        assertThatThrownBy(() -> Files.createTempFile((Path) null, null, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'dir' should be not null!");
     }
 
     @Test
     public void createTempDirectory() {
         final Path tempFile = Files.createTempDirectory(null);
         assertThat(tempFile).isNotNull();
-        assertThat(tempFile.toFile().exists()).isTrue();
-        assertThat(tempFile.toFile().isDirectory()).isTrue();
+        assertThat(tempFile.toFile()).exists();
+        assertThat(tempFile.toFile()).isDirectory();
 
         final Path tempFile2 = Files.createTempDirectory("");
         assertThat(tempFile2).isNotNull();
-        assertThat(tempFile2.toFile().exists()).isTrue();
-        assertThat(tempFile2.toFile().isDirectory()).isTrue();
+        assertThat(tempFile2.toFile()).exists();
+        assertThat(tempFile2.toFile()).isDirectory();
 
         final Path tempFile3 = Files.createTempDirectory("foo");
         assertThat(tempFile3).isNotNull();
-        assertThat(tempFile3.toFile().exists()).isTrue();
+        assertThat(tempFile3.toFile()).exists();
         assertThat(tempFile3.getFileName().toString()).startsWith("foo");
-        assertThat(tempFile3.toFile().isDirectory()).isTrue();
+        assertThat(tempFile3.toFile()).isDirectory();
     }
 
     @Test
     public void createTempDirectoryInsideDir() {
         final Path dir = newTempDir();
 
-        assertThat(dir.toFile().list()).isNotNull().isEmpty();
+        assertThat(dir.toFile().list()).isEmpty();
 
         final Path tempFile = Files.createTempDirectory(dir,
                                                         null);
 
         assertThat(tempFile).isNotNull();
-        assertThat(tempFile.toFile().exists()).isTrue();
-        assertThat(tempFile.toFile().isDirectory()).isTrue();
+        assertThat(tempFile.toFile()).exists();
+        assertThat(tempFile.toFile()).isDirectory();
 
-        assertThat(dir.toFile().list()).isNotNull().isNotEmpty();
+        assertThat(dir.toFile().list()).isNotEmpty();
     }
 
-    @Test(expected = NoSuchFileException.class)
+    @Test
     public void createTempDirectoryNoSuchFile() {
-        Files.createTempDirectory(Paths.get("/path/to/"),
-                                  null);
+        assertThatThrownBy(() -> Files.createTempDirectory(Paths.get("/path/to/"),
+                                                           null))
+                .isInstanceOf(NoSuchFileException.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void createTempDirectoryNull() {
-        Files.createTempDirectory((Path) null,
-                                  null);
+        assertThatThrownBy(() -> Files.createTempDirectory((Path) null, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'dir' should be not null!");
     }
 
     @Test
@@ -392,26 +418,24 @@ public class FilesTest extends AbstractBaseTest {
         final Path source = newTempDir();
         final Path dest = newDirToClean();
 
-        assertThat(source.toFile().exists()).isTrue();
-        assertThat(dest.toFile().exists()).isFalse();
+        assertThat(source.toFile()).exists();
+        assertThat(dest.toFile()).doesNotExist();
 
         Files.copy(source,
                    dest);
 
-        assertThat(dest.toFile().exists()).isTrue();
-        assertThat(source.toFile().exists()).isTrue();
+        assertThat(dest.toFile()).exists();
+        assertThat(source.toFile()).exists();
     }
 
-    @Test(expected = DirectoryNotEmptyException.class)
+    @Test
     public void copyDirDirectoryNotEmptyException() {
         final Path source = newTempDir();
         final Path dest = newDirToClean();
-        Files.createTempFile(source,
-                             "foo",
-                             "bar");
+        Files.createTempFile(source, "foo", "bar");
 
-        Files.copy(source,
-                   dest);
+        assertThatThrownBy(() -> Files.copy(source, dest))
+                .isInstanceOf(DirectoryNotEmptyException.class);
     }
 
     @Test
@@ -421,15 +445,15 @@ public class FilesTest extends AbstractBaseTest {
         final Path source = dir.resolve("temp.txt");
         final Path dest = dir.resolve("result.txt");
 
-        final OutputStream stream = Files.newOutputStream(source);
-        stream.write('a');
-        stream.close();
+        try (final OutputStream stream = Files.newOutputStream(source)) {
+            stream.write('a');
+        }
 
         Files.copy(source,
                    dest);
 
-        assertThat(dest.toFile().exists()).isTrue();
-        assertThat(source.toFile().exists()).isTrue();
+        assertThat(dest.toFile()).exists();
+        assertThat(source.toFile()).exists();
         assertThat(dest.toFile().length()).isEqualTo(source.toFile().length());
     }
 
@@ -439,57 +463,47 @@ public class FilesTest extends AbstractBaseTest {
         final Path dest = newTempDir().resolve("other");
 
         final Path sourceFile = source.resolve("file.txt");
-        final OutputStream stream = Files.newOutputStream(sourceFile);
-        stream.write('a');
-        stream.close();
-
-        try {
-            Files.copy(source,
-                       dest);
-            fail("source isn't empty");
-        } catch (Exception ex) {
+        try (final OutputStream stream = Files.newOutputStream(sourceFile)) {
+            stream.write('a');
         }
+
+        assertThatThrownBy(() -> Files.copy(source, dest))
+                .isInstanceOf(DirectoryNotEmptyException.class);
 
         sourceFile.toFile().delete();
         Files.copy(source,
                    dest);
 
-        try {
-            Files.copy(source,
-                       dest);
-            fail("dest already exists");
-        } catch (Exception ex) {
-        }
+        assertThatThrownBy(() -> Files.copy(source, dest))
+                .isInstanceOf(FileAlreadyExistsException.class);
 
         dest.toFile().delete();
         source.toFile().delete();
 
-        try {
-            Files.copy(source,
-                       dest);
-            fail("source doesn't exists");
-        } catch (Exception ex) {
-
-        } finally {
-        }
+        assertThatThrownBy(() -> Files.copy(source, dest))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Condition 'source must exist' is invalid!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void copyNull1() throws IOException {
-        Files.copy(newTempDir(),
-                   (Path) null);
+    @Test
+    public void copyNull1() {
+        assertThatThrownBy(() -> Files.copy(newTempDir(), (Path) null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'target' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void copyNull2() throws IOException {
-        Files.copy((Path) null,
-                   Paths.get("/temp"));
+    @Test
+    public void copyNull2() {
+        assertThatThrownBy(() -> Files.copy((Path) null, Paths.get("/temp")))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'source' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void copyNull3() throws IOException {
-        Files.copy((Path) null,
-                   (Path) null);
+    @Test
+    public void copyNull3() {
+        assertThatThrownBy(() -> Files.copy((Path) null, (Path) null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'source' should be not null!");
     }
 
     @Test
@@ -500,8 +514,8 @@ public class FilesTest extends AbstractBaseTest {
         Files.move(source,
                    dest);
 
-        assertThat(source.toFile().exists()).isFalse();
-        assertThat(dest.toFile().exists()).isTrue();
+        assertThat(source.toFile()).doesNotExist();
+        assertThat(dest.toFile()).exists();
     }
 
     @Test
@@ -509,16 +523,16 @@ public class FilesTest extends AbstractBaseTest {
         final Path dir = newTempDir();
         final Path source = dir.resolve("fileSource.txt");
         final Path dest = dir.resolve("fileDest.txt");
-        final OutputStream stream = Files.newOutputStream(source);
-        stream.write('a');
-        stream.close();
+        try (final OutputStream stream = Files.newOutputStream(source)) {
+            stream.write('a');
+        }
 
         long lenght = source.toFile().length();
         Files.move(source,
                    dest);
 
-        assertThat(dest.toFile().exists()).isTrue();
-        assertThat(source.toFile().exists()).isFalse();
+        assertThat(dest.toFile()).exists();
+        assertThat(source.toFile()).doesNotExist();
         assertThat(dest.toFile().length()).isEqualTo(lenght);
     }
 
@@ -528,73 +542,67 @@ public class FilesTest extends AbstractBaseTest {
         final Path dest = newTempDir().resolve("other");
 
         final Path sourceFile = source.resolve("file.txt");
-        final OutputStream stream = Files.newOutputStream(sourceFile);
-        stream.write('a');
-        stream.close();
-
-        try {
-            Files.move(source,
-                       dest);
-            fail("source isn't empty");
-        } catch (Exception ex) {
+        try (final OutputStream stream = Files.newOutputStream(sourceFile)) {
+            stream.write('a');
         }
+
+        assertThatThrownBy(() -> Files.move(source, dest))
+                .isInstanceOf(DirectoryNotEmptyException.class);
 
         sourceFile.toFile().delete();
         Files.copy(source,
                    dest);
 
-        try {
-            Files.move(source,
-                       dest);
-            fail("dest already exists");
-        } catch (Exception ex) {
-        }
+        assertThatThrownBy(() -> Files.move(source, dest))
+                .isInstanceOf(FileAlreadyExistsException.class);
 
         dest.toFile().delete();
         source.toFile().delete();
 
-        try {
-            Files.move(source,
-                       dest);
-            fail("source doesn't exists");
-        } catch (Exception ex) {
-
-        } finally {
-        }
+        assertThatThrownBy(() -> Files.move(source, dest))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Condition 'source must exist' is invalid!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void moveNull1() throws IOException {
-        Files.move(newTempDir(),
-                   null);
+    @Test
+    public void moveNull1() {
+        assertThatThrownBy(() -> Files.move(newTempDir(), null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'target' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void moveNull2() throws IOException {
-        Files.move(null,
-                   newTempDir());
+    @Test
+    public void moveNull2() {
+        assertThatThrownBy(() -> Files.move(null, newTempDir()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'source' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void moveNull3() throws IOException {
-        Files.move(null,
-                   null);
+    @Test
+    public void moveNull3() {
+        assertThatThrownBy(() -> Files.move(null, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'source' should be not null!");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void getFileStoreNull() {
-        Files.getFileStore(null);
+        assertThatThrownBy(() -> Files.getFileStore(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
     }
 
-    @Test(expected = FileSystemNotFoundException.class)
+    @Test
     public void getFileStoreN() {
         final URI uri = URI.create("nothing:///testXXXXXXX");
 
-        Files.getFileStore(Paths.get(uri));
+        assertThatThrownBy(() -> Files.getFileStore(Paths.get(uri)))
+                .isInstanceOf(FileSystemNotFoundException.class)
+                .hasMessage("Provider 'nothing' not found");
     }
 
     @Test
-    public void getFileAttributeViewGeneral() throws IOException {
+    public void getFileAttributeViewGeneral() {
         final Path path = Files.createTempFile(null,
                                                null);
 
@@ -610,7 +618,7 @@ public class FilesTest extends AbstractBaseTest {
     }
 
     @Test
-    public void getFileAttributeViewBasic() throws IOException {
+    public void getFileAttributeViewBasic() {
         final Path path = Files.createTempFile(null,
                                                null);
 
@@ -626,45 +634,48 @@ public class FilesTest extends AbstractBaseTest {
     }
 
     @Test
-    public void getFileAttributeViewInvalidView() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
+    public void getFileAttributeViewInvalidView() {
+        final Path path = Files.createTempFile("foo", "bar");
 
         assertThat(Files.getFileAttributeView(path,
                                               MyAttrsView.class)).isNull();
     }
 
-    @Test(expected = NoSuchFileException.class)
-    public void getFileAttributeViewNoSuchFileException() throws IOException {
+    @Test
+    public void getFileAttributeViewNoSuchFileException() {
         final Path path = Paths.get("/path/to/file.txt");
 
-        Files.getFileAttributeView(path,
-                                   BasicFileAttributeView.class);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void getFileAttributeViewNull1() throws IOException {
-        Files.getFileAttributeView(null,
-                                   MyAttrsView.class);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void getFileAttributeViewNull2() throws IOException {
-        final Path path = Paths.get("/path/to/file.txt");
-        Files.getFileAttributeView(path,
-                                   null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void getFileAttributeViewNull3() throws IOException {
-        Files.getFileAttributeView(null,
-                                   null);
+        assertThatThrownBy(() -> Files.getFileAttributeView(path,
+                                                            BasicFileAttributeView.class))
+                .isInstanceOf(NoSuchFileException.class);
     }
 
     @Test
-    public void readAttributesGeneral() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
+    public void getFileAttributeViewNull1() {
+        assertThatThrownBy(() -> Files.getFileAttributeView(null, MyAttrsView.class))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
+    }
+
+    @Test
+    public void getFileAttributeViewNull2() {
+        final Path path = Paths.get("/path/to/file.txt");
+
+        assertThatThrownBy(() -> Files.getFileAttributeView(path, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'type' should be not null!");
+    }
+
+    @Test
+    public void getFileAttributeViewNull3() {
+        assertThatThrownBy(() -> Files.getFileAttributeView(null, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
+    }
+
+    @Test
+    public void readAttributesGeneral() {
+        final Path path = Files.createTempFile("foo", "bar");
 
         final BasicFileAttributesImpl attrs = Files.readAttributes(path,
                                                                    BasicFileAttributesImpl.class);
@@ -677,9 +688,8 @@ public class FilesTest extends AbstractBaseTest {
     }
 
     @Test
-    public void readAttributesBasic() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
+    public void readAttributesBasic() {
+        final Path path = Files.createTempFile("foo", "bar");
 
         final BasicFileAttributes attrs = Files.readAttributes(path,
                                                                BasicFileAttributes.class);
@@ -692,200 +702,198 @@ public class FilesTest extends AbstractBaseTest {
         assertThat(attrs.size()).isEqualTo(0L);
     }
 
-    @Test(expected = NoSuchFileException.class)
-    public void readAttributesNonExistentFile() throws IOException {
+    @Test
+    public void readAttributesNonExistentFile() {
         final Path path = Paths.get("/path/to/file.txt");
-
-        Files.readAttributes(path,
-                             BasicFileAttributes.class);
+        assertThatThrownBy(() -> Files.readAttributes(path,
+                                                      BasicFileAttributes.class))
+                .isInstanceOf(NoSuchFileException.class);
     }
 
     @Test
-    public void readAttributesInvalid() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
+    public void readAttributesInvalid() {
+        final Path path = Files.createTempFile("foo", "bar");
 
         assertThat(Files.readAttributes(path,
                                         MyAttrs.class)).isNull();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void readAttributesNull1() throws IOException {
-        Files.readAttributes(null,
-                             MyAttrs.class);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void readAttributesNull2() throws IOException {
-        final Path path = Paths.get("/path/to/file.txt");
-        Files.readAttributes(path,
-                             (Class<MyAttrs>) null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void readAttributesNull3() throws IOException {
-        Files.readAttributes(null,
-                             (Class<MyAttrs>) null);
+    @Test
+    public void readAttributesNull1() {
+        assertThatThrownBy(() -> Files.readAttributes(null, MyAttrs.class))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
     }
 
     @Test
-    public void readAttributesMap() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
-
-        assertThat(Files.readAttributes(path,
-                                        "*")).isNotNull().hasSize(9);
-        assertThat(Files.readAttributes(path,
-                                        "basic:*")).isNotNull().hasSize(9);
-        assertThat(Files.readAttributes(path,
-                                        "basic:isRegularFile")).isNotNull().hasSize(1);
-        assertThat(Files.readAttributes(path,
-                                        "basic:isRegularFile,isDirectory")).isNotNull().hasSize(2);
-        assertThat(Files.readAttributes(path,
-                                        "basic:isRegularFile,isDirectory,someThing")).isNotNull().hasSize(2);
-        assertThat(Files.readAttributes(path,
-                                        "basic:someThing")).isNotNull().hasSize(0);
-
-        assertThat(Files.readAttributes(path,
-                                        "isRegularFile")).isNotNull().hasSize(1);
-        assertThat(Files.readAttributes(path,
-                                        "isRegularFile,isDirectory")).isNotNull().hasSize(2);
-        assertThat(Files.readAttributes(path,
-                                        "isRegularFile,isDirectory,someThing")).isNotNull().hasSize(2);
-        assertThat(Files.readAttributes(path,
-                                        "someThing")).isNotNull().hasSize(0);
-
-        try {
-            Files.readAttributes(path,
-                                 ":someThing");
-            fail("undefined view");
-        } catch (IllegalArgumentException ex) {
-        }
-
-        try {
-            Files.readAttributes(path,
-                                 "advanced:isRegularFile");
-            fail("undefined view");
-        } catch (UnsupportedOperationException ex) {
-        }
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void readAttributesMapNull1() throws IOException {
-        Files.readAttributes(null,
-                             "*");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void readAttributesMapNull2() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
-
-        Files.readAttributes(path,
-                             (String) null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void readAttributesMapNull3() throws IOException {
-        Files.readAttributes(null,
-                             (String) null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void readAttributesMapEmpty() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
-
-        Files.readAttributes(path,
-                             "");
-    }
-
-    @Test(expected = NoSuchFileException.class)
-    public void readAttributesMapNoSuchFileException() throws IOException {
+    public void readAttributesNull2() {
         final Path path = Paths.get("/path/to/file.txt");
-
-        Files.readAttributes(path,
-                             "*");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void setAttributeNull1() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
-
-        Files.setAttribute(path,
-                           null,
-                           null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void setAttributeNull2() throws IOException {
-        Files.setAttribute(null,
-                           "some",
-                           null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void setAttributeNull3() throws IOException {
-        Files.setAttribute(null,
-                           null,
-                           null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void setAttributeEmpty() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
-
-        Files.setAttribute(path,
-                           "",
-                           null);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void setAttributeInvalidAttr() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
-
-        Files.setAttribute(path,
-                           "myattr",
-                           null);
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void setAttributeInvalidView() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
-
-        Files.setAttribute(path,
-                           "advanced:isRegularFile",
-                           null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void setAttributeInvalidView2() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
-
-        Files.setAttribute(path,
-                           ":isRegularFile",
-                           null);
-    }
-
-    @Test(expected = NotImplementedException.class)
-    public void setAttributeNotImpl() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
-
-        Files.setAttribute(path,
-                           "isRegularFile",
-                           null);
+        assertThatThrownBy(() -> Files.readAttributes(path, (Class<MyAttrs>) null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'type' should be not null!");
     }
 
     @Test
-    public void readAttribute() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
+    public void readAttributesNull3() {
+        assertThatThrownBy(() -> Files.readAttributes(null, (Class<MyAttrs>) null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
+    }
+
+    @Test
+    public void readAttributesMap() {
+        final Path path = Files.createTempFile("foo", "bar");
+
+        Assertions.assertThat(Files.readAttributes(path,
+                                                   "*")).hasSize(9);
+        Assertions.assertThat(Files.readAttributes(path,
+                                                   "basic:*")).hasSize(9);
+        Assertions.assertThat(Files.readAttributes(path,
+                                                   "basic:isRegularFile")).hasSize(1);
+        Assertions.assertThat(Files.readAttributes(path,
+                                                   "basic:isRegularFile,isDirectory")).hasSize(2);
+        Assertions.assertThat(Files.readAttributes(path,
+                                                   "basic:isRegularFile,isDirectory,someThing")).hasSize(2);
+        Assertions.assertThat(Files.readAttributes(path,
+                                                   "basic:someThing")).hasSize(0);
+
+        Assertions.assertThat(Files.readAttributes(path,
+                                                   "isRegularFile")).hasSize(1);
+        Assertions.assertThat(Files.readAttributes(path,
+                                                   "isRegularFile,isDirectory")).hasSize(2);
+        Assertions.assertThat(Files.readAttributes(path,
+                                                   "isRegularFile,isDirectory,someThing")).hasSize(2);
+        Assertions.assertThat(Files.readAttributes(path,
+                                                   "someThing")).hasSize(0);
+
+        assertThatThrownBy(() -> Files.readAttributes(path,
+                                                      ":someThing"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(":someThing");
+
+        assertThatThrownBy(() -> Files.readAttributes(path,
+                                                      "advanced:isRegularFile"))
+                .isInstanceOf(UnsupportedOperationException.class)
+                .hasMessage("View 'advanced' not available");
+    }
+
+    @Test
+    public void readAttributesMapNull1() {
+        assertThatThrownBy(() -> Files.readAttributes(null, "*"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
+    }
+
+    @Test
+    public void readAttributesMapNull2() {
+        final Path path = Files.createTempFile("foo", "bar");
+
+        assertThatThrownBy(() -> Files.readAttributes(path, (String) null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'attributes' should be filled!");
+    }
+
+    @Test
+    public void readAttributesMapNull3() {
+        assertThatThrownBy(() -> Files.readAttributes(null,
+                                                      (String) null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
+    }
+
+    @Test
+    public void readAttributesMapEmpty() {
+        final Path path = Files.createTempFile("foo", "bar");
+
+        assertThatThrownBy(() -> Files.readAttributes(path, ""))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'attributes' should be filled!");
+    }
+
+    @Test
+    public void readAttributesMapNoSuchFileException() {
+        final Path path = Paths.get("/path/to/file.txt");
+
+        assertThatThrownBy(() -> Files.readAttributes(path,
+                                                      "*"))
+                .isInstanceOf(NoSuchFileException.class);
+    }
+
+    @Test
+    public void setAttributeNull1() {
+        final Path path = Files.createTempFile("foo", "bar");
+        assertThatThrownBy(() -> Files.setAttribute(path, null, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'attribute' should be filled!");
+    }
+
+    @Test
+    public void setAttributeNull2() {
+        assertThatThrownBy(() -> Files.setAttribute(null, "some", null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
+    }
+
+    @Test
+    public void setAttributeNull3() {
+        assertThatThrownBy(() -> Files.setAttribute(null, null, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
+    }
+
+    @Test
+    public void setAttributeEmpty() {
+        final Path path = Files.createTempFile("foo", "bar");
+
+        assertThatThrownBy(() -> Files.setAttribute(path, "", null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'attribute' should be filled!");
+    }
+
+    @Test
+    public void setAttributeInvalidAttr() {
+        final Path path = Files.createTempFile("foo", "bar");
+
+        assertThatThrownBy(() -> Files.setAttribute(path, "myattr", null))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Condition 'invalid attribute' is invalid!");
+    }
+
+    @Test
+    public void setAttributeInvalidView() {
+        final Path path = Files.createTempFile("foo", "bar");
+
+        assertThatThrownBy(() -> Files.setAttribute(path,
+                                                    "advanced:isRegularFile",
+                                                    null))
+                .isInstanceOf(UnsupportedOperationException.class)
+                .hasMessage("View 'advanced' not available");
+    }
+
+    @Test
+    public void setAttributeInvalidView2() {
+        final Path path = Files.createTempFile("foo", "bar");
+
+        assertThatThrownBy(() -> Files.setAttribute(path,
+                                                    ":isRegularFile",
+                                                    null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(":isRegularFile");
+    }
+
+    @Test
+    public void setAttributeNotImpl() {
+        final Path path = Files.createTempFile("foo", "bar");
+
+        assertThatThrownBy(() -> Files.setAttribute(path,
+                                                    "isRegularFile",
+                                                    null))
+                .isInstanceOf(NotImplementedException.class);
+    }
+
+    @Test
+    public void readAttribute() {
+        final Path path = Files.createTempFile("foo", "bar");
 
         assertThat(Files.getAttribute(path,
                                       "basic:isRegularFile")).isNotNull();
@@ -898,129 +906,134 @@ public class FilesTest extends AbstractBaseTest {
                                       "someThing")).isNull();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void readAttributeInvalid() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
+    @Test
+    public void readAttributeInvalid() {
+        final Path path = Files.createTempFile("foo", "bar");
 
-        assertThat(Files.getAttribute(path,
-                                      "*")).isNotNull();
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void readAttributeInvalid2() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
-
-        assertThat(Files.getAttribute(path,
-                                      "isRegularFile,isDirectory")).isNull();
-    }
-
-    @Test(expected = NoSuchFileException.class)
-    public void readAttributeInvalid3() throws IOException {
-        final Path path = Paths.get("/path/to/file.txt");
-
-        Files.getAttribute(path,
-                           "isRegularFile");
+        assertThatThrownBy(() -> Files.getAttribute(path, "*"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("*");
     }
 
     @Test
-    public void getLastModifiedTime() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
+    public void readAttributeInvalid2() {
+        final Path path = Files.createTempFile("foo", "bar");
+        assertThatThrownBy(() -> Files.getAttribute(path,
+                                                    "isRegularFile,isDirectory"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("isRegularFile,isDirectory");
+    }
+
+    @Test
+    public void readAttributeInvalid3() {
+        final Path path = Paths.get("/path/to/file.txt");
+
+        assertThatThrownBy(() -> Files.getAttribute(path,
+                                                    "isRegularFile"))
+                .isInstanceOf(NoSuchFileException.class);
+    }
+
+    @Test
+    public void getLastModifiedTime() {
+        final Path path = Files.createTempFile("foo", "bar");
 
         assertThat(Files.getLastModifiedTime(path)).isNotNull();
     }
 
-    @Test(expected = NoSuchFileException.class)
-    public void getLastModifiedTimeNoSuchFileException() throws IOException {
+    @Test
+    public void getLastModifiedTimeNoSuchFileException() {
         final Path path = Paths.get("/path/to/file");
 
-        Files.getLastModifiedTime(path);
+        assertThatThrownBy(() -> Files.getLastModifiedTime(path))
+                .isInstanceOf(NoSuchFileException.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void getLastModifiedTimeNull() throws IOException {
-        Files.getLastModifiedTime(null);
+    @Test
+    public void getLastModifiedTimeNull() {
+        assertThatThrownBy(() -> Files.getLastModifiedTime(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
     }
 
-    @Test(expected = NotImplementedException.class)
-    public void setLastModifiedTime() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
+    @Test
+    public void setLastModifiedTime() {
+        final Path path = Files.createTempFile("foo", "bar");
 
-        Files.setLastModifiedTime(path,
-                                  null);
+        assertThatThrownBy(() -> Files.setLastModifiedTime(path, null))
+                .isInstanceOf(NotImplementedException.class);
     }
 
-    @Test(expected = NoSuchFileException.class)
-    public void setLastModifiedTimeNoSuchFileException() throws IOException {
+    @Test
+    public void setLastModifiedTimeNoSuchFileException() {
         final Path path = Paths.get("/path/to/file");
 
-        Files.setLastModifiedTime(path,
-                                  null);
+        assertThatThrownBy(() -> Files.setLastModifiedTime(path, null))
+                .isInstanceOf(NoSuchFileException.class);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void setLastModifiedTimeNull() throws IOException {
-        Files.setLastModifiedTime(null,
-                                  null);
+    @Test
+    public void setLastModifiedTimeNull() {
+        assertThatThrownBy(() -> Files.setLastModifiedTime(null, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
     }
 
-    @Test(expected = NotImplementedException.class)
-    public void setLastModifiedTimeNull2() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
-        Files.setLastModifiedTime(path,
-                                  null);
+    @Test
+    public void setLastModifiedTimeNull2() {
+        final Path path = Files.createTempFile("foo", "bar");
+
+        assertThatThrownBy(() -> Files.setLastModifiedTime(path, null))
+                .isInstanceOf(NotImplementedException.class);
     }
 
     @Test
     public void size() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
+        final Path path = Files.createTempFile("foo", "bar");
 
-        assertThat(Files.size(path)).isNotNull().isEqualTo(0L);
+        assertThat(Files.size(path)).isEqualTo(0L);
 
         final Path sourceFile = newTempDir().resolve("file.txt");
         final OutputStream stream = Files.newOutputStream(sourceFile);
         stream.write('a');
         stream.close();
 
-        assertThat(Files.size(sourceFile)).isNotNull().isEqualTo(1L);
-    }
-
-    @Test(expected = NoSuchFileException.class)
-    public void sizeNoSuchFileException() throws IOException {
-        final Path path = Paths.get("/path/to/file");
-
-        Files.size(path);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void sizeNull() throws IOException {
-        Files.size(null);
+        assertThat(Files.size(sourceFile)).isEqualTo(1L);
     }
 
     @Test
-    public void exists() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
+    public void sizeNoSuchFileException() {
+        final Path path = Paths.get("/path/to/file");
+
+        assertThatThrownBy(() -> Files.size(path))
+                .isInstanceOf(NoSuchFileException.class);
+    }
+
+    @Test
+    public void sizeNull() {
+        assertThatThrownBy(() -> Files.size(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
+    }
+
+    @Test
+    public void exists() {
+        final Path path = Files.createTempFile("foo", "bar");
 
         assertThat(Files.exists(path)).isTrue();
         assertThat(Files.exists(newTempDir())).isTrue();
         assertThat(Files.exists(Paths.get("/some/path/here"))).isFalse();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void existsNull() throws IOException {
-        Files.exists(null);
+    @Test
+    public void existsNull() {
+        assertThatThrownBy(() -> Files.exists(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
     }
 
     @Test
-    public void notExists() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
+    public void notExists() {
+        final Path path = Files.createTempFile("foo", "bar");
 
         assertThat(Files.notExists(path)).isFalse();
         assertThat(Files.notExists(newTempDir())).isFalse();
@@ -1028,21 +1041,21 @@ public class FilesTest extends AbstractBaseTest {
         assertThat(Files.notExists(newTempDir().resolve("some.text"))).isTrue();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void notExistsNull() throws IOException {
-        Files.notExists(null);
+    @Test
+    public void notExistsNull() {
+        assertThatThrownBy(() -> Files.notExists(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
     }
 
     @Test
-    public void isSameFile() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
+    public void isSameFile() {
+        final Path path = Files.createTempFile("foo", "bar");
 
         assertThat(Files.isSameFile(path,
                                     Paths.get(path.toString()))).isTrue();
         assertThat(Files.isSameFile(path,
-                                    Files.createTempFile("foo",
-                                                         "bar"))).isFalse();
+                                    Files.createTempFile("foo", "bar"))).isFalse();
         assertThat(Files.isSameFile(newTempDir(),
                                     newTempDir())).isFalse();
 
@@ -1056,142 +1069,150 @@ public class FilesTest extends AbstractBaseTest {
                                     Paths.get("/path/to/some/place/a"))).isFalse();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void isSameFileNull1() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
+    @Test
+    public void isSameFileNull1() {
+        final Path path = Files.createTempFile("foo", "bar");
 
-        Files.isSameFile(path,
-                         null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void isSameFileNull2() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
-
-        Files.isSameFile(null,
-                         path);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void isSameFileNull3() throws IOException {
-        Files.isSameFile(null,
-                         null);
+        assertThatThrownBy(() -> Files.isSameFile(path, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path2' should be not null!");
     }
 
     @Test
-    public void isHidden() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
+    public void isSameFileNull2() {
+        final Path path = Files.createTempFile("foo", "bar");
+
+        assertThatThrownBy(() -> Files.isSameFile(null, path))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
+    }
+
+    @Test
+    public void isSameFileNull3() {
+        assertThatThrownBy(() -> Files.isSameFile(null, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
+    }
+
+    @Test
+    public void isHidden() {
+        final Path path = Files.createTempFile("foo", "bar");
 
         assertThat(Files.isHidden(path)).isFalse();
         assertThat(Files.isHidden(newTempDir())).isFalse();
         assertThat(Files.isHidden(Paths.get("/some/file"))).isFalse();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void isHiddenNull() throws IOException {
-        Files.isHidden(null);
+    @Test
+    public void isHiddenNull() {
+        assertThatThrownBy(() -> Files.isHidden(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
     }
 
     @Test
-    public void isReadable() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
+    public void isReadable() {
+        final Path path = Files.createTempFile("foo", "bar");
 
         assertThat(Files.isReadable(path)).isTrue();
         assertThat(Files.isReadable(newTempDir())).isTrue();
         assertThat(Files.isReadable(Paths.get("/some/file"))).isFalse();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void isReadableNull() throws IOException {
-        Files.isReadable(null);
+    @Test
+    public void isReadableNull() {
+        assertThatThrownBy(() -> Files.isReadable(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
     }
 
     @Test
-    public void isWritable() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
+    public void isWritable() {
+        final Path path = Files.createTempFile("foo", "bar");
 
         assertThat(Files.isWritable(path)).isTrue();
         assertThat(Files.isWritable(newTempDir())).isTrue();
         assertThat(Files.isWritable(Paths.get("/some/file"))).isFalse();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void isWritableNull() throws IOException {
-        Files.isWritable(null);
+    @Test
+    public void isWritableNull() {
+        assertThatThrownBy(() -> Files.isWritable(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
     }
 
     @Test
-    public void isExecutable() throws IOException {
+    public void isExecutable() {
         Assume.assumeFalse(SimpleFileSystemProvider.OSType.currentOS().equals(SimpleFileSystemProvider.OSType.WINDOWS));
 
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
+        final Path path = Files.createTempFile("foo", "bar");
 
         assertThat(Files.isExecutable(path)).isFalse();
         assertThat(Files.isExecutable(newTempDir())).isTrue();
         assertThat(Files.isExecutable(Paths.get("/some/file"))).isFalse();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void isExecutableNull() throws IOException {
-        Files.isExecutable(null);
+    @Test
+    public void isExecutableNull() {
+        assertThatThrownBy(() -> Files.isExecutable(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
     }
 
     @Test
-    public void isSymbolicLink() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
+    public void isSymbolicLink() {
+        final Path path = Files.createTempFile("foo", "bar");
 
         assertThat(Files.isSymbolicLink(path)).isFalse();
         assertThat(Files.isSymbolicLink(newTempDir())).isFalse();
         assertThat(Files.isSymbolicLink(Paths.get("/some/file"))).isFalse();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void isSymbolicLinkNull() throws IOException {
-        Files.isSymbolicLink(null);
+    @Test
+    public void isSymbolicLinkNull() {
+        assertThatThrownBy(() -> Files.isSymbolicLink(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
     }
 
     @Test
-    public void isDirectory() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
+    public void isDirectory() {
+        final Path path = Files.createTempFile("foo", "bar");
 
         assertThat(Files.isDirectory(path)).isFalse();
         assertThat(Files.isDirectory(newTempDir())).isTrue();
         assertThat(Files.isDirectory(Paths.get("/some/file"))).isFalse();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void isDirectoryNull() throws IOException {
-        Files.isSymbolicLink(null);
+    @Test
+    public void isDirectoryNull() {
+        assertThatThrownBy(() -> Files.isDirectory(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
     }
 
     @Test
-    public void isRegularFile() throws IOException {
-        final Path path = Files.createTempFile("foo",
-                                               "bar");
+    public void isRegularFile() {
+        final Path path = Files.createTempFile("foo", "bar");
 
         assertThat(Files.isRegularFile(path)).isTrue();
         assertThat(Files.isRegularFile(newTempDir())).isFalse();
         assertThat(Files.isRegularFile(Paths.get("/some/file"))).isFalse();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void isRegularFileNull() throws IOException {
-        Files.isRegularFile(null);
+    @Test
+    public void isRegularFileNull() {
+        assertThatThrownBy(() -> Files.isRegularFile(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'path' should be not null!");
     }
 
-    private static interface MyAttrsView extends BasicFileAttributeView {
+    private interface MyAttrsView extends BasicFileAttributeView {
 
     }
 
-    private static interface MyAttrs extends BasicFileAttributes {
+    private interface MyAttrs extends BasicFileAttributes {
 
     }
 }

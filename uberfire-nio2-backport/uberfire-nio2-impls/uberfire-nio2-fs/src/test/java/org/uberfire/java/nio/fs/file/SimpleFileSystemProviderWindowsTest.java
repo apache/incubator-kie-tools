@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.uberfire.java.nio.base.GeneralPathImpl;
 import org.uberfire.java.nio.file.Path;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.uberfire.java.nio.fs.file.SimpleFileSystemProvider.OSType.WINDOWS;
 
 public class SimpleFileSystemProviderWindowsTest {
@@ -35,13 +35,13 @@ public class SimpleFileSystemProviderWindowsTest {
     @Test
     public void simpleStateTest() {
         assertThat(fsProvider).isNotNull();
-        assertThat(fsProvider.getScheme()).isNotEmpty().isEqualTo("file");
+        assertThat(fsProvider.getScheme()).isEqualTo("file");
 
         final Path path = GeneralPathImpl.create(fsProvider.getFileSystem(URI.create("file:///")),
                                                  "c:\\path\\to\\file.txt",
                                                  false);
 
-        assertThat(path.getFileSystem()).isNotNull().isInstanceOf(SimpleWindowsFileSystem.class);
+        assertThat(path.getFileSystem()).isInstanceOf(SimpleWindowsFileSystem.class);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class SimpleFileSystemProviderWindowsTest {
                                                  "c:\\path\\to\\file.txt",
                                                  false);
 
-        assertThat(fsProvider.getFileStore(path)).isNotNull().isInstanceOf(SimpleWindowsFileStore.class);
-        assertThat(fsProvider.getFileStore(path).name()).isNotNull().isEqualTo("c:\\");
+        assertThat(fsProvider.getFileStore(path)).isInstanceOf(SimpleWindowsFileStore.class);
+        assertThat(fsProvider.getFileStore(path).name()).isEqualTo("c:\\");
     }
 }

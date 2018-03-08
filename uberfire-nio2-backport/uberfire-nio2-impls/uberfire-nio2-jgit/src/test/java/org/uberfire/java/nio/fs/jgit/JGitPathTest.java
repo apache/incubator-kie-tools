@@ -22,14 +22,15 @@ import org.uberfire.java.nio.EncodingUtil;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.failBecauseExceptionWasNotThrown;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class JGitPathTest {
 
-    final FileSystemProvider fsp = mock(FileSystemProvider.class);
-    final JGitFileSystem fs = mock(JGitFileSystem.class);
+    private final FileSystemProvider fsp = mock(FileSystemProvider.class);
+    private final JGitFileSystem fs = mock(JGitFileSystem.class);
 
     @Before
     public void setup() {
@@ -54,7 +55,7 @@ public class JGitPathTest {
 
         assertThat(path.getNameCount()).isEqualTo(0);
 
-        assertThat(path.getRoot()).isNotNull().isEqualTo(path);
+        assertThat(path.getRoot()).isEqualTo(path);
     }
 
     @Test
@@ -109,8 +110,8 @@ public class JGitPathTest {
 
         assertThat(path.getNameCount()).isEqualTo(4);
 
-        assertThat(path.getName(0).toString()).isNotNull().isEqualTo("path");
-        assertThat(path.getRoot().toString()).isNotNull().isEqualTo("/");
+        assertThat(path.getName(0).toString()).isEqualTo("path");
+        assertThat(path.getRoot().toString()).isEqualTo("/");
     }
 
     @Test
@@ -129,8 +130,8 @@ public class JGitPathTest {
 
         assertThat(path.getNameCount()).isEqualTo(4);
 
-        assertThat(path.getName(0).toString()).isNotNull().isEqualTo("path");
-        assertThat(path.getRoot().toString()).isNotNull().isEqualTo("/");
+        assertThat(path.getName(0).toString()).isEqualTo("path");
+        assertThat(path.getRoot().toString()).isEqualTo("/");
     }
 
     @Test
@@ -149,8 +150,8 @@ public class JGitPathTest {
 
         assertThat(path.getNameCount()).isEqualTo(4);
 
-        assertThat(path.getName(0).toString()).isNotNull().isEqualTo("path");
-        assertThat(path.getRoot().toString()).isNotNull().isEqualTo("/");
+        assertThat(path.getName(0).toString()).isEqualTo("path");
+        assertThat(path.getRoot().toString()).isEqualTo("/");
     }
 
     @Test
@@ -170,12 +171,9 @@ public class JGitPathTest {
 
         assertThat(path.getNameCount()).isEqualTo(0);
 
-        assertThat(path.getRoot().toString()).isNotNull().isEqualTo("/");
-        try {
-            assertThat(path.getName(0).toString()).isNotNull().isEqualTo("");
-            failBecauseExceptionWasNotThrown(IllegalArgumentException.class);
-        } catch (IllegalArgumentException ex) {
-        }
+        assertThat(path.getRoot().toString()).isEqualTo("/");
+        assertThatThrownBy(() -> path.getName(0))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

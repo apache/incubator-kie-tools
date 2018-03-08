@@ -17,41 +17,23 @@
 package org.uberfire.backend.vfs;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.Test;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.uberfire.backend.vfs.PathFactory.newPath;
 
-/**
- *
- */
 public class PathTest {
-
-    final FileSystem fs = new FileSystem() {
-
-        @Override
-        public List<Path> getRootDirectories() {
-            return null;
-        }
-
-        @Override
-        public Set<String> supportedFileAttributeViews() {
-            return null;
-        }
-    };
 
     @Test
     public void generalState() {
         {
             final Path path = newPath("resource",
                                       "scheme://path/to/some/resource");
-            assertThat(path.equals(path)).isTrue();
-            assertThat(path.equals(newPath("resource",
-                                           "scheme://path/to/some/resource"))).isTrue();
+            assertThat(path).isEqualTo(path);
+            assertThat(path).isEqualTo(newPath("resource",
+                                               "scheme://path/to/some/resource"));
             assertThat(path.hashCode()).isEqualTo(newPath("resource",
                                                           "scheme://path/to/some/resource").hashCode());
             assertThat(path.hashCode()).isEqualTo(path.hashCode());
@@ -76,7 +58,7 @@ public class PathTest {
 
     @Test
     public void checkNPE() {
-        final Map<Path, String> hashMap = new HashMap<Path, String>();
+        final Map<Path, String> hashMap = new HashMap<>();
         final Path path = newPath("defaultPackage",
                                   "default://guvnor-jcr2vfs-migration/defaultPackage/");
         hashMap.put(path,
