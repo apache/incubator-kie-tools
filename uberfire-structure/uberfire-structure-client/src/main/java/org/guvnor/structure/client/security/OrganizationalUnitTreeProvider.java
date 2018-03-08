@@ -75,10 +75,10 @@ public class OrganizationalUnitTreeProvider implements PermissionTreeProvider {
 
     @Override
     public PermissionNode buildRootNode() {
-        PermissionResourceNode rootNode = new PermissionResourceNode(i18n.OrganizationalUnitResource(),
+        PermissionResourceNode rootNode = new PermissionResourceNode(i18n.SpaceResource(),
                                                                      this);
-        rootNode.setNodeName(i18n.OrganizationalUnitsNode());
-        rootNode.setNodeFullName(i18n.OrganizationalUnitsHelp());
+        rootNode.setNodeName(i18n.SpacesNode());
+        rootNode.setNodeFullName(i18n.SpacesHelp());
         rootNode.setPositionInTree(rootNodePosition);
 
         Permission readPermission = newPermission(READ);
@@ -87,13 +87,13 @@ public class OrganizationalUnitTreeProvider implements PermissionTreeProvider {
         Permission createPermission = newPermission(CREATE);
 
         rootNode.addPermission(readPermission,
-                               i18n.OrganizationalUnitActionRead());
+                               i18n.SpaceActionRead());
         rootNode.addPermission(updatePermission,
-                               i18n.OrganizationalUnitActionUpdate());
+                               i18n.SpaceActionUpdate());
         rootNode.addPermission(deletePermission,
-                               i18n.OrganizationalUnitActionDelete());
+                               i18n.SpaceActionDelete());
         rootNode.addPermission(createPermission,
-                               i18n.OrganizationalUnitActionCreate());
+                               i18n.SpaceActionCreate());
 
         rootNode.addDependencies(readPermission,
                                  updatePermission,
@@ -162,11 +162,11 @@ public class OrganizationalUnitTreeProvider implements PermissionTreeProvider {
                                                     DELETE);
 
         node.addPermission(readPermission,
-                           i18n.OrganizationalUnitActionRead());
+                           i18n.SpaceActionRead());
         node.addPermission(updatePermission,
-                           i18n.OrganizationalUnitActionUpdate());
+                           i18n.SpaceActionUpdate());
         node.addPermission(deletePermission,
-                           i18n.OrganizationalUnitActionDelete());
+                           i18n.SpaceActionDelete());
 
         node.addDependencies(readPermission,
                              updatePermission,

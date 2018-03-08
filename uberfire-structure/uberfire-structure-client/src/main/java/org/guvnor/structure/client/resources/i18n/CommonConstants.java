@@ -47,19 +47,19 @@ public interface CommonConstants
 
     String RepositoryActionCreate();
 
-    String OrganizationalUnitsNode();
+    String SpacesNode();
 
-    String OrganizationalUnitsHelp();
+    String SpacesHelp();
 
-    String OrganizationalUnitResource();
+    String SpaceResource();
 
-    String OrganizationalUnitActionRead();
+    String SpaceActionRead();
 
-    String OrganizationalUnitActionUpdate();
+    String SpaceActionUpdate();
 
-    String OrganizationalUnitActionDelete();
+    String SpaceActionDelete();
 
-    String OrganizationalUnitActionCreate();
+    String SpaceActionCreate();
 
     String Loading();
 
