@@ -21,15 +21,23 @@ import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.server.controller.api.KieServerControllerNotFoundException;
 import org.kie.server.controller.api.model.runtime.ServerInstanceKey;
-import org.kie.server.controller.api.model.spec.*;
+import org.kie.server.controller.api.model.spec.Capability;
+import org.kie.server.controller.api.model.spec.ContainerConfig;
+import org.kie.server.controller.api.model.spec.ContainerSpec;
+import org.kie.server.controller.api.model.spec.ContainerSpecKey;
+import org.kie.server.controller.api.model.spec.ServerTemplate;
+import org.kie.server.controller.api.model.spec.ServerTemplateKeyList;
+import org.kie.server.controller.api.model.spec.ServerTemplateList;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 
 @Service
 @ApplicationScoped
 public class SpecManagementServiceCDI implements SpecManagementService {
 
-    @Inject @Any
+    @Inject
+    @Any
     private org.kie.server.controller.api.service.SpecManagementService service;
 
     @Override
@@ -66,7 +74,12 @@ public class SpecManagementServiceCDI implements SpecManagementService {
 
     @Override
     public boolean isNewServerTemplateIdValid(final String serverTemplateId) {
-        return getServerTemplate(serverTemplateId) == null;
+        try {
+            ServerTemplate serverTemplate = getServerTemplate(serverTemplateId);
+            return serverTemplate == null;
+        } catch (KieServerControllerNotFoundException notFoundException) {
+            return true;
+        }
     }
 
     private String validContainerIdWithSuffix(final String serverTemplateId,

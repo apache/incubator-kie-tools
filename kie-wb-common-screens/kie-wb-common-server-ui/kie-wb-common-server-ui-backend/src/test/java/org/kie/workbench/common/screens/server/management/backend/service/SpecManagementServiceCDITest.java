@@ -17,9 +17,9 @@
 package org.kie.workbench.common.screens.server.management.backend.service;
 
 import org.junit.Test;
+import org.kie.server.controller.api.KieServerControllerNotFoundException;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
-import org.kie.workbench.common.screens.server.management.backend.service.SpecManagementServiceCDI;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -59,6 +59,19 @@ public class SpecManagementServiceCDITest {
                                                              "org.jbpm:Evaluation:1.0~SNAPSHOT"));
         assertFalse(specManagementService.isContainerIdValid("templateId",
                                                              "aa&&aa"));
+    }
+
+    @Test
+    public void isNewServerTemplateIdValidTest() {
+        final SpecManagementServiceCDI specManagementService = spy(new SpecManagementServiceCDI());
+
+        final ServerTemplate serverTemplate = mock(ServerTemplate.class);
+        when(serverTemplate.getContainerSpec(any())).thenReturn(null);
+        doThrow(KieServerControllerNotFoundException.class).when(specManagementService).getServerTemplate("noDoraId");
+        doReturn(serverTemplate).when(specManagementService).getServerTemplate("doraId");
+
+        assertTrue(specManagementService.isNewServerTemplateIdValid("noDoraId"));
+        assertFalse(specManagementService.isNewServerTemplateIdValid("doraId"));
     }
 
     @Test
