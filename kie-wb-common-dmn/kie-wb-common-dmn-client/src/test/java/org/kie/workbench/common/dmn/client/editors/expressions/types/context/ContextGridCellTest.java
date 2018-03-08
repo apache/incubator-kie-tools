@@ -19,7 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
@@ -33,7 +33,7 @@ public class ContextGridCellTest {
     private GridCellValue<String> value;
 
     @Mock
-    private ListSelector listSelector;
+    private ListSelectorView.Presenter listSelector;
 
     private ContextGridCell cell;
 

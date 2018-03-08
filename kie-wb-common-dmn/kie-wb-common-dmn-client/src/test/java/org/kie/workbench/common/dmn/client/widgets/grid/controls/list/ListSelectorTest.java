@@ -55,7 +55,7 @@ public class ListSelectorTest {
     @Captor
     private ArgumentCaptor<List<ListSelectorItem>> itemsCaptor;
 
-    private ListSelector listSelector;
+    private ListSelectorView.Presenter listSelector;
 
     @Before
     public void setup() {

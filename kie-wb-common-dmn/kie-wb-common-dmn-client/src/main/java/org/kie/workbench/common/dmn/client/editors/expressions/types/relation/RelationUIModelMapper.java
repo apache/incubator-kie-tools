@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -31,11 +31,11 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowS
 
 public class RelationUIModelMapper extends BaseUIModelMapper<Relation> {
 
-    private final ListSelector listSelector;
+    private final ListSelectorView.Presenter listSelector;
 
     public RelationUIModelMapper(final Supplier<GridData> uiModel,
                                  final Supplier<Optional<Relation>> dmnModel,
-                                 final ListSelector listSelector) {
+                                 final ListSelectorView.Presenter listSelector) {
         super(uiModel,
               dmnModel);
         this.listSelector = listSelector;

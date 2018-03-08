@@ -34,8 +34,8 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Exp
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -75,13 +75,13 @@ public abstract class BaseFunctionSupplementaryGridTest<D extends ExpressionEdit
     protected EventSourceMock<ExpressionEditorSelectedEvent> editorSelectedEvent;
 
     @Mock
-    protected CellEditorControls cellEditorControls;
+    protected CellEditorControlsView.Presenter cellEditorControls;
 
     @Mock
     protected TranslationService translationService;
 
     @Mock
-    protected ListSelector listSelector;
+    protected ListSelectorView.Presenter listSelector;
 
     @Mock
     private GridCellTuple parent;

@@ -18,15 +18,15 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.undefined;
 
 import java.util.Optional;
 
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
 public class UndefinedExpressionCell extends DMNGridCell<String> {
 
-    private final ListSelector listSelector;
+    private final ListSelectorView.Presenter listSelector;
 
-    public UndefinedExpressionCell(final ListSelector listSelector) {
+    public UndefinedExpressionCell(final ListSelectorView.Presenter listSelector) {
         super(new BaseGridCellValue<>("--"));
         this.listSelector = listSelector;
     }

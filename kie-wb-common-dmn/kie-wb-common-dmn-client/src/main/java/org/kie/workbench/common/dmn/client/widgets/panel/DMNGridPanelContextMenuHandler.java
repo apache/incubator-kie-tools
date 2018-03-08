@@ -30,7 +30,7 @@ import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.dom.client.ContextMenuHandler;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -46,7 +46,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.Rang
 public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
 
     private DMNGridLayer gridLayer;
-    private CellEditorControls cellEditorControls;
+    private CellEditorControlsView.Presenter cellEditorControls;
 
     private class CandidateGridWidget {
 
@@ -75,7 +75,7 @@ public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
 
     @Inject
     public DMNGridPanelContextMenuHandler(final @DMNEditor DMNGridLayer gridLayer,
-                                          final CellEditorControls cellEditorControls) {
+                                          final CellEditorControlsView.Presenter cellEditorControls) {
         this.gridLayer = gridLayer;
         this.cellEditorControls = cellEditorControls;
     }

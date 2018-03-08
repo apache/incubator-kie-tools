@@ -19,7 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.undefined;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UndefinedExpressionCellTest {
 
     @Mock
-    private ListSelector listSelector;
+    private ListSelectorView.Presenter listSelector;
 
     private UndefinedExpressionCell cell;
 

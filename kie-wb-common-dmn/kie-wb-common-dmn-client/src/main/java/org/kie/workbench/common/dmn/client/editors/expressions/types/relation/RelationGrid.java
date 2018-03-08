@@ -39,9 +39,9 @@ import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -55,7 +55,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberCol
 
 public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMapper> implements HasListSelectorControl {
 
-    private final ListSelector listSelector;
+    private final ListSelectorView.Presenter listSelector;
 
     private final TextAreaSingletonDOMElementFactory factory;
     private final TextBoxSingletonDOMElementFactory headerFactory;
@@ -69,9 +69,9 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
                         final SessionManager sessionManager,
                         final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                         final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
-                        final CellEditorControls cellEditorControls,
+                        final CellEditorControlsView.Presenter cellEditorControls,
                         final TranslationService translationService,
-                        final ListSelector listSelector) {
+                        final ListSelectorView.Presenter listSelector) {
         super(parent,
               hasExpression,
               expression,

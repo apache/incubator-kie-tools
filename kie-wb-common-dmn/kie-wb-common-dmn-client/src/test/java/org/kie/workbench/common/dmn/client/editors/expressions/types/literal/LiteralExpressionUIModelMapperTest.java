@@ -21,7 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -42,7 +42,7 @@ public class LiteralExpressionUIModelMapperTest {
     private LiteralExpressionGrid literalExpressionEditor;
 
     @Mock
-    private ListSelector listSelector;
+    private ListSelectorView.Presenter listSelector;
 
     private BaseGridData uiModel;
 

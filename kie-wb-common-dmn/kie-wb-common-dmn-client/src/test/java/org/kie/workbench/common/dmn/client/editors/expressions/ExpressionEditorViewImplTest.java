@@ -43,8 +43,8 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -98,13 +98,13 @@ public class ExpressionEditorViewImplTest {
     private EventSourceMock<ExpressionEditorSelectedEvent> editorSelectedEvent;
 
     @Mock
-    private CellEditorControls cellEditorControls;
+    private CellEditorControlsView.Presenter cellEditorControls;
 
     @Mock
     private TranslationService translationService;
 
     @Mock
-    private ListSelector listSelector;
+    private ListSelectorView.Presenter listSelector;
 
     @Mock
     private SessionManager sessionManager;

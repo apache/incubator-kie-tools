@@ -43,8 +43,8 @@ import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BoundaryTransformMediator;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -79,9 +79,9 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     private RestrictedMousePanMediator mousePanMediator;
 
     private Event<ExpressionEditorSelectedEvent> editorSelectedEvent;
-    private CellEditorControls cellEditorControls;
+    private CellEditorControlsView.Presenter cellEditorControls;
     private TranslationService translationService;
-    private ListSelector listSelector;
+    private ListSelectorView.Presenter listSelector;
 
     private SessionManager sessionManager;
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
@@ -99,9 +99,9 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                     final @DMNEditor DMNGridLayer gridLayer,
                                     final @DMNEditor RestrictedMousePanMediator mousePanMediator,
                                     final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
-                                    final CellEditorControls cellEditorControls,
+                                    final CellEditorControlsView.Presenter cellEditorControls,
                                     final TranslationService translationService,
-                                    final ListSelector listSelector,
+                                    final ListSelectorView.Presenter listSelector,
                                     final SessionManager sessionManager,
                                     final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                     final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {

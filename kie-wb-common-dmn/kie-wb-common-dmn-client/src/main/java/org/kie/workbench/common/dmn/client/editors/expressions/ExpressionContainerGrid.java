@@ -33,9 +33,9 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -55,7 +55,7 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
     private final DMNGridPanel gridPanel;
     private final DMNGridLayer gridLayer;
     private final Event<ExpressionEditorSelectedEvent> editorSelectedEvent;
-    private final CellEditorControls cellEditorControls;
+    private final CellEditorControlsView.Presenter cellEditorControls;
     private final TranslationService translationService;
 
     private final SessionManager sessionManager;
@@ -70,9 +70,9 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
     public ExpressionContainerGrid(final DMNGridPanel gridPanel,
                                    final DMNGridLayer gridLayer,
                                    final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
-                                   final CellEditorControls cellEditorControls,
+                                   final CellEditorControlsView.Presenter cellEditorControls,
                                    final TranslationService translationService,
-                                   final ListSelector listSelector,
+                                   final ListSelectorView.Presenter listSelector,
                                    final SessionManager sessionManager,
                                    final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                    final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitions) {

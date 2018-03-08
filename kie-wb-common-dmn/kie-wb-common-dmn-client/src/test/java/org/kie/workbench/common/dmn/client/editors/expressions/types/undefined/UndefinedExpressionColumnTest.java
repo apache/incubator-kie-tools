@@ -31,7 +31,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorItem;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorTextItem;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridCell;
@@ -78,7 +78,7 @@ public class UndefinedExpressionColumnTest {
     private UndefinedExpressionGrid gridWidget;
 
     @Mock
-    private CellEditorControls cellEditorControls;
+    private CellEditorControlsView.Presenter cellEditorControls;
 
     @Mock
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;

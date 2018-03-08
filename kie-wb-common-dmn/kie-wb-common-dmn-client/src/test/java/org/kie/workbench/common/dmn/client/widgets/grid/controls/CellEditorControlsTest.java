@@ -50,7 +50,7 @@ public class CellEditorControlsTest {
     @Mock
     private HasCellEditorControls.Editor editor;
 
-    private CellEditorControls controls;
+    private CellEditorControlsView.Presenter controls;
 
     @Before
     public void setup() {

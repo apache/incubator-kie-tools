@@ -46,9 +46,9 @@ import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -66,7 +66,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
     private static final String EXPRESSION_COLUMN_GROUP = "InvocationGrid$ExpressionColumn1";
 
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
-    private final ListSelector listSelector;
+    private final ListSelectorView.Presenter listSelector;
 
     public InvocationGrid(final GridCellTuple parent,
                           final HasExpression hasExpression,
@@ -78,9 +78,9 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
                           final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                           final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                           final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
-                          final CellEditorControls cellEditorControls,
+                          final CellEditorControlsView.Presenter cellEditorControls,
                           final TranslationService translationService,
-                          final ListSelector listSelector,
+                          final ListSelectorView.Presenter listSelector,
                           final boolean isNested) {
         super(parent,
               hasExpression,

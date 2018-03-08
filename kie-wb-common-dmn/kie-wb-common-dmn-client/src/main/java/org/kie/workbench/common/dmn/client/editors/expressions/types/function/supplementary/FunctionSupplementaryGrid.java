@@ -35,9 +35,9 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Con
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -54,7 +54,7 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Conte
     private static final String EXPRESSION_COLUMN_GROUP = "FunctionSupplementaryGrid$ExpressionColumn1";
 
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
-    private final ListSelector listSelector;
+    private final ListSelectorView.Presenter listSelector;
 
     public FunctionSupplementaryGrid(final GridCellTuple parent,
                                      final HasExpression hasExpression,
@@ -66,9 +66,9 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Conte
                                      final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                      final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                      final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
-                                     final CellEditorControls cellEditorControls,
+                                     final CellEditorControlsView.Presenter cellEditorControls,
                                      final TranslationService translationService,
-                                     final ListSelector listSelector) {
+                                     final ListSelectorView.Presenter listSelector) {
         super(parent,
               hasExpression,
               expression,

@@ -22,20 +22,20 @@ import java.util.function.Supplier;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 public class UndefinedExpressionUIModelMapper extends BaseUIModelMapper<Expression> {
 
-    private final ListSelector listSelector;
+    private final ListSelectorView.Presenter listSelector;
 
     private final HasExpression hasExpression;
 
     public UndefinedExpressionUIModelMapper(final Supplier<GridData> uiModel,
                                             final Supplier<Optional<Expression>> dmnModel,
-                                            final ListSelector listSelector,
+                                            final ListSelectorView.Presenter listSelector,
                                             final HasExpression hasExpression) {
         super(uiModel,
               dmnModel);

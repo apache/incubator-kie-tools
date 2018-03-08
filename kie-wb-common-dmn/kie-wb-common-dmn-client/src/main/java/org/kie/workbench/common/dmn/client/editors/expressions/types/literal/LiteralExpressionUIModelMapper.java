@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -28,11 +28,11 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
 public class LiteralExpressionUIModelMapper extends BaseUIModelMapper<LiteralExpression> {
 
-    private final ListSelector listSelector;
+    private final ListSelectorView.Presenter listSelector;
 
     public LiteralExpressionUIModelMapper(final Supplier<GridData> uiModel,
                                           final Supplier<Optional<LiteralExpression>> dmnModel,
-                                          final ListSelector listSelector) {
+                                          final ListSelectorView.Presenter listSelector) {
         super(uiModel,
               dmnModel);
         this.listSelector = listSelector;

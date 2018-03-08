@@ -27,7 +27,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextGridCell;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
@@ -40,7 +40,7 @@ public class ExpressionContainerUIModelMapper extends BaseUIModelMapper<Expressi
     private final Supplier<HasExpression> hasExpression;
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitions;
 
-    private final ListSelector listSelector;
+    private final ListSelectorView.Presenter listSelector;
 
     public ExpressionContainerUIModelMapper(final GridCellTuple parent,
                                             final Supplier<GridData> uiModel,
@@ -48,7 +48,7 @@ public class ExpressionContainerUIModelMapper extends BaseUIModelMapper<Expressi
                                             final Supplier<Optional<HasName>> hasName,
                                             final Supplier<HasExpression> hasExpression,
                                             final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitions,
-                                            final ListSelector listSelector) {
+                                            final ListSelectorView.Presenter listSelector) {
         super(uiModel,
               dmnModel);
         this.parent = parent;

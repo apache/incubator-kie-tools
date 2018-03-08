@@ -26,7 +26,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersEditorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 
 public class FunctionColumnParametersHeaderMetaData implements EditableHeaderMetaData {
@@ -34,12 +34,12 @@ public class FunctionColumnParametersHeaderMetaData implements EditableHeaderMet
     static final String PARAMETER_COLUMN_GROUP = "FunctionColumnParametersHeaderMetaData$Parameters";
 
     private final Supplier<FunctionDefinition> functionSupplier;
-    private final CellEditorControls cellEditorControls;
+    private final CellEditorControlsView.Presenter cellEditorControls;
     private final ParametersEditorView.Presenter editor;
     private final FunctionGrid gridWidget;
 
     public FunctionColumnParametersHeaderMetaData(final Supplier<FunctionDefinition> functionSupplier,
-                                                  final CellEditorControls cellEditorControls,
+                                                  final CellEditorControlsView.Presenter cellEditorControls,
                                                   final ParametersEditorView.Presenter editor,
                                                   final FunctionGrid gridWidget) {
         this.functionSupplier = functionSupplier;

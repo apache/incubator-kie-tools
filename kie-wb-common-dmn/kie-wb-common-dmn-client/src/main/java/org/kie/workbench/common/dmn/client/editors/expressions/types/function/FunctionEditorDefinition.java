@@ -36,8 +36,8 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.function.pa
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -51,7 +51,7 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
 
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
-    private ListSelector listSelector;
+    private ListSelectorView.Presenter listSelector;
     private ParametersEditorView.Presenter parametersEditor;
 
     public FunctionEditorDefinition() {
@@ -66,9 +66,9 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
                                     final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                     final @FunctionGridSupplementaryEditor Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier,
                                     final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
-                                    final CellEditorControls cellEditorControls,
+                                    final CellEditorControlsView.Presenter cellEditorControls,
                                     final TranslationService translationService,
-                                    final ListSelector listSelector,
+                                    final ListSelectorView.Presenter listSelector,
                                     final ParametersEditorView.Presenter parametersEditor) {
         super(gridPanel,
               gridLayer,

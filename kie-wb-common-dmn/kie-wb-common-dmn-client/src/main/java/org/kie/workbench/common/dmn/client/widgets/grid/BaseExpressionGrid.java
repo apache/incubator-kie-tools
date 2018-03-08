@@ -41,7 +41,7 @@ import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueComman
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderGridWidgetMouseDoubleClickHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -79,7 +79,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
     protected final SessionManager sessionManager;
     protected final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     protected final Event<ExpressionEditorSelectedEvent> editorSelectedEvent;
-    protected final CellEditorControls cellEditorControls;
+    protected final CellEditorControlsView.Presenter cellEditorControls;
     protected final TranslationService translationService;
 
     protected M uiModelMapper;
@@ -96,7 +96,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
                               final SessionManager sessionManager,
                               final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                               final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
-                              final CellEditorControls cellEditorControls,
+                              final CellEditorControlsView.Presenter cellEditorControls,
                               final TranslationService translationService,
                               final boolean isNested) {
         this(parent,
@@ -125,7 +125,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
                               final SessionManager sessionManager,
                               final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                               final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
-                              final CellEditorControls cellEditorControls,
+                              final CellEditorControlsView.Presenter cellEditorControls,
                               final TranslationService translationService,
                               final boolean isNested) {
         this(parent,
@@ -155,7 +155,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
                        final SessionManager sessionManager,
                        final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                        final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
-                       final CellEditorControls cellEditorControls,
+                       final CellEditorControlsView.Presenter cellEditorControls,
                        final TranslationService translationService,
                        final Supplier<Boolean> isNested) {
         this(parent,
@@ -185,7 +185,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
                        final SessionManager sessionManager,
                        final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                        final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
-                       final CellEditorControls cellEditorControls,
+                       final CellEditorControlsView.Presenter cellEditorControls,
                        final TranslationService translationService,
                        final Supplier<Boolean> isNested) {
         super(gridData,

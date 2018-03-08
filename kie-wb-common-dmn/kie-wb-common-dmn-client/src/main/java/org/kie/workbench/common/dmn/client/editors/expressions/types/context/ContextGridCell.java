@@ -18,16 +18,16 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 
 import java.util.Optional;
 
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 
 public class ContextGridCell<T> extends DMNGridCell<T> {
 
-    private final ListSelector listSelector;
+    private final ListSelectorView.Presenter listSelector;
 
     public ContextGridCell(final GridCellValue<T> value,
-                           final ListSelector listSelector) {
+                           final ListSelectorView.Presenter listSelector) {
         super(value);
         this.listSelector = listSelector;
     }

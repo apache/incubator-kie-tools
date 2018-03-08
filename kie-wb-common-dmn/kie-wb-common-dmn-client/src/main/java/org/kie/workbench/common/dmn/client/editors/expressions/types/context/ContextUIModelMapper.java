@@ -27,7 +27,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridCell;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -45,13 +45,13 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
 
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
-    private final ListSelector listSelector;
+    private final ListSelectorView.Presenter listSelector;
 
     public ContextUIModelMapper(final GridWidget gridWidget,
                                 final Supplier<GridData> uiModel,
                                 final Supplier<Optional<Context>> dmnModel,
                                 final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
-                                final ListSelector listSelector) {
+                                final ListSelectorView.Presenter listSelector) {
         super(uiModel,
               dmnModel);
         this.gridWidget = gridWidget;

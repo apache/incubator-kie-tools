@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.uberfire.client.callbacks.Callback;
@@ -36,12 +36,12 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditC
 
 public class UndefinedExpressionColumn extends DMNGridColumn<UndefinedExpressionGrid, String> implements HasListSelectorControl {
 
-    private final CellEditorControls cellEditorControls;
+    private final CellEditorControlsView.Presenter cellEditorControls;
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
     public UndefinedExpressionColumn(final HeaderMetaData headerMetaData,
                                      final UndefinedExpressionGrid gridWidget,
-                                     final CellEditorControls cellEditorControls,
+                                     final CellEditorControlsView.Presenter cellEditorControls,
                                      final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
         this(Collections.singletonList(headerMetaData),
              gridWidget,
@@ -51,7 +51,7 @@ public class UndefinedExpressionColumn extends DMNGridColumn<UndefinedExpression
 
     public UndefinedExpressionColumn(final List<HeaderMetaData> headerMetaData,
                                      final UndefinedExpressionGrid gridWidget,
-                                     final CellEditorControls cellEditorControls,
+                                     final CellEditorControlsView.Presenter cellEditorControls,
                                      final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
         super(headerMetaData,
               new UndefinedExpressionColumnRenderer(),

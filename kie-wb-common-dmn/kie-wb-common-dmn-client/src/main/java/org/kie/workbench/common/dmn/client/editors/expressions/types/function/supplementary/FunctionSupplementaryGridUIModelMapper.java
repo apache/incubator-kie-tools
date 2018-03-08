@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextUIModelMapper;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
@@ -32,7 +32,7 @@ public class FunctionSupplementaryGridUIModelMapper extends ContextUIModelMapper
                                                   final Supplier<GridData> uiModel,
                                                   final Supplier<Optional<Context>> dmnModel,
                                                   final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
-                                                  final ListSelector listSelector) {
+                                                  final ListSelectorView.Presenter listSelector) {
         super(gridWidget,
               uiModel,
               dmnModel,
