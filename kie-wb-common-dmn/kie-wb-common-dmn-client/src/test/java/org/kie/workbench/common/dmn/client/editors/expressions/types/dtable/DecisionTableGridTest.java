@@ -133,6 +133,8 @@ public class DecisionTableGridTest {
     @Captor
     private ArgumentCaptor<AddDecisionRuleCommand> addDecisionRuleCommandCaptor;
 
+    private DecisionTableEditorDefinition definition;
+
     private Optional<DecisionTable> expression;
 
     private DecisionTableGrid grid;
@@ -140,27 +142,26 @@ public class DecisionTableGridTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        final DecisionTableEditorDefinition definition = new DecisionTableEditorDefinition(gridPanel,
-                                                                                           gridLayer,
-                                                                                           sessionManager,
-                                                                                           sessionCommandManager,
-                                                                                           editorSelectedEvent,
-                                                                                           cellEditorControls,
-                                                                                           translationService,
-                                                                                           controlsProvider);
+        this.definition = new DecisionTableEditorDefinition(gridPanel,
+                                                            gridLayer,
+                                                            sessionManager,
+                                                            sessionCommandManager,
+                                                            editorSelectedEvent,
+                                                            cellEditorControls,
+                                                            translationService,
+                                                            controlsProvider);
 
         expression = definition.getModelClass();
-
-        final Decision decision = new Decision();
-        decision.setName(new Name(HASNAME_NAME));
-        final Optional<HasName> hasName = Optional.of(decision);
 
         doReturn(controls).when(controlsProvider).get();
         doReturn(session).when(sessionManager).getCurrentSession();
         doReturn(canvasHandler).when(session).getCanvasHandler();
         doReturn(graphCommandContext).when(canvasHandler).getGraphExecutionContext();
-        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
 
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
+    }
+
+    private void setupGrid(final Optional<HasName> hasName) {
         this.grid = spy((DecisionTableGrid) definition.getEditor(parent,
                                                                  hasExpression,
                                                                  expression,
@@ -168,8 +169,16 @@ public class DecisionTableGridTest {
                                                                  false).get());
     }
 
+    private Optional<HasName> makeHasNameForDecision() {
+        final Decision decision = new Decision();
+        decision.setName(new Name(HASNAME_NAME));
+        return Optional.of(decision);
+    }
+
     @Test
     public void testInitialSetupFromDefinition() {
+        setupGrid(makeHasNameForDecision());
+
         final GridData uiModel = grid.getModel();
         assertTrue(uiModel instanceof DecisionTableGridData);
 
@@ -195,6 +204,8 @@ public class DecisionTableGridTest {
 
     @Test
     public void testGetEditorControlsEnabled() {
+        setupGrid(makeHasNameForDecision());
+
         final DecisionTable dtable = expression.get();
         dtable.setHitPolicy(HitPolicy.FIRST);
         dtable.setAggregation(BuiltinAggregator.COUNT);
@@ -213,6 +224,8 @@ public class DecisionTableGridTest {
 
     @Test
     public void testGetEditorControlsDisabled() {
+        setupGrid(makeHasNameForDecision());
+
         //The DMN model returns defaults for HitPolicy and DecisionTableOrientation
         final DecisionTable dtable = expression.get();
         dtable.setHitPolicy(null);
@@ -232,6 +245,8 @@ public class DecisionTableGridTest {
 
     @Test
     public void testColumn0MetaData() {
+        setupGrid(makeHasNameForDecision());
+
         final GridColumn<?> column = grid.getModel().getColumns().get(0);
         final List<GridColumn.HeaderMetaData> header = column.getHeaderMetaData();
 
@@ -251,6 +266,8 @@ public class DecisionTableGridTest {
 
     @Test
     public void testColumn1MetaData() {
+        setupGrid(makeHasNameForDecision());
+
         final GridColumn<?> column = grid.getModel().getColumns().get(1);
         final List<GridColumn.HeaderMetaData> header = column.getHeaderMetaData();
 
@@ -265,6 +282,8 @@ public class DecisionTableGridTest {
 
     @Test
     public void testColumn2MetaData() {
+        setupGrid(makeHasNameForDecision());
+
         final GridColumn<?> column = grid.getModel().getColumns().get(2);
         final List<GridColumn.HeaderMetaData> header = column.getHeaderMetaData();
 
@@ -278,7 +297,25 @@ public class DecisionTableGridTest {
     }
 
     @Test
+    public void testColumn2MetaDataWithoutHasName() {
+        setupGrid(Optional.empty());
+
+        final GridColumn<?> column = grid.getModel().getColumns().get(2);
+        final List<GridColumn.HeaderMetaData> header = column.getHeaderMetaData();
+
+        assertEquals(1,
+                     header.size());
+        assertTrue(header.get(0) instanceof BaseHeaderMetaData);
+
+        final BaseHeaderMetaData md = (BaseHeaderMetaData) header.get(0);
+        assertEquals(DMNEditorConstants.DecisionTableEditor_OutputClauseHeader,
+                     md.getTitle());
+    }
+
+    @Test
     public void testColumn3MetaData() {
+        setupGrid(makeHasNameForDecision());
+
         final GridColumn<?> column = grid.getModel().getColumns().get(3);
         final List<GridColumn.HeaderMetaData> header = column.getHeaderMetaData();
 
@@ -293,6 +330,8 @@ public class DecisionTableGridTest {
 
     @Test
     public void testAddInputClause() {
+        setupGrid(makeHasNameForDecision());
+
         grid.addInputClause();
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
@@ -307,6 +346,8 @@ public class DecisionTableGridTest {
 
     @Test
     public void testAddOutputClause() {
+        setupGrid(makeHasNameForDecision());
+
         grid.addOutputClause();
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
@@ -321,6 +362,8 @@ public class DecisionTableGridTest {
 
     @Test
     public void testAddDecisionRule() {
+        setupGrid(makeHasNameForDecision());
+
         grid.addDecisionRule();
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
@@ -340,6 +383,8 @@ public class DecisionTableGridTest {
 
     @Test
     public void testSetHitPolicyToNull() {
+        setupGrid(makeHasNameForDecision());
+
         grid.setHitPolicy(null);
 
         final DecisionTable dtable = expression.get();
@@ -353,6 +398,8 @@ public class DecisionTableGridTest {
 
     @Test
     public void testSetHitPolicyThatDoesNotSupportAggregation() {
+        setupGrid(makeHasNameForDecision());
+
         grid.setHitPolicy(HitPolicy.PRIORITY);
 
         final DecisionTable dtable = expression.get();
@@ -365,6 +412,8 @@ public class DecisionTableGridTest {
 
     @Test
     public void testSetHitPolicyThatDoesSupportAggregationWhenAggregationNotSet() {
+        setupGrid(makeHasNameForDecision());
+
         grid.setHitPolicy(HitPolicy.COLLECT);
 
         final DecisionTable dtable = expression.get();
@@ -378,6 +427,8 @@ public class DecisionTableGridTest {
 
     @Test
     public void testSetHitPolicyThatDoesSupportAggregationWhenAggregationIsSet() {
+        setupGrid(makeHasNameForDecision());
+
         grid.setBuiltinAggregator(BuiltinAggregator.MIN);
         reset(controls);
 
@@ -394,6 +445,8 @@ public class DecisionTableGridTest {
 
     @Test
     public void testSetBuiltinAggregatorToNull() {
+        setupGrid(makeHasNameForDecision());
+
         grid.setBuiltinAggregator(null);
 
         final DecisionTable dtable = expression.get();
@@ -403,6 +456,8 @@ public class DecisionTableGridTest {
 
     @Test
     public void testSetBuiltinAggregatorToNotNull() {
+        setupGrid(makeHasNameForDecision());
+
         grid.setBuiltinAggregator(BuiltinAggregator.MIN);
 
         final DecisionTable dtable = expression.get();
@@ -412,6 +467,8 @@ public class DecisionTableGridTest {
 
     @Test
     public void testSetDecisionTableOrientationToNull() {
+        setupGrid(makeHasNameForDecision());
+
         grid.setDecisionTableOrientation(null);
 
         final DecisionTable dtable = expression.get();
@@ -422,6 +479,8 @@ public class DecisionTableGridTest {
 
     @Test
     public void testSetDecisionTableOrientationToNotNull() {
+        setupGrid(makeHasNameForDecision());
+
         grid.setDecisionTableOrientation(DecisionTableOrientation.CROSS_TABLE);
 
         final DecisionTable dtable = expression.get();

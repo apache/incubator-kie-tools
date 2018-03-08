@@ -99,4 +99,7 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String DecisionTableEditor_DescriptionColumnHeader = "DecisionTableEditor.DescriptionColumnHeader";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DecisionTableEditor_OutputClauseHeader = "DecisionTableEditor.OutputClauseHeader";
 }

@@ -189,17 +189,20 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
         return () -> {
             final List<GridColumn.HeaderMetaData> metaData = new ArrayList<>();
             expression.ifPresent(dtable -> {
-                hasName.ifPresent(name -> {
+                if (hasName.isPresent()) {
+                    final HasName name = hasName.get();
                     final Name n = name.getName();
                     metaData.add(new OutputClauseColumnExpressionNameHeaderMetaData(n::getValue,
                                                                                     n::setValue,
                                                                                     headerTextBoxFactory));
-                    if (dtable.getOutput().size() > 1) {
-                        metaData.add(new OutputClauseColumnNameHeaderMetaData(oc::getName,
-                                                                              oc::setName,
-                                                                              headerTextBoxFactory));
-                    }
-                });
+                } else {
+                    metaData.add(new BaseHeaderMetaData(translationService.format(DMNEditorConstants.DecisionTableEditor_OutputClauseHeader)));
+                }
+                if (dtable.getOutput().size() > 1) {
+                    metaData.add(new OutputClauseColumnNameHeaderMetaData(oc::getName,
+                                                                          oc::setName,
+                                                                          headerTextBoxFactory));
+                }
             });
             return metaData;
         };
