@@ -17,13 +17,14 @@
 package org.kie.workbench.common.dmn.client.widgets.grid.columns;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.ait.lienzo.client.core.event.INodeXYEvent;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
@@ -68,10 +69,11 @@ public class EditableHeaderUtilities {
         return uiHeaderRowIndex;
     }
 
-    public static GridBodyCellRenderContext makeRenderContext(final GridWidget gridWidget,
-                                                              final BaseGridRendererHelper.RenderingInformation ri,
-                                                              final BaseGridRendererHelper.ColumnInformation ci,
-                                                              final int uiHeaderRowIndex) {
+    public static GridBodyCellEditContext makeRenderContext(final GridWidget gridWidget,
+                                                            final BaseGridRendererHelper.RenderingInformation ri,
+                                                            final BaseGridRendererHelper.ColumnInformation ci,
+                                                            final Point2D rp,
+                                                            final int uiHeaderRowIndex) {
         final GridColumn<?> column = ci.getColumn();
         final GridRenderer renderer = gridWidget.getRenderer();
 
@@ -125,17 +127,18 @@ public class EditableHeaderUtilities {
             }
         }
 
-        return new GridBodyCellRenderContext(blockCellX,
-                                             cellY,
-                                             blockCellWidth,
-                                             headerRowHeight,
-                                             clipMinY,
-                                             clipMinX,
-                                             uiHeaderRowIndex,
-                                             ci.getUiColumnIndex(),
-                                             floatingBlockInformation.getColumns().contains(column),
-                                             gridWidget.getViewport().getTransform(),
-                                             renderer);
+        return new GridBodyCellEditContext(blockCellX,
+                                           cellY,
+                                           blockCellWidth,
+                                           headerRowHeight,
+                                           clipMinY,
+                                           clipMinX,
+                                           uiHeaderRowIndex,
+                                           ci.getUiColumnIndex(),
+                                           floatingBlockInformation.getColumns().contains(column),
+                                           gridWidget.getViewport().getTransform(),
+                                           renderer,
+                                           Optional.of(rp));
     }
 
     private static boolean isSameHeaderMetaData(final GridColumn.HeaderMetaData clickedHeaderMetaData,

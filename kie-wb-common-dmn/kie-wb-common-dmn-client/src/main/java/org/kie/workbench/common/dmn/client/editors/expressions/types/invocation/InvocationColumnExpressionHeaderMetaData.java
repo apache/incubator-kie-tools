@@ -20,11 +20,11 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableTextHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
 
-public class InvocationColumnExpressionHeaderMetaData extends EditableHeaderMetaData<TextBox, TextBoxDOMElement> {
+public class InvocationColumnExpressionHeaderMetaData extends EditableTextHeaderMetaData<TextBox, TextBoxDOMElement> {
 
     static final String EXPRESSION_COLUMN_GROUP = "InvocationColumnExpressionHeaderMetaData$Expression";
 

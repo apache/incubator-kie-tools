@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,9 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.FunctionUIModelMapper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.KindUtilities;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
@@ -36,59 +37,56 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBui
 import org.kie.workbench.common.stunner.core.graph.command.impl.AbstractGraphCommand;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
-import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 import static org.kie.workbench.common.dmn.client.commands.util.CommandUtils.extractGridCellValue;
 
-public class SetKindCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
-                                                                          VetoUndoCommand {
+public class ClearExpressionTypeCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
+                                                                                      VetoUndoCommand {
 
-    private final GridCellValueTuple cellTuple;
+    private final GridCellTuple cellTuple;
     private final FunctionDefinition function;
-    private final FunctionDefinition.Kind kind;
-    private final Optional<Expression> expression;
+    private final FunctionUIModelMapper uiModelMapper;
     private final org.uberfire.mvp.Command canvasOperation;
 
+    private final Expression oldExpression;
     private final FunctionDefinition.Kind oldKind;
-    private final Optional<Expression> oldExpression;
     private final Optional<GridCellValue<?>> oldCellValue;
 
-    public SetKindCommand(final GridCellValueTuple cellTuple,
-                          final FunctionDefinition function,
-                          final FunctionDefinition.Kind kind,
-                          final Optional<Expression> expression,
-                          final org.uberfire.mvp.Command canvasOperation) {
+    public ClearExpressionTypeCommand(final GridCellTuple cellTuple,
+                                      final FunctionDefinition function,
+                                      final FunctionUIModelMapper uiModelMapper,
+                                      final org.uberfire.mvp.Command canvasOperation) {
         this.cellTuple = cellTuple;
         this.function = function;
-        this.kind = kind;
-        this.expression = expression;
+        this.uiModelMapper = uiModelMapper;
         this.canvasOperation = canvasOperation;
 
+        this.oldExpression = function.getExpression();
         this.oldKind = KindUtilities.getKind(function);
-        this.oldExpression = Optional.ofNullable(function.getExpression());
         this.oldCellValue = extractGridCellValue(cellTuple);
     }
 
     @Override
-    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler handler) {
+    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
         return new AbstractGraphCommand() {
             @Override
-            protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext gce) {
+            protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
                 return GraphCommandResultBuilder.SUCCESS;
             }
 
             @Override
-            public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
-                KindUtilities.setKind(function, kind);
-                function.setExpression(expression.orElse(null));
+            public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
+                function.setExpression(null);
+                //An undefined ExpressionType only makes sense for FEEL
+                KindUtilities.setKind(function, FunctionDefinition.Kind.FEEL);
 
                 return GraphCommandResultBuilder.SUCCESS;
             }
 
             @Override
-            public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext gce) {
+            public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
+                function.setExpression(oldExpression);
                 KindUtilities.setKind(function, oldKind);
-                function.setExpression(oldExpression.orElse(null));
 
                 return GraphCommandResultBuilder.SUCCESS;
             }
@@ -96,14 +94,13 @@ public class SetKindCommand extends AbstractCanvasGraphCommand implements VetoEx
     }
 
     @Override
-    protected Command<AbstractCanvasHandler, CanvasViolation> newCanvasCommand(final AbstractCanvasHandler handler) {
+    protected Command<AbstractCanvasHandler, CanvasViolation> newCanvasCommand(final AbstractCanvasHandler context) {
         return new AbstractCanvasCommand() {
             @Override
-            public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler handler) {
-                final GridData gridData = cellTuple.getGridWidget().getModel();
-                gridData.setCellValue(cellTuple.getRowIndex(),
-                                      cellTuple.getColumnIndex(),
-                                      cellTuple.getValue());
+            public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
+                //Use UIModelMapper to get cell value for null Expressions
+                uiModelMapper.fromDMNModel(cellTuple.getRowIndex(),
+                                           cellTuple.getColumnIndex());
 
                 canvasOperation.execute();
 
@@ -111,15 +108,11 @@ public class SetKindCommand extends AbstractCanvasGraphCommand implements VetoEx
             }
 
             @Override
-            public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler handler) {
-                if (oldCellValue.isPresent()) {
-                    cellTuple.getGridWidget().getModel().setCellValue(cellTuple.getRowIndex(),
-                                                                      cellTuple.getColumnIndex(),
-                                                                      oldCellValue.get());
-                } else {
-                    cellTuple.getGridWidget().getModel().deleteCell(cellTuple.getRowIndex(),
-                                                                    cellTuple.getColumnIndex());
-                }
+            public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
+                //Simply write back the old value
+                oldCellValue.ifPresent(v -> cellTuple.getGridWidget().getModel().setCellValue(cellTuple.getRowIndex(),
+                                                                                              cellTuple.getColumnIndex(),
+                                                                                              v));
 
                 canvasOperation.execute();
 

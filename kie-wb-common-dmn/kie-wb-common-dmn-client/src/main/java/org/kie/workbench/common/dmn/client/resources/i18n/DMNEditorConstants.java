@@ -89,5 +89,14 @@ public class DMNEditorConstants {
     public static final String InvocationEditor_DeleteParameter = "InvocationEditor.DeleteParameter";
 
     @TranslationKey(defaultValue = "")
+    public static final String FunctionEditor_FEEL = "FunctionEditor.FEEL";
+
+    @TranslationKey(defaultValue = "")
+    public static final String FunctionEditor_JAVA = "FunctionEditor.JAVA";
+
+    @TranslationKey(defaultValue = "")
+    public static final String FunctionEditor_PMML = "FunctionEditor.PMML";
+
+    @TranslationKey(defaultValue = "")
     public static final String DecisionTableEditor_DescriptionColumnHeader = "DecisionTableEditor.DescriptionColumnHeader";
 }

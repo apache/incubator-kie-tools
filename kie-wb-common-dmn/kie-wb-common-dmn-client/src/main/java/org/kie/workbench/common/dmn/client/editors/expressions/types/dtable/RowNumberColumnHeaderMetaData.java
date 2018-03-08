@@ -49,7 +49,7 @@ class RowNumberColumnHeaderMetaData implements GridColumn.HeaderMetaData {
     public String getTitle() {
         final HitPolicy hitPolicy = hitPolicySupplier.get();
         final BuiltinAggregator builtinAggregator = builtinAggregatorSupplier.get();
-        final StringBuffer sb = new StringBuffer(hitPolicy.value().substring(0, 1).toUpperCase());
+        final StringBuilder sb = new StringBuilder(hitPolicy.value().substring(0, 1).toUpperCase());
         if (HitPolicy.COLLECT == hitPolicy) {
             switch (builtinAggregator) {
                 case COUNT:

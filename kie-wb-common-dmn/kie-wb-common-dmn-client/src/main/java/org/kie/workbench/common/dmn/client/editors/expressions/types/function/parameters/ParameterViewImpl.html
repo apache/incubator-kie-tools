@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2017 Red Hat, Inc. and/or its affiliates.
+  ~ Copyright 2018 Red Hat, Inc. and/or its affiliates.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -13,15 +13,14 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<div class="kie-dmn-container">
-    <div class="kie-dmn-return-to-DRG">
-        <i class="fa fa-angle-double-left" aria-hidden="true"></i><a href="#" data-field="returnToDRG"></a>
-    </div>
-    <div class="kie-dmn-control-buttons">
-        <div data-field="editorControls"></div>
-    </div>
-    <div class="kie-dmn-expression-editor">
-        <div data-field="dmn-table"></div>
-    </div>
-</div>
+<table class="kie-dmn-parameter">
+    <tbody>
+    <tr>
+        <td><input type="text" data-field="name"></td>
+        <td>
+            <button type="button" class="btn btn-danger btn-sm" data-field="remove"><i class="fa fa-trash"></i> Delete
+            </button>
+        </td>
+    </tr>
+    </tbody>
+</table>

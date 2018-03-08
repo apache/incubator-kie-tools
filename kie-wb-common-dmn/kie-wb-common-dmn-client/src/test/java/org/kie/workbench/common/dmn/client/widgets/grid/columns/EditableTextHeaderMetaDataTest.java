@@ -29,13 +29,19 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.callbacks.Callback;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EditableHeaderMetaDataTest {
+public class EditableTextHeaderMetaDataTest {
 
     @Mock
     private SingletonDOMElementFactory<TextBox, TextBoxDOMElement> factory;
@@ -90,7 +96,39 @@ public class EditableHeaderMetaDataTest {
         verify(factory).destroyResources();
     }
 
-    private static class MockEditableHeaderMetaData extends EditableHeaderMetaData<TextBox, TextBoxDOMElement> {
+    @Test
+    @SuppressWarnings("unchecked")
+    public void checkEdit() {
+        final GridBodyCellEditContext context = mock(GridBodyCellEditContext.class);
+
+        header.edit(context);
+
+        verify(factory).attachDomElement(eq(context),
+                                         any(Callback.class),
+                                         any(Callback.class));
+    }
+
+    @Test
+    public void checkEqualsWhenIdentical() {
+        final MockEditableHeaderMetaData other = new MockEditableHeaderMetaData(() -> hasName.orElse(HasName.NOP).getName().getValue(),
+                                                                                (s) -> hasName.orElse(HasName.NOP).getName().setValue(s),
+                                                                                factory);
+
+        assertEquals(header,
+                     other);
+    }
+
+    @Test
+    public void checkEqualsWhenNotIdentical() {
+        final MockEditableHeaderMetaData other = new MockEditableHeaderMetaData(() -> "other",
+                                                                                (s) -> hasName.orElse(HasName.NOP).getName().setValue(s),
+                                                                                factory);
+
+        assertNotEquals(header,
+                        other);
+    }
+
+    private static class MockEditableHeaderMetaData extends EditableTextHeaderMetaData<TextBox, TextBoxDOMElement> {
 
         public MockEditableHeaderMetaData(final Supplier<String> titleGetter,
                                           final Consumer<String> titleSetter,

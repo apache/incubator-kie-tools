@@ -23,7 +23,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -33,10 +32,12 @@ import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersEditorView;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -50,7 +51,8 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
 
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
-    private ManagedInstance<FunctionGridControls> controlsProvider;
+    private ListSelector listSelector;
+    private ParametersEditorView.Presenter parametersEditor;
 
     public FunctionEditorDefinition() {
         //CDI proxy
@@ -66,7 +68,8 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
                                     final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                                     final CellEditorControls cellEditorControls,
                                     final TranslationService translationService,
-                                    final ManagedInstance<FunctionGridControls> controlsProvider) {
+                                    final ListSelector listSelector,
+                                    final ParametersEditorView.Presenter parametersEditor) {
         super(gridPanel,
               gridLayer,
               sessionManager,
@@ -76,7 +79,8 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
               translationService);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.supplementaryEditorDefinitionsSupplier = supplementaryEditorDefinitionsSupplier;
-        this.controlsProvider = controlsProvider;
+        this.listSelector = listSelector;
+        this.parametersEditor = parametersEditor;
     }
 
     @Override
@@ -92,8 +96,8 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
     @Override
     public Optional<FunctionDefinition> getModelClass() {
         final FunctionDefinition function = new FunctionDefinition();
-        function.getAdditionalAttributes().put(FunctionDefinition.KIND_QNAME,
-                                               FunctionDefinition.Kind.FEEL.code());
+        KindUtilities.setKind(function,
+                              FunctionDefinition.Kind.FEEL);
         function.setExpression(new LiteralExpression());
         return Optional.of(function);
     }
@@ -117,7 +121,8 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
                                             editorSelectedEvent,
                                             cellEditorControls,
                                             translationService,
-                                            controlsProvider.get(),
+                                            listSelector,
+                                            parametersEditor,
                                             isNested));
     }
 }

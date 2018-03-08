@@ -27,6 +27,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
@@ -38,17 +39,20 @@ public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition>
     private final GridWidget gridWidget;
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
+    private final ListSelector listSelector;
 
     public FunctionUIModelMapper(final GridWidget gridWidget,
                                  final Supplier<GridData> uiModel,
                                  final Supplier<Optional<FunctionDefinition>> dmnModel,
                                  final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
-                                 final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier) {
+                                 final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier,
+                                 final ListSelector listSelector) {
         super(uiModel,
               dmnModel);
         this.gridWidget = gridWidget;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.supplementaryEditorDefinitionsSupplier = supplementaryEditorDefinitionsSupplier;
+        this.listSelector = listSelector;
     }
 
     @Override
@@ -94,9 +98,10 @@ public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition>
                                                                  expression,
                                                                  Optional.empty(),
                                                                  true);
-        uiModel.get().setCellValue(rowIndex,
-                                   columnIndex,
-                                   new ExpressionCellValue(editor));
+        uiModel.get().setCell(rowIndex,
+                              columnIndex,
+                              () -> new FunctionGridCell<>(new ExpressionCellValue(editor),
+                                                           listSelector));
     }
 
     private FunctionDefinition.Kind extractExpressionLanguage(final FunctionDefinition function) {

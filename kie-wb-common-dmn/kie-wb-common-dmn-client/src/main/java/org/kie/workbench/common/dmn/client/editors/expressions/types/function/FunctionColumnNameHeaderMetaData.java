@@ -20,11 +20,11 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableTextHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
 
-public class FunctionColumnNameHeaderMetaData extends EditableHeaderMetaData<TextBox, TextBoxDOMElement> {
+public class FunctionColumnNameHeaderMetaData extends EditableTextHeaderMetaData<TextBox, TextBoxDOMElement> {
 
     private static final String NAME_GROUP = "FunctionColumnNameHeaderMetaData$Name";
 

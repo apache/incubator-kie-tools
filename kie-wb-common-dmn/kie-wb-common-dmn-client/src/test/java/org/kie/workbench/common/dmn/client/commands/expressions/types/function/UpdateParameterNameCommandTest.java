@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.kie.workbench.common.dmn.client.commands.expressions.types.function;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
@@ -37,7 +36,11 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AddParameterCommandTest {
+public class UpdateParameterNameCommandTest {
+
+    private static final String OLD_PARAMETER_NAME = "old";
+
+    private static final String NEW_PARAMETER_NAME = "new";
 
     @Mock
     private org.uberfire.mvp.Command canvasOperation;
@@ -51,19 +54,17 @@ public class AddParameterCommandTest {
     @Mock
     private RuleManager ruleManager;
 
-    private FunctionDefinition function;
-
     private InformationItem parameter;
 
-    private AddParameterCommand command;
+    private UpdateParameterNameCommand command;
 
     @Before
     public void setup() {
-        this.function = new FunctionDefinition();
         this.parameter = new InformationItem();
-        this.command = new AddParameterCommand(function,
-                                               parameter,
-                                               canvasOperation);
+        this.parameter.getName().setValue(OLD_PARAMETER_NAME);
+        this.command = new UpdateParameterNameCommand(parameter,
+                                                      NEW_PARAMETER_NAME,
+                                                      canvasOperation);
         doReturn(ruleManager).when(handler).getRuleManager();
     }
 
@@ -76,68 +77,28 @@ public class AddParameterCommandTest {
     }
 
     @Test
-    public void testGraphCommandExecuteWithParameters() {
-        final InformationItem otherParameter = new InformationItem();
-        function.getFormalParameter().add(otherParameter);
-
+    public void testGraphCommandExecute() {
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      c.execute(gce));
 
-        assertFormalParameters(2,
-                               otherParameter, parameter);
+        assertEquals(NEW_PARAMETER_NAME,
+                     parameter.getName().getValue());
     }
 
     @Test
-    public void testGraphCommandExecuteWithNoParameters() {
+    public void testGraphCommandUndo() {
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
-        assertEquals(GraphCommandResultBuilder.SUCCESS,
-                     c.execute(gce));
-
-        assertFormalParameters(1,
-                               parameter);
-    }
-
-    @Test
-    public void testGraphCommandUndoWithParameters() {
-        final InformationItem otherParameter = new InformationItem();
-        function.getFormalParameter().add(otherParameter);
-
-        final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
-
-        //Add parameter and then undo
+        //Rename parameter and then undo
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      c.execute(gce));
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      c.undo(gce));
 
-        assertFormalParameters(1,
-                               otherParameter);
-    }
-
-    @Test
-    public void testGraphCommandUndoWithNoParameters() {
-        final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
-
-        //Add parameter and then undo
-        assertEquals(GraphCommandResultBuilder.SUCCESS,
-                     c.execute(gce));
-        assertEquals(GraphCommandResultBuilder.SUCCESS,
-                     c.undo(gce));
-
-        assertFormalParameters(0);
-    }
-
-    private void assertFormalParameters(final int expectedCount,
-                                        final InformationItem... parameters) {
-        assertEquals(expectedCount,
-                     function.getFormalParameter().size());
-        for (int i = 0; i < expectedCount; i++) {
-            assertEquals(parameters[i],
-                         function.getFormalParameter().get(i));
-        }
+        assertEquals(OLD_PARAMETER_NAME,
+                     parameter.getName().getValue());
     }
 
     @Test

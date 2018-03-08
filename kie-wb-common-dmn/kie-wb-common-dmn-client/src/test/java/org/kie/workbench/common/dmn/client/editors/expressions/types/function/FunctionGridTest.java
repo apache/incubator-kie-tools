@@ -21,7 +21,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,16 +34,22 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.function.AddParameterCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.function.ClearExpressionTypeCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.function.RemoveParameterCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.function.SetKindCommand;
-import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.function.UpdateParameterNameCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersEditorView;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -59,22 +64,39 @@ import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
-import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mvp.Command;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class FunctionGridTest {
+
+    private static final String PARAMETER_NAME = "name";
+
+    private static final int KIND_FEEL = 0;
+
+    private static final int KIND_JAVA = 1;
+
+    private static final int KIND_PMML = 2;
+
+    private final static int DIVIDER = 3;
+
+    private final static int CLEAR_EXPRESSION_TYPE = 4;
 
     @Mock
     private DMNGridPanel gridPanel;
@@ -92,7 +114,7 @@ public class FunctionGridTest {
     private ClientSession session;
 
     @Mock
-    private AbstractCanvasHandler canvasHandler;
+    private AbstractCanvasHandler handler;
 
     @Mock
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
@@ -104,10 +126,10 @@ public class FunctionGridTest {
     private EventSourceMock<ExpressionEditorSelectedEvent> editorSelectedEvent;
 
     @Mock
-    private ManagedInstance<FunctionGridControls> controlsProvider;
+    private ListSelector listSelector;
 
     @Mock
-    private FunctionGridControls controls;
+    private ParametersEditorView.Presenter parametersEditor;
 
     @Mock
     private CellEditorControls cellEditorControls;
@@ -137,9 +159,6 @@ public class FunctionGridTest {
 
     private LiteralExpression supplementaryLiteralExpression = new LiteralExpression();
 
-    @Mock
-    private GridWidgetDnDHandlersState dndHandlersState;
-
     @Captor
     private ArgumentCaptor<Optional<Expression>> expressionCaptor;
 
@@ -150,6 +169,8 @@ public class FunctionGridTest {
     private ArgumentCaptor<GridLayerRedrawManager.PrioritizedCommand> redrawCaptor;
 
     private Optional<FunctionDefinition> expression;
+
+    private InformationItem parameter = new InformationItem();
 
     private FunctionGrid grid;
 
@@ -165,12 +186,12 @@ public class FunctionGridTest {
                                                                                  editorSelectedEvent,
                                                                                  cellEditorControls,
                                                                                  translationService,
-                                                                                 controlsProvider);
+                                                                                 listSelector,
+                                                                                 parametersEditor);
 
         expression = definition.getModelClass();
-        expression.get().getFormalParameter().add(new InformationItem() {{
-            setName(new Name("p0"));
-        }});
+        expression.get().getFormalParameter().add(parameter);
+        parameter.getName().setValue(PARAMETER_NAME);
 
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add((ExpressionEditorDefinition) definition);
@@ -181,7 +202,6 @@ public class FunctionGridTest {
         decision.setName(new Name("name"));
         final Optional<HasName> hasName = Optional.of(decision);
 
-        doReturn(controls).when(controlsProvider).get();
         doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
         doReturn(expressionEditorDefinitions).when(supplementaryEditorDefinitionsSupplier).get();
 
@@ -203,13 +223,15 @@ public class FunctionGridTest {
         doReturn(uiLiteralExpressionModel).when(literalExpressionEditor).getModel();
 
         doReturn(session).when(sessionManager).getCurrentSession();
-        doReturn(canvasHandler).when(session).getCanvasHandler();
+        doReturn(handler).when(session).getCanvasHandler();
 
         this.grid = spy((FunctionGrid) definition.getEditor(parent,
                                                             hasExpression,
                                                             expression,
                                                             hasName,
                                                             false).get());
+
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
     }
 
     @Test
@@ -231,16 +253,6 @@ public class FunctionGridTest {
     }
 
     @Test
-    public void testGetEditorControls() {
-        grid.getEditorControls();
-
-        verify(controls).initSelectedKind(eq(FunctionDefinition.Kind.FEEL));
-        verify(controls).enableKind(eq(true));
-        verify(controls).initSelectedExpressionType(eq(ExpressionType.LITERAL_EXPRESSION));
-        verify(controls).enableExpressionType(eq(true));
-    }
-
-    @Test
     public void testColumnMetaData() {
         final GridColumn<?> column = grid.getModel().getColumns().get(0);
         final List<GridColumn.HeaderMetaData> header = column.getHeaderMetaData();
@@ -257,16 +269,139 @@ public class FunctionGridTest {
                      md1.getTitle());
         assertEquals("F",
                      md2.getExpressionLanguageTitle());
-        assertEquals("(p0)",
+        assertEquals("(" + PARAMETER_NAME + ")",
                      md2.getFormalParametersTitle());
     }
 
     @Test
-    public void testAddFormalParameter() {
-        grid.addFormalParameter();
+    public void testOnItemSelectedExpressionColumnDefinedExpressionType() {
+        //The default model from FunctionEditorDefinition has a Literal Expression at (0, 0)
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
 
-        verify(sessionCommandManager).execute(any(AbstractCanvasHandler.class),
+        assertThat(items.size()).isEqualTo(5);
+        assertDefaultListItems(items.subList(0, 3));
+
+        assertThat(items.get(DIVIDER)).isInstanceOf(HasListSelectorControl.ListSelectorDividerItem.class);
+        assertListSelectorItem(items.get(CLEAR_EXPRESSION_TYPE),
+                               DMNEditorConstants.ExpressionEditor_Clear);
+
+        ((HasListSelectorControl.ListSelectorTextItem) items.get(CLEAR_EXPRESSION_TYPE)).getCommand().execute();
+        verify(cellEditorControls).hide();
+        verify(sessionCommandManager).execute(eq(handler),
+                                              any(org.kie.workbench.common.dmn.client.commands.general.ClearExpressionTypeCommand.class));
+    }
+
+    @Test
+    public void testOnItemSelectedExpressionColumnUndefinedExpressionType() {
+        //Clear editor for expression at (0, 0)
+        grid.getModel().setCellValue(0, 0, new ExpressionCellValue(Optional.empty()));
+
+        assertDefaultListItems(grid.getItems(0, 0));
+    }
+
+    private void assertDefaultListItems(final List<HasListSelectorControl.ListSelectorItem> items) {
+        assertThat(items.size()).isEqualTo(3);
+        assertListSelectorItem(items.get(KIND_FEEL),
+                               DMNEditorConstants.FunctionEditor_FEEL);
+        assertListSelectorItem(items.get(KIND_JAVA),
+                               DMNEditorConstants.FunctionEditor_JAVA);
+        assertListSelectorItem(items.get(KIND_PMML),
+                               DMNEditorConstants.FunctionEditor_PMML);
+    }
+
+    private void assertListSelectorItem(final HasListSelectorControl.ListSelectorItem item,
+                                        final String text) {
+        assertThat(item).isInstanceOf(HasListSelectorControl.ListSelectorTextItem.class);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) item;
+        assertThat(ti.getText()).isEqualTo(text);
+    }
+
+    @Test
+    public void testOnItemSelected() {
+        final Command command = mock(Command.class);
+        final HasListSelectorControl.ListSelectorTextItem listSelectorItem = mock(HasListSelectorControl.ListSelectorTextItem.class);
+        when(listSelectorItem.getCommand()).thenReturn(command);
+
+        grid.onItemSelected(listSelectorItem);
+
+        verify(command).execute();
+    }
+
+    @Test
+    public void testOnItemSelectedKindFEEL() {
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(KIND_FEEL);
+
+        when(supplementaryLiteralExpressionEditorDefinition.getType()).thenReturn(ExpressionType.FUNCTION);
+
+        grid.onItemSelected(ti);
+
+        verify(cellEditorControls).hide();
+        verify(grid).setKind(eq(FunctionDefinition.Kind.FEEL));
+    }
+
+    @Test
+    public void testOnItemSelectedKindJava() {
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(KIND_JAVA);
+
+        when(supplementaryLiteralExpressionEditorDefinition.getType()).thenReturn(ExpressionType.FUNCTION_JAVA);
+
+        grid.onItemSelected(ti);
+
+        verify(cellEditorControls).hide();
+        verify(grid).setKind(eq(FunctionDefinition.Kind.JAVA));
+    }
+
+    @Test
+    public void testOnItemSelectedKindPMML() {
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(KIND_PMML);
+
+        when(supplementaryLiteralExpressionEditorDefinition.getType()).thenReturn(ExpressionType.FUNCTION_PMML);
+
+        grid.onItemSelected(ti);
+
+        verify(cellEditorControls).hide();
+        verify(grid).setKind(eq(FunctionDefinition.Kind.PMML));
+    }
+
+    @Test
+    public void testGetParameters() {
+        final List<InformationItem> parameters = grid.getParameters();
+
+        assertEquals(1,
+                     parameters.size());
+        assertEquals(parameter,
+                     parameters.get(0));
+        assertEquals(PARAMETER_NAME,
+                     parameters.get(0).getName().getValue());
+    }
+
+    @Test
+    public void testAddParameter() {
+        grid.addParameter(() -> {/*Nothing*/});
+
+        verify(sessionCommandManager).execute(eq(handler),
                                               any(AddParameterCommand.class));
+    }
+
+    @Test
+    public void testRemoveParameter() {
+        grid.removeParameter(parameter,
+                             () -> {/*Nothing*/});
+
+        verify(sessionCommandManager).execute(eq(handler),
+                                              any(RemoveParameterCommand.class));
+    }
+
+    @Test
+    public void testUpdateParameterName() {
+        grid.updateParameterName(parameter,
+                                 "name");
+
+        verify(sessionCommandManager).execute(eq(handler),
+                                              any(UpdateParameterNameCommand.class));
     }
 
     @Test
@@ -312,16 +447,16 @@ public class FunctionGridTest {
         assertEquals(expectedEditor,
                      gridWidgetCaptor.getValue().get());
 
-        verify(sessionCommandManager).execute(any(AbstractCanvasHandler.class),
+        verify(sessionCommandManager).execute(eq(handler),
                                               any(SetKindCommand.class));
     }
 
     @Test
-    public void testSetExpressionType() {
-        grid.setExpressionType(ExpressionType.LITERAL_EXPRESSION);
+    public void testClearExpressionType() {
+        grid.clearExpressionType();
 
-        verify(sessionCommandManager).execute(any(AbstractCanvasHandler.class),
-                                              any(SetCellValueCommand.class));
+        verify(sessionCommandManager).execute(eq(handler),
+                                              any(ClearExpressionTypeCommand.class));
     }
 
     @Test
@@ -332,7 +467,6 @@ public class FunctionGridTest {
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
         verify(gridLayer).batch(redrawCaptor.capture());
-        verify(grid).getEditorControls();
 
         final GridLayerRedrawManager.PrioritizedCommand command = redrawCaptor.getValue();
         command.execute();

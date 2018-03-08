@@ -20,11 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -37,7 +38,7 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(LienzoMockitoTestRunner.class)
 public class EditableHeaderUtilitiesTest {
 
     private static final double HEADER_HEIGHT = 50.0;
@@ -60,6 +61,8 @@ public class EditableHeaderUtilitiesTest {
 
     @Mock
     private BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation;
+
+    private Point2D rp = new Point2D(0, 0);
 
     @Before
     public void setup() {
@@ -130,6 +133,7 @@ public class EditableHeaderUtilitiesTest {
         final GridBodyCellRenderContext context = EditableHeaderUtilities.makeRenderContext(gridWidget,
                                                                                             ri,
                                                                                             ci,
+                                                                                            rp,
                                                                                             0);
 
         assertNotNull(context);
@@ -159,6 +163,7 @@ public class EditableHeaderUtilitiesTest {
         final GridBodyCellRenderContext context = EditableHeaderUtilities.makeRenderContext(gridWidget,
                                                                                             ri,
                                                                                             ci,
+                                                                                            rp,
                                                                                             0);
 
         assertNotNull(context);
@@ -187,6 +192,7 @@ public class EditableHeaderUtilitiesTest {
         final GridBodyCellRenderContext context = EditableHeaderUtilities.makeRenderContext(gridWidget,
                                                                                             ri,
                                                                                             ci,
+                                                                                            rp,
                                                                                             0);
 
         assertNotNull(context);
@@ -217,6 +223,7 @@ public class EditableHeaderUtilitiesTest {
         final GridBodyCellRenderContext context = EditableHeaderUtilities.makeRenderContext(gridWidget,
                                                                                             ri,
                                                                                             ci,
+                                                                                            rp,
                                                                                             0);
 
         assertNotNull(context);
@@ -245,6 +252,7 @@ public class EditableHeaderUtilitiesTest {
         final GridBodyCellRenderContext context = EditableHeaderUtilities.makeRenderContext(gridWidget,
                                                                                             ri,
                                                                                             ci,
+                                                                                            rp,
                                                                                             0);
 
         assertNotNull(context);
@@ -275,6 +283,7 @@ public class EditableHeaderUtilitiesTest {
         final GridBodyCellRenderContext context = EditableHeaderUtilities.makeRenderContext(gridWidget,
                                                                                             ri,
                                                                                             ci,
+                                                                                            rp,
                                                                                             0);
 
         assertNotNull(context);

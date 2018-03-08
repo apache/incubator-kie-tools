@@ -378,7 +378,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
         return minimumWidth;
     }
 
-    protected void synchroniseViewWhenExpressionEditorChanged(final Optional<BaseExpressionGrid> oEditor) {
+    public void synchroniseViewWhenExpressionEditorChanged(final Optional<BaseExpressionGrid> oEditor) {
         parent.onResize();
         gridPanel.refreshScrollPosition();
         gridPanel.updatePanelSize();

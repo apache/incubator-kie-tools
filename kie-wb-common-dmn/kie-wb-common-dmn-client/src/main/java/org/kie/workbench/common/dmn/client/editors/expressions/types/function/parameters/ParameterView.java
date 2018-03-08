@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.widgets.grid.columns;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters;
 
-import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 
-public interface EditableHeaderMetaData extends GridColumn.HeaderMetaData,
-                                                HasDOMElementResources {
+public interface ParameterView extends org.jboss.errai.ui.client.local.api.IsElement {
 
-    void edit(final GridBodyCellEditContext context);
+    void setName(final String text);
+
+    void addRemoveClickHandler(final Command command);
+
+    void addParameterNameChangeHandler(final ParameterizedCommand<String> command);
 }

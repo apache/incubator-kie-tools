@@ -14,33 +14,22 @@
  * limitations under the License.
  */
 
-.kie-dmn-container {
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  width: 100%;
-  height: 100%;
-}
+package org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters;
 
-.kie-dmn-return-to-DRG {
-  height: 32px;
-  display: block;
-}
+import java.util.List;
 
-.kie-dmn-return-to-DRG i {
-  //This duplicates Bootstraps spacing for breadcrumbs
-  padding: 0 9px 0 7px;
-}
+import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.uberfire.mvp.Command;
 
-.kie-dmn-control-buttons {
-  height: 32px;
-  display: block;
-}
+public interface HasParametersControl {
 
-.kie-dmn-expression-editor {
-  display: flex;
-  width: 100%;
-  height: ~"calc(100% - 32px)";
-  top: 32px;
-}
+    List<InformationItem> getParameters();
 
+    void addParameter(final Command onSuccess);
+
+    void removeParameter(final InformationItem parameter,
+                         final Command onSuccess);
+
+    void updateParameterName(final InformationItem parameter,
+                             final String name);
+}
