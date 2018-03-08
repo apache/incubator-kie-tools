@@ -250,7 +250,7 @@ public abstract class DefEditorServiceBaseTest {
         verify(optionsFactory,
                times(2)).makeCommentedOption(COMMENT);
         verify(defRegistry,
-               times(1)).setEntry(Paths.convert(Paths.convert(renamedPath)),
+               times(1)).setEntry(Paths.normalizePath(renamedPath),
                                   getExpectedDef());
 
         //3) the definition was deployed and 4) the notification was fired.

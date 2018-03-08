@@ -146,18 +146,11 @@ public class ValidatorBuildService {
     }
 
     private boolean isIncrementalBuildPossible(final Path resourcePath) throws NoModuleException {
-        final boolean isResource = getDestinationPath(resourcePath).startsWith("src/main/resources/");
-        return isResource;
+        return getDestinationPath(resourcePath).startsWith("src/main/resources/");
     }
 
     private String getDestinationPath(final Path originalPath) throws NoModuleException {
-
-        final Path rootPath = Paths.convert(Paths.convert(module(originalPath).getRootPath()));
-        final Path path = Paths.convert(Paths.convert(originalPath));
-
-        final int rootPathLength = rootPath.toURI().length() + 1;
-        final String substring = path.toURI().substring(rootPathLength);
-        return substring;
+        return Paths.removePrefix(originalPath, module(originalPath).getRootPath());
     }
 
     private Module module(final Path resourcePath) throws NoModuleException {

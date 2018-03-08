@@ -113,7 +113,7 @@ public class PersistenceDescriptorEditorServiceImpl
         } else {
             //workaround to add hasVersionSupport property to the received path, in case the FS supports versioning.
             //When the path was created manually it doesn't have the property.
-            return new Pair<Path, Boolean>(Paths.convert(Paths.convert(path)), false);
+            return new Pair<Path, Boolean>(Paths.normalizePath(path), false);
         }
     }
 

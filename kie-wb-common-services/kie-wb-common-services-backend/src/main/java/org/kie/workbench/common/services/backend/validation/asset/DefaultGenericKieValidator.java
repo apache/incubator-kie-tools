@@ -62,8 +62,8 @@ public class DefaultGenericKieValidator implements GenericValidator {
 
     protected Predicate<ValidationMessage> fromValidatedPath(final Path path) {
         return message -> {
-            final String destinationPathURI = removeFileExtension(Paths.convert(Paths.convert(path)).toURI());
-            final String messageURI = message.getPath() != null ? removeFileExtension(Paths.convert(Paths.convert(message.getPath())).toURI()) : "";
+            final String destinationPathURI = removeFileExtension(Paths.normalizePath(path).toURI());
+            final String messageURI = message.getPath() != null ? removeFileExtension(Paths.normalizePath(message.getPath()).toURI()) : "";
             return messageURI.isEmpty() || destinationPathURI.endsWith(messageURI);
         };
     }
