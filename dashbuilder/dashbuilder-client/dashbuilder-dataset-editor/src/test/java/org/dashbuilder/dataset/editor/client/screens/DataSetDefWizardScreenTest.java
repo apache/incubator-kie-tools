@@ -46,6 +46,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.jgroups.util.Util.*;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 
@@ -109,6 +111,15 @@ public class DataSetDefWizardScreenTest {
     }
 
     @Test
+    public void testOnMayClose() {
+        presenter.init(null);
+        when(dataSetProviderTypeWorkflow.getDataSetDef()).thenReturn(mock(SQLDataSetDef.class));
+        presenter.onMayClose();
+        verify(view).confirmClose();
+        assertTrue(presenter.isDirty(presenter.getCurrentModelHash()));
+    }
+
+    @Test
     public void testOnClose() {
         presenter.init(PlaceRequest.NOWHERE);
         DataSetEditorWorkflow currentWorkflow = presenter.currentWorkflow;
@@ -126,12 +137,13 @@ public class DataSetDefWizardScreenTest {
         verify(errorPopupPresenter, times(1)).showMessage(anyString());
         verify(view, times(0)).setWidget(any(IsWidget.class));
     }
-    
+
     @Test
     public void testInitProviderTypeEdition() {
         PlaceRequest placeRequest = mock(PlaceRequest.class);
         presenter.init(placeRequest);
         assertEquals(dataSetProviderTypeWorkflow, presenter.currentWorkflow);
+        assertFalse(presenter.isDirty(presenter.getCurrentModelHash()));
         verify(workflowFactory, times(1)).providerType();
         verify(view, times(1)).setWidget(any(IsWidget.class));
         verify(dataSetProviderTypeWorkflow, times(1)).edit(any(DataSetDef.class));
@@ -145,6 +157,7 @@ public class DataSetDefWizardScreenTest {
         when(dataSetProviderTypeWorkflow.getProviderType()).thenReturn(DataSetProviderType.SQL);
         presenter.onProviderTypeSelected(dataSetProviderTypeWorkflow);
         assertEquals(dataSetBasicAttributesWorkflow, presenter.currentWorkflow);
+        assertFalse(presenter.isDirty(presenter.getCurrentModelHash()));
         verify(view, times(1)).setWidget(any(IsWidget.class));
         verify(dataSetBasicAttributesWorkflow, times(1)).edit(any(DataSetDef.class));
         verify(editWorkflow, times(1)).showTestButton();
@@ -188,11 +201,12 @@ public class DataSetDefWizardScreenTest {
             }
         }).when(dataSetBasicAttributesWorkflow).testDataSet(any(DataSetEditorWorkflow.TestDataSetCallback.class));
         presenter.currentWorkflow = dataSetBasicAttributesWorkflow;
-        
+
         presenter.onTestEvent(event);
-        
+
         verify(dataSetBasicAttributesWorkflow, times(1)).testDataSet(any(DataSetEditorWorkflow.TestDataSetCallback.class));
         assertEquals(editWorkflow, presenter.currentWorkflow);
+        assertTrue(presenter.isDirty(presenter.getCurrentModelHash()));
         verify(workflowFactory, times(1)).edit(any(DataSetProviderType.class));
         verify(view, times(1)).setWidget(any(IsWidget.class));
         final ArgumentCaptor<List> dataCaptor =  ArgumentCaptor.forClass(List.class);
@@ -217,7 +231,7 @@ public class DataSetDefWizardScreenTest {
         verify(placeManager, times(1)).goTo("DataSetAuthoringHome");
         verify(notification, times(1)).fire(any(NotificationEvent.class));
         verify(placeManager, times(1)).closePlace(any(PlaceRequest.class));
-        verify(editWorkflow, times(1)).clear();
+        verify(workflowFactory).dispose(editWorkflow);
         verify(workflowFactory, times(0)).providerType();
         verify(workflowFactory, times(0)).edit(any(DataSetProviderType.class));
         verify(workflowFactory, times(0)).basicAttributes(any(DataSetProviderType.class));
@@ -302,5 +316,5 @@ public class DataSetDefWizardScreenTest {
         verify(errorPopupPresenter, times(0)).showMessage(anyString());
         verify(view, times(0)).setWidget(any(IsWidget.class));
     }
-    
+
 }

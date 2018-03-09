@@ -97,6 +97,15 @@ public class DataSetDefEditorPresenterTest  {
     }
 
     @Test
+    public void testOnMayClose() {
+        presenter.loadContent();
+        when(editWorkflow.getDataSetDef()).thenReturn(mock(DataSetDef.class));
+        presenter.onMayClose();
+        verify(view).confirmClose();
+        assertTrue(presenter.isDirty(presenter.getCurrentModelHash()));
+    }
+
+    @Test
     public void testOnClose() throws Exception {
         presenter.onClose();
 
@@ -106,6 +115,7 @@ public class DataSetDefEditorPresenterTest  {
     @Test
     public void testLoadContent() throws Exception {
         presenter.loadContent();
+        assertFalse(presenter.isDirty(presenter.getCurrentModelHash()));
         verify(dataSetDefVfsServices, times(1)).load(any(Path.class));
         verify(changeTitleNotification, times(1)).fire(any(ChangeTitleWidgetEvent.class));
         verify(view, times(1)).hideBusyIndicator();
@@ -122,7 +132,7 @@ public class DataSetDefEditorPresenterTest  {
         verify(errorPopupPresenter, times(1)).showMessage(anyString());
         verify(view, times(1)).hideBusyIndicator();
         verify(view, times(0)).setWidget(any(IsWidget.class));
-        
+
     }
 
     @Test
@@ -130,6 +140,7 @@ public class DataSetDefEditorPresenterTest  {
         final Exception loadContentException = mock(Exception.class);
         doThrow(loadContentException).when(dataSetDefVfsServices).load(any(Path.class));
         presenter.loadContent();
+        assertFalse(presenter.isDirty(presenter.getCurrentModelHash()));
         verify(dataSetDefVfsServices, times(1)).get(any(Path.class));
         verify(view, times(1)).hideBusyIndicator();
         verify(view, times(1)).setWidget(editWorkflow);
@@ -141,7 +152,7 @@ public class DataSetDefEditorPresenterTest  {
     public void testGetDataSetDef() {
         assertEquals(dataSetDef, presenter.getDataSetDef());
     }
-    
+
     @Test
     public void testGetDataSetDefNullified() {
         when(editWorkflow.getDataSetDef()).thenReturn(null);
@@ -157,7 +168,7 @@ public class DataSetDefEditorPresenterTest  {
         presenter.onTestEvent(event);
         verify(editWorkflow, times(1)).testDataSet(any(DataSetEditorWorkflow.TestDataSetCallback.class));
     }
-    
+
     @Test
     public void testOnTestEventWithErrors() {
         TestDataSetRequestEvent event = mock(TestDataSetRequestEvent.class);

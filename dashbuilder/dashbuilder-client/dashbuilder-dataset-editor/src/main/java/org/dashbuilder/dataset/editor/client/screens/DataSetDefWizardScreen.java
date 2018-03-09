@@ -46,6 +46,7 @@ import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
@@ -76,6 +77,7 @@ public class DataSetDefWizardScreen {
 
     PlaceRequest placeRequest;
     Command nextCommand;
+    Integer originalHash = 0;
     DataSetEditorWorkflow currentWorkflow;
     SavePopUpPresenter savePopUpPresenter;
 
@@ -116,9 +118,53 @@ public class DataSetDefWizardScreen {
         providerTypeEdition();
     }
 
+    @OnMayClose
+    public boolean onMayClose() {
+        return mayClose();
+    }
+
     @OnClose
     public void onClose() {
         disposeCurrentWorkflow();
+    }
+
+    public void setOriginalHash(Integer originalHash) {
+        this.originalHash = originalHash;
+    }
+
+    public int getCurrentModelHash() {
+        if (getDataSetDef() == null) {
+            return 0;
+        }
+        return getDataSetDef().hashCode();
+    }
+
+    public DataSetDef getDataSetDef() {
+        return currentWorkflow != null ? currentWorkflow.getDataSetDef() : null;
+    }
+
+    public boolean mayClose() {
+        try {
+            // Flush the current workflow state
+            currentWorkflow.flush();
+        } catch (Exception e) {
+            // Ignore. The provider type selection workflow stage thorws an error
+            // due to the dataset def being in partial creation state.
+        }
+        Integer currentHash = getCurrentModelHash();
+        if (isDirty(currentHash)) {
+            return view.confirmClose();
+        } else {
+            return true;
+        }
+    }
+
+    public boolean isDirty(Integer currentHash) {
+        if (originalHash == null) {
+            return currentHash != null;
+        } else {
+            return !originalHash.equals(currentHash);
+        }
     }
 
     private void providerTypeEdition() {
@@ -127,8 +173,9 @@ public class DataSetDefWizardScreen {
         this.nextCommand = () -> onProviderTypeSelected(providerTypeWorkflow);
 
         // First step, provider type selection.
-        setCurrentWorkflow(providerTypeWorkflow);
         providerTypeWorkflow.edit(dataSetDef).providerTypeEdition();
+        setCurrentWorkflow(providerTypeWorkflow);
+        setOriginalHash(getCurrentModelHash());
     }
 
     void onProviderTypeSelected(final DataSetProviderTypeWorkflow providerTypeWorkflow) {
@@ -156,8 +203,9 @@ public class DataSetDefWizardScreen {
     private void basicAttributesEdition(final DataSetDef typedDataSetDef) {
         final DataSetProviderType type = typedDataSetDef.getProvider() != null ? typedDataSetDef.getProvider() : null;
         final DataSetBasicAttributesWorkflow basicAttributesWorkflow = workflowFactory.basicAttributes(type);
-        setCurrentWorkflow(basicAttributesWorkflow);
         basicAttributesWorkflow.edit(typedDataSetDef).basicAttributesEdition().showBackButton().showTestButton();
+        setCurrentWorkflow(basicAttributesWorkflow);
+        setOriginalHash(getCurrentModelHash());
     }
 
     private void testDataSet() {
@@ -193,12 +241,13 @@ public class DataSetDefWizardScreen {
                 // Delegate edition to the dataSetEditWorkflow.
                 final DataSetProviderType type = dataSetDef.getProvider() != null ? dataSetDef.getProvider() : null;
                 final DataSetEditWorkflow editWorkflow = workflowFactory.edit(type);
-                setCurrentWorkflow(editWorkflow);
                 editWorkflow.edit(dataSetDef,
                                   columnDefs)
                         .showPreviewTab()
                         .showBackButton()
                         .showNextButton();
+
+                setCurrentWorkflow(editWorkflow);
             } else {
                 showError("Data set has no columns");
             }
@@ -225,7 +274,7 @@ public class DataSetDefWizardScreen {
     RemoteCallback<Path> saveSuccessCallback = new RemoteCallback<Path>() {
         @Override
         public void callback(Path path) {
-            currentWorkflow.clear();
+            disposeCurrentWorkflow();
             BusyPopup.close();
             notification.fire(new NotificationEvent(DataSetAuthoringConstants.INSTANCE.savedOk()));
             placeManager.closePlace(placeRequest);
@@ -274,7 +323,7 @@ public class DataSetDefWizardScreen {
     void onCancelEvent(@Observes CancelRequestEvent cancelEvent) {
         checkNotNull("cancelEvent",
                      cancelEvent);
-        if (cancelEvent.getContext().equals(currentWorkflow)) {
+        if (cancelEvent.getContext().equals(currentWorkflow) && mayClose()) {
             providerTypeEdition();
         }
     }

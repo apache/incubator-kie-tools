@@ -141,6 +141,7 @@ public class DataSetDefEditorPresenter extends BaseEditor<DataSetDef, DefaultMet
 
     @OnMayClose
     public boolean onMayClose() {
+        workflow.flush();
         return super.mayClose(getCurrentModelHash());
     }
 
@@ -189,8 +190,7 @@ public class DataSetDefEditorPresenter extends BaseEditor<DataSetDef, DefaultMet
         final DataSetProviderType type = dataSetDef.getProvider() != null ? dataSetDef.getProvider() : null;
         workflow = workflowFactory.edit(type);
         view.setWidget(workflow);
-        workflow.edit(dataSetDef,
-                      columnDefs).showPreviewTab();
+        workflow.edit(dataSetDef, columnDefs).showPreviewTab();
     }
 
     private void edit(final DataSet dataset) {
@@ -254,8 +254,10 @@ public class DataSetDefEditorPresenter extends BaseEditor<DataSetDef, DefaultMet
     }
 
     public int getCurrentModelHash() {
-        if (getDataSetDef() == null) return 0;
-        return getDataSetDef().getUUID().hashCode();
+        if (getDataSetDef() == null) {
+            return 0;
+        }
+        return getDataSetDef().hashCode();
     }
 
     public void disposeWorkflow() {
@@ -300,8 +302,8 @@ public class DataSetDefEditorPresenter extends BaseEditor<DataSetDef, DefaultMet
                                                                     buildTitle()));
             view.hideBusyIndicator();
 
-            edit(dataSetDef,
-                 columns);
+            edit(dataSetDef, columns);
+            setOriginalHash(getCurrentModelHash());
         }
     }
 

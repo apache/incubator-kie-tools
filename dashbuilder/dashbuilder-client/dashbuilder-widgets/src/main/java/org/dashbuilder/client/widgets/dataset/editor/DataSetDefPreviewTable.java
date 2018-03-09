@@ -93,6 +93,7 @@ public class DataSetDefPreviewTable implements IsWidget {
                     .titleVisible(false)
                     .tablePageSize(6)
                     .tableOrderEnabled(true)
+                    .tableColumnPickerEnabled(false)
                     .filterOn(true, false, false);
 
             // Make only the specified columns visible (if null then show all)

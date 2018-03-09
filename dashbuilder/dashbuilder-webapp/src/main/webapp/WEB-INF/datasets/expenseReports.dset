@@ -5,7 +5,7 @@
     "isPublic": true,
     "pushEnabled": true,
     "pushMaxSize": 1024,
-    "refreshTime": "2second",
+    "refreshTime": "2 second",
     "refreshAlways": "false",
     "filePath": "expenseReports.csv",
     "separatorChar": ";",

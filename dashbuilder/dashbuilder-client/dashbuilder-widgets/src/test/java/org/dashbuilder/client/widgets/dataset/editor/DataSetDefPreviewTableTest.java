@@ -109,5 +109,6 @@ public class DataSetDefPreviewTableTest extends AbstractDisplayerTest {
         DisplayerSettings settings = displayer.getDisplayerSettings();
         assertEquals(settings.getColumnSettings("date").getValuePattern(), "dd/MM/yyyy");
         assertEquals(settings.getColumnSettings("number").getValuePattern(), "#,###");
+        assertEquals(settings.isTableColumnPickerEnabled(), false);
     }
 }
