@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control;
 
+import java.util.Optional;
+
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -36,6 +38,7 @@ import org.mockito.Mock;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -88,7 +91,7 @@ public class AttributeColumnConfigRowTest {
         when(attributeColumn.getAttribute()).thenReturn(RuleAttributeWidget.SALIENCE_ATTR);
         when(attributeColumn.cloneColumn()).thenReturn(editedAttributeColumn);
         when(presenter.isActiveDecisionTableEditable()).thenReturn(true);
-        when(presenter.getActiveDecisionTable()).thenReturn(decisionTable);
+        when(presenter.getActiveDecisionTable()).thenReturn(Optional.of(decisionTable));
 
         when(view.addUseRowNumberCheckBox(any(), anyBoolean(), any())).thenReturn(useRowNumberCheckBox);
         when(view.addReverseOrderCheckBox(any(), anyBoolean(), any())).thenReturn(reverseOrderCheckBox);
@@ -116,6 +119,24 @@ public class AttributeColumnConfigRowTest {
     }
 
     @Test
+    public void testInitUseRowNumberCheckBoxWithoutActiveDecisionTable() throws Exception {
+        when(useRowNumberCheckBox.getValue()).thenReturn(true);
+        when(presenter.getActiveDecisionTable()).thenReturn(Optional.empty());
+
+        columnConfigRow.init(attributeColumn,
+                             presenter);
+        verify(view).addUseRowNumberCheckBox(eq(attributeColumn),
+                                             eq(true),
+                                             clickCaptor.capture());
+        //Simulates that checkbox was clicked
+        clickCaptor.getValue().onClick(null);
+
+        verify(decisionTable,
+               never()).updateColumn(any(AttributeCol52.class),
+                                     any(AttributeCol52.class));
+    }
+
+    @Test
     public void testInitReverseOrder() throws Exception {
         when(reverseOrderCheckBox.getValue()).thenReturn(true);
         columnConfigRow.init(attributeColumn, presenter);
@@ -124,6 +145,24 @@ public class AttributeColumnConfigRowTest {
         clickCaptor.getValue().onClick(null);
         verify(editedAttributeColumn).setReverseOrder(true);
         verify(decisionTable).updateColumn(attributeColumn, editedAttributeColumn);
+    }
+
+    @Test
+    public void testInitReverseOrderWithoutActiveDecisionTable() throws Exception {
+        when(reverseOrderCheckBox.getValue()).thenReturn(true);
+        when(presenter.getActiveDecisionTable()).thenReturn(Optional.empty());
+
+        columnConfigRow.init(attributeColumn,
+                             presenter);
+        verify(view).addReverseOrderCheckBox(eq(attributeColumn),
+                                             eq(true),
+                                             clickCaptor.capture());
+        //Simulates that checkbox was clicked
+        clickCaptor.getValue().onClick(null);
+
+        verify(decisionTable,
+               never()).updateColumn(any(AttributeCol52.class),
+                                     any(AttributeCol52.class));
     }
 
     @Test
@@ -138,6 +177,24 @@ public class AttributeColumnConfigRowTest {
     }
 
     @Test
+    public void testInitDefaultValueWithoutActiveDecisionTable() throws Exception {
+        when(event.getEditedDefaultValue()).thenReturn(defaultValue);
+        when(presenter.getActiveDecisionTable()).thenReturn(Optional.empty());
+
+        columnConfigRow.init(attributeColumn,
+                             presenter);
+        verify(view).addDefaultValue(eq(attributeColumn),
+                                     eq(true),
+                                     defaultValueCaptor.capture());
+        //Simulates that checkbox was clicked
+        defaultValueCaptor.getValue().onDefaultValueChanged(event);
+
+        verify(decisionTable,
+               never()).updateColumn(any(AttributeCol52.class),
+                                     any(AttributeCol52.class));
+    }
+
+    @Test
     public void testInitHideColumn() throws Exception {
         when(hideColumnCheckBox.getValue()).thenReturn(true);
         columnConfigRow.init(attributeColumn, presenter);
@@ -146,5 +203,22 @@ public class AttributeColumnConfigRowTest {
         clickCaptor.getValue().onClick(null);
         verify(editedAttributeColumn).setHideColumn(true);
         verify(decisionTable).updateColumn(attributeColumn, editedAttributeColumn);
+    }
+
+    @Test
+    public void testInitHideColumnWithoutActiveDecisionTable() throws Exception {
+        when(hideColumnCheckBox.getValue()).thenReturn(true);
+        when(presenter.getActiveDecisionTable()).thenReturn(Optional.empty());
+
+        columnConfigRow.init(attributeColumn,
+                             presenter);
+        verify(view).addHideColumnCheckBox(eq(attributeColumn),
+                                           clickCaptor.capture());
+        //Simulates that checkbox was clicked
+        clickCaptor.getValue().onClick(null);
+
+        verify(decisionTable,
+               never()).updateColumn(any(AttributeCol52.class),
+                                     any(AttributeCol52.class));
     }
 }

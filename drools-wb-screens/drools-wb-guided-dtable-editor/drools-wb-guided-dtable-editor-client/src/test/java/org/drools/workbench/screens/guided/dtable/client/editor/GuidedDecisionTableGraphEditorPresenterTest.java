@@ -740,7 +740,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         doNothing().when(presenter).initialiseKieEditorTabs(dtPresenter, overview, oracle, model.getImports(), false);
         doNothing().when(presenter).initialiseEditorTabsWhenNoDocuments();
         doReturn(true).when(modeller).isDecisionTableAvailable(dtPresenter);
-        doReturn(dtPresenter).when(modeller).getActiveDecisionTable();
+        doReturn(Optional.of(dtPresenter)).when(modeller).getActiveDecisionTable();
         doReturn(overview).when(dtPresenter).getOverview();
         doReturn(oracle).when(dtPresenter).getDataModelOracle();
         doReturn(model).when(dtPresenter).getModel();
@@ -1366,6 +1366,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
 
     @Test
     public void checkOnUpdatedLockStatusEventWithNullPath() {
+        when(modeller.getActiveDecisionTable()).thenReturn(Optional.empty());
+
         checkOnUpdatedLockStatusEvent(null,
                                       false,
                                       false,
@@ -1375,6 +1377,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
 
     @Test
     public void checkOnUpdatedLockStatusEventNotLocked() {
+        when(modeller.getActiveDecisionTable()).thenReturn(Optional.empty());
+
         checkOnUpdatedLockStatusEvent(mock(ObservablePath.class),
                                       false,
                                       false,
@@ -1384,6 +1388,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
 
     @Test
     public void checkOnUpdatedLockStatusEventLockedByOtherUser() {
+        when(modeller.getActiveDecisionTable()).thenReturn(Optional.empty());
+
         checkOnUpdatedLockStatusEvent(mock(ObservablePath.class),
                                       true,
                                       false,
@@ -1393,6 +1399,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
 
     @Test
     public void checkOnUpdatedLockStatusEventLockedByCurrentUser() {
+        when(modeller.getActiveDecisionTable()).thenReturn(Optional.empty());
+
         checkOnUpdatedLockStatusEvent(mock(ObservablePath.class),
                                       true,
                                       true,

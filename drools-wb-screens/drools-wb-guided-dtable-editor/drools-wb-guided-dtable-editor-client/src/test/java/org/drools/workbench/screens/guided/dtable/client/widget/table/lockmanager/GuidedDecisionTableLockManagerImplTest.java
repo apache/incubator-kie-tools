@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.lockmanager;
 
 import java.lang.reflect.Field;
+import java.util.Optional;
 
 import javax.enterprise.event.Event;
 
@@ -61,12 +62,12 @@ public class GuidedDecisionTableLockManagerImplTest {
     @Mock
     private User user;
 
-    private Event<ChangeTitleWidgetEvent> changeTitleEvent = spy( new EventSourceMock<ChangeTitleWidgetEvent>() {
+    private Event<ChangeTitleWidgetEvent> changeTitleEvent = spy(new EventSourceMock<ChangeTitleWidgetEvent>() {
         @Override
-        public void fire( final ChangeTitleWidgetEvent event ) {
+        public void fire(final ChangeTitleWidgetEvent event) {
             //Do nothing. Default implementation throws an exception.
         }
-    } );
+    });
 
     @Mock
     private GuidedDecisionTableModellerView.Presenter modellerPresenter;
@@ -78,77 +79,76 @@ public class GuidedDecisionTableLockManagerImplTest {
 
     @Before
     public void setup() throws NoSuchFieldException, IllegalAccessException {
-        GwtMockito.useProviderForType( WorkbenchResources.class,
-                                       ( type ) -> null );
+        GwtMockito.useProviderForType(WorkbenchResources.class,
+                                      (type) -> null);
 
         lockManager = new GuidedDecisionTableLockManagerImpl();
 
-        setLockManagerField( "lockService",
-                             lockService );
-        setLockManagerField( "lockInfo",
-                             lockInfo );
-        setLockManagerField( "changeTitleEvent",
-                             changeTitleEvent );
-        setLockManagerField( "user",
-                             user );
+        setLockManagerField("lockService",
+                            lockService);
+        setLockManagerField("lockInfo",
+                            lockInfo);
+        setLockManagerField("changeTitleEvent",
+                            changeTitleEvent);
+        setLockManagerField("user",
+                            user);
 
-        when( lockInfo.getFile() ).thenReturn( dtPath );
-        when( user.getIdentifier() ).thenReturn( "user" );
+        when(lockInfo.getFile()).thenReturn(dtPath);
+        when(user.getIdentifier()).thenReturn("user");
     }
 
-    private void setLockManagerField( final String fieldName,
-                                      final Object value ) {
+    private void setLockManagerField(final String fieldName,
+                                     final Object value) {
         try {
-            final Field field = LockManagerImpl.class.getDeclaredField( fieldName );
-            field.setAccessible( true );
-            field.set( lockManager,
-                       value );
-        } catch ( NoSuchFieldException | IllegalAccessException e ) {
-            fail( e.getMessage() );
+            final Field field = LockManagerImpl.class.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(lockManager,
+                      value);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            fail(e.getMessage());
         }
     }
 
     @Test
     public void testFireChangeTitleEvent_NoActiveDecisionTable() {
-        lockManager.init( mock( LockTarget.class ),
-                          modellerPresenter );
+        lockManager.init(mock(LockTarget.class),
+                         modellerPresenter);
 
-        when( modellerPresenter.getActiveDecisionTable() ).thenReturn( null );
+        when(modellerPresenter.getActiveDecisionTable()).thenReturn(Optional.empty());
 
         lockManager.fireChangeTitleEvent();
 
-        verify( changeTitleEvent,
-                never() ).fire( any( ChangeTitleWidgetEvent.class ) );
+        verify(changeTitleEvent,
+               never()).fire(any(ChangeTitleWidgetEvent.class));
     }
 
     @Test
     public void testFireChangeTitleEvent_LockInfoUpdateForActiveDecisionTable() {
-        lockManager.init( mock( LockTarget.class ),
-                          modellerPresenter );
+        lockManager.init(mock(LockTarget.class),
+                         modellerPresenter);
 
-        final GuidedDecisionTableView.Presenter dtPresenter = mock( GuidedDecisionTableView.Presenter.class );
-        when( dtPresenter.getCurrentPath() ).thenReturn( new ObservablePathImpl().wrap( dtPath ) );
-        when( modellerPresenter.getActiveDecisionTable() ).thenReturn( dtPresenter );
+        final GuidedDecisionTableView.Presenter dtPresenter = mock(GuidedDecisionTableView.Presenter.class);
+        when(dtPresenter.getCurrentPath()).thenReturn(new ObservablePathImpl().wrap(dtPath));
+        when(modellerPresenter.getActiveDecisionTable()).thenReturn(Optional.of(dtPresenter));
 
         lockManager.fireChangeTitleEvent();
 
-        verify( changeTitleEvent,
-                times( 1 ) ).fire( any( ChangeTitleWidgetEvent.class ) );
+        verify(changeTitleEvent,
+               times(1)).fire(any(ChangeTitleWidgetEvent.class));
     }
 
     @Test
     public void testFireChangeTitleEvent_LockInfoUpdateForNonActiveDecisionTable() {
-        lockManager.init( mock( LockTarget.class ),
-                          modellerPresenter );
+        lockManager.init(mock(LockTarget.class),
+                         modellerPresenter);
 
-        final GuidedDecisionTableView.Presenter dtPresenter = mock( GuidedDecisionTableView.Presenter.class );
-        when( dtPresenter.getCurrentPath() ).thenReturn( mock( ObservablePath.class ) );
-        when( modellerPresenter.getActiveDecisionTable() ).thenReturn( dtPresenter );
+        final GuidedDecisionTableView.Presenter dtPresenter = mock(GuidedDecisionTableView.Presenter.class);
+        when(dtPresenter.getCurrentPath()).thenReturn(mock(ObservablePath.class));
+        when(modellerPresenter.getActiveDecisionTable()).thenReturn(Optional.of(dtPresenter));
 
         lockManager.fireChangeTitleEvent();
 
-        verify( changeTitleEvent,
-                never() ).fire( any( ChangeTitleWidgetEvent.class ) );
+        verify(changeTitleEvent,
+               never()).fire(any(ChangeTitleWidgetEvent.class));
     }
-
 }

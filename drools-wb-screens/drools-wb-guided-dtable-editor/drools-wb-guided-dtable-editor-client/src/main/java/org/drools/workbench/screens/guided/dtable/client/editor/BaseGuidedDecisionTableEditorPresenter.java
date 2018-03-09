@@ -223,10 +223,10 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
     }
 
     protected void onFocus() {
-        if (modeller.getActiveDecisionTable() != null) {
-            decisionTableSelectedEvent.fire(new DecisionTableSelectedEvent(modeller.getActiveDecisionTable()));
-            modeller.getActiveDecisionTable().initialiseAnalysis();
-        }
+        modeller.getActiveDecisionTable().ifPresent(dt -> {
+            decisionTableSelectedEvent.fire(new DecisionTableSelectedEvent(dt));
+            dt.initialiseAnalysis();
+        });
     }
 
     protected String getTitleText() {
@@ -317,7 +317,7 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
     }
 
     void onUpdatedLockStatusEvent(final UpdatedLockStatusEvent event) {
-        final Optional<GuidedDecisionTableView.Presenter> activeDecisionTable = Optional.ofNullable(modeller.getActiveDecisionTable());
+        final Optional<GuidedDecisionTableView.Presenter> activeDecisionTable = modeller.getActiveDecisionTable();
 
         if (!activeDecisionTable.isPresent()) {
             enableColumnsTab(false);

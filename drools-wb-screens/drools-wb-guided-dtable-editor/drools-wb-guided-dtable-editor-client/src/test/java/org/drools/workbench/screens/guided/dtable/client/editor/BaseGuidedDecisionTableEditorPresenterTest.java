@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -161,7 +162,7 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
     @Test
     public void checkDecisionTableSelectedEventFiredWhenEditorReceivesFocusWithActiveDecisionTable() {
         final GuidedDecisionTableView.Presenter activeDtable = mock(GuidedDecisionTableView.Presenter.class);
-        when(modeller.getActiveDecisionTable()).thenReturn(activeDtable);
+        when(modeller.getActiveDecisionTable()).thenReturn(Optional.of(activeDtable));
 
         presenter.onFocus();
 
@@ -180,6 +181,8 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
 
     @Test
     public void checkDecisionTableSelectedEventNotFiredWhenEditorReceivesFocusWithoutActiveDecisionTable() {
+        when(modeller.getActiveDecisionTable()).thenReturn(Optional.empty());
+
         presenter.onFocus();
 
         verify(decisionTableSelectedEvent,
@@ -734,7 +737,7 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         doReturn(false).when(event).isLocked();
         doReturn(false).when(event).isLockedByCurrentUser();
         doReturn(true).when(presenter).isGuidedDecisionTableEditable(activeDecisionTable);
-        doReturn(activeDecisionTable).when(modeller).getActiveDecisionTable();
+        doReturn(Optional.of(activeDecisionTable)).when(modeller).getActiveDecisionTable();
         doNothing().when(presenter).enableColumnsTab(anyBoolean());
 
         presenter.onUpdatedLockStatusEvent(event);
@@ -750,7 +753,7 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         doReturn(false).when(event).isLocked();
         doReturn(false).when(event).isLockedByCurrentUser();
         doReturn(false).when(presenter).isGuidedDecisionTableEditable(activeDecisionTable);
-        doReturn(activeDecisionTable).when(modeller).getActiveDecisionTable();
+        doReturn(Optional.of(activeDecisionTable)).when(modeller).getActiveDecisionTable();
         doNothing().when(presenter).enableColumnsTab(anyBoolean());
 
         presenter.onUpdatedLockStatusEvent(event);
@@ -766,7 +769,7 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         doReturn(true).when(event).isLocked();
         doReturn(true).when(event).isLockedByCurrentUser();
         doReturn(true).when(presenter).isGuidedDecisionTableEditable(activeDecisionTable);
-        doReturn(activeDecisionTable).when(modeller).getActiveDecisionTable();
+        doReturn(Optional.of(activeDecisionTable)).when(modeller).getActiveDecisionTable();
         doNothing().when(presenter).enableColumnsTab(anyBoolean());
 
         presenter.onUpdatedLockStatusEvent(event);
@@ -782,7 +785,7 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         doReturn(true).when(event).isLocked();
         doReturn(false).when(event).isLockedByCurrentUser();
         doReturn(true).when(presenter).isGuidedDecisionTableEditable(activeDecisionTable);
-        doReturn(activeDecisionTable).when(modeller).getActiveDecisionTable();
+        doReturn(Optional.of(activeDecisionTable)).when(modeller).getActiveDecisionTable();
         doNothing().when(presenter).enableColumnsTab(anyBoolean());
 
         presenter.onUpdatedLockStatusEvent(event);
@@ -795,7 +798,7 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
 
         final UpdatedLockStatusEvent event = mock(UpdatedLockStatusEvent.class);
 
-        doReturn(null).when(modeller).getActiveDecisionTable();
+        doReturn(Optional.empty()).when(modeller).getActiveDecisionTable();
 
         presenter.onUpdatedLockStatusEvent(event);
 

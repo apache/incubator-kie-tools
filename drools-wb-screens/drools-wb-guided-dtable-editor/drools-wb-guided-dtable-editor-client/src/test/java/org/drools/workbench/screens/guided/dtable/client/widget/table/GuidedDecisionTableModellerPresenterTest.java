@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.enterprise.event.Event;
@@ -63,7 +64,6 @@ import org.uberfire.mvp.PlaceRequest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doReturn;
@@ -305,7 +305,7 @@ public class GuidedDecisionTableModellerPresenterTest {
         final GuidedDecisionTablePresenter.Access access = new GuidedDecisionTablePresenter.Access();
         access.setReadOnly(true);
 
-        when(presenter.getActiveDecisionTable()).thenReturn(dtPresenter);
+        when(presenter.getActiveDecisionTable()).thenReturn(Optional.of(dtPresenter));
         when(dtPresenter.getAccess()).thenReturn(access);
 
         assertFalse(presenter.isActiveDecisionTableEditable());
@@ -317,7 +317,7 @@ public class GuidedDecisionTableModellerPresenterTest {
         final GuidedDecisionTablePresenter.Access access = new GuidedDecisionTablePresenter.Access();
         access.setReadOnly(false);
 
-        when(presenter.getActiveDecisionTable()).thenReturn(dtPresenter);
+        when(presenter.getActiveDecisionTable()).thenReturn(Optional.of(dtPresenter));
         when(dtPresenter.getAccess()).thenReturn(access);
 
         assertTrue(presenter.isActiveDecisionTableEditable());
@@ -329,7 +329,7 @@ public class GuidedDecisionTableModellerPresenterTest {
         final GuidedDecisionTablePresenter.Access access = new GuidedDecisionTablePresenter.Access();
         access.setLock(GuidedDecisionTablePresenter.Access.LockedBy.CURRENT_USER);
 
-        when(presenter.getActiveDecisionTable()).thenReturn(dtPresenter);
+        when(presenter.getActiveDecisionTable()).thenReturn(Optional.of(dtPresenter));
         when(dtPresenter.getAccess()).thenReturn(access);
 
         assertTrue(presenter.isActiveDecisionTableEditable());
@@ -341,8 +341,15 @@ public class GuidedDecisionTableModellerPresenterTest {
         final GuidedDecisionTablePresenter.Access access = new GuidedDecisionTablePresenter.Access();
         access.setLock(GuidedDecisionTablePresenter.Access.LockedBy.OTHER_USER);
 
-        when(presenter.getActiveDecisionTable()).thenReturn(dtPresenter);
+        when(presenter.getActiveDecisionTable()).thenReturn(Optional.of(dtPresenter));
         when(dtPresenter.getAccess()).thenReturn(access);
+
+        assertFalse(presenter.isActiveDecisionTableEditable());
+    }
+
+    @Test
+    public void isActiveDecisionTableEditableWhenNoActiveDecisionTale() {
+        when(presenter.getActiveDecisionTable()).thenReturn(Optional.empty());
 
         assertFalse(presenter.isActiveDecisionTableEditable());
     }
@@ -465,12 +472,50 @@ public class GuidedDecisionTableModellerPresenterTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
+    public void onDecisionTableSelectedWithOtherActiveDecisionTable() {
+        final GuidedDecisionTableView.Presenter dtPresenter1 = makeDecisionTable();
+        final GuidedDecisionTableView.Presenter dtPresenter2 = makeDecisionTable();
+        final DecisionTableSelectedEvent event = new DecisionTableSelectedEvent(dtPresenter1);
+
+        when(presenter.isDecisionTableAvailable(eq(dtPresenter1))).thenReturn(true);
+        when(presenter.getActiveDecisionTable()).thenReturn(Optional.of(dtPresenter2));
+        when(presenter.getAvailableDecisionTables()).thenReturn(new HashSet<GuidedDecisionTableView.Presenter>() {{
+            add(dtPresenter1);
+            add(dtPresenter2);
+        }});
+
+        presenter.onDecisionTableSelected(event);
+
+        verify(dtPresenter1,
+               times(1)).initialiseAnalysis();
+        verify(view,
+               times(1)).select(dtPresenter1.getView());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void onDecisionTableSelectedWithSameActiveDecisionTable() {
+        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
+        final DecisionTableSelectedEvent event = new DecisionTableSelectedEvent(dtPresenter);
+
+        when(presenter.isDecisionTableAvailable(eq(dtPresenter))).thenReturn(true);
+        when(presenter.getActiveDecisionTable()).thenReturn(Optional.of(dtPresenter));
+        when(presenter.getAvailableDecisionTables()).thenReturn(Collections.singleton(dtPresenter));
+
+        presenter.onDecisionTableSelected(event);
+
+        verify(dtPresenter, never()).initialiseAnalysis();
+        verify(view, never()).select(any(GuidedDecisionTableView.class));
+    }
+
+    @Test
     public void onDecisionTableSelectedNoneSelected() {
         final DecisionTableSelectedEvent event = DecisionTableSelectedEvent.NONE;
 
         presenter.onDecisionTableSelected(event);
 
-        assertNull(presenter.getActiveDecisionTable());
+        assertFalse(presenter.getActiveDecisionTable().isPresent());
 
         verify(presenter,
                never()).doDecisionTableSelected(any(GuidedDecisionTableView.Presenter.class));
@@ -486,7 +531,7 @@ public class GuidedDecisionTableModellerPresenterTest {
 
         presenter.onDecisionTableSelected(event);
 
-        assertNull(presenter.getActiveDecisionTable());
+        assertFalse(presenter.getActiveDecisionTable().isPresent());
 
         verify(presenter,
                never()).doDecisionTableSelected(any(GuidedDecisionTableView.Presenter.class));

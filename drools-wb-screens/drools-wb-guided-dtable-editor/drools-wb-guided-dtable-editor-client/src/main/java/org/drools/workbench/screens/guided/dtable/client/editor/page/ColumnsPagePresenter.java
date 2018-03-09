@@ -312,7 +312,10 @@ public class ColumnsPagePresenter {
                                   final MetadataCol52 metaDataColumn) {
         return () -> {
             try {
-                modeller.getActiveDecisionTable().deleteColumn(metaDataColumn);
+                final Optional<GuidedDecisionTableView.Presenter> dtPresenter = modeller.getActiveDecisionTable();
+                if (dtPresenter.isPresent()) {
+                    dtPresenter.get().deleteColumn(metaDataColumn);
+                }
             } catch (ModelSynchronizer.VetoException veto) {
                 showGenericVetoMessage();
             }
@@ -350,7 +353,10 @@ public class ColumnsPagePresenter {
             editedColumn.setHideColumn(chkHideColumn.getValue());
 
             try {
-                modeller.getActiveDecisionTable().updateColumn(metaDataColumn, editedColumn);
+                final Optional<GuidedDecisionTableView.Presenter> dtPresenter = modeller.getActiveDecisionTable();
+                if (dtPresenter.isPresent()) {
+                    dtPresenter.get().updateColumn(metaDataColumn, editedColumn);
+                }
             } catch (ModelSynchronizer.VetoException veto) {
                 showGenericVetoMessage();
             }
@@ -416,14 +422,15 @@ public class ColumnsPagePresenter {
             return;
         }
 
-        final ObservablePath currentPath = getActiveDecisionTable().getCurrentPath();
-
-        if (currentPath.equals(event.getFile())) {
-            refresh();
-        }
+        getActiveDecisionTable().ifPresent(dt -> {
+            final ObservablePath currentPath = dt.getCurrentPath();
+            if (currentPath.equals(event.getFile())) {
+                refresh();
+            }
+        });
     }
 
-    private GuidedDecisionTableView.Presenter getActiveDecisionTable() {
+    private Optional<GuidedDecisionTableView.Presenter> getActiveDecisionTable() {
         return getModeller().getActiveDecisionTable();
     }
 
@@ -476,11 +483,12 @@ public class ColumnsPagePresenter {
         return translationService.format(key, args);
     }
 
-    GuidedDecisionTable52 getGuidedDecisionTable52() {
-
-        final GuidedDecisionTableView.Presenter activeDecisionTable = getActiveDecisionTable();
-
-        return activeDecisionTable.getModel();
+    Optional<GuidedDecisionTable52> getGuidedDecisionTable52() {
+        final Optional<GuidedDecisionTableView.Presenter> activeDecisionTable = getActiveDecisionTable();
+        if (activeDecisionTable.isPresent()) {
+            return Optional.of(activeDecisionTable.get().getModel());
+        }
+        return Optional.empty();
     }
 
     public GuidedDecisionTableAccordion getAccordion() {
@@ -488,11 +496,13 @@ public class ColumnsPagePresenter {
     }
 
     void setupColumnsNoteInfo(final GuidedDecisionTableModellerView.Presenter modeller) {
-
-        final GuidedDecisionTableView.Presenter activeDecisionTable = modeller.getActiveDecisionTable();
-
-        if (activeDecisionTable.hasColumnDefinitions()) {
-            view.setColumnsNoteInfoAsHidden();
+        final Optional<GuidedDecisionTableView.Presenter> activeDecisionTable = modeller.getActiveDecisionTable();
+        if (activeDecisionTable.isPresent()) {
+            if (activeDecisionTable.get().hasColumnDefinitions()) {
+                view.setColumnsNoteInfoAsHidden();
+            } else {
+                view.setColumnsNoteInfoAsVisible();
+            }
         } else {
             view.setColumnsNoteInfoAsVisible();
         }
@@ -536,10 +546,10 @@ public class ColumnsPagePresenter {
         this.ruleSelector = makeRuleSelector();
 
         ruleSelector.addValueChangeHandler(e -> {
-            getActiveDecisionTable().setParentRuleName(e.getValue());
+            getActiveDecisionTable().ifPresent(dt -> dt.setParentRuleName(e.getValue()));
         });
 
-        setupRuleSelector(getActiveDecisionTable());
+        getActiveDecisionTable().ifPresent(this::setupRuleSelector);
 
         return ruleSelector;
     }
@@ -552,7 +562,7 @@ public class ColumnsPagePresenter {
         return label;
     }
 
-    private RuleSelector makeRuleSelector() {
+    RuleSelector makeRuleSelector() {
         return new RuleSelector();
     }
 
@@ -572,32 +582,33 @@ public class ColumnsPagePresenter {
     }
 
     void openNewGuidedDecisionTableColumnWizard() {
-
         if (!isColumnCreationEnabledToActiveDecisionTable()) {
             return;
         }
-
-        final NewGuidedDecisionTableColumnWizard wizard = wizardManagedInstance.get();
-
-        wizard.init(getActiveDecisionTable());
-        wizard.start();
+        getActiveDecisionTable().ifPresent(dt -> {
+            final NewGuidedDecisionTableColumnWizard wizard = wizardManagedInstance.get();
+            wizard.init(dt);
+            wizard.start();
+        });
     }
 
     boolean isColumnCreationEnabledToActiveDecisionTable() {
-
         return hasActiveDecisionTable() && isColumnCreationEnabled(getActiveDecisionTable());
     }
 
-    boolean isColumnCreationEnabled(final GuidedDecisionTableView.Presenter dtPresenter) {
+    boolean isColumnCreationEnabled(final Optional<GuidedDecisionTableView.Presenter> dtPresenter) {
+        if (!dtPresenter.isPresent()) {
+            return false;
+        }
 
-        final boolean decisionTableIsEditable = !dtPresenter.isReadOnly();
-        final boolean decisionTableHasEditableColumns = dtPresenter.hasEditableColumns();
+        final GuidedDecisionTableView.Presenter dt = dtPresenter.get();
+        final boolean decisionTableIsEditable = !dt.isReadOnly();
+        final boolean decisionTableHasEditableColumns = dt.hasEditableColumns();
 
         return decisionTableHasEditableColumns && decisionTableIsEditable;
     }
 
     public void onDecisionTableSelected(final @Observes DecisionTableSelectedEvent event) {
-
         if (!hasActiveDecisionTable()) {
             return;
         }
@@ -610,18 +621,20 @@ public class ColumnsPagePresenter {
 
         final GuidedDecisionTableView.Presenter presenter = dtPresenter.get();
 
-        if (presenter.equals(getActiveDecisionTable())) {
-            return;
-        }
-
-        setupRuleSelector(presenter);
+        getActiveDecisionTable().ifPresent(dt -> {
+            if (!presenter.equals(dt)) {
+                setupRuleSelector(presenter);
+            }
+        });
     }
 
     public void refresh() {
-        refreshAttributeWidget(getGuidedDecisionTable52().getAttributeCols());
-        refreshMetaDataWidget(getGuidedDecisionTable52().getMetadataCols());
-        refreshConditionsWidget(getGuidedDecisionTable52().getConditions());
-        refreshActionsWidget(getGuidedDecisionTable52().getActionCols());
+        getGuidedDecisionTable52().ifPresent(model -> {
+            refreshAttributeWidget(model.getAttributeCols());
+            refreshMetaDataWidget(model.getMetadataCols());
+            refreshConditionsWidget(model.getConditions());
+            refreshActionsWidget(model.getActionCols());
+        });
     }
 
     public interface View extends UberElement<ColumnsPagePresenter> {

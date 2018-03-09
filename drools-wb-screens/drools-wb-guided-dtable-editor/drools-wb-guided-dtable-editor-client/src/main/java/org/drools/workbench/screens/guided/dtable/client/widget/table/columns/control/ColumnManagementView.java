@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.c
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -36,6 +37,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoDeletePatternInUseException;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
@@ -91,13 +93,18 @@ public class ColumnManagementView extends VerticalPanel {
         action.add(actionLabel);
 
         final FlowPanel buttons = new FlowPanel() {{
-            add(editAnchor((clickEvent) -> presenter.getActiveDecisionTable().editAction(actionColumn)));
+            add(editAnchor((clickEvent) -> {
+                presenter.getActiveDecisionTable().ifPresent(dt -> dt.editAction(actionColumn));
+            }));
 
             if (presenter.isActiveDecisionTableEditable()) {
                 add(deleteAnchor(actionColumn.getHeader(),
                                  () -> {
                                      try {
-                                         presenter.getActiveDecisionTable().deleteColumn(actionColumn);
+                                         final Optional<GuidedDecisionTableView.Presenter> dtPresenter = presenter.getActiveDecisionTable();
+                                         if (dtPresenter.isPresent()) {
+                                             dtPresenter.get().deleteColumn(actionColumn);
+                                         }
                                      } catch (VetoDeletePatternInUseException veto) {
                                          presenter.getView().showUnableToDeleteColumnMessage(actionColumn);
                                      } catch (VetoException veto) {
@@ -122,9 +129,10 @@ public class ColumnManagementView extends VerticalPanel {
             condition.add(conditionLabel);
 
             final FlowPanel buttons = new FlowPanel() {{
-                add(editAnchor((clickEvent) -> presenter.getActiveDecisionTable().editCondition(pattern,
-                                                                                                conditionColumn))
-                );
+                add(editAnchor((clickEvent) -> {
+                    presenter.getActiveDecisionTable().ifPresent(dt -> dt.editCondition(pattern,
+                                                                                        conditionColumn));
+                }));
 
                 if (presenter.isActiveDecisionTableEditable()) {
                     add(removeCondition(conditionColumn));
@@ -145,7 +153,9 @@ public class ColumnManagementView extends VerticalPanel {
         condition.add(columnLabel);
 
         final FlowPanel buttons = new FlowPanel() {{
-            add(editAnchor((clickEvent) -> presenter.getActiveDecisionTable().editCondition(conditionColumn)));
+            add(editAnchor((clickEvent) -> {
+                presenter.getActiveDecisionTable().ifPresent(dt -> dt.editCondition(conditionColumn));
+            }));
 
             if (presenter.isActiveDecisionTableEditable()) {
                 add(removeCondition(conditionColumn));
@@ -185,7 +195,10 @@ public class ColumnManagementView extends VerticalPanel {
         return deleteAnchor(column.getHeader(),
                             () -> {
                                 try {
-                                    presenter.getActiveDecisionTable().deleteColumn(column);
+                                    final Optional<GuidedDecisionTableView.Presenter> dtPresenter = presenter.getActiveDecisionTable();
+                                    if (dtPresenter.isPresent()) {
+                                        dtPresenter.get().deleteColumn(column);
+                                    }
                                 } catch (VetoDeletePatternInUseException veto) {
                                     presenter.getView().showUnableToDeleteColumnMessage(column);
                                 } catch (VetoException veto) {

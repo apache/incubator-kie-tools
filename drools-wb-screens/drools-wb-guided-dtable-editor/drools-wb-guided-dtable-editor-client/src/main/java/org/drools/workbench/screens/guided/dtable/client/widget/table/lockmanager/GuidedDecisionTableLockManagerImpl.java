@@ -20,7 +20,6 @@ import javax.enterprise.context.Dependent;
 
 import org.drools.workbench.screens.guided.dtable.client.GuidedDecisionTable;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.LockManagerImpl;
@@ -33,29 +32,26 @@ public class GuidedDecisionTableLockManagerImpl extends LockManagerImpl implemen
     private GuidedDecisionTableModellerView.Presenter presenter;
 
     @Override
-    public void init( final LockTarget lockTarget,
-                      final GuidedDecisionTableModellerView.Presenter presenter ) {
+    public void init(final LockTarget lockTarget,
+                     final GuidedDecisionTableModellerView.Presenter presenter) {
         this.presenter = presenter;
-        init( lockTarget );
+        init(lockTarget);
     }
 
     @Override
     public void fireChangeTitleEvent() {
         final Path path = getLockInfo().getFile();
-        if ( path == null ) {
+        if (path == null) {
             return;
         }
-        final GuidedDecisionTableView.Presenter dtPresenter = presenter.getActiveDecisionTable();
-        if ( dtPresenter == null ) {
-            return;
-        }
-        final ObservablePath dtPath = dtPresenter.getCurrentPath();
-        if ( dtPath == null ) {
-            return;
-        }
-        if ( dtPath.equals( path ) ) {
-            super.fireChangeTitleEvent();
-        }
+        presenter.getActiveDecisionTable().ifPresent(dtPresenter -> {
+            final ObservablePath dtPath = dtPresenter.getCurrentPath();
+            if (dtPath == null) {
+                return;
+            }
+            if (dtPath.equals(path)) {
+                super.fireChangeTitleEvent();
+            }
+        });
     }
-
 }

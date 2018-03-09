@@ -15,8 +15,7 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.enterprise.event.Observes;
@@ -28,19 +27,10 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
-import org.drools.workbench.screens.guided.dtable.client.editor.menu.InsertMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.ViewMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableColumnSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshActionsPanelEvent;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshAttributesPanelEvent;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshConditionsPanelEvent;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMetaDataPanelEvent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.mvp.UberView;
@@ -107,7 +97,7 @@ public interface GuidedDecisionTableModellerView extends UberView<GuidedDecision
 
         void removeDecisionTable(final GuidedDecisionTableView.Presenter dtPresenter);
 
-        GuidedDecisionTableView.Presenter getActiveDecisionTable();
+        Optional<GuidedDecisionTableView.Presenter> getActiveDecisionTable();
 
         Set<GuidedDecisionTableView.Presenter> getAvailableDecisionTables();
 

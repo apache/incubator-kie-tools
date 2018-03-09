@@ -21,8 +21,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -50,6 +52,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
@@ -66,6 +69,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ColumnManagementViewTest {
@@ -88,6 +92,12 @@ public class ColumnManagementViewTest {
     @Mock
     private ManagedInstance<DeleteColumnManagementAnchorWidget> deleteColumnManagementAnchorWidgets;
 
+    @Captor
+    private ArgumentCaptor<ClickHandler> clickHandlerCaptor;
+
+    @Captor
+    private ArgumentCaptor<Command> deleteCommandCaptor;
+
     private ColumnManagementView view;
 
     @Before
@@ -99,6 +109,8 @@ public class ColumnManagementViewTest {
 
         doReturn(modellerView).when(modellerPresenter).getView();
         doReturn(horizontalPanel).when(view).newHorizontalPanel();
+
+        when(modellerPresenter.getActiveDecisionTable()).thenReturn(Optional.of(decisionTablePresenter));
     }
 
     private ColumnLabelWidget mockColumnLabelWidget() {
@@ -144,13 +156,25 @@ public class ColumnManagementViewTest {
         verify(horizontalPanel,
                times(3)).add(columnLabel);
         verify(view,
-               times(3)).editAnchor(any(ClickHandler.class));
+               times(3)).editAnchor(clickHandlerCaptor.capture());
         verify(view).deleteAnchor(eq("one"),
                                   any(Command.class));
         verify(view).deleteAnchor(eq("two"),
                                   any(Command.class));
         verify(view).deleteAnchor(eq("three"),
                                   any(Command.class));
+
+        clickHandlerCaptor.getAllValues().get(0).onClick(mock(ClickEvent.class));
+        verify(decisionTablePresenter).editCondition(eq(pattern),
+                                                     eq(pattern.getChildColumns().get(0)));
+
+        clickHandlerCaptor.getAllValues().get(1).onClick(mock(ClickEvent.class));
+        verify(decisionTablePresenter).editCondition(eq(pattern),
+                                                     eq(pattern.getChildColumns().get(1)));
+
+        clickHandlerCaptor.getAllValues().get(2).onClick(mock(ClickEvent.class));
+        verify(decisionTablePresenter).editCondition(eq(pattern),
+                                                     eq(pattern.getChildColumns().get(2)));
     }
 
     @Test
@@ -217,11 +241,17 @@ public class ColumnManagementViewTest {
         verify(horizontalPanel,
                times(2)).add(columnLabel);
         verify(view,
-               times(2)).editAnchor(any(ClickHandler.class));
+               times(2)).editAnchor(clickHandlerCaptor.capture());
         verify(view).deleteAnchor(eq("brl one"),
                                   any(Command.class));
         verify(view).deleteAnchor(eq("brl two"),
                                   any(Command.class));
+
+        clickHandlerCaptor.getAllValues().get(0).onClick(mock(ClickEvent.class));
+        verify(decisionTablePresenter).editCondition(eq(conditionColumnOne));
+
+        clickHandlerCaptor.getAllValues().get(1).onClick(mock(ClickEvent.class));
+        verify(decisionTablePresenter).editCondition(eq(conditionColumnTwo));
     }
 
     @Test
@@ -288,13 +318,31 @@ public class ColumnManagementViewTest {
         verify(horizontalPanel,
                times(3)).add(columnLabel);
         verify(view,
-               times(3)).editAnchor(any(ClickHandler.class));
+               times(3)).editAnchor(clickHandlerCaptor.capture());
         verify(view).deleteAnchor(eq("one"),
-                                  any(Command.class));
+                                  deleteCommandCaptor.capture());
         verify(view).deleteAnchor(eq("two"),
-                                  any(Command.class));
+                                  deleteCommandCaptor.capture());
         verify(view).deleteAnchor(eq("three"),
-                                  any(Command.class));
+                                  deleteCommandCaptor.capture());
+
+        clickHandlerCaptor.getAllValues().get(0).onClick(mock(ClickEvent.class));
+        verify(decisionTablePresenter).editAction(eq(brlActionColumn));
+
+        clickHandlerCaptor.getAllValues().get(1).onClick(mock(ClickEvent.class));
+        verify(decisionTablePresenter).editAction(eq(actionInsertFactColumn));
+
+        clickHandlerCaptor.getAllValues().get(2).onClick(mock(ClickEvent.class));
+        verify(decisionTablePresenter).editAction(eq(retractFactColumn));
+
+        deleteCommandCaptor.getAllValues().get(0).execute();
+        verify(decisionTablePresenter).deleteColumn(brlActionColumn);
+
+        deleteCommandCaptor.getAllValues().get(1).execute();
+        verify(decisionTablePresenter).deleteColumn(actionInsertFactColumn);
+
+        deleteCommandCaptor.getAllValues().get(2).execute();
+        verify(decisionTablePresenter).deleteColumn(retractFactColumn);
     }
 
     @Test
@@ -378,7 +426,7 @@ public class ColumnManagementViewTest {
                     final String columnHeader = "column header";
                     final ArgumentCaptor<Command> commandCaptor = ArgumentCaptor.forClass(Command.class);
 
-                    doReturn(decisionTablePresenter).when(modellerPresenter).getActiveDecisionTable();
+                    doReturn(Optional.of(decisionTablePresenter)).when(modellerPresenter).getActiveDecisionTable();
                     doReturn(columnHeader).when(column).getHeader();
 
                     view.removeCondition(column);
@@ -406,7 +454,7 @@ public class ColumnManagementViewTest {
                     final String columnHeader = "column header";
                     final ArgumentCaptor<Command> commandCaptor = ArgumentCaptor.forClass(Command.class);
 
-                    doReturn(decisionTablePresenter).when(modellerPresenter).getActiveDecisionTable();
+                    doReturn(Optional.of(decisionTablePresenter)).when(modellerPresenter).getActiveDecisionTable();
                     doReturn(columnHeader).when(column).getHeader();
                     doNothing().when(modellerView).showUnableToDeleteColumnMessage(column);
 

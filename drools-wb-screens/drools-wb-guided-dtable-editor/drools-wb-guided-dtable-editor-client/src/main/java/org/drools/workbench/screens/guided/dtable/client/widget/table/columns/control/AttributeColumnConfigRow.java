@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control;
 
+import java.util.Optional;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -23,6 +25,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.gwtbootstrap3.client.ui.CheckBox;
@@ -56,8 +59,11 @@ public class AttributeColumnConfigRow {
                                                                     editedColumn.setUseRowNumber(useRowNumberCheckBox.getValue());
                                                                     reverseOrderCheckBox.setEnabled(useRowNumberCheckBox.getValue());
                                                                     try {
-                                                                        presenter.getActiveDecisionTable().updateColumn(originalColumn,
-                                                                                                                        editedColumn);
+                                                                        final Optional<GuidedDecisionTableView.Presenter> dtPresenter = presenter.getActiveDecisionTable();
+                                                                        if (dtPresenter.isPresent()) {
+                                                                            dtPresenter.get().updateColumn(originalColumn,
+                                                                                                           editedColumn);
+                                                                        }
                                                                     } catch (VetoException veto) {
                                                                         presenter.getView().showGenericVetoMessage();
                                                                     }
@@ -71,8 +77,11 @@ public class AttributeColumnConfigRow {
                                                                     final AttributeCol52 editedColumn = originalColumn.cloneColumn();
                                                                     editedColumn.setReverseOrder(reverseOrderCheckBox.getValue());
                                                                     try {
-                                                                        presenter.getActiveDecisionTable().updateColumn(originalColumn,
-                                                                                                                        editedColumn);
+                                                                        final Optional<GuidedDecisionTableView.Presenter> dtPresenter = presenter.getActiveDecisionTable();
+                                                                        if (dtPresenter.isPresent()) {
+                                                                            dtPresenter.get().updateColumn(originalColumn,
+                                                                                                           editedColumn);
+                                                                        }
                                                                     } catch (VetoException veto) {
                                                                         presenter.getView().showGenericVetoMessage();
                                                                     }
@@ -86,8 +95,11 @@ public class AttributeColumnConfigRow {
                                  final AttributeCol52 editedColumn = originalColumn.cloneColumn();
                                  editedColumn.setDefaultValue(event.getEditedDefaultValue());
                                  try {
-                                     presenter.getActiveDecisionTable().updateColumn(originalColumn,
-                                                                                     editedColumn);
+                                     final Optional<GuidedDecisionTableView.Presenter> dtPresenter = presenter.getActiveDecisionTable();
+                                     if (dtPresenter.isPresent()) {
+                                         dtPresenter.get().updateColumn(originalColumn,
+                                                                        editedColumn);
+                                     }
                                  } catch (VetoException veto) {
                                      presenter.getView().showGenericVetoMessage();
                                  }
@@ -98,8 +110,11 @@ public class AttributeColumnConfigRow {
                                                             final AttributeCol52 editedColumn = originalColumn.cloneColumn();
                                                             editedColumn.setHideColumn(hideColumnCheckBox.getValue());
                                                             try {
-                                                                presenter.getActiveDecisionTable().updateColumn(originalColumn,
-                                                                                                                editedColumn);
+                                                                final Optional<GuidedDecisionTableView.Presenter> dtPresenter = presenter.getActiveDecisionTable();
+                                                                if (dtPresenter.isPresent()) {
+                                                                    dtPresenter.get().updateColumn(originalColumn,
+                                                                                                   editedColumn);
+                                                                }
                                                             } catch (VetoException veto) {
                                                                 presenter.getView().showGenericVetoMessage();
                                                             }
@@ -115,7 +130,10 @@ public class AttributeColumnConfigRow {
 
         view.addRemoveAttributeButton(() -> {
                                           try {
-                                              presenter.getActiveDecisionTable().deleteColumn(attributeColumn);
+                                              final Optional<GuidedDecisionTableView.Presenter> dtPresenter = presenter.getActiveDecisionTable();
+                                              if (dtPresenter.isPresent()) {
+                                                  dtPresenter.get().deleteColumn(attributeColumn);
+                                              }
                                           } catch (VetoException veto) {
                                               presenter.getView().showGenericVetoMessage();
                                           }

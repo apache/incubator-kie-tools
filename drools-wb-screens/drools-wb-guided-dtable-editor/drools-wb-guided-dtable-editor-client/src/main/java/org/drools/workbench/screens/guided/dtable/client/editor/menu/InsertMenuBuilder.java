@@ -179,12 +179,13 @@ public class InsertMenuBuilder extends BaseMenu implements MenuFactory.CustomMen
     }
 
     void openNewGuidedDecisionTableColumnWizard(final GuidedDecisionTableModellerView.Presenter modeller) {
-
         final NewGuidedDecisionTableColumnWizard wizard = wizardManagedInstance.get();
-        final GuidedDecisionTableView.Presenter activeDecisionTable = modeller.getActiveDecisionTable();
+        final Optional<GuidedDecisionTableView.Presenter> activeDecisionTable = modeller.getActiveDecisionTable();
 
-        wizard.init(activeDecisionTable);
-        wizard.start();
+        activeDecisionTable.ifPresent(dt -> {
+            wizard.init(dt);
+            wizard.start();
+        });
     }
 
     private void enableMenuItemsForAppendingRows(final boolean enabled) {

@@ -255,8 +255,8 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
     }
 
     @Override
-    public GuidedDecisionTableView.Presenter getActiveDecisionTable() {
-        return activeDecisionTable;
+    public Optional<GuidedDecisionTableView.Presenter> getActiveDecisionTable() {
+        return Optional.ofNullable(activeDecisionTable);
     }
 
     @Override
@@ -271,11 +271,11 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
 
     @Override
     public boolean isActiveDecisionTableEditable() {
-        final GuidedDecisionTableView.Presenter dtPresenter = getActiveDecisionTable();
-        if (dtPresenter == null) {
-            return false;
+        final Optional<GuidedDecisionTableView.Presenter> dtPresenter = getActiveDecisionTable();
+        if (dtPresenter.isPresent()) {
+            return dtPresenter.get().getAccess().isEditable();
         }
-        return dtPresenter.getAccess().isEditable();
+        return false;
     }
 
     @Override
@@ -342,12 +342,15 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
         }
         final GuidedDecisionTableView.Presenter presenter = dtPresenter.get();
         if (!isDecisionTableAvailable(presenter)) {
-            activeDecisionTable = null;
             return;
         }
-        if (presenter.equals(getActiveDecisionTable())) {
-            return;
+        final Optional<GuidedDecisionTableView.Presenter> activeDecisionTable = getActiveDecisionTable();
+        if (activeDecisionTable.isPresent()) {
+            if (presenter.equals(activeDecisionTable.get())) {
+                return;
+            }
         }
+
         doDecisionTableSelected(presenter);
     }
 

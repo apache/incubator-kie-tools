@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.editor.menu;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
@@ -323,7 +324,7 @@ public class InsertMenuBuilderTest {
         final NewGuidedDecisionTableColumnWizard wizard = mock(NewGuidedDecisionTableColumnWizard.class);
 
         doReturn(wizard).when(wizardManagedInstance).get();
-        doReturn(activeDecisionTable).when(modeller).getActiveDecisionTable();
+        doReturn(Optional.of(activeDecisionTable)).when(modeller).getActiveDecisionTable();
 
         builder.openNewGuidedDecisionTableColumnWizard(modeller);
 
@@ -333,10 +334,10 @@ public class InsertMenuBuilderTest {
 
     @Test
     public void testOnAppendColumnWhenModellerIsPresent() {
-
         final NewGuidedDecisionTableColumnWizard wizard = mock(NewGuidedDecisionTableColumnWizard.class);
 
         doReturn(wizard).when(wizardManagedInstance).get();
+        when(modeller.getActiveDecisionTable()).thenReturn(Optional.of(dtPresenter));
 
         builder.setModeller(modeller);
         builder.onAppendColumn();
@@ -346,7 +347,6 @@ public class InsertMenuBuilderTest {
 
     @Test
     public void testOnAppendColumnWhenModellerIsNotPresent() {
-
         final NewGuidedDecisionTableColumnWizard wizard = mock(NewGuidedDecisionTableColumnWizard.class);
 
         doReturn(wizard).when(wizardManagedInstance).get();
@@ -355,6 +355,20 @@ public class InsertMenuBuilderTest {
         builder.onAppendColumn();
 
         verify(builder, never()).openNewGuidedDecisionTableColumnWizard(any());
+    }
+
+    @Test
+    public void testOnAppendColumnWhenActiveDecisionTableIsNotPresent() {
+        final NewGuidedDecisionTableColumnWizard wizard = mock(NewGuidedDecisionTableColumnWizard.class);
+
+        when(wizardManagedInstance.get()).thenReturn(wizard);
+        when(modeller.getActiveDecisionTable()).thenReturn(Optional.empty());
+
+        builder.setModeller(modeller);
+        builder.onAppendColumn();
+
+        verify(wizard, never()).init(any(GuidedDecisionTableView.Presenter.class));
+        verify(wizard, never()).start();
     }
 
     @Test

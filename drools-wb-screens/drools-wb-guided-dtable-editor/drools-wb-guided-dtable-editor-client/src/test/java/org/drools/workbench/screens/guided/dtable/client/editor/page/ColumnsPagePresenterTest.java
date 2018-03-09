@@ -17,6 +17,8 @@
 package org.drools.workbench.screens.guided.dtable.client.editor.page;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,6 +27,8 @@ import java.util.function.Consumer;
 import com.google.gwt.dev.util.collect.HashMap;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -61,9 +65,12 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.mvp.UpdatedLockStatusEvent;
+import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.drools.workbench.screens.guided.dtable.client.editor.page.accordion.GuidedDecisionTableAccordionItem.Type.ACTION;
 import static org.drools.workbench.screens.guided.dtable.client.editor.page.accordion.GuidedDecisionTableAccordionItem.Type.ATTRIBUTE;
@@ -73,6 +80,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
@@ -82,6 +90,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ColumnsPagePresenterTest {
@@ -391,7 +400,7 @@ public class ColumnsPagePresenterTest {
 
         final GuidedDecisionTableView.Presenter activeDecisionTable = mock(GuidedDecisionTableView.Presenter.class);
 
-        doReturn(activeDecisionTable).when(modeller).getActiveDecisionTable();
+        doReturn(Optional.of(activeDecisionTable)).when(modeller).getActiveDecisionTable();
 
         presenter.deleteMetadataCommand(modeller, metadataColumn).execute();
 
@@ -404,7 +413,7 @@ public class ColumnsPagePresenterTest {
 
         final GuidedDecisionTableView.Presenter activeDecisionTable = mock(GuidedDecisionTableView.Presenter.class);
 
-        doReturn(activeDecisionTable).when(modeller).getActiveDecisionTable();
+        doReturn(Optional.of(activeDecisionTable)).when(modeller).getActiveDecisionTable();
         doThrow(ModelSynchronizer.VetoException.class).when(activeDecisionTable).deleteColumn(metadataColumn);
         doNothing().when(presenter).showGenericVetoMessage();
 
@@ -440,7 +449,7 @@ public class ColumnsPagePresenterTest {
         final ClickEvent clickEvent = mock(ClickEvent.class);
         final GuidedDecisionTableView.Presenter activeDecisionTable = mock(GuidedDecisionTableView.Presenter.class);
 
-        doReturn(activeDecisionTable).when(modeller).getActiveDecisionTable();
+        doReturn(Optional.of(activeDecisionTable)).when(modeller).getActiveDecisionTable();
         doReturn(clone).when(metadataColumn).cloneColumn();
 
         final ClickHandler clickHandler = presenter.hideMetadataClickHandler(modeller, checkBox, metadataColumn);
@@ -459,7 +468,7 @@ public class ColumnsPagePresenterTest {
         final ClickEvent clickEvent = mock(ClickEvent.class);
         final GuidedDecisionTableView.Presenter activeDecisionTable = mock(GuidedDecisionTableView.Presenter.class);
 
-        doReturn(activeDecisionTable).when(modeller).getActiveDecisionTable();
+        doReturn(Optional.of(activeDecisionTable)).when(modeller).getActiveDecisionTable();
         doReturn(clone).when(metadataColumn).cloneColumn();
         doThrow(ModelSynchronizer.VetoException.class).when(activeDecisionTable).updateColumn(metadataColumn, clone);
         doNothing().when(presenter).showGenericVetoMessage();
@@ -612,7 +621,7 @@ public class ColumnsPagePresenterTest {
         final ObservablePath path = mock(ObservablePath.class);
 
         doReturn(true).when(presenter).hasActiveDecisionTable();
-        doReturn(activeDecisionTable).when(modeller).getActiveDecisionTable();
+        doReturn(Optional.of(activeDecisionTable)).when(modeller).getActiveDecisionTable();
         doReturn(path).when(activeDecisionTable).getCurrentPath();
         doReturn(path).when(event).getFile();
         doNothing().when(presenter).refresh();
@@ -630,7 +639,7 @@ public class ColumnsPagePresenterTest {
         final ObservablePath path = mock(ObservablePath.class);
 
         doReturn(true).when(presenter).hasActiveDecisionTable();
-        doReturn(activeDecisionTable).when(modeller).getActiveDecisionTable();
+        doReturn(Optional.of(activeDecisionTable)).when(modeller).getActiveDecisionTable();
         doReturn(path).when(activeDecisionTable).getCurrentPath();
         doReturn(null).when(event).getFile();
 
@@ -674,7 +683,7 @@ public class ColumnsPagePresenterTest {
     @Test
     public void testHasActiveDecisionTableWhenActiveDecisionTableIsNotNull() {
 
-        doReturn(mock(GuidedDecisionTableView.Presenter.class)).when(modeller).getActiveDecisionTable();
+        doReturn(Optional.of(mock(GuidedDecisionTableView.Presenter.class))).when(modeller).getActiveDecisionTable();
 
         final boolean hasActiveDecisionTable = presenter.hasActiveDecisionTable();
 
@@ -758,7 +767,7 @@ public class ColumnsPagePresenterTest {
 
         final GuidedDecisionTableView.Presenter activeDecisionTable = mock(GuidedDecisionTableView.Presenter.class);
 
-        doReturn(activeDecisionTable).when(modeller).getActiveDecisionTable();
+        doReturn(Optional.of(activeDecisionTable)).when(modeller).getActiveDecisionTable();
         doReturn(true).when(activeDecisionTable).hasColumnDefinitions();
 
         presenter.setupColumnsNoteInfo(modeller);
@@ -771,7 +780,7 @@ public class ColumnsPagePresenterTest {
 
         final GuidedDecisionTableView.Presenter activeDecisionTable = mock(GuidedDecisionTableView.Presenter.class);
 
-        doReturn(activeDecisionTable).when(modeller).getActiveDecisionTable();
+        doReturn(Optional.of(activeDecisionTable)).when(modeller).getActiveDecisionTable();
         doReturn(false).when(activeDecisionTable).hasColumnDefinitions();
 
         presenter.setupColumnsNoteInfo(modeller);
@@ -810,6 +819,46 @@ public class ColumnsPagePresenterTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
+    public void testRuleSelectorWidget() {
+        final RuleSelector ruleSelector = mock(RuleSelector.class);
+        final GuidedDecisionTableView.Presenter dtPresenter = mock(GuidedDecisionTableView.Presenter.class);
+        final GuidedDecisionTable52 model = new GuidedDecisionTable52();
+        final Collection<String> ruleNames = Collections.singletonList("rule");
+        model.setParentName("parent");
+
+        doReturn(ruleSelector).when(presenter).makeRuleSelector();
+        when(modeller.getActiveDecisionTable()).thenReturn(Optional.of(dtPresenter));
+        when(dtPresenter.getModel()).thenReturn(model);
+
+        final ArgumentCaptor<ValueChangeHandler> valueChangeHandlerCaptor = ArgumentCaptor.forClass(ValueChangeHandler.class);
+        final ArgumentCaptor<ParameterizedCommand> commandCaptor = ArgumentCaptor.forClass(ParameterizedCommand.class);
+
+        presenter.ruleSelector();
+
+        verify(ruleSelector).addValueChangeHandler(valueChangeHandlerCaptor.capture());
+        valueChangeHandlerCaptor.getValue().onValueChange(mock(ValueChangeEvent.class));
+        verify(dtPresenter).setParentRuleName(anyString());
+        verify(presenter).setupRuleSelector(eq(dtPresenter));
+
+        verify(dtPresenter).getPackageParentRuleNames(commandCaptor.capture());
+        commandCaptor.getValue().execute(ruleNames);
+        verify(ruleSelector).setRuleName(eq("parent"));
+        verify(ruleSelector).setRuleNames(eq(ruleNames));
+    }
+
+    @Test
+    public void testRuleSelectorWidgetWitNoActiveDecisionTable() {
+        final RuleSelector ruleSelector = mock(RuleSelector.class);
+        when(modeller.getActiveDecisionTable()).thenReturn(Optional.empty());
+        doReturn(ruleSelector).when(presenter).makeRuleSelector();
+
+        presenter.ruleSelector();
+
+        verify(presenter, never()).setupRuleSelector(any(GuidedDecisionTableView.Presenter.class));
+    }
+
+    @Test
     public void testOpenNewGuidedDecisionTableColumnWizardWhenColumnCreatingIsNotEnabled() {
 
         final NewGuidedDecisionTableColumnWizard wizard = mock(NewGuidedDecisionTableColumnWizard.class);
@@ -830,7 +879,7 @@ public class ColumnsPagePresenterTest {
         final GuidedDecisionTableView.Presenter activeDecisionTable = mock(GuidedDecisionTableView.Presenter.class);
 
         doReturn(true).when(presenter).isColumnCreationEnabledToActiveDecisionTable();
-        doReturn(activeDecisionTable).when(modeller).getActiveDecisionTable();
+        doReturn(Optional.of(activeDecisionTable)).when(modeller).getActiveDecisionTable();
         doReturn(wizard).when(wizardManagedInstance).get();
 
         presenter.openNewGuidedDecisionTableColumnWizard();
@@ -867,7 +916,7 @@ public class ColumnsPagePresenterTest {
 
         doReturn(true).when(dtPresenter).isReadOnly();
 
-        final boolean isColumnCreationEnabled = presenter.isColumnCreationEnabled(dtPresenter);
+        final boolean isColumnCreationEnabled = presenter.isColumnCreationEnabled(Optional.of(dtPresenter));
 
         assertFalse(isColumnCreationEnabled);
     }
@@ -880,7 +929,7 @@ public class ColumnsPagePresenterTest {
         doReturn(false).when(dtPresenter).isReadOnly();
         doReturn(false).when(dtPresenter).hasEditableColumns();
 
-        final boolean isColumnCreationEnabled = presenter.isColumnCreationEnabled(dtPresenter);
+        final boolean isColumnCreationEnabled = presenter.isColumnCreationEnabled(Optional.of(dtPresenter));
 
         assertFalse(isColumnCreationEnabled);
     }
@@ -893,7 +942,7 @@ public class ColumnsPagePresenterTest {
         doReturn(false).when(dtPresenter).isReadOnly();
         doReturn(true).when(dtPresenter).hasEditableColumns();
 
-        final boolean isColumnCreationEnabled = presenter.isColumnCreationEnabled(dtPresenter);
+        final boolean isColumnCreationEnabled = presenter.isColumnCreationEnabled(Optional.of(dtPresenter));
 
         assertTrue(isColumnCreationEnabled);
     }
@@ -928,11 +977,10 @@ public class ColumnsPagePresenterTest {
 
         final DecisionTableSelectedEvent event = mock(DecisionTableSelectedEvent.class);
         final GuidedDecisionTableView.Presenter presenterDecisionTable = mock(GuidedDecisionTableView.Presenter.class);
-        final Optional<GuidedDecisionTableView.Presenter> presenterOptional = Optional.ofNullable(presenterDecisionTable);
 
         doReturn(true).when(presenter).hasActiveDecisionTable();
-        doReturn(presenterDecisionTable).when(modeller).getActiveDecisionTable();
-        doReturn(presenterOptional).when(event).getPresenter();
+        doReturn(Optional.of(presenterDecisionTable)).when(modeller).getActiveDecisionTable();
+        doReturn(Optional.of(presenterDecisionTable)).when(event).getPresenter();
 
         presenter.onDecisionTableSelected(event);
 
@@ -948,7 +996,7 @@ public class ColumnsPagePresenterTest {
         final Optional<GuidedDecisionTableView.Presenter> presenterOptional = Optional.ofNullable(eventDecisionTable);
 
         doReturn(true).when(presenter).hasActiveDecisionTable();
-        doReturn(presenterDecisionTable).when(modeller).getActiveDecisionTable();
+        doReturn(Optional.of(presenterDecisionTable)).when(modeller).getActiveDecisionTable();
         doReturn(presenterOptional).when(event).getPresenter();
         doNothing().when(presenter).setupRuleSelector(any());
 
@@ -962,7 +1010,7 @@ public class ColumnsPagePresenterTest {
 
         final GuidedDecisionTable52 guidedDecisionTable52 = mock(GuidedDecisionTable52.class);
 
-        doReturn(guidedDecisionTable52).when(presenter).getGuidedDecisionTable52();
+        doReturn(Optional.of(guidedDecisionTable52)).when(presenter).getGuidedDecisionTable52();
 
         doNothing().when(presenter).refreshAttributeWidget(any());
         doNothing().when(presenter).refreshMetaDataWidget(any());
