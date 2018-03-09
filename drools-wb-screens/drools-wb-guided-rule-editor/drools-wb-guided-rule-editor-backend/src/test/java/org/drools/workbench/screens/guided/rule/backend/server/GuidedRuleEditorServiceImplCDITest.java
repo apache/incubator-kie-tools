@@ -105,6 +105,29 @@ public class GuidedRuleEditorServiceImplCDITest extends CDITestSetup {
         Assertions.assertThat(messages).isEmpty();
     }
 
+    @Test
+    public void testValidateTimeSpecificAttributes() throws Exception {
+        final String resourcePath = RULES_ROOT + "timeSpecificAttributes.rdrl";
+        final List<ValidationMessage> messages = validateResource(resourcePath);
+        Assertions.assertThat(messages).isEmpty();
+    }
+
+    @Test
+    public void testValidateTimeSpecificAttributesCron() throws Exception {
+        final String resourcePath = RULES_ROOT + "timeSpecificAttributesCron.rdrl";
+        final List<ValidationMessage> messages = validateResource(resourcePath);
+        Assertions.assertThat(messages).isEmpty();
+    }
+
+    @Test
+    public void testValidateTimeSpecificAttributesInvalidTimer() throws Exception {
+        final String resourcePath = RULES_ROOT + "timeSpecificAttributesInvalidTimer.rdrl";
+        final String expectedError = "Incorrect number of arguments for interval timer 'x x x'";
+        final List<ValidationMessage> messages = validateResource(resourcePath);
+        Assertions.assertThat(messages).hasSize(2);
+        Assertions.assertThat(messages).allMatch(m -> m.getText().contains(expectedError));
+    }
+
     private List<ValidationMessage> validateResource(final String resource) throws Exception {
         final Path resourcePath = getPath(resource);
         return guidedRuleService.validate(resourcePath, guidedRuleService.load(resourcePath));
