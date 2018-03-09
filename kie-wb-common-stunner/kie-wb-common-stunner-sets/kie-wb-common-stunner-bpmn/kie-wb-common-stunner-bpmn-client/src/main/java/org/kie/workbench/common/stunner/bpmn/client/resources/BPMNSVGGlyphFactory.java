@@ -187,4 +187,12 @@ public interface BPMNSVGGlyphFactory {
                     .create()
                     .setUri(BPMNImageResources.INSTANCE.subProcessEvent().getSafeUri())
                     .build("subProcessEvent");
+
+    SvgDataUriGlyph MULTIPLE_INSTANCE_SUBPROCESS_GLYPH =
+            SvgDataUriGlyph.Builder
+                    .create()
+                    .setUri(BPMNImageResources.INSTANCE.subProcess().getSafeUri())
+                    .addUri("subProcessMultipleInstance",
+                            BPMNImageResources.INSTANCE.subProcessMultipleInstance().getSafeUri())
+                    .build("subProcessMultipleInstance");
 }

@@ -512,6 +512,17 @@
     fill: #000000;
 }
 
+
+.subProcess_group_multipleInstanceSubProcess_group {
+    opacity: 0;
+}
+
+.subProcess_multipleInstance_icon {
+    stroke: #000000;
+    fill: #000000;
+}
+
+
 #reusableSubProcess .subProcess {
     stroke-width: 3px;
 }
@@ -525,6 +536,15 @@
 }
 
 #adHocSubProcess .subProcess_group_adHoc {
+    opacity: 1;
+}
+
+
+#multipleInstanceSubProcess .subProcess {
+    fill: #f2f2f2;
+}
+
+#multipleInstanceSubProcess .subProcess_group_multipleInstance {
     opacity: 1;
 }
 

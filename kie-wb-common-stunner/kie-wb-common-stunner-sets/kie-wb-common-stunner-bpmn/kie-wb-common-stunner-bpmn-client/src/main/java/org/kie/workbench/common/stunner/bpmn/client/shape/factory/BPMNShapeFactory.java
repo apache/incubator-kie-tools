@@ -50,6 +50,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventC
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
+import org.kie.workbench.common.stunner.bpmn.definition.MultipleInstanceSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
@@ -147,6 +148,9 @@ public class BPMNShapeFactory
                           new SubprocessShapeDef(),
                           () -> svgShapeFactory)
                 .delegate(AdHocSubprocess.class,
+                          new SubprocessShapeDef(),
+                          () -> svgShapeFactory)
+                .delegate(MultipleInstanceSubprocess.class,
                           new SubprocessShapeDef(),
                           () -> svgShapeFactory)
                 .delegate(EndNoneEvent.class,

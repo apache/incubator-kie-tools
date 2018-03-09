@@ -36,6 +36,7 @@ public interface BPMNSVGViewFactory {
     String PATH_SUBPROCESS = "images/shapes/subprocess.svg";
     String PATH_SUBPROCESS_ADHOC = "images/shapes/subprocess-adhoc.svg";
     String PATH_SUBPROCESS_EVENT = "images/shapes/subprocess-event.svg";
+    String PATH_SUBPROCESS_MULTIPLE_INSTANCE = "images/shapes/subprocess-multiple-instance.svg";
     String PATH_RECTANGLE = "images/shapes/rectangle.svg";
 
     @SVGSource(PATH_TASK)
@@ -118,6 +119,9 @@ public interface BPMNSVGViewFactory {
 
     @SVGSource(PATH_SUBPROCESS_ADHOC)
     SVGShapeViewResource adHocSubProcess();
+
+    @SVGSource(PATH_SUBPROCESS_MULTIPLE_INSTANCE)
+    SVGShapeViewResource multipleInstanceSubProcess();
 
     @SVGSource(PATH_SUBPROCESS_ADHOC)
     SVGShapeViewResource embeddedSubProcess();

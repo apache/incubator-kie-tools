@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.MultipleInstanceSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
@@ -43,7 +44,8 @@ public class SubprocessShapeDef extends BaseDimensionedShapeDef
                     .put(ReusableSubprocess.class, BPMNSVGViewFactory::reusableSubProcess)
                     .put(EmbeddedSubprocess.class, BPMNSVGViewFactory::embeddedSubProcess)
                     .put(EventSubprocess.class, BPMNSVGViewFactory::eventSubProcess)
-                    .put(AdHocSubprocess.class, BPMNSVGViewFactory::adHocSubProcess);
+                    .put(AdHocSubprocess.class, BPMNSVGViewFactory::adHocSubProcess)
+                    .put(MultipleInstanceSubprocess.class, BPMNSVGViewFactory::multipleInstanceSubProcess);
 
     public static final Map<Class<? extends BaseSubprocess>, SvgDataUriGlyph> GLYPHS =
             new HashMap<Class<? extends BaseSubprocess>, SvgDataUriGlyph>() {{
@@ -51,10 +53,11 @@ public class SubprocessShapeDef extends BaseDimensionedShapeDef
                 put(EmbeddedSubprocess.class, BPMNSVGGlyphFactory.ADHOC_SUBPROCESS_GLYPH);
                 put(EventSubprocess.class, BPMNSVGGlyphFactory.EVENT_SUBPROCESS_GLYPH);
                 put(AdHocSubprocess.class, BPMNSVGGlyphFactory.ADHOC_SUBPROCESS_GLYPH);
+                put(MultipleInstanceSubprocess.class, BPMNSVGGlyphFactory.MULTIPLE_INSTANCE_SUBPROCESS_GLYPH);
             }};
 
     private static HasTitle.Position getSubprocessTextPosition(final BaseSubprocess bean) {
-        if ((bean instanceof EmbeddedSubprocess) || (bean instanceof EventSubprocess) || (bean instanceof AdHocSubprocess)) {
+        if ((bean instanceof EmbeddedSubprocess) || (bean instanceof MultipleInstanceSubprocess) || (bean instanceof EventSubprocess) || (bean instanceof AdHocSubprocess)) {
             return HasTitle.Position.TOP;
         } else {
             return HasTitle.Position.CENTER;

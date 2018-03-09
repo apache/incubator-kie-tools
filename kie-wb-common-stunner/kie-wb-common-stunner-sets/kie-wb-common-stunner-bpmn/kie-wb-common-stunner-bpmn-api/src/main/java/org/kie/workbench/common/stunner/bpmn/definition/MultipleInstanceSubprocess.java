@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,10 +32,9 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Rect
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
@@ -46,56 +45,57 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class, builder = EventSubprocess.EventSubprocessBuilder.class)
-@Morph(base = BaseSubprocess.class)
 @CanContain(roles = {"all"})
 @CanDock(roles = {"IntermediateEventOnSubprocessBoundary"})
+@Definition(graphFactory = NodeFactory.class, builder = MultipleInstanceSubprocess.MultipleInstanceSubprocessBuilder.class)
+@Morph(base = BaseSubprocess.class)
+
 @FormDefinition(
         startElement = "general",
         policy = FieldPolicy.ONLY_MARKED
 )
+public class MultipleInstanceSubprocess extends BaseSubprocess {
 
-public class EventSubprocess extends BaseSubprocess {
-
-    @Property
+    @PropertySet
     @FormField(
             afterElement = "general"
     )
-
     @Valid
-    private IsAsync isAsync;
+    protected MultipleInstanceSubprocessTaskExecutionSet executionSet;
+
     @PropertySet
     @FormField(
-            afterElement = "isAsync"
+            afterElement = "executionSet"
     )
     @Valid
     private ProcessData processData;
 
-    public EventSubprocess() {
-        super();
+    public MultipleInstanceSubprocess() {
     }
 
-    public EventSubprocess(final @MapsTo("general") BPMNGeneralSet general,
-                           final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
-                           final @MapsTo("fontSet") FontSet fontSet,
-                           final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
-                           final @MapsTo("simulationSet") SimulationSet simulationSet,
-                           final @MapsTo("isAsync") IsAsync isAsync,
-                           final @MapsTo("processData") ProcessData processData) {
+    public MultipleInstanceSubprocess(final @MapsTo("general") BPMNGeneralSet general,
+                                      final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                                      final @MapsTo("fontSet") FontSet fontSet,
+                                      final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
+                                      final @MapsTo("simulationSet") SimulationSet simulationSet,
+                                      final @MapsTo("executionSet") MultipleInstanceSubprocessTaskExecutionSet executionSet,
+                                      final @MapsTo("processData") ProcessData processData
+    ) {
         super(general,
               backgroundSet,
               fontSet,
               dimensionsSet,
               simulationSet);
-
-        this.isAsync = isAsync;
+        this.executionSet = executionSet;
         this.processData = processData;
     }
 
-    @Override
-    protected void initLabels() {
-        super.initLabels();
-        labels.add("canContainArtifacts");
+    public MultipleInstanceSubprocessTaskExecutionSet getExecutionSet() {
+        return executionSet;
+    }
+
+    public void setExecutionSet(MultipleInstanceSubprocessTaskExecutionSet executionSet) {
+        this.executionSet = executionSet;
     }
 
     public ProcessData getProcessData() {
@@ -106,28 +106,20 @@ public class EventSubprocess extends BaseSubprocess {
         this.processData = processData;
     }
 
-    public IsAsync getIsAsync() {
-        return isAsync;
-    }
-
-    public void setIsAsync(final IsAsync isAsync) {
-        this.isAsync = isAsync;
-    }
-
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
-                                         isAsync.hashCode(),
-                                         processData.hashCode(),
-                                         labels.hashCode());
+                                         Objects.hashCode(executionSet),
+                                         Objects.hashCode(processData),
+                                         Objects.hashCode(labels));
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof EventSubprocess) {
-            EventSubprocess other = (EventSubprocess) o;
+        if (o instanceof MultipleInstanceSubprocess) {
+            MultipleInstanceSubprocess other = (MultipleInstanceSubprocess) o;
             return super.equals(other) &&
-                    Objects.equals(isAsync, other.isAsync) &&
+                    Objects.equals(executionSet, other.executionSet) &&
                     Objects.equals(processData, other.processData) &&
                     Objects.equals(labels, other.labels);
         }
@@ -135,17 +127,17 @@ public class EventSubprocess extends BaseSubprocess {
     }
 
     @NonPortable
-    public static class EventSubprocessBuilder implements Builder<EventSubprocess> {
+    public static class MultipleInstanceSubprocessBuilder implements Builder<MultipleInstanceSubprocess> {
 
         @Override
-        public EventSubprocess build() {
-            return new EventSubprocess(
-                    new BPMNGeneralSet("Event Sub-process"),
+        public MultipleInstanceSubprocess build() {
+            return new MultipleInstanceSubprocess(
+                    new BPMNGeneralSet("Multiple Instance Sub-process"),
                     new BackgroundSet(),
                     new FontSet(),
                     new RectangleDimensionsSet(),
                     new SimulationSet(),
-                    new IsAsync(),
+                    new MultipleInstanceSubprocessTaskExecutionSet(),
                     new ProcessData());
         }
     }

@@ -91,6 +91,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEvent
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.MultipleInstanceSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
@@ -208,6 +209,7 @@ public class BPMNDiagramMarshallerTest {
     private static final String BPMN_EMBEDDED_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/embeddedSubprocess.bpmn";
     private static final String BPMN_EVENT_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/eventSubprocess.bpmn";
     private static final String BPMN_ADHOC_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/adHocSubProcess.bpmn";
+    private static final String BPMN_MULTIPLE_INSTANCE_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/multipleInstanceSubprocess.bpmn";
     private static final String BPMN_SCRIPTTASK = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/scriptTask.bpmn";
     private static final String BPMN_USERTASKASSIGNEES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTaskAssignees.bpmn";
     private static final String BPMN_USERTASKPROPERTIES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTaskProperties.bpmn";
@@ -1787,6 +1789,33 @@ public class BPMNDiagramMarshallerTest {
     }
 
     @Test
+    public void testUnmarshallMultipleInstanceSubprocess() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_MULTIPLE_INSTANCE_SUBPROCESS);
+        assertDiagram(diagram,
+                      2);
+        assertEquals("MultipleInstanceSubprocess",
+                     diagram.getMetadata().getTitle());
+        Node<? extends Definition, ?> multipleInstanceSubprocessNode = diagram.getGraph().getNode("_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571");
+        MultipleInstanceSubprocess multipleInstanceSubprocess = (MultipleInstanceSubprocess) multipleInstanceSubprocessNode.getContent().getDefinition();
+
+        assertEquals("var1", multipleInstanceSubprocess.getExecutionSet().getMultipleInstanceCollectionInput().getValue());
+        assertEquals("var2", multipleInstanceSubprocess.getExecutionSet().getMultipleInstanceCollectionOutput().getValue());
+        assertEquals("dataInput", multipleInstanceSubprocess.getExecutionSet().getMultipleInstanceDataInput().getValue());
+        assertEquals("dataOutput", multipleInstanceSubprocess.getExecutionSet().getMultipleInstanceDataOutput().getValue());
+        assertEquals("a=b", multipleInstanceSubprocess.getExecutionSet().getMultipleInstanceCompletionCondition().getValue());
+        assertEquals("onEntryAction",
+                     multipleInstanceSubprocess.getExecutionSet().getOnEntryAction().getValue().getValues().get(0).getScript());
+        assertEquals("java",
+                     multipleInstanceSubprocess.getExecutionSet().getOnEntryAction().getValue().getValues().get(0).getLanguage());
+        assertEquals("onExitAction",
+                     multipleInstanceSubprocess.getExecutionSet().getOnExitAction().getValue().getValues().get(0).getScript());
+        assertEquals("java",
+                     multipleInstanceSubprocess.getExecutionSet().getOnExitAction().getValue().getValues().get(0).getLanguage());
+        assertTrue(multipleInstanceSubprocess.getExecutionSet().getIsAsync().getValue());
+        assertEquals("mi-var1:String", multipleInstanceSubprocess.getProcessData().getProcessVariables().getValue());
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
     public void testUnmarshallEventSubprocess() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_EVENT_SUBPROCESS);
@@ -1797,8 +1826,7 @@ public class BPMNDiagramMarshallerTest {
         Node<? extends Definition, ?> eventSubprocessNode = diagram.getGraph().getNode("_DF031493-5F1C-4D2B-9916-2FEABB1FADFF");
         EventSubprocess eventSubprocess = (EventSubprocess) eventSubprocessNode.getContent().getDefinition();
         assertTrue(eventSubprocess.getIsAsync().getValue());
-        assertEquals(eventSubprocess.getProcessData().getProcessVariables().getValue(),
-                     "Var1:String");
+        assertEquals("Var1:String", eventSubprocess.getProcessData().getProcessVariables().getValue());
     }
 
     @Test
@@ -2312,6 +2340,39 @@ public class BPMNDiagramMarshallerTest {
                       7);
 
         assertTrue(result.contains("<bpmn2:subProcess id=\"_C3EBE7F1-8E57-4BB1-B380-40BB02E9464E\" "));
+    }
+
+    @Test
+    public void testMarshallMultipleInstanceSubprocess() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_MULTIPLE_INSTANCE_SUBPROCESS);
+        assertDiagram(diagram,
+                      2);
+
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      1,
+                      0);
+
+        assertTrue(result.contains("<bpmn2:subProcess id=\"_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571\""));
+        assertTrue(result.contains("name=\"MultipleInstanceSubprocess\""));
+        assertTrue(result.contains("<drools:onEntry-script scriptFormat=\"http://www.java.com/java\">"));
+        assertTrue(result.contains("<drools:script><![CDATA[onEntryAction]]></drools:script>"));
+        assertTrue(result.contains("</drools:onEntry-script>"));
+        assertTrue(result.contains("<drools:onExit-script scriptFormat=\"http://www.java.com/java\">"));
+        assertTrue(result.contains("<drools:script><![CDATA[onExitAction]]></drools:script>"));
+        assertTrue(result.contains("</drools:onExit-script>"));
+        assertTrue(result.contains("<drools:metaData name=\"customAsync\">"));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[true]]></drools:metaValue>"));
+        assertTrue(result.contains("</drools:metaData>"));
+        assertTrue(result.contains("<bpmn2:multiInstanceLoopCharacteristics"));
+        assertTrue(result.contains("<bpmn2:loopDataInputRef>_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_input</bpmn2:loopDataInputRef>"));
+        assertTrue(result.contains("<bpmn2:loopDataOutputRef>_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_output</bpmn2:loopDataOutputRef>"));
+        assertTrue(result.contains("<bpmn2:inputDataItem xsi:type=\"bpmn2:tDataInput\" id=\"dataInput\"/>"));
+        assertTrue(result.contains("<bpmn2:outputDataItem xsi:type=\"bpmn2:tDataOutput\" id=\"dataOutput\" itemSubjectRef=\"_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_multiInstanceItemType\"/>"));
+        assertTrue(result.contains("<bpmn2:completionCondition xsi:type=\"bpmn2:tFormalExpression\""));
+        assertTrue(result.contains("a=b</bpmn2:completionCondition>"));
+        assertTrue(result.contains("</bpmn2:multiInstanceLoopCharacteristics>"));
     }
 
     @Test

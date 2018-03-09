@@ -126,6 +126,19 @@
       }
     },
     {
+      "id": "multipleInstanceSubProcess",
+      "name": "Subprocess - Multiple Instance",
+      "shape": {
+        "path": "shapes/",
+        "file": "subprocess-multiple-instance.svg"
+      },
+      "icon": {
+        "path": "icons/subprocess/",
+        "file": "subprocess.svg",
+        "refs": "subProcessMultipleInstance"
+      }
+    },
+    {
       "id": "embeddedSubProcess",
       "name": "Subprocess - Embedded",
       "shape": {
