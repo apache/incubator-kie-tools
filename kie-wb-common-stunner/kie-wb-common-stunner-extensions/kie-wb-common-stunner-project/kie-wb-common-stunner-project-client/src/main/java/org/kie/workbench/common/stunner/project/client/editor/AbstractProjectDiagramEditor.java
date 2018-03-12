@@ -403,7 +403,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         }
 
         fileMenuBuilder
-                .addNewTopLevelMenu(versionRecordManager.buildMenu());
+                .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
     }
 
     protected <T> T getCommand(Class<T> key) {

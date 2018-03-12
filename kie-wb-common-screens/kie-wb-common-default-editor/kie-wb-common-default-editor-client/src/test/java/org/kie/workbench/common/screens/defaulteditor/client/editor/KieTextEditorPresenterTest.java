@@ -24,6 +24,7 @@ import org.guvnor.common.services.project.client.context.WorkspaceProjectContext
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,12 +42,9 @@ import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class KieTextEditorPresenterTest {
@@ -71,12 +69,19 @@ public class KieTextEditorPresenterTest {
     protected Caller<DefaultEditorService> defaultEditorService;
 
     @Mock
+    protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
+
+    @Mock
+    protected MenuItem alertsButtonMenuItem;
+
+    @Mock
     protected KieTextEditorView view;
 
     protected KieTextEditorPresenter presenter;
 
     @Before
     public void setup() {
+        when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
         presenter = new KieTextEditorPresenter(view) {
             {
                 fileMenuBuilder = KieTextEditorPresenterTest.this.fileMenuBuilder;
@@ -84,6 +89,7 @@ public class KieTextEditorPresenterTest {
                 workbenchContext = KieTextEditorPresenterTest.this.workbenchContext;
                 versionRecordManager = KieTextEditorPresenterTest.this.versionRecordManager;
                 defaultEditorService = KieTextEditorPresenterTest.this.defaultEditorService;
+                alertsButtonMenuItemBuilder = KieTextEditorPresenterTest.this.alertsButtonMenuItemBuilder;
             }
 
             @Override
@@ -105,6 +111,7 @@ public class KieTextEditorPresenterTest {
         verify(fileMenuBuilder).addCopy(any(Path.class), any(AssetUpdateValidator.class));
         verify(fileMenuBuilder).addRename(any(Command.class));
         verify(fileMenuBuilder).addDelete(any(Path.class), any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 
     @Test
@@ -118,6 +125,7 @@ public class KieTextEditorPresenterTest {
         verify(fileMenuBuilder, never()).addCopy(any(Path.class), any(AssetUpdateValidator.class));
         verify(fileMenuBuilder, never()).addRename(any(Command.class));
         verify(fileMenuBuilder, never()).addDelete(any(Path.class), any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 
     @Test

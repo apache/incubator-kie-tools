@@ -89,7 +89,10 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons-editor-client</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-message-console-client</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>

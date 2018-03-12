@@ -24,6 +24,7 @@ import org.guvnor.common.services.project.client.context.WorkspaceProjectContext
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,6 +50,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class KieEditorTest {
@@ -81,6 +83,12 @@ public class KieEditorTest {
     @Mock
     protected KieEditorWrapperView kieView;
 
+    @Mock
+    protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
+
+    @Mock
+    protected MenuItem alertsButtonMenuItem;
+
     @Spy
     @InjectMocks
     protected AssetUpdateValidator assetUpdateValidator;
@@ -89,6 +97,7 @@ public class KieEditorTest {
 
     @Before
     public void setup() {
+        when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
         presenter = spy(new KieEditor<String>() {
             {
                 fileMenuBuilder = KieEditorTest.this.fileMenuBuilder;
@@ -100,6 +109,7 @@ public class KieEditorTest {
                 kieView = KieEditorTest.this.kieView;
                 saveAndRenameCommandBuilder = KieEditorTest.this.saveAndRenameCommandBuilder;
                 metadata = KieEditorTest.this.metadata;
+                alertsButtonMenuItemBuilder = KieEditorTest.this.alertsButtonMenuItemBuilder;
             }
 
             @Override
@@ -133,6 +143,7 @@ public class KieEditorTest {
         verify(fileMenuBuilder).addCopy(any(Path.class), any(AssetUpdateValidator.class));
         verify(fileMenuBuilder).addRename(any(Command.class));
         verify(fileMenuBuilder).addDelete(any(Path.class), any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 
     @Test
@@ -146,6 +157,7 @@ public class KieEditorTest {
         verify(fileMenuBuilder, never()).addCopy(any(Path.class), any(AssetUpdateValidator.class));
         verify(fileMenuBuilder, never()).addRename(any(Command.class));
         verify(fileMenuBuilder, never()).addDelete(any(Path.class), any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 
     @Test

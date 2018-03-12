@@ -135,6 +135,15 @@ public class ProjectView implements ProjectScreen.View,
     @DataField("deploy")
     private HTMLButtonElement deploy;
 
+    @Inject
+    @DataField("main-actions")
+    private HTMLDivElement mainActions;
+
+    @Override
+    public void addMainAction(final IsElement action) {
+        mainActions.appendChild(action.getElement());
+    }
+
     @Override
     public void setAssetsCount(int count) {
         assetsCount.textContent = String.valueOf(count);

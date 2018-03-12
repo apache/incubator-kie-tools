@@ -22,6 +22,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -107,6 +108,12 @@ public class AbstractProjectDiagramEditorTest {
     @Mock
     private ClientTranslationService translationService;
 
+    @Mock
+    private AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
+
+    @Mock
+    protected MenuItem alertsButtonMenuItem;
+
     abstract class ClientResourceTypeMock implements ClientResourceType {
 
     }
@@ -142,6 +149,8 @@ public class AbstractProjectDiagramEditorTest {
         doReturn(mock(MenuItem.class)).when(projectMenuItemsBuilder).newCopyItem(any(Command.class));
         doReturn(mock(MenuItem.class)).when(projectMenuItemsBuilder).newCutItem(any(Command.class));
 
+        when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
+
         presenter = new AbstractProjectDiagramEditor<ClientResourceTypeMock>(mock(AbstractProjectDiagramEditor.View.class),
                                                                              mock(PlaceManager.class),
                                                                              mock(ErrorPopupPresenter.class),
@@ -163,6 +172,7 @@ public class AbstractProjectDiagramEditorTest {
                 workbenchContext = AbstractProjectDiagramEditorTest.this.workbenchContext;
                 projectController = AbstractProjectDiagramEditorTest.this.projectController;
                 versionRecordManager = AbstractProjectDiagramEditorTest.this.versionRecordManager;
+                alertsButtonMenuItemBuilder = AbstractProjectDiagramEditorTest.this.alertsButtonMenuItemBuilder;
             }
 
             @Override
@@ -197,6 +207,7 @@ public class AbstractProjectDiagramEditorTest {
                                           any(AssetUpdateValidator.class));
         verify(fileMenuBuilder).addDelete(any(Path.class),
                                           any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 
     @Test
@@ -217,6 +228,7 @@ public class AbstractProjectDiagramEditorTest {
         verify(fileMenuBuilder,
                never()).addDelete(any(Path.class),
                                   any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 
     @Test

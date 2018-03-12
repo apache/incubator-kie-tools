@@ -26,12 +26,14 @@ import elemental2.dom.HTMLElement;
 import elemental2.promise.Promise;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.messageconsole.client.console.widget.button.ViewHideAlertsButtonPresenter;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.events.AfterEditOrganizationalUnitEvent;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.workbench.common.screens.defaulteditor.client.editor.NewFileUploader;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
@@ -69,6 +71,8 @@ public class ProjectScreen {
 
     public interface View extends UberElemental<ProjectScreen>,
                                   BuildExecutor.View {
+
+        void addMainAction(IsElement action);
 
         void setAssetsCount(int count);
 
@@ -119,6 +123,7 @@ public class ProjectScreen {
     private ProjectNameValidator projectNameValidator;
     private Promises promises;
     private Event<NotificationEvent> notificationEvent;
+    private ViewHideAlertsButtonPresenter viewHideAlertsButtonPresenter;
 
     @Inject
     public ProjectScreen(final View view,
@@ -141,7 +146,8 @@ public class ProjectScreen {
                          final CopyPopUpPresenter copyPopUpPresenter,
                          final ProjectNameValidator projectNameValidator,
                          final Promises promises,
-                         final Event<NotificationEvent> notificationEvent) {
+                         final Event<NotificationEvent> notificationEvent,
+                         final ViewHideAlertsButtonPresenter viewHideAlertsButtonPresenter) {
         this.view = view;
         this.libraryPlaces = libraryPlaces;
         this.emptyAssetsScreen = emptyAssetsScreen;
@@ -163,6 +169,7 @@ public class ProjectScreen {
         this.projectNameValidator = projectNameValidator;
         this.promises = promises;
         this.notificationEvent = notificationEvent;
+        this.viewHideAlertsButtonPresenter = viewHideAlertsButtonPresenter;
         this.elemental2DomUtil = new Elemental2DomUtil();
     }
 
@@ -172,6 +179,7 @@ public class ProjectScreen {
         this.view.init(this);
         this.buildExecutor.init(this.view);
         this.view.setTitle(libraryPlaces.getActiveWorkspaceContext().getMainModule().getModuleName());
+        this.view.addMainAction(viewHideAlertsButtonPresenter.getView());
         this.resolveContributorsCount();
         this.resolveAssetsCount();
         this.showAssets();

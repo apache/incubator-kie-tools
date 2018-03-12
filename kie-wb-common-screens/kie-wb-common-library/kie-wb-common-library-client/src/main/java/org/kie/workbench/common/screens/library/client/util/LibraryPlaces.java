@@ -37,6 +37,7 @@ import org.guvnor.common.services.project.events.RenameModuleEvent;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.project.social.ModuleEventType;
+import org.guvnor.messageconsole.client.console.MessageConsoleScreen;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.guvnor.structure.repositories.Repository;
@@ -92,7 +93,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     public static final String ORGANIZATIONAL_UNITS_SCREEN = "LibraryOrganizationalUnitsScreen";
     public static final String PROJECT_SETTINGS = "ProjectSettings";
     public static final String PROJECT_EXPLORER = "org.kie.guvnor.explorer";
-    public static final String MESSAGES = "org.kie.workbench.common.screens.messageconsole.MessageConsole";
+    public static final String ALERTS = MessageConsoleScreen.ALERTS;
     public static final String REPOSITORY_STRUCTURE_SCREEN = "repositoryStructureScreen";
     public static final String ADD_ASSET_SCREEN = "AddAssetsScreen";
 
@@ -219,7 +220,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
                 final PathPlaceRequest pathPlaceRequest = (PathPlaceRequest) place;
                 setupLibraryBreadCrumbsForAsset(pathPlaceRequest.getPath());
                 showDocks();
-            } else if (!place.getIdentifier().equals(MESSAGES) && isLibraryPlace(place)) {
+            } else if (!place.getIdentifier().equals(ALERTS) && isLibraryPlace(place)) {
                 hideDocks();
                 if (place.getIdentifier().equals(PROJECT_SETTINGS)) {
                     setupLibraryBreadCrumbsForAsset(null);
@@ -713,10 +714,6 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         closeLibraryPlaces();
         placeManager.goTo(part,
                           libraryPerspective.getRootPanel());
-    }
-
-    public void goToMessages() {
-        placeManager.goTo(MESSAGES);
     }
 
     public void goToPreferences() {

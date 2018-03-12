@@ -21,6 +21,9 @@ import javax.enterprise.event.Event;
 
 import elemental2.dom.HTMLElement;
 import org.guvnor.common.services.project.client.security.ProjectController;
+import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.messageconsole.client.console.widget.button.ViewHideAlertsButtonPresenter;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -71,6 +74,9 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
 
     @Mock
     private AssetsScreen assetsScreen;
+
+    @Mock
+    private AssetsScreen.View assetsView;
 
     @Mock
     private ContributorsListPresenter contributorsListScreen;
@@ -130,6 +136,12 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
     @Mock
     private Event<NotificationEvent> notificationEvent;
 
+    @Mock
+    private ViewHideAlertsButtonPresenter viewHideAlertsButtonPresenter;
+
+    @Mock
+    private ViewHideAlertsButtonPresenter.View viewHideAlertsButtonView;
+
     private SyncPromises promises;
 
     @Before
@@ -137,9 +149,18 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
         projectScreenServiceCaller = new CallerMock<>(projectScreenService);
         promises = spy(new SyncPromises());
 
+        when(assetsScreen.getView()).thenReturn(assetsView);
+        when(viewHideAlertsButtonPresenter.getView()).thenReturn(viewHideAlertsButtonView);
+
         when(editContributorsPopUpPresenterInstance.get()).thenReturn(editContributorsPopUpPresenter);
         when(deleteProjectPopUpScreenInstance.get()).thenReturn(deleteProjectPopUpScreen);
         when(renameProjectPopUpScreenInstance.get()).thenReturn(renameProjectPopUpScreen);
+
+        final WorkspaceProject workspaceProject = mock(WorkspaceProject.class);
+        final Module module = mock(Module.class);
+        when(module.getModuleName()).thenReturn("module-name");
+        when(workspaceProject.getMainModule()).thenReturn(module);
+        when(libraryPlaces.getActiveWorkspaceContext()).thenReturn(workspaceProject);
 
         this.presenter = spy(new ProjectScreen(this.view,
                                                this.libraryPlaces,
@@ -161,9 +182,20 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
                                                copyPopUpPresenter,
                                                projectNameValidator,
                                                promises,
-                                               notificationEvent));
+                                               notificationEvent,
+                                               viewHideAlertsButtonPresenter));
 
         this.presenter.workspaceProject = createProject();
+    }
+
+    @Test
+    public void testInitialize() {
+        presenter.initialize();
+
+        verify(view).init(presenter);
+        verify(buildExecutor).init(view);
+        verify(view).setTitle("module-name");
+        verify(view).addMainAction(viewHideAlertsButtonView);
     }
 
     @Test

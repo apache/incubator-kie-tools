@@ -605,6 +605,7 @@ public class DataModelerScreenPresenterTest
         verify(fileMenuBuilder).addCopy(any(Command.class));
         verify(fileMenuBuilder).addRename(any(Command.class));
         verify(fileMenuBuilder).addDelete(any(Command.class));
+        verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 
     @Test
@@ -622,5 +623,6 @@ public class DataModelerScreenPresenterTest
                never()).addRename(any(Command.class));
         verify(fileMenuBuilder,
                never()).addDelete(any(Command.class));
+        verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 }

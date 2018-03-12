@@ -16,7 +16,6 @@
 package org.kie.workbench.common.screens.defaulteditor.client.editor;
 
 import java.util.function.Supplier;
-
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
@@ -101,7 +100,8 @@ public abstract class KieTextEditorPresenter
         }
 
         fileMenuBuilder
-                .addNewTopLevelMenu(versionRecordManager.buildMenu());
+                .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
     }
 
     @Override

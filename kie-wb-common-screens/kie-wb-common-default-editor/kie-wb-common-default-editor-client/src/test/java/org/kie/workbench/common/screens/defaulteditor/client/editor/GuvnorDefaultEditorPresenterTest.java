@@ -22,6 +22,7 @@ import java.util.Optional;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +34,7 @@ import org.mockito.Spy;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
+import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -56,16 +58,24 @@ public class GuvnorDefaultEditorPresenterTest {
     @Mock
     protected WorkspaceProjectContext workbenchContext;
 
+    @Mock
+    protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
+
+    @Mock
+    protected MenuItem alertsButtonMenuItem;
+
     protected GuvnorDefaultEditorPresenter presenter;
 
     @Before
     public void setup() {
+        doReturn(alertsButtonMenuItem).when(alertsButtonMenuItemBuilder).build();
         presenter = new GuvnorDefaultEditorPresenter(mock(GuvnorDefaultEditorView.class)) {
             {
                 fileMenuBuilder = GuvnorDefaultEditorPresenterTest.this.fileMenuBuilder;
                 projectController = GuvnorDefaultEditorPresenterTest.this.projectController;
                 workbenchContext = GuvnorDefaultEditorPresenterTest.this.workbenchContext;
                 versionRecordManager = GuvnorDefaultEditorPresenterTest.this.versionRecordManager;
+                alertsButtonMenuItemBuilder = GuvnorDefaultEditorPresenterTest.this.alertsButtonMenuItemBuilder;
             }
         };
     }
@@ -83,6 +93,7 @@ public class GuvnorDefaultEditorPresenterTest {
                                           any(AssetUpdateValidator.class));
         verify(fileMenuBuilder).addDelete(any(Path.class),
                                           any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 
     @Test
@@ -101,5 +112,6 @@ public class GuvnorDefaultEditorPresenterTest {
         verify(fileMenuBuilder,
                never()).addDelete(any(Path.class),
                                   any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 }

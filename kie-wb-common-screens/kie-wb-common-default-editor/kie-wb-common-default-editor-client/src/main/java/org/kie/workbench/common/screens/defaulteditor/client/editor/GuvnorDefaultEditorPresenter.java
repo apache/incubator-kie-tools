@@ -95,7 +95,8 @@ public class GuvnorDefaultEditorPresenter
         }
 
         fileMenuBuilder
-                .addNewTopLevelMenu(versionRecordManager.buildMenu());
+                .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
     }
 
     @WorkbenchMenu

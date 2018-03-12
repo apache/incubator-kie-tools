@@ -106,12 +106,12 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
 
     @Inject
     public FormEditorPresenter(FormEditorView view,
-            ChangesNotificationDisplayer changesNotificationDisplayer,
-            FormDefinitionResourceType resourceType,
-            Caller<FormEditorService> editorService,
-            TranslationService translationService,
-            ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents,
-            ShowAssetUsagesDisplayer showAssetUsagesDisplayer) {
+                               ChangesNotificationDisplayer changesNotificationDisplayer,
+                               FormDefinitionResourceType resourceType,
+                               Caller<FormEditorService> editorService,
+                               TranslationService translationService,
+                               ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents,
+                               ShowAssetUsagesDisplayer showAssetUsagesDisplayer) {
         super(view);
         this.view = view;
         this.changesNotificationDisplayer = changesNotificationDisplayer;
@@ -124,16 +124,16 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
 
     @OnStartup
     public void onStartup(final ObservablePath path,
-            final PlaceRequest place) {
+                          final PlaceRequest place) {
 
         init(path,
-                place,
-                resourceType);
+             place,
+             resourceType);
     }
 
     @OnFocus
     public void onFocus() {
-        if(editorHelper.getContent() == null) {
+        if (editorHelper.getContent() == null) {
             this.setActiveOnLoad = true;
         } else {
             setActiveInstance();
@@ -198,9 +198,9 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
         view.setupLayoutEditor(layoutEditor);
 
         changesNotificationDisplayer.show(content,
-                this::synchronizeLayoutEditor);
+                                          this::synchronizeLayoutEditor);
 
-        if(setActiveOnLoad) {
+        if (setActiveOnLoad) {
             setActiveInstance();
             setActiveOnLoad = false;
         }
@@ -210,9 +210,9 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
         layoutEditor.clear();
 
         layoutEditor.init(editorHelper.getContent().getDefinition().getName(),
-                translationService.getTranslation(FormEditorConstants.FormEditorPresenterLayoutTitle),
-                translationService.getTranslation(FormEditorConstants.FormEditorPresenterLayoutSubTitle),
-                LayoutTemplate.Style.FLUID);
+                          translationService.getTranslation(FormEditorConstants.FormEditorPresenterLayoutTitle),
+                          translationService.getTranslation(FormEditorConstants.FormEditorPresenterLayoutSubTitle),
+                          LayoutTemplate.Style.FLUID);
 
         layoutEditor.loadLayout(editorHelper.getContent().getDefinition().getLayoutTemplate());
     }
@@ -232,8 +232,10 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
 
     protected void loadFormControls() {
         LayoutDragComponentGroup group = new LayoutDragComponentGroup(translationService.getTranslation(FormEditorConstants.FormEditorPresenterComponentsPalette));
-        group.addLayoutDragComponent("html", htmlLayoutDragComponent);
-        editorHelper.getBaseFieldsDraggables().forEach(component -> group.addLayoutDragComponent(component.getFieldId(), component));
+        group.addLayoutDragComponent("html",
+                                     htmlLayoutDragComponent);
+        editorHelper.getBaseFieldsDraggables().forEach(component -> group.addLayoutDragComponent(component.getFieldId(),
+                                                                                                 component));
         layoutDragComponentPalette.addDraggableGroup(group);
     }
 
@@ -272,7 +274,8 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
         }
 
         fileMenuBuilder
-                .addNewTopLevelMenu(versionRecordManager.buildMenu());
+                .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
                 /*.addCommand( "PREVIEW",
                              () -> {
                                  synchronizeFormLayout();
@@ -378,7 +381,7 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
 
             // If the event is caused by a element move we must hold the field on the form.
             // If not it means that it should be removed.
-            if(!event.getFromMove()) {
+            if (!event.getFromMove()) {
                 editorHelper.removeField(fieldId,
                                          true);
                 onSyncPalette(formId);
@@ -391,8 +394,10 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
         Iterator<FieldDefinition> it = fields.iterator();
         while (it.hasNext()) {
             FieldDefinition field = it.next();
-            if (layoutDragComponentPalette.hasDraggableComponent(groupId, field.getId())) {
-                layoutDragComponentPalette.removeDraggableComponent(groupId, field.getId());
+            if (layoutDragComponentPalette.hasDraggableComponent(groupId,
+                                                                 field.getId())) {
+                layoutDragComponentPalette.removeDraggableComponent(groupId,
+                                                                    field.getId());
             }
         }
     }
@@ -409,8 +414,8 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
                 layoutFieldComponent.init(editorHelper.getRenderingContext(),
                                           field);
                 layoutDragComponentPalette.addDraggableComponent(groupId,
-                                                 field.getId(),
-                                                 layoutFieldComponent);
+                                                                 field.getId(),
+                                                                 layoutFieldComponent);
             }
         }
     }

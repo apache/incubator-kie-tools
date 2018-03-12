@@ -84,6 +84,10 @@
       <artifactId>uberfire-workbench-processors</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-message-console-client</artifactId>
+    </dependency>
 
     <!-- GWT and GWT Extensions -->
     <dependency>

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.screens.projectimportsscreen.client.forms;
 
 import java.util.function.Supplier;
-
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -116,7 +115,8 @@ public class ProjectImportsScreenPresenter
         }
 
         fileMenuBuilder
-                .addNewTopLevelMenu(versionRecordManager.buildMenu());
+                .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
     }
 
     @Override

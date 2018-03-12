@@ -30,6 +30,7 @@ import org.guvnor.common.services.project.client.context.WorkspaceProjectContext
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
 import org.guvnor.messageconsole.events.UnpublishMessagesEvent;
 import org.junit.Before;
@@ -77,6 +78,7 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.mockito.Mockito.*;
 
@@ -170,6 +172,12 @@ public abstract class DataModelerScreenPresenterTestBase {
     @Mock
     protected ShowAssetUsagesDisplayer showAssetUsages;
 
+    @Mock
+    protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
+
+    @Mock
+    protected MenuItem alertsButtonMenuItem;
+
     protected DataModelerScreenPresenter presenter;
 
     /**
@@ -221,6 +229,7 @@ public abstract class DataModelerScreenPresenterTestBase {
 
     @Before
     public void setUp() throws Exception {
+        when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
 
         testObject1 = DataModelerEditorsTestHelper.createTestObject1();
         testModel = DataModelerEditorsTestHelper.createTestModel(testObject1);
@@ -260,6 +269,7 @@ public abstract class DataModelerScreenPresenterTestBase {
                 projectController = DataModelerScreenPresenterTestBase.this.projectController;
                 deletePopUpPresenter = DataModelerScreenPresenterTestBase.this.deletePopUpPresenter;
                 showAssetUsagesDisplayer = DataModelerScreenPresenterTestBase.this.showAssetUsages;
+                alertsButtonMenuItemBuilder = DataModelerScreenPresenterTestBase.this.alertsButtonMenuItemBuilder;
                 uiStarted = true;
 
                 when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(Optional.empty());

@@ -28,6 +28,7 @@ import org.guvnor.common.services.project.client.context.WorkspaceProjectContext
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
@@ -83,6 +84,9 @@ public abstract class KieEditor<T>
 
     @Inject
     protected AssetUpdateValidator assetUpdateValidator;
+
+    @Inject
+    protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
 
     protected Metadata metadata;
     private ViewDRLSourceWidget sourceWidget;
@@ -274,7 +278,8 @@ public abstract class KieEditor<T>
 
         fileMenuBuilder
                 .addValidate(onValidate())
-                .addNewTopLevelMenu(versionRecordManager.buildMenu());
+                .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
     }
 
     @Override

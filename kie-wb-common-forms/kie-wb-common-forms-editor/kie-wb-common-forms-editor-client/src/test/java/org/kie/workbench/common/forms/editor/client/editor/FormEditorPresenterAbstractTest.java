@@ -25,6 +25,7 @@ import com.google.gwtmockito.GwtMock;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -159,6 +160,12 @@ public class FormEditorPresenterAbstractTest {
     @Mock
     protected AssetsUsageService assetsUsagService;
 
+    @Mock
+    protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
+
+    @Mock
+    protected MenuItem alertsButtonMenuItem;
+
     protected TestFieldManager fieldManager;
 
     protected List<Path> assetUsages = new ArrayList<>();
@@ -203,6 +210,7 @@ public class FormEditorPresenterAbstractTest {
         when(workbenchContext.getActiveModule()).thenReturn(Optional.empty());
         when(workbenchContext.getActiveRepositoryRoot()).thenReturn(Optional.empty());
         when(workbenchContext.getActivePackage()).thenReturn(Optional.empty());
+        when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
     }
 
     protected void loadContent() {
@@ -270,6 +278,7 @@ public class FormEditorPresenterAbstractTest {
                 projectController = FormEditorPresenterAbstractTest.this.projectController;
                 deletePopUpPresenter = FormEditorPresenterAbstractTest.this.deletePopUpPresenter;
                 renamePopUpPresenter = FormEditorPresenterAbstractTest.this.renamePopUpPresenter;
+                alertsButtonMenuItemBuilder = FormEditorPresenterAbstractTest.this.alertsButtonMenuItemBuilder;
                 formEditorContext = mock(FormEditorContext.class);
             }
 

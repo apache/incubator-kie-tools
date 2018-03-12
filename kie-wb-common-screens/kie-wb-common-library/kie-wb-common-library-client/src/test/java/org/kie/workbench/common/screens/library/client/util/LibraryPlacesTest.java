@@ -722,13 +722,6 @@ public class LibraryPlacesTest {
     }
 
     @Test
-    public void goToMessages() {
-        libraryPlaces.goToMessages();
-
-        verify(placeManager).goTo(LibraryPlaces.MESSAGES);
-    }
-
-    @Test
     public void goToPreferencesTest() {
         final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo = mock(PreferenceScopeResolutionStrategyInfo.class);
         doReturn(scopeResolutionStrategyInfo).when(projectScopedResolutionStrategySupplier).get();

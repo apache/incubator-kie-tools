@@ -26,6 +26,7 @@ import java.util.function.Supplier;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -117,6 +118,12 @@ public class ProjectImportsScreenPresenterTest {
     @Mock
     private Caller<ProjectImportsService> serviceCaller;
 
+    @Mock
+    private AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
+
+    @Mock
+    protected MenuItem alertsButtonMenuItem;
+
     @InjectMocks
     protected ProjectImportsScreenPresenter presenter = makeProjectImportsScreen();
 
@@ -137,6 +144,8 @@ public class ProjectImportsScreenPresenterTest {
         when(workbenchContext.getActiveModule()).thenReturn(Optional.empty());
         when(workbenchContext.getActiveRepositoryRoot()).thenReturn(Optional.empty());
         when(workbenchContext.getActivePackage()).thenReturn(Optional.empty());
+
+        when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
     }
 
     @Test
@@ -179,6 +188,7 @@ public class ProjectImportsScreenPresenterTest {
         verify(menuBuilder).addCopy(any(Path.class), any(AssetUpdateValidator.class));
         verify(menuBuilder).addRename(any(Command.class));
         verify(menuBuilder).addDelete(any(Path.class), any(AssetUpdateValidator.class));
+        verify(menuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 
     @Test
@@ -192,6 +202,7 @@ public class ProjectImportsScreenPresenterTest {
         verify(menuBuilder, never()).addCopy(any(Path.class), any(AssetUpdateValidator.class));
         verify(menuBuilder, never()).addRename(any(Command.class));
         verify(menuBuilder, never()).addDelete(any(Path.class), any(AssetUpdateValidator.class));
+        verify(menuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 
     @Test

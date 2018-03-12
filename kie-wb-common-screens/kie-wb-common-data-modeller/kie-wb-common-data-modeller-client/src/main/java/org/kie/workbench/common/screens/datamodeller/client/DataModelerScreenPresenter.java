@@ -1264,7 +1264,8 @@ public class DataModelerScreenPresenter
                 .addValidate(
                         onValidate()
                 )
-                .addNewTopLevelMenu(versionRecordManager.buildMenu());
+                .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
     }
 
     private void clearContext() {

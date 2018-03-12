@@ -467,6 +467,7 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
                                         any(AssetUpdateValidator.class));
         verify(menuBuilderMock).addRename(any(Command.class));
         verify(menuBuilderMock).addDelete(any(Command.class));
+        verify(menuBuilderMock).addNewTopLevelMenu(alertsButtonMenuItem);
 
         assertNotNull(presenter.getMenus());
         verify(menuBuilderMock,
@@ -491,6 +492,7 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
         verify(menuBuilderMock,
                never()).addDelete(any(Path.class),
                                   any(AssetUpdateValidator.class));
+        verify(menuBuilderMock).addNewTopLevelMenu(alertsButtonMenuItem);
 
         assertNotNull(presenter.getMenus());
         verify(menuBuilderMock,
