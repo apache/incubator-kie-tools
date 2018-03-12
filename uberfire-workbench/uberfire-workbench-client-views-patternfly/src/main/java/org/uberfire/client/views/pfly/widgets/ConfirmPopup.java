@@ -16,16 +16,19 @@
 
 package org.uberfire.client.views.pfly.widgets;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.MouseEvent;
 import org.jboss.errai.common.client.dom.Span;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.uberfire.client.views.pfly.resources.i18n.Constants;
 import org.uberfire.mvp.Command;
 
 @Dependent
@@ -37,26 +40,69 @@ public class ConfirmPopup {
     Span modalTitle;
 
     @Inject
+    @DataField("confirm-inline-notification")
+    InlineNotification confirmInlineNotification;
+
+    @Inject
     @DataField("confirm-message")
     Span modalConfirmationMessageLabel;
 
     @Inject
-    @DataField("confirm-ok-button-text")
-    Span okButton;
+    @DataField("confirm-cancel")
+    Button cancelButton;
+
+    @Inject
+    @DataField("confirm-ok")
+    Button okButton;
 
     @Inject
     @DataField("modal")
     private Modal modal;
 
+    @Inject
+    private TranslationService translationService;
+
     private Command okCommand;
 
-    public void show(String title,
-                     String okButtonText,
-                     String confirmMessage,
+    @PostConstruct
+    public void init() {
+        cancelButton.setText(translationService.getTranslation(Constants.ConfirmPopup_Cancel));
+    }
+
+    public void show(final String title,
+                     final String okButtonText,
+                     final String confirmMessage,
+                     final Command okCommand) {
+        show(title,
+             null,
+             null,
+             okButtonText,
+             Button.ButtonStyleType.DANGER,
+             confirmMessage,
+             okCommand);
+    }
+
+    public void show(final String title,
+                     final String inlineNotificationMessage,
+                     final InlineNotification.InlineNotificationType inlineNotificationType,
+                     final String okButtonText,
+                     final Button.ButtonStyleType okButtonType,
+                     final String confirmMessage,
                      final Command okCommand) {
         this.okCommand = okCommand;
         modalTitle.setTextContent(title);
-        okButton.setTextContent(okButtonText);
+        if (inlineNotificationMessage != null && inlineNotificationType != null) {
+            confirmInlineNotification.setMessage(inlineNotificationMessage);
+            confirmInlineNotification.setType(inlineNotificationType);
+            confirmInlineNotification.getElement().getStyle().removeProperty("display");
+        } else {
+            confirmInlineNotification.getElement().getStyle().setProperty("display",
+                                                                          "none");
+        }
+        okButton.setText(okButtonText);
+        if (okButtonType != null) {
+            okButton.setButtonStyleType(okButtonType);
+        }
         modalConfirmationMessageLabel.setTextContent(confirmMessage);
         modal.show();
     }

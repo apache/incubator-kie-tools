@@ -16,6 +16,8 @@
 
 package org.uberfire.client.views.pfly.widgets;
 
+import java.util.stream.Stream;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -35,9 +37,16 @@ public class Button implements IsElement {
     @Inject
     private Document document;
 
-    public void setText(final String text) {
-        final Text textNode = document.createTextNode(text);
+    private Text textNode;
+
+    @PostConstruct
+    public void init() {
+        textNode = document.createTextNode("");
         getElement().appendChild(textNode);
+    }
+
+    public void setText(final String text) {
+        textNode.data = text;
     }
 
     public void setClickHandler(final Command clickHandler) {
@@ -50,6 +59,8 @@ public class Button implements IsElement {
     }
 
     public void setButtonStyleType(final ButtonStyleType type) {
+        removeClass("btn");
+        Stream.of(ButtonStyleType.values()).forEach(buttonStyleType -> removeClass(buttonStyleType.getCssClass()));
         button.classList.add("btn",
                              type.getCssClass());
     }
@@ -107,5 +118,11 @@ public class Button implements IsElement {
             return cssClass;
         }
 
+    }
+
+    private void removeClass(final String cssClass) {
+        if (getElement().classList.contains(cssClass)) {
+            getElement().classList.remove(cssClass);
+        }
     }
 }

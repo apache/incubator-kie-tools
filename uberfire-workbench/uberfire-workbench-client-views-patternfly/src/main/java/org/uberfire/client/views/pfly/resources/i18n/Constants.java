@@ -109,4 +109,7 @@ public interface Constants {
 
     @TranslationKey(defaultValue = "")
     String ErrorPopupView_CloseDetailLabel = "ErrorPopupView.CloseDetailLabel";
+
+    @TranslationKey(defaultValue = "Cancel")
+    String ConfirmPopup_Cancel = "ConfirmPopup.Cancel";
 }
