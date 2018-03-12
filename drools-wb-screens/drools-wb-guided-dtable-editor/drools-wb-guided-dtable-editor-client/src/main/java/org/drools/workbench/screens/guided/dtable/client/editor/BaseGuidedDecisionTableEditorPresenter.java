@@ -40,6 +40,7 @@ import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEdi
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
+import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -100,6 +101,8 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
 
     private ColumnsPage columnsPage;
 
+    protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
+
     public BaseGuidedDecisionTableEditorPresenter(final View view,
                                                   final Caller<GuidedDecisionTableEditorService> service,
                                                   final Event<NotificationEvent> notification,
@@ -113,7 +116,8 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
                                                   final GuidedDecisionTableModellerView.Presenter modeller,
                                                   final SyncBeanManager beanManager,
                                                   final PlaceManager placeManager,
-                                                  final ColumnsPage columnsPage) {
+                                                  final ColumnsPage columnsPage,
+                                                  final AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder) {
         super(view);
         this.view = view;
         this.service = service;
@@ -129,6 +133,7 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
         this.beanManager = beanManager;
         this.placeManager = placeManager;
         this.columnsPage = columnsPage;
+        this.alertsButtonMenuItemBuilder = alertsButtonMenuItemBuilder;
     }
 
     @Override

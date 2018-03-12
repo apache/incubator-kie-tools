@@ -236,7 +236,8 @@ public class DecisionTableXLSEditorPresenter
         fileMenuBuilder
                 .addValidate(onValidate())
                 .addNewTopLevelMenu(getConvertMenu())
-                .addNewTopLevelMenu(versionRecordManager.buildMenu());
+                .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
     }
 
     protected MenuItem getConvertMenu() {

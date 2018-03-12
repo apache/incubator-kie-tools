@@ -106,7 +106,8 @@ public class GlobalsEditorPresenter
 
         fileMenuBuilder
                 .addValidate(onValidate())
-                .addNewTopLevelMenu(versionRecordManager.buildMenu());
+                .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
     }
 
     protected void loadContent() {

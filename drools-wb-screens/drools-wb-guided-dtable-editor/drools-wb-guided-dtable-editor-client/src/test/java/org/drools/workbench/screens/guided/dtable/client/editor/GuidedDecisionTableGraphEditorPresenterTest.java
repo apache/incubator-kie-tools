@@ -194,6 +194,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         when(view.asWidget()).thenReturn(mock(Widget.class));
         when(moduleService.resolvePackage(any(Path.class))).thenReturn(activePackage);
         when(activePackage.getPackageMainResourcesPath()).thenReturn(activePackageResourcesPath);
+        when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
 
         super.setup();
     }
@@ -220,7 +221,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                                            placeManager,
                                                            lockManager,
                                                            columnsPage,
-                                                           saveAndRenameCommandBuilder) {
+                                                           saveAndRenameCommandBuilder,
+                                                           alertsButtonMenuItemBuilder) {
             {
                 workbenchContext = GuidedDecisionTableGraphEditorPresenterTest.this.workbenchContext;
                 projectController = GuidedDecisionTableGraphEditorPresenterTest.this.projectController;
@@ -367,6 +369,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                times(1)).addNewTopLevelMenu(eq(versionManagerMenuItem));
         verify(fileMenuBuilder,
                times(1)).addNewTopLevelMenu(eq(registeredDocumentsMenuItem));
+        verify(fileMenuBuilder,
+               times(1)).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 
     @Test
@@ -388,6 +392,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         verify(fileMenuBuilder,
                never()).addDelete(any(BasicFileMenuBuilder.PathProvider.class),
                                   eq(assetUpdateValidator));
+        verify(fileMenuBuilder,
+               times(1)).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 
     @Test
@@ -1668,7 +1674,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                                            placeManager,
                                                            lockManager,
                                                            columnsPage,
-                                                           saveAndRenameCommandBuilder);
+                                                           saveAndRenameCommandBuilder,
+                                                           alertsButtonMenuItemBuilder);
     }
 
     private static class OnSaveSetupDataHolder {

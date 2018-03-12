@@ -54,6 +54,7 @@ import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableGra
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableGraphSaveAndRenameService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -145,7 +146,8 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                                                    final PlaceManager placeManager,
                                                    final LockManager lockManager,
                                                    final ColumnsPage columnsPage,
-                                                   final SaveAndRenameCommandBuilder<List<GuidedDecisionTableEditorContent>, Metadata> saveAndRenameCommandBuilder) {
+                                                   final SaveAndRenameCommandBuilder<List<GuidedDecisionTableEditorContent>, Metadata> saveAndRenameCommandBuilder,
+                                                   final AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder) {
         super(view,
               service,
               notification,
@@ -159,7 +161,8 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
               modeller,
               beanManager,
               placeManager,
-              columnsPage);
+              columnsPage,
+              alertsButtonMenuItemBuilder);
         this.graphService = graphService;
         this.moduleService = moduleService;
         this.saveInProgressEvent = saveInProgressEvent;
@@ -404,6 +407,7 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                 .addNewTopLevelMenu(getRadarMenuItem())
                 .addNewTopLevelMenu(getRegisteredDocumentsMenuItem())
                 .addNewTopLevelMenu(getVersionManagerMenuItem())
+                .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build())
                 .build();
     }
 

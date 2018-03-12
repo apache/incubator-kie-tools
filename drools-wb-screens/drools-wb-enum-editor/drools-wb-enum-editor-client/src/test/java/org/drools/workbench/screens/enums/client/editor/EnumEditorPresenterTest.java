@@ -33,6 +33,7 @@ import org.drools.workbench.screens.enums.service.EnumService;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
@@ -110,6 +111,9 @@ public class EnumEditorPresenterTest {
     @Mock
     private ValidationPopup validationPopup;
 
+    @Mock
+    private AlertsButtonMenuItemBuilder mockAlertsButtonMenuItemBuilder;
+
     @GwtMock
     private ViewDRLSourceWidget sourceWidget;
 
@@ -179,6 +183,7 @@ public class EnumEditorPresenterTest {
                 this.notification = mockNotification;
                 this.workbenchContext = mockWorkbenchContext;
                 this.saveAndRenameCommandBuilder = mockSaveAndRenameCommandBuilder;
+                this.alertsButtonMenuItemBuilder = mockAlertsButtonMenuItemBuilder;
             }
 
             @Override

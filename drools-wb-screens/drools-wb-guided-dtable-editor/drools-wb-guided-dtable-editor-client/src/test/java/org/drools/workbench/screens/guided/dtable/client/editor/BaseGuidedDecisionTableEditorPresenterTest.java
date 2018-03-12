@@ -93,7 +93,8 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
                                                       beanManager,
                                                       placeManager,
                                                       columnsPage,
-                                                      saveAndRenameCommandBuilder) {
+                                                      saveAndRenameCommandBuilder,
+                                                      alertsButtonMenuItemBuilder) {
             @Override
             protected Command getSaveAndRenameCommand() {
                 return mock(Command.class);

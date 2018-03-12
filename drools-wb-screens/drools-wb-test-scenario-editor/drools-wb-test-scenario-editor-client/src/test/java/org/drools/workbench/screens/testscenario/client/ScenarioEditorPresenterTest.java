@@ -39,6 +39,7 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.test.TestService;
+import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -72,6 +73,7 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.notNull;
@@ -144,6 +146,12 @@ public class ScenarioEditorPresenterTest {
     @Mock
     private AuditPage auditPage;
 
+    @Mock
+    protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
+
+    @Mock
+    protected MenuItem alertsButtonMenuItem;
+
     private CallerMock<ScenarioTestEditorService> fakeService;
     private ScenarioEditorPresenter editor;
     private Scenario scenario;
@@ -174,6 +182,7 @@ public class ScenarioEditorPresenterTest {
                 projectController = ScenarioEditorPresenterTest.this.projectController;
                 workbenchContext = ScenarioEditorPresenterTest.this.workbenchContext;
                 versionRecordManager = ScenarioEditorPresenterTest.this.versionRecordManager;
+                alertsButtonMenuItemBuilder = ScenarioEditorPresenterTest.this.alertsButtonMenuItemBuilder;
             }
 
             @Override
@@ -209,6 +218,8 @@ public class ScenarioEditorPresenterTest {
                                                                 any(HasImports.class),
                                                                 any(PackageDataModelOracleBaselinePayload.class))
         ).thenReturn(dmo);
+
+        when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
     }
 
     @Test
@@ -364,6 +375,7 @@ public class ScenarioEditorPresenterTest {
         verify(fileMenuBuilder).addRename(any(Command.class));
         verify(fileMenuBuilder).addDelete(any(Path.class),
                                           any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 
     @Test
@@ -384,6 +396,7 @@ public class ScenarioEditorPresenterTest {
         verify(fileMenuBuilder,
                never()).addDelete(any(Path.class),
                                   any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 
     @Test

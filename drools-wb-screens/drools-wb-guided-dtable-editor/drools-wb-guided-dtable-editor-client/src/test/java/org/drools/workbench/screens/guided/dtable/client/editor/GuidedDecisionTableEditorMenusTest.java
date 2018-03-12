@@ -41,6 +41,7 @@ import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEdi
 import org.guvnor.common.services.project.categories.Decision;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -99,6 +100,7 @@ import org.uberfire.workbench.model.menu.Menus;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -248,6 +250,12 @@ public class GuidedDecisionTableEditorMenusTest {
     @Mock
     private DecisionTablePopoverUtils popoverUtils;
 
+    @Mock
+    protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
+
+    @Mock
+    protected MenuItem alertsButtonMenuItem;
+
     private GuidedDecisionTableEditorPresenter presenter;
     private GuidedDTableResourceType resourceType = new GuidedDTableResourceType(new Decision());
 
@@ -282,6 +290,7 @@ public class GuidedDecisionTableEditorMenusTest {
 
     @Before
     public void setup() {
+        when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
         when(modeller.getView()).thenReturn(modellerView);
         when(versionRecordManager.newSaveMenuItem(any(Command.class))).thenReturn(saveMenuItem);
         when(versionRecordManager.buildMenu()).thenReturn(versionManagerMenuItem);
@@ -336,7 +345,8 @@ public class GuidedDecisionTableEditorMenusTest {
                                                                                                   beanManager,
                                                                                                   placeManager,
                                                                                                   columnsPage,
-                                                                                                  saveAndRenameCommandBuilder) {
+                                                                                                  saveAndRenameCommandBuilder,
+                                                                                                  alertsButtonMenuItemBuilder) {
             @Override
             protected Command getSaveAndRenameCommand() {
                 return mock(Command.class);

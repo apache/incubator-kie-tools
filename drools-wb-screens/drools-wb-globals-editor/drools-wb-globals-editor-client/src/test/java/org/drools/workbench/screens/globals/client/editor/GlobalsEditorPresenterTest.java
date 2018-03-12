@@ -31,6 +31,7 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
+import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -111,10 +112,17 @@ public class GlobalsEditorPresenterTest {
     @Mock
     private AssetUpdateValidator assetUpdateValidator;
 
+    @Mock
+    private AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
+
+    @Mock
+    protected MenuItem alertsButtonMenuItem;
+
     private GlobalsEditorPresenter presenter;
 
     @Before
     public void setUp() {
+        when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
         presenter = new GlobalsEditorPresenter(view) {
             {
                 kieView = GlobalsEditorPresenterTest.this.kieView;
@@ -130,6 +138,7 @@ public class GlobalsEditorPresenterTest {
                 workbenchContext = GlobalsEditorPresenterTest.this.workbenchContext;
                 versionRecordManager = GlobalsEditorPresenterTest.this.versionRecordManager;
                 assetUpdateValidator = GlobalsEditorPresenterTest.this.assetUpdateValidator;
+                alertsButtonMenuItemBuilder = GlobalsEditorPresenterTest.this.alertsButtonMenuItemBuilder;
             }
 
             @Override
@@ -238,6 +247,7 @@ public class GlobalsEditorPresenterTest {
                                         any(AssetUpdateValidator.class));
         verify(fileMenuBuilder).addRename(any(Command.class));
         verify(fileMenuBuilder).addDelete(any(Command.class));
+        verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 
     @Test
@@ -257,5 +267,6 @@ public class GlobalsEditorPresenterTest {
                                   any(AssetUpdateValidator.class));
         verify(fileMenuBuilder,
                never()).addDelete(any(Command.class));
+        verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 }

@@ -40,6 +40,7 @@ import org.guvnor.common.services.project.client.context.WorkspaceProjectContext
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
@@ -86,6 +87,7 @@ import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -241,6 +243,12 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
+    @Mock
+    protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
+
+    @Mock
+    protected MenuItem alertsButtonMenuItem;
+
     protected P presenter;
 
     @Before
@@ -278,6 +286,8 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
 
         when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(Optional.empty());
         when(workbenchContext.getActiveWorkspaceProject()).thenReturn(Optional.empty());
+
+        doReturn(alertsButtonMenuItem).when(alertsButtonMenuItemBuilder).build();
 
         presenter.init();
         presenter.setupMenuBar();

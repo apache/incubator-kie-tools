@@ -80,7 +80,8 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
                                                       beanManager,
                                                       placeManager,
                                                       columnsPage,
-                                                      saveAndRenameCommandBuilder) {
+                                                      saveAndRenameCommandBuilder,
+                                                      alertsButtonMenuItemBuilder) {
             {
                 workbenchContext = GuidedDecisionTableEditorPresenterTest.this.workbenchContext;
                 projectController = GuidedDecisionTableEditorPresenterTest.this.projectController;
@@ -117,6 +118,7 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
                times(1)).addNewTopLevelMenu(eq(radarMenuItem));
         verify(fileMenuBuilder,
                times(1)).addNewTopLevelMenu(eq(versionManagerMenuItem));
+        verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 
     @Test
@@ -138,6 +140,7 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
         verify(fileMenuBuilder,
                never()).addDelete(any(BasicFileMenuBuilder.PathProvider.class),
                                   eq(assetUpdateValidator));
+        verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 
     @Test

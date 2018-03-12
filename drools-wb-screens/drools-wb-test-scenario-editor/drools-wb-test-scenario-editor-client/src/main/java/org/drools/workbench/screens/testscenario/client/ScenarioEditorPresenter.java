@@ -266,7 +266,8 @@ public class ScenarioEditorPresenter
         fileMenuBuilder
                 .addNewTopLevelMenu(view.getRunScenarioMenuItem())
                 .addNewTopLevelMenu(view.getRunAllScenariosMenuItem())
-                .addNewTopLevelMenu(versionRecordManager.buildMenu());
+                .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
     }
 
     private void ifFixturesSizeZeroThenAddExecutionTrace() {

@@ -36,6 +36,7 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
+import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -126,6 +127,12 @@ public class DecisionTableXLSEditorPresenterTest {
     @Mock
     WorkspaceProjectContext workbenchContext;
 
+    @Mock
+    AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
+
+    @Mock
+    MenuItem alertsButtonMenuItem;
+
     DecisionTableXLSEditorPresenter presenter;
 
     @Before
@@ -138,6 +145,8 @@ public class DecisionTableXLSEditorPresenterTest {
         when(decisionTableXLSXResourceType.getSuffix()).thenReturn("XLSX");
         when(decisionTableXLSXResourceType.accept(XLSPath)).thenReturn(false);
         when(decisionTableXLSXResourceType.accept(XLSXPath)).thenReturn(true);
+
+        when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
 
         presenter = spy(new DecisionTableXLSEditorPresenter(view,
                                                             decisionTableXLSResourceType,
@@ -155,6 +164,7 @@ public class DecisionTableXLSEditorPresenterTest {
                 projectController = DecisionTableXLSEditorPresenterTest.this.projectController;
                 workbenchContext = DecisionTableXLSEditorPresenterTest.this.workbenchContext;
                 versionRecordManager = DecisionTableXLSEditorPresenterTest.this.versionRecordManager;
+                alertsButtonMenuItemBuilder = DecisionTableXLSEditorPresenterTest.this.alertsButtonMenuItemBuilder;
             }
 
             @Override
@@ -248,6 +258,7 @@ public class DecisionTableXLSEditorPresenterTest {
                                           any(AssetUpdateValidator.class));
         verify(fileMenuBuilder).addDelete(any(Path.class),
                                           any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 
     @Test
@@ -266,6 +277,7 @@ public class DecisionTableXLSEditorPresenterTest {
         verify(fileMenuBuilder,
                never()).addDelete(any(Path.class),
                                   any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 
     private class ServiceMock

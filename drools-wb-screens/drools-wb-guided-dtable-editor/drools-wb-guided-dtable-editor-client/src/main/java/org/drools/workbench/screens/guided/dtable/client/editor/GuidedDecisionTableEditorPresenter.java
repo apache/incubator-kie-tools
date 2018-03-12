@@ -43,6 +43,7 @@ import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEdito
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -93,7 +94,8 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
                                               final SyncBeanManager beanManager,
                                               final PlaceManager placeManager,
                                               final ColumnsPage columnsPage,
-                                              final SaveAndRenameCommandBuilder<GuidedDecisionTable52, Metadata> saveAndRenameCommandBuilder) {
+                                              final SaveAndRenameCommandBuilder<GuidedDecisionTable52, Metadata> saveAndRenameCommandBuilder,
+                                              final AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder) {
         super(view,
               service,
               notification,
@@ -107,7 +109,8 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
               modeller,
               beanManager,
               placeManager,
-              columnsPage);
+              columnsPage,
+              alertsButtonMenuItemBuilder);
 
         this.saveAndRenameCommandBuilder = saveAndRenameCommandBuilder;
     }
@@ -224,6 +227,7 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
                 .addNewTopLevelMenu(getInsertMenuItem())
                 .addNewTopLevelMenu(getRadarMenuItem())
                 .addNewTopLevelMenu(getVersionManagerMenuItem())
+                .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build())
                 .build();
     }
 
