@@ -1270,11 +1270,24 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
             FileUtils.delete(gitDir,
                              FileUtils.RECURSIVE | FileUtils.RETRY);
             fsManager.remove(fileSystem.getName());
+            cleanupParentDir(gitDir);
             return true;
         } catch (java.io.IOException e) {
             throw new IOException("Failed to remove the git repository.",
                                   e);
         }
+    }
+
+    private void cleanupParentDir(File gitDir) throws java.io.IOException {
+        final File parentDir = gitDir.getParentFile();
+        if (parentDir.isDirectory() && parentDirIsEmpty(parentDir) && !parentDir.equals(getGitRepoContainerDir())) {
+            FileUtils.delete(parentDir,
+                             FileUtils.RECURSIVE | FileUtils.RETRY);
+        }
+    }
+
+    private boolean parentDirIsEmpty(File parentDir) {
+        return parentDir.list().length == 0;
     }
 
     public void deleteAsset(final JGitPathImpl path,

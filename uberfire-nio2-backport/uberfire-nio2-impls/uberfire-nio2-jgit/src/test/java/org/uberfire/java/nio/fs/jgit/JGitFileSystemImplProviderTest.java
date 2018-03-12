@@ -57,6 +57,7 @@ import org.uberfire.java.nio.file.FileSystemNotFoundException;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.NotDirectoryException;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.Paths;
 import org.uberfire.java.nio.file.StandardWatchEventKind;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchKey;
@@ -78,11 +79,9 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
-import static org.junit.Assert.assertNotEquals;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.spy;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 import static org.uberfire.java.nio.file.StandardDeleteOption.NON_EMPTY_DIRECTORIES;
 
 public class JGitFileSystemImplProviderTest extends AbstractTestInfra {
@@ -877,6 +876,40 @@ public class JGitFileSystemImplProviderTest extends AbstractTestInfra {
     }
 
     @Test
+    public void testDeleteShouldRemoveEmptyParentDir() throws IOException {
+
+        final URI doraRepo = URI.create("git://parentDir/dora-repo");
+        FileSystem doraFS = provider.newFileSystem(doraRepo,
+                                                   EMPTY_ENV);
+
+        final File doraRepoDir = ((JGitFileSystemProxy) doraFS).getGit().getRepository().getDirectory();
+
+        final File parentDir = doraRepoDir.getParentFile();
+        final File gitProviderDir = provider.getGitRepoContainerDir();
+
+        final URI doraRepo1 = URI.create("git://parentDir/dora-repo1");
+        FileSystem doraFS1 = provider.newFileSystem(doraRepo1,
+                                                    EMPTY_ENV);
+        final File dora1RepoDir = ((JGitFileSystemProxy) doraFS1).getGit().getRepository().getDirectory();
+
+        final File parentDir1 = doraRepoDir.getParentFile();
+
+
+        assertEquals(parentDir, parentDir1);
+
+        provider.delete(doraFS.getPath(null));
+        assertFalse(doraRepoDir.exists());
+        assertTrue(parentDir.exists());
+        assertTrue(gitProviderDir.exists());
+
+
+        provider.delete(doraFS1.getPath(null));
+        assertFalse(dora1RepoDir.exists());
+        assertFalse(parentDir1.exists());
+        assertTrue(gitProviderDir.exists());
+    }
+
+    @Test
     public void testDelete() throws IOException {
         final URI newRepo = URI.create("git://delete1-test-repo");
         provider.newFileSystem(newRepo,
@@ -1064,7 +1097,7 @@ public class JGitFileSystemImplProviderTest extends AbstractTestInfra {
     }
 
     @Test
-    public void testCreateDirectory()  {
+    public void testCreateDirectory() {
         final URI newRepo = URI.create("git://xcreatedir-test-repo");
         provider.newFileSystem(newRepo,
                                EMPTY_ENV);
