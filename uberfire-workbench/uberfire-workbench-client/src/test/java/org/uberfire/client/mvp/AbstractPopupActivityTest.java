@@ -83,6 +83,11 @@ public class AbstractPopupActivityTest extends AbstractActivityTest {
         return popupActivity;
     }
 
+    @Override
+    public PlaceManager getPlaceManager() {
+        return placeManager;
+    }
+
     @Test
     public void shouldShowViewInOnOpen() throws Exception {
         popupActivity.onStartup(popupPlace);

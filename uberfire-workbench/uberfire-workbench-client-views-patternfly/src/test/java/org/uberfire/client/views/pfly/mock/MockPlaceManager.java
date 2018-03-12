@@ -17,6 +17,7 @@
 package org.uberfire.client.views.pfly.mock;
 
 import java.util.Collection;
+import java.util.List;
 import javax.enterprise.inject.Alternative;
 
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -157,18 +158,29 @@ public class MockPlaceManager implements PlaceManager {
     }
 
     @Override
-    public void registerOnOpenCallback(PlaceRequest place,
-                                       Command command) {
+    public void registerOnOpenCallback(final PlaceRequest place,
+                                       final Command callback) {
         throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public void unregisterOnOpenCallback(PlaceRequest place) {
+    public void unregisterOnOpenCallbacks(final PlaceRequest place) {
         throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public void executeOnOpenCallback(PlaceRequest place) {
+    public void registerOnCloseCallback(final PlaceRequest place,
+                                        final Command callback) {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
+
+    @Override
+    public void unregisterOnCloseCallbacks(final PlaceRequest place) {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
+
+    @Override
+    public void executeOnOpenCallbacks(final PlaceRequest place) {
         throw new UnsupportedOperationException("Not implemented.");
     }
 
@@ -183,7 +195,12 @@ public class MockPlaceManager implements PlaceManager {
     }
 
     @Override
-    public Command getOpenCallback(PlaceRequest place) {
+    public List<Command> getOnOpenCallbacks(final PlaceRequest place) {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
+
+    @Override
+    public List<Command> getOnCloseCallbacks(final PlaceRequest place) {
         throw new UnsupportedOperationException("Not implemented.");
     }
 }

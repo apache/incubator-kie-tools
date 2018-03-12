@@ -42,6 +42,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.HTMLElement;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
@@ -52,11 +53,13 @@ import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
+import org.jboss.errai.common.client.api.elemental2.IsElement;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.container.IOCResolutionException;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.menu.AuthFilterMenuVisitor;
-import org.uberfire.client.util.Layouts;
 import org.uberfire.client.util.CSSLocatorsUtils;
+import org.uberfire.client.util.Layouts;
 import org.uberfire.client.views.pfly.maximize.MaximizeToggleButton;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.panels.MaximizeToggleButtonPresenter;
@@ -513,6 +516,9 @@ public class ListBarWidgetImpl
         final Object result = item.build();
         if (result instanceof Widget) {
             return (Widget) result;
+        }
+        if (result instanceof HTMLElement) {
+            return ElementWrapperWidget.getWidget((HTMLElement) result);
         }
         return null;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,29 +16,16 @@
 
 package org.guvnor.messageconsole.client.console.resources.i18n;
 
-import com.google.gwt.i18n.client.Messages;
+import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 
-public interface MessageConsoleConstants extends Messages {
+public class AlertsConstants {
 
-    String Line();
+    @TranslationKey(defaultValue = "")
+    public static final String Alerts = "Alerts";
 
-    String Column();
+    @TranslationKey(defaultValue = "")
+    public static final String ViewAlerts = "ViewAlerts";
 
-    String Text();
-
-    String Level();
-
-    String FileName();
-
-    String RefreshMessageConsole();
-
-    String ClearMessageConsole();
-
-    String Refreshing();
-
-    String ErrorLevelTitle();
-
-    String WarningLevelTitle();
-
-    String InfoLevelTitle();
+    @TranslationKey(defaultValue = "")
+    public static final String HideAlerts = "HideAlerts";
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,31 +14,13 @@
  * limitations under the License.
  */
 
-package org.guvnor.messageconsole.client.console.resources.i18n;
+package org.guvnor.messageconsole.client.console;
 
-import com.google.gwt.i18n.client.Messages;
+import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.jboss.errai.ui.shared.api.annotations.Bundle;
 
-public interface MessageConsoleConstants extends Messages {
+@EntryPoint
+@Bundle("resources/i18n/AlertsConstants.properties")
+public class AlertsEntryPoint {
 
-    String Line();
-
-    String Column();
-
-    String Text();
-
-    String Level();
-
-    String FileName();
-
-    String RefreshMessageConsole();
-
-    String ClearMessageConsole();
-
-    String Refreshing();
-
-    String ErrorLevelTitle();
-
-    String WarningLevelTitle();
-
-    String InfoLevelTitle();
 }

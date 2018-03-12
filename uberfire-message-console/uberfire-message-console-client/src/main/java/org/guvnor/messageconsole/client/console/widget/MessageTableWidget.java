@@ -374,5 +374,9 @@ public class MessageTableWidget<T> extends Composite implements HasData<T> {
     public void setVisibleRange(final Range range) {
         dataGrid.setVisibleRange(range);
     }
+
+    public void setToolbarVisible(final boolean visible) {
+        this.dataGrid.setToolBarVisible(visible);
+    }
 }
 

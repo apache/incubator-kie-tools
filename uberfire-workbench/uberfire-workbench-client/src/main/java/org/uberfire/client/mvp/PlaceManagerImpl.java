@@ -92,7 +92,8 @@ public class PlaceManagerImpl
      */
     private final Map<PlaceRequest, CustomPanelDefinition> customPanels = new HashMap<>();
 
-    private final Map<PlaceRequest, Command> onOpenCallbacks = new HashMap<PlaceRequest, Command>();
+    private final Map<PlaceRequest, List<Command>> onOpenCallbacks = new HashMap<>();
+    private final Map<PlaceRequest, List<Command>> onCloseCallbacks = new HashMap<>();
     /**
      * Splash screens that have intercepted some other activity which is currently part of the workbench. Each of these
      * splash screens may or may not be visible (they manage their own "show next time" preferences).
@@ -568,20 +569,52 @@ public class PlaceManagerImpl
 
     @Override
     public void registerOnOpenCallback(final PlaceRequest place,
-                                       final Command command) {
+                                       final Command callback) {
         checkNotNull("place",
                      place);
-        checkNotNull("command",
-                     command);
-        this.onOpenCallbacks.put(place,
-                                 command);
+        checkNotNull("callback",
+                     callback);
+
+        List<Command> callbacks = getOnOpenCallbacks(place);
+        if (callbacks == null) {
+            callbacks = new ArrayList<>();
+            this.onOpenCallbacks.put(place,
+                                     callbacks);
+        }
+
+        callbacks.add(callback);
     }
 
     @Override
-    public void unregisterOnOpenCallback(final PlaceRequest place) {
+    public void unregisterOnOpenCallbacks(final PlaceRequest place) {
         checkNotNull("place",
                      place);
         this.onOpenCallbacks.remove(place);
+    }
+
+    @Override
+    public void registerOnCloseCallback(final PlaceRequest place,
+                                        final Command callback) {
+        checkNotNull("place",
+                     place);
+        checkNotNull("callback",
+                     callback);
+
+        List<Command> callbacks = getOnCloseCallbacks(place);
+        if (callbacks == null) {
+            callbacks = new ArrayList<>();
+            this.onCloseCallbacks.put(place,
+                                     callbacks);
+        }
+
+        callbacks.add(callback);
+    }
+
+    @Override
+    public void unregisterOnCloseCallbacks(final PlaceRequest place) {
+        checkNotNull("place",
+                     place);
+        this.onCloseCallbacks.remove(place);
     }
 
     /**
@@ -1044,8 +1077,13 @@ public class PlaceManagerImpl
     }
 
     @Override
-    public Command getOpenCallback(PlaceRequest place) {
+    public List<Command> getOnOpenCallbacks(final PlaceRequest place) {
         return this.onOpenCallbacks.get(place);
+    }
+
+    @Override
+    public List<Command> getOnCloseCallbacks(final PlaceRequest place) {
+        return this.onCloseCallbacks.get(place);
     }
 
     /**

@@ -20,6 +20,7 @@ import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -1300,6 +1301,64 @@ public class PlaceManagerTest {
                              kansasActivity);
         verifyPlaceNotClosed(emeraldCityPlace,
                              emeraldCityActivity);
+    }
+
+    @Test
+    public void testAddOnOpenCallbacks() {
+        final Command onOpenCallback1 = mock(Command.class);
+        final Command onOpenCallback2 = mock(Command.class);
+
+        final DefaultPlaceRequest myPlace = new DefaultPlaceRequest("my-place");
+        placeManager.registerOnOpenCallback(myPlace,
+                                            onOpenCallback1);
+        final List<Command> onOpenCallbacks1 = placeManager.getOnOpenCallbacks(myPlace);
+        assertEquals(1,
+                     onOpenCallbacks1.size());
+        assertSame(onOpenCallback1,
+                   onOpenCallbacks1.get(0));
+
+        placeManager.registerOnOpenCallback(myPlace,
+                                            onOpenCallback2);
+        final List<Command> onOpenCallbacks2 = placeManager.getOnOpenCallbacks(myPlace);
+        assertEquals(2,
+                     onOpenCallbacks2.size());
+        assertSame(onOpenCallback1,
+                   onOpenCallbacks2.get(0));
+        assertSame(onOpenCallback2,
+                   onOpenCallbacks2.get(1));
+
+        final DefaultPlaceRequest myOtherPlace = new DefaultPlaceRequest("my-other-place");
+        final List<Command> onOpenCallbacks3 = placeManager.getOnOpenCallbacks(myOtherPlace);
+        assertNull(onOpenCallbacks3);
+    }
+
+    @Test
+    public void testAddOnCloseCallbacks() {
+        final Command onCloseCallback1 = mock(Command.class);
+        final Command onCloseCallback2 = mock(Command.class);
+
+        final DefaultPlaceRequest myPlace = new DefaultPlaceRequest("my-place");
+        placeManager.registerOnCloseCallback(myPlace,
+                                            onCloseCallback1);
+        final List<Command> onCloseCallbacks1 = placeManager.getOnCloseCallbacks(myPlace);
+        assertEquals(1,
+                     onCloseCallbacks1.size());
+        assertSame(onCloseCallback1,
+                   onCloseCallbacks1.get(0));
+
+        placeManager.registerOnCloseCallback(myPlace,
+                                            onCloseCallback2);
+        final List<Command> onCloseCallbacks2 = placeManager.getOnCloseCallbacks(myPlace);
+        assertEquals(2,
+                     onCloseCallbacks2.size());
+        assertSame(onCloseCallback1,
+                   onCloseCallbacks2.get(0));
+        assertSame(onCloseCallback2,
+                   onCloseCallbacks2.get(1));
+
+        final DefaultPlaceRequest myOtherPlace = new DefaultPlaceRequest("my-other-place");
+        final List<Command> onCloseCallbacks3 = placeManager.getOnCloseCallbacks(myOtherPlace);
+        assertNull(onCloseCallbacks3);
     }
 
     private WorkbenchScreenActivity createWorkbenchScreenActivity(final PlaceRequest emeraldCityPlace) {

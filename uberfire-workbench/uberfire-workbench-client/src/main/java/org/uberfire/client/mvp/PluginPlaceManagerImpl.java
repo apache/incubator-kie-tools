@@ -16,6 +16,7 @@
 package org.uberfire.client.mvp;
 
 import java.util.Collection;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -206,12 +207,23 @@ public class PluginPlaceManagerImpl implements PlaceManager {
 
     @Override
     public void registerOnOpenCallback(final PlaceRequest place,
-                                       final Command command) {
+                                       final Command callback) {
         fail();
     }
 
     @Override
-    public void unregisterOnOpenCallback(final PlaceRequest place) {
+    public void unregisterOnOpenCallbacks(final PlaceRequest place) {
+        fail();
+    }
+
+    @Override
+    public void registerOnCloseCallback(final PlaceRequest place,
+                                        final Command callback) {
+        fail();
+    }
+
+    @Override
+    public void unregisterOnCloseCallbacks(final PlaceRequest place) {
         fail();
     }
 
@@ -222,7 +234,13 @@ public class PluginPlaceManagerImpl implements PlaceManager {
     }
 
     @Override
-    public Command getOpenCallback(PlaceRequest place) {
+    public List<Command> getOnOpenCallbacks(final PlaceRequest place) {
+        fail();
+        return null;
+    }
+
+    @Override
+    public List<Command> getOnCloseCallbacks(final PlaceRequest place) {
         fail();
         return null;
     }

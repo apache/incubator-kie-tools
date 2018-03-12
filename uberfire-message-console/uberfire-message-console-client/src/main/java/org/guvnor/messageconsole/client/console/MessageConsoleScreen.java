@@ -49,8 +49,10 @@ import org.uberfire.workbench.model.menu.Menus;
 
 @ApplicationScoped
 //The identifier has been preserved from kie-wb-common so existing .niogit System repositories are not broken
-@WorkbenchScreen(identifier = "org.kie.workbench.common.screens.messageconsole.MessageConsole")
+@WorkbenchScreen(identifier = MessageConsoleScreen.ALERTS)
 public class MessageConsoleScreen implements RefreshMenuBuilder.SupportsRefresh {
+
+    public static final String ALERTS = "org.kie.workbench.common.screens.messageconsole.MessageConsole";
 
     @Inject
     private Caller<BuildService> buildService;
@@ -121,7 +123,7 @@ public class MessageConsoleScreen implements RefreshMenuBuilder.SupportsRefresh 
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return MessageConsoleResources.CONSTANTS.MessageConsole();
+        return view.getTitle();
     }
 
     @WorkbenchPartView

@@ -19,6 +19,8 @@ package org.uberfire.client.mvp;
 import org.junit.Test;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
+import static org.mockito.Mockito.verify;
+
 /**
  * Base class for testing Activity implementations. All Activity unit tests should extend this one; it tests the Activity contract.
  */
@@ -28,6 +30,11 @@ public abstract class AbstractActivityTest {
      * Subclasses should implement this method to return the object they are unit testing.
      */
     public abstract Activity getActivityUnderTest();
+
+    /**
+     * Subclasses should implement this method to return the PlaceManager they are using for checking purposes.
+     */
+    public abstract PlaceManager getPlaceManager();
 
     @Test(expected = IllegalStateException.class)
     public void onOpenShouldFailWhenActivityNotStarted() {
@@ -39,6 +46,7 @@ public abstract class AbstractActivityTest {
         Activity a = getActivityUnderTest();
         a.onStartup(new DefaultPlaceRequest("testplace"));
         a.onOpen();
+        verify(getPlaceManager()).executeOnOpenCallbacks(a.getPlace());
     }
 
     @Test(expected = IllegalStateException.class)
@@ -62,6 +70,7 @@ public abstract class AbstractActivityTest {
         a.onStartup(new DefaultPlaceRequest("testplace"));
         a.onOpen();
         a.onClose();
+        verify(getPlaceManager()).executeOnCloseCallbacks(a.getPlace());
     }
 
     @Test(expected = IllegalStateException.class)

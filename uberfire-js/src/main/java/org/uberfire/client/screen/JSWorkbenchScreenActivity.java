@@ -79,6 +79,7 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
     @Override
     public void onClose() {
         nativePlugin.onClose();
+        placeManager.executeOnCloseCallbacks(place);
     }
 
     @Override
@@ -133,16 +134,13 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
 
     @Override
     public void onOpen() {
-        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-            @Override
-            public void execute() {
-                if (nativePlugin.getType() != null && nativePlugin.getType().equalsIgnoreCase("angularjs")) {
-                    bind();
-                }
-
-                nativePlugin.onOpen();
-                placeManager.executeOnOpenCallback(place);
+        Scheduler.get().scheduleDeferred(() -> {
+            if (nativePlugin.getType() != null && nativePlugin.getType().equalsIgnoreCase("angularjs")) {
+                bind();
             }
+
+            nativePlugin.onOpen();
+            placeManager.executeOnOpenCallbacks(place);
         });
     }
 

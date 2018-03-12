@@ -81,4 +81,9 @@ public class AbstractPerspectiveActivityTest extends AbstractActivityTest {
     public Activity getActivityUnderTest() {
         return activity;
     }
+
+    @Override
+    public PlaceManager getPlaceManager() {
+        return placeManager;
+    }
 }

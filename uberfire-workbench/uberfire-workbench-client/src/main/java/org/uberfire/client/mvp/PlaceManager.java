@@ -17,6 +17,7 @@
 package org.uberfire.client.mvp;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import jsinterop.annotations.JsIgnore;
@@ -126,17 +127,29 @@ public interface PlaceManager {
     @JsMethod(name = "getStatusByPlaceRequest")
     PlaceStatus getStatus(final PlaceRequest place);
 
-    default void executeOnOpenCallback(final PlaceRequest place) {
+    default void executeOnOpenCallbacks(final PlaceRequest place) {
         checkNotNull("place",
                      place);
 
-        final Command callback = getOpenCallback(place);
-        if (callback != null) {
-            callback.execute();
+        final List<Command> callbacks = getOnOpenCallbacks(place);
+        if (callbacks != null) {
+            callbacks.forEach(Command::execute);
         }
     }
 
-    public Command getOpenCallback(PlaceRequest place);
+    default void executeOnCloseCallbacks(final PlaceRequest place) {
+        checkNotNull("place",
+                     place);
+
+        final List<Command> callbacks = getOnCloseCallbacks(place);
+        if (callbacks != null) {
+            callbacks.forEach(Command::execute);
+        }
+    }
+
+    List<Command> getOnOpenCallbacks(PlaceRequest place);
+
+    List<Command> getOnCloseCallbacks(PlaceRequest place);
 
     @JsMethod(name = "closePlaceById")
     void closePlace(final String id);
@@ -158,10 +171,15 @@ public interface PlaceManager {
 
     boolean closeAllPlacesOrNothing();
 
-    void registerOnOpenCallback(final PlaceRequest place,
-                                final Command command);
+    void registerOnOpenCallback(PlaceRequest place,
+                                Command callback);
 
-    void unregisterOnOpenCallback(final PlaceRequest place);
+    void unregisterOnOpenCallbacks(PlaceRequest place);
+
+    void registerOnCloseCallback(PlaceRequest place,
+                                 Command callback);
+
+    void unregisterOnCloseCallbacks(PlaceRequest place);
 
     @JsIgnore
     Collection<SplashScreenActivity> getActiveSplashScreens();
