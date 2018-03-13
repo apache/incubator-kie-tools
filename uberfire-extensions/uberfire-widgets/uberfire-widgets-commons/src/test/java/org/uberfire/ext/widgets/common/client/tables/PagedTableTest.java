@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.widgets.common.client.tables;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -71,6 +72,36 @@ public class PagedTableTest {
         pagedTable.loadPageSizePreferences();
         verify(pagedTable.dataGrid,
                times(1)).setHeight(eq(EXPECTED_HEIGHT_PX + "px"));
+    }
+
+    @Test
+    public void testDataGridSetHeightOnColumnChange() throws Exception {
+        PagedTable pagedTable = new PagedTable(10, null, null, false, false, false, false);
+        pagedTable.dataGrid = spy(pagedTable.dataGrid);
+        doAnswer(invocation -> {
+            Scheduler.ScheduledCommand cmd = (Scheduler.ScheduledCommand) invocation.getArguments()[0];
+            cmd.execute();
+            return null;
+        }).when(Scheduler.get()).scheduleDeferred(any());
+
+        pagedTable.getColumnPicker().adjustColumnWidths();
+
+        verify(pagedTable.dataGrid).setHeight(anyString());
+    }
+
+    @Test
+    public void testDataGridFixedHeightOnColumnChange() throws Exception {
+        PagedTable pagedTable = new PagedTable(10, null, null, false, false, false, true);
+        pagedTable.dataGrid = spy(pagedTable.dataGrid);
+        doAnswer(invocation -> {
+            Scheduler.ScheduledCommand cmd = (Scheduler.ScheduledCommand) invocation.getArguments()[0];
+            cmd.execute();
+            return null;
+        }).when(Scheduler.get()).scheduleDeferred(any());
+
+        pagedTable.getColumnPicker().adjustColumnWidths();
+
+        verify(pagedTable.dataGrid, never()).setHeight(anyString());
     }
 
     @Test

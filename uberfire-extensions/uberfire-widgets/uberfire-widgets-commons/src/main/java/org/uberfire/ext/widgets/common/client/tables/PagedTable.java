@@ -29,6 +29,7 @@ import org.gwtbootstrap3.client.ui.Column;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.uberfire.ext.services.shared.preferences.GridGlobalPreferences;
 import org.uberfire.ext.services.shared.preferences.GridPreferencesStore;
+import org.uberfire.ext.widgets.table.client.ColumnChangedHandler;
 import org.uberfire.ext.widgets.table.client.PagedTableHelper;
 import org.uberfire.ext.widgets.table.client.UberfireSimplePager;
 
@@ -141,6 +142,19 @@ public class PagedTable<T>
             dataGrid.addRowCountChangeHandler(e -> Scheduler.get().scheduleDeferred(() -> setTableHeight()));
             dataGrid.getElement().getStyle().setMarginBottom(0,
                                                              Style.Unit.PX);
+            if (columnPicker != null) {
+                columnPicker.addColumnChangedHandler(new ColumnChangedHandler() {
+                    @Override
+                    public void beforeColumnChanged() {
+
+                    }
+
+                    @Override
+                    public void afterColumnChanged() {
+                        Scheduler.get().scheduleDeferred(() -> setTableHeight());
+                    }
+                });
+            }
         }
     }
 
