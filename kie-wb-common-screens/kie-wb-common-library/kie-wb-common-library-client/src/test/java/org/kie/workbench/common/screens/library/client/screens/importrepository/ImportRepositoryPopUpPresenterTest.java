@@ -16,19 +16,28 @@
 
 package org.kie.workbench.common.screens.library.client.screens.importrepository;
 
+import java.util.Optional;
+
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
 import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.api.LibraryService;
-import org.kie.workbench.common.screens.library.client.screens.samples.ImportProjectsSetupEvent;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
-import org.uberfire.mocks.EventSourceMock;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ImportRepositoryPopUpPresenterTest {
@@ -41,20 +50,26 @@ public class ImportRepositoryPopUpPresenterTest {
 
     @Mock
     private LibraryService libraryService;
-    private Caller<LibraryService> libraryServiceCaller;
 
     @Mock
-    private EventSourceMock<ImportProjectsSetupEvent> importProjectsSetupEvent;
+    private WorkspaceProjectContext projectContext;
+
+    private Caller<LibraryService> libraryServiceCaller;
+
+    private OrganizationalUnit ou;
 
     private ImportRepositoryPopUpPresenter presenter;
 
     @Before
     public void setup() {
+        ou = new OrganizationalUnitImpl("test-ou", "test-admin", "test-id");
+        when(projectContext.getActiveOrganizationalUnit()).thenReturn(Optional.of(ou));
+
         libraryServiceCaller = new CallerMock<>(libraryService);
         presenter = new ImportRepositoryPopUpPresenter(view,
                                                        libraryPlaces,
-                                                       libraryServiceCaller,
-                                                       importProjectsSetupEvent);
+                                                       projectContext,
+                                                       libraryServiceCaller);
     }
 
     @Test
@@ -73,21 +88,19 @@ public class ImportRepositoryPopUpPresenterTest {
 
     @Test
     public void importRepositoryTest() {
-        doReturn("repoUrl").when(view).getRepositoryURL();
+        String repoUrl = "repoUrl";
+        doReturn(repoUrl).when(view).getRepositoryURL();
 
         presenter.importRepository();
 
         verify(view).hideBusyIndicator();
         verify(view).hide();
-        verify(libraryPlaces).goToImportProjects(null);
-        verify(importProjectsSetupEvent).fire(any());
+        verify(libraryService).importProject(eq(ou), eq(repoUrl), eq(null), eq(null));
     }
 
     @Test
     public void importInvalidRepositoryTest() {
-        doThrow(new RuntimeException()).when(libraryService).getProjects(any(),
-                                                                         any(),
-                                                                         any());
+        doThrow(new RuntimeException()).when(libraryService).importProject(any(), any(), any(), any());
         doReturn("repoUrl").when(view).getRepositoryURL();
 
         presenter.importRepository();

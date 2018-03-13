@@ -24,7 +24,6 @@ import java.util.Set;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
-import org.jboss.errai.codegen.util.Str;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
@@ -33,6 +32,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
 import org.kie.workbench.common.screens.library.api.LibraryService;
+import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.common.TileWidget;
 import org.mockito.Mock;
@@ -45,15 +45,16 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.jgroups.util.Util.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ImportWorkspaceProjectsScreenTest {
+public class ExampleImportPresenterTest {
 
     @Mock
-    private ImportWorkspaceProjectsScreen.View view;
+    private ImportPresenter.View view;
 
     @Mock
     private LibraryPlaces libraryPlaces;
@@ -77,7 +78,7 @@ public class ImportWorkspaceProjectsScreenTest {
 
     private TileWidget tileWidget;
 
-    private ImportWorkspaceProjectsScreen importWorkspaceProjectsScreen;
+    private ImportPresenter importPresenter;
 
     @Before
     public void setup() {
@@ -87,70 +88,14 @@ public class ImportWorkspaceProjectsScreenTest {
 
         doReturn(tileWidget).when(tileWidgets).get();
 
-        importWorkspaceProjectsScreen = new ImportWorkspaceProjectsScreen(view,
-                                                                          libraryPlaces,
-                                                                          libraryServiceCaller,
-                                                                          tileWidgets,
-                                                                          examplesServiceCaller,
-                                                                          mock(WorkspaceProjectContext.class),
-                                                                          notificationEvent,
-                                                                          projectContextChangeEvent);
-    }
-
-    @Test
-    public void onStartupWithProjectsTest() {
-        Set<ExampleProject> projects = new HashSet<>();
-        projects.add(new ExampleProject(mock(Path.class),
-                                        "p1a",
-                                        "p1a description",
-                                        null));
-        projects.add(new ExampleProject(mock(Path.class),
-                                        "p3b",
-                                        "p3b description",
-                                        null));
-        projects.add(new ExampleProject(mock(Path.class),
-                                        "p2a",
-                                        "p2a description",
-                                        null));
-        doReturn(projects).when(libraryService).getProjects(anyString());
-
-        Map<String, String> params = new HashMap<>();
-        params.put("title",
-                   "Import Projects");
-        params.put("repositoryUrl",
-                   "repoUrl");
-
-        importWorkspaceProjectsScreen.onStartup(new DefaultPlaceRequest(LibraryPlaces.PROJECT_SCREEN,
-                                                                        params));
-
-        verify(view).init(importWorkspaceProjectsScreen);
-        verify(view).setTitle("Import Projects");
-        verify(view).showBusyIndicator(anyString());
-        verify(view).hideBusyIndicator();
-        verify(tileWidget,
-               times(3)).init(any(),
-                              any(),
-                              any(),
-                              any(),
-                              any());
-        verify(tileWidget).init(eq("p1a"),
-                                eq("p1a description"),
-                                any(),
-                                any(),
-                                any());
-        verify(tileWidget).init(eq("p3b"),
-                                eq("p3b description"),
-                                any(),
-                                any(),
-                                any());
-        verify(tileWidget).init(eq("p2a"),
-                                eq("p2a description"),
-                                any(),
-                                any(),
-                                any());
-        verify(view).clearProjects();
-        verify(view,
-               times(3)).addProject(any());
+        importPresenter = ImportPresenter.examplesImportPresenter(view,
+                                                                  libraryPlaces,
+                                                                  libraryServiceCaller,
+                                                                  tileWidgets,
+                                                                  examplesServiceCaller,
+                                                                  mock(WorkspaceProjectContext.class),
+                                                                  notificationEvent,
+                                                                  projectContextChangeEvent);
     }
 
     @Test
@@ -158,7 +103,7 @@ public class ImportWorkspaceProjectsScreenTest {
         Map<String, String> params = new HashMap<>();
         params.put("repositoryUrl",
                    "repoUrl");
-        importWorkspaceProjectsScreen.onStartup(new DefaultPlaceRequest(LibraryPlaces.PROJECT_SCREEN,
+        importPresenter.onStartup(new DefaultPlaceRequest(LibraryPlaces.PROJECT_SCREEN,
                                                                         params));
 
         verify(view).hideBusyIndicator();
@@ -181,14 +126,14 @@ public class ImportWorkspaceProjectsScreenTest {
                                         "p2a",
                                         "p2a description",
                                         null));
-        doReturn(projects).when(libraryService).getProjects(anyString());
+        doReturn(projects).when(libraryService).getExampleProjects();
 
         Map<String, String> params = new HashMap<>();
         params.put("repositoryUrl",
                    "repoUrl");
-        importWorkspaceProjectsScreen.onStartup(new DefaultPlaceRequest(LibraryPlaces.PROJECT_SCREEN,
+        importPresenter.onStartup(new DefaultPlaceRequest(LibraryPlaces.PROJECT_SCREEN,
                                                                         params));
-        final List<TileWidget> filteredProjects = importWorkspaceProjectsScreen.filterProjects("a");
+        final List<TileWidget> filteredProjects = importPresenter.filterProjects("a");
 
         assertEquals(2,
                      filteredProjects.size());
@@ -196,7 +141,7 @@ public class ImportWorkspaceProjectsScreenTest {
 
     @Test
     public void cancelTest() {
-        importWorkspaceProjectsScreen.cancel();
+        importPresenter.cancel();
 
         verify(libraryPlaces).goToLibrary();
     }

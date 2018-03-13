@@ -16,16 +16,15 @@
 
 package org.kie.workbench.common.screens.library.client.screens.importrepository;
 
-import java.util.Set;
 import javax.annotation.PostConstruct;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.screens.library.api.LibraryService;
-import org.kie.workbench.common.screens.library.client.screens.samples.ImportProjectsSetupEvent;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
@@ -57,21 +56,21 @@ public class ImportRepositoryPopUpPresenter {
 
     private View view;
 
-    private LibraryPlaces libraryPlaces;
-
     private Caller<LibraryService> libraryService;
 
-    private Event<ImportProjectsSetupEvent> importProjectsSetupEvent;
+    private LibraryPlaces libraryPlaces;
+
+    private WorkspaceProjectContext context;
 
     @Inject
     public ImportRepositoryPopUpPresenter(final View view,
                                           final LibraryPlaces libraryPlaces,
-                                          final Caller<LibraryService> libraryService,
-                                          final Event<ImportProjectsSetupEvent> importProjectsSetupEvent) {
+                                          final WorkspaceProjectContext context,
+                                          final Caller<LibraryService> libraryService) {
         this.view = view;
         this.libraryPlaces = libraryPlaces;
+        this.context = context;
         this.libraryService = libraryService;
-        this.importProjectsSetupEvent = importProjectsSetupEvent;
     }
 
     @PostConstruct
@@ -90,24 +89,22 @@ public class ImportRepositoryPopUpPresenter {
             return;
         }
 
+        OrganizationalUnit ou = context.getActiveOrganizationalUnit()
+                                       .orElseThrow(() -> new IllegalStateException("Cannot import project without an active organizational unit."));
+
         view.showBusyIndicator(view.getLoadingMessage());
-        libraryService.call((Set<ExampleProject> projects) -> {
+        libraryService.call((WorkspaceProject project) -> {
                                 view.hideBusyIndicator();
                                 view.hide();
-                                libraryPlaces.goToImportProjects(null);
-                                importProjectsSetupEvent.fire(new ImportProjectsSetupEvent(projects));
-                            },
-                            new DefaultErrorCallback() {
-                                @Override
-                                public boolean error(final Message message,
-                                                     final Throwable throwable) {
-                                    view.hideBusyIndicator();
-                                    view.showError(view.getNoProjectsToImportMessage());
-                                    return false;
-                                }
-                            }).getProjects(repositoryUrl,
-                                           view.getUserName(),
-                                           view.getPassword());
+                                libraryPlaces.goToProject(project);
+        }, new DefaultErrorCallback() {
+            @Override
+            public boolean error(Message message, Throwable throwable) {
+                view.hideBusyIndicator();
+                view.showError(view.getNoProjectsToImportMessage());
+                return false;
+            }
+        }).importProject(ou, repositoryUrl, view.getUserName(), view.getPassword());
     }
 
     public void cancel() {

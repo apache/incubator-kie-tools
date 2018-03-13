@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.library.client.screens.samples;
+package org.kie.workbench.common.screens.library.client.screens.importrepository;
 
 import java.util.Set;
 

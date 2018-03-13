@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.library.client.screens.samples;
+package org.kie.workbench.common.screens.library.client.screens.importrepository;
 
 import javax.inject.Inject;
 
@@ -33,10 +33,10 @@ import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryCon
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
 @Templated
-public class ImportProjectsView implements ImportWorkspaceProjectsScreen.View,
+public class ImportProjectsView implements ImportPresenter.View,
                                            IsElement {
 
-    private ImportWorkspaceProjectsScreen presenter;
+    private ImportPresenter presenter;
 
     @Inject
     private TranslationService ts;
@@ -62,7 +62,7 @@ public class ImportProjectsView implements ImportWorkspaceProjectsScreen.View,
     Button ok;
 
     @Override
-    public void init(final ImportWorkspaceProjectsScreen presenter) {
+    public void init(final ImportPresenter presenter) {
         this.presenter = presenter;
         filterText.setAttribute("placeholder",
                                 ts.getTranslation(LibraryConstants.Search));

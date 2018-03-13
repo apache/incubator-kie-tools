@@ -86,7 +86,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     public static final String LIBRARY_PERSPECTIVE = "LibraryPerspective";
     public static final String LIBRARY_SCREEN = "LibraryScreen";
     public static final String PROJECT_SCREEN = "ProjectScreen";
-    public static final String IMPORT_PROJECTS_SCREEN = "TrySamplesScreen";
+    public static final String IMPORT_SAMPLE_PROJECTS_SCREEN = "TrySamplesScreen";
     public static final String PROJECT_DETAIL_SCREEN = "ProjectsDetailScreen";
     public static final String ORG_UNITS_METRICS_SCREEN = "OrgUnitsMetricsScreen";
     public static final String PROJECT_METRICS_SCREEN = "ProjectMetricsScreen";
@@ -106,7 +106,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         add(ORGANIZATIONAL_UNITS_SCREEN);
         add(PROJECT_SETTINGS);
         add(ADD_ASSET_SCREEN);
-        add(IMPORT_PROJECTS_SCREEN);
+        add(IMPORT_SAMPLE_PROJECTS_SCREEN);
         add(PreferencesRootScreen.IDENTIFIER);
     }});
 
@@ -449,21 +449,6 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         libraryToolbar.setUpBranches();
     }
 
-    public void setupLibraryBreadCrumbsForImportProjects(final String repositoryUrl) {
-        breadcrumbs.clearBreadcrumbs(LibraryPlaces.LIBRARY_PERSPECTIVE);
-        breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
-                                  translationUtils.getOrganizationalUnitAliasInPlural(),
-                                  () -> goToOrganizationalUnits());
-        breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
-                                  projectContext.getActiveOrganizationalUnit()
-                                          .orElseThrow(() -> new IllegalStateException("Cannot create library breadcrumb without active space."))
-                                          .getName(),
-                                  () -> goToLibrary());
-        breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
-                                  ts.getTranslation(LibraryConstants.ImportProjects),
-                                  () -> goToImportProjects(repositoryUrl));
-    }
-
     public void setupLibraryBreadCrumbsForTrySamples() {
         breadcrumbs.clearBreadcrumbs(LibraryPlaces.LIBRARY_PERSPECTIVE);
         breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
@@ -667,11 +652,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
     public void goToTrySamples() {
         if (closeAllPlacesOrNothing()) {
-            Map<String, String> params = new HashMap<>();
-            params.put("trySamples",
-                       "true");
-            final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(LibraryPlaces.IMPORT_PROJECTS_SCREEN,
-                                                                             params);
+            final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(LibraryPlaces.IMPORT_SAMPLE_PROJECTS_SCREEN);
             final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
             part.setSelectable(false);
 
@@ -684,26 +665,6 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     public void goToImportRepositoryPopUp() {
         final ImportRepositoryPopUpPresenter importRepositoryPopUpPresenter = importRepositoryPopUpPresenters.get();
         importRepositoryPopUpPresenter.show();
-    }
-
-    public void goToImportProjects(final String repositoryUrl) {
-        if (closeAllPlacesOrNothing()) {
-            Map<String, String> params = new HashMap<>();
-            params.put("title",
-                       ts.getTranslation(LibraryConstants.ImportProjects));
-            if (repositoryUrl != null) {
-                params.put("repositoryUrl",
-                           repositoryUrl);
-            }
-            final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(LibraryPlaces.IMPORT_PROJECTS_SCREEN,
-                                                                             params);
-            final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
-            part.setSelectable(false);
-
-            placeManager.goTo(part,
-                              libraryPerspective.getRootPanel());
-            setupLibraryBreadCrumbsForImportProjects(repositoryUrl);
-        }
     }
 
     public void goToSettings() {

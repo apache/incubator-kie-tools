@@ -25,7 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -42,6 +44,9 @@ import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
+import org.guvnor.structure.repositories.RepositoryService;
+import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.structure.security.OrganizationalUnitAction;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
@@ -85,6 +90,8 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 @ApplicationScoped
 public class LibraryServiceImpl implements LibraryService {
 
+    private static final Pattern STRIP_DOT_GIT = Pattern.compile("\\.git$");
+
     private static final Logger log = LoggerFactory.getLogger(LibraryServiceImpl.class);
 
     private RefactoringQueryService refactoringQueryService;
@@ -102,6 +109,7 @@ public class LibraryServiceImpl implements LibraryService {
     private IOService ioService;
     private SocialUserRepositoryAPI socialUserRepositoryAPI;
     private IndexStatusOracle indexOracle;
+    private RepositoryService repoService;
 
     public LibraryServiceImpl() {
     }
@@ -116,6 +124,7 @@ public class LibraryServiceImpl implements LibraryService {
                               final WorkspaceProjectService projectService,
                               final KieModuleService moduleService,
                               final ExamplesService examplesService,
+                              final RepositoryService repoService,
                               @Named("ioStrategy") final IOService ioService,
                               final LibraryInternalPreferences internalPreferences,
                               final SocialUserRepositoryAPI socialUserRepositoryAPI,
@@ -129,6 +138,7 @@ public class LibraryServiceImpl implements LibraryService {
         this.projectService = projectService;
         this.moduleService = moduleService;
         this.examplesService = examplesService;
+        this.repoService = repoService;
         this.ioService = ioService;
         this.internalPreferences = internalPreferences;
         this.socialUserRepositoryAPI = socialUserRepositoryAPI;
@@ -193,6 +203,46 @@ public class LibraryServiceImpl implements LibraryService {
         return projectService.newProject(activeOrganizationalUnit,
                                          pom,
                                          mode);
+    }
+
+    @Override
+    public WorkspaceProject importProject(final OrganizationalUnit targetOU,
+                                          final String repositoryURL,
+                                          final String username,
+                                          final String password) {
+        final RepositoryEnvironmentConfigurations config = new RepositoryEnvironmentConfigurations();
+        config.setOrigin(repositoryURL);
+        if (username != null && password != null) {
+            config.setUserName(username);
+            config.setPassword(password);
+        }
+
+        final String targetProjectName = inferProjectName(repositoryURL);
+
+        final Repository repo = repoService.createRepository(targetOU, GitRepository.SCHEME.toString(), targetProjectName, config);
+        return projectService.resolveProject(repo);
+    }
+
+    @Override
+    public WorkspaceProject importProject(final OrganizationalUnit organizationalUnit,
+                                          final ExampleProject exampleProject) {
+        final ExampleOrganizationalUnit exampleOrganizationalUnit = new ExampleOrganizationalUnit(organizationalUnit.getName());
+
+        final List<ExampleProject> exampleProjects = Collections.singletonList(exampleProject);
+
+        final WorkspaceProjectContextChangeEvent projectContextChangeEvent = examplesService.setupExamples(exampleOrganizationalUnit,
+                                                                                                           exampleProjects);
+
+        return projectContextChangeEvent.getWorkspaceProject();
+    }
+
+    private String inferProjectName(String repositoryURL) {
+        return Optional.of(repositoryURL)
+                       .map(url -> java.nio.file.Paths.get(repositoryURL))
+                       .map(path -> path.getFileName().toString())
+                       .map(fileName -> STRIP_DOT_GIT.matcher(fileName))
+                       .map(matcher -> matcher.replaceFirst(""))
+                       .orElse("new-project");
     }
 
     @Override
@@ -325,19 +375,6 @@ public class LibraryServiceImpl implements LibraryService {
                                                                    userName,
                                                                    password);
         return examplesService.getProjects(repository);
-    }
-
-    @Override
-    public WorkspaceProject importProject(final OrganizationalUnit organizationalUnit,
-                                          final ExampleProject exampleProject) {
-        final ExampleOrganizationalUnit exampleOrganizationalUnit = new ExampleOrganizationalUnit(organizationalUnit.getName());
-
-        final List<ExampleProject> exampleProjects = Collections.singletonList(exampleProject);
-
-        final WorkspaceProjectContextChangeEvent projectContextChangeEvent = examplesService.setupExamples(exampleOrganizationalUnit,
-                                                                                                           exampleProjects);
-
-        return projectContextChangeEvent.getWorkspaceProject();
     }
 
     @Override

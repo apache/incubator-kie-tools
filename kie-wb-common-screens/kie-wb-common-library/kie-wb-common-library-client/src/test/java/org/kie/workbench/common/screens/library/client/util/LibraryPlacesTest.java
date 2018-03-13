@@ -16,9 +16,8 @@
 
 package org.kie.workbench.common.screens.library.client.util;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
+
 import javax.enterprise.event.Event;
 
 import org.ext.uberfire.social.activities.model.ExtendedTypes;
@@ -76,11 +75,20 @@ import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LibraryPlacesTest {
@@ -635,11 +643,7 @@ public class LibraryPlacesTest {
     public void goToTrySamplesTest() {
         doReturn(true).when(libraryPlaces).closeAllPlacesOrNothing();
 
-        Map<String, String> params = new HashMap<>();
-        params.put("trySamples",
-                   "true");
-        final PlaceRequest trySamplesScreen = new DefaultPlaceRequest(LibraryPlaces.IMPORT_PROJECTS_SCREEN,
-                                                                      params);
+        final PlaceRequest trySamplesScreen = new DefaultPlaceRequest(LibraryPlaces.IMPORT_SAMPLE_PROJECTS_SCREEN);
         final PartDefinitionImpl part = new PartDefinitionImpl(trySamplesScreen);
         part.setSelectable(false);
 
@@ -655,28 +659,6 @@ public class LibraryPlacesTest {
     public void goToImportRepositoryPopUpTest() {
         libraryPlaces.goToImportRepositoryPopUp();
         verify(importRepositoryPopUpPresenter).show();
-    }
-
-    @Test
-    public void goToImportProjectsTest() {
-        doReturn(true).when(libraryPlaces).closeAllPlacesOrNothing();
-
-        Map<String, String> params = new HashMap<>();
-        params.put("title",
-                   null);
-        params.put("repositoryUrl",
-                   "repositoryUrl");
-        final PlaceRequest importProjectsScreen = new DefaultPlaceRequest(LibraryPlaces.IMPORT_PROJECTS_SCREEN,
-                                                                          params);
-        final PartDefinitionImpl part = new PartDefinitionImpl(importProjectsScreen);
-        part.setSelectable(false);
-
-        libraryPlaces.goToImportProjects("repositoryUrl");
-
-        verify(libraryPlaces).closeAllPlacesOrNothing();
-        verify(placeManager).goTo(eq(part),
-                                  any(PanelDefinition.class));
-        verify(libraryPlaces).setupLibraryBreadCrumbsForImportProjects("repositoryUrl");
     }
 
     @Test
