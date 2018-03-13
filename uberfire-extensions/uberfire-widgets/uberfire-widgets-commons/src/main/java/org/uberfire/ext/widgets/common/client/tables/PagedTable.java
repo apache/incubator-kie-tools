@@ -26,12 +26,13 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AbstractDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 import org.gwtbootstrap3.client.ui.Column;
-import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.extras.select.client.ui.Option;
+import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.uberfire.ext.services.shared.preferences.GridGlobalPreferences;
 import org.uberfire.ext.services.shared.preferences.GridPreferencesStore;
 import org.uberfire.ext.widgets.table.client.ColumnChangedHandler;
-import org.uberfire.ext.widgets.table.client.PagedTableHelper;
 import org.uberfire.ext.widgets.table.client.UberfireSimplePager;
+import org.uberfire.ext.widgets.table.client.resources.i18n.CommonConstants;
 
 /**
  * Paged Table Widget that stores user preferences.
@@ -50,7 +51,7 @@ public class PagedTable<T>
     public UberfireSimplePager pager;
 
     @UiField
-    public ListBox pageSizesSelector;
+    public Select pageSizesSelector;
 
     @UiField
     public Column topToolbar;
@@ -127,8 +128,6 @@ public class PagedTable<T>
         this.pageSize = pageSize;
         this.dataGrid.setPageStart(0);
         this.dataGrid.setPageSize(pageSize);
-        PagedTableHelper.setSelectedValue(pageSizesSelector,
-                                          String.valueOf(pageSize));
         this.pager.setDisplay(dataGrid);
         this.pageSizesSelector.setVisible(this.showPageSizesSelector);
         setShowFastFordwardPagerButton(showFFButton);
@@ -198,18 +197,23 @@ public class PagedTable<T>
                                        int maxPageSize,
                                        int incPageSize) {
         pageSizesSelector.clear();
-        PagedTableHelper.setSelectIndexOnPageSizesSelector(minPageSize,
-                                                           maxPageSize,
-                                                           incPageSize,
-                                                           pageSizesSelector,
-                                                           pageSize);
 
-        pageSizesSelector.addChangeHandler(event -> {
-            storePageSizeInGridPreferences(Integer.parseInt(pageSizesSelector.getSelectedValue()));
+        for (int i = minPageSize; i <= maxPageSize; i = i + incPageSize) {
+            final Option option = GWT.create(Option.class);
+            option.setText(String.valueOf(i) + " " + CommonConstants.INSTANCE.Items());
+            option.setValue(String.valueOf(i));
+            pageSizesSelector.add(option);
+        }
+
+        pageSizesSelector.setValue(String.valueOf(pageSize));
+
+        pageSizesSelector.addValueChangeHandler(event -> {
+            storePageSizeInGridPreferences(Integer.parseInt(pageSizesSelector.getValue()));
             loadPageSizePreferences();
         });
 
         loadPageSizePreferences();
+        Scheduler.get().scheduleDeferred(() -> pageSizesSelector.refresh());
     }
 
     public void setShowLastPagerButton(boolean showLastPagerButton) {
