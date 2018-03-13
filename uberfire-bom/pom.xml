@@ -1371,11 +1371,6 @@
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-organizationalunit-manager</artifactId>
-        <version>${project.version}</version>
-      </dependency>
 
       <!-- Dashbuilder APIs -->
       <dependency>
