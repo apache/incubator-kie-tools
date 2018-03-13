@@ -12,7 +12,7 @@ To build the project, simply run
 
 This will generate a zip file in the target directory:
 
-    kie-wb-common-project-migration-$VERSION-linux.zip
+    kie-wb-common-project-migration-$VERSION-dist.zip
 
 The zip file is a standalone artifact that contains all the necessary dependencies to run the CLI tool.
 
@@ -23,7 +23,7 @@ Installing the Tool
 
 To install the tool, simply unzip it into the desired location, like so:
 
-    unzip -d $INSTALL_DIR kie-wb-common-project-migration-$VERSION-linux.zip
+    unzip -d $INSTALL_DIR kie-wb-common-project-migration-$VERSION-dist.zip
 
 This should create a directory (`kie-wb-common-project-migration-$VERSION`) in the `$INSTALL_DIR`.
 
@@ -42,7 +42,13 @@ Simple Usage
 
 The simplest way to invoke the tool is
 
+Linux -
     $TOOL_DIR/bin/migration-tool.sh -t $NIOGIT
+
+
+Windows -
+    $TOOL_DIR/bin/migration-tool.bat -t $NIOGIT
+    
 
 The tool will migrate projects in-place: when the tool finishes a successful run, the `$NIOGIT` directory will be ready for use with the new workbench.
 
@@ -55,5 +61,12 @@ The simple invocation will prompt the user to confirm before migration is attemp
 
 If you wish to run the tool without this prompt, you can add the `-b` flag like so:
 
-
+Linux -
+    ```
     $TOOL_DIR/bin/migration-tool.sh -b -t $NIOGIT
+    ```
+
+Windows -
+    ```
+    $TOOL_DIR/bin/migration-tool.bat -b -t $NIOGIT
+    ```
