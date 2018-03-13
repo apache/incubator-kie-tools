@@ -1,5 +1,12 @@
 #!/bin/sh
-SCRIPTDIR="`pwd`"
+#SCRIPTDIR="cd $(dirname $0) && pwd"
+
+saveddir=`pwd`
+SCRIPT_HOME=`dirname "$0"`/..
+
+# make it fully qualified
+SCRIPTDIR=`cd "$SCRIPT_HOME" && pwd`
+cd "$saveddir"
 
 CLASSPATH="$SCRIPTDIR/lib/*"
 
@@ -31,5 +38,5 @@ case $JAVAVER in
  ;;
 esac
 
-exec "$JAVACMD" -cp $CLASSPATH ${mainClass} $@
+exec "$JAVACMD" -cp "$CLASSPATH" org.kie.workbench.common.project.MigrationTool $@
 
