@@ -118,7 +118,7 @@ public class KieMetadataTest {
                             8);
         Map<String, TypeMetaInfo> typesMI = kieModuleMetaInfo.getTypeMetaInfos();
         Assert.assertEquals(typesMI.size(),
-                            35);
+                            46);
 
         Optional<KieModule> kieModuleOptional = res.getKieModule();
         Assert.assertTrue(kieModuleOptional.isPresent());
