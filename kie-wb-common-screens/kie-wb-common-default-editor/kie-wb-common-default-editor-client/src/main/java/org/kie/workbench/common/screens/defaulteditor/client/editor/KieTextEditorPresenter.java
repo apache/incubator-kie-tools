@@ -115,12 +115,6 @@ public abstract class KieTextEditorPresenter
     }
 
     @Override
-    protected Command onValidate() {
-        // not used
-        return null;
-    }
-
-    @Override
     protected void loadContent() {
         defaultEditorService.call(getLoadSuccessCallback(),
                                   getNoSuchFileExceptionErrorCallback()).loadContent(versionRecordManager.getCurrentPath());

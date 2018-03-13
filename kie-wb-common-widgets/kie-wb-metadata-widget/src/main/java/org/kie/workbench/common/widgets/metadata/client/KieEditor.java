@@ -35,6 +35,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
 import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
@@ -302,7 +303,7 @@ public abstract class KieEditor<T>
 
     void addCommonActions(final FileMenuBuilder fileMenuBuilder) {
         fileMenuBuilder
-                .addValidate(onValidate())
+                .addValidate(getValidateCommand())
                 .addNewTopLevelMenu(versionRecordManager.buildMenu())
                 .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
     }

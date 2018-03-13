@@ -20,34 +20,41 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.widgets.client.callbacks.AssetValidatedCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.KieWorkbenchWidgetsConstants;
 import org.uberfire.mvp.Command;
+import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
 public class ValidationPopup implements ValidationPopupView.Presenter {
 
-    private ValidationPopupView view;
+    private final ValidationPopupView view;
 
-    private ValidationMessageTranslatorUtils validationMessageTranslatorUtils;
+    private final ValidationMessageTranslatorUtils validationMessageTranslatorUtils;
 
-    private TranslationService translationService;
+    private final TranslationService translationService;
 
     private Command yesCommand;
 
     private Command cancelCommand;
 
+    private final Event<NotificationEvent> notificationEvent;
+
     @Inject
     public ValidationPopup(final ValidationPopupView view,
                            final ValidationMessageTranslatorUtils validationMessageTranslatorUtils,
-                           final TranslationService translationService) {
+                           final TranslationService translationService,
+                           final Event<NotificationEvent> notificationEvent) {
         this.view = view;
         this.validationMessageTranslatorUtils = validationMessageTranslatorUtils;
         this.translationService = translationService;
+        this.notificationEvent = notificationEvent;
     }
 
     @PostConstruct
@@ -65,6 +72,12 @@ public class ValidationPopup implements ValidationPopupView.Presenter {
                          () -> {
                          },
                          messages);
+    }
+
+    public AssetValidatedCallback getValidationCallback(final Command validationFinishedCommand){
+        return new AssetValidatedCallback(validationFinishedCommand,
+                                          notificationEvent,
+                                          this);
     }
 
     public void showTranslatedMessages(final List<ValidationMessage> messages) {

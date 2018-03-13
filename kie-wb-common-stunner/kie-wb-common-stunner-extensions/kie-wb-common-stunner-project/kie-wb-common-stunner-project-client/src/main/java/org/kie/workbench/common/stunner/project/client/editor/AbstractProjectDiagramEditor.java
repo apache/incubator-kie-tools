@@ -257,11 +257,10 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     }
 
     @Override
-    protected Command onValidate() {
-        return () -> validate(() -> {
-            onValidationSuccess();
-            hideLoadingViews();
-        });
+    protected void onValidate(final Command finished) {
+        onValidationSuccess();
+        hideLoadingViews();
+        finished.execute();
     }
 
     /**

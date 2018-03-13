@@ -16,22 +16,30 @@
 
 package org.kie.workbench.common.widgets.client.popups.validation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.widgets.client.callbacks.AssetValidatedCallback;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mvp.Command;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class ValidationPopupTest {
 
     @Mock
@@ -43,76 +51,94 @@ public class ValidationPopupTest {
     @Mock
     private TranslationService translationService;
 
+    @Mock
+    private EventSourceMock notificationEvent;
+
     private ValidationPopup validationPopup;
 
     @Before
     public void setUp() {
-        validationPopup = new ValidationPopup( view,
-                                               validationMessageTranslatorUtils,
-                                               translationService );
+        validationPopup = new ValidationPopup(view,
+                                              validationMessageTranslatorUtils,
+                                              translationService,
+                                              notificationEvent);
 
-        view.init( validationPopup );
+        view.init(validationPopup);
     }
 
     @Test
     public void showMessages() {
         ValidationMessage validationMessage = new ValidationMessage();
 
-        validationPopup.showMessages( Arrays.asList( validationMessage ) );
+        validationPopup.showMessages(Arrays.asList(validationMessage));
 
-        verify( view ).showYesButton( false );
-        verify( view ).showCancelButton( true );
+        verify(view).showYesButton(false);
+        verify(view).showCancelButton(true);
 
-        verify( view ).setValidationMessages( anyListOf( ValidationMessage.class ) );
-        verify( view ).show();
+        verify(view).setValidationMessages(anyListOf(ValidationMessage.class));
+        verify(view).show();
     }
 
     @Test
     public void showCopyValidationMessages() {
-        List<ValidationMessage> validationMessages = Arrays.asList( new ValidationMessage() );
+        List<ValidationMessage> validationMessages = Arrays.asList(new ValidationMessage());
 
-        validationPopup.showCopyValidationMessages( () -> {},
-                                                    () -> {},
-                                                    validationMessages );
+        validationPopup.showCopyValidationMessages(() -> {
+                                                   },
+                                                   () -> {
+                                                   },
+                                                   validationMessages);
 
-        verify( view ).showYesButton( true );
-        verify( view ).showCancelButton( true );
+        verify(view).showYesButton(true);
+        verify(view).showCancelButton(true);
 
         List<ValidationMessage> translatedMessages = Collections.emptyList();
-        when( validationMessageTranslatorUtils.translate( validationMessages ) ).thenReturn( translatedMessages );
+        when(validationMessageTranslatorUtils.translate(validationMessages)).thenReturn(translatedMessages);
 
-        verify( view ).setValidationMessages( translatedMessages );
-        verify( view ).show();
+        verify(view).setValidationMessages(translatedMessages);
+        verify(view).show();
     }
 
     @Test
     public void showSaveValidationMessages() {
-        List<ValidationMessage> validationMessages = Arrays.asList( new ValidationMessage() );
+        List<ValidationMessage> validationMessages = Arrays.asList(new ValidationMessage());
 
-        validationPopup.showSaveValidationMessages( () -> {},
-                                                    () -> {},
-                                                    validationMessages );
+        validationPopup.showSaveValidationMessages(() -> {
+                                                   },
+                                                   () -> {
+                                                   },
+                                                   validationMessages);
 
-        verify( view ).showYesButton( true );
-        verify( view ).showCancelButton( true );
+        verify(view).showYesButton(true);
+        verify(view).showCancelButton(true);
 
         List<ValidationMessage> translatedMessages = Collections.emptyList();
-        when( validationMessageTranslatorUtils.translate( validationMessages ) ).thenReturn( translatedMessages );
+        when(validationMessageTranslatorUtils.translate(validationMessages)).thenReturn(translatedMessages);
 
-        verify( view ).setValidationMessages( translatedMessages );
-        verify( view ).show();
+        verify(view).setValidationMessages(translatedMessages);
+        verify(view).show();
     }
 
     @Test
     public void showTranslatedMessages() {
-        List<ValidationMessage> validationMessages = Arrays.asList( new ValidationMessage() );
+        List<ValidationMessage> validationMessages = Arrays.asList(new ValidationMessage());
 
-        validationPopup.showTranslatedMessages( validationMessages );
+        validationPopup.showTranslatedMessages(validationMessages);
 
         List<ValidationMessage> translatedMessages = Collections.emptyList();
-        when( validationMessageTranslatorUtils.translate( validationMessages ) ).thenReturn( translatedMessages );
+        when(validationMessageTranslatorUtils.translate(validationMessages)).thenReturn(translatedMessages);
 
-        verify( view ).setValidationMessages( translatedMessages );
-        verify( view ).show();
+        verify(view).setValidationMessages(translatedMessages);
+        verify(view).show();
+    }
+
+    @Test
+    public void getCallback() throws Exception {
+
+        final AssetValidatedCallback callback = validationPopup.getValidationCallback(mock(Command.class));
+
+        callback.callback(new ArrayList<>());
+
+        verify(notificationEvent).fire(any());
     }
 }

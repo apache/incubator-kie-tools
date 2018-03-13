@@ -205,7 +205,7 @@ public class KieEditorTest {
         final MenuItem buildMenu = mock(MenuItem.class);
         final MenuItem build = mock(MenuItem.class);
 
-        doReturn(onValidate).when(presenter).onValidate();
+        doReturn(onValidate).when(presenter).getValidateCommand();
         doReturn(buildMenu).when(versionRecordManager).buildMenu();
         doReturn(build).when(alertsButtonMenuItemBuilder).build();
 
@@ -292,11 +292,6 @@ public class KieEditorTest {
         @Override
         protected Caller<? extends SupportsSaveAndRename<String, Metadata>> getSaveAndRenameServiceCaller() {
             return super.getSaveAndRenameServiceCaller();
-        }
-
-        @Override
-        protected Command onValidate() {
-            return super.onValidate();
         }
     }
 }

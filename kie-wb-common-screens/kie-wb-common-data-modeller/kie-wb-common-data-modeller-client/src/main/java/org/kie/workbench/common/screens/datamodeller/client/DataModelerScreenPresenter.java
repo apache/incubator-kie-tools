@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.datamodeller.client;
 
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -82,6 +83,7 @@ import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitM
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
+import org.uberfire.ext.widgets.common.client.callbacks.CommandErrorCallback;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnFocus;
@@ -452,42 +454,30 @@ public class DataModelerScreenPresenter
         };
     }
 
-    protected Command onValidate() {
-        return new Command() {
-            @Override
-            public void execute() {
+    @Override
+    protected void onValidate(final Command finished) {
 
-                //at validation time we must do the same calculation as if we were about to save.
-                final DataObject[] modifiedDataObject = new DataObject[1];
-                if (isDirty()) {
-                    if (context.isEditorChanged()) {
+        //at validation time we must do the same calculation as if we were about to save.
+        final DataObject[] modifiedDataObject = new DataObject[1];
+        if (isDirty()) {
+            if (context.isEditorChanged()) {
 
-                        //at save time the source has always priority over the model.
-                        //If the source was properly parsed and the editor has changes, we need to send the DataObject
-                        //to the server in order to let the source to be updated prior to save.
-                        modifiedDataObject[0] = context.getDataObject();
-                    } else {
-                        //if the source has changes, no update form the UI to the source will be performed.
-                        //instead the parsed DataObject must be returned from the server.
-                        modifiedDataObject[0] = null;
-                    }
-                }
-
-                modelerService.call(new RemoteCallback<List<org.guvnor.common.services.shared.validation.model.ValidationMessage>>() {
-                    @Override
-                    public void callback(final List<org.guvnor.common.services.shared.validation.model.ValidationMessage> results) {
-                        if (results == null || results.isEmpty()) {
-                            notification.fire(new NotificationEvent(org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
-                                                                    NotificationEvent.NotificationType.SUCCESS));
-                        } else {
-                            validationPopup.showMessages(results);
-                        }
-                    }
-                }).validate(getSource(),
-                            versionRecordManager.getCurrentPath(),
-                            modifiedDataObject[0]);
+                //at save time the source has always priority over the model.
+                //If the source was properly parsed and the editor has changes, we need to send the DataObject
+                //to the server in order to let the source to be updated prior to save.
+                modifiedDataObject[0] = context.getDataObject();
+            } else {
+                //if the source has changes, no update form the UI to the source will be performed.
+                //instead the parsed DataObject must be returned from the server.
+                modifiedDataObject[0] = null;
             }
-        };
+        }
+
+        modelerService.call(
+                validationPopup.getValidationCallback(finished),
+                new CommandErrorCallback(finished)).validate(getSource(),
+                                                             versionRecordManager.getCurrentPath(),
+                                                             modifiedDataObject[0]);
     }
 
     private boolean isDirty() {
@@ -1262,7 +1252,7 @@ public class DataModelerScreenPresenter
 
         fileMenuBuilder
                 .addValidate(
-                        onValidate()
+                        getValidateCommand()
                 )
                 .addNewTopLevelMenu(versionRecordManager.buildMenu())
                 .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
