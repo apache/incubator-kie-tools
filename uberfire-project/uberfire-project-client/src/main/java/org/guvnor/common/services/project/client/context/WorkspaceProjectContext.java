@@ -129,4 +129,8 @@ public class WorkspaceProjectContext {
     public void removeChangeHandler(final ProjectContextChangeHandle projectContextChangeHandle) {
         changeHandlers.remove(projectContextChangeHandle);
     }
+
+    public void updateProjectModule(final Module module) {
+        this.activeModule = module;
+    }
 }
