@@ -40,14 +40,13 @@ public class GitRepository
 
     public static final SpacesAPI.Scheme SCHEME = GIT;
 
-    private final Map<String, Object> environment = new HashMap<String, Object>();
-    private final List<PublicURI> publicURIs = new ArrayList<PublicURI>();
+    private final Map<String, Object> environment = new HashMap<>();
+    private final List<PublicURI> publicURIs = new ArrayList<>();
     private final Map<String, Branch> branches = new HashMap<>();
     private String alias = null;
     private Space space;
-    private Path root;
 
-    private Collection<String> groups = new ArrayList<String>();
+    private Collection<String> groups = new ArrayList<>();
     private boolean requiresRefresh = true;
 
     public GitRepository() {
@@ -160,12 +159,13 @@ public class GitRepository
         return RESOURCE_TYPE;
     }
 
+    @Override
     public Collection<String> getGroups() {
         return groups;
     }
 
     public void setGroups(Collection<String> groups) {
-        this.groups = new ArrayList<String>(groups);
+        this.groups = new ArrayList<>(groups);
     }
 
     @Override

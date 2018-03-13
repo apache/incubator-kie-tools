@@ -35,7 +35,6 @@ import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
-import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.guvnor.common.services.shared.test.TestService;
@@ -68,13 +67,7 @@ public class JobRequestHelper {
     private RepositoryService repositoryService;
 
     @Inject
-    private ModuleService<? extends Module> moduleService;
-
-    @Inject
     private WorkspaceProjectService workspaceProjectService;
-
-    @Inject
-    private RepositoryService repoService;
 
     @Inject
     private BuildService buildService;
