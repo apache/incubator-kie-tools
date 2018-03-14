@@ -16,63 +16,69 @@
 
 package org.uberfire.client.views.pfly.widgets;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import elemental2.dom.Document;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.Text;
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsType;
+import org.jboss.errai.common.client.api.elemental2.IsElement;
 import org.uberfire.mvp.Command;
 
-@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "HTMLButtonElement")
-public class Button extends HTMLButtonElement {
+@Dependent
+public class Button implements IsElement {
 
-    @JsOverlay
-    public final void setText(final String text) {
-        final Text textNode = ownerDocument.createTextNode(text);
-        appendChild(textNode);
+    @Inject
+    private HTMLButtonElement button;
+
+    @Inject
+    private Document document;
+
+    public void setText(final String text) {
+        final Text textNode = document.createTextNode(text);
+        getElement().appendChild(textNode);
     }
 
-    @JsOverlay
-    public final void setClickHandler(final Command clickHandler) {
-        this.addEventListener("click",
-                              (e) -> clickHandler.execute());
+    public void setClickHandler(final Command clickHandler) {
+        button.addEventListener("click",
+                                (e) -> clickHandler.execute());
     }
 
-    @JsOverlay
-    public final void setType(final ButtonType type){
-        this.type = type.name().toLowerCase();
+    public void setType(final ButtonType type) {
+        button.type = type.name().toLowerCase();
     }
 
-    @JsOverlay
-    public final void setButtonStyleType(final ButtonStyleType type) {
-        this.classList.add("btn", type.getCssClass());
+    public void setButtonStyleType(final ButtonStyleType type) {
+        button.classList.add("btn",
+                             type.getCssClass());
     }
 
-    @JsOverlay
-    public final void setEnabled(final boolean enabled) {
+    public void setEnabled(final boolean enabled) {
         if (enabled) {
-            classList.remove("disabled");
+            button.classList.remove("disabled");
         } else {
-            classList.add("disabled");
+            button.classList.add("disabled");
         }
     }
 
-    @JsOverlay
-    public final void hide(){
-        classList.add("hidden");
+    public void hide() {
+        button.classList.add("hidden");
     }
 
-    @JsOverlay
-    public final void show(){
-        classList.remove("hidden");
+    public void show() {
+        button.classList.remove("hidden");
     }
 
-    @JsOverlay
-    public final void addIcon(final String... classes){
-        final HTMLElement icon = (HTMLElement) ownerDocument.createElement("span");
-        icon.classList.add(classes);
-        appendChild(icon);
+    public void addIcon(final String... classes) {
+        final HTMLElement span = (HTMLElement) document.createElement("span");
+        span.classList.add(classes);
+        button.appendChild(span);
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return button;
     }
 
     public enum ButtonType {

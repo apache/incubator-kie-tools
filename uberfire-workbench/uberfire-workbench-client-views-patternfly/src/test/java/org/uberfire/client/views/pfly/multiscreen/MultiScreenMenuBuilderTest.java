@@ -18,11 +18,10 @@ package org.uberfire.client.views.pfly.multiscreen;
 
 import java.util.Optional;
 
-import elemental2.dom.DOMTokenList;
+import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLDocument;
 import elemental2.dom.HTMLElement;
-import elemental2.dom.Text;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
@@ -33,6 +32,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.views.pfly.widgets.Button;
 import org.uberfire.client.views.pfly.widgets.KebabMenu;
+import org.uberfire.client.views.pfly.widgets.KebabMenuItem;
 import org.uberfire.security.Resource;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.menu.MenuCustom;
@@ -58,6 +58,12 @@ public class MultiScreenMenuBuilderTest {
     @Mock
     ManagedInstance<KebabMenu> kebabMenus;
 
+    @Mock
+    ManagedInstance<KebabMenuItem> kebabMenuItems;
+
+    @Mock
+    ManagedInstance<Button> buttons;
+
     @InjectMocks
     MultiScreenMenuBuilder menuBuilder;
 
@@ -65,12 +71,10 @@ public class MultiScreenMenuBuilderTest {
     public void setup() {
         when(authManager.authorize(any(Resource.class),
                                    eq(identity))).thenReturn(true);
-        Button button = mock(Button.class);
-        button.classList = mock(DOMTokenList.class);
-        button.ownerDocument = document;
-        when(document.createElement("button")).thenReturn(button);
-        when(document.createElement("div")).thenReturn(mock(HTMLDivElement.class));
-        when(document.createTextNode(any(String.class))).thenReturn(mock(Text.class));
+        final Button button = mock(Button.class);
+        when(button.getElement()).thenReturn(mock(HTMLButtonElement.class));
+        when(buttons.get()).thenReturn(button);
+        when(kebabMenus.get()).thenReturn(mock(KebabMenu.class));
     }
 
     @Test
@@ -85,8 +89,8 @@ public class MultiScreenMenuBuilderTest {
         assertFalse(optional.isPresent());
         verify(authManager).authorize(menuItem,
                                       identity);
-        verifyZeroInteractions(document);
-        verifyZeroInteractions(kebabMenus);
+        verifyZeroInteractions(kebabMenus,
+                               document);
     }
 
     @Test
@@ -103,8 +107,8 @@ public class MultiScreenMenuBuilderTest {
         assertFalse(optional.isPresent());
         verify(authManager).authorize(menuItem,
                                       identity);
-        verifyZeroInteractions(document);
-        verifyZeroInteractions(kebabMenus);
+        verifyZeroInteractions(kebabMenus,
+                               document);
     }
 
     @Test
@@ -114,7 +118,7 @@ public class MultiScreenMenuBuilderTest {
         final Optional<HTMLElement> optional = menuBuilder.apply(menuItem);
 
         assertTrue(optional.isPresent());
-        verify(document).createElement("button");
+        verify(buttons).get();
         verifyZeroInteractions(kebabMenus);
     }
 
@@ -142,7 +146,7 @@ public class MultiScreenMenuBuilderTest {
 
         assertTrue(optional.isPresent());
         verify(menuItem).build();
-        verifyZeroInteractions(document);
-        verifyZeroInteractions(kebabMenus);
+        verifyZeroInteractions(kebabMenus,
+                               document);
     }
 }

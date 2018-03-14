@@ -41,8 +41,6 @@ import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
-import static elemental2.dom.DomGlobal.document;
-
 @Templated
 @WorkbenchScreen(identifier = "MultiScreen")
 public class MultiScreen extends Composite {
@@ -97,10 +95,8 @@ public class MultiScreen extends Composite {
         buttonMenu.setType(Button.ButtonType.BUTTON);
         buttonMenu.setButtonStyleType(Button.ButtonStyleType.LINK);
         buttonMenu.setClickHandler(() -> Window.alert("Refresh!"));
-        HTMLElement icon = (HTMLElement) document.createElement("span");
-        icon.classList.add("fa",
+        buttonMenu.addIcon("fa",
                            "fa-refresh");
-        buttonMenu.appendChild(icon);
 
         button.setClickHandler(() -> placeManager.goTo("TodoListScreen"));
         sideButton.setClickHandler(() -> placeManager.goTo("SidePanelTodoListScreen"));
@@ -124,7 +120,7 @@ public class MultiScreen extends Composite {
 
                             @Override
                             public HTMLElement build() {
-                                return buttonMenu;
+                                return buttonMenu.getElement();
                             }
                         };
                     }

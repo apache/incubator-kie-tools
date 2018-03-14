@@ -24,9 +24,8 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import elemental2.dom.Document;
-import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLDocument;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLLIElement;
 import org.jboss.errai.common.client.api.elemental2.IsElement;
@@ -44,39 +43,23 @@ import org.uberfire.workbench.model.menu.MenuItemCommand;
 @Dependent
 public class MultiScreenMenuBuilder implements Function<MenuItem, Optional<HTMLElement>> {
 
+    @Inject
     private AuthorizationManager authManager;
 
+    @Inject
     private User identity;
 
+    @Inject
     private ManagedInstance<KebabMenu> kebabMenus;
 
-    private ManagedInstance<KebabMenuItem> kebabMenuItems;
-
-    private Document document;
+    @Inject
+    private ManagedInstance<Button> buttons;
 
     @Inject
-    public MultiScreenMenuBuilder(final AuthorizationManager authManager,
-                                  final User identity,
-                                  final ManagedInstance<KebabMenu> kebabMenus,
-                                  final ManagedInstance<KebabMenuItem> kebabMenuItems) {
-        this(authManager,
-             identity,
-             kebabMenus,
-             kebabMenuItems,
-             DomGlobal.document);
-    }
+    private ManagedInstance<KebabMenuItem> kebabMenuItems;
 
-    public MultiScreenMenuBuilder(final AuthorizationManager authManager,
-                                  final User identity,
-                                  final ManagedInstance<KebabMenu> kebabMenus,
-                                  final ManagedInstance<KebabMenuItem> kebabMenuItems,
-                                  final Document document) {
-        this.authManager = authManager;
-        this.identity = identity;
-        this.kebabMenus = kebabMenus;
-        this.kebabMenuItems = kebabMenuItems;
-        this.document = document;
-    }
+    @Inject
+    private HTMLDocument document;
 
     @Override
     public Optional<HTMLElement> apply(final MenuItem menuItem) {
@@ -133,14 +116,14 @@ public class MultiScreenMenuBuilder implements Function<MenuItem, Optional<HTMLE
 
         @Override
         public HTMLElement apply(final MenuItemCommand menuItem) {
-            final Button button = (Button) document.createElement("button");
+            final Button button = buttons.get();
             button.setType(Button.ButtonType.BUTTON);
             button.setButtonStyleType(Button.ButtonStyleType.DEFAULT);
             button.setText(menuItem.getCaption());
             button.setEnabled(menuItem.isEnabled());
             button.setClickHandler(menuItem.getCommand());
             menuItem.addEnabledStateChangeListener(button::setEnabled);
-            return button;
+            return button.getElement();
         }
     }
 

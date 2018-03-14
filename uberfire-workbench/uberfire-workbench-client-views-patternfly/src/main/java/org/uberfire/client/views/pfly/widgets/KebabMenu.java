@@ -20,6 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLDocument;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLLIElement;
 import elemental2.dom.HTMLUListElement;
@@ -39,6 +40,9 @@ public class KebabMenu implements IsElement {
     @DataField("dropdown-menu")
     HTMLUListElement dropdownMenu;
 
+    @Inject
+    HTMLDocument document;
+
     @Override
     public HTMLElement getElement() {
         return kebab;
@@ -48,14 +52,35 @@ public class KebabMenu implements IsElement {
         dropdownMenu.appendChild(item);
     }
 
+    public void addSeparator() {
+        final HTMLLIElement separator = (HTMLLIElement) document.createElement("li");
+        separator.classList.add("divider");
+        addKebabItem(separator);
+    }
+
     public void setItemsAlignment(final ItemsAlignment alignment) {
         if (alignment == ItemsAlignment.RIGHT) {
             dropdownMenu.classList.add("dropdown-menu-right");
         }
     }
 
+    public void setDropPosition(final DropPosition position) {
+        if (position == DropPosition.UP) {
+            kebab.classList.remove("dropdown");
+            kebab.classList.add("dropup");
+        } else {
+            kebab.classList.remove("dropup");
+            kebab.classList.add("dropdown");
+        }
+    }
+
     public enum ItemsAlignment {
         LEFT,
         RIGHT
+    }
+
+    public enum DropPosition {
+        UP,
+        DOWN
     }
 }

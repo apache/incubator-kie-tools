@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLDocument;
 import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
 import org.jboss.errai.common.client.api.elemental2.IsElement;
@@ -29,8 +30,6 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.views.pfly.widgets.Button;
 import org.uberfire.mvp.Command;
-
-import static elemental2.dom.DomGlobal.document;
 
 @Dependent
 @Templated
@@ -61,6 +60,9 @@ public class MultiScreenView implements IsElement {
     @Inject
     @DataField("close-group")
     HTMLDivElement closeGroup;
+
+    @Inject
+    HTMLDocument document;
 
     @Override
     public HTMLElement getElement() {
