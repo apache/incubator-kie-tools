@@ -23,7 +23,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import javax.enterprise.inject.spi.BeanManager;
 
@@ -53,6 +57,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationRequirement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeRequirement;
@@ -92,6 +97,7 @@ import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFact
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -847,6 +853,45 @@ public class DMNMarshallerTest {
         DMNDecisionResult adultResult = dmnResult.getDecisionResultByName("hardcoded decision");
         assertEquals(DecisionEvaluationStatus.SUCCEEDED, adultResult.getEvaluationStatus());
         assertEquals(47, ((BigDecimal) adultResult.getResult()).intValue());
+    }
+
+    @Test
+    public void test_function_java_WB_model() throws IOException {
+        final DMNMarshaller m = new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
+                                                  applicationFactoryManager);
+
+        @SuppressWarnings("unchecked")
+        final Graph<?, Node<?, ?>> g = m.unmarshall(null,
+                                                    this.getClass().getResourceAsStream("/DROOLS-2372.dmn"));
+
+        final Stream<Node<?, ?>> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(g.nodes().iterator(), Spliterator.ORDERED),
+                                                               false);
+        final Optional<Decision> wbDecision = stream
+                .filter(n -> n.getContent() instanceof ViewImpl)
+                .map(n -> (ViewImpl) n.getContent())
+                .filter(n -> n.getDefinition() instanceof Decision)
+                .map(n -> (Decision) n.getDefinition())
+                .findFirst();
+
+        wbDecision.ifPresent(d -> {
+            assertTrue(d.getExpression() instanceof FunctionDefinition);
+            final FunctionDefinition wbFunction = (FunctionDefinition) d.getExpression();
+
+            //This is what the WB expects
+            assertTrue(wbFunction.getAdditionalAttributes().containsKey(FunctionDefinition.KIND_QNAME));
+            assertEquals("J",
+                         wbFunction.getAdditionalAttributes().get(FunctionDefinition.KIND_QNAME));
+        });
+
+        final DMNRuntime runtime = roundTripUnmarshalMarshalThenUnmarshalDMN(this.getClass().getResourceAsStream("/DROOLS-2372.dmn"));
+        final DMNModel dmnModel = runtime.getModels().get(0);
+
+        final DecisionNode dmnDecision = dmnModel.getDecisions().iterator().next();
+        assertTrue(dmnDecision.getDecision().getExpression() instanceof org.kie.dmn.model.v1_1.FunctionDefinition);
+        final org.kie.dmn.model.v1_1.FunctionDefinition dmnFunction = (org.kie.dmn.model.v1_1.FunctionDefinition) dmnDecision.getDecision().getExpression();
+        assertTrue(dmnFunction.getAdditionalAttributes().containsKey(org.kie.dmn.model.v1_1.FunctionDefinition.KIND_QNAME));
+        assertEquals("J",
+                     dmnFunction.getAdditionalAttributes().get(org.kie.dmn.model.v1_1.FunctionDefinition.KIND_QNAME));
     }
 
     @Test

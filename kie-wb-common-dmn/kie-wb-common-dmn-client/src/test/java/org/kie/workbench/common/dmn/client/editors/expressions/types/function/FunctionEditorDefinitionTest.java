@@ -141,7 +141,7 @@ public class FunctionEditorDefinitionTest {
 
         final FunctionDefinition model = oModel.get();
         assertEquals(DMNModelInstrumentedBase.URI_KIE,
-                     model.getNsContext().get(KindUtilities.DROOLS_QNAME_PREFIX));
+                     model.getNsContext().get(FunctionDefinition.DROOLS_PREFIX));
         assertEquals(FunctionDefinition.Kind.FEEL.code(),
                      model.getAdditionalAttributes().get(FunctionDefinition.KIND_QNAME));
         assertTrue(model.getExpression() instanceof LiteralExpression);

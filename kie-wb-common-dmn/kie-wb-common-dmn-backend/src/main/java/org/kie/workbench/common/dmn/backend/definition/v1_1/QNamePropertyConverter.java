@@ -28,7 +28,7 @@ public class QNamePropertyConverter {
      * @return maybe null
      */
     public static QName wbFromDMN(final javax.xml.namespace.QName qName) {
-        return (qName != null) ? new QName(MarshallingUtils.formatQName(qName)) : null;
+        return (qName != null) ? new QName("{" + qName.getNamespaceURI() + "}" + (qName.getPrefix().equals("") ? "" : qName.getPrefix() + ":") + qName.getLocalPart()) : null;
     }
 
     /*

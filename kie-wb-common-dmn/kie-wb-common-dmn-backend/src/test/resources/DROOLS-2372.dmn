@@ -1,0 +1,53 @@
+<?xml version="1.0" ?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:di="http://www.omg.org/spec/CMMN/20151109/DI" xmlns:dmndi="java://org.kie.workbench.common.dmn.backend.definition.v1_1.dd" xmlns:dc="http://www.omg.org/spec/CMMN/20151109/DC" id="EA1DD9CB-0517-4EBC-84E9-5917CF48AD78" name="My name" expressionLanguage="http://www.omg.org/spec/FEEL/20140401" typeLanguage="http://www.omg.org/spec/FEEL/20140401" namespace="">
+  <description>My description</description>
+  <extensionElements>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape id="dmnshape-F713DE6B-6A54-4D7F-A0FC-2234E96A9303" dmnElementRef="F713DE6B-6A54-4D7F-A0FC-2234E96A9303">
+        <dc:Bounds x="110.0" y="182.0" width="100.0" height="50.0"></dc:Bounds>
+        <dc:BgColor red="255" green="255" blue="255"></dc:BgColor>
+        <dc:BorderColor red="0" green="0" blue="0"></dc:BorderColor>
+        <dmndi:DMNFontStyle>
+          <dc:FontColor red="0" green="0" blue="0"></dc:FontColor>
+        </dmndi:DMNFontStyle>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </extensionElements>
+  <decision id="F713DE6B-6A54-4D7F-A0FC-2234E96A9303" name="My name">
+    <description>My description</description>
+    <variable id="8A7AA186-5E33-4FBE-B8EC-78CB5C3C914B" name="My name" typeRef="feel:string">
+      <description>My description</description>
+    </variable>
+    <functionDefinition xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="J" id="07FD45CA-0A7B-4B21-8C21-E828F7D974AF" typeRef="feel:string">
+      <description>My description</description>
+      <context id="B97FF990-F1E1-48E0-AA07-1DEEF1BAEDD9" typeRef="feel:string">
+        <description>My description</description>
+        <contextEntry>
+          <variable id="B61F1C7D-33D9-4F5F-AA5A-C776BEC0FE84" name="class" typeRef="feel:string">
+            <description>My description</description>
+          </variable>
+          <literalExpression id="C974D6A5-9AB7-40D2-B50F-963254475673" typeRef="feel:string" expressionLanguage="">
+            <description>My description</description>
+            <text>"java.lang.Math"</text>
+            <importedValues namespace="" locationURI="My LocationURI" importType="" expressionLanguage="">
+              <importedElement></importedElement>
+            </importedValues>
+          </literalExpression>
+        </contextEntry>
+        <contextEntry>
+          <variable id="D785EC06-7F97-4BEC-94A2-2C736D32CCFA" name="method signature" typeRef="feel:string">
+            <description>My description</description>
+          </variable>
+          <literalExpression id="FAB11006-025C-4955-926C-C3B693566230" typeRef="feel:string" expressionLanguage="">
+            <description>My description</description>
+            <text>"max(double, double)"</text>
+            <importedValues namespace="" locationURI="My LocationURI" importType="" expressionLanguage="">
+              <importedElement></importedElement>
+            </importedValues>
+          </literalExpression>
+        </contextEntry>
+      </context>
+    </functionDefinition>
+  </decision>
+</definitions>
+

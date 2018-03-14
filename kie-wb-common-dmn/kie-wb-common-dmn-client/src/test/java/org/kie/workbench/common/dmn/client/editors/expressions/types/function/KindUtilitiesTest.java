@@ -63,7 +63,7 @@ public class KindUtilitiesTest {
         KindUtilities.setKind(function,
                               kind);
 
-        assertThat(function.getNsContext().get(KindUtilities.DROOLS_QNAME_PREFIX)).isEqualTo(DMNModelInstrumentedBase.URI_KIE);
+        assertThat(function.getNsContext().get(FunctionDefinition.DROOLS_PREFIX)).isEqualTo(DMNModelInstrumentedBase.URI_KIE);
         assertThat(function.getAdditionalAttributes().get(FunctionDefinition.KIND_QNAME)).isEqualTo(kind.code());
     }
 }
