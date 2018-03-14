@@ -47,8 +47,8 @@ Linux -
 
 
 Windows -
-    $TOOL_DIR/bin/migration-tool.bat -t $NIOGIT
-    
+    $TOOL_DIR\bin\migration-tool.bat -t $NIOGIT
+
 
 The tool will migrate projects in-place: when the tool finishes a successful run, the `$NIOGIT` directory will be ready for use with the new workbench.
 
@@ -68,5 +68,5 @@ Linux -
 
 Windows -
     ```
-    $TOOL_DIR/bin/migration-tool.bat -b -t $NIOGIT
+    $TOOL_DIR\bin\migration-tool.bat -b -t $NIOGIT
     ```
