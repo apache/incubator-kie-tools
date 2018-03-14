@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.commands.expressions.types.context;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +35,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
@@ -74,21 +76,25 @@ public class DeleteContextEntryCommandTest {
     public void setup() {
         this.context = new Context();
         this.context.getContextEntry().add(new ContextEntry());
-        this.uiModel = new BaseGridData();
+        this.uiModel = new BaseGridData(false);
         this.uiModel.appendRow(new DMNGridRow());
         this.uiModel.appendColumn(uiRowNumberColumn);
 
-        this.command = spy(new DeleteContextEntryCommand(context,
-                                                         uiModel,
-                                                         0,
-                                                         canvasOperation));
         doReturn(ruleManager).when(handler).getRuleManager();
         doReturn(0).when(uiRowNumberColumn).getIndex();
         doReturn(1).when(uiModelColumn).getIndex();
     }
 
+    private void makeCommand(final int deleteFromUiRowIndex) {
+        this.command = spy(new DeleteContextEntryCommand(context,
+                                                         uiModel,
+                                                         deleteFromUiRowIndex,
+                                                         canvasOperation));
+    }
+
     @Test
     public void testGraphCommandAllow() {
+        makeCommand(0);
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
@@ -97,6 +103,7 @@ public class DeleteContextEntryCommandTest {
 
     @Test
     public void testGraphCommandExecute() {
+        makeCommand(0);
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
@@ -106,7 +113,22 @@ public class DeleteContextEntryCommandTest {
     }
 
     @Test
+    public void testGraphCommandExecuteMultipleRows() {
+        addContextEntries(3);
+        final ContextEntry firstEntry = context.getContextEntry().get(0);
+        final ContextEntry lastEntry = context.getContextEntry().get(2);
+
+        makeCommand(1);
+        final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
+
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     c.execute(gce));
+        Assertions.assertThat(context.getContextEntry()).containsExactly(firstEntry, lastEntry);
+    }
+
+    @Test
     public void testGraphCommandUndo() {
+        makeCommand(0);
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
         //Delete row and then undo
@@ -119,7 +141,26 @@ public class DeleteContextEntryCommandTest {
     }
 
     @Test
+    public void testGraphCommandUndoMultipleRows() {
+        addContextEntries(3);
+        final ContextEntry firstEntry = context.getContextEntry().get(0);
+        final ContextEntry originalEntry = context.getContextEntry().get(1);
+        final ContextEntry lastEntry = context.getContextEntry().get(2);
+
+        makeCommand(1);
+        final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
+
+        //Delete row and then undo
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     c.execute(gce));
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     c.undo(gce));
+        Assertions.assertThat(context.getContextEntry()).containsExactly(firstEntry, originalEntry, lastEntry);
+    }
+
+    @Test
     public void testCanvasCommandAllow() {
+        makeCommand(0);
         final Command<AbstractCanvasHandler, CanvasViolation> c = command.newCanvasCommand(handler);
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
@@ -128,6 +169,7 @@ public class DeleteContextEntryCommandTest {
 
     @Test
     public void testCanvasCommandExecuteWithColumns() {
+        makeCommand(0);
         uiModel.appendColumn(uiModelColumn);
 
         final Command<AbstractCanvasHandler, CanvasViolation> cc = command.newCanvasCommand(handler);
@@ -150,7 +192,40 @@ public class DeleteContextEntryCommandTest {
     }
 
     @Test
+    public void testCanvasCommandExecuteWithColumnsMultipleRows() {
+        addContextEntries(3);
+        final GridRow firstRow = uiModel.getRow(0);
+        final GridRow lastRow = uiModel.getRow(2);
+
+        makeCommand(1);
+        uiModel.appendColumn(uiModelColumn);
+
+        final Command<AbstractCanvasHandler, CanvasViolation> cc = command.newCanvasCommand(handler);
+
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     cc.execute(handler));
+        assertEquals(2,
+                     uiModel.getRowCount());
+        assertEquals(2,
+                     uiModel.getColumnCount());
+        assertEquals(uiRowNumberColumn,
+                     uiModel.getColumns().get(0));
+        assertEquals(uiModelColumn,
+                     uiModel.getColumns().get(1));
+        assertEquals(firstRow,
+                     uiModel.getRow(0));
+        assertEquals(lastRow,
+                     uiModel.getRow(1));
+
+        verify(command).updateRowNumbers();
+        verify(command).updateParentInformation();
+
+        verify(canvasOperation).execute();
+    }
+
+    @Test
     public void testCanvasCommandExecuteWithNoColumns() {
+        makeCommand(0);
         final Command<AbstractCanvasHandler, CanvasViolation> cc = command.newCanvasCommand(handler);
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
@@ -170,6 +245,7 @@ public class DeleteContextEntryCommandTest {
 
     @Test
     public void testCanvasCommandUndoWithColumns() {
+        makeCommand(0);
         uiModel.appendColumn(uiModelColumn);
 
         //Delete ContextEntry and then undo
@@ -198,7 +274,49 @@ public class DeleteContextEntryCommandTest {
     }
 
     @Test
+    public void testCanvasCommandUndoWithColumnsMultipleRows() {
+        addContextEntries(3);
+        final GridRow firstRow = uiModel.getRow(0);
+        final GridRow originalRow = uiModel.getRow(1);
+        final GridRow lastRow = uiModel.getRow(2);
+
+        makeCommand(1);
+        uiModel.appendColumn(uiModelColumn);
+
+        //Delete ContextEntry and then undo
+        final Command<AbstractCanvasHandler, CanvasViolation> cc = command.newCanvasCommand(handler);
+
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     cc.execute(handler));
+
+        reset(command, canvasOperation);
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     cc.undo(handler));
+
+        assertEquals(2,
+                     uiModel.getColumnCount());
+        assertEquals(uiRowNumberColumn,
+                     uiModel.getColumns().get(0));
+        assertEquals(uiModelColumn,
+                     uiModel.getColumns().get(1));
+        assertEquals(3,
+                     uiModel.getRowCount());
+        assertEquals(firstRow,
+                     uiModel.getRow(0));
+        assertEquals(originalRow,
+                     uiModel.getRow(1));
+        assertEquals(lastRow,
+                     uiModel.getRow(2));
+
+        verify(command).updateRowNumbers();
+        verify(command).updateParentInformation();
+
+        verify(canvasOperation).execute();
+    }
+
+    @Test
     public void testCanvasCommandUndoWithNoColumns() {
+        makeCommand(0);
         //Delete ContextEntry and then undo
         final Command<AbstractCanvasHandler, CanvasViolation> cc = command.newCanvasCommand(handler);
 
@@ -220,5 +338,18 @@ public class DeleteContextEntryCommandTest {
         verify(command).updateParentInformation();
 
         verify(canvasOperation).execute();
+    }
+
+    private void addContextEntries(final int entriesCount) {
+        final int originalRowCount = uiModel.getRowCount();
+        for (int i = 0; i < originalRowCount; i++) {
+            uiModel.deleteRow(0);
+        }
+        context.getContextEntry().clear();
+
+        for (int i = 0; i < entriesCount; i++) {
+            context.getContextEntry().add(new ContextEntry());
+            uiModel.appendRow(new DMNGridRow());
+        }
     }
 }
