@@ -44,6 +44,8 @@ import static org.mockito.Mockito.when;
 
 public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonDOMElementFactory, D extends BaseDOMElement, W extends Widget & HasValue & Focusable, C extends BaseGridColumn & HasSingletonDOMElementResource, G extends BaseExpressionGrid> {
 
+    private static final String DEFAULT_VALUE = "";
+
     @Mock
     protected GridColumn.HeaderMetaData headerMetaData;
 
@@ -93,19 +95,59 @@ public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonD
     @Test
     @SuppressWarnings("unchecked")
     public void checkEdit() {
-        final GridCell<String> cell = new BaseGridCell<>(new BaseGridCellValue<>("value"));
+        final String value = "value";
+        final GridCell<String> cell = new BaseGridCell<>(new BaseGridCellValue<>(value));
 
         column.edit(cell,
                     context,
                     result -> {/*Nothing*/});
 
+        assertCellEdit(value);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void checkEditNullCell() {
+        column.edit(null,
+                    context,
+                    result -> {/*Nothing*/});
+
+        assertCellEdit(DEFAULT_VALUE);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void checkEditNullCellValue() {
+        final GridCell<String> cell = new BaseGridCell<>(null);
+
+        column.edit(cell,
+                    context,
+                    result -> {/*Nothing*/});
+
+        assertCellEdit(DEFAULT_VALUE);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void checkEditNullCellValueValue() {
+        final GridCell<String> cell = new BaseGridCell<>(new BaseGridCellValue<>(null));
+
+        column.edit(cell,
+                    context,
+                    result -> {/*Nothing*/});
+
+        assertCellEdit(DEFAULT_VALUE);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void assertCellEdit(final String value) {
         verify(factory).attachDomElement(eq(context),
                                          domElementOnCreationCallbackCaptor.capture(),
                                          domElementOnDisplayCallbackCaptor.capture());
 
         final Callback<D> domElementOnCreationCallback = domElementOnCreationCallbackCaptor.getValue();
         domElementOnCreationCallback.callback(domElement);
-        verify(widget).setValue(eq("value"));
+        verify(widget).setValue(eq(value));
 
         final Callback<D> domElementOnDisplayCallback = domElementOnDisplayCallbackCaptor.getValue();
         domElementOnDisplayCallback.callback(domElement);

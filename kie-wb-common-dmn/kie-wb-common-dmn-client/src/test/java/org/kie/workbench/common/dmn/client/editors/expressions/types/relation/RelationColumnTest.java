@@ -27,118 +27,87 @@ import org.kie.workbench.common.dmn.client.editors.expressions.mocks.MockHasDOME
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.BaseDOMElementSingletonColumnTest;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextAreaDOMElement;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
-import org.uberfire.client.callbacks.Callback;
-import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class RelationColumnTest {
-
-    @Mock
-    private GridColumn.HeaderMetaData headerMetaData;
+public class RelationColumnTest extends BaseDOMElementSingletonColumnTest<TextAreaSingletonDOMElementFactory, TextAreaDOMElement, TextArea, RelationColumn, RelationGrid> {
 
     @Mock
     private TextAreaSingletonDOMElementFactory factory;
 
     @Mock
-    private RelationGrid gridWidget;
+    private TextAreaDOMElement domElement;
+
+    @Mock
+    private TextArea widget;
 
     @Mock
     private GridWidget parentGridWidget;
 
     @Mock
-    private GridBodyCellRenderContext context;
-
-    @Mock
-    private Callback callback;
-
-    @Mock
-    private TextArea textArea;
-
-    @Mock
-    private TextAreaDOMElement textAreaDOMElement;
-
-    @Mock
     private BaseExpressionGrid peerExpressionEditor;
-
-    @Captor
-    private ArgumentCaptor<Callback<TextAreaDOMElement>> textAreaDOMElementCallback;
-
-    private GridCellTuple parent;
 
     private GridData parentUiModel;
 
-    private RelationColumn relationColumn;
+    @Override
+    protected TextAreaSingletonDOMElementFactory getFactory() {
+        return factory;
+    }
+
+    @Override
+    protected TextAreaDOMElement getDomElement() {
+        return domElement;
+    }
+
+    @Override
+    protected TextArea getWidget() {
+        return widget;
+    }
+
+    @Override
+    protected RelationGrid getGridWidget() {
+        return mock(RelationGrid.class);
+    }
+
+    @Override
+    protected RelationColumn getColumn() {
+        return new RelationColumn(headerMetaData,
+                                  factory,
+                                  gridWidget);
+    }
 
     @Before
     public void setUp() throws Exception {
-        relationColumn = new RelationColumn(headerMetaData,
-                                            factory,
-                                            gridWidget);
         parentUiModel = new BaseGridData();
         parentUiModel.appendRow(new BaseGridRow());
         parentUiModel.appendRow(new BaseGridRow());
         parentUiModel.appendColumn(mock(ExpressionEditorColumn.class));
-        parent = new GridCellTuple(0, 0, parentGridWidget);
+        final GridCellTuple parent = new GridCellTuple(0, 0, parentGridWidget);
 
         doReturn(parentUiModel).when(parentGridWidget).getModel();
-        doReturn(textArea).when(textAreaDOMElement).getWidget();
+        doReturn(widget).when(domElement).getWidget();
         doReturn(parent).when(gridWidget).getParentInformation();
         doReturn(100.0).when(gridWidget).getWidth();
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void testEditNullCell() throws Exception {
-        relationColumn.edit(null, context, callback);
-        verify(factory).attachDomElement(eq(context), textAreaDOMElementCallback.capture(), any(Callback.class));
-        textAreaDOMElementCallback.getValue().callback(textAreaDOMElement);
-        verify(textArea).setValue("");
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testEditEmptyCell() throws Exception {
-        relationColumn.edit(new BaseGridCell<>(null), context, callback);
-        verify(factory).attachDomElement(eq(context), textAreaDOMElementCallback.capture(), any(Callback.class));
-        textAreaDOMElementCallback.getValue().callback(textAreaDOMElement);
-        verify(textArea).setValue("");
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testEditCell() throws Exception {
-        final String cellValue = "abc";
-        relationColumn.edit(new BaseGridCell<>(new BaseGridCellValue<>(cellValue)), context, callback);
-        verify(factory).attachDomElement(eq(context), textAreaDOMElementCallback.capture(), any(Callback.class));
-        textAreaDOMElementCallback.getValue().callback(textAreaDOMElement);
-        verify(textArea).setValue(cellValue);
-    }
-
-    @Test
     public void testGetMinimumWidthWithNoPeers() {
         assertEquals(DMNGridColumn.DEFAULT_WIDTH,
-                     relationColumn.getMinimumWidth(),
+                     column.getMinimumWidth(),
                      0.0);
     }
 
@@ -189,9 +158,9 @@ public class RelationColumnTest {
     @Test
     public void testHeaderDOMElementsAreDestroyed() {
         final MockHasDOMElementResourcesHeaderMetaData mockHeaderMetaData = mock(MockHasDOMElementResourcesHeaderMetaData.class);
-        relationColumn.getHeaderMetaData().add(mockHeaderMetaData);
+        column.getHeaderMetaData().add(mockHeaderMetaData);
 
-        relationColumn.destroyResources();
+        column.destroyResources();
 
         verify(mockHeaderMetaData).destroyResources();
     }
@@ -206,7 +175,7 @@ public class RelationColumnTest {
         parentUiModel.setCellValue(1, 0, new ExpressionCellValue(peer));
 
         assertEquals(expectedMinimumWidth,
-                     relationColumn.getMinimumWidth(),
+                     column.getMinimumWidth(),
                      0.0);
     }
 }

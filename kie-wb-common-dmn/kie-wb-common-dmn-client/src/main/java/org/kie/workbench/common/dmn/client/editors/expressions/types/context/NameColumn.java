@@ -21,18 +21,17 @@ import java.util.List;
 
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNSimpleGridColumn;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
 
-public class NameColumn extends DMNGridColumn<ContextGrid, String> implements HasSingletonDOMElementResource {
+public class NameColumn extends DMNSimpleGridColumn<ContextGrid, String> implements HasSingletonDOMElementResource {
 
     private final TextBoxSingletonDOMElementFactory factory;
 
@@ -66,15 +65,13 @@ public class NameColumn extends DMNGridColumn<ContextGrid, String> implements Ha
             return;
         }
         factory.attachDomElement(context,
-                                 (e) -> e.getWidget().setValue(assertCell(cell).getValue().getValue()),
+                                 (e) -> e.getWidget().setValue(assertCellValue(assertCell(cell).getValue()).getValue()),
                                  (e) -> e.getWidget().setFocus(true));
     }
 
-    private GridCell<String> assertCell(final GridCell<String> cell) {
-        if (cell != null) {
-            return cell;
-        }
-        return new BaseGridCell<>(new BaseGridCellValue<>(""));
+    @Override
+    protected GridCellValue<String> makeDefaultCellValue() {
+        return new BaseGridCellValue<>("");
     }
 
     @Override
