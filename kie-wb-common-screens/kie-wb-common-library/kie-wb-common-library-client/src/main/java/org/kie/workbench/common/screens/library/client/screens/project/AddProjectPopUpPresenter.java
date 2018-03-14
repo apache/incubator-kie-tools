@@ -187,9 +187,7 @@ public class AddProjectPopUpPresenter {
                        version,
                        () -> {
                            final RemoteCallback<WorkspaceProject> successCallback = getSuccessCallback();
-                           final ErrorCallback<?> errorCallback = getErrorCallback(groupId,
-                                                                                   artifactId,
-                                                                                   version);
+                           final ErrorCallback<?> errorCallback = getErrorCallback();
                            if (view.isAdvancedOptionsSelected()) {
 
                                final POM pom = new POM(new GAV(groupId,
@@ -318,17 +316,14 @@ public class AddProjectPopUpPresenter {
         };
     }
 
-    private ErrorCallback<?> getErrorCallback(final String groupId,
-                                              final String artifactId,
-                                              final String version) {
+    private ErrorCallback<?> getErrorCallback() {
 
         Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> errors = new HashMap<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable>() {{
             put(GAVAlreadyExistsException.class,
                 parameter -> {
+                    GAVAlreadyExistsException exception = (GAVAlreadyExistsException) parameter;
                     view.hideBusyIndicator();
-                    conflictingRepositoriesPopup.setContent(new GAV(groupId,
-                                                                    artifactId,
-                                                                    version),
+                    conflictingRepositoriesPopup.setContent(exception.getGAV(),
                                                             ((GAVAlreadyExistsException) parameter).getRepositories(),
                                                             () -> {
                                                                 conflictingRepositoriesPopup.hide();
