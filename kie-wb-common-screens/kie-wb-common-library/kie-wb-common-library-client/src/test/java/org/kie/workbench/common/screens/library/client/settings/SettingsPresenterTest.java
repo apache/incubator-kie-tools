@@ -89,7 +89,7 @@ public class SettingsPresenterTest {
 
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(projectContext).getActiveWorkspaceProject();
         doReturn(Optional.of(mock(Module.class))).when(projectContext).getActiveModule();
-
+        doNothing().when(projectContext).updateProjectModule(any());
         settingsPresenter = spy(new SettingsPresenter(
                 view,
                 promises,
@@ -368,6 +368,12 @@ public class SettingsPresenterTest {
 
     @Test
     public void testSave() {
+        WorkspaceProject project = mock(WorkspaceProject.class);
+        doReturn(project).when(projectScreenService).save(any(),
+                                                          any(),
+                                                          any(),
+                                                          any());
+
         final Section section1 = newMockedSection();
         final Section section2 = newMockedSection();
 
@@ -484,18 +490,26 @@ public class SettingsPresenterTest {
     @Test
     public void testSaveProjectScreenModel() {
 
+        WorkspaceProject project = mock(WorkspaceProject.class);
+        Module module = mock(Module.class);
+        doReturn(module).when(project).getMainModule();
+        doReturn(project).when(projectScreenService).save(any(),
+                                                          any(),
+                                                          any(),
+                                                          any());
+
         settingsPresenter.saveProjectScreenModel("Test comment",
                                                  DeploymentMode.VALIDATED,
                                                  null).catch_(i -> {
             fail("Promise should've been resolved!");
             return promises.resolve();
         });
-        ;
 
         verify(projectScreenService).save(any(),
                                           any(),
                                           eq("Test comment"),
                                           eq(DeploymentMode.VALIDATED));
+        verify(projectContext).updateProjectModule(module);
         verify(settingsPresenter,
                never()).handlePomConcurrentUpdate(any(),
                                                   any());
@@ -631,6 +645,11 @@ public class SettingsPresenterTest {
 
     @Test
     public void testForceSave() {
+        WorkspaceProject project = mock(WorkspaceProject.class);
+        doReturn(project).when(projectScreenService).save(any(),
+                                                          any(),
+                                                          any(),
+                                                          any());
         settingsPresenter.concurrentPomUpdateInfo = mock(ObservablePath.OnConcurrentUpdateEvent.class);
 
         settingsPresenter.forceSave("Test comment",

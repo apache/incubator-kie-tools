@@ -160,13 +160,14 @@ public class SettingsPresenter {
         concurrentPomUpdateInfo = null;
 
         pathToPom = observablePaths.get()
-                .wrap(projectContext.getActiveModule().orElseThrow(()->new RuntimeException("Can't get active module"))
-                                                       .getPomXMLPath());
+                .wrap(projectContext.getActiveModule().orElseThrow(() -> new RuntimeException("Can't get active module"))
+                              .getPomXMLPath());
         pathToPom.onConcurrentUpdate(info -> concurrentPomUpdateInfo = info);
 
-        return promises.promisify(projectScreenService, s -> {
-            return s.load(pathToPom);
-        }).then(model -> {
+        return promises.promisify(projectScreenService,
+                                  s -> {
+                                      return s.load(pathToPom);
+                                  }).then(model -> {
             this.model = model;
             return setupSections(model);
         }).then(i -> {
@@ -177,11 +178,14 @@ public class SettingsPresenter {
             } else {
                 return goTo(sections.get(0));
             }
-        }).catch_(e -> promises.catchOrExecute(e, this::defaultErrorResolution, i -> {
-            notificationEvent.fire(new NotificationEvent(view.getLoadErrorMessage(), ERROR));
-            view.hideBusyIndicator();
-            return promises.resolve();
-        }));
+        }).catch_(e -> promises.catchOrExecute(e,
+                                               this::defaultErrorResolution,
+                                               i -> {
+                                                   notificationEvent.fire(new NotificationEvent(view.getLoadErrorMessage(),
+                                                                                                ERROR));
+                                                   view.hideBusyIndicator();
+                                                   return promises.resolve();
+                                               }));
     }
 
     void setupMenuItems() {
@@ -281,11 +285,24 @@ public class SettingsPresenter {
             return promises.reject(currentSection);
         }
 
-        return promises.promisify(projectScreenService, s -> {
-            s.save(pathToPom, model, comment, mode);
-        }).catch_(e -> promises.catchOrExecute(e, this::defaultErrorResolution, (final Promises.Error<Message> error) -> {
-            return handleSaveProjectScreenModelError(comment, chain, error.getThrowable());
-        }));
+        return promises.promisify(projectScreenService,
+                                  s -> {
+                                      return s.save(pathToPom,
+                                                    model,
+                                                    comment,
+                                                    mode);
+                                  })
+                .then(ret -> {
+                    projectContext.updateProjectModule(ret.getMainModule());
+                    return promises.resolve();
+                })
+                .catch_(e -> promises.catchOrExecute(e,
+                                                     this::defaultErrorResolution,
+                                                     (final Promises.Error<Message> error) -> {
+                                                         return handleSaveProjectScreenModelError(comment,
+                                                                                                  chain,
+                                                                                                  error.getThrowable());
+                                                     }));
     }
 
     Promise<Void> handleSaveProjectScreenModelError(final String comment,
@@ -293,7 +310,9 @@ public class SettingsPresenter {
                                                     final Throwable throwable) {
 
         if (throwable instanceof GAVAlreadyExistsException) {
-            return handlePomConcurrentUpdate(comment, chain, (GAVAlreadyExistsException) throwable);
+            return handlePomConcurrentUpdate(comment,
+                                             chain,
+                                             (GAVAlreadyExistsException) throwable);
         } else {
             return defaultErrorResolution(throwable);
         }
