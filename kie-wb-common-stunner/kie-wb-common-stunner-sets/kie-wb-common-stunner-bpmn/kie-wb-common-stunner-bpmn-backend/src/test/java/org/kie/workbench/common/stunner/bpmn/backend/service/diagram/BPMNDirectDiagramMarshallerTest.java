@@ -58,6 +58,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.Assignme
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.InterruptingErrorEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
@@ -142,6 +143,7 @@ public class BPMNDirectDiagramMarshallerTest {
     private static final String BPMN_ENDTERMINATEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endTerminateEvent.bpmn";
     private static final String BPMN_PROCESSPROPERTIES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/processProperties.bpmn";
     private static final String BPMN_BUSINESSRULETASKRULEFLOWGROUP = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/businessRuleTask.bpmn";
+    private static final String BPMN_EVENT_SUBPROCESS_STARTERROREVENT= "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/isInterruptingStartErrorEvent.bpmn";
     private static final String BPMN_REUSABLE_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/reusableSubprocessCalledElement.bpmn";
     private static final String BPMN_EMBEDDED_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/embeddedSubprocess.bpmn";
     private static final String BPMN_ADHOC_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/adHocSubProcess.bpmn";
@@ -641,6 +643,51 @@ public class BPMNDirectDiagramMarshallerTest {
                      endNoneEvent.getGeneral().getName().getValue());
         assertEquals("MyEndNoneEventDocumentation",
                      endNoneEvent.getGeneral().getDocumentation().getValue());
+    }
+
+    @Test
+    @Ignore
+    public void testUnmarshallIsInterruptingStartErrorEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_EVENT_SUBPROCESS_STARTERROREVENT);
+        assertDiagram(diagram,7);
+        assertEquals("EventSubprocessStartErrorEvent", diagram.getMetadata().getTitle());
+
+        // Check first start event with all FILLED properties
+        Node<? extends Definition, ?> startEventNode = diagram.getGraph().getNode("9ABD5C04-C6E2-4DF3-829F-ADB283330AD6");
+        StartErrorEvent startErrorEvent = (StartErrorEvent) startEventNode.getContent().getDefinition();
+        BPMNGeneralSet eventGeneralSet = startErrorEvent.getGeneral();
+        assertNotNull(eventGeneralSet);
+        assertEquals("StartErrorEvent", eventGeneralSet.getName().getValue());
+        assertEquals("Some not empty\nDocumentation\n~`!@#$%^&*()_+=-{}|[]\\:\";'<>/?.,",
+                     eventGeneralSet.getDocumentation().getValue());
+
+        InterruptingErrorEventExecutionSet eventExecutionSet = startErrorEvent.getExecutionSet();
+        assertNotNull(eventExecutionSet);
+        assertNotNull(eventExecutionSet.getErrorRef());
+        assertEquals("Error1", eventExecutionSet.getErrorRef().getValue());
+        assertEquals(true, eventExecutionSet.getIsInterrupting().getValue());
+
+        DataIOSet eventDataIOSet = startErrorEvent.getDataIOSet();
+        AssignmentsInfo assignmentsInfo = eventDataIOSet.getAssignmentsinfo();
+        assertEquals("||Var1:String||[dout]Var1->Var1", assignmentsInfo.getValue());
+
+        // Check second start event with all EMPTY properties
+        Node<? extends Definition, ?> emptyEventNode = diagram.getGraph().getNode("50B93E5E-C05D-40DD-BF48-2B6AE919763E");
+        StartErrorEvent emptyErrorEvent = (StartErrorEvent) emptyEventNode.getContent().getDefinition();
+        BPMNGeneralSet emptyEventGeneralSet = emptyErrorEvent.getGeneral();
+        assertNotNull(emptyEventGeneralSet);
+        assertEquals("", emptyEventGeneralSet.getName().getValue());
+        assertEquals("", emptyEventGeneralSet.getDocumentation().getValue());
+
+        InterruptingErrorEventExecutionSet emptyExecutionSet = emptyErrorEvent.getExecutionSet();
+        assertNotNull(emptyExecutionSet);
+        assertNotNull(emptyExecutionSet.getErrorRef());
+        assertEquals("", emptyExecutionSet.getErrorRef().getValue());
+        assertEquals(false, emptyExecutionSet.getIsInterrupting().getValue());
+
+        DataIOSet emptyDataIOSet = emptyErrorEvent.getDataIOSet();
+        AssignmentsInfo emptyAssignmentsInfo = emptyDataIOSet.getAssignmentsinfo();
+        assertEquals("", emptyAssignmentsInfo.getValue());
     }
 
     @Test
