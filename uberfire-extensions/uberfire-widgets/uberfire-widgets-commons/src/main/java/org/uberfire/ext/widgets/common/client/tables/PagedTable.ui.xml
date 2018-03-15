@@ -20,8 +20,7 @@
              xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
              xmlns:bg="urn:import:org.gwtbootstrap3.client.ui.gwt"
              xmlns:bh="urn:import:org.gwtbootstrap3.client.ui.html"
-             xmlns:uf="urn:import:org.uberfire.ext.widgets.table.client"
-             xmlns:s="urn:import:org.gwtbootstrap3.extras.select.client.ui">
+             xmlns:uf="urn:import:org.uberfire.ext.widgets.table.client">
 
   <ui:style>
     .dataGridContainer {
@@ -46,11 +45,6 @@
     .pager {
       margin: 0px;
     }
-
-    .pager td {
-      padding-top: 0px;
-    }
-
   </ui:style>
 
   <g:FlowPanel addStyleNames="{style.dataGridContainer}">
@@ -78,7 +72,7 @@
     </b:Row>
     <b:Row>
       <b:Column size="MD_6">
-        <s:Select ui:field="pageSizesSelector" width="100px"/>
+        <b:ListBox ui:field="pageSizesSelector" width="100px"/>
       </b:Column>
       <b:Column size="MD_6">
         <uf:UberfireSimplePager ui:field="pager" addStyleNames="pagination pagination-right pull-right {style.pager}"/>

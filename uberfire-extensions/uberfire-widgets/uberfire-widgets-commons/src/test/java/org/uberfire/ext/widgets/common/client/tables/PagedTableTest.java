@@ -24,19 +24,14 @@ import com.google.gwtmockito.WithClassesToStub;
 import org.gwtbootstrap3.client.ui.Image;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.html.Text;
-import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.mockito.Mockito.*;
-import static org.uberfire.ext.widgets.common.client.tables.PagedTable.DEFAULT_PAGE_SIZE;
 
 @RunWith(GwtMockitoTestRunner.class)
 @WithClassesToStub({Image.class, Label.class, Text.class})
 public class PagedTableTest {
-
-    @GwtMock
-    Select select;
 
     @GwtMock
     AsyncDataProvider dataProvider;
@@ -123,41 +118,4 @@ public class PagedTableTest {
         verify(pagedTable.dataGrid,
                times(1)).setPageStart(0);
     }
-
-    @Test
-    public void testPageSizeSelectStartValue() throws Exception {
-        doAnswer(invocation -> {
-            Scheduler.ScheduledCommand cmd = (Scheduler.ScheduledCommand) invocation.getArguments()[0];
-            cmd.execute();
-            return null;
-        }).when(Scheduler.get()).scheduleDeferred(any());
-
-        final int PAGE_SIZE = 10;
-
-        new PagedTable(PAGE_SIZE);
-
-        verify(select).clear();
-        verify(select, times(4)).add(any());
-        verify(select).setValue(String.valueOf(PAGE_SIZE));
-        verify(select).addValueChangeHandler(any());
-        verify(select).refresh();
-    }
-
-    @Test
-    public void testDefaultPageSizeValue() throws Exception {
-        doAnswer(invocation -> {
-            Scheduler.ScheduledCommand cmd = (Scheduler.ScheduledCommand) invocation.getArguments()[0];
-            cmd.execute();
-            return null;
-        }).when(Scheduler.get()).scheduleDeferred(any());
-
-        new PagedTable();
-
-        verify(select).clear();
-        verify(select, times(4)).add(any());
-        verify(select).setValue(String.valueOf(DEFAULT_PAGE_SIZE));
-        verify(select).addValueChangeHandler(any());
-        verify(select).refresh();
-    }
-
 }
