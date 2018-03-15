@@ -31,6 +31,7 @@ import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.bus.client.api.messaging.Message;
+import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
@@ -38,7 +39,6 @@ import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
 import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.widgets.multipage.Page;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
@@ -50,8 +50,8 @@ import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.editor.commons.client.validation.ValidationErrorReason;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -267,19 +267,48 @@ public abstract class KieEditor<T>
     @Override
     protected void makeMenuBar() {
         if (canUpdateProject()) {
-            fileMenuBuilder
-                    .addSave(versionRecordManager.newSaveMenuItem(this::saveAction))
-                    .addCopy(versionRecordManager.getCurrentPath(),
-                             assetUpdateValidator)
-                    .addRename(getSaveAndRename())
-                    .addDelete(versionRecordManager.getPathToLatest(),
-                               assetUpdateValidator);
+            addSave(fileMenuBuilder);
+            addCopy(fileMenuBuilder);
+            addRename(fileMenuBuilder);
+            addDelete(fileMenuBuilder);
         }
 
+        addCommonActions(fileMenuBuilder);
+    }
+
+    void addSave(final FileMenuBuilder fileMenuBuilder) {
+        fileMenuBuilder.addSave(versionRecordManager.newSaveMenuItem(getSaveActionCommand()));
+    }
+
+    void addCopy(final FileMenuBuilder fileMenuBuilder) {
+        fileMenuBuilder.addCopy(versionRecordManager.getCurrentPath(), assetUpdateValidator);
+    }
+
+    void addRename(final FileMenuBuilder fileMenuBuilder) {
+
+        final Optional<? extends Caller<? extends SupportsSaveAndRename<T, Metadata>>> saveAndRenameServiceCaller =
+                Optional.ofNullable(getSaveAndRenameServiceCaller());
+
+        if (saveAndRenameServiceCaller.isPresent()) {
+            fileMenuBuilder.addRename(getSaveAndRename());
+        } else {
+            fileMenuBuilder.addRename(versionRecordManager.getPathToLatest(), assetUpdateValidator);
+        }
+    }
+
+    void addDelete(final FileMenuBuilder fileMenuBuilder) {
+        fileMenuBuilder.addDelete(versionRecordManager.getPathToLatest(), assetUpdateValidator);
+    }
+
+    void addCommonActions(final FileMenuBuilder fileMenuBuilder) {
         fileMenuBuilder
                 .addValidate(onValidate())
                 .addNewTopLevelMenu(versionRecordManager.buildMenu())
                 .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
+    }
+
+    Command getSaveActionCommand() {
+        return this::saveAction;
     }
 
     @Override
@@ -328,9 +357,9 @@ public abstract class KieEditor<T>
 
     protected boolean canUpdateProject() {
         return workbenchContext
-                               .getActiveWorkspaceProject()
-                               .map(activeProject -> projectController.canUpdateProject(activeProject))
-                               .orElse(true);
+                .getActiveWorkspaceProject()
+                .map(activeProject -> projectController.canUpdateProject(activeProject))
+                .orElse(true);
     }
 
     @Override

@@ -25,6 +25,7 @@ import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
+import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,11 +34,12 @@ import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateVa
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -93,75 +95,129 @@ public class KieEditorTest {
     @InjectMocks
     protected AssetUpdateValidator assetUpdateValidator;
 
-    protected KieEditor<String> presenter;
+    protected KieEditorFake presenter;
 
     @Before
     public void setup() {
         when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
-        presenter = spy(new KieEditor<String>() {
-            {
-                fileMenuBuilder = KieEditorTest.this.fileMenuBuilder;
-                projectController = KieEditorTest.this.projectController;
-                workbenchContext = KieEditorTest.this.workbenchContext;
-                versionRecordManager = KieEditorTest.this.versionRecordManager;
-                assetUpdateValidator = KieEditorTest.this.assetUpdateValidator;
-                notification = KieEditorTest.this.notification;
-                kieView = KieEditorTest.this.kieView;
-                saveAndRenameCommandBuilder = KieEditorTest.this.saveAndRenameCommandBuilder;
-                metadata = KieEditorTest.this.metadata;
-                alertsButtonMenuItemBuilder = KieEditorTest.this.alertsButtonMenuItemBuilder;
-            }
-
-            @Override
-            protected Command getSaveAndRename() {
-                return mock(Command.class);
-            }
-
-            @Override
-            protected void loadContent() {
-            }
-
-            @Override
-            protected Supplier<String> getContentSupplier() {
-                return null;
-            }
-
-            @Override
-            protected void onSave() {
-            }
-        });
+        presenter = spy(new KieEditorFake());
     }
 
     @Test
     public void testMakeMenuBar() {
+
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
         doReturn(true).when(projectController).canUpdateProject(any());
 
         presenter.makeMenuBar();
 
-        verify(fileMenuBuilder).addSave(any(MenuItem.class));
-        verify(fileMenuBuilder).addCopy(any(Path.class), any(AssetUpdateValidator.class));
-        verify(fileMenuBuilder).addRename(any(Command.class));
-        verify(fileMenuBuilder).addDelete(any(Path.class), any(AssetUpdateValidator.class));
-        verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
+        verify(presenter).addSave(fileMenuBuilder);
+        verify(presenter).addCopy(fileMenuBuilder);
+        verify(presenter).addRename(fileMenuBuilder);
+        verify(presenter).addDelete(fileMenuBuilder);
+        verify(presenter).addCommonActions(fileMenuBuilder);
     }
 
     @Test
     public void testMakeMenuBarWithoutUpdateProjectPermission() {
+
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
         doReturn(false).when(projectController).canUpdateProject(any());
 
         presenter.makeMenuBar();
 
-        verify(fileMenuBuilder, never()).addSave(any(MenuItem.class));
-        verify(fileMenuBuilder, never()).addCopy(any(Path.class), any(AssetUpdateValidator.class));
-        verify(fileMenuBuilder, never()).addRename(any(Command.class));
-        verify(fileMenuBuilder, never()).addDelete(any(Path.class), any(AssetUpdateValidator.class));
-        verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
+        verify(presenter, never()).addSave(fileMenuBuilder);
+        verify(presenter, never()).addCopy(fileMenuBuilder);
+        verify(presenter, never()).addRename(fileMenuBuilder);
+        verify(presenter, never()).addDelete(fileMenuBuilder);
+        verify(presenter).addCommonActions(fileMenuBuilder);
     }
 
     @Test
-    public void validSaveActionTest() {
+    public void testAddSave() {
+
+        final MenuItem menuItem = mock(MenuItem.class);
+        final Command command = mock(Command.class);
+
+        doReturn(command).when(presenter).getSaveActionCommand();
+        doReturn(menuItem).when(versionRecordManager).newSaveMenuItem(command);
+
+        presenter.addSave(fileMenuBuilder);
+
+        verify(fileMenuBuilder).addSave(menuItem);
+    }
+
+    @Test
+    public void testAddCopy() {
+
+        final ObservablePath observablePath = mock(ObservablePath.class);
+
+        doReturn(observablePath).when(versionRecordManager).getCurrentPath();
+
+        presenter.addCopy(fileMenuBuilder);
+
+        verify(fileMenuBuilder).addCopy(observablePath, assetUpdateValidator);
+    }
+
+    @Test
+    public void testAddRenameWhenSaveAndRenameIsEnabled() {
+
+        final Caller saveAndRenameCaller = mock(Caller.class);
+        final Command command = mock(Command.class);
+
+        doReturn(saveAndRenameCaller).when(presenter).getSaveAndRenameServiceCaller();
+        doReturn(command).when(presenter).getSaveAndRename();
+
+        presenter.addRename(fileMenuBuilder);
+
+        verify(fileMenuBuilder).addRename(command);
+    }
+
+    @Test
+    public void testAddRenameWhenSaveAndRenameIsNotEnabled() {
+
+        final ObservablePath observablePath = mock(ObservablePath.class);
+
+        doReturn(observablePath).when(versionRecordManager).getPathToLatest();
+        doReturn(null).when(presenter).getSaveAndRenameServiceCaller();
+
+        presenter.addRename(fileMenuBuilder);
+
+        verify(fileMenuBuilder).addRename(observablePath, assetUpdateValidator);
+    }
+
+    @Test
+    public void testAddDelete() {
+
+        final ObservablePath observablePath = mock(ObservablePath.class);
+
+        doReturn(observablePath).when(versionRecordManager).getPathToLatest();
+
+        presenter.addDelete(fileMenuBuilder);
+
+        verify(fileMenuBuilder).addDelete(observablePath, assetUpdateValidator);
+    }
+
+    @Test
+    public void testAddCommonActions() {
+
+        final Command onValidate = mock(Command.class);
+        final MenuItem buildMenu = mock(MenuItem.class);
+        final MenuItem build = mock(MenuItem.class);
+
+        doReturn(onValidate).when(presenter).onValidate();
+        doReturn(buildMenu).when(versionRecordManager).buildMenu();
+        doReturn(build).when(alertsButtonMenuItemBuilder).build();
+
+        presenter.addCommonActions(fileMenuBuilder);
+
+        verify(fileMenuBuilder).addValidate(onValidate);
+        verify(fileMenuBuilder).addNewTopLevelMenu(buildMenu);
+        verify(fileMenuBuilder).addNewTopLevelMenu(build);
+    }
+
+    @Test
+    public void testValidSaveAction() {
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
         doReturn(true).when(projectController).canUpdateProject(any());
 
@@ -171,7 +227,7 @@ public class KieEditorTest {
     }
 
     @Test
-    public void notAllowedSaveActionTest() {
+    public void testNotAllowedSaveAction() {
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
         doReturn(false).when(projectController).canUpdateProject(any());
         doReturn("not-allowed").when(kieView).getNotAllowedSavingMessage();
@@ -198,5 +254,49 @@ public class KieEditorTest {
         final Validator renameValidator = presenter.getRenameValidator();
 
         assertEquals(assetUpdateValidator, renameValidator);
+    }
+
+    class KieEditorFake extends KieEditor<String> {
+
+        public KieEditorFake() {
+            fileMenuBuilder = KieEditorTest.this.fileMenuBuilder;
+            projectController = KieEditorTest.this.projectController;
+            workbenchContext = KieEditorTest.this.workbenchContext;
+            versionRecordManager = KieEditorTest.this.versionRecordManager;
+            assetUpdateValidator = KieEditorTest.this.assetUpdateValidator;
+            notification = KieEditorTest.this.notification;
+            kieView = KieEditorTest.this.kieView;
+            saveAndRenameCommandBuilder = KieEditorTest.this.saveAndRenameCommandBuilder;
+            metadata = KieEditorTest.this.metadata;
+            alertsButtonMenuItemBuilder = KieEditorTest.this.alertsButtonMenuItemBuilder;
+        }
+
+        @Override
+        protected Command getSaveAndRename() {
+            return mock(Command.class);
+        }
+
+        @Override
+        protected void loadContent() {
+        }
+
+        @Override
+        protected Supplier<String> getContentSupplier() {
+            return null;
+        }
+
+        @Override
+        protected void onSave() {
+        }
+
+        @Override
+        protected Caller<? extends SupportsSaveAndRename<String, Metadata>> getSaveAndRenameServiceCaller() {
+            return super.getSaveAndRenameServiceCaller();
+        }
+
+        @Override
+        protected Command onValidate() {
+            return super.onValidate();
+        }
     }
 }
