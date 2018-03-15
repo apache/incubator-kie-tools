@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -33,8 +34,15 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 
+import static org.uberfire.client.promise.PromiseBootstrapper.ensurePromiseApiIsAvailable;
+
 @Dependent
 public class Promises {
+
+    @PostConstruct
+    public void init() {
+        ensurePromiseApiIsAvailable();
+    }
 
     // Reducers
 
