@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.svg.gen.translator.impl;
 
-import org.kie.workbench.common.stunner.core.util.UUID;
 import org.kie.workbench.common.stunner.svg.gen.exception.TranslatorException;
 import org.kie.workbench.common.stunner.svg.gen.model.PrimitiveDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.ShapeDefinition;
@@ -41,7 +40,7 @@ public class SVGGroupTranslator
     protected GroupDefinition doTranslate(final Element element,
                                           final SVGTranslatorContext context) throws TranslatorException {
 
-        final String id = getOrSetId(element);
+        final String id = getId(element);
         final GroupDefinition groupDefinition = new GroupDefinition(id);
         final NodeList childNodes = element.getChildNodes();
         if (null != childNodes && childNodes.getLength() > 0) {
@@ -68,17 +67,6 @@ public class SVGGroupTranslator
             }
         }
         return groupDefinition;
-    }
-
-    private String getOrSetId(final Element element) {
-        final String id = getId(element);
-        if (null == id || id.trim().length() == 0) {
-            final String uuid = UUID.uuid(4);
-            element.setAttribute(ID,
-                                 uuid);
-            return uuid;
-        }
-        return id;
     }
 
     @Override

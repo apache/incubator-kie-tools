@@ -38,17 +38,9 @@ public class ContainerShape<W, D extends ShapeViewDef<W, V>, V extends ShapeView
     private final List<S> children = new LinkedList<S>();
 
     public ContainerShape(final D shapeDef,
-                          final V view) {
+                          final AbstractShape<V> shape) {
         super(shapeDef,
-              view);
-    }
-
-    public ContainerShape(final D shapeDef,
-                          final V view,
-                          final ShapeStateHandler<V, Shape<V>> shapeStateHelper) {
-        super(shapeDef,
-              view,
-              shapeStateHelper);
+              shape);
     }
 
     @Override

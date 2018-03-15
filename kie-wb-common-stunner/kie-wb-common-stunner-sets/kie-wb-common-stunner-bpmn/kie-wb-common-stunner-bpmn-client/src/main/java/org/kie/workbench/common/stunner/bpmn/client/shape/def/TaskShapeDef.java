@@ -56,9 +56,9 @@ public class TaskShapeDef extends BaseDimensionedShapeDef
         return newSizeHandlerBuilder()
                 .width(task -> task.getDimensionsSet().getWidth().getValue())
                 .height(task -> task.getDimensionsSet().getHeight().getValue())
-                .minWidth(task -> 25d)
+                .minWidth(task -> 50d)
                 .maxWidth(task -> 400d)
-                .minHeight(task -> 25d)
+                .minHeight(task -> 50d)
                 .maxHeight(task -> 400d)
                 .build();
     }

@@ -16,30 +16,27 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.impl;
 
-import org.kie.workbench.common.stunner.core.client.shape.Lifecycle;
-import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
-public abstract class ShapeWrapper<V extends ShapeView, S extends Shape<V>>
-        implements
-        Shape<V>,
-        Lifecycle {
+public abstract class ShapeWrapper<V extends ShapeView, S extends AbstractShape<V>>
+        extends AbstractShape<V> {
 
     protected abstract S getWrappedShape();
 
     @Override
+    public ShapeStateHandler getShapeStateHandler() {
+        return getWrappedShape().getShapeStateHandler();
+    }
+
+    @Override
     public void beforeDraw() {
-        if (getWrappedShape() instanceof Lifecycle) {
-            ((Lifecycle) getWrappedShape()).beforeDraw();
-        }
+        getWrappedShape().beforeDraw();
     }
 
     @Override
     public void afterDraw() {
-        if (getWrappedShape() instanceof Lifecycle) {
-            ((Lifecycle) getWrappedShape()).afterDraw();
-        }
+        getWrappedShape().afterDraw();
     }
 
     @Override

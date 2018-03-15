@@ -36,7 +36,7 @@ import static org.mockito.Mockito.verify;
 public class ShapeImplTest {
 
     @Mock
-    private ShapeStateStrokeHandler shapeStateHandler;
+    private ShapeStateHandler shapeStateHandler;
 
     private ShapeViewExtStub view;
     private ShapeImpl<ShapeView> tested;
@@ -47,8 +47,6 @@ public class ShapeImplTest {
         this.view = spy(new ShapeViewExtStub());
         this.tested = new ShapeImpl<ShapeView>(view,
                                                shapeStateHandler);
-        verify(shapeStateHandler,
-               times(1)).forShape(eq(tested));
     }
 
     @Test
@@ -71,7 +69,7 @@ public class ShapeImplTest {
     public void testApplyState() {
         tested.applyState(ShapeState.NONE);
         verify(shapeStateHandler,
-               never()).shapeUpdated();
+               never()).shapeAttributesChanged();
         verify(shapeStateHandler,
                times(1)).applyState(eq(ShapeState.NONE));
     }

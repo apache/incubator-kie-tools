@@ -17,24 +17,17 @@
 package org.kie.workbench.common.stunner.cm.client.shape;
 
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
-import org.kie.workbench.common.stunner.client.lienzo.shape.impl.AnimatedShapeStateStrokeHandler;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementShapeDef;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.shapes.client.BasicContainerShape;
 
-public class AbstractCMContainerShape<W extends BPMNViewDefinition, D extends CaseManagementShapeDef<W, V>, V extends ShapeView>
+public class AbstractCMContainerShape<W extends BPMNViewDefinition, D extends CaseManagementShapeDef<W, V>, V extends LienzoShapeView<?>>
         extends BasicContainerShape<W, D, V> {
 
-    private static final double ACTIVE_STROKE_WIDTH = 1d;
-
+    @SuppressWarnings("unchecked")
     public AbstractCMContainerShape(final D shapeDef,
                                     final V view) {
         super(shapeDef,
-              view,
-              new AnimatedShapeStateStrokeHandler<>());
-        ((AnimatedShapeStateStrokeHandler) getShape()
-                .getShapeStateHandler())
-                .getWrapped()
-                .setStrokeWidthForActiveState(ACTIVE_STROKE_WIDTH);
+              view);
     }
 }

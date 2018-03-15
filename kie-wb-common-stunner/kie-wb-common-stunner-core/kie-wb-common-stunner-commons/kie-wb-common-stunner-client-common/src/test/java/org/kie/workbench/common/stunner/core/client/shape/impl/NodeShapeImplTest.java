@@ -23,7 +23,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
-import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeViewExtStub;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
@@ -62,7 +61,7 @@ public class NodeShapeImplTest {
     private BiConsumer<String, ShapeView> titleHandler;
 
     @Mock
-    private ShapeStateHandler<ShapeView, Shape<ShapeView>> shapeStateHandler;
+    private ShapeStateHandler shapeStateHandler;
 
     @Mock
     private Node<View<Object>, Edge> element;
@@ -81,7 +80,7 @@ public class NodeShapeImplTest {
 
     @Before
     public void setup() throws Exception {
-        when(shapeStateHandler.shapeUpdated()).thenReturn(shapeStateHandler);
+        when(shapeStateHandler.shapeAttributesChanged()).thenReturn(shapeStateHandler);
         when(def.titleHandler()).thenReturn(Optional.of(titleHandler));
         when(def.fontHandler()).thenReturn(Optional.of(fontHandler));
         when(def.sizeHandler()).thenReturn(Optional.of(sizeHandler));
@@ -97,8 +96,8 @@ public class NodeShapeImplTest {
         this.view = spy(new ShapeViewExtStub());
 
         this.tested = new NodeShapeImpl<>(def,
-                                          view,
-                                          shapeStateHandler);
+                                          new ShapeImpl<>(view,
+                                                          shapeStateHandler));
     }
 
     @Test
@@ -117,7 +116,7 @@ public class NodeShapeImplTest {
         verify(shapeStateHandler,
                times(1)).reset();
         verify(shapeStateHandler,
-               times(1)).shapeUpdated();
+               times(1)).shapeAttributesChanged();
         verify(shapeStateHandler,
                times(1)).applyState(eq(ShapeState.NONE));
         verify(viewHandler,

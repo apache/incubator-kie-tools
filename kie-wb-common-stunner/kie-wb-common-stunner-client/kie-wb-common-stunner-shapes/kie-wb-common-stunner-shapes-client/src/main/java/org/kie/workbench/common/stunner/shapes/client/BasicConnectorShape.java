@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.shapes.client;
 
-import org.kie.workbench.common.stunner.client.lienzo.shape.impl.AnimatedShapeStateStrokeHandler;
+import org.kie.workbench.common.stunner.client.lienzo.shape.impl.ShapeStateDefaultHandler;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresConnectorViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
@@ -26,11 +26,15 @@ import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 public class BasicConnectorShape<W, D extends ShapeViewDef<W, V>, V extends WiresConnectorViewExt>
         extends ConnectorShape<W, D, V> {
 
+    @SuppressWarnings("unchecked")
     public BasicConnectorShape(D shapeDef,
                                V view) {
         super(shapeDef,
               view,
-              new AnimatedShapeStateStrokeHandler<>());
+              new ShapeStateDefaultHandler()
+                      .setRenderType(ShapeStateDefaultHandler.RenderType.STROKE)
+                      .setBorderShape(() -> view)
+                      .setBackgroundShape(() -> view));
     }
 
     @Override

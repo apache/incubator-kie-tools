@@ -76,6 +76,6 @@ public class StunnerWiresControlFactory implements WiresControlFactory {
 
     @Override
     public WiresShapeHighlight<PickerPart.ShapePart> newShapeHighlight(final WiresManager wiresManager) {
-        return new StunnerWiresShapeHighlight(wiresManager);
+        return new StunnerWiresShapeStateHighlight(wiresManager);
     }
 }

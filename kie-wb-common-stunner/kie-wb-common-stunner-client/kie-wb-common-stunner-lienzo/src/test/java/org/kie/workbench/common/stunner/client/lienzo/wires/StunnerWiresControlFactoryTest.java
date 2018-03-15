@@ -128,6 +128,6 @@ public class StunnerWiresControlFactoryTest {
     public void testNewShapeHighlight() {
         final WiresShapeHighlight<PickerPart.ShapePart> instance = tested.newShapeHighlight(wiresManager);
         assertNotNull(instance);
-        assertTrue(instance instanceof StunnerWiresShapeHighlight);
+        assertTrue(instance instanceof StunnerWiresShapeStateHighlight);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.svg.client.shape.view;
+package org.kie.workbench.common.stunner.core.client.shape.view;
 
-import java.util.function.BiConsumer;
+public interface HasShadow<T> {
 
-import com.ait.lienzo.client.core.shape.Shape;
+    T setShadow(final String color,
+                int blur,
+                double offx,
+                double offy);
 
-public interface SVGPrimitivePolicy extends BiConsumer<SVGBasicShapeView, Shape<?>> {
-
+    T removeShadow();
 }

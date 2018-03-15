@@ -16,15 +16,16 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.view.handler;
 
-import java.util.Collections;
-
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -35,53 +36,69 @@ public class EventInterruptingViewHandlerTest extends EventViewHandlerTestBase {
     @Before
     @SuppressWarnings("unchecked")
     public void init() {
-        when(prim.getId()).thenReturn(EventCancelActivityViewHandler.INTERMEDIATE_CIRCLE_ID);
-        when(prim.get()).thenReturn(circle);
-        when(view.getChildren()).thenReturn(Collections.singletonList(prim));
+        super.init();
+        when(child1.getId()).thenReturn(EventInterruptingViewHandler.ID_START);
+        when(child2.getId()).thenReturn(EventInterruptingViewHandler.ID_START_NON_INTERRUPTING);
         tested = new EventInterruptingViewHandler();
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testHandleTimerIsNotInterrupting() {
-        final StartTimerEvent bean =
-                new StartTimerEvent.StartTimerEventBuilder().build();
+        final StartTimerEvent bean = new StartTimerEvent.StartTimerEventBuilder().build();
         bean.getExecutionSet().getIsInterrupting().setValue(false);
-        tested.handle(bean,
-                      view);
-        verifyCircleDashed(circle);
+        tested.handle(bean, view);
+        verify(prim1).setAlpha(eq(0d));
+        verify(prim2).setAlpha(eq(1d));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testHandleTimerIsInterrupting() {
-        final StartTimerEvent bean =
-                new StartTimerEvent.StartTimerEventBuilder().build();
+        final StartTimerEvent bean = new StartTimerEvent.StartTimerEventBuilder().build();
         bean.getExecutionSet().getIsInterrupting().setValue(true);
-        tested.handle(bean,
-                      view);
-        verifyCircleNotDashed(circle);
+        tested.handle(bean, view);
+        verify(prim1).setAlpha(eq(1d));
+        verify(prim2).setAlpha(eq(0d));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testHandleMessageEventIsNotInterrupting() {
-        final StartMessageEvent bean =
-                new StartMessageEvent.StartMessageEventBuilder().build();
+        final StartMessageEvent bean = new StartMessageEvent.StartMessageEventBuilder().build();
         bean.getExecutionSet().getIsInterrupting().setValue(false);
-        tested.handle(bean,
-                      view);
-        verifyCircleDashed(circle);
+        tested.handle(bean, view);
+        verify(prim1).setAlpha(eq(0d));
+        verify(prim2).setAlpha(eq(1d));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testHandleMessageEventIsInterrupting() {
-        final StartMessageEvent bean =
-                new StartMessageEvent.StartMessageEventBuilder().build();
+        final StartMessageEvent bean = new StartMessageEvent.StartMessageEventBuilder().build();
         bean.getExecutionSet().getIsInterrupting().setValue(true);
-        tested.handle(bean,
-                      view);
-        verifyCircleNotDashed(circle);
+        tested.handle(bean, view);
+        verify(prim1).setAlpha(eq(1d));
+        verify(prim2).setAlpha(eq(0d));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testHandleSignalEventIsNotInterrupting() {
+        final StartSignalEvent bean = new StartSignalEvent.StartSignalEventBuilder().build();
+        bean.getExecutionSet().getIsInterrupting().setValue(false);
+        tested.handle(bean, view);
+        verify(prim1).setAlpha(eq(0d));
+        verify(prim2).setAlpha(eq(1d));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testHandleSignalEventIsInterrupting() {
+        final StartSignalEvent bean = new StartSignalEvent.StartSignalEventBuilder().build();
+        bean.getExecutionSet().getIsInterrupting().setValue(true);
+        tested.handle(bean, view);
+        verify(prim1).setAlpha(eq(1d));
+        verify(prim2).setAlpha(eq(0d));
     }
 }

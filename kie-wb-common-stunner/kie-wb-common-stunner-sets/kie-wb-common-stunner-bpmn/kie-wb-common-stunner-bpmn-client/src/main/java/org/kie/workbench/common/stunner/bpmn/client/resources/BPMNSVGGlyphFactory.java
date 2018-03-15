@@ -171,7 +171,7 @@ public interface BPMNSVGGlyphFactory {
                     .create()
                     .setUri(BPMNImageResources.INSTANCE.subProcess().getSafeUri())
                     .addUri("subProcessEmbedded",
-                            BPMNImageResources.INSTANCE.subProcessAdHoc().getSafeUri())
+                            BPMNImageResources.INSTANCE.subProcessEmbedded().getSafeUri())
                     .build("subProcessEmbedded");
 
     SvgDataUriGlyph ADHOC_SUBPROCESS_GLYPH =

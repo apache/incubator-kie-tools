@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.core.client.shape.impl;
 import org.kie.workbench.common.stunner.core.client.shape.Lifecycle;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.NodeShape;
-import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
@@ -31,7 +30,7 @@ import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 /**
  * The default Shape implementation for nodes. It acts as the bridge between a node and the shape view.
- * <p/>
+ * <p>
  * This implementation relies on ShapeDefinitions. This way provides the bridge between the node and it's
  * bean definition instance, and delegates the interaction logic between the definition instance and the shape's
  * view to a ShapeDefViewHandler type.
@@ -44,18 +43,17 @@ public class NodeShapeImpl<W, D extends ShapeViewDef<W, V>, V extends ShapeView>
         implements NodeShape<W, View<W>, Node<View<W>, Edge>, V>,
                    Lifecycle {
 
-    public NodeShapeImpl(final D shapeDef,
-                         final V view) {
-        super(shapeDef,
-              view);
-    }
+    private final AbstractShape<V> shape;
 
     public NodeShapeImpl(final D shapeDef,
-                         final V view,
-                         final ShapeStateHandler<V, Shape<V>> shapeStateHelper) {
-        super(shapeDef,
-              view,
-              shapeStateHelper);
+                         final AbstractShape<V> shape) {
+        super(shapeDef);
+        this.shape = shape;
+    }
+
+    @Override
+    protected AbstractShape<V> getShape() {
+        return shape;
     }
 
     @Override

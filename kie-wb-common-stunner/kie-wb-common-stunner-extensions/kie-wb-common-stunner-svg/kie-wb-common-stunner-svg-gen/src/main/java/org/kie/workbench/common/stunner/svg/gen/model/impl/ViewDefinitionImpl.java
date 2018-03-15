@@ -17,8 +17,10 @@
 package org.kie.workbench.common.stunner.svg.gen.model.impl;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 import org.kie.workbench.common.stunner.svg.gen.model.LayoutDefinition;
@@ -28,7 +30,6 @@ import org.kie.workbench.common.stunner.svg.gen.model.StyleSheetDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.TransformDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.ViewDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.ViewRefDefinition;
-import org.kie.workbench.common.stunner.svg.gen.model.ViewShapeStateDefinition;
 
 public class ViewDefinitionImpl implements ViewDefinition<SVGShapeView> {
 
@@ -39,13 +40,13 @@ public class ViewDefinitionImpl implements ViewDefinition<SVGShapeView> {
     private final double y;
     private final double width;
     private final double height;
-    private final ViewShapeStateDefinition shapeStateDefinition;
     private final ViewBoxDefinition viewBox;
     private final StyleSheetDefinition globalStyleSheetDefinition;
     private TransformDefinition transformDefinition;
     private String id;
     private String factoryMethodName;
     private String path;
+    private final Map<String, String> staticFields;
 
     public ViewDefinitionImpl(final String id,
                               final double x,
@@ -54,10 +55,8 @@ public class ViewDefinitionImpl implements ViewDefinition<SVGShapeView> {
                               final double height,
                               final StyleSheetDefinition globalStyleSheetDefinition,
                               final ViewBoxDefinition viewBox,
-                              final ViewShapeStateDefinition shapeStateDefinition,
                               final ShapeDefinition main,
                               final PrimitiveDefinition... children) {
-        this.shapeStateDefinition = shapeStateDefinition;
         this.viewBox = viewBox;
         this.id = id;
         this.x = x;
@@ -66,6 +65,7 @@ public class ViewDefinitionImpl implements ViewDefinition<SVGShapeView> {
         this.height = height;
         this.main = main;
         this.globalStyleSheetDefinition = globalStyleSheetDefinition;
+        this.staticFields = new LinkedHashMap<>();
         if (null != children) {
             Collections.addAll(this.children,
                                children);
@@ -107,11 +107,6 @@ public class ViewDefinitionImpl implements ViewDefinition<SVGShapeView> {
     @Override
     public List<PrimitiveDefinition> getChildren() {
         return children;
-    }
-
-    @Override
-    public ViewShapeStateDefinition getShapeStateDefinition() {
-        return shapeStateDefinition;
     }
 
     @Override
@@ -185,6 +180,10 @@ public class ViewDefinitionImpl implements ViewDefinition<SVGShapeView> {
 
     public StyleSheetDefinition getGlobalStyleSheetDefinition() {
         return globalStyleSheetDefinition;
+    }
+
+    public Map<String, String> getStaticFields() {
+        return staticFields;
     }
 
     @Override

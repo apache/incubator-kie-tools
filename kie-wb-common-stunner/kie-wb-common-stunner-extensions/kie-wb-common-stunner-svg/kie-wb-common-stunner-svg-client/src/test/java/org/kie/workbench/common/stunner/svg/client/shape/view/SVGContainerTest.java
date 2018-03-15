@@ -23,7 +23,6 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.svg.client.shape.view.impl.SVGPrimitivePolicies;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -40,8 +39,7 @@ public class SVGContainerTest {
     public void setup() throws Exception {
         group = new Group().setID("cont1");
         rectangle = new Rectangle(10d, 10d).setID("rect1");
-        someShape = new SVGPrimitiveShape(rectangle,
-                                          SVGPrimitivePolicies.Builder.buildNonePolicy());
+        someShape = new SVGPrimitiveShape(rectangle);
         tested = new SVGContainer("cont1",
                                   group,
                                   true,

@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.core.client.shape.impl;
 import org.kie.workbench.common.stunner.core.client.shape.ElementShape;
 import org.kie.workbench.common.stunner.core.client.shape.Lifecycle;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
-import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeViewHandlersDef;
@@ -31,34 +30,22 @@ public abstract class AbstractElementShape<W, C extends View<W>, E extends Eleme
         implements ElementShape<W, C, E, V>,
                    Lifecycle {
 
-    private final ShapeImpl<V> shape;
     private final ShapeViewHandlersDef<W, V, D> shapeHandlersDef;
 
-    protected AbstractElementShape(final D shapeDef,
-                                   final V view) {
+    protected AbstractElementShape(final D shapeDef) {
         this.shapeHandlersDef = new ShapeViewHandlersDef<>(shapeDef);
-        this.shape = new ShapeImpl<V>(view,
-                                      new ShapeStateStrokeHandler<>());
-        getShape().getShapeStateHandler().forShape(this);
     }
 
-    protected AbstractElementShape(final D shapeDef,
-                                   final V view,
-                                   final ShapeStateHandler<V, Shape<V>> shapeStateHelper) {
-        this.shapeHandlersDef = new ShapeViewHandlersDef<>(shapeDef);
-        this.shape = new ShapeImpl<V>(view,
-                                      shapeStateHelper);
-        getShape().getShapeStateHandler().forShape(this);
-    }
+    protected abstract AbstractShape<V> getShape();
 
     @Override
     public void setUUID(final String uuid) {
-        shape.setUUID(uuid);
+        getShape().setUUID(uuid);
     }
 
     @Override
     public String getUUID() {
-        return shape.getUUID();
+        return getShape().getUUID();
     }
 
     @Override
@@ -75,12 +62,12 @@ public abstract class AbstractElementShape<W, C extends View<W>, E extends Eleme
 
     @Override
     public void beforeDraw() {
-        shape.beforeDraw();
+        getShape().beforeDraw();
     }
 
     @Override
     public void afterDraw() {
-        shape.afterDraw();
+        getShape().afterDraw();
     }
 
     @Override
@@ -99,7 +86,7 @@ public abstract class AbstractElementShape<W, C extends View<W>, E extends Eleme
                 .ifPresent(h -> h.accept(element.getContent(), getShapeView()));
         getShape()
                 .getShapeStateHandler()
-                .shapeUpdated()
+                .shapeAttributesChanged()
                 .applyState(shapeState);
     }
 
@@ -109,16 +96,12 @@ public abstract class AbstractElementShape<W, C extends View<W>, E extends Eleme
 
     @Override
     public V getShapeView() {
-        return shape.getShapeView();
+        return getShape().getShapeView();
     }
 
     @Override
     public void destroy() {
-        shape.destroy();
-    }
-
-    public ShapeImpl<V> getShape() {
-        return shape;
+        getShape().destroy();
     }
 
     public ShapeViewHandlersDef<W, V, D> getShapeHandlersDef() {

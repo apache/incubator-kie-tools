@@ -28,6 +28,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.types.Shadow;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
@@ -274,5 +275,23 @@ public class WiresShapeView<T> extends WiresShape
     @SuppressWarnings("unchecked")
     private T cast() {
         return (T) this;
+    }
+
+    @Override
+    public T setShadow(final String color,
+                       final int blur,
+                       final double offx,
+                       final double offy) {
+        getShape().setShadow(new Shadow(color,
+                                        blur,
+                                        offx,
+                                        offx));
+        return cast();
+    }
+
+    @Override
+    public T removeShadow() {
+        getShape().setShadow(null);
+        return cast();
     }
 }

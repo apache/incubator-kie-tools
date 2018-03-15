@@ -22,6 +22,8 @@ import org.kie.workbench.common.stunner.cm.client.shape.view.NullView;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.impl.AbstractElementShape;
+import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeImpl;
+import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateAttributeHandler;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -29,10 +31,20 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 public class NullShape
         extends AbstractElementShape<BPMNViewDefinition, View<BPMNViewDefinition>, Node<View<BPMNViewDefinition>, Edge>, NullShapeDef, NullView> {
 
+    private final ShapeImpl<NullView> shape;
+
+    @SuppressWarnings("unchecked")
     public NullShape(final NullShapeDef shapeDef,
                      final NullView view) {
-        super(shapeDef,
-              view);
+        super(shapeDef);
+        this.shape = new ShapeImpl<>(view,
+                                     new ShapeStateAttributeHandler<NullView>()
+                                             .setView(() -> view));
+    }
+
+    @Override
+    protected ShapeImpl<NullView> getShape() {
+        return shape;
     }
 
     @Override

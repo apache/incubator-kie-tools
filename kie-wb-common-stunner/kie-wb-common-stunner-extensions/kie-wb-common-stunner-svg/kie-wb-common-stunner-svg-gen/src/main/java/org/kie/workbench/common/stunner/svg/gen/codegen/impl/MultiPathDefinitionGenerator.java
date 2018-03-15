@@ -31,13 +31,12 @@ public class MultiPathDefinitionGenerator
 
     @Override
     public StringBuffer doGenerate(final MultiPathDefinition input) throws GeneratorException {
-        final String path = input.getPath();
         final Map<String, Object> root = new HashMap<String, Object>();
-
         root.put("className",
                  MultiPath.class.getName());
-        root.put("path",
-                 path);
+        root.put("pathInstanceId",
+                 SVGViewFactoryGenerator.getStaticFieldValidId(input.getId()));
+
         // Generate the code using the given template.
         try {
             return writeTemplate(root);

@@ -33,7 +33,8 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler
 import org.uberfire.mvp.Command;
 
 // TODO: (Roger) Refactor use of inner text child as done in WiresShapeViewExt.
-public class WiresConnectorViewExt<T> extends WiresConnectorView<T>
+public class WiresConnectorViewExt<T>
+        extends WiresConnectorView<T>
         implements
         HasTitle<T>,
         HasEventHandlers<T, Shape<?>> {

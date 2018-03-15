@@ -78,8 +78,7 @@ public class SVGChildViewHandlerTest {
 
     @Test
     public void testAddChild() {
-        primitiveShape = new SVGPrimitiveShape(rectangle,
-                                               SVGPrimitivePolicies.Builder.buildNonePolicy());
+        primitiveShape = new SVGPrimitiveShape(rectangle);
         tested.addChild(primitiveShape);
         verify(shapeView, times(1)).addChild(eq(rectangle));
         assertEquals(1,
@@ -92,8 +91,7 @@ public class SVGChildViewHandlerTest {
     public void testAddChildScalable() {
         primitiveShape = new SVGPrimitiveShape(rectangle,
                                                true,
-                                               null,
-                                               SVGPrimitivePolicies.Builder.buildNonePolicy());
+                                               null);
         tested.addChild(primitiveShape);
         verify(shapeView, times(1)).addScalableChild(eq(rectangle));
         assertEquals(1,
@@ -106,8 +104,7 @@ public class SVGChildViewHandlerTest {
     public void testAddChildLayout() {
         primitiveShape = new SVGPrimitiveShape(rectangle,
                                                false,
-                                               LayoutContainer.Layout.BOTTOM,
-                                               SVGPrimitivePolicies.Builder.buildNonePolicy());
+                                               LayoutContainer.Layout.BOTTOM);
         tested.addChild(primitiveShape);
         verify(shapeView, times(1)).addChild(eq(rectangle), eq(LayoutContainer.Layout.BOTTOM));
         assertEquals(1,

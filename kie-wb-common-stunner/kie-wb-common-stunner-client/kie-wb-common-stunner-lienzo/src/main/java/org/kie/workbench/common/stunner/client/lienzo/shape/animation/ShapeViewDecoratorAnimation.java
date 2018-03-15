@@ -28,25 +28,57 @@ import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView
 import org.kie.workbench.common.stunner.core.client.animation.AbstractAnimation;
 import org.kie.workbench.common.stunner.core.client.animation.AnimationHandle;
 
+import static com.ait.lienzo.client.core.animation.AnimationProperty.Properties.FILL_ALPHA;
+import static com.ait.lienzo.client.core.animation.AnimationProperty.Properties.FILL_COLOR;
 import static com.ait.lienzo.client.core.animation.AnimationProperty.Properties.STROKE_ALPHA;
 import static com.ait.lienzo.client.core.animation.AnimationProperty.Properties.STROKE_COLOR;
 import static com.ait.lienzo.client.core.animation.AnimationProperty.Properties.STROKE_WIDTH;
 
 public class ShapeViewDecoratorAnimation extends AbstractAnimation<LienzoShapeView<?>> {
 
+    private final boolean isStrokeNotFill;
     private final Supplier<LienzoShapeView<?>> shapeView;
     private final String color;
+    private final double alpha;
     private final double strokeWidth;
-    private final double strokeAlpha;
 
-    public ShapeViewDecoratorAnimation(final Supplier<LienzoShapeView<?>> shapeView,
-                                       final String color,
-                                       final double strokeWidth,
-                                       final double strokeAlpha) {
+    public static ShapeViewDecoratorAnimation newStrokeDecoratorAnimation(final Supplier<LienzoShapeView<?>> shapeView,
+                                                                          final String strokeColor,
+                                                                          final double strokeWidth,
+                                                                          final double strokeAlpha) {
+        return new ShapeViewDecoratorAnimation(shapeView,
+                                               strokeColor,
+                                               strokeWidth,
+                                               strokeAlpha);
+    }
+
+    public static ShapeViewDecoratorAnimation newFillDecoratorAnimation(final Supplier<LienzoShapeView<?>> shapeView,
+                                                                        final String fillColor,
+                                                                        final double fillAlpha) {
+        return new ShapeViewDecoratorAnimation(shapeView,
+                                               fillColor,
+                                               fillAlpha);
+    }
+
+    ShapeViewDecoratorAnimation(final Supplier<LienzoShapeView<?>> shapeView,
+                                final String fillColor,
+                                final double fillAlpha) {
+        this.isStrokeNotFill = false;
         this.shapeView = shapeView;
-        this.color = color;
+        this.color = fillColor;
+        this.alpha = fillAlpha;
+        this.strokeWidth = 0;
+    }
+
+    ShapeViewDecoratorAnimation(final Supplier<LienzoShapeView<?>> shapeView,
+                                final String strokeColor,
+                                final double strokeWidth,
+                                final double strokeAlpha) {
+        this.isStrokeNotFill = true;
+        this.shapeView = shapeView;
+        this.color = strokeColor;
+        this.alpha = strokeAlpha;
         this.strokeWidth = strokeWidth;
-        this.strokeAlpha = strokeAlpha;
     }
 
     @Override
@@ -96,16 +128,20 @@ public class ShapeViewDecoratorAnimation extends AbstractAnimation<LienzoShapeVi
         return strokeWidth;
     }
 
-    public double getStrokeAlpha() {
-        return strokeAlpha;
+    public double getAlpha() {
+        return alpha;
     }
 
     private IAnimationHandle animate(final com.ait.lienzo.client.core.shape.Shape<?> shape) {
+        final AnimationProperties properties = isStrokeNotFill ?
+                AnimationProperties.toPropertyList(STROKE_COLOR(color),
+                                                   STROKE_ALPHA(alpha),
+                                                   STROKE_WIDTH(strokeWidth)) :
+                AnimationProperties.toPropertyList(FILL_COLOR(color),
+                                                   FILL_ALPHA(alpha));
         return shape.animate(
                 AnimationTweener.LINEAR,
-                AnimationProperties.toPropertyList(STROKE_COLOR(color),
-                                                   STROKE_ALPHA(strokeAlpha),
-                                                   STROKE_WIDTH(strokeWidth)),
+                properties,
                 getDuration(),
                 getAnimationCallback());
     }

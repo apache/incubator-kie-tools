@@ -48,14 +48,12 @@ public class SVGShapeViewImplTest {
                                        false,
                                        null);
         rectangle = new Rectangle(10d, 10d);
-        this.childShape = new SVGPrimitiveShape(new Rectangle(10d, 10d),
-                                                SVGPrimitivePolicies.Builder.buildNonePolicy());
+        this.childShape = new SVGPrimitiveShape(new Rectangle(10d, 10d));
         this.child = new SVGBasicShapeViewImpl("svgChild1",
                                                childShape,
                                                50d,
                                                23d);
-        this.shape = new SVGPrimitiveShape(rectangle,
-                                           SVGPrimitivePolicies.Builder.buildNonePolicy());
+        this.shape = new SVGPrimitiveShape(rectangle);
         this.tested = new SVGShapeViewImpl("svg-test1",
                                            shape,
                                            100,

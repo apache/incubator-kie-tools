@@ -17,6 +17,8 @@
 package org.kie.workbench.common.stunner.svg.client.shape.view;
 
 import com.ait.lienzo.client.core.shape.Shape;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
+import org.kie.workbench.common.stunner.core.client.shape.HasShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasFillGradient;
@@ -31,10 +33,12 @@ import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 public interface SVGShapeView<T extends SVGShapeView>
         extends
         SVGBasicShapeView<T>,
+        LienzoShapeView<T>,
         HasTitle<T>,
         HasControlPoints<T>,
         HasEventHandlers<T, Shape<?>>,
         HasFillGradient<T>,
-        HasSize<T> {
+        HasSize<T>,
+        HasShapeState {
 
 }

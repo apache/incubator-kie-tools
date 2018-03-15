@@ -32,6 +32,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.kie.workbench.common.stunner.svg.gen.SVGGenerator;
 import org.kie.workbench.common.stunner.svg.gen.SVGGeneratorRequest;
+import org.kie.workbench.common.stunner.svg.gen.codegen.impl.SVGGeneratorFormatUtils;
 import org.kie.workbench.common.stunner.svg.gen.codegen.impl.SVGViewFactoryGenerator;
 import org.kie.workbench.common.stunner.svg.gen.exception.GeneratorException;
 import org.kie.workbench.common.stunner.svg.gen.model.StyleSheetDefinition;
@@ -39,8 +40,8 @@ import org.kie.workbench.common.stunner.svg.gen.model.ViewDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.ViewDefinitionImpl;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.ViewFactoryImpl;
 import org.kie.workbench.common.stunner.svg.gen.translator.SVGDocumentTranslator;
-import org.kie.workbench.common.stunner.svg.gen.translator.css.SVGStyleTranslatorHelper;
-import org.kie.workbench.common.stunner.svg.gen.translator.impl.SVGTranslatorContextImpl;
+import org.kie.workbench.common.stunner.svg.gen.translator.SVGTranslatorContext;
+import org.kie.workbench.common.stunner.svg.gen.translator.css.SVGStyleTranslator;
 import org.w3c.dom.Document;
 
 public class SVGGeneratorImpl implements SVGGenerator {
@@ -74,7 +75,7 @@ public class SVGGeneratorImpl implements SVGGenerator {
             final InputStream cssStream = loadResource(cssPath);
             if (null != cssStream) {
                 try {
-                    styleSheetDefinition[0] = SVGStyleTranslatorHelper.parseStyleSheetDefinition(cssPath, cssStream);
+                    styleSheetDefinition[0] = SVGStyleTranslator.parseStyleSheetDefinition(cssPath, cssStream);
                     viewFactory.setStyleSheetDefinition(styleSheetDefinition[0]);
                 } catch (Exception e) {
                     throw new RuntimeException("Error while processing the glocal CSS file [" + cssPath + "] ",
@@ -106,9 +107,10 @@ public class SVGGeneratorImpl implements SVGGenerator {
                                                   vd.getFilePath(),
                                                   styleSheetDefinition[0],
                                                   result -> {
-                                                      result.setFactoryMethodName(result.getId());
+                                                      final String id = SVGGeneratorFormatUtils.getValidInstanceId(result);
+                                                      result.setFactoryMethodName(id);
                                                       referencedViewDefinitions.add(result);
-                                                      processedSvgIds.add(result.getId());
+                                                      processedSvgIds.add(id);
                                                   }));
         viewFactory.getViewDefinitions().addAll(referencedViewDefinitions);
 
@@ -134,7 +136,6 @@ public class SVGGeneratorImpl implements SVGGenerator {
         } else {
             throw new RuntimeException("No SVG file found at [" + svgPath + "]");
         }
-        ;
     }
 
     private InputStream loadResource(final String path) {
@@ -172,14 +173,15 @@ public class SVGGeneratorImpl implements SVGGenerator {
         final String relativePath = path.getNameCount() > 1 ?
                 path.subpath(0, path.getNameCount() - 1).toString() :
                 "";
-        final SVGTranslatorContextImpl context = new SVGTranslatorContextImpl(document,
-                                                                              relativePath,
-                                                                              styleSheetDefinition);
+        final SVGTranslatorContext context = new SVGTranslatorContext(document,
+                                                                      relativePath,
+                                                                      styleSheetDefinition);
         if (null != viewId) {
             context.setViewId(viewId);
         }
         final ViewDefinitionImpl viewDefinition = (ViewDefinitionImpl) translator.translate(context);
         viewDefinition.setPath(svgPath);
+        viewDefinition.getStaticFields().putAll(context.getStaticStringMembers());
         return viewDefinition;
     }
 

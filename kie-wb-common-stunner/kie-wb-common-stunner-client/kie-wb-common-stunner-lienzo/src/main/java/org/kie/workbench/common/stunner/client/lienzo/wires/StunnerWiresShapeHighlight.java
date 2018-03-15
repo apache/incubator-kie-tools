@@ -120,15 +120,15 @@ public class StunnerWiresShapeHighlight implements WiresShapeHighlight<PickerPar
         final String strokeColor = view.getStrokeColor();
         final double strokeWidth = view.getStrokeWidth();
         final double strokeAlpha = view.getStrokeAlpha();
-        restoreAnimation = new ShapeViewDecoratorAnimation(() -> view,
-                                                           strokeColor,
-                                                           strokeWidth,
-                                                           strokeAlpha);
+        restoreAnimation = ShapeViewDecoratorAnimation.newStrokeDecoratorAnimation(() -> view,
+                                                                                   strokeColor,
+                                                                                   strokeWidth,
+                                                                                   strokeAlpha);
         final Animation highlightAnimation =
-                new ShapeViewDecoratorAnimation(() -> view,
-                                                color,
-                                                calculateStrokeWidth(strokeWidth),
-                                                HIGHLIGHT_ALPHA);
+                ShapeViewDecoratorAnimation.newStrokeDecoratorAnimation(() -> view,
+                                                                        color,
+                                                                        calculateStrokeWidth(strokeWidth),
+                                                                        HIGHLIGHT_ALPHA);
         highlightAnimation.run();
     }
 

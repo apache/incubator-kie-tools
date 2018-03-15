@@ -15,16 +15,40 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<svg id="subProcess" version="1.1" xmlns="http://www.w3.org/2000/svg"
+
+<!-- add  filter="url(#selectShadow)"  to make the selection shadow -->
+<svg id="subProcess"
+     version="1.1"
+     xmlns="http://www.w3.org/2000/svg"
      xmlns:stunner="http://kiegroup.org/2017/stunner"
-     x="0" y="0" width="150px" height="50px" viewBox="0 0 150 50">
-  <rect class="subProcess" x="0" y="0" width="150px" height="50px" rx="5" ry="5"/>
-  <g class="subProcess_group_reusable" stunner:layout="BOTTOM" transform="translate(65,30) scale(0.04,0.04)">
-    <rect class="subProcess_reusable_boundingbox" x="0" y="0" width="352px" height="448px"/>
+     x=".75" y=".75"
+     width="153px" height="101px"
+     viewBox="-1.5 -1.5 153 101">
+  <rect class="subProcess" x="0" y="0" width="150px" height="98px" rx="2" ry="2"/>
+  <g class="subProcess_group_reusable" stunner:transform="non-scalable" stunner:layout="BOTTOM"  transform="translate(0,0) scale(1,1)">
+    <rect class="subProcess_reusable_boundingbox" x="63" y="66" width="25px" height="25px"/>
     <path class="subProcess_reusable_icon"
-          transform="translate(44,70) scale(0.75,0.75)"
+          transform="translate(71.5,72.5) scale(0.03977273,0.03977273)"
           d="M352,184v48c0,6.7-2.3,12.3-7,17s-10.3,7-17,7H224v104c0,6.7-2.3,12.3-7,17s-10.3,7-17,7h-48c-6.7,0-12.3-2.3-17-7
 	s-7-10.3-7-17V256H24c-6.7,0-12.3-2.3-17-7s-7-10.3-7-17v-48c0-6.7,2.3-12.3,7-17s10.3-7,17-7h104V56c0-6.7,2.3-12.3,7-17
 	s10.3-7,17-7h48c6.7,0,12.3,2.3,17,7s7,10.3,7,17v104h104c6.7,0,12.3,2.3,17,7S352,177.3,352,184z"/>
   </g>
+  <defs>
+
+    <filter id="selectShadow" height="300%" width="300%" x="-75%" y="-75%">
+      <!-- Thicken out the original shape -->
+      <feMorphology operator="dilate" radius="0" in="SourceAlpha" result="thicken" />
+
+      <!-- Create a drop shadow -->
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity=".6" result="droppedShadow"/>
+
+      <!--	Layer the effects together -->
+      <feMerge>
+        <feMergeNode in="droppedShadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+
+    </filter>
+
+  </defs>
 </svg>

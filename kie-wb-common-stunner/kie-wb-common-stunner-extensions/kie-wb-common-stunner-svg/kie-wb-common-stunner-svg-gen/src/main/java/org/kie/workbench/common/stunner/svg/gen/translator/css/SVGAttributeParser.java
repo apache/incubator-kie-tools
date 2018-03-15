@@ -23,7 +23,7 @@ import com.ait.lienzo.shared.core.types.Color;
 import com.ait.lienzo.shared.core.types.ColorName;
 import org.apache.commons.lang3.StringUtils;
 
-public class SVGAttributeParserUtils {
+public class SVGAttributeParser {
 
     private static final Pattern RBG_PATTERN = Pattern.compile("rgb *\\( *([0-9]+), *([0-9]+), *([0-9]+) *\\)");
 
@@ -56,31 +56,23 @@ public class SVGAttributeParserUtils {
                 final int r = Integer.valueOf(m.group(1));
                 final int g = Integer.valueOf(m.group(2));
                 final int b = Integer.valueOf(m.group(3));
-                return rgbToHexString(r,
-                                      g,
-                                      b,
-                                      1);
+                return rgbToHexString(r, g, b);
             }
         }
         final ColorName name = ColorName.lookup(raw);
         final Color color = null != name ? ColorName.lookup(raw).getColor() : null;
         if (null != color) {
-            return rgbToHexString(color.getR(),
-                                  color.getG(),
-                                  color.getB(),
-                                  1);
+            return rgbToHexString(color.getR(), color.getG(), color.getB());
         }
         throw new RuntimeException("RGB value cannot be parsed! [" + raw + "]");
     }
 
-    public static String rgbToHexString(final int r,
-                                        final int g,
-                                        final int b,
-                                        final int a) {
-        final int rgb = toRGB(r,
-                              g,
-                              b,
-                              1);
+    public static String rgbToHexString(final int r, final int g, final int b) {
+        return rgbToHexString(r, g, b, 1);
+    }
+
+    public static String rgbToHexString(final int r, final int g, final int b, final int a) {
+        final int rgb = toRGB(r, g, b, a);
         return rgbToHexString(rgb);
     }
 

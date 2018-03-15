@@ -18,10 +18,12 @@ package org.kie.workbench.common.stunner.client.lienzo.shape.view;
 
 import com.ait.lienzo.client.core.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasDecorators;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasShadow;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 public interface LienzoShapeView<V>
         extends ShapeView<V>,
-                HasDecorators<Shape<?>> {
+                HasDecorators<Shape<?>>,
+                HasShadow<V> {
 
 }

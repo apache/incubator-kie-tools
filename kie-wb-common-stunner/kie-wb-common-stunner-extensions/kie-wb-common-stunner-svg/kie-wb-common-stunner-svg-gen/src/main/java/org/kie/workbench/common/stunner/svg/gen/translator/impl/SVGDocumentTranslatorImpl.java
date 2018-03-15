@@ -26,13 +26,13 @@ import org.kie.workbench.common.stunner.svg.gen.model.ShapeDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.StyleSheetDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.ViewDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.ViewRefDefinition;
-import org.kie.workbench.common.stunner.svg.gen.model.ViewShapeStateDefinition;
-import org.kie.workbench.common.stunner.svg.gen.model.impl.AbstractPrimitiveDefinition;
+import org.kie.workbench.common.stunner.svg.gen.model.impl.AbstractShapeDefinition;
+import org.kie.workbench.common.stunner.svg.gen.model.impl.GroupDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.ViewDefinitionImpl;
 import org.kie.workbench.common.stunner.svg.gen.translator.SVGDocumentTranslator;
 import org.kie.workbench.common.stunner.svg.gen.translator.SVGElementTranslator;
 import org.kie.workbench.common.stunner.svg.gen.translator.SVGTranslatorContext;
-import org.kie.workbench.common.stunner.svg.gen.translator.css.SVGAttributeParserUtils;
+import org.kie.workbench.common.stunner.svg.gen.translator.css.SVGAttributeParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -63,8 +63,7 @@ public class SVGDocumentTranslatorImpl implements SVGDocumentTranslator {
 
     @Override
     @SuppressWarnings("unchecked")
-    public ViewDefinition<SVGShapeView> translate(final SVGTranslatorContext c) throws TranslatorException {
-        final SVGTranslatorContextImpl context = (SVGTranslatorContextImpl) c;
+    public ViewDefinition<SVGShapeView> translate(final SVGTranslatorContext context) throws TranslatorException {
         final Document root = context.getRoot();
         final StyleSheetDefinition styleSheetDefinition = context.getGlobalStyleSheet().orElse(null);
 
@@ -103,12 +102,12 @@ public class SVGDocumentTranslatorImpl implements SVGDocumentTranslator {
         if (isEmpty(height)) {
             throw new TranslatorException("The SVG node [" + svgId + "] must contain a valid HEIGHT attribute.");
         }
-        svgCoord[0] = SVGAttributeParserUtils.toPixelValue(x,
-                                                           X_DEFAULT);
-        svgCoord[1] = SVGAttributeParserUtils.toPixelValue(y,
-                                                           Y_DEFAULT);
-        svgSize[0] = SVGAttributeParserUtils.toPixelValue(width);
-        svgSize[1] = SVGAttributeParserUtils.toPixelValue(height);
+        svgCoord[0] = SVGAttributeParser.toPixelValue(x,
+                                                      X_DEFAULT);
+        svgCoord[1] = SVGAttributeParser.toPixelValue(y,
+                                                      Y_DEFAULT);
+        svgSize[0] = SVGAttributeParser.toPixelValue(width);
+        svgSize[1] = SVGAttributeParser.toPixelValue(height);
         final String vbox = svgNode.getAttribute(VIEW_BOX);
         if (isEmpty(vbox)) {
             throw new TranslatorException("The SVG node [" + svgId + "] must contain a valid VIEWBOX attribute.");
@@ -116,8 +115,7 @@ public class SVGDocumentTranslatorImpl implements SVGDocumentTranslator {
         viewBox[0] = SVGViewBoxTranslator.translate(vbox);
 
         // Parser innver SVG View elements.
-        PrimitiveDefinition<?> potentialMainShape = null;
-        PrimitiveDefinition<?> mainShape = null;
+        ShapeDefinition<?> main = null;
         final List<PrimitiveDefinition<?>> result = new LinkedList<>();
         final NodeList nodes = svgNode.getChildNodes();
         if (null != nodes) {
@@ -133,10 +131,8 @@ public class SVGDocumentTranslatorImpl implements SVGDocumentTranslator {
                         if (null != definition) {
                             if (definition instanceof PrimitiveDefinition) {
                                 final PrimitiveDefinition primitiveDefinition = (PrimitiveDefinition) definition;
-                                if (primitiveDefinition.isMain()) {
-                                    mainShape = primitiveDefinition;
-                                } else if (null == potentialMainShape) {
-                                    potentialMainShape = primitiveDefinition;
+                                if (null == main) {
+                                    main = (ShapeDefinition<?>) primitiveDefinition;
                                 } else {
                                     result.add(primitiveDefinition);
                                 }
@@ -149,22 +145,20 @@ public class SVGDocumentTranslatorImpl implements SVGDocumentTranslator {
             }
         }
 
-        if (null != mainShape && null != potentialMainShape) {
-            result.add(potentialMainShape);
+        if (null == main) {
+            throw new TranslatorException("No SVG main node found.");
         }
 
-        final PrimitiveDefinition<?> main = null != mainShape ? mainShape : potentialMainShape;
-        if (null == main) {
-            throw new TranslatorException("No SVG main node found!!");
+        if (main instanceof GroupDefinition) {
+            throw new TranslatorException("Main node cannot be a group.");
         }
 
         // Main view shape should listen for events.
-        if (main instanceof AbstractPrimitiveDefinition) {
-            ((AbstractPrimitiveDefinition) main).setListening(true);
+        if (main instanceof AbstractShapeDefinition) {
+            ((AbstractShapeDefinition) main).setMainShape(true);
+            ((AbstractShapeDefinition) main).setListening(true);
         }
 
-        final ViewShapeStateDefinition shapeStateDefinition = createShapeStateDefinition(svgId,
-                                                                                         styleSheetDefinition);
         // Generate the view definition instance.
         final ViewDefinition viewDefinition =
                 new ViewDefinitionImpl(svgId,
@@ -174,20 +168,10 @@ public class SVGDocumentTranslatorImpl implements SVGDocumentTranslator {
                                        svgSize[1],
                                        styleSheetDefinition,
                                        viewBox[0],
-                                       shapeStateDefinition,
-                                       (ShapeDefinition) main,
+                                       main,
                                        result.toArray(new PrimitiveDefinition<?>[result.size()]));
-        viewDefinition.getSVGViewRefs().addAll(context.viewRefDefinitions);
+        viewDefinition.getSVGViewRefs().addAll(context.getViewRefDefinitions());
         return viewDefinition;
-    }
-
-    private static ViewShapeStateDefinition createShapeStateDefinition(final String svgId,
-                                                                       final StyleSheetDefinition styleSheetDefinition) {
-        if (null != styleSheetDefinition) {
-            return ViewShapeStateDefinition.build(svgId,
-                                                  styleSheetDefinition);
-        }
-        return null;
     }
 
     private static boolean isEmpty(final String s) {

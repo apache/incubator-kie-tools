@@ -33,6 +33,7 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.client.core.types.Shadow;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
@@ -43,6 +44,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPointImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 
@@ -52,6 +54,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -435,5 +438,23 @@ public class WiresConnectorViewTest {
             assertEquals(controlPoint.getLocation().getY(), point.getY(), 0);
             assertEquals(controlPoint.getIndex().intValue(), i);
         }
+    }
+
+    @Test
+    public void testSetShadow() {
+        tested.setShadow("red", 1, 2d, 3d);
+        ArgumentCaptor<Shadow> shadowArgumentCaptor = ArgumentCaptor.forClass(Shadow.class);
+        verify(line, times(1)).setShadow(shadowArgumentCaptor.capture());
+        final Shadow shadow = shadowArgumentCaptor.getValue();
+        assertEquals("red", shadow.getColor());
+        assertEquals(1, shadow.getBlur());
+        assertEquals(2d, shadow.getOffset().getX(), 0d);
+        assertEquals(3d, shadow.getOffset().getY(), 0d);
+    }
+
+    @Test
+    public void testRemoveShadow() {
+        tested.removeShadow();
+        verify(line, times(1)).setShadow((Shadow) isNull());
     }
 }

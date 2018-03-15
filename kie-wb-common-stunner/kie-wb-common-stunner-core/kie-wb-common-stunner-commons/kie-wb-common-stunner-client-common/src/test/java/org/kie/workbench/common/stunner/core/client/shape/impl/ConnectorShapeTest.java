@@ -57,7 +57,7 @@ public class ConnectorShapeTest {
     private BiConsumer<Object, ShapeView> viewHandler;
 
     @Mock
-    private ShapeStateStrokeHandler shapeStateHandler;
+    private ShapeStateHandler shapeStateHandler;
 
     private ConnectorShape tested;
     private ShapeView<?> shapeView;
@@ -80,7 +80,7 @@ public class ConnectorShapeTest {
     public void testApplyState() {
         tested.applyState(ShapeState.NONE);
         verify(shapeStateHandler,
-               never()).shapeUpdated();
+               never()).shapeAttributesChanged();
         verify(shapeStateHandler,
                times(1)).applyState(eq(ShapeState.NONE));
     }

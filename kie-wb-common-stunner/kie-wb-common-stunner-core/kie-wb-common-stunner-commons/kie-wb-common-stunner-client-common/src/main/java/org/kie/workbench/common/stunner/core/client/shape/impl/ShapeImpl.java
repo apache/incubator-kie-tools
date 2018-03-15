@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.impl;
 
-import org.kie.workbench.common.stunner.core.client.shape.Lifecycle;
-import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
@@ -28,23 +26,16 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
  * @param <V> The Shape View type.
  */
 public class ShapeImpl<V extends ShapeView>
-        implements
-        Shape<V>,
-        Lifecycle {
+        extends AbstractShape<V> {
 
     private final V view;
-    private final ShapeStateHandler<V, Shape<V>> shapeStateHandler;
+    private final ShapeStateHandler shapeStateHandler;
     private String uuid;
 
-    public ShapeImpl(final V view) {
-        this(view, new ShapeStateStrokeHandler<>());
-    }
-
     public ShapeImpl(final V view,
-                     final ShapeStateHandler<V, Shape<V>> shapeStateHandler) {
+                     final ShapeStateHandler shapeStateHandler) {
         this.view = view;
         this.shapeStateHandler = shapeStateHandler;
-        this.shapeStateHandler.forShape(this);
     }
 
     public void setUUID(final String uuid) {
@@ -73,7 +64,7 @@ public class ShapeImpl<V extends ShapeView>
                 .applyState(shapeState);
     }
 
-    public ShapeStateHandler<V, Shape<V>> getShapeStateHandler() {
+    public ShapeStateHandler getShapeStateHandler() {
         return shapeStateHandler;
     }
 

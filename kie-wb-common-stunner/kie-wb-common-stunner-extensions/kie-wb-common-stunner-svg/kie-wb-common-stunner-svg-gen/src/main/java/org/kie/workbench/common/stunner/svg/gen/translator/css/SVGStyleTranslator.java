@@ -20,6 +20,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,11 +41,12 @@ import org.kie.workbench.common.stunner.svg.gen.model.impl.StyleDefinitionImpl;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.TransformDefinitionImpl;
 import org.w3c.css.sac.InputSource;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.css.CSSRule;
 import org.w3c.dom.css.CSSRuleList;
 import org.w3c.dom.css.CSSStyleDeclaration;
 
-public class SVGStyleTranslatorHelper {
+public class SVGStyleTranslator {
 
     public static final String ID = "id";
     public static final String OPACITY = "opacity";
@@ -100,24 +106,20 @@ public class SVGStyleTranslatorHelper {
                                                        final StyleSheetDefinition styleSheetDefinition) throws TranslatorException {
         // Parse from the css class declarations, if a global stylesheet is present.
         final String cssClassRaw = null != styleSheetDefinition ?
-                element.getAttribute(CSS_CLASS) :
+                getStyleDeclaration(element) :
                 null;
         if (!isEmpty(cssClassRaw)) {
-            // Parse from the css class declaration.
-            final String cssSelector = parseCssSelector(cssClassRaw);
-            StyleDefinition style = styleSheetDefinition.getStyle(cssSelector);
-            style = null != style ? style.copy() : createDefaultStyleDefinition();
-            final String itemCssSelector = "#" + svgId + " " + cssSelector;
-            final StyleDefinition itemStyle = styleSheetDefinition.getStyle(itemCssSelector);
-            if (null != itemStyle) {
-                style.add(itemStyle);
+            final List<String> elementSelectors = parseAllSelectors(element);
+            final List<String> selectors = new ArrayList<>(elementSelectors);
+            for (String elementSelector : elementSelectors) {
+                selectors.add("#" + svgId + " " + elementSelector);
             }
-            return style;
+            StyleDefinition style = styleSheetDefinition.getStyle(selectors);
+            return null != style ? style : createDefaultStyleDefinition();
         } else {
             // Parse styles from element attributes.
             StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < ATTR_NAMES.length; i++) {
-                final String key = ATTR_NAMES[i];
+            for (final String key : ATTR_NAMES) {
                 final String value = element.getAttribute(key);
                 if (!isEmpty(value)) {
                     builder.append(key).append(": ").append(value).append("; ");
@@ -137,7 +139,7 @@ public class SVGStyleTranslatorHelper {
     }
 
     public static String[] getClassNames(final Element element) {
-        final String raw = element.getAttribute(CSS_CLASS);
+        final String raw = getStyleDeclaration(element);
         if (!isEmpty(raw)) {
             return raw.split(PATTERN_CLASSNAME_SEPARATOR);
         }
@@ -162,12 +164,12 @@ public class SVGStyleTranslatorHelper {
                 final String y = m.group(3).trim();
                 switch (op) {
                     case TRANSFORM_SCALE:
-                        sx = SVGAttributeParserUtils.toPixelValue(x);
-                        sy = SVGAttributeParserUtils.toPixelValue(y);
+                        sx = SVGAttributeParser.toPixelValue(x);
+                        sy = SVGAttributeParser.toPixelValue(y);
                         break;
                     case TRANSFORM_TRANSLATE:
-                        tx = SVGAttributeParserUtils.toPixelValue(x);
-                        ty = SVGAttributeParserUtils.toPixelValue(y);
+                        tx = SVGAttributeParser.toPixelValue(x);
+                        ty = SVGAttributeParser.toPixelValue(y);
                         break;
                 }
             } else {
@@ -184,7 +186,6 @@ public class SVGStyleTranslatorHelper {
             final CSSRule item = cssRules.item(i);
             if (CSSRule.STYLE_RULE == item.getType()) {
                 final CSSStyleRuleImpl rule = (CSSStyleRuleImpl) item;
-                String selectorText = rule.getSelectorText();
                 final CSSStyleDeclaration declaration = rule.getStyle();
                 return parseStyleDefinition(declaration);
             }
@@ -218,30 +219,30 @@ public class SVGStyleTranslatorHelper {
             final String value = declaration.getPropertyValue(property).trim();
             switch (property) {
                 case OPACITY:
-                    builder.setAlpha(SVGAttributeParserUtils.toPixelValue(value));
+                    builder.setAlpha(SVGAttributeParser.toPixelValue(value));
                     break;
                 case FILL:
                     if (ATTR_VALUE_NONE.equals(value)) {
                         isFillNone = true;
                     } else {
-                        builder.setFillColor(SVGAttributeParserUtils.toHexColorString(value));
+                        builder.setFillColor(SVGAttributeParser.toHexColorString(value));
                     }
                     break;
                 case FILL_OPACITY:
-                    builder.setFillAlpha(SVGAttributeParserUtils.toPixelValue(value));
+                    builder.setFillAlpha(SVGAttributeParser.toPixelValue(value));
                     break;
                 case STROKE:
                     if (ATTR_VALUE_NONE.equals(value)) {
                         isStrokeNone = true;
                     } else {
-                        builder.setStrokeColor(SVGAttributeParserUtils.toHexColorString(value));
+                        builder.setStrokeColor(SVGAttributeParser.toHexColorString(value));
                     }
                     break;
                 case STROKE_OPACITY:
-                    builder.setStrokeAlpha(SVGAttributeParserUtils.toPixelValue(value));
+                    builder.setStrokeAlpha(SVGAttributeParser.toPixelValue(value));
                     break;
                 case STROKE_WIDTH:
-                    builder.setStrokeWidth(SVGAttributeParserUtils.toPixelValue(value));
+                    builder.setStrokeWidth(SVGAttributeParser.toPixelValue(value));
                     break;
                 case STROKE_DASHARRAY:
                     builder.setStrokeDashArray(value);
@@ -250,7 +251,7 @@ public class SVGStyleTranslatorHelper {
                     builder.setFontFamily(value.trim());
                     break;
                 case FONT_SIZE:
-                    builder.setFontSize(SVGAttributeParserUtils.toPixelValue(value));
+                    builder.setFontSize(SVGAttributeParser.toPixelValue(value));
                     break;
             }
         }
@@ -263,14 +264,58 @@ public class SVGStyleTranslatorHelper {
         return builder.build();
     }
 
-    private static String parseCssSelector(final String cssClassRaw) {
-        String result = "";
-        final String[] classNames = cssClassRaw.split(PATTERN_CLASSNAME_SEPARATOR);
-        for (String cssClassName : classNames) {
-            final String value = cssClassName.trim();
-            result += " ." + value;
+    static List<String> parseAllSelectors(final Element element) {
+        final List<Element> elements = getElementsTree(element);
+        final List<String> result = new LinkedList<>();
+        for (final Element candidate : elements) {
+            Collection<String> selectors = parseElementSelectors(candidate);
+            if (result.isEmpty()) {
+                result.addAll(selectors);
+            } else {
+                ArrayList<String> parentSelectors = new ArrayList<>(result);
+                for (String selector : selectors) {
+                    for (String parentSelector : parentSelectors) {
+                        result.add(selector + " " + parentSelector);
+                    }
+                }
+            }
         }
-        return result.trim();
+        return result;
+    }
+
+    static List<Element> getElementsTree(final Element element) {
+        final List<Element> tree = new LinkedList<>();
+        tree.add(element);
+        Node parent = element.getParentNode();
+        while (null != parent) {
+            if (parent instanceof Element) {
+                tree.add((Element) parent);
+            }
+            parent = parent.getParentNode();
+        }
+        return tree;
+    }
+
+    static Collection<String> parseElementSelectors(final Element element) {
+        final List<String> result = new LinkedList<>();
+        // Class selectors.
+        final String cssClassRaw = getStyleDeclaration(element);
+        if (!isEmpty(cssClassRaw)) {
+            Arrays.stream(cssClassRaw.split(PATTERN_CLASSNAME_SEPARATOR))
+                    .map(c -> "." + c)
+                    .forEach(result::add);
+        }
+
+        // Id selector.
+        final String id = element.getAttribute(ID);
+        if (!isEmpty(id)) {
+            result.add("#" + id);
+        }
+        return result;
+    }
+
+    private static String getStyleDeclaration(final Element element) {
+        return element.getAttribute(CSS_CLASS);
     }
 
     private static boolean isEmpty(final String s) {

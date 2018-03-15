@@ -20,7 +20,6 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGContainer;
-import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitivePolicy;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitiveShape;
 
 public class SVGPrimitiveFactory {
@@ -37,11 +36,9 @@ public class SVGPrimitiveFactory {
 
     public static SVGPrimitiveShape newSVGPrimitiveShape(final Shape<?> primitive,
                                                          final boolean scalable,
-                                                         final LayoutContainer.Layout layout,
-                                                         final SVGPrimitivePolicy policy) {
+                                                         final LayoutContainer.Layout layout) {
         return new SVGPrimitiveShape(primitive,
                                      scalable,
-                                     layout,
-                                     policy);
+                                     layout);
     }
 }

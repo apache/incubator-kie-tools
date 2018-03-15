@@ -24,6 +24,7 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.client.lienzo.shape.impl.ShapeStateDefaultHandler;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefFunctionalFactory;
 import org.kie.workbench.common.stunner.svg.client.shape.SVGShape;
 import org.kie.workbench.common.stunner.svg.client.shape.def.SVGShapeDef;
@@ -31,7 +32,6 @@ import org.kie.workbench.common.stunner.svg.client.shape.def.SVGShapeViewDef;
 import org.kie.workbench.common.stunner.svg.client.shape.impl.SVGMutableShapeImpl;
 import org.kie.workbench.common.stunner.svg.client.shape.impl.SVGShapeImpl;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
-import org.kie.workbench.common.stunner.svg.client.shape.view.impl.SVGShapeStateHandler;
 import org.kie.workbench.common.stunner.svg.client.shape.view.impl.SVGShapeViewImpl;
 import org.mockito.Mock;
 
@@ -66,13 +66,13 @@ public class SVGShapeFactoryTest {
     private SVGShapeViewImpl shapeView;
 
     @Mock
-    private SVGShapeStateHandler shapeViewStateHandler;
+    private ShapeStateDefaultHandler shapeViewStateHandler;
 
     @Mock
     private SVGShapeViewImpl shapeViewImpl;
 
     @Mock
-    private SVGShapeStateHandler shapeViewImplStateHandler;
+    private ShapeStateDefaultHandler shapeViewImplStateHandler;
 
     @Mock
     private BiConsumer<Object, SVGShapeView> viewHandler;

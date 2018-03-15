@@ -51,7 +51,7 @@ public class SVGViewDefinitionGeneratorTest {
     private SVGViewDefinitionGenerator tested;
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         tested = new SVGViewDefinitionGenerator();
     }
 
@@ -77,7 +77,6 @@ public class SVGViewDefinitionGeneratorTest {
                                                                  VBOX_MIN_Y,
                                                                  VBOX_WIDTH,
                                                                  VBOX_HEIGHT),
-                                       null,
                                        mainDef,
                                        circleDefinition);
 
@@ -85,7 +84,6 @@ public class SVGViewDefinitionGeneratorTest {
         viewDefinition.setPath("svg-view-test.svg");
         final String generated = tested.generate(viewFactory,
                                                  viewDefinition).toString();
-        System.out.println(generated);
         assertTrue(generated.contains("public SVGShapeViewResource svgViewTest()"));
         assertTrue(generated.contains("private SVGShapeView svgViewTestView(final boolean resizable)"));
         assertTrue(generated.contains("return this.svgViewTestView(25.50d, 225.45d, resizable);"));

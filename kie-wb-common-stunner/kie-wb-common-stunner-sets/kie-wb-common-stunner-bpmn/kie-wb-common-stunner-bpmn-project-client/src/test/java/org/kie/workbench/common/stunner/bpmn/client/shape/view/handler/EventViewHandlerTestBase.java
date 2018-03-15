@@ -16,13 +16,14 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.view.handler;
 
-import com.ait.lienzo.client.core.shape.Circle;
+import java.util.Arrays;
+
+import com.ait.lienzo.client.core.shape.IPrimitive;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitive;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 import org.mockito.Mock;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public abstract class EventViewHandlerTestBase {
 
@@ -30,22 +31,20 @@ public abstract class EventViewHandlerTestBase {
     protected SVGShapeView view;
 
     @Mock
-    protected SVGPrimitive prim;
+    protected SVGPrimitive child1;
 
     @Mock
-    protected Circle circle;
+    protected IPrimitive<?> prim1;
 
-    protected void verifyCircleDashed(Circle circle) {
-        verify(circle,
-               times(1)).setDashArray(ViewHandlerHelper.DASH,
-                                      ViewHandlerHelper.DASH,
-                                      ViewHandlerHelper.DASH);
-    }
+    @Mock
+    protected SVGPrimitive child2;
 
-    protected void verifyCircleNotDashed(Circle circle) {
-        verify(circle,
-               times(1)).setDashArray(0d,
-                                      0d,
-                                      0d);
+    @Mock
+    protected IPrimitive<?> prim2;
+
+    public void init() {
+        when(view.getChildren()).thenReturn(Arrays.asList(child1, child2));
+        when(child1.get()).thenReturn(prim1);
+        when(child2.get()).thenReturn(prim2);
     }
 }

@@ -36,6 +36,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
+import com.ait.lienzo.client.core.types.Shadow;
 import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
@@ -520,5 +521,27 @@ public class WiresConnectorView<T> extends WiresConnector
     @SuppressWarnings("unchecked")
     private T cast() {
         return (T) this;
+    }
+
+    @Override
+    public T setShadow(final String color,
+                       final int blur,
+                       final double offx,
+                       final double offy) {
+        getDirectionalLine().setShadow(new Shadow(color,
+                                                  blur,
+                                                  offx,
+                                                  offy));
+        return cast();
+    }
+
+    @Override
+    public T removeShadow() {
+        getDirectionalLine().setShadow(null);
+        return cast();
+    }
+
+    private AbstractDirectionalMultiPointShape<?> getDirectionalLine() {
+        return (AbstractDirectionalMultiPointShape<?>) getLine();
     }
 }

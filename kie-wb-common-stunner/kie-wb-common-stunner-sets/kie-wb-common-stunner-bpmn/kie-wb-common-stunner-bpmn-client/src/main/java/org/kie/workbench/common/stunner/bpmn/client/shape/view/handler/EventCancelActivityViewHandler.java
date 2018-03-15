@@ -22,33 +22,32 @@ import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventC
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeViewHandler;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
-
-import static org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.ViewHandlerHelper.setCircleDashed;
+import org.kie.workbench.common.stunner.svg.client.shape.view.SVGViewUtils;
 
 public class EventCancelActivityViewHandler
         implements ShapeViewHandler<BaseCatchingIntermediateEvent, SVGShapeView<?>> {
 
     // The id for the circle to change in the SVG file.
-    static final String INTERMEDIATE_CIRCLE_ID = "eventAll_interm";
+    static final String ID_INTERMEDIATE = "intermediate";
+    static final String ID_INTERMEDIATE_NON_INTERRUPTING = "intermediate-noninterrupting";
 
     @Override
     public void handle(final BaseCatchingIntermediateEvent bean,
                        final SVGShapeView<?> view) {
+        Boolean isCancelActivity = null;
         if (bean instanceof IntermediateSignalEventCatching) {
-            final boolean isCancelActivity = ((IntermediateSignalEventCatching) bean).getExecutionSet().getCancelActivity().getValue();
-            setCircleDashed(view,
-                            INTERMEDIATE_CIRCLE_ID,
-                            !isCancelActivity);
+            isCancelActivity = ((IntermediateSignalEventCatching) bean).getExecutionSet().getCancelActivity().getValue();
         } else if (bean instanceof IntermediateTimerEvent) {
-            final boolean isCancelActivity = ((IntermediateTimerEvent) bean).getExecutionSet().getCancelActivity().getValue();
-            setCircleDashed(view,
-                            INTERMEDIATE_CIRCLE_ID,
-                            !isCancelActivity);
+            isCancelActivity = ((IntermediateTimerEvent) bean).getExecutionSet().getCancelActivity().getValue();
         } else if (bean instanceof IntermediateMessageEventCatching) {
-            final boolean isCancelActivity = ((IntermediateMessageEventCatching) bean).getExecutionSet().getCancelActivity().getValue();
-            setCircleDashed(view,
-                            INTERMEDIATE_CIRCLE_ID,
-                            !isCancelActivity);
+            isCancelActivity = ((IntermediateMessageEventCatching) bean).getExecutionSet().getCancelActivity().getValue();
+        }
+        if (null != isCancelActivity) {
+            final String visibleId = isCancelActivity ? ID_INTERMEDIATE : ID_INTERMEDIATE_NON_INTERRUPTING;
+            final String nonVisibleId = !isCancelActivity ? ID_INTERMEDIATE : ID_INTERMEDIATE_NON_INTERRUPTING;
+            SVGViewUtils.switchVisibility(view,
+                                          visibleId,
+                                          nonVisibleId);
         }
     }
 }

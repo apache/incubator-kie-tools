@@ -33,10 +33,13 @@ public class SVGMultiPathTranslator extends AbstractSVGShapeTranslator<Element, 
     @Override
     public MultiPathDefinition doTranslate(final Element pathElement,
                                            final SVGTranslatorContext context) throws TranslatorException {
+
+        final String id = getId(pathElement);
         String path = pathElement.getAttribute(PATH);
         failIfEmpty(PATH,
                     path);
-        return new MultiPathDefinition(getId(pathElement),
+        context.addStaticStringMember(id, path);
+        return new MultiPathDefinition(id,
                                        path);
     }
 
@@ -44,7 +47,7 @@ public class SVGMultiPathTranslator extends AbstractSVGShapeTranslator<Element, 
     @Override
     protected void translatePosition(final Element element,
                                      final MultiPathDefinition def,
-                                     final SVGTranslatorContext context) throws TranslatorException {
+                                     final SVGTranslatorContext context) {
         def.setX(0d);
         def.setY(0d);
     }

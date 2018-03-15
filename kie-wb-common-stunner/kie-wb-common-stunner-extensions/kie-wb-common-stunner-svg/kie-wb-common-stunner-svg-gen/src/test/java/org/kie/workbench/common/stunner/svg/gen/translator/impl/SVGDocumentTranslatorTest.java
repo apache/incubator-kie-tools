@@ -39,6 +39,7 @@ import org.kie.workbench.common.stunner.svg.gen.model.impl.GroupDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.MultiPathDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.RectDefinition;
 import org.kie.workbench.common.stunner.svg.gen.translator.SVGDocumentTranslator;
+import org.kie.workbench.common.stunner.svg.gen.translator.SVGTranslatorContext;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.w3c.dom.Document;
 
@@ -63,16 +64,16 @@ public class SVGDocumentTranslatorTest {
     }
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         translator = ViewGenerators.newTranslator();
     }
 
     @Test
     public void testTranslate() throws Exception {
         final ViewDefinition<SVGShapeView> viewDefinition =
-                translator.translate(new SVGTranslatorContextImpl(svgTest,
-                                                                  "",
-                                                                  styleSheetDefinition));
+                translator.translate(new SVGTranslatorContext(svgTest,
+                                                              "",
+                                                              styleSheetDefinition));
         assertNotNull(viewDefinition);
         assertEquals("svg-test-file",
                      viewDefinition.getId());
@@ -125,9 +126,9 @@ public class SVGDocumentTranslatorTest {
 
     @Test(expected = TranslatorException.class)
     public void testCheckTranslateErrors() throws Exception {
-        translator.translate(new SVGTranslatorContextImpl(svgTestError,
-                                                          "",
-                                                          styleSheetDefinition));
+        translator.translate(new SVGTranslatorContext(svgTestError,
+                                                      "",
+                                                      styleSheetDefinition));
     }
 
     private static Document parse(final InputStream inputStream) throws Exception {

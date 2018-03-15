@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.stunner.svg.gen.model;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class StyleSheetDefinition {
@@ -31,12 +33,26 @@ public final class StyleSheetDefinition {
 
     public StyleSheetDefinition addStyle(final String name,
                                          final StyleDefinition styleDefinition) {
-        styleDefinitions.put(name, styleDefinition);
+        Arrays.stream(name.split(","))
+                .forEach(n -> styleDefinitions.put(n.trim(), styleDefinition));
         return this;
     }
 
     public StyleDefinition getStyle(final String name) {
         return styleDefinitions.get(name.trim());
+    }
+
+    public StyleDefinition getStyle(final List<String> names) {
+        StyleDefinition result = null;
+        for (String name : names) {
+            final StyleDefinition style = getStyle(name);
+            if (null != style && null == result) {
+                result = style.copy();
+            } else if (null != style) {
+                result.add(style.copy());
+            }
+        }
+        return result;
     }
 
     public String getCssPath() {

@@ -325,20 +325,21 @@ SVGStencilTester.prototype.injectStencilSetStyleDeclarations = function () {
 SVGStencilTester.prototype.applySelectedShapeState = function() {
     const domShapeStateSelector = document.getElementById('shapeStateSelector');
     const shapeStateValue = domShapeStateSelector.options[domShapeStateSelector.selectedIndex].value;
-    if (shapeStateValue !== "shape-icon") {
-        this.removeSvgElementStyle();
-    }
     if (shapeStateValue !== "shape-state-none") {
         this.applyShapeState(shapeStateValue);
     }
 };
 
-SVGStencilTester.prototype.applyShapeState = function(stateClassName) {
-    $("." + svgOriginalId).attr("class", svgOriginalId + " " + stateClassName);
-};
-
-SVGStencilTester.prototype.removeSvgElementStyle = function() {
-    $("." + svgOriginalId).attr("style", "");
+SVGStencilTester.prototype.applyShapeState = function(shapeStateValue) {
+    if (shapeStateValue === "shape-state-selected") {
+        $("#shapePanel > svg").first().attr("filter","url(#selectShadow)");
+    } else if (shapeStateValue === "shape-state-highlight") {
+        // TODO
+        $("#shapePanel > svg").first().attr("filter","");
+    } else if (shapeStateValue === "shape-state-invalid") {
+        // TODO
+        $("#shapePanel > svg").first().attr("filter","");
+    }
 };
 
 SVGStencilTester.prototype.appendSvgText = function() {

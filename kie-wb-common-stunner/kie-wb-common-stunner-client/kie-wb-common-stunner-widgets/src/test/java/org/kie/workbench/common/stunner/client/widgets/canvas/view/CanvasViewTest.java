@@ -231,6 +231,10 @@ public class CanvasViewTest {
         tested.setCursor(AbstractCanvas.Cursors.CROSSHAIR);
         verify(panelStyle,
                times(1)).setCursor(eq(Style.Cursor.CROSSHAIR));
+        tested.setCursor(AbstractCanvas.Cursors.NOT_ALLOWED);
+        verify(panelStyle,
+               times(1)).setProperty(eq(CanvasView.CURSOR),
+                                     eq(CanvasView.CURSOR_NOT_ALLOWED));
     }
 
     @Test

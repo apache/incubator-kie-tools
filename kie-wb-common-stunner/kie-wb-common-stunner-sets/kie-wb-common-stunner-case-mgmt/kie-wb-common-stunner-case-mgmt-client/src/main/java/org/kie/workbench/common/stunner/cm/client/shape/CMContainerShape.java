@@ -17,10 +17,10 @@
 package org.kie.workbench.common.stunner.cm.client.shape;
 
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementShapeDef;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
-public class CMContainerShape<W extends BPMNViewDefinition, V extends ShapeView>
+public class CMContainerShape<W extends BPMNViewDefinition, V extends LienzoShapeView<?>>
         extends AbstractCMContainerShape<W, CaseManagementShapeDef<W, V>, V> {
 
     public CMContainerShape(final CaseManagementShapeDef<W, V> shapeDef,

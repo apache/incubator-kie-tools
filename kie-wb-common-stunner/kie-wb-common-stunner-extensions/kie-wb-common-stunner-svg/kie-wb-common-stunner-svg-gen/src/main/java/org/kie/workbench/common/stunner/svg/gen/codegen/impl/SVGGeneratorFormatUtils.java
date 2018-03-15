@@ -19,6 +19,9 @@ package org.kie.workbench.common.stunner.svg.gen.codegen.impl;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
+import org.kie.workbench.common.stunner.svg.gen.model.PrimitiveDefinition;
+import org.kie.workbench.common.stunner.svg.gen.model.impl.SVGModelUtils;
+
 /**
  * As the generated values will end up in a source file, this utils class provides different methods
  * as for using concrete formatting behaviors common along all generated code.
@@ -31,6 +34,14 @@ public class SVGGeneratorFormatUtils {
             setGroupingUsed(false);
         }});
     }};
+
+    public static String getValidInstanceId(final PrimitiveDefinition<?> primitiveDefinition) {
+        return getValidInstanceId(primitiveDefinition.getId());
+    }
+
+    public static String getValidInstanceId(final String value) {
+        return SVGModelUtils.toValidJavaId(value);
+    }
 
     public static String format(final double value) {
         return DF.format(value);

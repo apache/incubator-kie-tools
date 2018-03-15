@@ -16,9 +16,16 @@
 
 package org.kie.workbench.common.stunner.svg.gen.model;
 
+import java.util.Optional;
+
 public interface ShapeDefinition<V> extends PrimitiveDefinition<V> {
 
-    ShapePolicyDefinition getShapePolicyDefinition();
+    public enum ShapeStateDefinition {
+        STROKE,
+        FILL;
+    }
+
+    Optional<ShapeStateDefinition> getStateDefinition();
 
     StyleDefinition getStyleDefinition();
 }

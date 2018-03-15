@@ -18,31 +18,36 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.view.handler;
 
 import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeViewHandler;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
-
-import static org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.ViewHandlerHelper.setCircleDashed;
+import org.kie.workbench.common.stunner.svg.client.shape.view.SVGViewUtils;
 
 public class EventInterruptingViewHandler
         implements ShapeViewHandler<BaseStartEvent, SVGShapeView<?>> {
 
     // The id for the circle to change in the SVG file.
-    static final String INTERMEDIATE_CIRCLE_ID = "eventAll_interm";
+    static final String ID_START = "start";
+    static final String ID_START_NON_INTERRUPTING = "start-noninterrupting";
 
     @Override
     public void handle(final BaseStartEvent bean,
                        final SVGShapeView<?> view) {
+        Boolean isInterrupting = null;
         if (bean instanceof StartMessageEvent) {
-            final boolean isInterrupting = ((StartMessageEvent) bean).getExecutionSet().getIsInterrupting().getValue();
-            setCircleDashed(view,
-                            INTERMEDIATE_CIRCLE_ID,
-                            !isInterrupting);
+            isInterrupting = ((StartMessageEvent) bean).getExecutionSet().getIsInterrupting().getValue();
         } else if (bean instanceof StartTimerEvent) {
-            final boolean isInterrupting = ((StartTimerEvent) bean).getExecutionSet().getIsInterrupting().getValue();
-            setCircleDashed(view,
-                            INTERMEDIATE_CIRCLE_ID,
-                            !isInterrupting);
+            isInterrupting = ((StartTimerEvent) bean).getExecutionSet().getIsInterrupting().getValue();
+        } else if (bean instanceof StartSignalEvent) {
+            isInterrupting = ((StartSignalEvent) bean).getExecutionSet().getIsInterrupting().getValue();
+        }
+        if (null != isInterrupting) {
+            final String visibleId = isInterrupting ? ID_START : ID_START_NON_INTERRUPTING;
+            final String nonVisibleId = !isInterrupting ? ID_START : ID_START_NON_INTERRUPTING;
+            SVGViewUtils.switchVisibility(view,
+                                          visibleId,
+                                          nonVisibleId);
         }
     }
 }

@@ -34,6 +34,8 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 public class CanvasView extends Composite implements AbstractCanvas.View<com.ait.lienzo.client.widget.LienzoPanel> {
 
+    public static final String CURSOR = "cursor";
+    public static final String CURSOR_NOT_ALLOWED = "not-allowed";
     private static final String Bg_COLOR = "#FFFFFF";
 
     protected FlowPanel mainPanel = new FlowPanel();
@@ -218,8 +220,7 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
                 style.setCursor(Style.Cursor.POINTER);
                 break;
             case NOT_ALLOWED:
-                // TODO: Use a good cursor.
-                style.setCursor(Style.Cursor.AUTO);
+                style.setProperty(CURSOR, CURSOR_NOT_ALLOWED);
                 break;
             case WAIT:
                 style.setCursor(Style.Cursor.WAIT);

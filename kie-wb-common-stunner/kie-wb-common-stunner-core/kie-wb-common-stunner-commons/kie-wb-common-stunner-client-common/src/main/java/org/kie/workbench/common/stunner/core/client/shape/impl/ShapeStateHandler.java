@@ -16,17 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.impl;
 
-import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.client.shape.HasShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
-public interface ShapeStateHandler<V extends ShapeView, S extends Shape<V>> {
+public interface ShapeStateHandler extends HasShapeState {
 
-    ShapeStateHandler<V, S> forShape(S shape);
-
-    ShapeStateHandler<V, S> shapeUpdated();
-
-    void applyState(ShapeState shapeState);
+    ShapeStateHandler shapeAttributesChanged();
 
     ShapeState reset();
 

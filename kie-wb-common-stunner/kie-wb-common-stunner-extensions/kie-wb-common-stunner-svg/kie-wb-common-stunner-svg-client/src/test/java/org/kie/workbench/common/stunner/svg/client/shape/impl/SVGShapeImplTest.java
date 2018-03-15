@@ -21,8 +21,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.shape.impl.LienzoShape;
+import org.kie.workbench.common.stunner.client.lienzo.shape.impl.ShapeStateDefaultHandler;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
-import org.kie.workbench.common.stunner.svg.client.shape.view.impl.SVGShapeStateHandler;
 import org.kie.workbench.common.stunner.svg.client.shape.view.impl.SVGShapeViewImpl;
 import org.mockito.Mock;
 
@@ -40,10 +41,10 @@ public class SVGShapeImplTest {
     private SVGShapeViewImpl view;
 
     @Mock
-    private SVGShapeStateHandler svgShapeStateHandler;
+    private ShapeStateDefaultHandler svgShapeStateHandler;
 
     @Mock
-    private LienzoShape<?> lienzoShape;
+    private LienzoShape<LienzoShapeView> lienzoShape;
 
     private SVGShapeImpl tested;
     private SVGShapeImpl mocked;

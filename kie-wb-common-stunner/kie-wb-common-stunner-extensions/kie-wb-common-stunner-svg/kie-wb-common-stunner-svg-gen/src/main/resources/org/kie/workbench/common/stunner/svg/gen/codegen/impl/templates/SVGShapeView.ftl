@@ -13,7 +13,7 @@ private SVGShapeView ${name}View(final boolean resizable) {
 
 private SVGShapeView ${name}View(final double width, final double height, final boolean resizable) {
 
-    SVGPrimitiveShape mainShape = SVGPrimitiveFactory.newSVGPrimitiveShape(${mainShape}, true, ${layout}, SVGPrimitivePolicies.Builder.build(${policy}));
+    SVGPrimitiveShape mainShape = SVGPrimitiveFactory.newSVGPrimitiveShape(${mainShape}, true, ${layout});
 
     final SVGShapeViewImpl view = new SVGShapeViewImpl("${viewId}", mainShape, width, height, resizable);
 
@@ -27,7 +27,8 @@ private SVGShapeView ${name}View(final double width, final double height, final 
 
     ${text}
 
-    ${stateHolders}
+    view.getShapeStateHandler().setBorderShape(() -> SVGViewUtils.getVisibleShape(${stateViewIds}));
+    view.getShapeStateHandler().setRenderType(${stateViewPolicy});
 
     view.refresh();
 
@@ -40,7 +41,7 @@ private SVGBasicShapeView ${name}BasicView() {
 
 private SVGBasicShapeView ${name}BasicView(final double width, final double height) {
 
-    SVGPrimitiveShape mainShape = SVGPrimitiveFactory.newSVGPrimitiveShape(${mainShape}, false, ${layout}, SVGPrimitivePolicies.Builder.build(${policy}));
+    SVGPrimitiveShape mainShape = SVGPrimitiveFactory.newSVGPrimitiveShape(${mainShape}, false, ${layout});
 
     final SVGBasicShapeViewImpl view = new SVGBasicShapeViewImpl("${viewId}", mainShape, width, height);
 

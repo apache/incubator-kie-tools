@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.svg.gen.translator.impl;
 import org.kie.workbench.common.stunner.svg.gen.exception.TranslatorException;
 import org.kie.workbench.common.stunner.svg.gen.model.ViewDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.ViewBoxDefinitionImpl;
-import org.kie.workbench.common.stunner.svg.gen.translator.css.SVGAttributeParserUtils;
+import org.kie.workbench.common.stunner.svg.gen.translator.css.SVGAttributeParser;
 
 /**
  * A really basic parser implementation for an svg viewBox attribute.
@@ -50,12 +50,12 @@ public class SVGViewBoxTranslator {
     private static ViewDefinition.ViewBoxDefinition build(final String x,
                                                           final String y,
                                                           final String width,
-                                                          final String height) throws TranslatorException {
-        return new ViewBoxDefinitionImpl(SVGAttributeParserUtils.toPixelValue(x,
-                                                                              0d),
-                                         SVGAttributeParserUtils.toPixelValue(y,
-                                                                              0d),
-                                         SVGAttributeParserUtils.toPixelValue(width),
-                                         SVGAttributeParserUtils.toPixelValue(height));
+                                                          final String height) {
+        return new ViewBoxDefinitionImpl(SVGAttributeParser.toPixelValue(x,
+                                                                         0d),
+                                         SVGAttributeParser.toPixelValue(y,
+                                                                         0d),
+                                         SVGAttributeParser.toPixelValue(width),
+                                         SVGAttributeParser.toPixelValue(height));
     }
 }

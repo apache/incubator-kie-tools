@@ -16,26 +16,25 @@
 
 package org.kie.workbench.common.stunner.shapes.client;
 
-import org.kie.workbench.common.stunner.client.lienzo.shape.impl.AnimatedShapeStateStrokeHandler;
+import org.kie.workbench.common.stunner.client.lienzo.shape.impl.LienzoShape;
+import org.kie.workbench.common.stunner.client.lienzo.shape.impl.ShapeStateAttributeAnimationHandler;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ContainerShape;
-import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateHandler;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateAttributesFactory;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 
-public class BasicContainerShape<W, D extends ShapeViewDef<W, V>, V extends ShapeView>
+public class BasicContainerShape<W, D extends ShapeViewDef<W, V>, V extends LienzoShapeView<?>>
         extends ContainerShape<W, D, V, Shape<?>> {
 
+    @SuppressWarnings("unchecked")
     public BasicContainerShape(final D shapeDef,
                                final V view) {
-        this(shapeDef,
-             view,
-             new AnimatedShapeStateStrokeHandler<>());
-    }
-
-    public BasicContainerShape(final D shapeDef,
-                               final V view,
-                               final ShapeStateHandler<V, Shape<V>> shapeStateHelper) {
-        super(shapeDef, view, shapeStateHelper);
+        super(shapeDef,
+              new LienzoShape<V>(view,
+                                 new ShapeStateAttributeAnimationHandler<>()
+                                         .getAttributesHandler()
+                                         .useAttributes(ShapeStateAttributesFactory::buildStrokeAttributes)
+                                         .setView(() -> view)));
     }
 }

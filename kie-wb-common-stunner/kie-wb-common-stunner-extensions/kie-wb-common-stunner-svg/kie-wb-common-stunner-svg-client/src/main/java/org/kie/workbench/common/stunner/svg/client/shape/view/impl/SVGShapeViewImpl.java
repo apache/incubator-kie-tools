@@ -18,8 +18,10 @@ package org.kie.workbench.common.stunner.svg.client.shape.view.impl;
 
 import java.util.Collection;
 
+import org.kie.workbench.common.stunner.client.lienzo.shape.impl.ShapeStateDefaultHandler;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresScalableContainer;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.DecoratedShapeView;
+import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGBasicShapeView;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGContainer;
@@ -34,8 +36,9 @@ public class SVGShapeViewImpl
     private final String name;
     private final SVGPrimitiveShape svgPrimitive;
     private final SVGChildViewHandler childViewHandler;
-    private final SVGShapeStateHandler shapeStateHandler;
+    private final ShapeStateDefaultHandler shapeStateHandler;
 
+    @SuppressWarnings("unchecked")
     public SVGShapeViewImpl(final String name,
                             final SVGPrimitiveShape svgPrimitive,
                             final double width,
@@ -49,7 +52,9 @@ public class SVGShapeViewImpl
         this.name = name;
         this.svgPrimitive = svgPrimitive;
         this.childViewHandler = new SVGChildViewHandler(this);
-        this.shapeStateHandler = new SVGShapeStateHandler();
+        this.shapeStateHandler = new ShapeStateDefaultHandler()
+                .setBorderShape((() -> this))
+                .setBackgroundShape(() -> this);
     }
 
     @Override
@@ -86,7 +91,12 @@ public class SVGShapeViewImpl
         return childViewHandler.getSVGChildren();
     }
 
-    public SVGShapeStateHandler getShapeStateHandler() {
+    public ShapeStateDefaultHandler getShapeStateHandler() {
         return shapeStateHandler;
+    }
+
+    @Override
+    public void applyState(final ShapeState shapeState) {
+        shapeStateHandler.applyState(shapeState);
     }
 }

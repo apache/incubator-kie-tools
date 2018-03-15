@@ -19,49 +19,58 @@
     BPMN shape styles.
     ******************
  */
-.gateway {
-    fill: #FDF4EA;
-    stroke: #EC7A08;
-    stroke-width: 5px;
+ #gateway-background,
+ #gateway-type #gateway,
+ #gateway-subtypes #complex,
+ #gateway-subtypes #event,
+ #gateway-subtypes #exclusive,
+ #gateway-subtypes #inclusive,
+ #gateway-subtypes #parallel,
+ #gateway-subtypes #parallel-event {
+     opacity: 0;
+     display: inline;
+ }
+
+#parallelMultipleGateway #gateway-background {
+     opacity: 1;
+     fill: #fef4ea;
+}
+#parallelMultipleGateway #gateway {
+     opacity: 1;
+     fill: #ec7a08;
+}
+#parallelMultipleGateway #parallel {
+     opacity: 1;
+     fill: #ec7a08;
 }
 
-.gateway_group_parallel_multiple {
-    opacity: 0;
+
+#exclusiveGateway #gateway-background {
+     opacity: 1;
+     fill: #fef4ea;
+     filter: none;
 }
 
-.gateway_parallelMultipleIcon {
-    fill: #EC7A08;
-    stroke: #EC7A08;
+#exclusiveGateway #gateway {
+     opacity: 1;
+     fill: #ec7a08;
+}
+#exclusiveGateway #exclusive {
+     opacity: 1;
+     fill: #ec7a08;
 }
 
-.gateway_exclusiveIcon {
-    fill: #EC7A08;
-    stroke: #EC7A08;
+#inclusiveGateway #gateway-background {
+     opacity: 1;
+     fill: #fef4ea;
 }
-
-.gateway_inclusiveIcon {
-    fill: #EC7A08;
-    stroke: #EC7A08;
+#inclusiveGateway #gateway {
+     opacity: 1;
+     fill: #ec7a08;
 }
-
-.gateway_group_exclusive {
-    opacity: 0;
-}
-
-.gateway_group_inclusive {
-    opacity: 0;
-}
-
-#parallelMultipleGateway .gateway_group_parallel_multiple {
-    opacity: 1;
-}
-
-#exclusiveGateway .gateway_group_exclusive {
-    opacity: 1;
-}
-
-#inclusiveGateway .gateway_group_inclusive {
-    opacity: 1;
+#inclusiveGateway #inclusive {
+     opacity: 1;
+     fill: #ec7a08;
 }
 
 .lane {
@@ -81,8 +90,7 @@
 }
 
 .task_user_icon {
-    stroke: #000000;
-    fill: #000000;
+    fill: #393f44;
 }
 
 .task_group_script {
@@ -90,8 +98,7 @@
 }
 
 .task_script_icon {
-    stroke: #000000;
-    fill: #000000;
+    fill: #393f44;
 }
 
 .task_group_business_rule {
@@ -99,8 +106,7 @@
 }
 
 .task_business_rule_icon {
-    stroke: #000000;
-    fill: #000000;
+    fill: #393f44;
 }
 
 #userTask .task_group_user {
@@ -115,357 +121,273 @@
     opacity: 1;
 }
 
-.eventAll {
-    stroke-width: 1.5px;
-}
 
-.eventAll_interm_circle {
-    stroke-width: 1.5px;
-    fill-opacity: 0;
+
+#event-background,
+#event-type #intermediate-noninterrupting,
+#event-type #intermediate,
+#event-type #end,
+#event-type #end_1_,
+#event-type #start,
+#event-type #start-noninterrupting,
+#event-subtypes #cancel-throwing,
+#event-subtypes #cancel-catching,
+#event-subtypes #compensation-throwing,
+#event-subtypes #compensation-catching,
+#event-subtypes #conditional-catching,
+#event-subtypes #conditional-throwing,
+#event-subtypes #end,
+#event-subtypes #end_1_,
+#event-subtypes #error-throwing,
+#event-subtypes #error-catching,
+#event-subtypes #escalation-throwing,
+#event-subtypes #escalation-catching,
+#event-subtypes #link-throwing,
+#event-subtypes #link-catching,
+#event-subtypes #message-throwing,
+#event-subtypes #message-catching,
+#event-subtypes #multiple-throwing,
+#event-subtypes #multiple-catching,
+#event-subtypes #parallel-multiple-throwing,
+#event-subtypes #parallel-multiple-catching,
+#event-subtypes #signal-throwing,
+#event-subtypes #signal-catching,
+#event-subtypes #wait   {
     opacity: 0;
 }
-
-.eventAll_group_timer {
-    opacity: 0;
-}
-
-.eventAll_timerIcon {
-
-}
-
-.eventAll_group_signal {
-    opacity: 0;
-}
-
-.eventAll_group_message {
-    opacity: 0;
-}
-
-.eventAll_signalIcon {
-
-}
-
-.eventAll_messageIcon {
-
-}
-
-.eventAll_group_terminate {
-    opacity: 0;
-}
-
-.eventAll_group_message{
-    opacity: 0;
-}
-
-.eventAll_terminateIcon {
-
-}
-
-.eventAll_group_error {
-    opacity: 0;
-}
-
-.eventAll_errorIcon {
-
-}
-
-#startNoneEvent .eventAll {
-    fill: #E8FAE6;
-    stroke: #4AA241;
-}
-
-#startSignalEvent .eventAll {
-    fill: #E8FAE6;
-    stroke: #4AA241;
-}
-
-#startSignalEvent .eventAll_group_signal {
+#startNoneEvent #event-background {
     opacity: 1;
+    fill: #e8fae6;
 }
-
-#startSignalEvent .eventAll_signalIcon {
-    fill: #4AA241;
-    stroke: #4AA241;
-}
-
-#startMessageEvent .eventAll {
-    fill: #E8FAE6;
-    stroke: #4AA241;
-}
-
-#startMessageEvent .eventAll_group_message {
+#startNoneEvent #start {
     opacity: 1;
+    fill: #4aa241;
 }
 
-#startMessageEvent .eventAll_messageIcon {
-    fill: #4AA241;
-    stroke: #4AA241;
-}
-
-#startMessageEvent .eventAll_interm_circle {
-    stroke: #4AA241;
+#startSignalEvent #event-background {
     opacity: 1;
+    fill: #e8fae6;
 }
-
-#startTimerEvent .eventAll {
-    fill: #E8FAE6;
-    stroke: #4AA241;
-}
-
-#startTimerEvent .eventAll_timerIcon {
-    fill: #4AA241;
-    stroke: #4AA241;
-}
-
-#startTimerEvent .eventAll_group_timer {
+#startSignalEvent #start {
     opacity: 1;
+    fill: #4aa241;
 }
-
-#startErrorEvent .eventAll {
-    fill: #E8FAE6;
-    stroke: #4AA241;
+#startSignalEvent #start-noninterrupting {
+    opacity: 0.01; /*Forcing to generate this element for further use, it depends on the runtime value for the "is interrupting" property. */
+    fill: #4aa241;
 }
-
-#startErrorEvent .eventAll_errorIcon {
+#startSignalEvent #signal-catching {
     opacity: 1;
-    fill: #4AA241;
-    stroke: #4AA241;
+    fill: #4aa241;
 }
 
-#startErrorEvent .eventAll_errorIconFilled {
-    opacity: 0;
-}
-
-#startErrorEvent .eventAll_group_error {
+#startMessageEvent #event-background {
     opacity: 1;
+    fill: #e8fae6;
 }
-
-#intermediateNoneEvent .eventAll {
-    fill: #FBEFCF;
-    stroke: #F0AB00;
-}
-
-#intermediateNoneEvent .eventAll_interm_circle {
-    stroke: #F0AB00;
+#startMessageEvent #start {
     opacity: 1;
+    fill: #4aa241;
 }
-
-#intermediateSignalCatchingEvent .eventAll {
-    fill: #FBEFCF;
-    stroke: #F0AB00;
+#startMessageEvent #start-noninterrupting {
+    opacity: 0.01; /*Forcing to generate this element for further use, it depends on the runtime value for the "is interrupting" property. */
+    fill: #4aa241;
 }
-
-#intermediateSignalCatchingEvent .eventAll_interm_circle {
-    stroke: #F0AB00;
+#startMessageEvent #message-catching {
     opacity: 1;
+    fill: #4aa241;
 }
 
-#intermediateSignalCatchingEvent .eventAll_signalIcon {
-    fill: #F0AB00;
-    stroke: #F0AB00;
-}
-
-#intermediateSignalCatchingEvent .eventAll_group_signal {
+#startTimerEvent #event-background {
     opacity: 1;
+    fill: #e8fae6;
 }
-
-#intermediateMessageCatchingEvent .eventAll {
-    fill: #FBEFCF;
-    stroke: #F0AB00;
-}
-
-#intermediateMessageCatchingEvent .eventAll_interm_circle {
-    stroke: #F0AB00;
+#startTimerEvent #start {
     opacity: 1;
+    fill: #4aa241;
 }
-
-#intermediateMessageCatchingEvent .eventAll_messageIcon {
-    fill: #F0AB00;
-    stroke: #F0AB00;
+#startTimerEvent #start-noninterrupting {
+    opacity: 0.01; /*Forcing to generate this element for further use, it depends on the runtime value for the "is interrupting" property. */
+    fill: #4aa241;
 }
-
-#intermediateMessageCatchingEvent .eventAll_group_message {
+#startTimerEvent #wait {
     opacity: 1;
+    fill: #4aa241;
 }
 
-#intermediateErrorCatchingEvent .eventAll {
-    fill: #FBEFCF;
-    stroke: #F0AB00;
-}
-
-#intermediateErrorCatchingEvent .eventAll_interm_circle {
-    stroke: #F0AB00;
+#startErrorEvent #event-background {
     opacity: 1;
+    fill: #e8fae6;
 }
-
-#intermediateErrorCatchingEvent .eventAll_errorIcon {
-    fill: #F0AB00;
-    stroke: #F0AB00;
+#startErrorEvent #start {
     opacity: 1;
+    fill: #4aa241;
 }
-
-#intermediateErrorCatchingEvent .eventAll_errorIconFilled {
-    opacity: 0;
-}
-
-#intermediateErrorCatchingEvent .eventAll_group_error {
+#startErrorEvent #error-catching {
     opacity: 1;
+    fill: #4aa241;
 }
 
-#intermediateSignalThrowingEvent .eventAll {
-    fill: #8cabff;
-    fill-opacity: 0.5;
-    stroke: #008cec;
-}
-
-#intermediateSignalThrowingEvent .eventAll_interm_circle {
-    stroke: #008cec;
+#intermediateTimerEvent #event-background {
     opacity: 1;
+    fill: #fbefcf;
 }
-
-#intermediateSignalThrowingEvent .eventAll_signalIcon {
-    fill: #008cec;
-    stroke: #008cec;
-}
-
-#intermediateSignalThrowingEvent .eventAll_group_signal {
+#intermediateTimerEvent #intermediate {
     opacity: 1;
+    fill: #e5a000;
 }
-
-
-#intermediateMessageThrowingEvent .eventAll {
-    fill: #8cabff;
-    fill-opacity: 0.5;
-    stroke: #008cec;
+#intermediateTimerEvent #intermediate-noninterrupting {
+    opacity: 0.01; /*Forcing to generate this element for further use, it depends on the runtime value for the "is interrupting" property. */
+    fill: #e5a000;
 }
-
-#intermediateMessageThrowingEvent .eventAll_interm_circle {
-    stroke: #008cec;
+#intermediateTimerEvent #wait {
     opacity: 1;
+    fill: #e5a000;
 }
 
-#intermediateMessageThrowingEvent .eventAll_messageIcon {
-    fill: #008cec;
-    stroke: #008cec;
-}
-
-#intermediateMessageThrowingEvent .eventAll_group_message {
+#intermediateSignalCatchingEvent #event-background {
     opacity: 1;
+    fill: #fbefcf;
 }
-
-#intermediateTimerEvent .eventAll {
-    fill: #FBEFCF;
-    stroke: #F0AB00;
-}
-
-#intermediateTimerEvent .eventAll_interm_circle {
-    stroke: #F0AB00;
+#intermediateSignalCatchingEvent #intermediate {
     opacity: 1;
+    fill: #e5a000;
 }
-
-#intermediateTimerEvent .eventAll_timerIcon {
-    fill: #F0AB00;
-    stroke: #F0AB00;
+#intermediateSignalCatchingEvent #intermediate-noninterrupting {
+    opacity: 0.01; /*Forcing to generate this element for further use, it depends on the runtime value for the "is interrupting" property. */
+    fill: #e5a000;
 }
-
-#intermediateTimerEvent .eventAll_group_timer {
+#intermediateSignalCatchingEvent #signal-catching {
     opacity: 1;
+    fill: #e5a000;
 }
 
-#intermediateMessageEvent .eventAll_interm_circle {
-    stroke: #F0AB00;
+#intermediateMessageCatchingEvent #event-background {
     opacity: 1;
+    fill: #fbefcf;
 }
-
-#intermediateMessageEvent .eventAll_timerIcon {
-    fill: #F0AB00;
-    stroke: #F0AB00;
-}
-
-#intermediateMessageEvent .eventAll_group_timer {
+#intermediateMessageCatchingEvent #intermediate {
     opacity: 1;
+    fill: #e5a000;
 }
-
-#endNoneEvent .eventAll {
-    fill: #FCE7E7;
-    stroke: #A30000;
+#intermediateMessageCatchingEvent #intermediate-noninterrupting {
+    opacity: 0.01; /*Forcing to generate this element for further use, it depends on the runtime value for the "is interrupting" property. */
+    fill: #e5a000;
 }
-
-#endSignalEvent .eventAll {
-    fill: #FCE7E7;
-    stroke: #A30000;
-}
-
-#endSignalEvent .eventAll_signalIcon {
-    fill: #A30000;
-    stroke: #A30000;
-}
-
-
-#endMessageEvent .eventAll {
-    fill: #FCE7E7;
-    stroke: #A30000;
-}
-
-#endMessageEvent .eventAll_messageIcon {
-    fill: #A30000;
-    stroke: #A30000;
-}
-
-#endSignalEvent .eventAll_group_signal {
+#intermediateMessageCatchingEvent #message-catching {
     opacity: 1;
+    fill: #e5a000;
 }
 
-#endMessageEvent .eventAll {
-    fill: #FCE7E7;
-    stroke: #A30000;
-}
-
-#endMessageEvent .eventAll_group_message {
+#intermediateErrorCatchingEvent #event-background {
     opacity: 1;
- }
-
-#endMessageEvent .eventAll_messageIcon {
-    fill: #A30000;
-    stroke: #A30000;
+    fill: #fbefcf;
 }
-
-#endTerminateEvent .eventAll {
-    fill: #FCE7E7;
-    stroke: #A30000;
-}
-
-#endTerminateEvent .eventAll_terminateIcon {
-    fill: #A30000;
-}
-
-#endTerminateEvent .eventAll_group_terminate {
+#intermediateErrorCatchingEvent #intermediate {
     opacity: 1;
+    fill: #e5a000;
 }
-
-#endErrorEvent .eventAll {
-    fill: #FCE7E7;
-    stroke: #A30000;
-}
-
-#endErrorEvent .eventAll_errorIcon {
-    opacity: 0;
-}
-
-#endErrorEvent .eventAll_errorIconFilled {
+#intermediateErrorCatchingEvent #error-catching {
     opacity: 1;
-    fill: #A30000;
-    stroke: #A30000;
+    fill: #e5a000;
 }
 
-#endErrorEvent .eventAll_group_error {
+#intermediateSignalThrowingEvent #event-background {
     opacity: 1;
+    fill: #bedee1;
+}
+#intermediateSignalThrowingEvent #intermediate {
+    opacity: 1;
+    fill: #007a87;
+}
+#intermediateSignalThrowingEvent #signal-throwing {
+    opacity: 1;
+    fill: #007a87;
+
+}
+
+#intermediateMessageThrowingEvent #event-background {
+    opacity: 1;
+    fill: #bedee1;
+}
+#intermediateMessageThrowingEvent #intermediate {
+    opacity: 1;
+    fill: #007a87;
+}
+#intermediateMessageThrowingEvent #message-throwing {
+    opacity: 1;
+    fill: #007a87;
+}
+
+
+#endNoneEvent #event-background {
+    opacity: 1;
+    fill: #fce7e7;
+}
+#endNoneEvent #end {
+    opacity: 1;
+    fill: #a30000;
+}
+
+
+#endSignalEvent #event-background {
+    opacity: 1;
+    fill: #fce7e7;
+}
+#endSignalEvent #end {
+    opacity: 1;
+    fill: #a30000;
+}
+#endSignalEvent #signal-catching {
+    opacity: 1;
+    fill: #a30000;
+}
+
+
+#endMessageEvent #event-background {
+    opacity: 1;
+    fill: #fce7e7;
+}
+#endMessageEvent #end {
+    opacity: 1;
+    fill: #a30000;
+}
+#endMessageEvent #message-catching {
+    opacity: 1;
+    fill: #a30000;
+}
+
+
+#endTerminateEvent #event-background {
+    opacity: 1;
+    fill: #fce7e7;
+}
+#endTerminateEvent #end {
+    opacity: 1;
+    fill: #a30000;
+}
+#endTerminateEvent #end_1_ {
+    opacity: 1;
+    fill: #a30000;
+}
+
+#endErrorEvent #event-background {
+    opacity: 1;
+    fill: #fce7e7;
+}
+#endErrorEvent #end {
+    opacity: 1;
+    fill: #a30000;
+}
+#endErrorEvent #error-throwing {
+    opacity: 1;
+    fill: #a30000;
 }
 
 .subProcess {
-    fill: #FFFFFF;
-    stroke: #000000;
-    stroke-width: 1.5px;
+    fill: #FFFFFF; /*this affects only the reusable subprocess*/
+    stroke: #393f44; /*this affects the reusable, ad hoc, and embedded subprocesses*/
+    stroke-width: 1.5px; /*this affects the adhoc and embedded subprocesses but not the collapsed one*/
 }
 
 .subProcess_group_reusable {
@@ -477,21 +399,21 @@
 }
 
 .subProcess_reusable_icon {
-    stroke: #000000;
-    fill: #000000;
+    fill: #393f44;
 }
 
 .subProcess_reusable_boundingbox {
     fill:none;
-    stroke: black;
-    stroke-width: 10px;
+    stroke: #393f44;     /* this is the little box around the icon. */
+    stroke-width: 1.5px;
 }
 
 .subProcess_event {
-    stroke-dasharray: 5, 5;
+    stroke-dasharray: 2,2;
+    stroke-width: 2px;
     opacity: 1;
-    fill: #f2f2f2;
-    stroke: #000000;
+    fill: #fafafa;
+    stroke: #393f44;
 }
 
 .subProcess_event_icon {
@@ -524,7 +446,8 @@
 
 
 #reusableSubProcess .subProcess {
-    stroke-width: 3px;
+    stroke-width: 3px; /* this is the whole outline */
+    stroke: #393f44;
 }
 
 #reusableSubProcess .subProcess_group_reusable {
@@ -532,7 +455,7 @@
 }
 
 #adHocSubProcess .subProcess {
-    fill: #f2f2f2;
+    fill: #fafafa;
 }
 
 #adHocSubProcess .subProcess_group_adHoc {
@@ -553,11 +476,11 @@
 }
 
 #eventSubProcess .subProcess {
-    fill: #f2f2f2;
+    fill: #fafafa;
 }
 
 #embeddedSubProcess .subProcess {
-    fill: #f2f2f2;
+    fill: #fafafa;
 }
 
 
@@ -569,24 +492,11 @@
  */
 #text {
     opacity: 1;
-    font-family: Verdana;
-    font-size: 10px;
+    font-family: Open Sans;
+    font-size: 12px;
     fill: #000000;
-    stroke: #000000;
-    stroke-width: 0.5px;
-}
-
-/*
-    *******************************
-    Global BPMN shape state styles.
-    *******************************
- */
-.shape-state-selected {
-    stroke: blue;
-}
-.shape-state-highlight{
-    stroke: blue;
-}
-.shape-state-invalid {
-    stroke: red;
+    stroke: #393f44;
+    stroke-width: 1px;
+    text-align: left;
+    align: left;
 }

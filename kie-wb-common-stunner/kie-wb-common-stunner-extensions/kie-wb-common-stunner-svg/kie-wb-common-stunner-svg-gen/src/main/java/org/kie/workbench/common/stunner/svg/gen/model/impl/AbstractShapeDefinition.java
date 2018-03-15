@@ -16,33 +16,35 @@
 
 package org.kie.workbench.common.stunner.svg.gen.model.impl;
 
+import java.util.Optional;
+
 import org.kie.workbench.common.stunner.svg.gen.model.ShapeDefinition;
-import org.kie.workbench.common.stunner.svg.gen.model.ShapePolicyDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.StyleDefinition;
 
 public abstract class AbstractShapeDefinition<V>
         extends AbstractPrimitiveDefinition<V>
         implements ShapeDefinition<V> {
 
-    private ShapePolicyDefinition shapePolicyDefinition;
+    private Optional<ShapeStateDefinition> stateDefinition;
     private StyleDefinition styleDefinition;
 
     protected AbstractShapeDefinition(final String id) {
         super(id);
+        this.stateDefinition = Optional.empty();
     }
 
     @Override
-    public ShapePolicyDefinition getShapePolicyDefinition() {
-        return shapePolicyDefinition;
+    public Optional<ShapeStateDefinition> getStateDefinition() {
+        return stateDefinition;
+    }
+
+    public void setStateDefinition(final Optional<ShapeStateDefinition> stateDefinition) {
+        this.stateDefinition = stateDefinition;
     }
 
     @Override
     public StyleDefinition getStyleDefinition() {
         return styleDefinition;
-    }
-
-    public void setShapePolicyDefinition(final ShapePolicyDefinition shapePolicyDefinition) {
-        this.shapePolicyDefinition = shapePolicyDefinition;
     }
 
     public void setStyleDefinition(final StyleDefinition styleDefinition) {

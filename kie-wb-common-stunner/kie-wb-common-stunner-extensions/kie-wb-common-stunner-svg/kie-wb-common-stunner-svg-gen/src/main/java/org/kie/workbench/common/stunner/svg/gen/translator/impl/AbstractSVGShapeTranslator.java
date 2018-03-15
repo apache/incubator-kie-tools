@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.stunner.svg.gen.translator.impl;
 
+import java.util.Optional;
+
 import org.kie.workbench.common.stunner.svg.gen.exception.TranslatorException;
-import org.kie.workbench.common.stunner.svg.gen.model.ShapePolicyDefinition;
+import org.kie.workbench.common.stunner.svg.gen.model.ShapeDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.StyleDefinition;
 import org.kie.workbench.common.stunner.svg.gen.model.impl.AbstractShapeDefinition;
 import org.kie.workbench.common.stunner.svg.gen.translator.SVGTranslatorContext;
@@ -32,9 +34,12 @@ public abstract class AbstractSVGShapeTranslator<E extends Element, O extends Ab
                                                 SVGTranslatorContext context) throws TranslatorException {
         super.translatePrimitiveDefinition(element, def, context);
         if (!def.isMain()) {
-            final String shapeRaw = getShapeAttributeValue(element);
-            final ShapePolicyDefinition p = isEmpty(shapeRaw) ? ShapePolicyDefinition.STROKE_COLOR : ShapePolicyDefinition.valueOf(shapeRaw);
-            def.setShapePolicyDefinition(p);
+            final String shapeStateRaw = getShapeStateAttributeValue(element);
+            if (isEmpty(shapeStateRaw)) {
+                def.setStateDefinition(Optional.empty());
+            } else {
+                def.setStateDefinition(Optional.of(ShapeDefinition.ShapeStateDefinition.valueOf(shapeStateRaw.toUpperCase())));
+            }
         }
     }
 

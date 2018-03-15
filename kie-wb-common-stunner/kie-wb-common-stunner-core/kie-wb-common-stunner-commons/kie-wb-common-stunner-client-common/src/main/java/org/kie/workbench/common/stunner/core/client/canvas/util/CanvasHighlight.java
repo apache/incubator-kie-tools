@@ -80,11 +80,13 @@ public class CanvasHighlight {
             getCanvas().draw();
             uuids.clear();
         }
+        setValidCursor();
         return this;
     }
 
     public void destroy() {
         this.uuids.clear();
+        setValidCursor();
     }
 
     private void applyState(final Element<?> node,
@@ -101,6 +103,23 @@ public class CanvasHighlight {
             uuids.add(uuid);
             shape.applyState(state);
         }
+        if (ShapeState.INVALID.equals(state)) {
+            setInvalidCursor();
+        } else {
+            setValidCursor();
+        }
+    }
+
+    private void setInvalidCursor() {
+        setCursor(AbstractCanvas.Cursors.NOT_ALLOWED);
+    }
+
+    private void setValidCursor() {
+        setCursor(AbstractCanvas.Cursors.AUTO);
+    }
+
+    private void setCursor(final AbstractCanvas.Cursors cursor) {
+        getCanvas().getView().setCursor(cursor);
     }
 
     private Shape getShape(final String uuid) {

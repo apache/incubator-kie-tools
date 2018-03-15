@@ -1,1 +1,1 @@
-new ${className}("${path}")
+new ${className}(${pathInstanceId})

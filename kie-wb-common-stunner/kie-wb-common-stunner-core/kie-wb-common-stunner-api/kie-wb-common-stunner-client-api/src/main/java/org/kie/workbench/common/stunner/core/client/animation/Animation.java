@@ -20,11 +20,14 @@ public interface Animation<S> {
 
     interface AnimationCallback {
 
-        void onStart();
+        default void onStart() {
+        }
 
-        void onFrame();
+        default void onFrame() {
+        }
 
-        void onComplete();
+        default void onComplete() {
+        }
     }
 
     S getSource();

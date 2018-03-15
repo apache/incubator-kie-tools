@@ -29,8 +29,8 @@ public interface SVGDocumentTranslator extends Translator<Document> {
     String XLINK_URI = "http://www.w3.org/1999/xlink";
     String STUNNER_URI = "http://kiegroup.org/2017/stunner";
     String STUNNER_ATTR_NS_LAYOUT = "layout";
+    String STUNNER_ATTR_NS_STATE = "shape-state";
     String STUNNER_ATTR_NS_SHAPE = "shape";
-    String STUNNER_ATTR_SHAPE_MAIN = "main-shape";
     String STUNNER_ATTR_SHAPE_EXCLUDE = "exclude";
     String STUNNER_ATTR_NS_TRANSFORM = "transform";
     String STUNNER_ATTR_TRANSFORM_NON_SCALABLE = "non-scalable";

@@ -38,7 +38,5 @@ public interface ViewDefinition<V> extends PrimitiveDefinition<V>,
 
     List<PrimitiveDefinition> getChildren();
 
-    ViewShapeStateDefinition getShapeStateDefinition();
-
     List<ViewRefDefinition> getSVGViewRefs();
 }

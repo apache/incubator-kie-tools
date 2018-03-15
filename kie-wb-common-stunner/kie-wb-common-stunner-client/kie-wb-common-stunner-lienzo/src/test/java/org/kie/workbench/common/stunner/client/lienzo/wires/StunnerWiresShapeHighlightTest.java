@@ -114,7 +114,7 @@ public class StunnerWiresShapeHighlightTest {
         assertTrue(restoreAnimation instanceof ShapeViewDecoratorAnimation);
         final ShapeViewDecoratorAnimation viewRestoreAnimation = (ShapeViewDecoratorAnimation) restoreAnimation;
         assertEquals(color, viewRestoreAnimation.getColor());
-        assertEquals(alpha, viewRestoreAnimation.getStrokeAlpha(), 0d);
+        assertEquals(alpha, viewRestoreAnimation.getAlpha(), 0d);
         assertEquals(width, viewRestoreAnimation.getStrokeWidth(), 0d);
     }
 

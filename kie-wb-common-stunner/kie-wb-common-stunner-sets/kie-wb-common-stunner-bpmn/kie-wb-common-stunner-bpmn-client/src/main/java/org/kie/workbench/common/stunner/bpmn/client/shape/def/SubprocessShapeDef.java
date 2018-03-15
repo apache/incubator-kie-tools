@@ -50,7 +50,7 @@ public class SubprocessShapeDef extends BaseDimensionedShapeDef
     public static final Map<Class<? extends BaseSubprocess>, SvgDataUriGlyph> GLYPHS =
             new HashMap<Class<? extends BaseSubprocess>, SvgDataUriGlyph>() {{
                 put(ReusableSubprocess.class, BPMNSVGGlyphFactory.REUSABLE_SUBPROCESS_GLYPH);
-                put(EmbeddedSubprocess.class, BPMNSVGGlyphFactory.ADHOC_SUBPROCESS_GLYPH);
+                put(EmbeddedSubprocess.class, BPMNSVGGlyphFactory.EMBEDDED_SUBPROCESS_GLYPH);
                 put(EventSubprocess.class, BPMNSVGGlyphFactory.EVENT_SUBPROCESS_GLYPH);
                 put(AdHocSubprocess.class, BPMNSVGGlyphFactory.ADHOC_SUBPROCESS_GLYPH);
                 put(MultipleInstanceSubprocess.class, BPMNSVGGlyphFactory.MULTIPLE_INSTANCE_SUBPROCESS_GLYPH);
@@ -76,9 +76,9 @@ public class SubprocessShapeDef extends BaseDimensionedShapeDef
         return newSizeHandlerBuilder()
                 .width(task -> task.getDimensionsSet().getWidth().getValue())
                 .height(task -> task.getDimensionsSet().getHeight().getValue())
-                .minWidth(task -> 25d)
+                .minWidth(task -> 50d)
                 .maxWidth(task -> 1200d)
-                .minHeight(task -> 25d)
+                .minHeight(task -> 50d)
                 .maxHeight(task -> 1200d)
                 .build();
     }

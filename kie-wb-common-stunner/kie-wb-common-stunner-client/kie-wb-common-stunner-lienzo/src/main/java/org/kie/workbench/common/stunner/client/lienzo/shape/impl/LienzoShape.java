@@ -16,27 +16,29 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.shape.impl;
 
-import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeImpl;
+import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateAttributesFactory;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateHandler;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeWrapper;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
-public class LienzoShape<V extends ShapeView> extends ShapeWrapper<V, ShapeImpl<V>> {
+public class LienzoShape<V extends LienzoShapeView> extends ShapeWrapper<V, ShapeImpl<V>> {
 
     private final ShapeImpl<V> wrapped;
 
+    @SuppressWarnings("unchecked")
     public LienzoShape(final V view) {
-        this.wrapped = new ShapeImpl<V>(view,
-                                        new AnimatedShapeStateStrokeHandler<>());
-        this.wrapped.getShapeStateHandler().forShape(this);
+        this.wrapped = new ShapeImpl<>(view,
+                                       new ShapeStateAttributeAnimationHandler<>()
+                                               .getAttributesHandler()
+                                               .useAttributes(ShapeStateAttributesFactory::buildStrokeAttributes)
+                                               .setView(() -> view));
     }
 
     public LienzoShape(final V view,
-                       final ShapeStateHandler<V, Shape<V>> shapeStateHelper) {
-        this.wrapped = new ShapeImpl<V>(view,
-                                        shapeStateHelper);
-        this.wrapped.getShapeStateHandler().forShape(this);
+                       final ShapeStateHandler shapeStateHelper) {
+        this.wrapped = new ShapeImpl<>(view,
+                                       shapeStateHelper);
     }
 
     @Override
