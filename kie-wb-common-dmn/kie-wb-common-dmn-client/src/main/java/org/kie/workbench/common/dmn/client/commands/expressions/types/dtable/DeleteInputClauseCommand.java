@@ -14,15 +14,20 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.commands.expressions.types.relation;
+package org.kie.workbench.common.dmn.client.commands.expressions.types.dtable;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.List;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
+import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapper;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapperHelper;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
@@ -34,31 +39,48 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AbstractGraphCommand;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
-public class DeleteRelationRowCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
+public class DeleteInputClauseCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
                                                                                     VetoUndoCommand {
 
-    private final Relation relation;
+    private final DecisionTable dtable;
     private final GridData uiModel;
-    private final int uiRowIndex;
+    private final int uiColumnIndex;
+    private final DecisionTableUIModelMapper uiModelMapper;
     private final org.uberfire.mvp.Command canvasOperation;
 
-    private final List oldRow;
-    private final GridRow oldUiModelRow;
+    private final InputClause oldInputClause;
+    private final List<UnaryTests> oldColumnData;
+    private final GridColumn<?> oldUiModelColumn;
 
-    public DeleteRelationRowCommand(final Relation relation,
+    public DeleteInputClauseCommand(final DecisionTable dtable,
                                     final GridData uiModel,
-                                    final int uiRowIndex,
+                                    final int uiColumnIndex,
+                                    final DecisionTableUIModelMapper uiModelMapper,
                                     final org.uberfire.mvp.Command canvasOperation) {
-        this.relation = relation;
+        this.dtable = dtable;
         this.uiModel = uiModel;
-        this.uiRowIndex = uiRowIndex;
+        this.uiColumnIndex = uiColumnIndex;
+        this.uiModelMapper = uiModelMapper;
         this.canvasOperation = canvasOperation;
 
-        this.oldRow = relation.getRow().get(uiRowIndex);
-        this.oldUiModelRow = uiModel.getRow(uiRowIndex);
+        this.oldInputClause = dtable.getInput().get(uiColumnIndex - DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
+        this.oldColumnData = extractColumnData();
+        this.oldUiModelColumn = uiModel.getColumns().get(uiColumnIndex);
+    }
+
+    private List<UnaryTests> extractColumnData() {
+        final int clauseIndex = getInputClauseIndex();
+        return dtable.getRule()
+                .stream()
+                .map(row -> row.getInputEntry().get(clauseIndex))
+                .collect(Collectors.toList());
+    }
+
+    private int getInputClauseIndex() {
+        return uiColumnIndex - DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT;
     }
 
     @Override
@@ -71,14 +93,23 @@ public class DeleteRelationRowCommand extends AbstractCanvasGraphCommand impleme
 
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
-                relation.getRow().remove(uiRowIndex);
+                final int clauseIndex = getInputClauseIndex();
+                dtable.getRule().forEach(row -> row.getInputEntry().remove(clauseIndex));
+                dtable.getInput().remove(clauseIndex);
 
                 return GraphCommandResultBuilder.SUCCESS;
             }
 
             @Override
             public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext gce) {
-                relation.getRow().add(uiRowIndex, oldRow);
+                final int clauseIndex = getInputClauseIndex();
+                dtable.getInput().add(clauseIndex,
+                                      oldInputClause);
+                IntStream.range(0, dtable.getRule().size())
+                        .forEach(rowIndex -> {
+                            final UnaryTests value = oldColumnData.get(rowIndex);
+                            dtable.getRule().get(rowIndex).getInputEntry().add(clauseIndex, value);
+                        });
 
                 return GraphCommandResultBuilder.SUCCESS;
             }
@@ -90,9 +121,10 @@ public class DeleteRelationRowCommand extends AbstractCanvasGraphCommand impleme
         return new AbstractCanvasCommand() {
             @Override
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler handler) {
-                uiModel.deleteRow(uiRowIndex);
+                //Deleting the GridColumn also deletes the underlying data
+                final GridColumn<?> gridColumn = uiModel.getColumns().get(uiColumnIndex);
+                uiModel.deleteColumn(gridColumn);
 
-                updateRowNumbers();
                 updateParentInformation();
 
                 canvasOperation.execute();
@@ -102,9 +134,14 @@ public class DeleteRelationRowCommand extends AbstractCanvasGraphCommand impleme
 
             @Override
             public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler handler) {
-                uiModel.insertRow(uiRowIndex, oldUiModelRow);
+                //Need to manually setup the old data when the column is restored
+                uiModel.insertColumn(uiColumnIndex,
+                                     oldUiModelColumn);
+                for (int rowIndex = 0; rowIndex < dtable.getRule().size(); rowIndex++) {
+                    uiModelMapper.fromDMNModel(rowIndex,
+                                               uiColumnIndex);
+                }
 
-                updateRowNumbers();
                 updateParentInformation();
 
                 canvasOperation.execute();
@@ -112,12 +149,6 @@ public class DeleteRelationRowCommand extends AbstractCanvasGraphCommand impleme
                 return CanvasCommandResultBuilder.SUCCESS;
             }
         };
-    }
-
-    public void updateRowNumbers() {
-        CommandUtils.updateRowNumbers(uiModel,
-                                      IntStream.range(0,
-                                                      uiModel.getRowCount()));
     }
 
     public void updateParentInformation() {

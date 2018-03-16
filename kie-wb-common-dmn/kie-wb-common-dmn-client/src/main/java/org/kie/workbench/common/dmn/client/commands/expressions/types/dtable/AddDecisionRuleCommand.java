@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.commands.expressions.types.dtable;
 
+import java.util.stream.IntStream;
+
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
@@ -23,6 +25,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
+import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -47,6 +50,7 @@ public class AddDecisionRuleCommand extends AbstractCanvasGraphCommand implement
     private final DecisionRule rule;
     private final GridData uiModel;
     private final DMNGridRow uiModelRow;
+    private final int uiRowIndex;
     private final DecisionTableUIModelMapper uiModelMapper;
     private final org.uberfire.mvp.Command canvasOperation;
 
@@ -54,12 +58,14 @@ public class AddDecisionRuleCommand extends AbstractCanvasGraphCommand implement
                                   final DecisionRule rule,
                                   final GridData uiModel,
                                   final DMNGridRow uiModelRow,
+                                  final int uiRowIndex,
                                   final DecisionTableUIModelMapper uiModelMapper,
                                   final org.uberfire.mvp.Command canvasOperation) {
         this.dtable = dtable;
         this.rule = rule;
         this.uiModel = uiModel;
         this.uiModelRow = uiModelRow;
+        this.uiRowIndex = uiRowIndex;
         this.uiModelMapper = uiModelMapper;
         this.canvasOperation = canvasOperation;
     }
@@ -74,7 +80,8 @@ public class AddDecisionRuleCommand extends AbstractCanvasGraphCommand implement
 
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
-                dtable.getRule().add(rule);
+                dtable.getRule().add(uiRowIndex,
+                                     rule);
 
                 for (int ie = 0; ie < dtable.getInput().size(); ie++) {
                     final UnaryTests ut = new UnaryTests();
@@ -108,19 +115,23 @@ public class AddDecisionRuleCommand extends AbstractCanvasGraphCommand implement
             @Override
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
                 int columnIndex = 0;
-                uiModel.appendRow(uiModelRow);
-                uiModelMapper.fromDMNModel(uiModel.getRowCount() - 1,
+                uiModel.insertRow(uiRowIndex,
+                                  uiModelRow);
+                uiModelMapper.fromDMNModel(uiRowIndex,
                                            columnIndex++);
                 for (int ici = 0; ici < dtable.getInput().size(); ici++) {
-                    uiModelMapper.fromDMNModel(uiModel.getRowCount() - 1,
+                    uiModelMapper.fromDMNModel(uiRowIndex,
                                                columnIndex++);
                 }
                 for (int oci = 0; oci < dtable.getOutput().size(); oci++) {
-                    uiModelMapper.fromDMNModel(uiModel.getRowCount() - 1,
+                    uiModelMapper.fromDMNModel(uiRowIndex,
                                                columnIndex++);
                 }
-                uiModelMapper.fromDMNModel(uiModel.getRowCount() - 1,
+                uiModelMapper.fromDMNModel(uiRowIndex,
                                            columnIndex);
+
+                updateRowNumbers();
+                updateParentInformation();
 
                 canvasOperation.execute();
 
@@ -129,13 +140,25 @@ public class AddDecisionRuleCommand extends AbstractCanvasGraphCommand implement
 
             @Override
             public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
-                final int rowIndex = uiModel.getRows().indexOf(uiModelRow);
-                uiModel.deleteRow(rowIndex);
+                uiModel.deleteRow(uiRowIndex);
+
+                updateRowNumbers();
+                updateParentInformation();
 
                 canvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }
         };
+    }
+
+    public void updateRowNumbers() {
+        CommandUtils.updateRowNumbers(uiModel,
+                                      IntStream.range(0,
+                                                      uiModel.getRowCount()));
+    }
+
+    public void updateParentInformation() {
+        CommandUtils.updateParentInformation(uiModel);
     }
 }

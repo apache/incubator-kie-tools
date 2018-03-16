@@ -20,9 +20,12 @@ import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
-import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HasHitPolicyControl;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyEditorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditablePopupHeaderMetaData;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 
-class RowNumberColumnHeaderMetaData implements GridColumn.HeaderMetaData {
+class RowNumberColumnHeaderMetaData extends EditablePopupHeaderMetaData<HasHitPolicyControl, HitPolicyEditorView.Presenter> {
 
     private static final String ROW_NUMBER_GROUP = "RowNumberColumn";
 
@@ -30,7 +33,13 @@ class RowNumberColumnHeaderMetaData implements GridColumn.HeaderMetaData {
     private final Supplier<BuiltinAggregator> builtinAggregatorSupplier;
 
     public RowNumberColumnHeaderMetaData(final Supplier<HitPolicy> hitPolicySupplier,
-                                         final Supplier<BuiltinAggregator> builtinAggregatorSupplier) {
+                                         final Supplier<BuiltinAggregator> builtinAggregatorSupplier,
+                                         final CellEditorControlsView.Presenter cellEditorControls,
+                                         final HitPolicyEditorView.Presenter editor,
+                                         final DecisionTableGrid gridWidget) {
+        super(cellEditorControls,
+              editor,
+              gridWidget);
         this.hitPolicySupplier = hitPolicySupplier;
         this.builtinAggregatorSupplier = builtinAggregatorSupplier;
     }
@@ -51,25 +60,10 @@ class RowNumberColumnHeaderMetaData implements GridColumn.HeaderMetaData {
         final BuiltinAggregator builtinAggregator = builtinAggregatorSupplier.get();
         final StringBuilder sb = new StringBuilder(hitPolicy.value().substring(0, 1).toUpperCase());
         if (HitPolicy.COLLECT == hitPolicy) {
-            switch (builtinAggregator) {
-                case COUNT:
-                    sb.append("#");
-                    break;
-                case MAX:
-                    sb.append(">");
-                    break;
-                case MIN:
-                    sb.append("<");
-                    break;
-                case SUM:
-                    sb.append("+");
+            if (builtinAggregator != null) {
+                sb.append(builtinAggregator.getCode());
             }
         }
         return sb.toString();
-    }
-
-    @Override
-    public void setTitle(final String title) {
-        throw new UnsupportedOperationException("Title is derived from the Decision Table Hit Policy and cannot be set on the HeaderMetaData.");
     }
 }

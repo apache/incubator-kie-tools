@@ -191,6 +191,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
                                                  cellEditorControls.hide();
                                                  expression.ifPresent(e -> deleteColumn(uiColumnIndex));
                                              }));
+        items.add(new ListSelectorDividerItem());
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_InsertRowAbove),
                                              true,
                                              () -> {
@@ -231,12 +232,18 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
                                                                        relationColumn,
                                                                        index,
                                                                        uiModelMapper,
-                                                                       () -> {
-                                                                           parent.assertWidth(RelationGrid.this.getWidth() + getPadding() * 2);
-                                                                           gridPanel.refreshScrollPosition();
-                                                                           gridPanel.updatePanelSize();
-                                                                           gridLayer.batch();
-                                                                       }));
+                                                                       this::synchroniseView));
+        });
+    }
+
+    void deleteColumn(final int index) {
+        expression.ifPresent(relation -> {
+            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                          new DeleteRelationColumnCommand(relation,
+                                                                          model,
+                                                                          index,
+                                                                          uiModelMapper,
+                                                                          this::synchroniseView));
         });
     }
 
@@ -249,27 +256,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
                                                                     new DMNGridRow(),
                                                                     index,
                                                                     uiModelMapper,
-                                                                    () -> {
-                                                                        gridPanel.refreshScrollPosition();
-                                                                        gridPanel.updatePanelSize();
-                                                                        gridLayer.batch();
-                                                                    }));
-        });
-    }
-
-    void deleteColumn(final int index) {
-        expression.ifPresent(relation -> {
-            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                          new DeleteRelationColumnCommand(relation,
-                                                                          model,
-                                                                          index,
-                                                                          uiModelMapper,
-                                                                          () -> {
-                                                                              parent.assertWidth(RelationGrid.this.getWidth() + getPadding() * 2);
-                                                                              gridPanel.refreshScrollPosition();
-                                                                              gridPanel.updatePanelSize();
-                                                                              gridLayer.batch();
-                                                                          }));
+                                                                    this::synchroniseView));
         });
     }
 
@@ -279,12 +266,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
                                           new DeleteRelationRowCommand(relation,
                                                                        model,
                                                                        index,
-                                                                       uiModelMapper,
-                                                                       () -> {
-                                                                           gridPanel.refreshScrollPosition();
-                                                                           gridPanel.updatePanelSize();
-                                                                           gridLayer.batch();
-                                                                       }));
+                                                                       this::synchroniseView));
         });
     }
 }

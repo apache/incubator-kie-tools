@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapperHelper.DecisionTableSection;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -30,10 +31,14 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowS
 
 public class DecisionTableUIModelMapper extends BaseUIModelMapper<DecisionTable> {
 
+    private final ListSelectorView.Presenter listSelector;
+
     public DecisionTableUIModelMapper(final Supplier<GridData> uiModel,
-                                      final Supplier<Optional<DecisionTable>> dmnModel) {
+                                      final Supplier<Optional<DecisionTable>> dmnModel,
+                                      final ListSelectorView.Presenter listSelector) {
         super(uiModel,
               dmnModel);
+        this.listSelector = listSelector;
     }
 
     @Override
@@ -44,28 +49,32 @@ public class DecisionTableUIModelMapper extends BaseUIModelMapper<DecisionTable>
             final DecisionTableSection section = DecisionTableUIModelMapperHelper.getSection(dtable, columnIndex);
             switch (section) {
                 case ROW_INDEX:
-                    uiModel.get().setCellValue(rowIndex,
-                                               columnIndex,
-                                               new BaseGridCellValue<>(rowIndex + 1));
+                    uiModel.get().setCell(rowIndex,
+                                          columnIndex,
+                                          () -> new DecisionTableGridCell<>(new BaseGridCellValue<>(rowIndex + 1),
+                                                                            listSelector));
                     uiModel.get().getCell(rowIndex,
                                           columnIndex).setSelectionStrategy(RowSelectionStrategy.INSTANCE);
                     break;
                 case INPUT_CLAUSES:
                     final int iei = DecisionTableUIModelMapperHelper.getInputEntryIndex(dtable, columnIndex);
-                    uiModel.get().setCellValue(rowIndex,
-                                               columnIndex,
-                                               new BaseGridCellValue<>(rule.getInputEntry().get(iei).getText()));
+                    uiModel.get().setCell(rowIndex,
+                                          columnIndex,
+                                          () -> new DecisionTableGridCell<>(new BaseGridCellValue<>(rule.getInputEntry().get(iei).getText()),
+                                                                            listSelector));
                     break;
                 case OUTPUT_CLAUSES:
                     final int oei = DecisionTableUIModelMapperHelper.getOutputEntryIndex(dtable, columnIndex);
-                    uiModel.get().setCellValue(rowIndex,
-                                               columnIndex,
-                                               new BaseGridCellValue<>(rule.getOutputEntry().get(oei).getText()));
+                    uiModel.get().setCell(rowIndex,
+                                          columnIndex,
+                                          () -> new DecisionTableGridCell<>(new BaseGridCellValue<>(rule.getOutputEntry().get(oei).getText()),
+                                                                            listSelector));
                     break;
                 case DESCRIPTION:
-                    uiModel.get().setCellValue(rowIndex,
-                                               columnIndex,
-                                               new BaseGridCellValue<>(rule.getDescription().getValue()));
+                    uiModel.get().setCell(rowIndex,
+                                          columnIndex,
+                                          () -> new DecisionTableGridCell<>(new BaseGridCellValue<>(rule.getDescription().getValue()),
+                                                                            listSelector));
                     break;
             }
         });

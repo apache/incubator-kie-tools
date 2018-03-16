@@ -43,6 +43,12 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorCo
 @ApplicationScoped
 public class CellEditorControlsViewImpl implements CellEditorControlsView {
 
+    private static final String CONTAINER_CLASS = "kie-dmn-cell-editor-controls";
+
+    private static final String BOOTSTRAP_SELECT_CLASS = "bootstrap-select";
+
+    private static final String BOOTSTRAP_SELECT_OPEN_CLASS = "open";
+
     @DataField("cellEditorControls")
     private Div cellEditorControls;
 
@@ -130,11 +136,32 @@ public class CellEditorControlsViewImpl implements CellEditorControlsView {
     private boolean isOverCellEditorControlsContainer(final Event event) {
         HTMLElement e = (HTMLElement) event.getTarget();
         while (e != null) {
-            if (e.getClassList().contains("kie-dmn-cell-editor-controls")) {
+            if (isOverCellEditorContainer(e)) {
+                return true;
+            }
+            if (isOverBootstrapSelectContainer(e)) {
                 return true;
             }
             e = (HTMLElement) e.getParentElement();
         }
         return false;
+    }
+
+    private boolean isOverCellEditorContainer(final HTMLElement e) {
+        return e.getClassList().contains(CONTAINER_CLASS);
+    }
+
+    // This is a hack to check whether the Event occurred over an 'open' Bootstrap dropdown.
+    // The dropdown content is added dynamically to the DOM when it is opened. If the dropdown container is set to the
+    // CellEditorControlsView element the content is incorrectly positioned as it does not work in a parent element
+    // that is absolutely positioned. If the dropdown container is set to body the CellEditorControlsView is not an
+    // ancestor however content positioning works properly.
+    private boolean isOverBootstrapSelectContainer(final HTMLElement e) {
+        if (!e.getClassList().contains(BOOTSTRAP_SELECT_CLASS)) {
+            return false;
+        } else if (!e.getClassList().contains(BOOTSTRAP_SELECT_OPEN_CLASS)) {
+            return false;
+        }
+        return true;
     }
 }

@@ -379,9 +379,9 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
     }
 
     public void synchroniseViewWhenExpressionEditorChanged(final Optional<BaseExpressionGrid> oEditor) {
-        parent.onResize();
         gridPanel.refreshScrollPosition();
         gridPanel.updatePanelSize();
+        parent.onResize();
 
         oEditor.ifPresent(BaseExpressionGrid::selectFirstCell);
 
@@ -392,6 +392,11 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
                 oEditor.ifPresent(gridLayer::select);
             }
         });
+    }
+
+    public void synchroniseView() {
+        parent.assertWidth(getWidth() + getPadding() * 2);
+        synchroniseViewWhenExpressionEditorChanged(Optional.empty());
     }
 
     public void selectFirstCell() {

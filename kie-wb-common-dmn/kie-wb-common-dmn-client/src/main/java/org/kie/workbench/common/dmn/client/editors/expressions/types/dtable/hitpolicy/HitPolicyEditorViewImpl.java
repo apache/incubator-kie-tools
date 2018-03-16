@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy;
 
 import java.util.List;
 
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.Event;
-import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Document;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.SinkNative;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
@@ -36,17 +32,10 @@ import org.uberfire.client.views.pfly.widgets.Select;
 import org.uberfire.mvp.Command;
 
 @Templated
-@Dependent
-public class DecisionTableGridControlsImpl implements DecisionTableGridControls {
+@ApplicationScoped
+public class HitPolicyEditorViewImpl implements HitPolicyEditorView {
 
-    @DataField("addInputClause")
-    private Div addInputClause;
-
-    @DataField("addOutputClause")
-    private Div addOutputClause;
-
-    @DataField("addDecisionRule")
-    private Div addDecisionRule;
+    private static final String OPEN = "open";
 
     @DataField("lstHitPolicies")
     private Select lstHitPolicies;
@@ -59,23 +48,17 @@ public class DecisionTableGridControlsImpl implements DecisionTableGridControls 
 
     private Document document;
 
-    private Presenter presenter;
+    private HitPolicyEditorView.Presenter presenter;
 
-    public DecisionTableGridControlsImpl() {
+    public HitPolicyEditorViewImpl() {
         //CDI proxy
     }
 
     @Inject
-    public DecisionTableGridControlsImpl(final Div addInputClause,
-                                         final Div addOutputClause,
-                                         final Div addDecisionRule,
-                                         final Select lstHitPolicies,
-                                         final Select lstBuiltinAggregator,
-                                         final Select lstDecisionTableOrientation,
-                                         final Document document) {
-        this.addInputClause = addInputClause;
-        this.addOutputClause = addOutputClause;
-        this.addDecisionRule = addDecisionRule;
+    public HitPolicyEditorViewImpl(final Select lstHitPolicies,
+                                   final Select lstBuiltinAggregator,
+                                   final Select lstDecisionTableOrientation,
+                                   final Document document) {
         this.lstHitPolicies = lstHitPolicies;
         this.lstBuiltinAggregator = lstBuiltinAggregator;
         this.lstDecisionTableOrientation = lstDecisionTableOrientation;
@@ -119,7 +102,7 @@ public class DecisionTableGridControlsImpl implements DecisionTableGridControls 
     }
 
     @Override
-    public void init(final Presenter presenter) {
+    public void init(final HitPolicyEditorView.Presenter presenter) {
         this.presenter = presenter;
     }
 
@@ -163,51 +146,36 @@ public class DecisionTableGridControlsImpl implements DecisionTableGridControls 
         Scheduler.get().scheduleDeferred(() -> select.refresh(s -> s.setValue(value)));
     }
 
+    private void enableSelect(final Select select, final boolean enabled) {
+        if (enabled) {
+            select.enable();
+        } else {
+            select.disable();
+        }
+    }
+
     @Override
     public void enableHitPolicies(final boolean enabled) {
-        if (enabled) {
-            lstHitPolicies.enable();
-        } else {
-            lstHitPolicies.disable();
-        }
+        enableSelect(lstHitPolicies, enabled);
     }
 
     @Override
     public void enableBuiltinAggregators(final boolean enabled) {
-        if (enabled) {
-            lstBuiltinAggregator.enable();
-        } else {
-            lstBuiltinAggregator.disable();
-        }
+        enableSelect(lstBuiltinAggregator, enabled);
     }
 
     @Override
     public void enableDecisionTableOrientation(final boolean enabled) {
-        if (enabled) {
-            lstDecisionTableOrientation.enable();
-        } else {
-            lstDecisionTableOrientation.disable();
-        }
+        enableSelect(lstDecisionTableOrientation, enabled);
     }
 
-    @EventHandler("addInputClause")
-    @SinkNative(Event.ONCLICK)
-    @SuppressWarnings("unused")
-    public void onClickAddInputClause(final Event event) {
-        presenter.addInputClause();
+    @Override
+    public void show() {
+        getElement().getClassList().add(OPEN);
     }
 
-    @EventHandler("addOutputClause")
-    @SinkNative(Event.ONCLICK)
-    @SuppressWarnings("unused")
-    public void onClickAddOutputClause(final Event event) {
-        presenter.addOutputClause();
-    }
-
-    @EventHandler("addDecisionRule")
-    @SinkNative(Event.ONCLICK)
-    @SuppressWarnings("unused")
-    public void onClickAddDecisionRule(final Event event) {
-        presenter.addDecisionRule();
+    @Override
+    public void hide() {
+        getElement().getClassList().remove(OPEN);
     }
 }

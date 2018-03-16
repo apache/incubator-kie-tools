@@ -21,6 +21,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
+import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapperHelper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.InputClauseColumn;
@@ -46,6 +47,7 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
     private final InputClause inputClause;
     private final GridData uiModel;
     private final InputClauseColumn uiModelColumn;
+    private final int uiColumnIndex;
     private final DecisionTableUIModelMapper uiModelMapper;
     private final org.uberfire.mvp.Command canvasOperation;
 
@@ -53,12 +55,14 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
                                  final InputClause inputClause,
                                  final GridData uiModel,
                                  final InputClauseColumn uiModelColumn,
+                                 final int uiColumnIndex,
                                  final DecisionTableUIModelMapper uiModelMapper,
                                  final org.uberfire.mvp.Command canvasOperation) {
         this.dtable = dtable;
         this.inputClause = inputClause;
         this.uiModel = uiModel;
         this.uiModelColumn = uiModelColumn;
+        this.uiColumnIndex = uiColumnIndex;
         this.uiModelMapper = uiModelMapper;
         this.canvasOperation = canvasOperation;
     }
@@ -73,12 +77,12 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
 
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
-                dtable.getInput().add(inputClause);
-
+                final int clauseIndex = uiColumnIndex - DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT;
+                dtable.getInput().add(clauseIndex, inputClause);
                 dtable.getRule().forEach(rule -> {
                     final UnaryTests ut = new UnaryTests();
                     ut.setText(INPUT_CLAUSE_DEFAULT_VALUE);
-                    rule.getInputEntry().add(ut);
+                    rule.getInputEntry().add(clauseIndex, ut);
                 });
 
                 return GraphCommandResultBuilder.SUCCESS;
@@ -100,14 +104,15 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
         return new AbstractCanvasCommand() {
             @Override
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
-                final int columnIndex = DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT + dtable.getInput().indexOf(inputClause);
-                uiModel.insertColumn(columnIndex,
+                uiModel.insertColumn(uiColumnIndex,
                                      uiModelColumn);
 
                 for (int rowIndex = 0; rowIndex < dtable.getRule().size(); rowIndex++) {
                     uiModelMapper.fromDMNModel(rowIndex,
-                                               columnIndex);
+                                               uiColumnIndex);
                 }
+
+                updateParentInformation();
 
                 canvasOperation.execute();
 
@@ -118,10 +123,17 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
             public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
                 uiModel.deleteColumn(uiModelColumn);
 
+                updateParentInformation();
+
                 canvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }
         };
     }
+
+    public void updateParentInformation() {
+        CommandUtils.updateParentInformation(uiModel);
+    }
+
 }

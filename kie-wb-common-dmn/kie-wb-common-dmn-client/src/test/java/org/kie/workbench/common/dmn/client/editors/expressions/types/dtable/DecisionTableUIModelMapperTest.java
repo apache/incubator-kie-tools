@@ -29,6 +29,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -38,6 +39,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -54,6 +56,9 @@ public class DecisionTableUIModelMapperTest {
 
     @Mock
     private DescriptionColumn uiDescriptionColumn;
+
+    @Mock
+    private ListSelectorView.Presenter listSelector;
 
     private BaseGridData uiModel;
 
@@ -105,7 +110,8 @@ public class DecisionTableUIModelMapperTest {
         });
 
         this.mapper = new DecisionTableUIModelMapper(() -> uiModel,
-                                                     () -> Optional.of(dtable));
+                                                     () -> Optional.of(dtable),
+                                                     listSelector);
         this.cellValueSupplier = Optional::empty;
     }
 
@@ -118,11 +124,13 @@ public class DecisionTableUIModelMapperTest {
                      uiModel.getCell(0, 0).getValue().getValue());
         assertEquals(RowSelectionStrategy.INSTANCE,
                      uiModel.getCell(0, 0).getSelectionStrategy());
+        assertTrue(uiModel.getCell(0, 0) instanceof DecisionTableGridCell);
 
         assertEquals(2,
                      uiModel.getCell(1, 0).getValue().getValue());
         assertEquals(RowSelectionStrategy.INSTANCE,
                      uiModel.getCell(1, 0).getSelectionStrategy());
+        assertTrue(uiModel.getCell(1, 0) instanceof DecisionTableGridCell);
     }
 
     @Test
@@ -132,9 +140,11 @@ public class DecisionTableUIModelMapperTest {
 
         assertEquals("i1",
                      uiModel.getCell(0, 1).getValue().getValue());
+        assertTrue(uiModel.getCell(0, 1) instanceof DecisionTableGridCell);
 
         assertEquals("i2",
                      uiModel.getCell(1, 1).getValue().getValue());
+        assertTrue(uiModel.getCell(1, 1) instanceof DecisionTableGridCell);
     }
 
     @Test
@@ -144,9 +154,11 @@ public class DecisionTableUIModelMapperTest {
 
         assertEquals("o1",
                      uiModel.getCell(0, 2).getValue().getValue());
+        assertTrue(uiModel.getCell(0, 2) instanceof DecisionTableGridCell);
 
         assertEquals("o2",
                      uiModel.getCell(1, 2).getValue().getValue());
+        assertTrue(uiModel.getCell(1, 2) instanceof DecisionTableGridCell);
     }
 
     @Test
@@ -156,9 +168,11 @@ public class DecisionTableUIModelMapperTest {
 
         assertEquals("desc1",
                      uiModel.getCell(0, 3).getValue().getValue());
+        assertTrue(uiModel.getCell(0, 3) instanceof DecisionTableGridCell);
 
         assertEquals("desc2",
                      uiModel.getCell(1, 3).getValue().getValue());
+        assertTrue(uiModel.getCell(1, 3) instanceof DecisionTableGridCell);
     }
 
     @Test

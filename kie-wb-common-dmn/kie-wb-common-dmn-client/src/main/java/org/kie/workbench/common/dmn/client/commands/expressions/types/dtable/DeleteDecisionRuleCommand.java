@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.commands.expressions.types.relation;
+package org.kie.workbench.common.dmn.client.commands.expressions.types.dtable;
 
 import java.util.stream.IntStream;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.List;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;
@@ -37,27 +37,27 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
-public class DeleteRelationRowCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
-                                                                                    VetoUndoCommand {
+public class DeleteDecisionRuleCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
+                                                                                     VetoUndoCommand {
 
-    private final Relation relation;
+    private final DecisionTable dtable;
     private final GridData uiModel;
     private final int uiRowIndex;
     private final org.uberfire.mvp.Command canvasOperation;
 
-    private final List oldRow;
+    private final DecisionRule oldRule;
     private final GridRow oldUiModelRow;
 
-    public DeleteRelationRowCommand(final Relation relation,
-                                    final GridData uiModel,
-                                    final int uiRowIndex,
-                                    final org.uberfire.mvp.Command canvasOperation) {
-        this.relation = relation;
+    public DeleteDecisionRuleCommand(final DecisionTable dtable,
+                                     final GridData uiModel,
+                                     final int uiRowIndex,
+                                     final org.uberfire.mvp.Command canvasOperation) {
+        this.dtable = dtable;
         this.uiModel = uiModel;
         this.uiRowIndex = uiRowIndex;
         this.canvasOperation = canvasOperation;
 
-        this.oldRow = relation.getRow().get(uiRowIndex);
+        this.oldRule = dtable.getRule().get(uiRowIndex);
         this.oldUiModelRow = uiModel.getRow(uiRowIndex);
     }
 
@@ -71,14 +71,14 @@ public class DeleteRelationRowCommand extends AbstractCanvasGraphCommand impleme
 
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
-                relation.getRow().remove(uiRowIndex);
+                dtable.getRule().remove(uiRowIndex);
 
                 return GraphCommandResultBuilder.SUCCESS;
             }
 
             @Override
             public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext gce) {
-                relation.getRow().add(uiRowIndex, oldRow);
+                dtable.getRule().add(uiRowIndex, oldRule);
 
                 return GraphCommandResultBuilder.SUCCESS;
             }

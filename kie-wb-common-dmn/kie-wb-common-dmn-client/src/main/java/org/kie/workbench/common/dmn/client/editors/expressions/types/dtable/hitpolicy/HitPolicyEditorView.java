@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy;
 
 import java.util.List;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.uberfire.client.mvp.UberElement;
 
-public interface DecisionTableGridControls extends org.jboss.errai.ui.client.local.api.IsElement,
-                                                   UberElement<DecisionTableGridControls.Presenter> {
+public interface HitPolicyEditorView extends org.jboss.errai.ui.client.local.api.IsElement,
+                                             UberElement<HitPolicyEditorView.Presenter> {
 
-    interface Presenter {
-
-        void addInputClause();
-
-        void addOutputClause();
-
-        void addDecisionRule();
+    interface Presenter extends HasCellEditorControls.Editor<HasHitPolicyControl> {
 
         void setHitPolicy(final HitPolicy hitPolicy);
 
@@ -58,4 +53,8 @@ public interface DecisionTableGridControls extends org.jboss.errai.ui.client.loc
     void enableBuiltinAggregators(final boolean enabled);
 
     void enableDecisionTableOrientation(final boolean enabled);
+
+    void show();
+
+    void hide();
 }

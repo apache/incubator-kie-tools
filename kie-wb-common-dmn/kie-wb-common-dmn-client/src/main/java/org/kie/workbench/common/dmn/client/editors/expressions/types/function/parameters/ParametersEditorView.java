@@ -25,12 +25,6 @@ import org.uberfire.client.mvp.UberElement;
 public interface ParametersEditorView extends org.jboss.errai.ui.client.local.api.IsElement,
                                               UberElement<ParametersEditorView.Presenter> {
 
-    void setParameters(final List<InformationItem> parameters);
-
-    void show();
-
-    void hide();
-
     interface Presenter extends HasCellEditorControls.Editor<HasParametersControl> {
 
         void addParameter();
@@ -40,4 +34,10 @@ public interface ParametersEditorView extends org.jboss.errai.ui.client.local.ap
         void updateParameterName(final InformationItem parameter,
                                  final String name);
     }
+
+    void setParameters(final List<InformationItem> parameters);
+
+    void show();
+
+    void hide();
 }

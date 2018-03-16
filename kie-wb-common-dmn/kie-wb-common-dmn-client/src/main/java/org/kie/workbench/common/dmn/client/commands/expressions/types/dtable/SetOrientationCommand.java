@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.commands.expressions.types.relation;
+package org.kie.workbench.common.dmn.client.commands.expressions.types.dtable;
 
-import java.util.stream.IntStream;
+import java.util.Optional;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.List;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
-import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
@@ -34,31 +33,24 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AbstractGraphCommand;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
-public class DeleteRelationRowCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
-                                                                                    VetoUndoCommand {
+public class SetOrientationCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
+                                                                                 VetoUndoCommand {
 
-    private final Relation relation;
-    private final GridData uiModel;
-    private final int uiRowIndex;
+    private final DecisionTable dtable;
+    private final DecisionTableOrientation orientation;
     private final org.uberfire.mvp.Command canvasOperation;
 
-    private final List oldRow;
-    private final GridRow oldUiModelRow;
+    private final Optional<DecisionTableOrientation> oldOrientation;
 
-    public DeleteRelationRowCommand(final Relation relation,
-                                    final GridData uiModel,
-                                    final int uiRowIndex,
-                                    final org.uberfire.mvp.Command canvasOperation) {
-        this.relation = relation;
-        this.uiModel = uiModel;
-        this.uiRowIndex = uiRowIndex;
+    public SetOrientationCommand(final DecisionTable dtable,
+                                 final DecisionTableOrientation orientation,
+                                 final org.uberfire.mvp.Command canvasOperation) {
+        this.dtable = dtable;
+        this.orientation = orientation;
         this.canvasOperation = canvasOperation;
 
-        this.oldRow = relation.getRow().get(uiRowIndex);
-        this.oldUiModelRow = uiModel.getRow(uiRowIndex);
+        this.oldOrientation = Optional.ofNullable(dtable.getPreferredOrientation());
     }
 
     @Override
@@ -71,14 +63,14 @@ public class DeleteRelationRowCommand extends AbstractCanvasGraphCommand impleme
 
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
-                relation.getRow().remove(uiRowIndex);
+                dtable.setPreferredOrientation(orientation);
 
                 return GraphCommandResultBuilder.SUCCESS;
             }
 
             @Override
             public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext gce) {
-                relation.getRow().add(uiRowIndex, oldRow);
+                dtable.setPreferredOrientation(oldOrientation.orElse(DecisionTableOrientation.RULE_AS_ROW));
 
                 return GraphCommandResultBuilder.SUCCESS;
             }
@@ -90,11 +82,6 @@ public class DeleteRelationRowCommand extends AbstractCanvasGraphCommand impleme
         return new AbstractCanvasCommand() {
             @Override
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler handler) {
-                uiModel.deleteRow(uiRowIndex);
-
-                updateRowNumbers();
-                updateParentInformation();
-
                 canvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
@@ -102,25 +89,10 @@ public class DeleteRelationRowCommand extends AbstractCanvasGraphCommand impleme
 
             @Override
             public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler handler) {
-                uiModel.insertRow(uiRowIndex, oldUiModelRow);
-
-                updateRowNumbers();
-                updateParentInformation();
-
                 canvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }
         };
-    }
-
-    public void updateRowNumbers() {
-        CommandUtils.updateRowNumbers(uiModel,
-                                      IntStream.range(0,
-                                                      uiModel.getRowCount()));
-    }
-
-    public void updateParentInformation() {
-        CommandUtils.updateParentInformation(uiModel);
     }
 }

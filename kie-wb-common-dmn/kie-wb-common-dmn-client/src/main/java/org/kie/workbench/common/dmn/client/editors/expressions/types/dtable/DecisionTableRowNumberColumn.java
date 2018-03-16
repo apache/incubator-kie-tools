@@ -21,13 +21,21 @@ import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyEditorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 public class DecisionTableRowNumberColumn extends RowNumberColumn {
 
     public DecisionTableRowNumberColumn(final Supplier<HitPolicy> hitPolicySupplier,
-                                        final Supplier<BuiltinAggregator> builtinAggregatorSupplier) {
+                                        final Supplier<BuiltinAggregator> builtinAggregatorSupplier,
+                                        final CellEditorControlsView.Presenter cellEditorControls,
+                                        final HitPolicyEditorView.Presenter editor,
+                                        final DecisionTableGrid gridWidget) {
         super(Collections.singletonList(new RowNumberColumnHeaderMetaData(hitPolicySupplier,
-                                                                          builtinAggregatorSupplier)));
+                                                                          builtinAggregatorSupplier,
+                                                                          cellEditorControls,
+                                                                          editor,
+                                                                          gridWidget)));
     }
 }

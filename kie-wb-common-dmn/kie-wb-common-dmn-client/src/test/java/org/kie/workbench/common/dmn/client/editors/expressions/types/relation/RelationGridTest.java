@@ -56,12 +56,14 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -80,11 +82,13 @@ public class RelationGridTest {
 
     private final static int DELETE_COLUMN = 2;
 
-    private final static int INSERT_ROW_ABOVE = 3;
+    private final static int DIVIDER = 3;
 
-    private final static int INSERT_ROW_BELOW = 4;
+    private final static int INSERT_ROW_ABOVE = 4;
 
-    private final static int DELETE_ROW = 5;
+    private final static int INSERT_ROW_BELOW = 5;
+
+    private final static int DELETE_ROW = 6;
 
     @Mock
     private GridWidget parentGridWidget;
@@ -229,7 +233,7 @@ public class RelationGridTest {
 
         final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(0, 0);
 
-        assertThat(items.size()).isEqualTo(6);
+        assertThat(items.size()).isEqualTo(7);
         assertListSelectorItem(items.get(INSERT_COLUMN_BEFORE),
                                DMNEditorConstants.RelationEditor_InsertColumnBefore);
         assertListSelectorItem(items.get(INSERT_COLUMN_AFTER),
@@ -417,9 +421,9 @@ public class RelationGridTest {
         addColumnCommand.getValue().execute(abstractCanvasHandler);
         verify(parent).assertWidth(relationGrid.getWidth() + relationGrid.getPadding() * 2);
         verify(parentGridColumn).setWidth(relationGrid.getWidth() + relationGrid.getPadding() * 2);
+        verify(gridLayer).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
-        verify(gridLayer).batch();
     }
 
     @Test
@@ -435,9 +439,9 @@ public class RelationGridTest {
         deleteColumnCommand.getValue().execute(abstractCanvasHandler);
         verify(parent).assertWidth(relationGrid.getWidth() + relationGrid.getPadding() * 2);
         verify(parentGridColumn).setWidth(relationGrid.getWidth() + relationGrid.getPadding() * 2);
+        verify(gridLayer).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
-        verify(gridLayer).batch();
     }
 
     @Test
@@ -449,9 +453,9 @@ public class RelationGridTest {
         verify(sessionCommandManager).execute(eq(abstractCanvasHandler), addRowCommand.capture());
 
         addRowCommand.getValue().execute(abstractCanvasHandler);
+        verify(gridLayer).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
-        verify(gridLayer).batch();
     }
 
     @Test
@@ -464,8 +468,8 @@ public class RelationGridTest {
         verify(sessionCommandManager).execute(eq(abstractCanvasHandler), deleteRowCommand.capture());
 
         deleteRowCommand.getValue().execute(abstractCanvasHandler);
+        verify(gridLayer).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
-        verify(gridLayer).batch();
     }
 }

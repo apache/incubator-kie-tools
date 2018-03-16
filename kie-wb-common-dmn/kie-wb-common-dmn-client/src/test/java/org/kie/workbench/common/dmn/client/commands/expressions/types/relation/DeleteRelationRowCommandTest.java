@@ -98,7 +98,6 @@ public class DeleteRelationRowCommandTest {
         this.command = spy(new DeleteRelationRowCommand(relation,
                                                         uiModel,
                                                         0,
-                                                        uiModelMapper,
                                                         canvasOperation));
         doReturn(ruleManager).when(handler).getRuleManager();
         doReturn(0).when(uiRowNumberColumn).getIndex();

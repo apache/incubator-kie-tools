@@ -20,13 +20,23 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public enum BuiltinAggregator {
 
-    SUM,
-    COUNT,
-    MIN,
-    MAX;
+    SUM("+"),
+    COUNT("#"),
+    MIN("<"),
+    MAX(">");
+
+    private String code;
+
+    BuiltinAggregator(final String code) {
+        this.code = code;
+    }
 
     public String value() {
         return name();
+    }
+
+    public String getCode() {
+        return code;
     }
 
     public static BuiltinAggregator fromValue(final String value) {

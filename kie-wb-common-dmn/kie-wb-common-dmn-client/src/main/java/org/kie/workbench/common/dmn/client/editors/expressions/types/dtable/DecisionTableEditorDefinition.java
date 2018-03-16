@@ -22,7 +22,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -38,10 +37,12 @@ import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyEditorView;
 import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -63,7 +64,8 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
 
     static final String RULE_DESCRIPTION = "A rule";
 
-    private ManagedInstance<DecisionTableGridControls> controlsProvider;
+    private ListSelectorView.Presenter listSelector;
+    private HitPolicyEditorView.Presenter hitPolicyEditor;
 
     public DecisionTableEditorDefinition() {
         //CDI proxy
@@ -77,7 +79,8 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
                                          final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                                          final CellEditorControlsView.Presenter cellEditorControls,
                                          final TranslationService translationService,
-                                         final ManagedInstance<DecisionTableGridControls> controlsProvider) {
+                                         final ListSelectorView.Presenter listSelector,
+                                         final HitPolicyEditorView.Presenter hitPolicyEditor) {
         super(gridPanel,
               gridLayer,
               sessionManager,
@@ -85,7 +88,8 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
               editorSelectedEvent,
               cellEditorControls,
               translationService);
-        this.controlsProvider = controlsProvider;
+        this.listSelector = listSelector;
+        this.hitPolicyEditor = hitPolicyEditor;
     }
 
     @Override
@@ -150,6 +154,7 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
                                                  editorSelectedEvent,
                                                  cellEditorControls,
                                                  translationService,
-                                                 controlsProvider.get()));
+                                                 listSelector,
+                                                 hitPolicyEditor));
     }
 }

@@ -21,6 +21,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
+import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapperHelper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.OutputClauseColumn;
@@ -46,6 +47,7 @@ public class AddOutputClauseCommand extends AbstractCanvasGraphCommand implement
     private final OutputClause outputClause;
     private final GridData uiModel;
     private final OutputClauseColumn uiModelColumn;
+    private final int uiColumnIndex;
     private final DecisionTableUIModelMapper uiModelMapper;
     private final org.uberfire.mvp.Command canvasOperation;
 
@@ -53,12 +55,14 @@ public class AddOutputClauseCommand extends AbstractCanvasGraphCommand implement
                                   final OutputClause outputClause,
                                   final GridData uiModel,
                                   final OutputClauseColumn uiModelColumn,
+                                  final int uiColumnIndex,
                                   final DecisionTableUIModelMapper uiModelMapper,
                                   final org.uberfire.mvp.Command canvasOperation) {
         this.dtable = dtable;
         this.outputClause = outputClause;
         this.uiModel = uiModel;
         this.uiModelColumn = uiModelColumn;
+        this.uiColumnIndex = uiColumnIndex;
         this.uiModelMapper = uiModelMapper;
         this.canvasOperation = canvasOperation;
     }
@@ -73,12 +77,13 @@ public class AddOutputClauseCommand extends AbstractCanvasGraphCommand implement
 
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
-                dtable.getOutput().add(outputClause);
+                final int clauseIndex = uiColumnIndex - DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT - dtable.getInput().size();
+                dtable.getOutput().add(clauseIndex, outputClause);
 
                 dtable.getRule().forEach(rule -> {
                     final LiteralExpression le = new LiteralExpression();
                     le.setText(OUTPUT_CLAUSE_DEFAULT_VALUE);
-                    rule.getOutputEntry().add(le);
+                    rule.getOutputEntry().add(clauseIndex, le);
                 });
 
                 return GraphCommandResultBuilder.SUCCESS;
@@ -100,16 +105,15 @@ public class AddOutputClauseCommand extends AbstractCanvasGraphCommand implement
         return new AbstractCanvasCommand() {
             @Override
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
-                final int columnIndex = DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT
-                        + dtable.getInput().size()
-                        + dtable.getOutput().indexOf(outputClause);
-                uiModel.insertColumn(columnIndex,
+                uiModel.insertColumn(uiColumnIndex,
                                      uiModelColumn);
 
                 for (int rowIndex = 0; rowIndex < dtable.getRule().size(); rowIndex++) {
                     uiModelMapper.fromDMNModel(rowIndex,
-                                               columnIndex);
+                                               uiColumnIndex);
                 }
+
+                updateParentInformation();
 
                 canvasOperation.execute();
 
@@ -120,10 +124,17 @@ public class AddOutputClauseCommand extends AbstractCanvasGraphCommand implement
             public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
                 uiModel.deleteColumn(uiModelColumn);
 
+                updateParentInformation();
+
                 canvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }
         };
     }
+
+    public void updateParentInformation() {
+        CommandUtils.updateParentInformation(uiModel);
+    }
+
 }
