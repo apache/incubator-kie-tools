@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Optional;
 
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.internal.ketch.KetchLeaderCache;
 import org.eclipse.jgit.internal.storage.file.WindowCache;
 import org.eclipse.jgit.lib.StoredConfig;
@@ -29,6 +28,8 @@ import org.eclipse.jgit.storage.file.WindowCacheConfig;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.util.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 
@@ -45,6 +46,8 @@ public class Clone {
     private final boolean isMirror;
     private final KetchLeaderCache leaders;
 
+    private Logger logger = LoggerFactory.getLogger(Clone.class);
+
     public Clone(final File directory,
                  final String origin,
                  final boolean isMirror,
@@ -59,7 +62,15 @@ public class Clone {
         this.leaders = leaders;
     }
 
-    public Optional<Git> execute() throws InvalidRemoteException {
+    public Optional<Git> execute() {
+
+        if (repoDir.exists()) {
+            String message = String.format("Cannot clone because destination repository <%s> already exists",
+                                           repoDir.getAbsolutePath());
+            logger.error(message);
+            throw new CloneException(message);
+        }
+
         final Git git = Git.createRepository(repoDir,
                                              null);
 
@@ -102,8 +113,12 @@ public class Clone {
 
                 return Optional.of(git);
             } catch (Exception e) {
+                String message = String.format("Error cloning origin <%s>.",
+                                               origin);
+                logger.error(message);
                 cleanupDir(git.getRepository().getDirectory());
-                throw new CloneException();
+                throw new CloneException(message,
+                                         e);
             }
         }
 
@@ -127,5 +142,14 @@ public class Clone {
 
     public class CloneException extends RuntimeException {
 
+        public CloneException(final String message) {
+            super(message);
+        }
+
+        public CloneException(final String message,
+                              final Throwable t) {
+            super(message,
+                  t);
+        }
     }
 }

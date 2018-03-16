@@ -56,7 +56,7 @@ public class Fork {
         this.leaders = leaders;
     }
 
-    public Git execute() throws InvalidRemoteException {
+    public Git execute()  {
 
         if (logger.isDebugEnabled()) {
             logger.debug("Forking repository <{}> to <{}>",

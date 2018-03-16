@@ -48,7 +48,6 @@ import java.util.concurrent.Executors;
 
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.errors.UnsupportedCredentialItem;
@@ -655,7 +654,8 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                                 fsName + DOT_GIT_EXT);
         }
 
-        if (env.containsKey(GIT_ENV_KEY_DEFAULT_REMOTE_NAME)) {
+        if (syncWithRemote(env,
+                           repoDest)) {
             final String origin = env.get(GIT_ENV_KEY_DEFAULT_REMOTE_NAME).toString();
             try {
                 if (this.isForkOrigin(origin)) {
@@ -674,8 +674,6 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
             } catch (Clone.CloneException ce) {
                 fsManager.remove(fsName);
                 throw new RuntimeException(ce);
-            } catch (InvalidRemoteException e) {
-                throw new RuntimeException(e);
             }
         } else {
             git = Git.createRepository(repoDest,
@@ -683,6 +681,11 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                                        config.isEnableKetch() ? leaders : null);
         }
         return git;
+    }
+
+    private boolean syncWithRemote(Map<String, ?> env,
+                                   File repoDest) {
+        return env.containsKey(GIT_ENV_KEY_DEFAULT_REMOTE_NAME) && !repoDest.exists();
     }
 
     String extractFSName(final URI _uri) {
@@ -789,9 +792,9 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         checkURI("uri",
                  uri);
 
-	if(LOG.isDebugEnabled()) {
-	    LOG.debug("Accessing uri " + uri.toString());
-	}
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Accessing uri " + uri.toString());
+        }
 
         Path path;
 

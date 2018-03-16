@@ -71,7 +71,7 @@ public interface Git {
                     final String origin,
                     final String name,
                     final CredentialsProvider credential,
-                    final KetchLeaderCache leaders) throws InvalidRemoteException {
+                    final KetchLeaderCache leaders) {
         return new Fork(gitRepoContainerDir,
                         origin,
                         name,
@@ -83,7 +83,7 @@ public interface Git {
                      final String origin,
                      final boolean isMirror,
                      final CredentialsProvider credential,
-                     final KetchLeaderCache leaders) throws InvalidRemoteException {
+                     final KetchLeaderCache leaders) {
         return new Clone(repoDest,
                          origin,
                          isMirror,

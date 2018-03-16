@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.GitImpl;
+import org.uberfire.java.nio.fs.jgit.util.commands.Clone;
 import org.uberfire.java.nio.fs.jgit.util.commands.Commit;
 import org.uberfire.java.nio.fs.jgit.util.commands.CreateRepository;
 import org.uberfire.java.nio.fs.jgit.util.commands.Fork;
@@ -169,7 +170,7 @@ public class JGitForkTest extends AbstractTestInfra {
                      CredentialsProvider.getDefault(),
                      null).execute();
             fail("If got here is because it could for the repository");
-        } catch (InvalidRemoteException e) {
+        } catch (Clone.CloneException e) {
             assertThat(e).isNotNull();
             logger.info(e.getMessage(),
                         e);
