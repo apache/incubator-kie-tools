@@ -18,11 +18,11 @@ package org.uberfire.client.promise;
 
 import com.google.gwt.core.client.ScriptInjector;
 
-class PromiseBootstrapper {
+class PromisePolyfillBootstrapper {
 
     static void ensurePromiseApiIsAvailable() {
         if (!isPromiseApiAvailable()) {
-            ScriptInjector.fromString(PromiseClientBundle.INSTANCE.promisePolyfill().getText())
+            ScriptInjector.fromString(PromisePolyfillClientBundle.INSTANCE.promisePolyfill().getText())
                     .setWindow(ScriptInjector.TOP_WINDOW)
                     .inject();
         }

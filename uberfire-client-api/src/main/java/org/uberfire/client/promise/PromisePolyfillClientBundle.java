@@ -20,9 +20,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.TextResource;
 
-public interface PromiseClientBundle extends ClientBundle {
+public interface PromisePolyfillClientBundle extends ClientBundle {
 
-    PromiseClientBundle INSTANCE = GWT.create(PromiseClientBundle.class);
+    PromisePolyfillClientBundle INSTANCE = GWT.create(PromisePolyfillClientBundle.class);
 
     @Source("org/uberfire/client/views/static/bluebird/bluebird.min.js")
     TextResource promisePolyfill();

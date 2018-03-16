@@ -32,11 +32,6 @@
   <name>UberFire Client API</name>
   <description>UberFire Client API</description>
 
-
-  <properties>
-    <version.org.webjars.bower.bluebird>3.1.1</version.org.webjars.bower.bluebird>
-  </properties>
-
   <dependencies>
 
     <dependency>
