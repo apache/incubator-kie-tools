@@ -183,6 +183,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-bus</artifactId>
     </dependency>
@@ -218,6 +223,13 @@
     </dependency>
 
     <!-- Test scope. -->
+
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-project-client</artifactId>
+      <scope>test</scope>
+      <type>test-jar</type>
+    </dependency>
 
     <dependency>
       <groupId>org.kie</groupId>

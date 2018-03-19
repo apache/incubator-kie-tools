@@ -45,6 +45,8 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.SwitchG
 import org.kie.workbench.common.stunner.core.client.session.command.impl.UndoSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ValidateSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGraphSessionCommand;
+import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
+import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
 import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesListener;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
@@ -54,6 +56,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
@@ -73,6 +76,36 @@ import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class AbstractProjectDiagramEditorTest {
+
+    @Mock
+    protected AbstractProjectDiagramEditor.View view;
+
+    @Mock
+    protected PlaceManager placeManager;
+
+    @Mock
+    protected ErrorPopupPresenter errorPopupPresenter;
+
+    @Mock
+    protected EventSourceMock<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
+
+    @Mock
+    protected SavePopUpPresenter savePopUpPresenter;
+
+    @Mock
+    protected ClientProjectDiagramService clientProjectDiagramService;
+
+    @Mock
+    protected SessionManager sessionManager;
+
+    @Mock
+    protected SessionPresenterFactory sessionPresenterFactory;
+
+    @Mock
+    protected EventSourceMock<OnDiagramFocusEvent> onDiagramFocusEvent;
+
+    @Mock
+    protected EventSourceMock<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent;
 
     @Mock
     protected BasicFileMenuBuilder menuBuilder;
@@ -97,19 +130,18 @@ public class AbstractProjectDiagramEditorTest {
     protected SessionCommandFactory sessionCommandFactory;
 
     @Mock
-    private ProjectMessagesListener projectMessagesListener;
+    protected ProjectMessagesListener projectMessagesListener;
+
+    protected ClientResourceType resourceType;
 
     @Mock
-    private ClientResourceTypeMock resourceType;
+    protected DiagramClientErrorHandler diagramClientErrorHandler;
 
     @Mock
-    private DiagramClientErrorHandler diagramClientErrorHandler;
+    protected ClientTranslationService translationService;
 
     @Mock
-    private ClientTranslationService translationService;
-
-    @Mock
-    private AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
+    protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
 
     @Mock
     protected MenuItem alertsButtonMenuItem;
@@ -121,7 +153,7 @@ public class AbstractProjectDiagramEditorTest {
     protected AbstractProjectDiagramEditor<ClientResourceTypeMock> presenter;
 
     @Before
-    public void setup() {
+    public void setUp() {
         doReturn(mock(SwitchGridSessionCommand.class)).when(sessionCommandFactory).newSwitchGridCommand();
         doReturn(mock(VisitGraphSessionCommand.class)).when(sessionCommandFactory).newVisitGraphCommand();
         doReturn(mock(ClearSessionCommand.class)).when(sessionCommandFactory).newClearCommand();
@@ -151,22 +183,36 @@ public class AbstractProjectDiagramEditorTest {
 
         when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
 
-        presenter = new AbstractProjectDiagramEditor<ClientResourceTypeMock>(mock(AbstractProjectDiagramEditor.View.class),
-                                                                             mock(PlaceManager.class),
-                                                                             mock(ErrorPopupPresenter.class),
-                                                                             mock(EventSourceMock.class),
-                                                                             mock(SavePopUpPresenter.class),
-                                                                             resourceType,
-                                                                             mock(ClientProjectDiagramService.class),
-                                                                             mock(SessionManager.class),
-                                                                             mock(SessionPresenterFactory.class),
-                                                                             sessionCommandFactory,
-                                                                             projectMenuItemsBuilder,
-                                                                             new EventSourceMock<>(),
-                                                                             new EventSourceMock<>(),
-                                                                             projectMessagesListener,
-                                                                             diagramClientErrorHandler,
-                                                                             translationService) {
+        resourceType = mockResourceType();
+        presenter = createDiagramEditor();
+        presenter.init();
+    }
+
+    protected ClientResourceType mockResourceType() {
+        return mock(ClientResourceTypeMock.class);
+    }
+
+    protected ClientResourceType getResourceType() {
+        return resourceType;
+    }
+
+    protected AbstractProjectDiagramEditor createDiagramEditor() {
+        return new AbstractProjectDiagramEditor<ClientResourceTypeMock>(view,
+                                                                        placeManager,
+                                                                        errorPopupPresenter,
+                                                                        changeTitleNotificationEvent,
+                                                                        savePopUpPresenter,
+                                                                        (ClientResourceTypeMock) getResourceType(),
+                                                                        clientProjectDiagramService,
+                                                                        sessionManager,
+                                                                        sessionPresenterFactory,
+                                                                        sessionCommandFactory,
+                                                                        projectMenuItemsBuilder,
+                                                                        onDiagramFocusEvent,
+                                                                        onDiagramLostFocusEvent,
+                                                                        projectMessagesListener,
+                                                                        diagramClientErrorHandler,
+                                                                        translationService) {
             {
                 fileMenuBuilder = AbstractProjectDiagramEditorTest.this.fileMenuBuilder;
                 workbenchContext = AbstractProjectDiagramEditorTest.this.workbenchContext;
@@ -190,7 +236,6 @@ public class AbstractProjectDiagramEditorTest {
                 return null;
             }
         };
-        presenter.init();
     }
 
     @Test

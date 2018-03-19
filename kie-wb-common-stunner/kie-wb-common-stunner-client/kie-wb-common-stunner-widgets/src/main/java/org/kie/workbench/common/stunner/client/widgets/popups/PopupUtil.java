@@ -19,13 +19,19 @@ package org.kie.workbench.common.stunner.client.widgets.popups;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.uberfire.client.views.pfly.widgets.Button;
 import org.uberfire.client.views.pfly.widgets.ConfirmPopup;
+import org.uberfire.client.views.pfly.widgets.InlineNotification;
 import org.uberfire.mvp.Command;
 
 @ApplicationScoped
 public class PopupUtil {
 
     private final ConfirmPopup confirmPopup;
+
+    public PopupUtil() {
+        this(null);
+    }
 
     @Inject
     public PopupUtil(final ConfirmPopup confirmPopup) {
@@ -38,6 +44,22 @@ public class PopupUtil {
                                  final Command okCommand) {
         confirmPopup.show(title,
                           okButtonText,
+                          confirmMessage,
+                          okCommand);
+    }
+
+    public void showConfirmPopup(final String title,
+                                 final String inlineNotificationMessage,
+                                 final InlineNotification.InlineNotificationType inlineNotificationType,
+                                 final String okButtonText,
+                                 final Button.ButtonStyleType okButtonType,
+                                 final String confirmMessage,
+                                 final Command okCommand) {
+        confirmPopup.show(title,
+                          inlineNotificationMessage,
+                          inlineNotificationType,
+                          okButtonText,
+                          okButtonType,
                           confirmMessage,
                           okCommand);
     }

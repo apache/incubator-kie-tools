@@ -24,20 +24,12 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.AnchorListItem;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.ButtonGroup;
-import org.gwtbootstrap3.client.ui.DropDownMenu;
-import org.gwtbootstrap3.client.ui.constants.ButtonSize;
-import org.gwtbootstrap3.client.ui.constants.IconPosition;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.constants.Pull;
-import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ContextUtils;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
 import org.kie.workbench.common.stunner.bpmn.project.client.resources.BPMNClientConstants;
 import org.kie.workbench.common.stunner.bpmn.project.client.type.BPMNDiagramResourceType;
+import org.kie.workbench.common.stunner.client.widgets.popups.PopupUtil;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -67,6 +59,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.views.pfly.widgets.InlineNotification;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
@@ -78,7 +71,6 @@ import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
@@ -91,6 +83,11 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
     private final ManagedInstance<GenerateProcessFormsSessionCommand> generateProcessFormSessionCommands;
     private final ManagedInstance<GenerateDiagramFormsSessionCommand> generateDiagramFormsSessionCommands;
     private final ManagedInstance<GenerateSelectedFormsSessionCommand> generateSelectedFormsSessionCommands;
+    private final BPMNDiagramEditorMenuItemsBuilder bpmnDiagramEditorMenuItemsBuilder;
+    private final Event<BPMNMigrateDiagramEvent> migrateDiagramEvent;
+    private boolean isMigrating = false;
+
+    private final PopupUtil popupUtil;
 
     @Inject
     public BPMNDiagramEditor(final View view,
@@ -111,7 +108,10 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
                              final ManagedInstance<GenerateProcessFormsSessionCommand> generateProcessFormSessionCommands,
                              final ManagedInstance<GenerateDiagramFormsSessionCommand> generateDiagramFormsSessionCommands,
                              final ManagedInstance<GenerateSelectedFormsSessionCommand> generateSelectedFormsSessionCommands,
-                             final ClientTranslationService translationService) {
+                             final BPMNDiagramEditorMenuItemsBuilder bpmnDiagramEditorMenuItemsBuilder,
+                             final ClientTranslationService translationService,
+                             final Event<BPMNMigrateDiagramEvent> migrateDiagramEvent,
+                             final PopupUtil popupUtil) {
         super(view,
               placeManager,
               errorPopupPresenter,
@@ -131,6 +131,9 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
         this.generateProcessFormSessionCommands = generateProcessFormSessionCommands;
         this.generateDiagramFormsSessionCommands = generateDiagramFormsSessionCommands;
         this.generateSelectedFormsSessionCommands = generateSelectedFormsSessionCommands;
+        this.bpmnDiagramEditorMenuItemsBuilder = bpmnDiagramEditorMenuItemsBuilder;
+        this.migrateDiagramEvent = migrateDiagramEvent;
+        this.popupUtil = popupUtil;
     }
 
     @OnStartup
@@ -157,9 +160,10 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
     protected void makeAdditionalStunnerMenus(final FileMenuBuilder fileMenuBuilder) {
         super.makeAdditionalStunnerMenus(fileMenuBuilder);
         fileMenuBuilder
-                .addNewTopLevelMenu(newFormsGenerationMenuItem(() -> executeFormsCommand(GenerateProcessFormsSessionCommand.class),
-                                                               () -> executeFormsCommand(GenerateDiagramFormsSessionCommand.class),
-                                                               () -> executeFormsCommand(GenerateSelectedFormsSessionCommand.class)));
+                .addNewTopLevelMenu(bpmnDiagramEditorMenuItemsBuilder.newFormsGenerationMenuItem(() -> executeFormsCommand(GenerateProcessFormsSessionCommand.class),
+                                                                                                 () -> executeFormsCommand(GenerateDiagramFormsSessionCommand.class),
+                                                                                                 () -> executeFormsCommand(GenerateSelectedFormsSessionCommand.class)))
+                .addNewTopLevelMenu(bpmnDiagramEditorMenuItemsBuilder.newMigrateMenuItem(this::onMigrate));
     }
 
     @Override
@@ -238,41 +242,45 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
                 });
     }
 
-    private MenuItem newFormsGenerationMenuItem(final Command generateProcessForm,
-                                                final Command generateAllForms,
-                                                final Command generateSelectedForms) {
-        final DropDownMenu menu = new DropDownMenu() {{
-            setPull(Pull.RIGHT);
-        }};
+    protected void onMigrate() {
+        final Command onMigrateCommand = () -> {
+            if (isDirty(getCurrentDiagramHash())) {
+                saveAndMigrate();
+            } else {
+                migrate();
+            }
+        };
+        popupUtil.showConfirmPopup(getTranslationService().getKeyValue(BPMNClientConstants.EditorMigrateActionTitle),
+                                   getTranslationService().getKeyValue(BPMNClientConstants.EditorMigrateActionWarning),
+                                   InlineNotification.InlineNotificationType.WARNING,
+                                   getTranslationService().getKeyValue(BPMNClientConstants.EditorMigrateAction),
+                                   org.uberfire.client.views.pfly.widgets.Button.ButtonStyleType.PRIMARY,
+                                   getTranslationService().getKeyValue(BPMNClientConstants.EditorMigrateConfirmAction),
+                                   onMigrateCommand);
+    }
 
-        menu.add(new AnchorListItem(getTranslationService().getKeyValue(BPMNClientConstants.EditorGenerateProcessForm)) {{
-            setIcon(IconType.LIST_ALT);
-            setIconPosition(IconPosition.LEFT);
-            setTitle(getTranslationService().getKeyValue(BPMNClientConstants.EditorGenerateProcessForm));
-            addClickHandler(event -> generateProcessForm.execute());
-        }});
-        menu.add(new AnchorListItem(getTranslationService().getKeyValue(BPMNClientConstants.EditorGenerateAllForms)) {{
-            setIcon(IconType.LIST_ALT);
-            setIconPosition(IconPosition.LEFT);
-            setTitle(getTranslationService().getKeyValue(BPMNClientConstants.EditorGenerateAllForms));
-            addClickHandler(event -> generateAllForms.execute());
-        }});
-        menu.add(new AnchorListItem(getTranslationService().getKeyValue(BPMNClientConstants.EditorGenerateSelectionForms)) {{
-            setIcon(IconType.LIST_ALT);
-            setIconPosition(IconPosition.LEFT);
-            setTitle(getTranslationService().getKeyValue(BPMNClientConstants.EditorGenerateSelectionForms));
-            addClickHandler(event -> generateSelectedForms.execute());
-        }});
-        final IsWidget group = new ButtonGroup() {{
-            add(new Button() {{
-                setToggleCaret(true);
-                setDataToggle(Toggle.DROPDOWN);
-                setIcon(IconType.LIST_ALT);
-                setSize(ButtonSize.SMALL);
-                setTitle(getTranslationService().getKeyValue(BPMNClientConstants.EditorFormGenerationTitle));
-            }});
-            add(menu);
-        }};
-        return ProjectDiagramEditorMenuItemsBuilder.buildItem(group);
+    private void saveAndMigrate() {
+        isMigrating = true;
+        super.save();
+    }
+
+    private void migrate() {
+        migrateDiagramEvent.fire(new BPMNMigrateDiagramEvent(versionRecordManager.getCurrentPath(),
+                                                             place));
+    }
+
+    @Override
+    protected void onSaveSuccess() {
+        super.onSaveSuccess();
+        if (isMigrating) {
+            isMigrating = false;
+            migrate();
+        }
+    }
+
+    @Override
+    protected void onSaveError(ClientRuntimeError error) {
+        isMigrating = false;
+        super.onSaveError(error);
     }
 }

@@ -647,7 +647,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         return (View) baseView;
     }
 
-    private void onSaveSuccess() {
+    protected void onSaveSuccess() {
         final String message = translationService.getKeyValue(StunnerProjectClientConstants.DIAGRAM_SAVE_SUCCESSFUL);
         log(Level.INFO,
             message);
@@ -655,7 +655,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         setOriginalHash(getCurrentDiagramHash());
     }
 
-    private void onSaveError(final ClientRuntimeError error) {
+    protected void onSaveError(final ClientRuntimeError error) {
         showError(error);
     }
 
@@ -688,8 +688,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         hideLoadingViews();
     }
 
-    private void log(final Level level,
-                     final String message) {
+    protected void log(final Level level,
+                       final String message) {
         if (LogConfiguration.loggingIsEnabled()) {
             LOGGER.log(level,
                        message);

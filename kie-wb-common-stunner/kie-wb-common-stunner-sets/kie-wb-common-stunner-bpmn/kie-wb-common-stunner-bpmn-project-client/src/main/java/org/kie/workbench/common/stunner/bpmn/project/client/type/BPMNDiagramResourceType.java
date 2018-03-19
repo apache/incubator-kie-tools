@@ -29,7 +29,7 @@ import org.uberfire.workbench.category.Category;
 @ApplicationScoped
 public class BPMNDiagramResourceType extends AbstractStunnerClientResourceType<BPMNDefinitionSetResourceType> {
 
-    private static final Image ICON = new Image(BPMNProjectImageResources.INSTANCE.bpmn2Icon());
+    private final Image ICON = newIcon();
 
     protected BPMNDiagramResourceType() {
         this(null,
@@ -51,5 +51,12 @@ public class BPMNDiagramResourceType extends AbstractStunnerClientResourceType<B
     @Override
     public IsWidget getIcon() {
         return ICON;
+    }
+
+    /**
+     * convenient method for facilitating tests. Icon is still created once since the class is ApplicationScoped.
+     */
+    Image newIcon() {
+        return new Image(BPMNProjectImageResources.INSTANCE.bpmn2Icon());
     }
 }

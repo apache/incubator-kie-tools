@@ -21,7 +21,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.views.pfly.widgets.Button;
 import org.uberfire.client.views.pfly.widgets.ConfirmPopup;
+import org.uberfire.client.views.pfly.widgets.InlineNotification;
 import org.uberfire.mvp.Command;
 
 import static org.mockito.Mockito.times;
@@ -31,6 +33,8 @@ import static org.mockito.Mockito.verify;
 public class PopupUtilTest {
 
     private static final String TITLE = "TITLE";
+
+    private static final String INLINE_NOTIFICATION = "INLINE_NOTIFICATION";
 
     private static final String OK_BUTTON_TEXT = "OK_BUTTON_TEXT";
 
@@ -59,6 +63,28 @@ public class PopupUtilTest {
         verify(confirmPopup,
                times(1)).show(TITLE,
                               OK_BUTTON_TEXT,
+                              CONFIRM_MESSAGE,
+                              command);
+    }
+
+    @Test
+    public void testShowConfirmPopupWithInlineNotification() {
+        InlineNotification.InlineNotificationType someNotificationType = InlineNotification.InlineNotificationType.WARNING;
+        Button.ButtonStyleType someBtnType = Button.ButtonStyleType.PRIMARY;
+        popupUtil.showConfirmPopup(TITLE,
+                                   INLINE_NOTIFICATION,
+                                   someNotificationType,
+                                   OK_BUTTON_TEXT,
+                                   someBtnType,
+                                   CONFIRM_MESSAGE,
+                                   command);
+
+        verify(confirmPopup,
+               times(1)).show(TITLE,
+                              INLINE_NOTIFICATION,
+                              someNotificationType,
+                              OK_BUTTON_TEXT,
+                              someBtnType,
                               CONFIRM_MESSAGE,
                               command);
     }
