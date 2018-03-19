@@ -17,12 +17,20 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters;
 
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
+/**
+ * A type-safe wrapper to a FactoryManager.
+ * <p>
+ * Returns nodes, edges and graphs of the requested type.
+ * It is a
+ */
 public class TypedFactoryManager {
 
     private final FactoryManager factoryManager;
@@ -43,7 +51,7 @@ public class TypedFactoryManager {
         return (Edge<View<R>, Node>) factoryManager.newElement(s, aClass);
     }
 
-    public Graph<DefinitionSet, Node> newGraph(String s, Class<?> aClass) {
-        return (Graph<DefinitionSet, Node>) factoryManager.newElement(s, aClass);
+    public Diagram<Graph<DefinitionSet, Node>, Metadata> newDiagram(String s, Class<?> aClass, Metadata metadata) {
+        return factoryManager.newDiagram(s, aClass, metadata);
     }
 }

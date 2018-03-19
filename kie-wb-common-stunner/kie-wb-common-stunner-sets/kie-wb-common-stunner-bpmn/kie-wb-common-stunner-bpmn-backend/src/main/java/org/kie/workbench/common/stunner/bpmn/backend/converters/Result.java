@@ -71,6 +71,8 @@ public interface Result<T> {
 
     Failure<T> asFailure();
 
+    Ignored<T> asIgnored();
+
     class Success<T> implements Result<T> {
 
         private final T value;

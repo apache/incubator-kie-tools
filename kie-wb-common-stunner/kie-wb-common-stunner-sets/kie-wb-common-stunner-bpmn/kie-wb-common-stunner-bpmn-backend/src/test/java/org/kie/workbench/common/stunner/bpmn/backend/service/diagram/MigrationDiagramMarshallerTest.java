@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.backend.ApplicationFactoryManager;
 import org.kie.workbench.common.stunner.backend.definition.factory.TestScopeModelFactory;
 import org.kie.workbench.common.stunner.backend.service.XMLEncoderDiagramMetadataMarshaller;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
@@ -59,6 +58,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.bind.BackendBindableMorphAdapter;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionSetAdapter;
@@ -164,7 +164,7 @@ public class MigrationDiagramMarshallerTest {
     @Mock
     private CloneManager cloneManager;
     @Mock
-    private ApplicationFactoryManager applicationFactoryManager;
+    private FactoryManager applicationFactoryManager;
 
     private EdgeFactory<Object> connectionEdgeFactory;
     private NodeFactory<Object> viewNodeFactory;
@@ -336,6 +336,7 @@ public class MigrationDiagramMarshallerTest {
         mockAdapterManager(definitionAdapter, definitionSetAdapter, propertySetAdapter, propertyAdapter);
         mockAdapterRegistry(definitionAdapter, definitionSetAdapter, propertySetAdapter, propertyAdapter);
         applicationFactoryManager = new MockApplicationFactoryManager(
+                definitionManager,
                 new GraphFactoryImpl(definitionManager),
                 testScopeModelFactory,
                 new EdgeFactoryImpl(definitionManager),
@@ -348,7 +349,13 @@ public class MigrationDiagramMarshallerTest {
         GraphCommandFactory commandFactory = new GraphCommandFactory();
 
         // The tested BPMN marshaller.
-        newMarshaller = new BPMNDirectDiagramMarshaller(definitionManager, rulesManager, applicationFactoryManager, commandFactory, commandManager);
+        newMarshaller = new BPMNDirectDiagramMarshaller(
+                new XMLEncoderDiagramMetadataMarshaller(),
+                definitionManager,
+                rulesManager,
+                applicationFactoryManager,
+                commandFactory,
+                commandManager);
     }
 
     private void mockAdapterRegistry(BackendDefinitionAdapter definitionAdapter, BackendDefinitionSetAdapter definitionSetAdapter, BackendPropertySetAdapter propertySetAdapter, BackendPropertyAdapter propertyAdapter) {
@@ -445,7 +452,6 @@ public class MigrationDiagramMarshallerTest {
         assertDiagramEquals(oldDiagram, newDiagram, BPMN_USERTASKASSIGNEES);
     }
 
-
     @Test
     public void testUnmarshallUserMagnetDockers() throws Exception {
         Diagram<Graph, Metadata> oldDiagram = Unmarshalling.unmarshall(oldMarshaller, BPMN_MAGNETDOCKERS);
@@ -457,7 +463,6 @@ public class MigrationDiagramMarshallerTest {
         // Let's check nodes only.
         assertDiagramEquals(oldDiagram, newDiagram, BPMN_MAGNETDOCKERS);
     }
-
 
     @Test
     public void testUnmarshallEmbeddedSubprocess() throws Exception {
@@ -495,16 +500,13 @@ public class MigrationDiagramMarshallerTest {
         assertDiagramEquals(oldDiagram, newDiagram, BPMN_EVALUATION);
     }
 
-
-
-
     private void assertNodeEquals(Diagram<Graph, Metadata> oldDiagram, Diagram<Graph, Metadata> newDiagram, String fileName) {
-        Map<String, Node<View,?>> oldNodes = asNodeMap(oldDiagram.getGraph().nodes());
-        Map<String, Node<View,?>> newNodes = asNodeMap(newDiagram.getGraph().nodes());
+        Map<String, Node<View, ?>> oldNodes = asNodeMap(oldDiagram.getGraph().nodes());
+        Map<String, Node<View, ?>> newNodes = asNodeMap(newDiagram.getGraph().nodes());
 
         assertEquals(fileName + ": Number of nodes should match", oldNodes.size(), newNodes.size());
 
-        for (Node<View, ?> o: oldNodes.values()) {
+        for (Node<View, ?> o : oldNodes.values()) {
             Node<View, ?> n = newNodes.get(o.getUUID());
 
             View oldContent = o.getContent();
@@ -527,14 +529,11 @@ public class MigrationDiagramMarshallerTest {
                     oldDefinition,
                     newDefinition
             );
-
-
         }
-
     }
 
-    private Map<String, Node<View,?>> asNodeMap(Iterable nodes) {
-        Map<String, Node<View,?>> oldNodes = new HashMap<>();
+    private Map<String, Node<View, ?>> asNodeMap(Iterable nodes) {
+        Map<String, Node<View, ?>> oldNodes = new HashMap<>();
         nodes.forEach(n -> {
             Node n1 = (Node) n;
             oldNodes.put(n1.getUUID(), n1);
@@ -544,14 +543,14 @@ public class MigrationDiagramMarshallerTest {
 
     private void assertDiagramEquals(Diagram<Graph, Metadata> oldDiagram, Diagram<Graph, Metadata> newDiagram, String fileName) {
         assertNodeEquals(oldDiagram, newDiagram, fileName);
-        assertEdgeEquals(oldDiagram, newDiagram);
+        assertEdgeEquals(oldDiagram, newDiagram, fileName);
     }
 
-    private void assertEdgeEquals(Diagram<Graph, Metadata> oldDiagram, Diagram<Graph, Metadata> newDiagram) {
+    private void assertEdgeEquals(Diagram<Graph, Metadata> oldDiagram, Diagram<Graph, Metadata> newDiagram, String fileName) {
         Set<Edge> oldEdges = asEdgeSet(oldDiagram.getGraph().nodes());
         Set<Edge> newEdges = asEdgeSet(newDiagram.getGraph().nodes());
 
-        assertEquals("Number of edges should match", oldEdges.size(), newEdges.size());
+        assertEquals(fileName + ": Number of edges should match", oldEdges.size(), newEdges.size());
 
         {
             Map<String, Edge> nonRelOldEdges = oldEdges.stream()
@@ -568,12 +567,11 @@ public class MigrationDiagramMarshallerTest {
                 Edge<ViewConnector, ?> newEdge = nonRelNewEdges.get(oldEdge.getUUID());
 
                 // (relationship) edges are equal iff <source, target> match respectively
-                assertEquals("Source Connection should match for " + oldEdge.getUUID(),
+                assertEquals(fileName + ": Source Connection should match for " + oldEdge.getUUID(),
                              oldEdge.getContent().getSourceConnection(), newEdge.getContent().getSourceConnection());
-                assertEquals("Target Connection should match for " + oldEdge.getUUID(),
+                assertEquals(fileName + ": Target Connection should match for " + oldEdge.getUUID(),
                              oldEdge.getContent().getTargetConnection(), newEdge.getContent().getTargetConnection());
             }
-
         }
 
         {
@@ -586,8 +584,8 @@ public class MigrationDiagramMarshallerTest {
                     .collect(Collectors.toList());
 
             // sort lexicografically by source + target IDs
-            relOldEdges.sort(Comparator.comparing(e -> e.getSourceNode().getUUID()+e.getTargetNode().getUUID()));
-            relNewEdges.sort(Comparator.comparing(e -> e.getSourceNode().getUUID()+e.getTargetNode().getUUID()));
+            relOldEdges.sort(Comparator.comparing(e -> e.getSourceNode().getUUID() + e.getTargetNode().getUUID()));
+            relNewEdges.sort(Comparator.comparing(e -> e.getSourceNode().getUUID() + e.getTargetNode().getUUID()));
 
             Iterator<Edge> oldIt = relOldEdges.iterator();
             Iterator<Edge> newIt = relNewEdges.iterator();
@@ -596,12 +594,10 @@ public class MigrationDiagramMarshallerTest {
                 Edge<ViewConnector, ?> oldEdge = oldIt.next();
                 Edge<ViewConnector, ?> newEdge = newIt.next();
 
-                assertEquals(oldEdge.getTargetNode(), newEdge.getTargetNode());
-                assertEquals(oldEdge.getSourceNode(), newEdge.getSourceNode());
+                assertEquals(fileName + ": target node did not match", oldEdge.getTargetNode(), newEdge.getTargetNode());
+                assertEquals(fileName + ": source node did not match", oldEdge.getSourceNode(), newEdge.getSourceNode());
             }
         }
-
-
     }
 
     private Set<Edge> asEdgeSet(Iterable nodes) {

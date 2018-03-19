@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -24,24 +25,29 @@ import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import bpsim.impl.BpsimFactoryImpl;
 import bpsim.impl.BpsimPackageImpl;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.DocumentRoot;
-import org.eclipse.bpmn2.Process;
+import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.jboss.drools.DroolsPackage;
+import org.jboss.drools.impl.DroolsFactoryImpl;
 import org.jboss.drools.impl.DroolsPackageImpl;
 import org.kie.workbench.common.stunner.backend.service.XMLEncoderDiagramMetadataMarshaller;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.GraphBuildingContext;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.processes.ProcessConverter;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.properties.PropertyReaderFactory;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsConverter;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.ConverterFactory;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.GraphBuilder;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.resource.JBPMBpmn2ResourceFactoryImpl;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.resource.JBPMBpmn2ResourceImpl;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -52,11 +58,9 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.command.EmptyRulesCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.core.graph.processing.index.map.MapIndexBuilder;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,24 +80,6 @@ public class BPMNDirectDiagramMarshaller implements DiagramMarshaller<Graph, Met
     private final TypedFactoryManager typedFactoryManager;
     private final GraphCommandFactory commandFactory;
     private final GraphCommandManager commandManager;
-    private final BPMNDiagramMarshaller legacyMarshaller;
-
-    public BPMNDirectDiagramMarshaller(
-            final DefinitionManager definitionManager,
-            final RuleManager ruleManager,
-            final FactoryManager factoryManager,
-            final GraphCommandFactory commandFactory,
-            final GraphCommandManager commandManager) {
-        this.definitionManager = definitionManager;
-        this.ruleManager = ruleManager;
-        this.typedFactoryManager = new TypedFactoryManager(factoryManager);
-        this.commandFactory = commandFactory;
-        this.commandManager = commandManager;
-
-        // these are not used in tests
-        this.legacyMarshaller = null;
-        this.diagramMetadataMarshaller = null;
-    }
 
     @Inject
     public BPMNDirectDiagramMarshaller(
@@ -102,21 +88,42 @@ public class BPMNDirectDiagramMarshaller implements DiagramMarshaller<Graph, Met
             final RuleManager ruleManager,
             final FactoryManager factoryManager,
             final GraphCommandFactory commandFactory,
-            final GraphCommandManager commandManager,
-            final BPMNDiagramMarshaller legacyMarshaller) {
+            final GraphCommandManager commandManager) {
         this.diagramMetadataMarshaller = diagramMetadataMarshaller;
         this.definitionManager = definitionManager;
         this.ruleManager = ruleManager;
         this.typedFactoryManager = new TypedFactoryManager(factoryManager);
         this.commandFactory = commandFactory;
         this.commandManager = commandManager;
-        this.legacyMarshaller = legacyMarshaller;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public String marshall(final Diagram diagram) throws IOException {
-        return legacyMarshaller.marshall(diagram);
+    public String marshall(final Diagram<Graph, Metadata> diagram) throws IOException {
+        LOG.debug("Starting diagram marshalling...");
+
+        Bpmn2Resource resource = createBpmn2Resource();
+
+        // we start converting from the root, then pull out the result
+        DefinitionsConverter definitionsConverter =
+                new DefinitionsConverter(diagram.getGraph());
+
+        Definitions definitions =
+                definitionsConverter.toDefinitions();
+
+        resource.getContents().add(definitions);
+
+        LOG.debug("Diagram marshalling completed successfully.");
+        String outputString = renderToString(resource);
+        LOG.trace(outputString);
+        return outputString;
+    }
+
+    private String renderToString(Bpmn2Resource resource) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        resource.save(outputStream, new HashMap<>());
+        return StringEscapeUtils.unescapeHtml4(
+                outputStream.toString("UTF-8"));
     }
 
     @Override
@@ -124,55 +131,64 @@ public class BPMNDirectDiagramMarshaller implements DiagramMarshaller<Graph, Met
                                                  final InputStream inputStream) throws IOException {
         LOG.debug("Starting diagram unmarshalling...");
 
-        Definitions definitions = parseDefinitions(inputStream);
-        String definitionsId = definitions.getId();
+        // definition resolver provides utlities to access elements of the BPMN datamodel
+        DefinitionResolver definitionResolver =
+                new DefinitionResolver(parseDefinitions(inputStream));
 
-        Process process = findProcess(definitions);
+        metadata.setCanvasRootUUID(definitionResolver.getDefinitions().getId());
+        metadata.setTitle(definitionResolver.getProcess().getName());
 
-        metadata.setCanvasRootUUID(definitionsId);
-        metadata.setTitle(process.getName());
+        ConverterFactory converterFactory =
+                new ConverterFactory(definitionResolver, typedFactoryManager);
 
-        Graph<DefinitionSet, Node> graph =
-                typedFactoryManager.newGraph(
-                        definitionsId, BPMNDefinitionSet.class);
+        // perform actual conversion. Process is the root of the diagram
+        BpmnNode diagramRoot =
+                converterFactory
+                        .rootProcessConverter()
+                        .convertProcess();
 
-        GraphBuildingContext context = emptyGraphContext(graph);
+        LOG.debug("Diagram unmarshalling completed successfully.");
 
-        PropertyReaderFactory propertyReaderFactory =
-                new PropertyReaderFactory(definitions);
-
-        ProcessConverter processConverter =
-                new ProcessConverter(
-                        typedFactoryManager,
-                        propertyReaderFactory,
-                        context);
-
-        processConverter.convert(definitionsId, process);
-
-        LOG.debug("Diagram unmarshalling finished successfully.");
-        return graph;
-    }
-
-    public Process findProcess(Definitions definitions) {
-        return (Process) definitions.getRootElements().stream()
-                .filter(el -> el instanceof Process)
-                .findFirst().get();
-    }
-
-    private GraphBuildingContext emptyGraphContext(Graph<DefinitionSet, Node> graph) {
-        EmptyRulesCommandExecutionContext commandExecutionContext =
-                new EmptyRulesCommandExecutionContext(
+        // the root node contains all of the information
+        // needed to build the entire graph (including parent/child relationships)
+        // thus, we can now walk the graph to issue all the commands
+        // to draw it on our canvas
+        Diagram<Graph<DefinitionSet, Node>, Metadata> diagram =
+                typedFactoryManager.newDiagram(
+                        definitionResolver.getDefinitions().getId(),
+                        BPMNDefinitionSet.class,
+                        metadata);
+        GraphBuilder graphBuilder =
+                new GraphBuilder(
+                        diagram.getGraph(),
                         definitionManager,
-                        typedFactoryManager.untyped(),
+                        typedFactoryManager,
                         ruleManager,
-                        new MapIndexBuilder().build(graph));
+                        commandFactory,
+                        commandManager);
+        graphBuilder.render(diagramRoot);
 
-        GraphBuildingContext ctx = new GraphBuildingContext(
-                commandExecutionContext, commandFactory, commandManager);
+        LOG.debug("Diagram drawing completed successfully.");
+        return diagram.getGraph();
+    }
 
-        ctx.clearGraph();
+    private Bpmn2Resource createBpmn2Resource() {
+        DroolsFactoryImpl.init();
+        BpsimFactoryImpl.init();
 
-        return ctx;
+        ResourceSet rSet = new ResourceSetImpl();
+
+        rSet.getResourceFactoryRegistry()
+                .getExtensionToFactoryMap()
+                .put("bpmn2",
+                     new JBPMBpmn2ResourceFactoryImpl());
+
+        Bpmn2Resource resource =
+                (Bpmn2Resource) rSet.createResource(
+                        URI.createURI("virtual.bpmn2"));
+
+        rSet.getResources().add(resource);
+        return resource;
     }
 
     @Override

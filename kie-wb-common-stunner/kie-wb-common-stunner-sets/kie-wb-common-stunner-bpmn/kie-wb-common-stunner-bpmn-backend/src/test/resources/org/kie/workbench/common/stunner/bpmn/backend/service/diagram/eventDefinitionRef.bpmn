@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2018 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="ARISBPMN_93576e41-986c-11e7-40d3-005056844bde" targetNamespace="http://www.softwareag.com/bpmn2Serialisation/prueba2">
+
+
+  <!--Definicion de Tipo de Evento Timer -->
+  <semantic:timerEventDefinition id="sag-9e71d691-986c-11e7-40d3-005056844bde1345">
+    <semantic:timeDate />
+  </semantic:timerEventDefinition>
+
+
+
+  <semantic:process id="PROCESS_93576entic:timeDate 0d3-005056844bde" isExecutable="false" name="prueba2">
+    <semantic:laneSet id="LANESET_93576e41-986c-11e7-40d3-005056844bde">
+      <semantic:lane id="FLOWNODE_9e71d681-986c-11e7-40d3-005056844bde" name="prueba2">
+        <semantic:childLaneSet id="CHILD_LANESET_9e71d681-986c-11e7-40d3-005056844bde">
+          <semantic:lane id="FLOWNODE_9e71d683-986c-11e7-40d3-005056844bde" name="Pasaje">
+            <semantic:flowNodeRef>FLOWNODE_9e71d689-986c-11e7-40d3-005056844bde</semantic:flowNodeRef>
+            <semantic:flowNodeRef>FLOWNODE_9e71d68c-986c-11e7-40d3-005056844bde</semantic:flowNodeRef>
+            <semantic:flowNodeRef>FLOWNODE_9e71d692-986c-11e7-40d3-005056844bde</semantic:flowNodeRef>
+            <semantic:flowNodeRef>FLOWNODE_9e71d69a-986c-11e7-40d3-005056844bde</semantic:flowNodeRef>
+          </semantic:lane>
+          <semantic:lane id="FLOWNODE_9e71d686-986c-11e7-40d3-005056844bde" name="Pasaje" />
+        </semantic:childLaneSet>
+      </semantic:lane>
+    </semantic:laneSet>
+    <semantic:startEvent id="FLOWNODE_9e71d689-986c-11e7-40d3-005056844bde" name="Evento inicial">
+      <semantic:outgoing>FLOW_9e71d689-986c-11e7-40d3-005056844bde_9e71d694-986c-11e7-40d3-005056844bde_9e71d68c-986c-11e7-40d3-005056844bde</semantic:outgoing>
+    </semantic:startEvent>
+    <semantic:userTask id="FLOWNODE_9e71d68c-986c-11e7-40d3-005056844bde" name="Tarea">
+      <semantic:incoming>FLOW_9e71d689-986c-11e7-40d3-005056844bde_9e71d694-986c-11e7-40d3-005056844bde_9e71d68c-986c-11e7-40d3-005056844bde</semantic:incoming>
+      <semantic:outgoing>FLOW_9e71d68c-986c-11e7-40d3-005056844bde_9e71d695-986c-11e7-40d3-005056844bde_9e71d692-986c-11e7-40d3-005056844bde</semantic:outgoing>
+    </semantic:userTask>
+
+
+
+    <!-- Definicion de evento intermedio + REFERENCIA a Definicion de Tipo de Evento Timer -->
+    <semantic:intermediateCatchEvent id="FLOWNODE_9e71d692-986c-11e7-40d3-005056844bde" name="Evento intermedio">
+      <semantic:incoming>FLOW_9e71d68c-986c-11e7-40d3-005056844bde_9e71d695-986c-11e7-40d3-005056844bde_9e71d692-986c-11e7-40d3-005056844bde</semantic:incoming>
+      <semantic:outgoing>FLOW_9e71d692-986c-11e7-40d3-005056844bde_9e71d69c-986c-11e7-40d3-005056844bde_9e71d69a-986c-11e7-40d3-005056844bde</semantic:outgoing>
+      <!-- REFERENCIA a Definicion de Tipo de Evento Timer -->
+      <semantic:eventDefinitionRef>sag-9e71d691-986c-11e7-40d3-005056844bde1345</semantic:eventDefinitionRef>
+    </semantic:intermediateCatchEvent>
+
+
+
+
+    <semantic:endEvent id="FLOWNODE_9e71d69a-986c-11e7-40d3-005056844bde" name="Evento final">
+      <semantic:incoming>FLOW_9e71d692-986c-11e7-40d3-005056844bde_9e71d69c-986c-11e7-40d3-005056844bde_9e71d69a-986c-11e7-40d3-005056844bde</semantic:incoming>
+    </semantic:endEvent>
+    <semantic:sequenceFlow id="FLOW_9e71d689-986c-11e7-40d3-005056844bde_9e71d694-986c-11e7-40d3-005056844bde_9e71d68c-986c-11e7-40d3-005056844bde" sourceRef="FLOWNODE_9e71d689-986c-11e7-40d3-005056844bde" targetRef="FLOWNODE_9e71d68c-986c-11e7-40d3-005056844bde" />
+    <semantic:sequenceFlow id="FLOW_9e71d68c-986c-11e7-40d3-005056844bde_9e71d695-986c-11e7-40d3-005056844bde_9e71d692-986c-11e7-40d3-005056844bde" sourceRef="FLOWNODE_9e71d68c-986c-11e7-40d3-005056844bde" targetRef="FLOWNODE_9e71d692-986c-11e7-40d3-005056844bde" />
+    <semantic:sequenceFlow id="FLOW_9e71d692-986c-11e7-40d3-005056844bde_9e71d69c-986c-11e7-40d3-005056844bde_9e71d69a-986c-11e7-40d3-005056844bde" sourceRef="FLOWNODE_9e71d692-986c-11e7-40d3-005056844bde" targetRef="FLOWNODE_9e71d69a-986c-11e7-40d3-005056844bde" />
+  </semantic:process>
+  <bpmndi:BPMNDiagram id="BPMNDIAGRAM_93576e41-986c-11e7-40d3-005056844bde" name="prueba2">
+    <bpmndi:BPMNPlane bpmnElement="PROCESS_93576e41-986c-11e7-40d3-005056844bde">
+      <bpmndi:BPMNEdge bpmnElement="FLOW_9e71d689-986c-11e7-40d3-005056844bde_9e71d694-986c-11e7-40d3-005056844bde_9e71d68c-986c-11e7-40d3-005056844bde" id="BPMNEDGE_9e71d689-986c-11e7-40d3-005056844bde_9e71d694-986c-11e7-40d3-005056844bde_9e71d68c-986c-11e7-40d3-005056844bde">
+        <di:waypoint x="318" y="236" />
+        <di:waypoint x="372" y="236" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="FLOW_9e71d68c-986c-11e7-40d3-005056844bde_9e71d695-986c-11e7-40d3-005056844bde_9e71d692-986c-11e7-40d3-005056844bde" id="BPMNEDGE_9e71d68c-986c-11e7-40d3-005056844bde_9e71d695-986c-11e7-40d3-005056844bde_9e71d692-986c-11e7-40d3-005056844bde">
+        <di:waypoint x="468" y="249" />
+        <di:waypoint x="509" y="249" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="FLOW_9e71d692-986c-11e7-40d3-005056844bde_9e71d69c-986c-11e7-40d3-005056844bde_9e71d69a-986c-11e7-40d3-005056844bde" id="BPMNEDGE_9e71d692-986c-11e7-40d3-005056844bde_9e71d69c-986c-11e7-40d3-005056844bde_9e71d69a-986c-11e7-40d3-005056844bde">
+        <di:waypoint x="541" y="249" />
+        <di:waypoint x="641" y="249" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape bpmnElement="FLOWNODE_9e71d681-986c-11e7-40d3-005056844bde" id="BPMNDI_FLOWNODE_9e71d681-986c-11e7-40d3-005056844bde">
+        <dc:Bounds height="262" width="578" x="183" y="197" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="FLOWNODE_9e71d683-986c-11e7-40d3-005056844bde" id="BPMNDI_FLOWNODE_9e71d683-986c-11e7-40d3-005056844bde">
+        <dc:Bounds height="131" width="538" x="223" y="197" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="FLOWNODE_9e71d686-986c-11e7-40d3-005056844bde" id="BPMNDI_FLOWNODE_9e71d686-986c-11e7-40d3-005056844bde">
+        <dc:Bounds height="131" width="538" x="223" y="328" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="FLOWNODE_9e71d689-986c-11e7-40d3-005056844bde" id="BPMNDI_FLOWNODE_9e71d689-986c-11e7-40d3-005056844bde">
+        <dc:Bounds height="32" width="32" x="286" y="220" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="FLOWNODE_9e71d68c-986c-11e7-40d3-005056844bde" id="BPMNDI_FLOWNODE_9e71d68c-986c-11e7-40d3-005056844bde">
+        <dc:Bounds height="57" width="96" x="372" y="220" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="FLOWNODE_9e71d692-986c-11e7-40d3-005056844bde" id="BPMNDI_FLOWNODE_9e71d692-986c-11e7-40d3-005056844bde">
+        <dc:Bounds height="32" width="32" x="509" y="233" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="FLOWNODE_9e71d69a-986c-11e7-40d3-005056844bde" id="BPMNDI_FLOWNODE_9e71d69a-986c-11e7-40d3-005056844bde">
+        <dc:Bounds height="30" width="30" x="641" y="234" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</semantic:definitions>
+
