@@ -36,7 +36,6 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Exp
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
-import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -51,14 +50,11 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
-import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -82,9 +78,6 @@ public class ExpressionContainerGridTest {
 
     @Mock
     private DMNGridLayer gridLayer;
-
-    @Mock
-    private EventSourceMock<ExpressionEditorSelectedEvent> editorSelectedEvent;
 
     @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
@@ -134,9 +127,6 @@ public class ExpressionContainerGridTest {
     @Mock
     private HasExpression hasExpression;
 
-    @Captor
-    private ArgumentCaptor<ExpressionEditorSelectedEvent> expressionEditorSelectedEventCaptor;
-
     private LiteralExpression literalExpression = new LiteralExpression();
 
     private ExpressionContainerGrid grid;
@@ -146,7 +136,6 @@ public class ExpressionContainerGridTest {
     public void setup() {
         this.grid = new ExpressionContainerGrid(gridPanel,
                                                 gridLayer,
-                                                editorSelectedEvent,
                                                 cellEditorControls,
                                                 translationService,
                                                 listSelector,
@@ -199,13 +188,6 @@ public class ExpressionContainerGridTest {
     @Test
     public void testGridDraggingIsDisabled() {
         assertThat(grid.onDragHandle(mock(INodeXYEvent.class))).isFalse();
-    }
-
-    @Test
-    public void testSelect() {
-        grid.select();
-
-        verify(editorSelectedEvent).fire(any(ExpressionEditorSelectedEvent.class));
     }
 
     @Test

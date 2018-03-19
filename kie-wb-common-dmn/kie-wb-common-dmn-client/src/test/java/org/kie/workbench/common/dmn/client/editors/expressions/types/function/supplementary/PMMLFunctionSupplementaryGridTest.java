@@ -29,7 +29,6 @@ public class PMMLFunctionSupplementaryGridTest extends BaseFunctionSupplementary
                                                 sessionManager,
                                                 sessionCommandManager,
                                                 expressionEditorDefinitionsSupplier,
-                                                editorSelectedEvent,
                                                 cellEditorControls,
                                                 translationService,
                                                 listSelector);

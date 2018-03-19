@@ -19,7 +19,6 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -31,7 +30,6 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
-import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -58,7 +56,6 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation> {
                                     final @DMNEditor DMNGridLayer gridLayer,
                                     final SessionManager sessionManager,
                                     final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                    final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                                     final CellEditorControlsView.Presenter cellEditorControls,
                                     final TranslationService translationService,
                                     final ListSelectorView.Presenter listSelector) {
@@ -66,7 +63,6 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation> {
               gridLayer,
               sessionManager,
               sessionCommandManager,
-              editorSelectedEvent,
               cellEditorControls,
               translationService);
         this.listSelector = listSelector;
@@ -108,7 +104,6 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation> {
                                             gridLayer,
                                             sessionManager,
                                             sessionCommandManager,
-                                            editorSelectedEvent,
                                             cellEditorControls,
                                             translationService,
                                             listSelector));

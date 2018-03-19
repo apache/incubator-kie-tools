@@ -29,7 +29,6 @@ public class JavaFunctionSupplementaryGridTest extends BaseFunctionSupplementary
                                                 sessionManager,
                                                 sessionCommandManager,
                                                 expressionEditorDefinitionsSupplier,
-                                                editorSelectedEvent,
                                                 cellEditorControls,
                                                 translationService,
                                                 listSelector);

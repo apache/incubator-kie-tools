@@ -44,7 +44,6 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionT
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersEditorView;
-import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -66,7 +65,6 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
-import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -121,9 +119,6 @@ public class FunctionGridTest {
 
     @Mock
     private Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
-
-    @Mock
-    private EventSourceMock<ExpressionEditorSelectedEvent> editorSelectedEvent;
 
     @Mock
     private ListSelectorView.Presenter listSelector;
@@ -183,7 +178,6 @@ public class FunctionGridTest {
                                                                                  sessionCommandManager,
                                                                                  expressionEditorDefinitionsSupplier,
                                                                                  supplementaryEditorDefinitionsSupplier,
-                                                                                 editorSelectedEvent,
                                                                                  cellEditorControls,
                                                                                  translationService,
                                                                                  listSelector,

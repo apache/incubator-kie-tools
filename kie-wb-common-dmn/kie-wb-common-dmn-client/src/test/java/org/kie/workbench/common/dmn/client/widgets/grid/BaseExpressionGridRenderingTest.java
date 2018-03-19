@@ -23,7 +23,6 @@ import java.util.Optional;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import org.jboss.errai.common.client.api.IsElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -161,7 +160,6 @@ public class BaseExpressionGridRenderingTest extends BaseExpressionGridTest {
                                       renderer,
                                       sessionManager,
                                       sessionCommandManager,
-                                      editorSelectedEvent,
                                       cellEditorControls,
                                       translationService,
                                       () -> isHeaderHidden) {
@@ -178,11 +176,6 @@ public class BaseExpressionGridRenderingTest extends BaseExpressionGridTest {
             @Override
             protected void initialiseUiModel() {
                 //Nothing for this test
-            }
-
-            @Override
-            public Optional<IsElement> getEditorControls() {
-                return Optional.empty();
             }
         };
     }

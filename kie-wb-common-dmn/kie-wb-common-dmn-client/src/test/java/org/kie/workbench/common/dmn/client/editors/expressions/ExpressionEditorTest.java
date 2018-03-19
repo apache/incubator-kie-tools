@@ -24,22 +24,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
-import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.EditorToolbar;
-import org.kie.workbench.common.stunner.core.client.api.SessionManager;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -48,9 +41,6 @@ public class ExpressionEditorTest {
 
     @Mock
     private ExpressionEditorView view;
-
-    @Mock
-    private SessionManager sessionManager;
 
     @Mock
     private SessionPresenter sessionPresenter;
@@ -72,8 +62,7 @@ public class ExpressionEditorTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
-        testedEditor = new ExpressionEditor(view,
-                                            sessionManager);
+        testedEditor = new ExpressionEditor(view);
         when(sessionPresenter.getToolbar()).thenReturn(editorToolbar);
         when(editorToolbar.isEnabled(any(ToolbarCommand.class))).thenReturn(true);
     }
@@ -108,36 +97,5 @@ public class ExpressionEditorTest {
 
         verify(editorToolbar, atLeast(1)).enable(any(ToolbarCommand.class));
         verify(command).execute();
-    }
-
-    @Test
-    public void testObservesExpressionEditorSelectedEvent_SameSessions() throws Exception {
-        final ExpressionEditorSelectedEvent firedEvent = mock(ExpressionEditorSelectedEvent.class);
-        final Optional<BaseExpressionGrid> expressionGrid = Optional.of(mock(BaseExpressionGrid.class));
-        final ClientSession clientSession = mock(ClientSession.class);
-
-        doReturn(expressionGrid).when(firedEvent).getEditor();
-        // same client sessions
-        doReturn(clientSession).when(sessionManager).getCurrentSession();
-        doReturn(clientSession).when(firedEvent).getSession();
-
-        testedEditor.onExpressionEditorSelected(firedEvent);
-
-        verify(view).onExpressionEditorSelected(expressionGrid);
-    }
-
-    @Test
-    public void testObservesExpressionEditorSelectedEvent_DifferentSessions() throws Exception {
-        final ExpressionEditorSelectedEvent firedEvent = mock(ExpressionEditorSelectedEvent.class);
-        final Optional<BaseExpressionGrid> expressionGrid = Optional.of(mock(BaseExpressionGrid.class));
-
-        doReturn(expressionGrid).when(firedEvent).getEditor();
-        // different client sessions
-        doReturn(mock(ClientSession.class)).when(sessionManager).getCurrentSession();
-        doReturn(mock(ClientSession.class)).when(firedEvent).getSession();
-
-        testedEditor.onExpressionEditorSelected(firedEvent);
-
-        verify(view, never()).onExpressionEditorSelected(expressionGrid);
     }
 }

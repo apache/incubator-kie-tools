@@ -20,15 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.event.Event;
-
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
-import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
@@ -60,7 +56,6 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
                                  final DMNGridLayer gridLayer,
                                  final SessionManager sessionManager,
                                  final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                 final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                                  final CellEditorControlsView.Presenter cellEditorControls,
                                  final TranslationService translationService,
                                  final ListSelectorView.Presenter listSelector,
@@ -74,7 +69,6 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
               new LiteralExpressionGridRenderer(isNested),
               sessionManager,
               sessionCommandManager,
-              editorSelectedEvent,
               cellEditorControls,
               translationService,
               isNested);
@@ -133,20 +127,8 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
     }
 
     @Override
-    public Optional<IsElement> getEditorControls() {
-        return Optional.empty();
-    }
-
-    @Override
     public double getPadding() {
         return findParentGrid().isPresent() ? PADDING : DEFAULT_PADDING;
-    }
-
-    @Override
-    protected void fireExpressionEditorSelectedEvent() {
-        final Optional<BaseExpressionGrid> parentGrid = findParentGrid();
-        editorSelectedEvent.fire(new ExpressionEditorSelectedEvent(sessionManager.getCurrentSession(),
-                                                                   parentGrid));
     }
 
     @Override

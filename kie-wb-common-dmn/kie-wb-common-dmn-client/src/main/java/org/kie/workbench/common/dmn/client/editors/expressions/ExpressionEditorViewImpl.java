@@ -19,33 +19,23 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.event.dom.client.ClickEvent;
-import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.Anchor;
-import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Document;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
-import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
-import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BoundaryTransformMediator;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -67,18 +57,12 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     @DataField("returnToDRG")
     private Anchor returnToDRG;
 
-    @DataField("editorControls")
-    private Div expressionEditorControls;
-
     private ExpressionContainerGrid expressionContainerGrid;
-
-    private Document document;
 
     private DMNGridPanel gridPanel;
     private DMNGridLayer gridLayer;
     private RestrictedMousePanMediator mousePanMediator;
 
-    private Event<ExpressionEditorSelectedEvent> editorSelectedEvent;
     private CellEditorControlsView.Presenter cellEditorControls;
     private TranslationService translationService;
     private ListSelectorView.Presenter listSelector;
@@ -93,12 +77,9 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     @Inject
     public ExpressionEditorViewImpl(final Anchor returnToDRG,
-                                    final Div expressionEditorControls,
-                                    final Document document,
                                     final @DMNEditor DMNGridPanel gridPanel,
                                     final @DMNEditor DMNGridLayer gridLayer,
                                     final @DMNEditor RestrictedMousePanMediator mousePanMediator,
-                                    final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                                     final CellEditorControlsView.Presenter cellEditorControls,
                                     final TranslationService translationService,
                                     final ListSelectorView.Presenter listSelector,
@@ -106,14 +87,11 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                     final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                     final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
         this.returnToDRG = returnToDRG;
-        this.expressionEditorControls = expressionEditorControls;
-        this.document = document;
 
         this.gridPanel = gridPanel;
         this.gridLayer = gridLayer;
         this.mousePanMediator = mousePanMediator;
 
-        this.editorSelectedEvent = editorSelectedEvent;
         this.cellEditorControls = cellEditorControls;
         this.translationService = translationService;
         this.listSelector = listSelector;
@@ -144,7 +122,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     protected void setupGridWidget() {
         expressionContainerGrid = new ExpressionContainerGrid(gridPanel,
                                                               gridLayer,
-                                                              editorSelectedEvent,
                                                               cellEditorControls,
                                                               translationService,
                                                               listSelector,
@@ -179,33 +156,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
         hasName.ifPresent(name -> returnToDRG.setTextContent(translationService.format(DMNEditorConstants.ExpressionEditor_ReturnToDRG,
                                                                                        name.getName().getValue())));
-
-        //TODO {manstis} This can be removed when all EditorControls are removed
-        final GridCellTuple parent = new GridCellTuple(0, 0, expressionContainerGrid);
-        final Optional<Expression> expression = Optional.ofNullable(hasExpression.getExpression());
-        final Optional<ExpressionEditorDefinition<Expression>> expressionEditorDefinition = expressionEditorDefinitionsSupplier.get().getExpressionEditorDefinition(expression);
-        expressionEditorDefinition.ifPresent(definition -> {
-            final Optional<BaseExpressionGrid> oEditor = definition.getEditor(parent,
-                                                                              hasExpression,
-                                                                              expression,
-                                                                              hasName,
-                                                                              false);
-            onExpressionEditorSelected(oEditor);
-        });
-    }
-
-    @Override
-    public void onExpressionEditorSelected(final Optional<BaseExpressionGrid> oEditor) {
-        DOMUtil.removeAllChildren(expressionEditorControls);
-
-        if (oEditor.isPresent()) {
-            final BaseExpressionGrid editor = oEditor.get();
-            final Optional<IsElement> oEditorControls = editor.getEditorControls();
-            if (oEditorControls.isPresent()) {
-                final IsElement editorControls = oEditorControls.get();
-                expressionEditorControls.appendChild(editorControls.getElement());
-            }
-        }
     }
 
     @SuppressWarnings("unused")

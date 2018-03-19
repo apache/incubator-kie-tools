@@ -21,8 +21,6 @@ import com.google.gwt.user.client.ui.ProvidesResize;
 import org.jboss.errai.common.client.api.IsElement;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
-import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.RequiresResize;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
@@ -42,8 +40,6 @@ public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.ap
         void setExpression(final Optional<HasName> hasName,
                            final HasExpression hasExpression);
 
-        void onExpressionEditorSelected(final ExpressionEditorSelectedEvent event);
-
         void setExitCommand(final Command exitCommand);
 
         ExpressionEditorView getView();
@@ -53,6 +49,4 @@ public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.ap
 
     void setExpression(final Optional<HasName> hasName,
                        final HasExpression hasExpression);
-
-    void onExpressionEditorSelected(final Optional<BaseExpressionGrid> oEditor);
 }

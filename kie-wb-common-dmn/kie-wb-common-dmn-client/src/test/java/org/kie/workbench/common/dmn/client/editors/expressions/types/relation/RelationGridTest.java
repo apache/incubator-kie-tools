@@ -19,8 +19,6 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 import java.util.Collections;
 import java.util.Optional;
 
-import javax.enterprise.event.Event;
-
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
@@ -36,7 +34,6 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.A
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationRowCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationColumnCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationRowCommand;
-import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNClientFullSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -57,7 +54,6 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
-import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -128,8 +124,6 @@ public class RelationGridTest {
     @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
-    private Event<ExpressionEditorSelectedEvent> editorSelectedEvent;
-
     @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
 
@@ -155,7 +149,6 @@ public class RelationGridTest {
 
     @Before
     public void setUp() throws Exception {
-        editorSelectedEvent = new EventSourceMock<>();
         doReturn(abstractCanvasHandler).when(dmnClientFullSession).getCanvasHandler();
         doReturn(dmnClientFullSession).when(sessionManager).getCurrentSession();
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
@@ -171,7 +164,6 @@ public class RelationGridTest {
                                             gridLayer,
                                             sessionManager,
                                             sessionCommandManager,
-                                            editorSelectedEvent,
                                             cellEditorControls,
                                             translationService,
                                             listSelector));

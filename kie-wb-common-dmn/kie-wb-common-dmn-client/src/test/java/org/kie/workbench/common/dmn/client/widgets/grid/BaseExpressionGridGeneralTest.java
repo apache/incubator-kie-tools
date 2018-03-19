@@ -25,13 +25,11 @@ import java.util.stream.IntStream;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.assertj.core.api.Assertions;
-import org.jboss.errai.common.client.api.IsElement;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
@@ -78,7 +76,6 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
                                       renderer,
                                       sessionManager,
                                       sessionCommandManager,
-                                      editorSelectedEvent,
                                       cellEditorControls,
                                       translationService,
                                       false) {
@@ -95,11 +92,6 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
             @Override
             protected void initialiseUiModel() {
                 //Nothing for this test
-            }
-
-            @Override
-            public Optional<IsElement> getEditorControls() {
-                return Optional.empty();
             }
         };
     }
@@ -174,8 +166,6 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     @Test
     public void testSelect() {
         grid.select();
-
-        verify(editorSelectedEvent).fire(any(ExpressionEditorSelectedEvent.class));
 
         verify(grid).selectFirstCell();
     }

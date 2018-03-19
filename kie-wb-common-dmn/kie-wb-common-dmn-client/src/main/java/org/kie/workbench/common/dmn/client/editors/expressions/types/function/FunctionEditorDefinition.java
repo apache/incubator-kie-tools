@@ -20,7 +20,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -33,7 +32,6 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorD
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersEditorView;
-import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -65,7 +63,6 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
                                     final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                     final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                     final @FunctionGridSupplementaryEditor Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier,
-                                    final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                                     final CellEditorControlsView.Presenter cellEditorControls,
                                     final TranslationService translationService,
                                     final ListSelectorView.Presenter listSelector,
@@ -74,7 +71,6 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
               gridLayer,
               sessionManager,
               sessionCommandManager,
-              editorSelectedEvent,
               cellEditorControls,
               translationService);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
@@ -118,7 +114,6 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
                                             sessionCommandManager,
                                             expressionEditorDefinitionsSupplier,
                                             supplementaryEditorDefinitionsSupplier,
-                                            editorSelectedEvent,
                                             cellEditorControls,
                                             translationService,
                                             listSelector,

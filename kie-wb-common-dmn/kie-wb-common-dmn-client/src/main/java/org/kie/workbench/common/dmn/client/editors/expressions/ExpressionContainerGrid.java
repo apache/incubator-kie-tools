@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import javax.enterprise.event.Event;
-
 import com.ait.lienzo.client.core.event.INodeXYEvent;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -31,7 +29,6 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.client.commands.general.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
-import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
@@ -54,7 +51,6 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
 
     private final DMNGridPanel gridPanel;
     private final DMNGridLayer gridLayer;
-    private final Event<ExpressionEditorSelectedEvent> editorSelectedEvent;
     private final CellEditorControlsView.Presenter cellEditorControls;
     private final TranslationService translationService;
 
@@ -69,7 +65,6 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
 
     public ExpressionContainerGrid(final DMNGridPanel gridPanel,
                                    final DMNGridLayer gridLayer,
-                                   final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                                    final CellEditorControlsView.Presenter cellEditorControls,
                                    final TranslationService translationService,
                                    final ListSelectorView.Presenter listSelector,
@@ -82,7 +77,6 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
               new ExpressionContainerRenderer());
         this.gridPanel = gridPanel;
         this.gridLayer = gridLayer;
-        this.editorSelectedEvent = editorSelectedEvent;
         this.cellEditorControls = cellEditorControls;
         this.translationService = translationService;
         this.sessionManager = sessionManager;
@@ -113,17 +107,6 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
     @Override
     public boolean onDragHandle(final INodeXYEvent event) {
         return false;
-    }
-
-    @Override
-    public void select() {
-        fireExpressionEditorSelectedEvent();
-        super.select();
-    }
-
-    protected void fireExpressionEditorSelectedEvent() {
-        editorSelectedEvent.fire(new ExpressionEditorSelectedEvent(sessionManager.getCurrentSession(),
-                                                                   Optional.empty()));
     }
 
     @Override

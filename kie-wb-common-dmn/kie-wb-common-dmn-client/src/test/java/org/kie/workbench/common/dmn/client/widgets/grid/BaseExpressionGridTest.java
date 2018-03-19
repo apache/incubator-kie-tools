@@ -22,7 +22,6 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -34,7 +33,6 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseBounds;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
-import org.uberfire.mocks.EventSourceMock;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
@@ -59,9 +57,6 @@ public abstract class BaseExpressionGridTest {
 
     @Mock
     protected SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-
-    @Mock
-    protected EventSourceMock<ExpressionEditorSelectedEvent> editorSelectedEvent;
 
     @Mock
     protected CellEditorControlsView.Presenter cellEditorControls;

@@ -25,11 +25,7 @@ import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Element;
-import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.Anchor;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Document;
-import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +37,6 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionEditorDefinition;
-import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -58,7 +53,6 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
-import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -80,12 +74,6 @@ public class ExpressionEditorViewImplTest {
     private Anchor returnToDRG;
 
     @Mock
-    private Div expressionEditorControls;
-
-    @Mock
-    private Document document;
-
-    @Mock
     private DMNGridPanel gridPanel;
 
     @Mock
@@ -93,9 +81,6 @@ public class ExpressionEditorViewImplTest {
 
     @Mock
     private RestrictedMousePanMediator mousePanMediator;
-
-    @Mock
-    private EventSourceMock<ExpressionEditorSelectedEvent> editorSelectedEvent;
 
     @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
@@ -162,15 +147,11 @@ public class ExpressionEditorViewImplTest {
                                                                        any(Optional.class),
                                                                        anyBoolean());
         doReturn(new BaseGridData()).when(editor).getModel();
-        doReturn(Optional.empty()).when(editor).getEditorControls();
 
         this.view = spy(new ExpressionEditorViewImpl(returnToDRG,
-                                                     expressionEditorControls,
-                                                     document,
                                                      gridPanel,
                                                      gridLayer,
                                                      mousePanMediator,
-                                                     editorSelectedEvent,
                                                      cellEditorControls,
                                                      translationService,
                                                      listSelector,
@@ -183,7 +164,6 @@ public class ExpressionEditorViewImplTest {
 
         doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
         doReturn(Optional.empty()).when(undefinedExpressionEditorDefinition).getModelClass();
-        doReturn(Optional.empty()).when(undefinedExpressionEditor).getEditorControls();
         doReturn(new BaseGridData()).when(undefinedExpressionEditor).getModel();
         doReturn(Optional.of(undefinedExpressionEditor)).when(undefinedExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
                                                                                                              any(HasExpression.class),
@@ -261,19 +241,5 @@ public class ExpressionEditorViewImplTest {
                            hasExpression);
 
         verify(returnToDRG, never()).setTextContent(any(String.class));
-    }
-
-    @Test
-    public void testOnExpressionEditorSelected() throws Exception {
-        final Optional<BaseExpressionGrid> expressionGridEditor = Optional.of(editor);
-        final HTMLElement selectedEditorControlsHTML = mock(HTMLElement.class);
-        final IsElement selectedEditorControlsElement = mock(IsElement.class);
-        final Optional<IsElement> selectedEditorControls = Optional.of(selectedEditorControlsElement);
-
-        doReturn(selectedEditorControlsHTML).when(selectedEditorControlsElement).getElement();
-        doReturn(selectedEditorControls).when(editor).getEditorControls();
-
-        view.onExpressionEditorSelected(expressionGridEditor);
-        verify(expressionEditorControls).appendChild(selectedEditorControlsHTML);
     }
 }

@@ -22,10 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import javax.enterprise.event.Event;
-
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
-import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -46,7 +43,6 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Exp
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.HasParametersControl;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersEditorView;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
-import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
@@ -83,7 +79,6 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
                         final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                         final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                         final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier,
-                        final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                         final CellEditorControlsView.Presenter cellEditorControls,
                         final TranslationService translationService,
                         final ListSelectorView.Presenter listSelector,
@@ -98,7 +93,6 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
               new FunctionGridRenderer(isNested),
               sessionManager,
               sessionCommandManager,
-              editorSelectedEvent,
               cellEditorControls,
               translationService,
               false);
@@ -158,11 +152,6 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
             model.appendRow(new DMNGridRow());
             uiModelMapper.fromDMNModel(0, 0);
         });
-    }
-
-    @Override
-    public Optional<IsElement> getEditorControls() {
-        return Optional.empty();
     }
 
     @Override

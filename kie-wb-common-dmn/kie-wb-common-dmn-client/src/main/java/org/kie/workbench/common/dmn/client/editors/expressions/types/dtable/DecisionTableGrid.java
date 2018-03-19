@@ -21,10 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import javax.enterprise.event.Event;
-
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
-import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -48,7 +45,6 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.Set
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.SetOrientationCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HasHitPolicyControl;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyEditorView;
-import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
@@ -108,7 +104,6 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                              final DMNGridLayer gridLayer,
                              final SessionManager sessionManager,
                              final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                             final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                              final CellEditorControlsView.Presenter cellEditorControls,
                              final TranslationService translationService,
                              final ListSelectorView.Presenter listSelector,
@@ -127,7 +122,6 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
               new DecisionTableGridRenderer(),
               sessionManager,
               sessionCommandManager,
-              editorSelectedEvent,
               cellEditorControls,
               translationService,
               false);
@@ -260,11 +254,6 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                            columnIndex);
             });
         });
-    }
-
-    @Override
-    public Optional<IsElement> getEditorControls() {
-        return Optional.empty();
     }
 
     @Override

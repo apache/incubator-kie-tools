@@ -36,7 +36,6 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionCell;
-import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
@@ -58,7 +57,6 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
-import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -99,9 +97,6 @@ public class UndefinedExpressionGridTest {
 
     @Mock
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
-
-    @Mock
-    private EventSourceMock<ExpressionEditorSelectedEvent> editorSelectedEvent;
 
     @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
@@ -147,7 +142,6 @@ public class UndefinedExpressionGridTest {
                                                                                                        sessionManager,
                                                                                                        sessionCommandManager,
                                                                                                        expressionEditorDefinitionsSupplier,
-                                                                                                       editorSelectedEvent,
                                                                                                        cellEditorControls,
                                                                                                        translationService,
                                                                                                        listSelector);
@@ -195,11 +189,6 @@ public class UndefinedExpressionGridTest {
         assertThat(uiModel.getCell(0, 0)).isNotNull();
 
         assertThat(uiModel.getCell(0, 0)).isInstanceOf(UndefinedExpressionCell.class);
-    }
-
-    @Test
-    public void testGetEditorControls() {
-        assertThat(grid.getEditorControls().isPresent()).isFalse();
     }
 
     @Test

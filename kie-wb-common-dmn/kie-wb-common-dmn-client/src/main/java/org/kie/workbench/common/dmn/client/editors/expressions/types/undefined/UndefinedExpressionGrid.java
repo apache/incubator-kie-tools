@@ -21,10 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import javax.enterprise.event.Event;
-
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
-import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -34,7 +31,6 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
-import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -70,7 +66,6 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
                                    final SessionManager sessionManager,
                                    final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                    final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
-                                   final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                                    final CellEditorControlsView.Presenter cellEditorControls,
                                    final TranslationService translationService,
                                    final ListSelectorView.Presenter listSelector,
@@ -84,7 +79,6 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
               new UndefinedExpressionGridRenderer(),
               sessionManager,
               sessionCommandManager,
-              editorSelectedEvent,
               cellEditorControls,
               translationService,
               isNested);
@@ -131,11 +125,6 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
         model.appendRow(new DMNGridRow());
         uiModelMapper.fromDMNModel(0,
                                    0);
-    }
-
-    @Override
-    public Optional<IsElement> getEditorControls() {
-        return Optional.empty();
     }
 
     @Override

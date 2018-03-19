@@ -19,10 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import javax.enterprise.event.Event;
-
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
-import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -34,7 +31,6 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.A
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationRowCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationColumnCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationRowCommand;
-import org.kie.workbench.common.dmn.client.events.ExpressionEditorSelectedEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
@@ -68,7 +64,6 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
                         final DMNGridLayer gridLayer,
                         final SessionManager sessionManager,
                         final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                        final Event<ExpressionEditorSelectedEvent> editorSelectedEvent,
                         final CellEditorControlsView.Presenter cellEditorControls,
                         final TranslationService translationService,
                         final ListSelectorView.Presenter listSelector) {
@@ -86,7 +81,6 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
               new RelationGridRenderer(),
               sessionManager,
               sessionCommandManager,
-              editorSelectedEvent,
               cellEditorControls,
               translationService,
               false);
@@ -161,11 +155,6 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
                 }
             });
         });
-    }
-
-    @Override
-    public Optional<IsElement> getEditorControls() {
-        return Optional.empty();
     }
 
     @Override
