@@ -30,7 +30,10 @@ public class FunctionDefinition extends Expression implements HasExpression {
 
     public static final String DROOLS_PREFIX = "drools";
 
-    public static final QName KIND_QNAME = new QName("{" + DMNModelInstrumentedBase.URI_KIE + "}" + DROOLS_PREFIX + ":kind");
+    public static final String KIND_LOCAL_PART = "kind";
+
+    public static final QName KIND_QNAME = new QName(DMNModelInstrumentedBase.URI_KIE,
+                                                     KIND_LOCAL_PART);
 
     private Expression expression;
 

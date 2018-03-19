@@ -19,7 +19,6 @@ package org.kie.workbench.common.dmn.backend.definition.v1_1;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import org.kie.dmn.backend.marshalling.v1_1.xstream.MarshallingUtils;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 public class QNamePropertyConverter {
@@ -28,7 +27,9 @@ public class QNamePropertyConverter {
      * @return maybe null
      */
     public static QName wbFromDMN(final javax.xml.namespace.QName qName) {
-        return (qName != null) ? new QName("{" + qName.getNamespaceURI() + "}" + (qName.getPrefix().equals("") ? "" : qName.getPrefix() + ":") + qName.getLocalPart()) : null;
+        return (qName != null) ? new QName(qName.getNamespaceURI(),
+                                           qName.getLocalPart(),
+                                           qName.getPrefix()) : null;
     }
 
     /*
@@ -37,13 +38,15 @@ public class QNamePropertyConverter {
     public static void setDMNfromWB(final QName qname,
                                     final Consumer<javax.xml.namespace.QName> setter) {
         if (qname != null) {
-            setter.accept(MarshallingUtils.parseQNameString(qname.getValue()));
+            setter.accept(dmnFromWB(qname).orElse(null));
         }
     }
 
     public static Optional<javax.xml.namespace.QName> dmnFromWB(final QName wb) {
         if (wb != null) {
-            return Optional.of(MarshallingUtils.parseQNameString(wb.getValue()));
+            return Optional.of(new javax.xml.namespace.QName(wb.getNamespaceURI(),
+                                                             wb.getLocalPart(),
+                                                             wb.getPrefix()));
         } else {
             return Optional.empty();
         }

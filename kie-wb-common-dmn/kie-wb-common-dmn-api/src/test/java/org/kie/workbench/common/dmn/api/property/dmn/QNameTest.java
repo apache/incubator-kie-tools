@@ -27,27 +27,40 @@ import static org.junit.Assert.assertTrue;
 
 public class QNameTest {
 
-    private static final String VALUE = "value";
+    private final static String NAMESPACE_URI = "namespace-uri";
 
-    private final static QName qName1 = new QName(VALUE);
+    private final static String LOCAL_PART = "local-part";
 
-    private final static QName qName2 = new QName(VALUE);
+    private final static String PREFIX = "prefix";
+
+    private final static QName QNAME1 = new QName(NAMESPACE_URI, LOCAL_PART, PREFIX);
+
+    private final static QName QNAME2 = new QName(NAMESPACE_URI, LOCAL_PART, PREFIX);
+
+    private final static QName QNAME3 = new QName(NAMESPACE_URI, LOCAL_PART);
 
     @Test
     public void checkEquals() {
-        assertEquals(qName1, qName2);
+        assertEquals(QNAME1, QNAME2);
+        assertEquals(QNAME1, QNAME3);
+        assertEquals(QNAME2, QNAME3);
 
-        assertNotEquals(qName1, FunctionDefinition.KIND_QNAME);
+        assertNotEquals(QNAME1, FunctionDefinition.KIND_QNAME);
+        assertNotEquals(QNAME2, FunctionDefinition.KIND_QNAME);
+        assertNotEquals(QNAME3, FunctionDefinition.KIND_QNAME);
     }
 
     @Test
     public void checkHashCode() {
-        assertEquals(qName1.hashCode(), qName2.hashCode());
+        assertEquals(QNAME1.hashCode(), QNAME2.hashCode());
+        assertEquals(QNAME1.hashCode(), QNAME3.hashCode());
+        assertEquals(QNAME2.hashCode(), QNAME3.hashCode());
 
         final HashSet<QName> qNames = new HashSet<>();
 
-        qNames.add(qName1);
+        qNames.add(QNAME1);
 
-        assertTrue(qNames.contains(qName2));
+        assertTrue(qNames.contains(QNAME2));
+        assertTrue(qNames.contains(QNAME3));
     }
 }
