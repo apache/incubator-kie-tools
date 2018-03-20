@@ -296,6 +296,10 @@ public class DefaultWorkbenchFeaturesMenusHelper {
             if (navItem instanceof NavDivider) {
                 continue;
             }
+            // AF-953: Ignore empty groups
+            if (navItem instanceof NavGroup && ((NavGroup) navItem).getChildren().isEmpty()) {
+                continue;
+            }
             // Build a top level menu entry
             if (builder == null) {
                 builder = MenuFactory.newTopLevelMenu(navItem.getName());

@@ -394,6 +394,11 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
                       "i2",
                       true)
                 .endGroup()
+                .group("g3",
+                       "g3",
+                       "g3",
+                       true)
+                .endGroup()
                 .build();
 
         Menus menus = menusHelper.buildMenusFromNavTree(navTree).build();
