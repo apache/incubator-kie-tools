@@ -402,11 +402,6 @@
       <artifactId>uberfire-message-console-backend</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-organizationalunit-manager</artifactId>
-    </dependency>
-
     <!-- Common -->
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
@@ -1182,7 +1177,6 @@
             <compileSourcesArtifact>org.uberfire:uberfire-project-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-message-console-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-message-console-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-organizationalunit-manager</compileSourcesArtifact>
 
             <!-- Common dependencies -->
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-library-client</compileSourcesArtifact>
