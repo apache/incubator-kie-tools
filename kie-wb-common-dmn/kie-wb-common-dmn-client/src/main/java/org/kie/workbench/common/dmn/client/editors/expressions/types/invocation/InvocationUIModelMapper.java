@@ -23,10 +23,10 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Binding;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
-import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemNameCell;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
@@ -78,11 +78,10 @@ public class InvocationUIModelMapper extends BaseUIModelMapper<Invocation> {
                     break;
                 case BINDING_PARAMETER_COLUMN_INDEX:
                     final InformationItem variable = invocation.getBinding().get(rowIndex).getParameter();
-                    final String name = variable.getName().getValue();
                     uiModel.get().setCell(rowIndex,
                                           columnIndex,
-                                          () -> new InvocationGridCell<>(new BaseGridCellValue<>(name),
-                                                                         listSelector));
+                                          () -> new InformationItemNameCell(() -> variable,
+                                                                            listSelector));
                     break;
                 case BINDING_EXPRESSION_COLUMN_INDEX:
                     final Binding binding = invocation.getBinding().get(rowIndex);
@@ -119,7 +118,8 @@ public class InvocationUIModelMapper extends BaseUIModelMapper<Invocation> {
                     invocation.getBinding()
                             .get(rowIndex)
                             .getParameter()
-                            .setName(new Name(cell.get().orElse(new BaseGridCellValue<>("")).getValue().toString()));
+                            .getName()
+                            .setValue(cell.get().orElse(new BaseGridCellValue<>("")).getValue().toString());
                     break;
                 case BINDING_EXPRESSION_COLUMN_INDEX:
                     cell.get().ifPresent(v -> {

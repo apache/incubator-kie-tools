@@ -143,17 +143,6 @@ public abstract class BaseContextUIModelMapperTest<M extends ContextUIModelMappe
     protected abstract M getMapper();
 
     @Test
-    public void testFromDMNModelName() {
-        mapper.fromDMNModel(0, 1);
-        mapper.fromDMNModel(1, 1);
-
-        assertEquals("ii1",
-                     uiModel.getCell(0, 1).getValue().getValue());
-        assertEquals(ContextUIModelMapper.DEFAULT_ROW_CAPTION,
-                     uiModel.getCell(1, 1).getValue().getValue());
-    }
-
-    @Test
     public void testFromDMNModelExpression() {
         mapper.fromDMNModel(0, 2);
         mapper.fromDMNModel(1, 2);

@@ -26,6 +26,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContextUIModelMapperTest extends BaseContextUIModelMapperTest<ContextUIModelMapper> {
@@ -49,6 +50,17 @@ public class ContextUIModelMapperTest extends BaseContextUIModelMapperTest<Conte
 
         assertThat(uiModel.getCell(1, 0).getValue().getValue()).isNull();
         assertThat(uiModel.getCell(1, 0).getSelectionStrategy()).isSameAs(RowSelectionStrategy.INSTANCE);
+    }
+
+    @Test
+    public void testFromDMNModelName() {
+        mapper.fromDMNModel(0, 1);
+        mapper.fromDMNModel(1, 1);
+
+        assertEquals("ii1",
+                     uiModel.getCell(0, 1).getValue().getValue());
+        assertEquals(ContextUIModelMapper.DEFAULT_ROW_CAPTION,
+                     uiModel.getCell(1, 1).getValue().getValue());
     }
 
     @Test

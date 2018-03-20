@@ -20,7 +20,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMe
 
 public class DeleteHeaderValueCommand extends SetHeaderValueCommand {
 
-    private static final String DEFAULT_TITLE = "title";
+    private static final String DEFAULT_TITLE = "";
 
     public DeleteHeaderValueCommand(final EditableHeaderMetaData headerMetaData,
                                     final org.uberfire.mvp.Command canvasOperation) {
