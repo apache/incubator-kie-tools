@@ -28,7 +28,6 @@ import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.kie.workbench.common.forms.editor.model.FormModelSynchronizationResult;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandlerManager;
-import org.kie.workbench.common.forms.editor.service.backend.util.UIDGenerator;
 import org.kie.workbench.common.forms.editor.service.shared.VFSFormFinderService;
 import org.kie.workbench.common.forms.editor.service.shared.model.FormModelSynchronizationUtil;
 import org.kie.workbench.common.forms.editor.type.FormResourceTypeDefinition;
@@ -37,8 +36,9 @@ import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.Ge
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.JavaFormModel;
-import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
+import org.kie.workbench.common.forms.services.backend.serialization.FormDefinitionSerializer;
+import org.kie.workbench.common.forms.services.backend.util.UIDGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;

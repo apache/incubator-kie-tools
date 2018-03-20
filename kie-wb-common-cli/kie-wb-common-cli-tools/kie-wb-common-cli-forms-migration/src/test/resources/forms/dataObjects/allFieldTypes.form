@@ -1,0 +1,166 @@
+
+<form id="1953988820">
+<property name="name" value="FormWithAllFieldTypes.form"/>
+<property name="displayMode" value="default"/>
+<property name="status" value="0"/>
+<field position="0" name=":decorator_0" type="HTMLLabel" id="1389395877">
+<property name="fieldRequired" value="false"/>
+<property name="htmlContent" value="quot;enquot;,quot;HTMLquot;"/>
+<property name="fieldClass" value="HTMLlabel"/>
+</field>
+<field position="1" name=":decorator_1" type="Separator" id="1974905041">
+<property name="fieldRequired" value="false"/>
+<property name="fieldClass" value="Separator"/>
+</field>
+<field position="2" name="subform" type="Subform" id="1299266288">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;Subform2quot;"/>
+<property name="fieldClass" value="java.lang.Object"/>
+<property name="inputBinding" value="user/subform"/>
+<property name="outputBinding" value="user/subform"/>
+</field>
+<field position="3" name="multiple" type="MultipleSubform" id="1773369753">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;MultipleSubform3quot;"/>
+<property name="fieldClass" value="java.util.List"/>
+<property name="inputBinding" value="user/multiple"/>
+<property name="outputBinding" value="user/multiple"/>
+</field>
+<field position="4" name="text" type="InputText" id="1006117528">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;InputText4quot;"/>
+<property name="fieldClass" value="java.lang.String"/>
+<property name="inputBinding" value="user/text"/>
+<property name="outputBinding" value="user/text"/>
+</field>
+<field position="5" name="textarea" type="InputTextArea" id="1200118371">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;InputTextArea5quot;"/>
+<property name="fieldClass" value="java.lang.String"/>
+<property name="inputBinding" value="user/textarea"/>
+<property name="outputBinding" value="user/textarea"/>
+</field>
+<field position="6" name="character" type="InputTextCharacter" id="1769356391">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;InputTextCharacter6quot;"/>
+<property name="fieldClass" value="java.lang.Character"/>
+<property name="inputBinding" value="user/character"/>
+<property name="outputBinding" value="user/character"/>
+</field>
+<field position="7" name="float" type="InputTextFloat" id="718358653">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;InputTextFloat7quot;"/>
+<property name="fieldClass" value="java.lang.Float"/>
+<property name="inputBinding" value="user/float"/>
+<property name="outputBinding" value="user/float"/>
+</field>
+<field position="8" name="double" type="InputTextDouble" id="2128338035">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;InputTextDouble8quot;"/>
+<property name="fieldClass" value="java.lang.Double"/>
+<property name="inputBinding" value="user/double"/>
+<property name="outputBinding" value="user/double"/>
+</field>
+<field position="9" name="bigDecimal" type="InputTextBigDecimal" id="186181818">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;InputTextBigDecimal9quot;"/>
+<property name="fieldClass" value="java.math.BigDecimal"/>
+<property name="inputBinding" value="user/bigDecimal"/>
+<property name="outputBinding" value="user/bigDecimal"/>
+</field>
+<field position="10" name="bigInteger" type="InputTextBigInteger" id="1242192275">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;InputTextBigInteger10quot;"/>
+<property name="fieldClass" value="java.math.BigInteger"/>
+<property name="inputBinding" value="user/bigInteger"/>
+<property name="outputBinding" value="user/bigInteger"/>
+</field>
+<field position="11" name="byte" type="InputTextByte" id="201393508">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;InputTextByte11quot;"/>
+<property name="fieldClass" value="java.lang.Byte"/>
+<property name="inputBinding" value="user/byte"/>
+<property name="outputBinding" value="user/byte"/>
+</field>
+<field position="12" name="short" type="InputTextShort" id="924944852">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;InputTextShort12quot;"/>
+<property name="fieldClass" value="java.lang.Short"/>
+<property name="inputBinding" value="user/short"/>
+<property name="outputBinding" value="user/shart"/>
+</field>
+<field position="13" name="integer" type="InputTextInteger" id="708195173">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;InputTextInteger13quot;"/>
+<property name="fieldClass" value="java.lang.Integer"/>
+<property name="inputBinding" value="user/integer"/>
+<property name="outputBinding" value="user/integer"/>
+</field>
+<field position="14" name="long" type="InputTextLong" id="1247715092">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;InputTextLong14quot;"/>
+<property name="fieldClass" value="java.lang.Long"/>
+<property name="inputBinding" value="user/long"/>
+<property name="outputBinding" value="user/long"/>
+</field>
+<field position="15" name="email" type="InputTextEmail" id="1368308303">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;InputTextEmail15quot;"/>
+<property name="fieldClass" value="java.lang.String"/>
+<property name="inputBinding" value="user/email"/>
+<property name="outputBinding" value="user/email"/>
+</field>
+<field position="16" name="boolean" type="CheckBox" id="900266047">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;CheckBox16quot;"/>
+<property name="fieldClass" value="java.lang.Boolean"/>
+<property name="inputBinding" value="user/boolean"/>
+<property name="outputBinding" value="user/boolean"/>
+</field>
+<field position="17" name="html" type="HTMLEditor" id="745207876">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;HTMLEditor17quot;"/>
+<property name="fieldClass" value="java.lang.String"/>
+<property name="inputBinding" value="user/html"/>
+<property name="outputBinding" value="user/html"/>
+</field>
+<field position="18" name="date" type="InputDate" id="2043647731">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;InputDate18quot;"/>
+<property name="fieldClass" value="java.util.Date"/>
+<property name="inputBinding" value="user/date"/>
+<property name="outputBinding" value="user/date"/>
+</field>
+<field position="19" name="shortDate" type="InputShortDate" id="1291653692">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;InputShortDate19quot;"/>
+<property name="fieldClass" value="java.util.Date"/>
+<property name="inputBinding" value="user/shortDate"/>
+<property name="outputBinding" value="user/shortDate"/>
+</field>
+<field position="20" name="document" type="Document" id="1808199991">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;Document20quot;"/>
+<property name="readonly" value="false"/>
+<property name="fieldClass" value="org.jbpm.document.Document"/>
+<property name="inputBinding" value="user/document"/>
+<property name="outputBinding" value="user/document"/>
+</field>
+<field position="21" name="select" type="SelectBox" id="336008477">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;SelectBox21quot;"/>
+<property name="readonly" value="false"/>
+<property name="fieldClass" value="java.lang.String"/>
+<property name="inputBinding" value="user/select"/>
+<property name="outputBinding" value="user/select"/>
+</field>
+<field position="22" name="radio" type="RadioGroup" id="298751710">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;RadioGroup22quot;"/>
+<property name="readonly" value="false"/>
+<property name="fieldClass" value="java.lang.String"/>
+<property name="inputBinding" value="user/radio"/>
+<property name="outputBinding" value="user/radio"/>
+</field>
+<dataHolder inputId="user" name="#0000A0" type="dataModelerEntry" outId="user" value="org.jbpm.tests.AllFieldTypes" id="model"/>
+</form>

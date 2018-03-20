@@ -25,7 +25,6 @@ import org.kie.workbench.common.forms.adf.service.definitions.layout.LayoutColum
 import org.kie.workbench.common.forms.adf.service.definitions.layout.LayoutSettings;
 import org.kie.workbench.common.forms.commons.shared.layout.impl.StaticFormLayoutTemplateGenerator;
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
-import org.kie.workbench.common.forms.editor.service.backend.util.UIDGenerator;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.EntityRelationField;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.HasNestedForm;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.IsCRUDDefinition;
@@ -39,6 +38,7 @@ import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormLayoutComponent;
 import org.kie.workbench.common.forms.model.JavaFormModel;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
+import org.kie.workbench.common.forms.services.backend.util.UIDGenerator;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 
 public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFormGeneratorService<SOURCE> {

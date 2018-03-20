@@ -30,7 +30,7 @@ import org.kie.workbench.common.forms.editor.service.shared.VFSFormFinderService
 import org.kie.workbench.common.forms.editor.type.FormResourceTypeDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.JavaFormModel;
-import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
+import org.kie.workbench.common.forms.services.backend.serialization.FormDefinitionSerializer;
 import org.kie.workbench.common.services.datamodeller.util.FileUtils;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;

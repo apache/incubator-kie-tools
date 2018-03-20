@@ -49,10 +49,10 @@ import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRender
 import org.kie.workbench.common.forms.fields.test.TestMetaDataEntryManager;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
-import org.kie.workbench.common.forms.serialization.impl.FieldSerializer;
-import org.kie.workbench.common.forms.serialization.impl.FormDefinitionSerializerImpl;
-import org.kie.workbench.common.forms.serialization.impl.FormModelSerializer;
+import org.kie.workbench.common.forms.services.backend.serialization.FormDefinitionSerializer;
+import org.kie.workbench.common.forms.services.backend.serialization.impl.FieldSerializer;
+import org.kie.workbench.common.forms.services.backend.serialization.impl.FormDefinitionSerializerImpl;
+import org.kie.workbench.common.forms.services.backend.serialization.impl.FormModelSerializer;
 import org.lesscss.deps.org.apache.commons.io.Charsets;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;

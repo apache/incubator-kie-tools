@@ -10,6 +10,7 @@
   <name>KIE Workbench Common CLI Parent</name>
 
   <modules>
-    <module>kie-wb-common-project-migration</module>
+    <module>kie-wb-common-cli-tools</module>
+    <module>kie-wb-common-cli-migration-tool</module>
   </modules>
 </project>

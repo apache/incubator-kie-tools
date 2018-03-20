@@ -35,7 +35,7 @@ import org.kie.workbench.common.forms.jbpm.server.service.BPMNFormModelGenerator
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.BPMNFormGeneratorService;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.authoring.Authoring;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
+import org.kie.workbench.common.forms.services.backend.serialization.FormDefinitionSerializer;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.forms.backend.gen.FormGenerationModelProviders;
 import org.kie.workbench.common.stunner.forms.backend.service.FormDefinitionGenerator;

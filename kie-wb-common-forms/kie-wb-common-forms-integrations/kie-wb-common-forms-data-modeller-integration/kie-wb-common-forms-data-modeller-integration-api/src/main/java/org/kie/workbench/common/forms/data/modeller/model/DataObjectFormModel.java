@@ -25,10 +25,12 @@ import org.kie.workbench.common.forms.model.impl.AbstractFormModel;
 public class DataObjectFormModel extends AbstractFormModel implements
                                                            JavaFormModel {
 
+    private Source source = Source.INTERNAL;
     private String className;
 
     private DataObjectFormModel() {
         // Only for serialization purposes
+        source = Source.INTERNAL;
     }
 
     public DataObjectFormModel(@MapsTo("name") String name,
@@ -45,6 +47,14 @@ public class DataObjectFormModel extends AbstractFormModel implements
         this.className = className;
     }
 
+    public Source getSource() {
+        return source;
+    }
+
+    public void setSource(Source source) {
+        this.source = source;
+    }
+
     @Override
     public String getType() {
         return getClassName();
@@ -59,13 +69,20 @@ public class DataObjectFormModel extends AbstractFormModel implements
             return false;
         }
 
-        DataObjectFormModel formModel = (DataObjectFormModel) o;
+        DataObjectFormModel that = (DataObjectFormModel) o;
 
-        return className.equals(formModel.className);
+        if (source != that.source) {
+            return false;
+        }
+        return className != null ? className.equals(that.className) : that.className == null;
     }
 
     @Override
     public int hashCode() {
-        return className.hashCode();
+        int result = source != null ? source.hashCode() : 0;
+        result = ~~result;
+        result = 31 * result + (className != null ? className.hashCode() : 0);
+        result = ~~result;
+        return result;
     }
 }

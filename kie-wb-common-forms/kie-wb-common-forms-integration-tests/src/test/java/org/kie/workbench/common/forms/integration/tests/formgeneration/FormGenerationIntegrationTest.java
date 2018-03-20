@@ -63,11 +63,11 @@ import org.kie.workbench.common.forms.jbpm.server.service.impl.BPMNFormModelGene
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.util.formModel.FormModelPropertiesUtil;
-import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
-import org.kie.workbench.common.forms.serialization.impl.FieldSerializer;
-import org.kie.workbench.common.forms.serialization.impl.FormDefinitionSerializerImpl;
-import org.kie.workbench.common.forms.serialization.impl.FormModelSerializer;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
+import org.kie.workbench.common.forms.services.backend.serialization.FormDefinitionSerializer;
+import org.kie.workbench.common.forms.services.backend.serialization.impl.FieldSerializer;
+import org.kie.workbench.common.forms.services.backend.serialization.impl.FormDefinitionSerializerImpl;
+import org.kie.workbench.common.forms.services.backend.serialization.impl.FormModelSerializer;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.ServiceException;
 import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;

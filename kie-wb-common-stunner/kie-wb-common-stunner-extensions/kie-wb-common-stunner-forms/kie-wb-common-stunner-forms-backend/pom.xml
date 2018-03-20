@@ -168,7 +168,7 @@
 
     <dependency>
       <groupId>org.kie.workbench.forms</groupId>
-      <artifactId>kie-wb-common-forms-serialization</artifactId>
+      <artifactId>kie-wb-common-forms-backend-services</artifactId>
     </dependency>
 
     <dependency>

@@ -34,9 +34,9 @@ import org.kie.workbench.common.forms.editor.backend.indexing.query.FindFormDefi
 import org.kie.workbench.common.forms.editor.type.FormResourceTypeDefinition;
 import org.kie.workbench.common.forms.fields.test.TestMetaDataEntryManager;
 import org.kie.workbench.common.forms.model.FormModel;
-import org.kie.workbench.common.forms.serialization.impl.FieldSerializer;
-import org.kie.workbench.common.forms.serialization.impl.FormDefinitionSerializerImpl;
-import org.kie.workbench.common.forms.serialization.impl.FormModelSerializer;
+import org.kie.workbench.common.forms.services.backend.serialization.impl.FieldSerializer;
+import org.kie.workbench.common.forms.services.backend.serialization.impl.FormDefinitionSerializerImpl;
+import org.kie.workbench.common.forms.services.backend.serialization.impl.FormModelSerializer;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
