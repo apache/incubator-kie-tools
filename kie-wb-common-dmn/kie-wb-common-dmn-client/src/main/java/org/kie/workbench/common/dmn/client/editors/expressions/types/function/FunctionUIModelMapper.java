@@ -40,19 +40,22 @@ public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition>
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
     private final ListSelectorView.Presenter listSelector;
+    private final int nesting;
 
     public FunctionUIModelMapper(final GridWidget gridWidget,
                                  final Supplier<GridData> uiModel,
                                  final Supplier<Optional<FunctionDefinition>> dmnModel,
                                  final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                  final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier,
-                                 final ListSelectorView.Presenter listSelector) {
+                                 final ListSelectorView.Presenter listSelector,
+                                 final int nesting) {
         super(uiModel,
               dmnModel);
         this.gridWidget = gridWidget;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.supplementaryEditorDefinitionsSupplier = supplementaryEditorDefinitionsSupplier;
         this.listSelector = listSelector;
+        this.nesting = nesting;
     }
 
     @Override
@@ -97,7 +100,7 @@ public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition>
                                                                  function,
                                                                  expression,
                                                                  Optional.empty(),
-                                                                 true);
+                                                                 nesting + 1);
         uiModel.get().setCell(rowIndex,
                               columnIndex,
                               () -> new FunctionGridCell<>(new ExpressionCellValue(editor),

@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.event.INodeXYEvent;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
@@ -79,7 +78,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
 
     protected M uiModelMapper;
 
-    protected final Supplier<Boolean> isNested;
+    protected final int nesting;
 
     public BaseExpressionGrid(final GridCellTuple parent,
                               final HasExpression hasExpression,
@@ -92,19 +91,20 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
                               final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                               final CellEditorControlsView.Presenter cellEditorControls,
                               final TranslationService translationService,
-                              final boolean isNested) {
+                              final int nesting) {
         this(parent,
              hasExpression,
              expression,
              hasName,
              gridPanel,
              gridLayer,
+             new DMNGridData(),
              gridRenderer,
              sessionManager,
              sessionCommandManager,
              cellEditorControls,
              translationService,
-             () -> isNested);
+             nesting);
     }
 
     public BaseExpressionGrid(final GridCellTuple parent,
@@ -119,63 +119,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
                               final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                               final CellEditorControlsView.Presenter cellEditorControls,
                               final TranslationService translationService,
-                              final boolean isNested) {
-        this(parent,
-             hasExpression,
-             expression,
-             hasName,
-             gridPanel,
-             gridLayer,
-             gridData,
-             gridRenderer,
-             sessionManager,
-             sessionCommandManager,
-             cellEditorControls,
-             translationService,
-             () -> isNested);
-    }
-
-    // Constructor used for Unit Testing with a Supplier<Boolean> for isNested
-    BaseExpressionGrid(final GridCellTuple parent,
-                       final HasExpression hasExpression,
-                       final Optional<E> expression,
-                       final Optional<HasName> hasName,
-                       final DMNGridPanel gridPanel,
-                       final DMNGridLayer gridLayer,
-                       final GridRenderer gridRenderer,
-                       final SessionManager sessionManager,
-                       final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                       final CellEditorControlsView.Presenter cellEditorControls,
-                       final TranslationService translationService,
-                       final Supplier<Boolean> isNested) {
-        this(parent,
-             hasExpression,
-             expression,
-             hasName,
-             gridPanel,
-             gridLayer,
-             new DMNGridData(),
-             gridRenderer,
-             sessionManager,
-             sessionCommandManager,
-             cellEditorControls,
-             translationService,
-             isNested);
-    }
-
-    BaseExpressionGrid(final GridCellTuple parent,
-                       final HasExpression hasExpression,
-                       final Optional<E> expression,
-                       final Optional<HasName> hasName,
-                       final DMNGridPanel gridPanel,
-                       final DMNGridLayer gridLayer,
-                       final GridData gridData,
-                       final GridRenderer gridRenderer,
-                       final SessionManager sessionManager,
-                       final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                       final CellEditorControlsView.Presenter cellEditorControls,
-                       final TranslationService translationService,
-                       final Supplier<Boolean> isNested) {
+                              final int nesting) {
         super(gridData,
               gridLayer,
               gridLayer,
@@ -191,7 +135,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
         this.hasExpression = hasExpression;
         this.expression = expression;
         this.hasName = hasName;
-        this.isNested = isNested;
+        this.nesting = nesting;
 
         doInitialisation();
     }
@@ -324,7 +268,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
 
         final Predicate<Pair<Group, GridRenderer.RendererCommand>> renderHeader = (p) -> {
             final GridRenderer.RendererCommand command = p.getK2();
-            if (isNested.get()) {
+            if (isHeaderHidden()) {
                 return !(command instanceof GridRenderer.RendererHeaderCommand);
             }
             return true;
@@ -334,8 +278,11 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
         allOtherCommands.stream().filter(renderHeader).forEach(p -> addCommandToRenderQueue(p.getK1(), p.getK2()));
         gridLineCommands.stream().filter(renderHeader).forEach(p -> addCommandToRenderQueue(p.getK1(), p.getK2()));
         selectedCellsCommands.stream().filter(renderHeader).forEach(p -> addCommandToRenderQueue(p.getK1(), p.getK2()));
+
         super.executeRenderQueueCommands(isSelectionLayer);
     }
+
+    protected abstract boolean isHeaderHidden();
 
     public GridCellTuple getParentInformation() {
         return parent;
@@ -359,25 +306,33 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
         return minimumWidth;
     }
 
-    public void synchroniseViewWhenExpressionEditorChanged(final Optional<BaseExpressionGrid> oEditor) {
+    public void synchroniseView() {
         gridPanel.refreshScrollPosition();
         gridPanel.updatePanelSize();
         parent.onResize();
-
-        oEditor.ifPresent(BaseExpressionGrid::selectFirstCell);
 
         gridLayer.batch(new GridLayerRedrawManager.PrioritizedCommand(0) {
             @Override
             public void execute() {
                 gridLayer.draw();
-                oEditor.ifPresent(gridLayer::select);
             }
         });
     }
 
-    public void synchroniseView() {
-        parent.assertWidth(getWidth() + getPadding() * 2);
-        synchroniseViewWhenExpressionEditorChanged(Optional.empty());
+    public void synchroniseViewWhenExpressionEditorChanged(final BaseExpressionGrid editor) {
+        final double proposedWidth = editor.getWidth() + editor.getPadding() * 2;
+        parent.proposeContainingColumnWidth(proposedWidth);
+        gridPanel.refreshScrollPosition();
+        gridPanel.updatePanelSize();
+        parent.onResize();
+
+        gridLayer.batch(new GridLayerRedrawManager.PrioritizedCommand(0) {
+            @Override
+            public void execute() {
+                gridLayer.draw();
+                gridLayer.select(editor);
+            }
+        });
     }
 
     public void selectFirstCell() {

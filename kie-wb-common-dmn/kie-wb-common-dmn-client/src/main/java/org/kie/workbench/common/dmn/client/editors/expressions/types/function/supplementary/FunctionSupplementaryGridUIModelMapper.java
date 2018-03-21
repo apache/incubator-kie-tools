@@ -32,12 +32,14 @@ public class FunctionSupplementaryGridUIModelMapper extends ContextUIModelMapper
                                                   final Supplier<GridData> uiModel,
                                                   final Supplier<Optional<Context>> dmnModel,
                                                   final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
-                                                  final ListSelectorView.Presenter listSelector) {
+                                                  final ListSelectorView.Presenter listSelector,
+                                                  final int nesting) {
         super(gridWidget,
               uiModel,
               dmnModel,
               expressionEditorDefinitionsSupplier,
-              listSelector);
+              listSelector,
+              nesting);
     }
 
     @Override

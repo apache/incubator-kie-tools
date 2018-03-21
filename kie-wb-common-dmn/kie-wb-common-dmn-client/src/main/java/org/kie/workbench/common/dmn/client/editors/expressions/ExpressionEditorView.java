@@ -18,10 +18,10 @@ package org.kie.workbench.common.dmn.client.editors.expressions;
 import java.util.Optional;
 
 import com.google.gwt.user.client.ui.ProvidesResize;
+import com.google.gwt.user.client.ui.RequiresResize;
 import org.jboss.errai.common.client.api.IsElement;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.RequiresResize;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;

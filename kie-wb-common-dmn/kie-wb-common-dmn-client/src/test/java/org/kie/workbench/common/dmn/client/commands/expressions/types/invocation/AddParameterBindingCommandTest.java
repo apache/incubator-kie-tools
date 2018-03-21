@@ -122,7 +122,8 @@ public class AddParameterBindingCommandTest {
                                                          () -> uiModel,
                                                          () -> Optional.of(invocation),
                                                          () -> expressionEditorDefinitions,
-                                                         listSelector);
+                                                         listSelector,
+                                                         0);
 
         doReturn(ruleManager).when(handler).getRuleManager();
         doReturn(0).when(uiRowNumberColumn).getIndex();

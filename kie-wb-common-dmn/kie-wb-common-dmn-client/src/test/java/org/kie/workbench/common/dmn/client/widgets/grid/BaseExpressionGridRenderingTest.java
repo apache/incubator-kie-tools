@@ -97,7 +97,7 @@ public class BaseExpressionGridRenderingTest extends BaseExpressionGridTest {
     @Mock
     private RenderGridBoundaryCommand renderGridBoundaryCommand;
 
-    private boolean isHeaderHidden = false;
+    private boolean isHeaderHidden;
 
     @Before
     @Override
@@ -162,7 +162,7 @@ public class BaseExpressionGridRenderingTest extends BaseExpressionGridTest {
                                       sessionCommandManager,
                                       cellEditorControls,
                                       translationService,
-                                      () -> isHeaderHidden) {
+                                      0) {
             @Override
             protected BaseUIModelMapper makeUiModelMapper() {
                 return mapper;
@@ -176,6 +176,11 @@ public class BaseExpressionGridRenderingTest extends BaseExpressionGridTest {
             @Override
             protected void initialiseUiModel() {
                 //Nothing for this test
+            }
+
+            @Override
+            protected boolean isHeaderHidden() {
+                return isHeaderHidden;
             }
         };
     }

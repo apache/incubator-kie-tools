@@ -51,16 +51,20 @@ public class InvocationUIModelMapper extends BaseUIModelMapper<Invocation> {
 
     private final ListSelectorView.Presenter listSelector;
 
+    private final int nesting;
+
     public InvocationUIModelMapper(final GridWidget gridWidget,
                                    final Supplier<GridData> uiModel,
                                    final Supplier<Optional<Invocation>> dmnModel,
                                    final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
-                                   final ListSelectorView.Presenter listSelector) {
+                                   final ListSelectorView.Presenter listSelector,
+                                   final int nesting) {
         super(uiModel,
               dmnModel);
         this.gridWidget = gridWidget;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.listSelector = listSelector;
+        this.nesting = nesting;
     }
 
     @Override
@@ -95,7 +99,7 @@ public class InvocationUIModelMapper extends BaseUIModelMapper<Invocation> {
                                                                                  binding,
                                                                                  expression,
                                                                                  Optional.ofNullable(binding.getParameter()),
-                                                                                 true);
+                                                                                 nesting + 1);
                         uiModel.get().setCell(rowIndex,
                                               columnIndex,
                                               () -> new InvocationGridCell<>(new ExpressionCellValue(editor),

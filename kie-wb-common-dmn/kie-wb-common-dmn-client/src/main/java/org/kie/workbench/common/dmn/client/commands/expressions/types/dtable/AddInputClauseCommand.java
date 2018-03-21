@@ -135,5 +135,4 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
     public void updateParentInformation() {
         CommandUtils.updateParentInformation(uiModel);
     }
-
 }

@@ -31,6 +31,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelect
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 public class ExpressionContainerUIModelMapper extends BaseUIModelMapper<Expression> {
@@ -72,11 +73,14 @@ public class ExpressionContainerUIModelMapper extends BaseUIModelMapper<Expressi
                                                                               hasExpression,
                                                                               expression,
                                                                               hasName,
-                                                                              false);
+                                                                              0);
             uiModel.setCell(0,
                             0,
                             () -> new ContextGridCell<>(new ExpressionCellValue(oEditor),
                                                         listSelector));
+
+            final GridColumn<?> uiColumn = uiModel.getColumns().get(columnIndex);
+            uiColumn.setWidth(uiColumn.getMinimumWidth());
         });
     }
 

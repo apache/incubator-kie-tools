@@ -66,7 +66,8 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
                         final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                         final CellEditorControlsView.Presenter cellEditorControls,
                         final TranslationService translationService,
-                        final ListSelectorView.Presenter listSelector) {
+                        final ListSelectorView.Presenter listSelector,
+                        final int nesting) {
         super(parent,
               hasExpression,
               expression,
@@ -83,7 +84,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
               sessionCommandManager,
               cellEditorControls,
               translationService,
-              false);
+              nesting);
         this.listSelector = listSelector;
 
         this.factory = new TextAreaSingletonDOMElementFactory(gridPanel,
@@ -158,6 +159,11 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
     }
 
     @Override
+    protected boolean isHeaderHidden() {
+        return false;
+    }
+
+    @Override
     @SuppressWarnings("unused")
     public java.util.List<ListSelectorItem> getItems(final int uiRowIndex,
                                                      final int uiColumnIndex) {
@@ -221,7 +227,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
                                                                        relationColumn,
                                                                        index,
                                                                        uiModelMapper,
-                                                                       this::synchroniseView));
+                                                                       () -> synchroniseViewWhenExpressionEditorChanged(this)));
         });
     }
 
@@ -232,7 +238,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
                                                                           model,
                                                                           index,
                                                                           uiModelMapper,
-                                                                          this::synchroniseView));
+                                                                          () -> synchroniseViewWhenExpressionEditorChanged(this)));
         });
     }
 

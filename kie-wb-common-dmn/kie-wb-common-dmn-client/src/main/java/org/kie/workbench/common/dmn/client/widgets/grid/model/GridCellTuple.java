@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.model;
 
+import com.google.gwt.user.client.ui.RequiresResize;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
@@ -53,8 +54,10 @@ public class GridCellTuple implements RequiresResize {
         return gridWidget;
     }
 
-    public void assertWidth(final double width) {
-        gridWidget.getModel().getColumns().get(columnIndex).setWidth(width);
+    public void proposeContainingColumnWidth(final double proposedWidth) {
+        final GridColumn<?> parentColumn = gridWidget.getModel().getColumns().get(columnIndex);
+        final double requiredWidth = Math.max(proposedWidth, parentColumn.getWidth());
+        parentColumn.setWidth(requiredWidth);
     }
 
     @Override

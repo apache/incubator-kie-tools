@@ -59,19 +59,19 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
                                  final CellEditorControlsView.Presenter cellEditorControls,
                                  final TranslationService translationService,
                                  final ListSelectorView.Presenter listSelector,
-                                 final boolean isNested) {
+                                 final int nesting) {
         super(parent,
               hasExpression,
               expression,
               hasName,
               gridPanel,
               gridLayer,
-              new LiteralExpressionGridRenderer(isNested),
+              new LiteralExpressionGridRenderer(nesting > 0),
               sessionManager,
               sessionCommandManager,
               cellEditorControls,
               translationService,
-              isNested);
+              nesting);
         this.listSelector = listSelector;
 
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
@@ -124,6 +124,11 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
             uiModelMapper.fromDMNModel(0,
                                        0);
         });
+    }
+
+    @Override
+    protected boolean isHeaderHidden() {
+        return nesting > 0;
     }
 
     @Override

@@ -116,7 +116,7 @@ public class PMMLFunctionEditorDefinition extends BaseEditorDefinition<Context> 
                                                   final HasExpression hasExpression,
                                                   final Optional<Context> expression,
                                                   final Optional<HasName> hasName,
-                                                  final boolean isNested) {
+                                                  final int nesting) {
         return Optional.of(new FunctionSupplementaryGrid(parent,
                                                          hasExpression,
                                                          expression,
@@ -128,6 +128,7 @@ public class PMMLFunctionEditorDefinition extends BaseEditorDefinition<Context> 
                                                          expressionEditorDefinitionsSupplier,
                                                          cellEditorControls,
                                                          translationService,
-                                                         listSelector));
+                                                         listSelector,
+                                                         nesting));
     }
 }

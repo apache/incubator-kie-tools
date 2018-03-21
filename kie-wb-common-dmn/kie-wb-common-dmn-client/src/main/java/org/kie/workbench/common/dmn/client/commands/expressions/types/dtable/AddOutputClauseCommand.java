@@ -136,5 +136,4 @@ public class AddOutputClauseCommand extends AbstractCanvasGraphCommand implement
     public void updateParentInformation() {
         CommandUtils.updateParentInformation(uiModel);
     }
-
 }

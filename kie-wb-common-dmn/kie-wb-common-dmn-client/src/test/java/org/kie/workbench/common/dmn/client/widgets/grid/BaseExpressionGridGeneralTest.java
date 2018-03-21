@@ -52,7 +52,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
@@ -78,7 +77,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
                                       sessionCommandManager,
                                       cellEditorControls,
                                       translationService,
-                                      false) {
+                                      0) {
             @Override
             protected BaseUIModelMapper makeUiModelMapper() {
                 return mapper;
@@ -92,6 +91,11 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
             @Override
             protected void initialiseUiModel() {
                 //Nothing for this test
+            }
+
+            @Override
+            protected boolean isHeaderHidden() {
+                return false;
             }
         };
     }
@@ -284,12 +288,11 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     public void synchroniseViewWhenExpressionEditorChangedWithEditor() {
         final BaseExpressionGrid editor = mock(BaseExpressionGrid.class);
 
-        grid.synchroniseViewWhenExpressionEditorChanged(Optional.of(editor));
+        grid.synchroniseViewWhenExpressionEditorChanged(editor);
 
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
         verify(parentCell).onResize();
-        verify(editor).selectFirstCell();
         verify(gridLayer).batch(redrawCommandCaptor.capture());
 
         final GridLayerRedrawManager.PrioritizedCommand redrawCommand = redrawCommandCaptor.getValue();
@@ -300,32 +303,11 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     }
 
     @Test
-    public void synchroniseViewWhenExpressionEditorChangedWithoutEditor() {
-        grid.synchroniseViewWhenExpressionEditorChanged(Optional.empty());
-
-        verify(gridPanel).refreshScrollPosition();
-        verify(gridPanel).updatePanelSize();
-        verify(parentCell).onResize();
-        verify(gridLayer).batch(redrawCommandCaptor.capture());
-
-        final GridLayerRedrawManager.PrioritizedCommand redrawCommand = redrawCommandCaptor.getValue();
-        redrawCommand.execute();
-
-        verify(gridLayer).draw();
-        verify(gridLayer, never()).select(any(GridWidget.class));
-    }
-
-    @Test
     public void synchroniseView() {
-        final double mockWidth = 20.0;
-        final double mockPadding = 7.0;
-        when(grid.getWidth()).thenReturn(mockWidth);
-        when(grid.getPadding()).thenReturn(mockPadding);
         grid.synchroniseView();
 
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
-        verify(parentCell).assertWidth(eq(mockWidth + mockPadding * 2));
         verify(parentCell).onResize();
         verify(gridLayer).batch(redrawCommandCaptor.capture());
 

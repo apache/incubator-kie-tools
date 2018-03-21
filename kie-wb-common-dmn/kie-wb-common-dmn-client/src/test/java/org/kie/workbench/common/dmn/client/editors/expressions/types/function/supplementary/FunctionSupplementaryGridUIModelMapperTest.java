@@ -35,7 +35,8 @@ public class FunctionSupplementaryGridUIModelMapperTest extends BaseContextUIMod
                                                           () -> uiModel,
                                                           () -> Optional.of(context),
                                                           expressionEditorDefinitionsSupplier,
-                                                          listSelector);
+                                                          listSelector,
+                                                          0);
     }
 
     @Test

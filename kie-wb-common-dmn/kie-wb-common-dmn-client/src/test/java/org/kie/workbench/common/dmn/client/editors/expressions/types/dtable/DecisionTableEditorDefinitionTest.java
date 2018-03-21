@@ -150,7 +150,7 @@ public class DecisionTableEditorDefinitionTest {
                                                                           hasExpression,
                                                                           expression,
                                                                           hasName,
-                                                                          false);
+                                                                          0);
 
         assertThat(oEditor).isPresent();
 

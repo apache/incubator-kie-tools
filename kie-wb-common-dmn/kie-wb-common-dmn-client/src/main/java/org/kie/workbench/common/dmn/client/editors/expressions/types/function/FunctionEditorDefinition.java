@@ -103,7 +103,7 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
                                                   final HasExpression hasExpression,
                                                   final Optional<FunctionDefinition> expression,
                                                   final Optional<HasName> hasName,
-                                                  final boolean isNested) {
+                                                  final int nesting) {
         return Optional.of(new FunctionGrid(parent,
                                             hasExpression,
                                             expression,
@@ -118,6 +118,6 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
                                             translationService,
                                             listSelector,
                                             parametersEditor,
-                                            isNested));
+                                            nesting));
     }
 }

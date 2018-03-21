@@ -95,7 +95,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation> {
                                                   final HasExpression hasExpression,
                                                   final Optional<Relation> expression,
                                                   final Optional<HasName> hasName,
-                                                  final boolean isNested) {
+                                                  final int nesting) {
         return Optional.of(new RelationGrid(parent,
                                             hasExpression,
                                             expression,
@@ -106,6 +106,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation> {
                                             sessionCommandManager,
                                             cellEditorControls,
                                             translationService,
-                                            listSelector));
+                                            listSelector,
+                                            nesting));
     }
 }

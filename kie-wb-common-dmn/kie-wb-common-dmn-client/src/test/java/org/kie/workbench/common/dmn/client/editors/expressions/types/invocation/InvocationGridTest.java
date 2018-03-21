@@ -68,9 +68,10 @@ import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -161,21 +162,27 @@ public class InvocationGridTest {
 
     private LiteralExpression literalExpression = new LiteralExpression();
 
+    private Optional<Invocation> expression = Optional.empty();
+
+    private Optional<HasName> hasName = Optional.empty();
+
+    private InvocationEditorDefinition definition;
+
     private InvocationGrid grid;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        final InvocationEditorDefinition definition = new InvocationEditorDefinition(gridPanel,
-                                                                                     gridLayer,
-                                                                                     sessionManager,
-                                                                                     sessionCommandManager,
-                                                                                     expressionEditorDefinitionsSupplier,
-                                                                                     cellEditorControls,
-                                                                                     translationService,
-                                                                                     listSelector);
+        definition = new InvocationEditorDefinition(gridPanel,
+                                                    gridLayer,
+                                                    sessionManager,
+                                                    sessionCommandManager,
+                                                    expressionEditorDefinitionsSupplier,
+                                                    cellEditorControls,
+                                                    translationService,
+                                                    listSelector);
 
-        final Optional<Invocation> expression = definition.getModelClass();
+        expression = definition.getModelClass();
         expression.ifPresent(invocation -> ((LiteralExpression) invocation.getExpression()).setText("invocation-expression"));
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add((ExpressionEditorDefinition) definition);
@@ -188,7 +195,7 @@ public class InvocationGridTest {
                                                                                                          any(HasExpression.class),
                                                                                                          any(Optional.class),
                                                                                                          any(Optional.class),
-                                                                                                         anyBoolean());
+                                                                                                         anyInt());
 
         doReturn(parent).when(undefinedExpressionEditor).getParentInformation();
         doReturn(Optional.empty()).when(undefinedExpressionEditorDefinition).getModelClass();
@@ -196,7 +203,7 @@ public class InvocationGridTest {
                                                                                                              any(HasExpression.class),
                                                                                                              any(Optional.class),
                                                                                                              any(Optional.class),
-                                                                                                             anyBoolean());
+                                                                                                             anyInt());
 
         doReturn(session).when(sessionManager).getCurrentSession();
         doReturn(handler).when(session).getCanvasHandler();
@@ -204,19 +211,23 @@ public class InvocationGridTest {
 
         final Decision decision = new Decision();
         decision.setName(new Name("name"));
-        final Optional<HasName> hasName = Optional.of(decision);
-
-        this.grid = spy((InvocationGrid) definition.getEditor(parent,
-                                                              hasExpression,
-                                                              expression,
-                                                              hasName,
-                                                              false).get());
+        hasName = Optional.of(decision);
 
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
     }
 
+    private void setupGrid(final int nesting) {
+        this.grid = spy((InvocationGrid) definition.getEditor(parent,
+                                                              hasExpression,
+                                                              expression,
+                                                              hasName,
+                                                              nesting).get());
+    }
+
     @Test
     public void testInitialSetupFromDefinition() {
+        setupGrid(0);
+
         final GridData uiModel = grid.getModel();
         assertTrue(uiModel instanceof InvocationGridData);
 
@@ -240,7 +251,23 @@ public class InvocationGridTest {
     }
 
     @Test
+    public void testHeaderVisibilityWhenNested() {
+        setupGrid(1);
+
+        assertFalse(grid.isHeaderHidden());
+    }
+
+    @Test
+    public void testHeaderVisibilityWhenNotNested() {
+        setupGrid(0);
+
+        assertFalse(grid.isHeaderHidden());
+    }
+
+    @Test
     public void testNameColumnMetaData() {
+        setupGrid(0);
+
         final GridColumn<?> column = grid.getModel().getColumns().get(InvocationUIModelMapper.BINDING_PARAMETER_COLUMN_INDEX);
         final List<GridColumn.HeaderMetaData> header = column.getHeaderMetaData();
 
@@ -260,6 +287,8 @@ public class InvocationGridTest {
 
     @Test
     public void testExpressionColumnMetaData() {
+        setupGrid(0);
+
         final GridColumn<?> column = grid.getModel().getColumns().get(InvocationUIModelMapper.BINDING_EXPRESSION_COLUMN_INDEX);
         final List<GridColumn.HeaderMetaData> header = column.getHeaderMetaData();
 
@@ -279,22 +308,30 @@ public class InvocationGridTest {
 
     @Test
     public void testGetItemsRowNumberColumn() {
+        setupGrid(0);
+
         assertDefaultListItems(grid.getItems(0, 0));
     }
 
     @Test
     public void testOnItemSelectedNameColumn() {
+        setupGrid(0);
+
         assertDefaultListItems(grid.getItems(0, 1));
     }
 
     @Test
     public void testOnItemSelectedExpressionColumnUndefinedExpressionType() {
+        setupGrid(0);
+
         //The default model from ContextEditorDefinition has an undefined expression at (0, 2)
         assertDefaultListItems(grid.getItems(0, 2));
     }
 
     @Test
     public void testOnItemSelectedExpressionColumnDefinedExpressionType() {
+        setupGrid(0);
+
         //Set an editor for expression at (0, 2)
         final BaseExpressionGrid editor = mock(BaseExpressionGrid.class);
         grid.getModel().setCellValue(0, 2, new ExpressionCellValue(Optional.of(editor)));
@@ -333,6 +370,8 @@ public class InvocationGridTest {
 
     @Test
     public void testOnItemSelected() {
+        setupGrid(0);
+
         final Command command = mock(Command.class);
         final HasListSelectorControl.ListSelectorTextItem listSelectorItem = mock(HasListSelectorControl.ListSelectorTextItem.class);
         when(listSelectorItem.getCommand()).thenReturn(command);
@@ -344,6 +383,8 @@ public class InvocationGridTest {
 
     @Test
     public void testOnItemSelectedInsertParameterAbove() {
+        setupGrid(0);
+
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_PARAMETER_ABOVE);
 
@@ -355,6 +396,8 @@ public class InvocationGridTest {
 
     @Test
     public void testOnItemSelectedInsertParameterBelow() {
+        setupGrid(0);
+
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_PARAMETER_BELOW);
 
@@ -366,6 +409,8 @@ public class InvocationGridTest {
 
     @Test
     public void testOnItemSelectedDeleteParameter() {
+        setupGrid(0);
+
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(DELETE_PARAMETER);
 
@@ -377,6 +422,8 @@ public class InvocationGridTest {
 
     @Test
     public void testOnItemSelectedDeleteParameterEnabled() {
+        setupGrid(0);
+
         //Grid has one row from Invocation model. It cannot be deleted.
         assertDeleteParameterEnabled(0, false);
 
@@ -394,6 +441,8 @@ public class InvocationGridTest {
 
     @Test
     public void testAddParameterBinding() {
+        setupGrid(0);
+
         grid.addParameterBinding(0);
 
         verify(sessionCommandManager).execute(eq(handler),
@@ -415,6 +464,8 @@ public class InvocationGridTest {
 
     @Test
     public void testDeleteParameterBinding() {
+        setupGrid(0);
+
         grid.deleteParameterBinding(0);
 
         verify(sessionCommandManager).execute(eq(handler),
@@ -436,6 +487,8 @@ public class InvocationGridTest {
 
     @Test
     public void testClearExpressionType() {
+        setupGrid(0);
+
         grid.clearExpressionType(0);
 
         verify(sessionCommandManager).execute(eq(handler),

@@ -22,7 +22,6 @@ import java.util.Optional;
 
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.RequiresResize;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -32,8 +31,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResource
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridWidgetRegistry;
 
-public class ExpressionEditorColumn extends DMNGridColumn<GridWidget, Optional<BaseExpressionGrid>> implements RequiresResize,
-                                                                                                               HasDOMElementResources {
+public class ExpressionEditorColumn extends DMNGridColumn<GridWidget, Optional<BaseExpressionGrid>> implements HasDOMElementResources {
 
     public ExpressionEditorColumn(final GridWidgetRegistry registry,
                                   final HeaderMetaData headerMetaData,
@@ -128,41 +126,6 @@ public class ExpressionEditorColumn extends DMNGridColumn<GridWidget, Optional<B
                 ((DMNGridColumn) lastColumn).setWidthInternal(lastColumnWidth + targetGridWidth);
             }
         }
-    }
-
-    @Override
-    public void onResize() {
-        final double currentColumnWidth = getWidth();
-        final double requiredColumnWidth = getRequiredColumnWidth();
-        if (currentColumnWidth != requiredColumnWidth) {
-            setWidth(requiredColumnWidth);
-        }
-    }
-
-    private double getRequiredColumnWidth() {
-        double requiredColumnWidth = DEFAULT_WIDTH;
-        final GridData model = gridWidget.getModel();
-        final int columnIndex = getLogicalColumnIndex(model);
-
-        if (columnIndex != -1) {
-            for (GridRow row : model.getRows()) {
-                final GridCell<?> cell = row.getCells().get(columnIndex);
-                if (cell != null) {
-                    final GridCellValue<?> value = cell.getValue();
-                    if (value instanceof ExpressionCellValue) {
-                        final ExpressionCellValue ecv = (ExpressionCellValue) value;
-                        final Optional<BaseExpressionGrid> editor = ecv.getValue();
-                        if (editor.isPresent()) {
-                            final BaseExpressionGrid beg = editor.get();
-                            requiredColumnWidth = Math.max(requiredColumnWidth,
-                                                           beg.getWidth() + beg.getPadding() * 2);
-                        }
-                    }
-                }
-            }
-        }
-
-        return requiredColumnWidth;
     }
 
     /*

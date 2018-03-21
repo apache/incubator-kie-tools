@@ -45,7 +45,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doReturn;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -111,7 +111,7 @@ public class FunctionUIModelMapperTest {
                                                                                                          any(HasExpression.class),
                                                                                                          any(Optional.class),
                                                                                                          any(Optional.class),
-                                                                                                         anyBoolean());
+                                                                                                         anyInt());
 
         //Supplementary Editor definitions
         final ExpressionEditorDefinitions supplementaryEditorDefinitions = new ExpressionEditorDefinitions();
@@ -124,7 +124,7 @@ public class FunctionUIModelMapperTest {
                                                                                                  any(HasExpression.class),
                                                                                                  any(Optional.class),
                                                                                                  any(Optional.class),
-                                                                                                 anyBoolean());
+                                                                                                 anyInt());
 
         this.function = new FunctionDefinition();
 
@@ -133,7 +133,8 @@ public class FunctionUIModelMapperTest {
                                                 () -> Optional.of(function),
                                                 expressionEditorDefinitionsSupplier,
                                                 supplementaryEditorDefinitionsSupplier,
-                                                listSelector);
+                                                listSelector,
+                                                0);
         this.cellValueSupplier = Optional::empty;
     }
 

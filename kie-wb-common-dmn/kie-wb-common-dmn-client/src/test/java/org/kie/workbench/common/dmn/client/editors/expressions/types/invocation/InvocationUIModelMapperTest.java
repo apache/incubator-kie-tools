@@ -49,7 +49,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doReturn;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -113,7 +113,7 @@ public class InvocationUIModelMapperTest {
                                                                                                          any(HasExpression.class),
                                                                                                          any(Optional.class),
                                                                                                          any(Optional.class),
-                                                                                                         anyBoolean());
+                                                                                                         anyInt());
 
         final LiteralExpression invocationExpression = new LiteralExpression();
         invocationExpression.setText("invocation-expression");
@@ -133,7 +133,8 @@ public class InvocationUIModelMapperTest {
                                                   () -> uiModel,
                                                   () -> Optional.of(invocation),
                                                   expressionEditorDefinitionsSupplier,
-                                                  listSelector);
+                                                  listSelector,
+                                                  0);
         this.cellValueSupplier = Optional::empty;
     }
 

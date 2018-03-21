@@ -63,7 +63,8 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Conte
                                      final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                      final CellEditorControlsView.Presenter cellEditorControls,
                                      final TranslationService translationService,
-                                     final ListSelectorView.Presenter listSelector) {
+                                     final ListSelectorView.Presenter listSelector,
+                                     final int nesting) {
         super(parent,
               hasExpression,
               expression,
@@ -80,7 +81,7 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Conte
               sessionCommandManager,
               cellEditorControls,
               translationService,
-              true);
+              nesting);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.listSelector = listSelector;
 
@@ -101,7 +102,8 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Conte
                                                           this::getModel,
                                                           () -> expression,
                                                           expressionEditorDefinitionsSupplier,
-                                                          listSelector);
+                                                          listSelector,
+                                                          nesting);
     }
 
     @Override
@@ -132,6 +134,11 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Conte
                                            2);
             });
         });
+    }
+
+    @Override
+    protected boolean isHeaderHidden() {
+        return true;
     }
 
     @Override

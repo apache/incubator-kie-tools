@@ -107,7 +107,8 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                              final CellEditorControlsView.Presenter cellEditorControls,
                              final TranslationService translationService,
                              final ListSelectorView.Presenter listSelector,
-                             final HitPolicyEditorView.Presenter hitPolicyEditor) {
+                             final HitPolicyEditorView.Presenter hitPolicyEditor,
+                             final int nesting) {
         super(parent,
               hasExpression,
               expression,
@@ -124,7 +125,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
               sessionCommandManager,
               cellEditorControls,
               translationService,
-              false);
+              nesting);
         this.listSelector = listSelector;
         this.hitPolicyEditor = hitPolicyEditor;
 
@@ -257,6 +258,11 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
     }
 
     @Override
+    protected boolean isHeaderHidden() {
+        return false;
+    }
+
+    @Override
     @SuppressWarnings("unused")
     public java.util.List<ListSelectorItem> getItems(final int uiRowIndex,
                                                      final int uiColumnIndex) {
@@ -367,7 +373,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                     makeInputClauseColumn(clause),
                                                                     index,
                                                                     uiModelMapper,
-                                                                    this::synchroniseView));
+                                                                    () -> synchroniseViewWhenExpressionEditorChanged(this)));
         });
     }
 
@@ -378,7 +384,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                        model,
                                                                        index,
                                                                        uiModelMapper,
-                                                                       this::synchroniseView));
+                                                                       () -> synchroniseViewWhenExpressionEditorChanged(this)));
         });
     }
 
@@ -394,7 +400,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                      makeOutputClauseColumn(clause),
                                                                      index,
                                                                      uiModelMapper,
-                                                                     this::synchroniseView));
+                                                                     () -> synchroniseViewWhenExpressionEditorChanged(this)));
         });
     }
 
@@ -405,7 +411,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                         model,
                                                                         index,
                                                                         uiModelMapper,
-                                                                        this::synchroniseView));
+                                                                        () -> synchroniseViewWhenExpressionEditorChanged(this)));
         });
     }
 

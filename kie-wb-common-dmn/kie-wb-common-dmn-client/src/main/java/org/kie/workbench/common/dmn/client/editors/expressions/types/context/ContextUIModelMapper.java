@@ -46,16 +46,20 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
 
     private final ListSelectorView.Presenter listSelector;
 
+    private final int nesting;
+
     public ContextUIModelMapper(final GridWidget gridWidget,
                                 final Supplier<GridData> uiModel,
                                 final Supplier<Optional<Context>> dmnModel,
                                 final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
-                                final ListSelectorView.Presenter listSelector) {
+                                final ListSelectorView.Presenter listSelector,
+                                final int nesting) {
         super(uiModel,
               dmnModel);
         this.gridWidget = gridWidget;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.listSelector = listSelector;
+        this.nesting = nesting;
     }
 
     @Override
@@ -104,7 +108,7 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                                                                                  ce,
                                                                                  expression,
                                                                                  Optional.ofNullable(ce.getVariable()),
-                                                                                 true);
+                                                                                 nesting + 1);
                         if (!isLastRow) {
                             uiModel.get().setCell(rowIndex,
                                                   columnIndex,

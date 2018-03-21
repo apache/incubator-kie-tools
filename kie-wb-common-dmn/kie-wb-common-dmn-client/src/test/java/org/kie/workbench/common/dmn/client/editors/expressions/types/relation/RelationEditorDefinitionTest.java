@@ -121,7 +121,7 @@ public class RelationEditorDefinitionTest {
                                                                           hasExpression,
                                                                           expression,
                                                                           hasName,
-                                                                          false);
+                                                                          0);
 
         assertThat(oEditor).isPresent();
 

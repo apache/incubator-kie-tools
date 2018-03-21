@@ -65,11 +65,12 @@ import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -157,23 +158,28 @@ public class ContextGridTest {
 
     private LiteralExpression literalExpression = new LiteralExpression();
 
+    private Optional<Context> expression = Optional.empty();
+
     private Optional<HasName> hasName = Optional.empty();
+
+    private ContextEditorDefinition definition;
 
     private ContextGrid grid;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        final ContextEditorDefinition definition = new ContextEditorDefinition(gridPanel,
-                                                                               gridLayer,
-                                                                               sessionManager,
-                                                                               sessionCommandManager,
-                                                                               expressionEditorDefinitionsSupplier,
-                                                                               cellEditorControls,
-                                                                               translationService,
-                                                                               listSelector);
+        definition = new ContextEditorDefinition(gridPanel,
+                                                 gridLayer,
+                                                 sessionManager,
+                                                 sessionCommandManager,
+                                                 expressionEditorDefinitionsSupplier,
+                                                 cellEditorControls,
+                                                 translationService,
+                                                 listSelector);
 
-        final Optional<Context> expression = definition.getModelClass();
+        expression = definition.getModelClass();
+
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add((ExpressionEditorDefinition) definition);
         expressionEditorDefinitions.add(literalExpressionEditorDefinition);
@@ -186,7 +192,7 @@ public class ContextGridTest {
                                                                                                          any(HasExpression.class),
                                                                                                          any(Optional.class),
                                                                                                          any(Optional.class),
-                                                                                                         anyBoolean());
+                                                                                                         anyInt());
 
         doReturn(parent).when(undefinedExpressionEditor).getParentInformation();
         doReturn(Optional.empty()).when(undefinedExpressionEditorDefinition).getModelClass();
@@ -194,22 +200,26 @@ public class ContextGridTest {
                                                                                                              any(HasExpression.class),
                                                                                                              any(Optional.class),
                                                                                                              any(Optional.class),
-                                                                                                             anyBoolean());
+                                                                                                             anyInt());
 
         doReturn(session).when(sessionManager).getCurrentSession();
         doReturn(handler).when(session).getCanvasHandler();
 
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
+    }
+
+    private void setupGrid(final int nesting) {
         this.grid = spy((ContextGrid) definition.getEditor(parent,
                                                            hasExpression,
                                                            expression,
                                                            hasName,
-                                                           false).get());
-
-        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
+                                                           nesting).get());
     }
 
     @Test
     public void testInitialSetupFromDefinition() {
+        setupGrid(0);
+
         final GridData uiModel = grid.getModel();
         assertTrue(uiModel instanceof ContextGridData);
 
@@ -244,7 +254,23 @@ public class ContextGridTest {
     }
 
     @Test
+    public void testHeaderVisibilityWhenNested() {
+        setupGrid(1);
+
+        assertTrue(grid.isHeaderHidden());
+    }
+
+    @Test
+    public void testHeaderVisibilityWhenNotNested() {
+        setupGrid(0);
+
+        assertFalse(grid.isHeaderHidden());
+    }
+
+    @Test
     public void testRowDragPermittedNotPendingRowMove() {
+        setupGrid(0);
+
         doReturn(GridWidgetHandlersOperation.NONE).when(dndHandlersState).getOperation();
         assertTrue(grid.isRowDragPermitted(dndHandlersState));
     }
@@ -263,6 +289,8 @@ public class ContextGridTest {
 
     private void assertRowDragPermitted(final int uiModelRowIndex,
                                         final boolean isPermitted) {
+        setupGrid(0);
+
         final List<GridRow> rows = new ArrayList<>();
         rows.add(grid.getModel().getRow(uiModelRowIndex));
 
@@ -275,22 +303,30 @@ public class ContextGridTest {
 
     @Test
     public void testGetItemsRowNumberColumn() {
+        setupGrid(0);
+
         assertDefaultListItems(grid.getItems(0, 0));
     }
 
     @Test
     public void testOnItemSelectedNameColumn() {
+        setupGrid(0);
+
         assertDefaultListItems(grid.getItems(0, 1));
     }
 
     @Test
     public void testOnItemSelectedExpressionColumnUndefinedExpressionType() {
+        setupGrid(0);
+
         //The default model from ContextEditorDefinition has an undefined expression at (0, 2)
         assertDefaultListItems(grid.getItems(0, 2));
     }
 
     @Test
     public void testOnItemSelectedExpressionColumnDefinedExpressionType() {
+        setupGrid(0);
+
         //Set an editor for expression at (0, 2)
         final BaseExpressionGrid editor = mock(BaseExpressionGrid.class);
         grid.getModel().setCellValue(0, 2, new ExpressionCellValue(Optional.of(editor)));
@@ -329,6 +365,8 @@ public class ContextGridTest {
 
     @Test
     public void testOnItemSelected() {
+        setupGrid(0);
+
         final Command command = mock(Command.class);
         final HasListSelectorControl.ListSelectorTextItem listSelectorItem = mock(HasListSelectorControl.ListSelectorTextItem.class);
         when(listSelectorItem.getCommand()).thenReturn(command);
@@ -340,6 +378,8 @@ public class ContextGridTest {
 
     @Test
     public void testOnItemSelectedInsertRowAbove() {
+        setupGrid(0);
+
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_ROW_ABOVE);
 
@@ -351,6 +391,8 @@ public class ContextGridTest {
 
     @Test
     public void testOnItemSelectedInsertRowBelow() {
+        setupGrid(0);
+
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_ROW_BELOW);
 
@@ -362,6 +404,8 @@ public class ContextGridTest {
 
     @Test
     public void testOnItemSelectedDeleteRow() {
+        setupGrid(0);
+
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(DELETE_ROW);
 
@@ -373,6 +417,8 @@ public class ContextGridTest {
 
     @Test
     public void testOnItemSelectedDeleteRowEnabled() {
+        setupGrid(0);
+
         //Grid has two rows from Context model. Neither can be deleted.
         assertDeleteRowEnabled(0, false);
         assertLastRowHasNoListItems();
@@ -397,6 +443,8 @@ public class ContextGridTest {
 
     @Test
     public void testAddContextEntry() {
+        setupGrid(0);
+
         grid.addContextEntry(0);
 
         verify(sessionCommandManager).execute(eq(handler),
@@ -418,6 +466,8 @@ public class ContextGridTest {
 
     @Test
     public void testDeleteContextEntry() {
+        setupGrid(0);
+
         grid.deleteContextEntry(0);
 
         verify(sessionCommandManager).execute(eq(handler),
@@ -439,6 +489,8 @@ public class ContextGridTest {
 
     @Test
     public void testClearExpressionType() {
+        setupGrid(0);
+
         grid.clearExpressionType(0);
 
         verify(sessionCommandManager).execute(eq(handler),

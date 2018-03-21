@@ -69,7 +69,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
                                    final CellEditorControlsView.Presenter cellEditorControls,
                                    final TranslationService translationService,
                                    final ListSelectorView.Presenter listSelector,
-                                   final boolean isNested) {
+                                   final int nesting) {
         super(parent,
               hasExpression,
               expression,
@@ -81,7 +81,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
               sessionCommandManager,
               cellEditorControls,
               translationService,
-              isNested);
+              nesting);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.listSelector = listSelector;
 
@@ -125,6 +125,11 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
         model.appendRow(new DMNGridRow());
         uiModelMapper.fromDMNModel(0,
                                    0);
+    }
+
+    @Override
+    protected boolean isHeaderHidden() {
+        return true;
     }
 
     @Override
@@ -180,7 +185,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
                                                                      hasExpression,
                                                                      expression,
                                                                      hasName,
-                                                                     isNested.get());
+                                                                     nesting);
             final GridCellValueTuple gcv = new GridCellValueTuple<>(parent.getRowIndex(),
                                                                     parent.getColumnIndex(),
                                                                     parent.getGridWidget(),
@@ -189,7 +194,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new SetCellValueCommand(gcv,
                                                                   () -> uiModelMapper,
-                                                                  () -> synchroniseViewWhenExpressionEditorChanged(editor)));
+                                                                  () -> synchroniseViewWhenExpressionEditorChanged(editor.get())));
         });
     }
 }

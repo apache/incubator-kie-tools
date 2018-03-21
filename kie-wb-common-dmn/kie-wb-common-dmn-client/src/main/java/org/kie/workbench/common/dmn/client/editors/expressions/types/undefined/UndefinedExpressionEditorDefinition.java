@@ -91,7 +91,7 @@ public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Ex
                                                   final HasExpression hasExpression,
                                                   final Optional<Expression> expression,
                                                   final Optional<HasName> hasName,
-                                                  final boolean isNested) {
+                                                  final int nesting) {
         return Optional.of(new UndefinedExpressionGrid(parent,
                                                        hasExpression,
                                                        expression,
@@ -104,6 +104,6 @@ public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Ex
                                                        cellEditorControls,
                                                        translationService,
                                                        listSelector,
-                                                       isNested));
+                                                       nesting));
     }
 }

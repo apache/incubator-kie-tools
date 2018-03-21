@@ -30,8 +30,6 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -99,20 +97,6 @@ public class DMNGridDataTest {
     }
 
     @Test
-    public void testSetCellResizableColumn() {
-        uiModel.setCell(0, 2, () -> uiCell);
-
-        verify(resizableUiColumn).onResize();
-    }
-
-    @Test
-    public void testSetCellNonResizableColumn() {
-        uiModel.setCell(0, 1, () -> uiCell);
-
-        verify(resizableUiColumn, never()).onResize();
-    }
-
-    @Test
     public void testSetCellValue() {
         final GridData.Range r = uiModel.setCellValue(0, 1, new BaseGridCellValue<>("value"));
 
@@ -122,39 +106,11 @@ public class DMNGridDataTest {
     }
 
     @Test
-    public void testSetCellValueResizableColumn() {
-        uiModel.setCellValue(0, 2, new BaseGridCellValue<>("value"));
-
-        verify(resizableUiColumn).onResize();
-    }
-
-    @Test
-    public void testSetCellValueNonResizableColumn() {
-        uiModel.setCellValue(0, 1, new BaseGridCellValue<>("value"));
-
-        verify(resizableUiColumn, never()).onResize();
-    }
-
-    @Test
     public void testDeleteCell() {
         final GridData.Range r = uiModel.deleteCell(0, 1);
 
         assertThat(r.getMinRowIndex()).isEqualTo(0);
         assertThat(r.getMaxRowIndex()).isEqualTo(0);
         assertThat(uiModel.getCell(0, 1)).isNull();
-    }
-
-    @Test
-    public void testDeleteCellResizableColumn() {
-        uiModel.deleteCell(0, 2);
-
-        verify(resizableUiColumn).onResize();
-    }
-
-    @Test
-    public void testDeleteCellNonResizableColumn() {
-        uiModel.deleteCell(0, 1);
-
-        verify(resizableUiColumn, never()).onResize();
     }
 }

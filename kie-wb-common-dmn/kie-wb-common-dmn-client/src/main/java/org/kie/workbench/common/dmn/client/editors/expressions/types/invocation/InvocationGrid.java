@@ -76,7 +76,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
                           final CellEditorControlsView.Presenter cellEditorControls,
                           final TranslationService translationService,
                           final ListSelectorView.Presenter listSelector,
-                          final boolean isNested) {
+                          final int nesting) {
         super(parent,
               hasExpression,
               expression,
@@ -88,12 +88,12 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
                                      sessionCommandManager,
                                      expression,
                                      gridLayer::batch),
-              new InvocationGridRenderer(isNested),
+              new InvocationGridRenderer(nesting > 0),
               sessionManager,
               sessionCommandManager,
               cellEditorControls,
               translationService,
-              false);
+              nesting);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.listSelector = listSelector;
 
@@ -114,7 +114,8 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
                                            this::getModel,
                                            () -> expression,
                                            expressionEditorDefinitionsSupplier,
-                                           listSelector);
+                                           listSelector,
+                                           nesting);
     }
 
     @Override
@@ -177,6 +178,11 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
                                            InvocationUIModelMapper.BINDING_EXPRESSION_COLUMN_INDEX);
             });
         });
+    }
+
+    @Override
+    protected boolean isHeaderHidden() {
+        return false;
     }
 
     @Override
@@ -249,7 +255,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
                                                                          new DMNGridRow(),
                                                                          index,
                                                                          uiModelMapper,
-                                                                         () -> synchroniseViewWhenExpressionEditorChanged(Optional.empty())));
+                                                                         this::synchroniseView));
         });
     }
 
@@ -259,7 +265,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
                                           new DeleteParameterBindingCommand(invocation,
                                                                             model,
                                                                             index,
-                                                                            () -> synchroniseViewWhenExpressionEditorChanged(Optional.empty())));
+                                                                            this::synchroniseView));
         });
     }
 
@@ -272,6 +278,6 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
                                       new ClearExpressionTypeCommand(gc,
                                                                      hasExpression,
                                                                      uiModelMapper,
-                                                                     () -> synchroniseViewWhenExpressionEditorChanged(Optional.empty())));
+                                                                     () -> synchroniseViewWhenExpressionEditorChanged(this)));
     }
 }

@@ -377,7 +377,7 @@ public class ExpressionEditorColumnTest {
                                       sessionCommandManager,
                                       cellEditorControls,
                                       translationService,
-                                      false) {
+                                      0) {
             @Override
             protected BaseUIModelMapper makeUiModelMapper() {
                 return null;
@@ -395,7 +395,12 @@ public class ExpressionEditorColumnTest {
 
             @Override
             protected void initialiseUiModel() {
+                //Nothing for this test
+            }
 
+            @Override
+            protected boolean isHeaderHidden() {
+                return false;
             }
 
             @Override

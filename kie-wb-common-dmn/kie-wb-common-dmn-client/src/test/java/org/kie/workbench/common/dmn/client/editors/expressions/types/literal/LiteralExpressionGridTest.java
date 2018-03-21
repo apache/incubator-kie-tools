@@ -52,6 +52,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
 import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -97,37 +99,47 @@ public class LiteralExpressionGridTest {
     @Mock
     private HasExpression hasExpression;
 
+    private Optional<LiteralExpression> expression = Optional.empty();
+
+    private Optional<HasName> hasName = Optional.empty();
+
+    private LiteralExpressionEditorDefinition definition;
+
     private LiteralExpressionGrid grid;
 
     @Before
     public void setup() {
-        final LiteralExpressionEditorDefinition definition = new LiteralExpressionEditorDefinition(gridPanel,
-                                                                                                   gridLayer,
-                                                                                                   sessionManager,
-                                                                                                   sessionCommandManager,
-                                                                                                   cellEditorControls,
-                                                                                                   translationService,
-                                                                                                   listSelector);
+        definition = new LiteralExpressionEditorDefinition(gridPanel,
+                                                           gridLayer,
+                                                           sessionManager,
+                                                           sessionCommandManager,
+                                                           cellEditorControls,
+                                                           translationService,
+                                                           listSelector);
 
         final Decision decision = new Decision();
         decision.setName(new Name("name"));
-        final Optional<HasName> hasName = Optional.of(decision);
-        final Optional<LiteralExpression> expression = definition.getModelClass();
+        hasName = Optional.of(decision);
+        expression = definition.getModelClass();
         expression.ifPresent(e -> e.setText(EXPRESSION_TEXT));
 
         doReturn(session).when(sessionManager).getCurrentSession();
         doReturn(canvasHandler).when(session).getCanvasHandler();
         doReturn(mock(Bounds.class)).when(gridLayer).getVisibleBounds();
+    }
 
+    private void setupGrid(final int nesting) {
         this.grid = spy((LiteralExpressionGrid) definition.getEditor(parent,
                                                                      hasExpression,
                                                                      expression,
                                                                      hasName,
-                                                                     false).get());
+                                                                     nesting).get());
     }
 
     @Test
     public void testInitialSetupFromDefinition() {
+        setupGrid(0);
+
         final GridData uiModel = grid.getModel();
         assertThat(uiModel).isInstanceOf(DMNGridData.class);
 
@@ -140,7 +152,23 @@ public class LiteralExpressionGridTest {
     }
 
     @Test
+    public void testHeaderVisibilityWhenNested() {
+        setupGrid(1);
+
+        assertTrue(grid.isHeaderHidden());
+    }
+
+    @Test
+    public void testHeaderVisibilityWhenNotNested() {
+        setupGrid(0);
+
+        assertFalse(grid.isHeaderHidden());
+    }
+
+    @Test
     public void testPaddingWithParent() {
+        setupGrid(0);
+
         doReturn(Optional.of(mock(BaseExpressionGrid.class))).when(grid).findParentGrid();
 
         assertThat(grid.getPadding()).isEqualTo(LiteralExpressionGrid.PADDING);
@@ -148,6 +176,8 @@ public class LiteralExpressionGridTest {
 
     @Test
     public void testPaddingWithNoParent() {
+        setupGrid(0);
+
         doReturn(Optional.empty()).when(grid).findParentGrid();
 
         assertThat(grid.getPadding()).isEqualTo(BaseExpressionGrid.DEFAULT_PADDING);
@@ -155,6 +185,8 @@ public class LiteralExpressionGridTest {
 
     @Test
     public void testGetItemsWithNoParent() {
+        setupGrid(0);
+
         when(parent.getGridWidget()).thenReturn(mock(GridWidget.class));
         when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(mock(BaseGridWidget.class)));
 
@@ -166,6 +198,8 @@ public class LiteralExpressionGridTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testGetItemsWithParentThatDoesSupportCellControls() {
+        setupGrid(0);
+
         final GridData parentGridData = mock(GridData.class);
         final ContextGrid parentGridWidget = mock(ContextGrid.class);
         final HasListSelectorControl.ListSelectorItem listSelectorItem = mock(HasListSelectorControl.ListSelectorItem.class);
@@ -185,6 +219,8 @@ public class LiteralExpressionGridTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testGetItemsWithParentThatDoesSupportCellControlsButCellDoesNot() {
+        setupGrid(0);
+
         final GridData parentGridData = mock(GridData.class);
         final ContextGrid parentGridWidget = mock(ContextGrid.class);
         final HasListSelectorControl.ListSelectorItem listSelectorItem = mock(HasListSelectorControl.ListSelectorItem.class);
@@ -201,6 +237,8 @@ public class LiteralExpressionGridTest {
 
     @Test
     public void testGetItemsWithParentThatDoesNotSupportCellControls() {
+        setupGrid(0);
+
         final GridData parentGridData = mock(GridData.class);
         final BaseExpressionGrid parentGridWidget = mock(BaseExpressionGrid.class);
         when(parent.getGridWidget()).thenReturn(parentGridWidget);
@@ -214,6 +252,8 @@ public class LiteralExpressionGridTest {
 
     @Test
     public void testOnItemSelected() {
+        setupGrid(0);
+
         final Command command = mock(Command.class);
         final HasListSelectorControl.ListSelectorTextItem listSelectorItem = mock(HasListSelectorControl.ListSelectorTextItem.class);
         when(listSelectorItem.getCommand()).thenReturn(command);

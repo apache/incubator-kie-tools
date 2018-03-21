@@ -104,7 +104,7 @@ public class ContextEditorDefinition extends BaseEditorDefinition<Context> {
                                                   final HasExpression hasExpression,
                                                   final Optional<Context> expression,
                                                   final Optional<HasName> hasName,
-                                                  final boolean isNested) {
+                                                  final int nesting) {
         return Optional.of(new ContextGrid(parent,
                                            hasExpression,
                                            expression,
@@ -117,6 +117,6 @@ public class ContextEditorDefinition extends BaseEditorDefinition<Context> {
                                            cellEditorControls,
                                            translationService,
                                            listSelector,
-                                           isNested));
+                                           nesting));
     }
 }

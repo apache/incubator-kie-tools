@@ -148,7 +148,7 @@ public class FunctionEditorDefinitionTest {
                                                                           hasExpression,
                                                                           expression,
                                                                           hasName,
-                                                                          false);
+                                                                          0);
 
         assertTrue(oEditor.isPresent());
 

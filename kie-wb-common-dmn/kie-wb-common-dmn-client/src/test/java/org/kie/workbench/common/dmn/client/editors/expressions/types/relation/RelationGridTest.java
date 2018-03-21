@@ -58,6 +58,7 @@ import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -155,7 +156,7 @@ public class RelationGridTest {
         parent = spy(new GridCellTuple(0, 0, parentGridWidget));
     }
 
-    private void makeRelationGrid() {
+    private void setupGrid(final int nesting) {
         relationGrid = spy(new RelationGrid(parent,
                                             hasExpression,
                                             expression,
@@ -166,14 +167,15 @@ public class RelationGridTest {
                                             sessionCommandManager,
                                             cellEditorControls,
                                             translationService,
-                                            listSelector));
+                                            listSelector,
+                                            nesting));
         doReturn(parentGridData).when(parentGridWidget).getModel();
         doReturn(Collections.singletonList(parentGridColumn)).when(parentGridData).getColumns();
     }
 
     @Test
     public void testInitialiseUiColumnsEmptyModel() throws Exception {
-        makeRelationGrid();
+        setupGrid(0);
 
         assertEquals(0, relationGrid.getModel().getRowCount());
         assertEquals(1, relationGrid.getModel().getColumns().size());
@@ -187,7 +189,7 @@ public class RelationGridTest {
             getName().setValue(columnHeader);
         }});
 
-        makeRelationGrid();
+        setupGrid(0);
 
         assertEquals(2, relationGrid.getModel().getColumns().size());
         assertTrue(relationGrid.getModel().getColumns().get(0) instanceof RowNumberColumn);
@@ -212,7 +214,7 @@ public class RelationGridTest {
             }});
         }});
 
-        makeRelationGrid();
+        setupGrid(0);
 
         assertEquals(2, relationGrid.getModel().getRowCount());
         assertEquals(firstRowValue, relationGrid.getModel().getRow(0).getCells().get(1).getValue().getValue());
@@ -220,8 +222,22 @@ public class RelationGridTest {
     }
 
     @Test
+    public void testHeaderVisibilityWhenNested() {
+        setupGrid(1);
+
+        assertFalse(relationGrid.isHeaderHidden());
+    }
+
+    @Test
+    public void testHeaderVisibilityWhenNotNested() {
+        setupGrid(0);
+
+        assertFalse(relationGrid.isHeaderHidden());
+    }
+
+    @Test
     public void testGetItems() {
-        makeRelationGrid();
+        setupGrid(0);
 
         final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(0, 0);
 
@@ -232,6 +248,7 @@ public class RelationGridTest {
                                DMNEditorConstants.RelationEditor_InsertColumnAfter);
         assertListSelectorItem(items.get(DELETE_COLUMN),
                                DMNEditorConstants.RelationEditor_DeleteColumn);
+        assertThat(items.get(DIVIDER)).isInstanceOf(HasListSelectorControl.ListSelectorDividerItem.class);
         assertListSelectorItem(items.get(INSERT_ROW_ABOVE),
                                DMNEditorConstants.RelationEditor_InsertRowAbove);
         assertListSelectorItem(items.get(INSERT_ROW_BELOW),
@@ -249,7 +266,7 @@ public class RelationGridTest {
 
     @Test
     public void testOnItemSelected() {
-        makeRelationGrid();
+        setupGrid(0);
 
         final Command command = mock(Command.class);
         final HasListSelectorControl.ListSelectorTextItem listSelectorItem = mock(HasListSelectorControl.ListSelectorTextItem.class);
@@ -262,7 +279,7 @@ public class RelationGridTest {
 
     @Test
     public void testOnItemSelectedInsertColumnBefore() {
-        makeRelationGrid();
+        setupGrid(0);
 
         final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(0, 0);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_COLUMN_BEFORE);
@@ -275,7 +292,7 @@ public class RelationGridTest {
 
     @Test
     public void testOnItemSelectedInsertColumnAfter() {
-        makeRelationGrid();
+        setupGrid(0);
 
         final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(0, 0);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_COLUMN_AFTER);
@@ -288,7 +305,7 @@ public class RelationGridTest {
 
     @Test
     public void testOnItemSelectedInsertColumnEnabled() {
-        makeRelationGrid();
+        setupGrid(0);
 
         assertListSelectorItemEnabled(0, 0, INSERT_COLUMN_BEFORE, false);
         assertListSelectorItemEnabled(0, 1, INSERT_COLUMN_BEFORE, true);
@@ -300,7 +317,7 @@ public class RelationGridTest {
     @Test
     public void testOnItemSelectedDeleteColumn() {
         relation.getColumn().add(new InformationItem());
-        makeRelationGrid();
+        setupGrid(0);
 
         //Cannot delete column 0 since it is the RowNumber column. The first Relation column is 1.
         final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(0, RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
@@ -314,7 +331,7 @@ public class RelationGridTest {
 
     @Test
     public void testOnItemSelectedDeleteColumnEnabled() {
-        makeRelationGrid();
+        setupGrid(0);
 
         //Grid has one Relation column that cannot be deleted.
         relationGrid.getModel().appendColumn(mock(RelationColumn.class));
@@ -330,7 +347,7 @@ public class RelationGridTest {
 
     @Test
     public void testOnItemSelectedInsertRowAbove() {
-        makeRelationGrid();
+        setupGrid(0);
 
         final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(0, 0);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_ROW_ABOVE);
@@ -343,7 +360,7 @@ public class RelationGridTest {
 
     @Test
     public void testOnItemSelectedInsertRowBelow() {
-        makeRelationGrid();
+        setupGrid(0);
 
         final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(0, 0);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_ROW_BELOW);
@@ -356,7 +373,7 @@ public class RelationGridTest {
 
     @Test
     public void testOnItemSelectedInsertRowEnabled() {
-        makeRelationGrid();
+        setupGrid(0);
 
         assertListSelectorItemEnabled(0, 0, INSERT_ROW_ABOVE, true);
         assertListSelectorItemEnabled(1, 0, INSERT_ROW_ABOVE, true);
@@ -368,7 +385,7 @@ public class RelationGridTest {
     @Test
     public void testOnItemSelectedDeleteRow() {
         relation.getRow().add(new List());
-        makeRelationGrid();
+        setupGrid(0);
 
         final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(0, 0);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(DELETE_ROW);
@@ -381,7 +398,7 @@ public class RelationGridTest {
 
     @Test
     public void testOnItemSelectedDeleteRowEnabled() {
-        makeRelationGrid();
+        setupGrid(0);
 
         //Grid has one row that cannot be deleted.
         relationGrid.getModel().appendRow(new BaseGridRow());
@@ -404,14 +421,14 @@ public class RelationGridTest {
 
     @Test
     public void testAddColumn() throws Exception {
-        makeRelationGrid();
+        setupGrid(0);
 
         relationGrid.addColumn(0);
 
         verify(sessionCommandManager).execute(eq(abstractCanvasHandler), addColumnCommand.capture());
 
         addColumnCommand.getValue().execute(abstractCanvasHandler);
-        verify(parent).assertWidth(relationGrid.getWidth() + relationGrid.getPadding() * 2);
+        verify(parent).proposeContainingColumnWidth(relationGrid.getWidth() + relationGrid.getPadding() * 2);
         verify(parentGridColumn).setWidth(relationGrid.getWidth() + relationGrid.getPadding() * 2);
         verify(gridLayer).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
         verify(gridPanel).refreshScrollPosition();
@@ -421,7 +438,7 @@ public class RelationGridTest {
     @Test
     public void testDeleteColumn() throws Exception {
         relation.getColumn().add(new InformationItem());
-        makeRelationGrid();
+        setupGrid(0);
 
         //Cannot delete column 0 since it is the RowNumber column. The first Relation column is 1.
         relationGrid.deleteColumn(RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
@@ -429,7 +446,7 @@ public class RelationGridTest {
         verify(sessionCommandManager).execute(eq(abstractCanvasHandler), deleteColumnCommand.capture());
 
         deleteColumnCommand.getValue().execute(abstractCanvasHandler);
-        verify(parent).assertWidth(relationGrid.getWidth() + relationGrid.getPadding() * 2);
+        verify(parent).proposeContainingColumnWidth(relationGrid.getWidth() + relationGrid.getPadding() * 2);
         verify(parentGridColumn).setWidth(relationGrid.getWidth() + relationGrid.getPadding() * 2);
         verify(gridLayer).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
         verify(gridPanel).refreshScrollPosition();
@@ -438,7 +455,7 @@ public class RelationGridTest {
 
     @Test
     public void testAddRow() throws Exception {
-        makeRelationGrid();
+        setupGrid(0);
 
         relationGrid.addRow(0);
 
@@ -453,7 +470,7 @@ public class RelationGridTest {
     @Test
     public void testDeleteRow() throws Exception {
         relation.getRow().add(new List());
-        makeRelationGrid();
+        setupGrid(0);
 
         relationGrid.deleteRow(0);
 

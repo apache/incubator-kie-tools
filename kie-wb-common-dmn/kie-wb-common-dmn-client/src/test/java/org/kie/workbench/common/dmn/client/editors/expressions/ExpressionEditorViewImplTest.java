@@ -56,7 +56,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.Restri
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -145,7 +145,7 @@ public class ExpressionEditorViewImplTest {
                                                                        any(HasExpression.class),
                                                                        any(Optional.class),
                                                                        any(Optional.class),
-                                                                       anyBoolean());
+                                                                       anyInt());
         doReturn(new BaseGridData()).when(editor).getModel();
 
         this.view = spy(new ExpressionEditorViewImpl(returnToDRG,
@@ -169,7 +169,7 @@ public class ExpressionEditorViewImplTest {
                                                                                                              any(HasExpression.class),
                                                                                                              any(Optional.class),
                                                                                                              any(Optional.class),
-                                                                                                             anyBoolean());
+                                                                                                             anyInt());
 
         doAnswer((i) -> i.getArguments()[1]).when(translationService).format(anyString(), anyObject());
     }

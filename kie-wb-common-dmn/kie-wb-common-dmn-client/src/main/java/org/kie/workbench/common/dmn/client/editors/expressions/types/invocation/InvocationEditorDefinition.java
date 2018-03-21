@@ -102,7 +102,7 @@ public class InvocationEditorDefinition extends BaseEditorDefinition<Invocation>
                                                   final HasExpression hasExpression,
                                                   final Optional<Invocation> expression,
                                                   final Optional<HasName> hasName,
-                                                  final boolean isNested) {
+                                                  final int nesting) {
         return Optional.of(new InvocationGrid(parent,
                                               hasExpression,
                                               expression,
@@ -115,6 +115,6 @@ public class InvocationEditorDefinition extends BaseEditorDefinition<Invocation>
                                               cellEditorControls,
                                               translationService,
                                               listSelector,
-                                              isNested));
+                                              nesting));
     }
 }

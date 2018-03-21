@@ -143,7 +143,7 @@ public class PMMLFunctionEditorDefinitionTest {
                                                                           hasExpression,
                                                                           expression,
                                                                           hasName,
-                                                                          false);
+                                                                          0);
 
         assertTrue(oEditor.isPresent());
 

@@ -37,7 +37,8 @@ public class ContextUIModelMapperTest extends BaseContextUIModelMapperTest<Conte
                                         () -> uiModel,
                                         () -> Optional.of(context),
                                         expressionEditorDefinitionsSupplier,
-                                        listSelector);
+                                        listSelector,
+                                        0);
     }
 
     @Test

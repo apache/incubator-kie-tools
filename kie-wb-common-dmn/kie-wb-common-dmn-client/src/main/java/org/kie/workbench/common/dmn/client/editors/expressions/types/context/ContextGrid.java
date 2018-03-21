@@ -75,7 +75,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
                        final CellEditorControlsView.Presenter cellEditorControls,
                        final TranslationService translationService,
                        final ListSelectorView.Presenter listSelector,
-                       final boolean isNested) {
+                       final int nesting) {
         super(parent,
               hasExpression,
               expression,
@@ -87,12 +87,12 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
                                   sessionCommandManager,
                                   expression,
                                   gridLayer::batch),
-              new ContextGridRenderer(isNested),
+              new ContextGridRenderer(nesting > 0),
               sessionManager,
               sessionCommandManager,
               cellEditorControls,
               translationService,
-              isNested);
+              nesting);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.listSelector = listSelector;
 
@@ -113,7 +113,8 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
                                         this::getModel,
                                         () -> expression,
                                         expressionEditorDefinitionsSupplier,
-                                        listSelector);
+                                        listSelector,
+                                        nesting);
     }
 
     @Override
@@ -163,6 +164,11 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
                                            2);
             });
         });
+    }
+
+    @Override
+    protected boolean isHeaderHidden() {
+        return nesting > 0;
     }
 
     @Override
@@ -248,7 +254,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
                                                                      new DMNGridRow(),
                                                                      index,
                                                                      uiModelMapper,
-                                                                     () -> synchroniseViewWhenExpressionEditorChanged(Optional.empty())));
+                                                                     this::synchroniseView));
         });
     }
 
@@ -258,7 +264,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
                                           new DeleteContextEntryCommand(c,
                                                                         model,
                                                                         index,
-                                                                        () -> synchroniseViewWhenExpressionEditorChanged(Optional.empty())));
+                                                                        this::synchroniseView));
         });
     }
 
@@ -271,6 +277,6 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
                                       new ClearExpressionTypeCommand(gc,
                                                                      hasExpression,
                                                                      uiModelMapper,
-                                                                     () -> synchroniseViewWhenExpressionEditorChanged(Optional.empty())));
+                                                                     () -> synchroniseViewWhenExpressionEditorChanged(this)));
     }
 }

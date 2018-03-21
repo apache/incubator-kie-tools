@@ -83,19 +83,19 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
                         final TranslationService translationService,
                         final ListSelectorView.Presenter listSelector,
                         final ParametersEditorView.Presenter parametersEditor,
-                        final boolean isNested) {
+                        final int nesting) {
         super(parent,
               hasExpression,
               expression,
               hasName,
               gridPanel,
               gridLayer,
-              new FunctionGridRenderer(isNested),
+              new FunctionGridRenderer(nesting > 0),
               sessionManager,
               sessionCommandManager,
               cellEditorControls,
               translationService,
-              false);
+              nesting);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.supplementaryEditorDefinitionsSupplier = supplementaryEditorDefinitionsSupplier;
         this.listSelector = listSelector;
@@ -119,7 +119,8 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
                                          () -> expression,
                                          expressionEditorDefinitionsSupplier,
                                          supplementaryEditorDefinitionsSupplier,
-                                         listSelector);
+                                         listSelector,
+                                         nesting);
     }
 
     @Override
@@ -152,6 +153,11 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
             model.appendRow(new DMNGridRow());
             uiModelMapper.fromDMNModel(0, 0);
         });
+    }
+
+    @Override
+    protected boolean isHeaderHidden() {
+        return false;
     }
 
     @Override
@@ -288,7 +294,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
                                                                                  hasExpression,
                                                                                  expression,
                                                                                  hasName,
-                                                                                 true);
+                                                                                 nesting);
             doSetKind(kind,
                       function,
                       expression,
@@ -309,7 +315,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
                                                          function,
                                                          kind,
                                                          expression,
-                                                         () -> synchroniseViewWhenExpressionEditorChanged(editor)));
+                                                         () -> synchroniseViewWhenExpressionEditorChanged(this)));
     }
 
     void clearExpressionType() {
@@ -321,7 +327,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
                                           new ClearExpressionTypeCommand(gc,
                                                                          function,
                                                                          uiModelMapper,
-                                                                         () -> synchroniseViewWhenExpressionEditorChanged(Optional.empty())));
+                                                                         () -> synchroniseViewWhenExpressionEditorChanged(this)));
         });
     }
 }

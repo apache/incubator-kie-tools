@@ -86,7 +86,7 @@ public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<Lite
                                                   final HasExpression hasExpression,
                                                   final Optional<LiteralExpression> expression,
                                                   final Optional<HasName> hasName,
-                                                  final boolean isNested) {
+                                                  final int nesting) {
         return Optional.of(new LiteralExpressionGrid(parent,
                                                      hasExpression,
                                                      expression,
@@ -98,6 +98,6 @@ public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<Lite
                                                      cellEditorControls,
                                                      translationService,
                                                      listSelector,
-                                                     isNested));
+                                                     nesting));
     }
 }

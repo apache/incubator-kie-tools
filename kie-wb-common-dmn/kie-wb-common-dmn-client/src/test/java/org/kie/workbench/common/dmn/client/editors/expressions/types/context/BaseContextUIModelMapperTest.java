@@ -47,7 +47,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberCol
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doReturn;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -117,14 +117,14 @@ public abstract class BaseContextUIModelMapperTest<M extends ContextUIModelMappe
                                                                                                          any(HasExpression.class),
                                                                                                          any(Optional.class),
                                                                                                          any(Optional.class),
-                                                                                                         anyBoolean());
+                                                                                                         anyInt());
 
         doReturn(Optional.empty()).when(undefinedExpressionEditorDefinition).getModelClass();
         doReturn(Optional.of(undefinedExpressionEditor)).when(undefinedExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
                                                                                                              any(HasExpression.class),
                                                                                                              any(Optional.class),
                                                                                                              any(Optional.class),
-                                                                                                             anyBoolean());
+                                                                                                             anyInt());
 
         this.context = new Context();
         this.context.getContextEntry().add(new ContextEntry() {{

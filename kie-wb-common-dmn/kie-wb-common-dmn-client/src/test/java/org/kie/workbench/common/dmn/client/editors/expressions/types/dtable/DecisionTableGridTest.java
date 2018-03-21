@@ -69,6 +69,7 @@ import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -175,9 +176,9 @@ public class DecisionTableGridTest {
     @Captor
     private ArgumentCaptor<SetOrientationCommand> setOrientationCommandCaptor;
 
-    private DecisionTableEditorDefinition definition;
+    private Optional<DecisionTable> expression = Optional.empty();
 
-    private Optional<DecisionTable> expression;
+    private DecisionTableEditorDefinition definition;
 
     private DecisionTableGrid grid;
 
@@ -202,12 +203,13 @@ public class DecisionTableGridTest {
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
     }
 
-    private void setupGrid(final Optional<HasName> hasName) {
+    private void setupGrid(final Optional<HasName> hasName,
+                           final int nesting) {
         this.grid = spy((DecisionTableGrid) definition.getEditor(parent,
                                                                  hasExpression,
                                                                  expression,
                                                                  hasName,
-                                                                 false).get());
+                                                                 nesting).get());
     }
 
     private Optional<HasName> makeHasNameForDecision() {
@@ -218,7 +220,7 @@ public class DecisionTableGridTest {
 
     @Test
     public void testInitialSetupFromDefinition() {
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         final GridData uiModel = grid.getModel();
         assertTrue(uiModel instanceof DecisionTableGridData);
@@ -244,8 +246,22 @@ public class DecisionTableGridTest {
     }
 
     @Test
+    public void testHeaderVisibilityWhenNested() {
+        setupGrid(Optional.empty(), 1);
+
+        assertFalse(grid.isHeaderHidden());
+    }
+
+    @Test
+    public void testHeaderVisibilityWhenNotNested() {
+        setupGrid(Optional.empty(), 0);
+
+        assertFalse(grid.isHeaderHidden());
+    }
+
+    @Test
     public void testColumn0MetaData() {
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         final GridColumn<?> column = grid.getModel().getColumns().get(0);
         final List<GridColumn.HeaderMetaData> header = column.getHeaderMetaData();
@@ -266,7 +282,7 @@ public class DecisionTableGridTest {
 
     @Test
     public void testColumn1MetaData() {
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         final GridColumn<?> column = grid.getModel().getColumns().get(1);
         final List<GridColumn.HeaderMetaData> header = column.getHeaderMetaData();
@@ -282,7 +298,7 @@ public class DecisionTableGridTest {
 
     @Test
     public void testColumn2MetaData() {
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         final GridColumn<?> column = grid.getModel().getColumns().get(2);
         final List<GridColumn.HeaderMetaData> header = column.getHeaderMetaData();
@@ -298,7 +314,7 @@ public class DecisionTableGridTest {
 
     @Test
     public void testColumn2MetaDataWithoutHasName() {
-        setupGrid(Optional.empty());
+        setupGrid(Optional.empty(), 0);
 
         final GridColumn<?> column = grid.getModel().getColumns().get(2);
         final List<GridColumn.HeaderMetaData> header = column.getHeaderMetaData();
@@ -314,7 +330,7 @@ public class DecisionTableGridTest {
 
     @Test
     public void testColumn3MetaData() {
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         final GridColumn<?> column = grid.getModel().getColumns().get(3);
         final List<GridColumn.HeaderMetaData> header = column.getHeaderMetaData();
@@ -330,14 +346,14 @@ public class DecisionTableGridTest {
 
     @Test
     public void testGetItemsRowNumberColumn() {
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         assertDefaultListItems(grid.getItems(0, 0));
     }
 
     @Test
     public void testGetItemsInputClauseColumn() {
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 1);
 
@@ -364,7 +380,7 @@ public class DecisionTableGridTest {
 
     @Test
     public void testGetItemsOutputClauseColumn() {
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 2);
 
@@ -391,7 +407,7 @@ public class DecisionTableGridTest {
 
     @Test
     public void testGetItemsDescriptionColumn() {
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         assertDefaultListItems(grid.getItems(0, 3));
     }
@@ -415,7 +431,7 @@ public class DecisionTableGridTest {
 
     @Test
     public void testOnItemSelected() {
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         final Command command = mock(Command.class);
         final HasListSelectorControl.ListSelectorTextItem listSelectorItem = mock(HasListSelectorControl.ListSelectorTextItem.class);
@@ -428,7 +444,7 @@ public class DecisionTableGridTest {
 
     @Test
     public void testOnItemSelectedInsertRowAbove() {
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(DEFAULT_INSERT_RULE_ABOVE);
@@ -441,7 +457,7 @@ public class DecisionTableGridTest {
 
     @Test
     public void testOnItemSelectedInsertRowBelow() {
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(DEFAULT_INSERT_RULE_BELOW);
@@ -454,7 +470,7 @@ public class DecisionTableGridTest {
 
     @Test
     public void testOnItemSelectedDeleteRow() {
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(DEFAULT_DELETE_RULE);
@@ -467,7 +483,7 @@ public class DecisionTableGridTest {
 
     @Test
     public void testAddInputClause() {
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         grid.addInputClause(1);
 
@@ -477,13 +493,13 @@ public class DecisionTableGridTest {
         final AddInputClauseCommand addInputClauseCommand = addInputClauseCommandCaptor.getValue();
         addInputClauseCommand.execute(canvasHandler);
 
-        verify(parent).assertWidth(eq(grid.getWidth() + grid.getPadding() * 2));
+        verify(parent).proposeContainingColumnWidth(eq(grid.getWidth() + grid.getPadding() * 2));
         verifyGridPanelRefresh();
     }
 
     @Test
     public void testDeleteInputClause() {
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         grid.deleteInputClause(1);
 
@@ -493,13 +509,13 @@ public class DecisionTableGridTest {
         final DeleteInputClauseCommand deleteInputClauseCommand = deleteInputClauseCommandCaptor.getValue();
         deleteInputClauseCommand.execute(canvasHandler);
 
-        verify(parent).assertWidth(eq(grid.getWidth() + grid.getPadding() * 2));
+        verify(parent).proposeContainingColumnWidth(eq(grid.getWidth() + grid.getPadding() * 2));
         verifyGridPanelRefresh();
     }
 
     @Test
     public void testAddOutputClause() {
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         grid.addOutputClause(2);
 
@@ -509,13 +525,13 @@ public class DecisionTableGridTest {
         final AddOutputClauseCommand addOutputClauseCommand = addOutputClauseCommandCaptor.getValue();
         addOutputClauseCommand.execute(canvasHandler);
 
-        verify(parent).assertWidth(eq(grid.getWidth() + grid.getPadding() * 2));
+        verify(parent).proposeContainingColumnWidth(eq(grid.getWidth() + grid.getPadding() * 2));
         verifyGridPanelRefresh();
     }
 
     @Test
     public void testDeleteOutputClause() {
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         grid.deleteOutputClause(2);
 
@@ -525,13 +541,13 @@ public class DecisionTableGridTest {
         final DeleteOutputClauseCommand deleteOutputClauseCommand = deleteOutputClauseCommandCaptor.getValue();
         deleteOutputClauseCommand.execute(canvasHandler);
 
-        verify(parent).assertWidth(eq(grid.getWidth() + grid.getPadding() * 2));
+        verify(parent).proposeContainingColumnWidth(eq(grid.getWidth() + grid.getPadding() * 2));
         verifyGridPanelRefresh();
     }
 
     @Test
     public void testAddDecisionRule() {
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         grid.addDecisionRule(0);
 
@@ -546,7 +562,7 @@ public class DecisionTableGridTest {
 
     @Test
     public void testDeleteDecisionRule() {
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         grid.deleteDecisionRule(0);
 
@@ -563,7 +579,7 @@ public class DecisionTableGridTest {
     public void testSetHitPolicy() {
         final HitPolicy hitPolicy = HitPolicy.ANY;
 
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         grid.setHitPolicy(hitPolicy,
                           command);
@@ -587,7 +603,7 @@ public class DecisionTableGridTest {
         final HitPolicy hitPolicy = HitPolicy.COLLECT;
         final BuiltinAggregator aggregator = BuiltinAggregator.SUM;
 
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         expression.get().setAggregation(aggregator);
 
@@ -615,7 +631,7 @@ public class DecisionTableGridTest {
     public void testSetHitPolicyRequiresBuiltInAggregatorUseDefaultWhenNotSet() {
         final HitPolicy hitPolicy = HitPolicy.COLLECT;
 
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         grid.setHitPolicy(hitPolicy,
                           command);
@@ -641,7 +657,7 @@ public class DecisionTableGridTest {
     public void testSetBuiltInAggregator() {
         final BuiltinAggregator aggregator = BuiltinAggregator.SUM;
 
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         grid.setBuiltinAggregator(aggregator);
 
@@ -658,7 +674,7 @@ public class DecisionTableGridTest {
     public void testSetDecisionTableOrientation() {
         final DecisionTableOrientation orientation = DecisionTableOrientation.RULE_AS_ROW;
 
-        setupGrid(makeHasNameForDecision());
+        setupGrid(makeHasNameForDecision(), 0);
 
         grid.setDecisionTableOrientation(orientation);
 

@@ -138,7 +138,7 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
                                                   final HasExpression hasExpression,
                                                   final Optional<DecisionTable> expression,
                                                   final Optional<HasName> hasName,
-                                                  final boolean isNested) {
+                                                  final int nesting) {
         return Optional.of(new DecisionTableGrid(parent,
                                                  hasExpression,
                                                  expression,
@@ -150,6 +150,7 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
                                                  cellEditorControls,
                                                  translationService,
                                                  listSelector,
-                                                 hitPolicyEditor));
+                                                 hitPolicyEditor,
+                                                 nesting));
     }
 }

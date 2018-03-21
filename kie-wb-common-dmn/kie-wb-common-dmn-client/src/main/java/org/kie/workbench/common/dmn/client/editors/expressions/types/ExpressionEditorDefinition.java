@@ -36,5 +36,5 @@ public interface ExpressionEditorDefinition<T extends Expression> {
                                            final HasExpression hasExpression,
                                            final Optional<T> expression,
                                            final Optional<HasName> hasName,
-                                           final boolean isNested);
+                                           final int nesting);
 }
