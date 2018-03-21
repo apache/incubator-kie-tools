@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.guvnor.structure.backend.organizationalunit;
 
@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -30,7 +29,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
-import org.guvnor.structure.backend.config.OrgUnit;
 import org.guvnor.structure.config.SystemRepositoryChangedEvent;
 import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -494,7 +492,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
         return false;
     }
 
-    public void updateRegisteredOU(@Observes @OrgUnit SystemRepositoryChangedEvent changedEvent) {
+    public void updateRegisteredOUCache(@Observes @org.guvnor.structure.backend.config.Repository SystemRepositoryChangedEvent changedEvent) {
         registeredOrganizationalUnits.clear();
         loadOrganizationalUnits();
     }
