@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import elemental2.dom.Element;
 import elemental2.dom.HTMLSelectElement;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.client.mvp.UberElemental;
 
@@ -33,14 +34,17 @@ public class KieSelectElement {
 
     private final View view;
     private final OptionsListPresenter optionsListPresenter;
+    private final Elemental2DomUtil elemental2DomUtil;
 
     Consumer<String> onChange;
 
     @Inject
     public KieSelectElement(final View view,
-                            final OptionsListPresenter optionsListPresenter) {
+                            final OptionsListPresenter optionsListPresenter,
+                            final Elemental2DomUtil elemental2DomUtil) {
         this.view = view;
         this.optionsListPresenter = optionsListPresenter;
+        this.elemental2DomUtil = elemental2DomUtil;
         this.onChange = i -> {
         };
     }
@@ -55,7 +59,7 @@ public class KieSelectElement {
                       final String initialValue,
                       final Consumer<String> onChange) {
 
-        element.innerHTML = "";
+        elemental2DomUtil.removeAllElementChildren(element);
         element.appendChild(view.getElement());
 
         optionsListPresenter.setup(

@@ -7,6 +7,7 @@ import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLSelectElement;
 import elemental2.dom.Node;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +37,7 @@ public class KieSelectElementTest {
 
     @Before
     public void before() {
-        kieSelectElement = spy(new KieSelectElement(view, optionsListPresenter));
+        kieSelectElement = spy(new KieSelectElement(view, optionsListPresenter, new Elemental2DomUtil()));
     }
 
     @Test
@@ -57,6 +58,8 @@ public class KieSelectElementTest {
                 return node;
             }
         });
+
+        container.innerHTML = "";
 
         final List<Option> options =
                 singletonList(new Option("Label", "Value"));

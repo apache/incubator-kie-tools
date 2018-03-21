@@ -24,8 +24,8 @@ import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import elemental2.dom.HTMLLIElement;
 import elemental2.dom.HTMLUListElement;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -42,6 +42,9 @@ public class SettingsView implements SettingsPresenter.View,
 
     @Inject
     private TranslationService translationService;
+
+    @Inject
+    private Elemental2DomUtil elemental2DomUtil;
 
     @Inject
     @DataField("save")
@@ -76,7 +79,7 @@ public class SettingsView implements SettingsPresenter.View,
 
     @Override
     public void setSection(final Section section) {
-        content.innerHTML = "";
+        elemental2DomUtil.removeAllElementChildren(content);
         content.appendChild(section.getElement());
     }
 

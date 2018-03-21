@@ -25,6 +25,7 @@ import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLHeadingElement;
 import elemental2.dom.HTMLInputElement;
 import elemental2.dom.HTMLTextAreaElement;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -38,6 +39,9 @@ public class GeneralSettingsView implements GeneralSettingsPresenter.View {
 
     @Inject
     private TranslationService translationService;
+
+    @Inject
+    private Elemental2DomUtil elemental2DomUtil;
 
     @Inject
     @DataField("error")
@@ -227,7 +231,7 @@ public class GeneralSettingsView implements GeneralSettingsPresenter.View {
 
     @Override
     public void hideError() {
-        this.errorMessage.innerHTML = "";
+        elemental2DomUtil.removeAllElementChildren(errorMessage);
         this.error.hidden = true;
     }
 
