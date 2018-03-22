@@ -40,7 +40,7 @@ import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
-import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinition;
+import org.kie.workbench.common.stunner.core.client.components.palette.PaletteDefinition;
 import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 
 // TODO: i18n.

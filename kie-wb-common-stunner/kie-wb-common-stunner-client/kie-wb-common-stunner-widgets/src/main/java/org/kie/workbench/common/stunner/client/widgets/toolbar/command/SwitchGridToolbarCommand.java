@@ -46,12 +46,12 @@ public class SwitchGridToolbarCommand extends AbstractToolbarCommand<AbstractCli
 
     @Override
     public String getCaption() {
-        return translationService.getKeyValue(CoreTranslationMessages.SWITCH_GRID);
+        return translationService.getValue(CoreTranslationMessages.SWITCH_GRID);
     }
 
     @Override
     public String getTooltip() {
-        return translationService.getKeyValue(CoreTranslationMessages.SWITCH_GRID);
+        return translationService.getValue(CoreTranslationMessages.SWITCH_GRID);
     }
 
     @Override

@@ -54,7 +54,7 @@ public class FormGenerationToolboxAction implements ToolboxAction<AbstractCanvas
     @Override
     public String getTitle(final AbstractCanvasHandler canvasHandler,
                            final String uuid) {
-        return translationService.getKeyValue(FormsClientConstants.FormsGenerateTaskForm);
+        return translationService.getValue(FormsClientConstants.FormsGenerateTaskForm);
     }
 
     @Override

@@ -74,21 +74,20 @@ public class BusinessRuleTask extends BaseTask implements DataIOModel {
 
         @Override
         public BusinessRuleTask build() {
-            return new BusinessRuleTask(new TaskGeneralSet(new Name("Task"),
-                                                           new Documentation("")),
-                                        new BusinessRuleTaskExecutionSet(),
-                                        new DataIOSet(),
-                                        new BackgroundSet(),
-                                        new FontSet(),
-                                        new RectangleDimensionsSet(),
-                                        new SimulationSet(),
-                                        new TaskType(TaskTypes.BUSINESS_RULE)
-            );
+            return new BusinessRuleTask();
         }
     }
 
     public BusinessRuleTask() {
-        super(TaskTypes.BUSINESS_RULE);
+        this(new TaskGeneralSet(new Name("Task"),
+                                new Documentation("")),
+             new BusinessRuleTaskExecutionSet(),
+             new DataIOSet(),
+             new BackgroundSet(),
+             new FontSet(),
+             new RectangleDimensionsSet(),
+             new SimulationSet(),
+             new TaskType(TaskTypes.BUSINESS_RULE));
     }
 
     public BusinessRuleTask(final @MapsTo("general") TaskGeneralSet general,

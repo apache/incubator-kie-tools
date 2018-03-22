@@ -31,7 +31,6 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.jboss.drools.DroolsPackage;
 import org.jboss.drools.impl.DroolsPackageImpl;
-import org.kie.workbench.common.stunner.backend.service.XMLEncoderDiagramMetadataMarshaller;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.profile.impl.DefaultProfileImpl;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.resource.JBPMBpmn2ResourceFactoryImpl;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.resource.JBPMBpmn2ResourceImpl;
@@ -42,6 +41,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxMana
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
+import org.kie.workbench.common.stunner.core.backend.service.XMLEncoderDiagramMetadataMarshaller;
 import org.kie.workbench.common.stunner.core.definition.service.DiagramMarshaller;
 import org.kie.workbench.common.stunner.core.definition.service.DiagramMetadataMarshaller;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -102,7 +102,8 @@ public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Grap
         String result = null;
         try {
             // Marshall the diagram definition
-            result = marshaller.marshall(diagram);
+            result = marshaller.marshall(diagram,
+                                         getPreProcessingData(diagram.getMetadata()));
 
             // Update diagram's settings.
             updateRootUUID(diagram.getMetadata(),
@@ -116,10 +117,13 @@ public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Grap
         return result;
     }
 
+    protected abstract String getPreProcessingData(Metadata metadata);
+
     public JBPMBpmn2ResourceImpl marshallToBpmn2Resource(final Diagram<Graph, Metadata> diagram) throws IOException {
         final Bpmn2Marshaller marshaller = new Bpmn2Marshaller(definitionManager,
                                                                oryxManager);
-        return marshaller.marshallToBpmn2Resource(diagram);
+        return marshaller.marshallToBpmn2Resource(diagram,
+                                                  getPreProcessingData(diagram.getMetadata()));
     }
 
     @Override
@@ -145,7 +149,7 @@ public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Grap
             final Definitions definitions = parseDefinitions(inputStream);
             parser.setProfile(new DefaultProfileImpl());
             result = parser.unmarshall(definitions,
-                                       null);
+                                       getPreProcessingData(metadata));
 
             // Update diagram's settings.
             updateRootUUID(metadata,

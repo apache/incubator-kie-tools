@@ -62,19 +62,19 @@ public class NoneTask extends BaseTask {
 
         @Override
         public NoneTask build() {
-            return new NoneTask(new TaskGeneralSet(new Name("Task"),
-                                                   new Documentation("")),
-                                new EmptyTaskExecutionSet(),
-                                new BackgroundSet(),
-                                new FontSet(),
-                                new RectangleDimensionsSet(),
-                                new SimulationSet(),
-                                new TaskType(TaskTypes.NONE));
+            return new NoneTask();
         }
     }
 
     public NoneTask() {
-        super(TaskTypes.NONE);
+        this(new TaskGeneralSet(new Name("Task"),
+                                new Documentation("")),
+             new EmptyTaskExecutionSet(),
+             new BackgroundSet(),
+             new FontSet(),
+             new RectangleDimensionsSet(),
+             new SimulationSet(),
+             new TaskType(TaskTypes.NONE));
     }
 
     public NoneTask(final @MapsTo("general") TaskGeneralSet general,

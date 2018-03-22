@@ -28,8 +28,8 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNBaseInfo;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNCategories;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
-import org.kie.workbench.common.stunner.bpmn.definition.Categories;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
@@ -59,7 +59,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 public class CaseManagementDiagram implements BPMNDiagram {
 
     @Category
-    public static final transient String category = Categories.CONTAINERS;
+    public static final transient String category = BPMNCategories.CONTAINERS;
 
     @PropertySet
     @FormField

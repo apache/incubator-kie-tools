@@ -64,11 +64,11 @@ public class ClientFormGenerationManager {
 
     // Listen for form generation events.
     void onFormGeneratedEvent(@Observes FormGeneratedEvent event) {
-        formGenerationNotifier.showNotification(translationService.getKeyValue(FormsClientConstants.FormsGenerationSuccess, event.getName()));
+        formGenerationNotifier.showNotification(translationService.getValue(FormsClientConstants.FormsGenerationSuccess, event.getName()));
     }
 
     void onFormGenerationFailureEvent(@Observes FormGenerationFailureEvent event) {
-        formGenerationNotifier.showError(translationService.getKeyValue(FormsClientConstants.FormsGenerationFailure, event.getName()));
+        formGenerationNotifier.showError(translationService.getValue(FormsClientConstants.FormsGenerationFailure, event.getName()));
     }
 
     private static RemoteCallback<Void> getRemoteCallback() {

@@ -102,7 +102,7 @@ public class DMNEditDecisionToolboxActionTest {
         tested.getTitle(canvasHandler,
                         E_UUID);
         verify(translationService,
-               times(1)).getKeyValue(eq(CoreTranslationMessages.EDIT));
+               times(1)).getValue(eq(CoreTranslationMessages.EDIT));
     }
 
     @Test

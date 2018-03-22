@@ -44,6 +44,7 @@ import org.kie.workbench.common.stunner.core.client.session.event.OnSessionError
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.uberfire.client.annotations.WorkbenchContextId;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -79,7 +80,6 @@ public class SessionDiagramViewerScreen {
     private final ShowcaseDiagramService diagramLoader;
     private final SessionManager sessionManager;
     private final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory;
-    private final PlaceManager placeManager;
     private final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
     private final MenuDevCommandsBuilder menuDevCommandsBuilder;
     private final ScreenPanelView screenPanelView;
@@ -104,7 +104,7 @@ public class SessionDiagramViewerScreen {
         this.diagramLoader = diagramLoader;
         this.sessionManager = sessionManager;
         this.sessionPresenterFactory = sessionPresenterFactory;
-        this.placeManager = placeManager;
+        PlaceManager placeManager1 = placeManager;
         this.changeTitleNotificationEvent = changeTitleNotificationEvent;
         this.menuDevCommandsBuilder = menuDevCommandsBuilder;
         this.screenPanelView = screenPanelView;
@@ -159,37 +159,43 @@ public class SessionDiagramViewerScreen {
                                  new ServiceCallback<Diagram>() {
                                      @Override
                                      public void onSuccess(final Diagram diagram) {
-                                         final AbstractClientReadOnlySession session = newSession(diagram);
-                                         presenter = sessionPresenterFactory.newPresenterViewer();
-                                         screenPanelView.setWidget(presenter.getView());
-                                         presenter
-                                                 .withToolbar(true)
-                                                 .withPalette(false)
-                                                 .displayNotifications(type -> true).open(diagram,
-                                                                                          session,
-                                                                                          new SessionPresenter.SessionPresenterCallback<AbstractClientReadOnlySession, Diagram>() {
-                                                                                              @Override
-                                                                                              public void afterSessionOpened() {
+                                         final Metadata metadata = diagram.getMetadata();
+                                         sessionManager.getSessionFactory(metadata,
+                                                                          ClientReadOnlySession.class)
+                                                 .newSession(metadata,
+                                                             s -> {
+                                                                 final AbstractClientReadOnlySession session = (AbstractClientReadOnlySession) s;
+                                                                 presenter = sessionPresenterFactory.newPresenterViewer();
+                                                                 screenPanelView.setWidget(presenter.getView());
+                                                                 presenter
+                                                                         .withToolbar(true)
+                                                                         .withPalette(false)
+                                                                         .displayNotifications(type -> true).open(diagram,
+                                                                                                                  session,
+                                                                                                                  new SessionPresenter.SessionPresenterCallback<AbstractClientReadOnlySession, Diagram>() {
+                                                                                                                      @Override
+                                                                                                                      public void afterSessionOpened() {
 
-                                                                                              }
+                                                                                                                      }
 
-                                                                                              @Override
-                                                                                              public void afterCanvasInitialized() {
+                                                                                                                      @Override
+                                                                                                                      public void afterCanvasInitialized() {
 
-                                                                                              }
+                                                                                                                      }
 
-                                                                                              @Override
-                                                                                              public void onSuccess() {
-                                                                                                  BusyPopup.close();
-                                                                                                  callback.execute();
-                                                                                              }
+                                                                                                                      @Override
+                                                                                                                      public void onSuccess() {
+                                                                                                                          BusyPopup.close();
+                                                                                                                          callback.execute();
+                                                                                                                      }
 
-                                                                                              @Override
-                                                                                              public void onError(final ClientRuntimeError error) {
-                                                                                                  SessionDiagramViewerScreen.this.showError(error);
-                                                                                                  callback.execute();
-                                                                                              }
-                                                                                          });
+                                                                                                                      @Override
+                                                                                                                      public void onError(final ClientRuntimeError error) {
+                                                                                                                          SessionDiagramViewerScreen.this.showError(error);
+                                                                                                                          callback.execute();
+                                                                                                                      }
+                                                                                                                  });
+                                                             });
                                      }
 
                                      @Override
@@ -198,11 +204,6 @@ public class SessionDiagramViewerScreen {
                                          callback.execute();
                                      }
                                  });
-    }
-
-    private AbstractClientReadOnlySession newSession(final Diagram diagram) {
-        return (AbstractClientReadOnlySession) sessionManager.getSessionFactory(diagram,
-                                                                                ClientReadOnlySession.class).newSession();
     }
 
     private void updateTitle(final String title) {

@@ -41,12 +41,12 @@ public class ValidateToolbarCommand extends AbstractToolbarCommand<AbstractClien
 
     @Override
     public String getCaption() {
-        return translationService.getKeyValue(CoreTranslationMessages.VALIDATE);
+        return translationService.getValue(CoreTranslationMessages.VALIDATE);
     }
 
     @Override
     public String getTooltip() {
-        return translationService.getKeyValue(CoreTranslationMessages.VALIDATE);
+        return translationService.getValue(CoreTranslationMessages.VALIDATE);
     }
 
     @Override

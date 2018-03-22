@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.project.diagram.impl;
 
+import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -28,34 +29,34 @@ import org.uberfire.backend.vfs.Path;
 @Portable
 public class ProjectMetadataImpl extends AbstractMetadata implements ProjectMetadata {
 
-    private String projectName;
-    private String projectPkg;
+    private String moduleName;
+    private Package projectPkg;
 
     public ProjectMetadataImpl() {
     }
 
     private ProjectMetadataImpl(final @MapsTo("definitionSetId") String definitionSetId,
-                                final @MapsTo("projectPkg") String projectPkg,
-                                final @MapsTo("projectName") String projectName) {
+                                final @MapsTo("projectPkg") Package projectPkg,
+                                final @MapsTo("moduleName") String moduleName) {
         super(definitionSetId);
-        this.projectName = projectName;
+        this.moduleName = moduleName;
         this.projectPkg = projectPkg;
     }
 
     @Override
-    public String getProjectName() {
-        return projectName;
+    public String getModuleName() {
+        return moduleName;
     }
 
     @Override
-    public String getProjectPackage() {
+    public Package getProjectPackage() {
         return projectPkg;
     }
 
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
-                                         (null != projectName) ? projectName.hashCode() : 0,
+                                         (null != moduleName) ? moduleName.hashCode() : 0,
                                          (null != projectPkg) ? projectPkg.hashCode() : 0);
     }
 
@@ -64,7 +65,7 @@ public class ProjectMetadataImpl extends AbstractMetadata implements ProjectMeta
         if (o instanceof ProjectMetadataImpl) {
             ProjectMetadataImpl other = (ProjectMetadataImpl) o;
             return super.equals(other) &&
-                    (null != projectName) ? projectName.equals(other.projectName) : null == other.projectName &&
+                    (null != moduleName) ? moduleName.equals(other.moduleName) : null == other.moduleName &&
                     (null != projectPkg) ? projectPkg.equals(other.projectPkg) : null == other.projectPkg;
         }
         return false;
@@ -81,7 +82,7 @@ public class ProjectMetadataImpl extends AbstractMetadata implements ProjectMeta
         private String defSetId;
         private String title;
         private String pName;
-        private String pPkg;
+        private Package pPkg;
         private Path path;
 
         public ProjectMetadataBuilder forDefinitionSetId(final String s) {
@@ -94,12 +95,12 @@ public class ProjectMetadataImpl extends AbstractMetadata implements ProjectMeta
             return this;
         }
 
-        public ProjectMetadataBuilder forProjectName(final String pName) {
+        public ProjectMetadataBuilder forModuleName(final String pName) {
             this.pName = pName;
             return this;
         }
 
-        public ProjectMetadataBuilder forProjectPackage(final String pPkg) {
+        public ProjectMetadataBuilder forProjectPackage(final Package pPkg) {
             this.pPkg = pPkg;
             return this;
         }
@@ -114,6 +115,7 @@ public class ProjectMetadataImpl extends AbstractMetadata implements ProjectMeta
                                                                        pPkg,
                                                                        pName);
             result.setPath(path);
+            result.setRoot(pPkg.getModuleRootPath());
             result.setTitle(title);
             return result;
         }

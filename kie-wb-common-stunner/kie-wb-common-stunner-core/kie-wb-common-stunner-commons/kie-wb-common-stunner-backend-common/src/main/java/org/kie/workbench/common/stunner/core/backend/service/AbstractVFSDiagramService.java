@@ -62,7 +62,6 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
 
     private final DefinitionManager definitionManager;
     private final FactoryManager factoryManager;
-    private final IOService ioService;
     private final Instance<DefinitionSetService> definitionSetServiceInstances;
     private final BackendRegistryFactory registryFactory;
     private Collection<DefinitionSetService> definitionSetServices = new LinkedList<>();
@@ -71,14 +70,14 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
     public AbstractVFSDiagramService(final DefinitionManager definitionManager,
                                      final FactoryManager factoryManager,
                                      final Instance<DefinitionSetService> definitionSetServiceInstances,
-                                     final IOService ioService,
                                      final BackendRegistryFactory registryFactory) {
         this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;
-        this.ioService = ioService;
         this.definitionSetServiceInstances = definitionSetServiceInstances;
         this.registryFactory = registryFactory;
     }
+
+    protected abstract IOService getIoService();
 
     protected void initialize() {
         for (DefinitionSetService definitionSetService : definitionSetServiceInstances) {
@@ -99,15 +98,15 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
                                            services.getResourceType());
         final org.uberfire.java.nio.file.Path kiePath = Paths.convert(path).resolve(fName);
         try {
-            if (ioService.exists(kiePath)) {
+            if (getIoService().exists(kiePath)) {
                 throw new FileAlreadyExistsException(kiePath.toString());
             }
             final D diagram = factoryManager.newDiagram(name,
                                                         defSetId,
                                                         metadata);
             final String[] raw = serialize(diagram);
-            ioService.write(kiePath,
-                            raw[0]);
+            getIoService().write(kiePath,
+                                 raw[0]);
             return Paths.convert(kiePath);
         } catch (final Exception e) {
             LOG.error("Cannot create diagram in path [" + kiePath + "]",
@@ -149,16 +148,10 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
                 final String name = parseFileName(file,
                                                   services);
                 // Check if any metadata definition exist.
-                M metadata = null;
-                InputStream metaDataStream = loadMetadataForPath(file);
-                if (null != metaDataStream) {
-                    try {
-                        metadata = (M) services.getDiagramMarshaller().getMetadataMarshaller().unmarshall(metaDataStream);
-                    } catch (java.io.IOException e) {
-                        LOG.error("Cannot unmarshall metadata for diagram's path [" + file + "]",
-                                  e);
-                    }
-                }
+                M metadata = obtainMetadata(services,
+                                            file,
+                                            defSetId,
+                                            name);
                 if (null == metadata) {
                     metadata = (M) buildMetadataInstance(file,
                                                          defSetId,
@@ -184,6 +177,12 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
         }
         throw new UnsupportedOperationException("Diagram format not supported [" + file + "]");
     }
+
+    @SuppressWarnings("unchecked")
+    protected abstract M obtainMetadata(DefinitionSetService services,
+                                        final org.uberfire.backend.vfs.Path diagramFilePath,
+                                        final String defSetId,
+                                        final String fileName);
 
     private String parseFileName(final org.uberfire.backend.vfs.Path file,
                                  final DefinitionSetService services) {
@@ -244,7 +243,7 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
     public Collection<D> getDiagramsByPath(final org.uberfire.java.nio.file.Path root) {
         try {
             final Collection<D> result = new ArrayList<D>();
-            if (ioService.exists(root)) {
+            if (getIoService().exists(root)) {
                 walkFileTree(checkNotNull("root",
                                           root),
                              new SimpleFileVisitor<org.uberfire.java.nio.file.Path>() {
@@ -282,20 +281,18 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
         }
     }
 
-    protected abstract InputStream loadMetadataForPath(final org.uberfire.backend.vfs.Path path);
-
     protected abstract Metadata buildMetadataInstance(final org.uberfire.backend.vfs.Path path,
                                                       final String defSetId,
                                                       final String title);
 
     protected InputStream loadPath(final org.uberfire.backend.vfs.Path _path) {
         org.uberfire.java.nio.file.Path path = Paths.convert(_path);
-        final byte[] bytes = ioService.readAllBytes(path);
+        final byte[] bytes = getIoService().readAllBytes(path);
         return new ByteArrayInputStream(bytes);
     }
 
     protected InputStream loadPath(final org.uberfire.java.nio.file.Path _path) {
-        final byte[] bytes = ioService.readAllBytes(_path);
+        final byte[] bytes = getIoService().readAllBytes(_path);
         return new ByteArrayInputStream(bytes);
     }
 
@@ -343,10 +340,6 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
             }
         }
         return null;
-    }
-
-    protected IOService getIoService() {
-        return ioService;
     }
 
     protected DefinitionManager getDefinitionManager() {

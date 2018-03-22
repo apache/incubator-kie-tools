@@ -26,11 +26,13 @@ import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuIt
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearStatesSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.CopySelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.CutSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.DeleteSelectionSessionCommand;
@@ -71,6 +73,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -146,6 +149,51 @@ public class AbstractProjectDiagramEditorTest {
     @Mock
     protected MenuItem alertsButtonMenuItem;
 
+    @Mock
+    private ClearStatesSessionCommand clearStatesSessionCommand;
+
+    @Mock
+    private SwitchGridSessionCommand switchGridSessionCommand;
+
+    @Mock
+    private VisitGraphSessionCommand visitGraphSessionCommand;
+
+    @Mock
+    private ClearSessionCommand clearSessionCommand;
+
+    @Mock
+    private DeleteSelectionSessionCommand deleteSelectionSessionCommand;
+
+    @Mock
+    private UndoSessionCommand undoSessionCommand;
+
+    @Mock
+    private RedoSessionCommand redoSessionCommand;
+
+    @Mock
+    private ValidateSessionCommand validateSessionCommand;
+
+    @Mock
+    private ExportToPngSessionCommand exportToPngSessionCommand;
+
+    @Mock
+    private ExportToJpgSessionCommand exportToJpgSessionCommand;
+
+    @Mock
+    private ExportToPdfSessionCommand exportToPdfSessionCommand;
+
+    @Mock
+    private ExportToBpmnSessionCommand exportToBpmnSessionCommand;
+
+    @Mock
+    private CopySelectionSessionCommand copySelectionSessionCommand;
+
+    @Mock
+    private PasteSelectionSessionCommand pasteSelectionSessionCommand;
+
+    @Mock
+    private CutSelectionSessionCommand cutSelectionSessionCommand;
+
     abstract class ClientResourceTypeMock implements ClientResourceType {
 
     }
@@ -153,21 +201,23 @@ public class AbstractProjectDiagramEditorTest {
     protected AbstractProjectDiagramEditor<ClientResourceTypeMock> presenter;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() {
-        doReturn(mock(SwitchGridSessionCommand.class)).when(sessionCommandFactory).newSwitchGridCommand();
-        doReturn(mock(VisitGraphSessionCommand.class)).when(sessionCommandFactory).newVisitGraphCommand();
-        doReturn(mock(ClearSessionCommand.class)).when(sessionCommandFactory).newClearCommand();
-        doReturn(mock(DeleteSelectionSessionCommand.class)).when(sessionCommandFactory).newDeleteSelectedElementsCommand();
-        doReturn(mock(UndoSessionCommand.class)).when(sessionCommandFactory).newUndoCommand();
-        doReturn(mock(RedoSessionCommand.class)).when(sessionCommandFactory).newRedoCommand();
-        doReturn(mock(ValidateSessionCommand.class)).when(sessionCommandFactory).newValidateCommand();
-        doReturn(mock(ExportToPngSessionCommand.class)).when(sessionCommandFactory).newExportToPngSessionCommand();
-        doReturn(mock(ExportToJpgSessionCommand.class)).when(sessionCommandFactory).newExportToJpgSessionCommand();
-        doReturn(mock(ExportToPdfSessionCommand.class)).when(sessionCommandFactory).newExportToPdfSessionCommand();
-        doReturn(mock(ExportToBpmnSessionCommand.class)).when(sessionCommandFactory).newExportToBpmnSessionCommand();
-        doReturn(mock(CopySelectionSessionCommand.class)).when(sessionCommandFactory).newCopySelectionCommand();
-        doReturn(mock(PasteSelectionSessionCommand.class)).when(sessionCommandFactory).newPasteSelectionCommand();
-        doReturn(mock(CutSelectionSessionCommand.class)).when(sessionCommandFactory).newCutSelectionCommand();
+        doReturn(clearStatesSessionCommand).when(sessionCommandFactory).newClearStatesCommand();
+        doReturn(switchGridSessionCommand).when(sessionCommandFactory).newSwitchGridCommand();
+        doReturn(visitGraphSessionCommand).when(sessionCommandFactory).newVisitGraphCommand();
+        doReturn(clearSessionCommand).when(sessionCommandFactory).newClearCommand();
+        doReturn(deleteSelectionSessionCommand).when(sessionCommandFactory).newDeleteSelectedElementsCommand();
+        doReturn(undoSessionCommand).when(sessionCommandFactory).newUndoCommand();
+        doReturn(redoSessionCommand).when(sessionCommandFactory).newRedoCommand();
+        doReturn(validateSessionCommand).when(sessionCommandFactory).newValidateCommand();
+        doReturn(exportToPngSessionCommand).when(sessionCommandFactory).newExportToPngSessionCommand();
+        doReturn(exportToJpgSessionCommand).when(sessionCommandFactory).newExportToJpgSessionCommand();
+        doReturn(exportToPdfSessionCommand).when(sessionCommandFactory).newExportToPdfSessionCommand();
+        doReturn(exportToBpmnSessionCommand).when(sessionCommandFactory).newExportToBpmnSessionCommand();
+        doReturn(copySelectionSessionCommand).when(sessionCommandFactory).newCopySelectionCommand();
+        doReturn(pasteSelectionSessionCommand).when(sessionCommandFactory).newPasteSelectionCommand();
+        doReturn(cutSelectionSessionCommand).when(sessionCommandFactory).newCutSelectionCommand();
 
         doReturn(mock(MenuItem.class)).when(projectMenuItemsBuilder).newClearItem(any(Command.class));
         doReturn(mock(MenuItem.class)).when(projectMenuItemsBuilder).newVisitGraphItem(any(Command.class));
@@ -196,6 +246,7 @@ public class AbstractProjectDiagramEditorTest {
         return resourceType;
     }
 
+    @SuppressWarnings("unchecked")
     protected AbstractProjectDiagramEditor createDiagramEditor() {
         return new AbstractProjectDiagramEditor<ClientResourceTypeMock>(view,
                                                                         placeManager,
@@ -285,5 +336,29 @@ public class AbstractProjectDiagramEditorTest {
         String formattedTitle = presenter.formatTitle(title);
         assertEquals(formattedTitle,
                      "testDiagram.bpmn - Business Process");
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testCloseEditor() {
+        SessionPresenter sessionPresenter = mock(SessionPresenter.class);
+        presenter.setSessionPresenter(sessionPresenter);
+        presenter.doClose();
+        verify(clearStatesSessionCommand, times(1)).unbind();
+        verify(switchGridSessionCommand, times(1)).unbind();
+        verify(visitGraphSessionCommand, times(1)).unbind();
+        verify(clearSessionCommand, times(1)).unbind();
+        verify(deleteSelectionSessionCommand, times(1)).unbind();
+        verify(undoSessionCommand, times(1)).unbind();
+        verify(redoSessionCommand, times(1)).unbind();
+        verify(validateSessionCommand, times(1)).unbind();
+        verify(exportToPngSessionCommand, times(1)).unbind();
+        verify(exportToJpgSessionCommand, times(1)).unbind();
+        verify(exportToPdfSessionCommand, times(1)).unbind();
+        verify(copySelectionSessionCommand, times(1)).unbind();
+        verify(pasteSelectionSessionCommand, times(1)).unbind();
+        verify(cutSelectionSessionCommand, times(1)).unbind();
+        verify(sessionPresenter, never()).clear();
+        verify(sessionPresenter, times(1)).destroy();
     }
 }

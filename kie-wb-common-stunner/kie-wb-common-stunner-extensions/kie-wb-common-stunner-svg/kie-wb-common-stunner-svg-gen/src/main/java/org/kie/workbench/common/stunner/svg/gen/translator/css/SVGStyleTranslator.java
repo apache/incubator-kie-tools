@@ -20,13 +20,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.steadystate.css.dom.CSSStyleRuleImpl;
 import com.steadystate.css.dom.CSSStyleSheetImpl;
@@ -110,7 +110,7 @@ public class SVGStyleTranslator {
                 null;
         if (!isEmpty(cssClassRaw)) {
             final List<String> elementSelectors = parseAllSelectors(element);
-            final List<String> selectors = new ArrayList<>(elementSelectors);
+            final List<String> selectors = elementSelectors.stream().collect(Collectors.toList());
             for (String elementSelector : elementSelectors) {
                 selectors.add("#" + svgId + " " + elementSelector);
             }
@@ -272,7 +272,7 @@ public class SVGStyleTranslator {
             if (result.isEmpty()) {
                 result.addAll(selectors);
             } else {
-                ArrayList<String> parentSelectors = new ArrayList<>(result);
+                final List<String> parentSelectors = result.stream().collect(Collectors.toList());
                 for (String selector : selectors) {
                     for (String parentSelector : parentSelectors) {
                         result.add(selector + " " + parentSelector);

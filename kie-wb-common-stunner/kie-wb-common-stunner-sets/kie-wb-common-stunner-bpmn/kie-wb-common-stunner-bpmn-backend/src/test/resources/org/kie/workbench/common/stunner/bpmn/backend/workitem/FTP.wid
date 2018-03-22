@@ -1,0 +1,24 @@
+import org.drools.core.process.core.datatype.impl.type.StringDataType;
+
+[
+
+  [
+    "name" : "FTP",
+    "description" : "Sending files using FTP",
+    "version" : "1.0",
+    "parameters" : [
+    	"FilePath" : new StringDataType(),
+    	"User" : new StringDataType(),
+    	"Password" : new StringDataType(),
+    	"Body" : new StringDataType()
+    ],
+    "displayName" : "FTP",
+    "icon" : "ftp.gif",
+    "eclipse:customEditor" : "org.drools.eclipse.flow.common.editor.editpart.work.SampleCustomEditor",
+    "category" : "File System",
+    "defaultHandler" : "org.jbpm.process.workitem.ftp.FTPUploadWorkItemHandler",
+    "dependencies" : [
+    ]
+  ]
+
+]

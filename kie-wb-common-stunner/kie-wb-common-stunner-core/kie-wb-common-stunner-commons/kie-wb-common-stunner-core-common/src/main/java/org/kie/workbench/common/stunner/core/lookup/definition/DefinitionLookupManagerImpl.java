@@ -112,9 +112,9 @@ public class DefinitionLookupManagerImpl
         final Set<String> labels = definitionAdapter.getLabels(def);
         boolean isNode = isNode(def,
                                 definitionAdapter);
-        return new DefinitionRepresentationImpl(id,
-                                                isNode,
-                                                labels);
+        return new DefinitionRepresentation(id,
+                                            isNode,
+                                            labels);
     }
 
     private boolean isNode(final Object def,

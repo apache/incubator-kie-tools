@@ -26,7 +26,8 @@ public interface ConnectorShapeDef<W, V extends ShapeView>
     ConnectorGlyph GLYPH = ConnectorGlyph.create();
 
     @Override
-    default Glyph getGlyph(Class<? extends W> type) {
+    default Glyph getGlyph(Class<? extends W> type,
+                           final String defId) {
         return GLYPH;
     }
 

@@ -93,6 +93,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.WaitForCompletion;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
+import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 
@@ -130,10 +131,16 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
         for (final Class<?> defClass : definitions) {
             String customMapping = customMappings.get(defClass);
             customMapping = customMapping != null ? customMapping : globalMappings.get(defClass);
-            final String orxId = customMapping != null ? customMapping : getDefaultOryxDefinitionId(defClass);
-            defMappings.put(defClass,
-                            orxId);
+            final String oryxId = customMapping != null ? customMapping : getDefaultOryxDefinitionId(defClass);
+            addOryxDefinitionId(defClass,
+                                oryxId);
         }
+    }
+
+    public void addOryxDefinitionId(final Class<?> type,
+                                    final String oryxId) {
+        defMappings.put(type,
+                        oryxId);
     }
 
     @Override
@@ -289,6 +296,14 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
             businesRuleTaskPropertiesMap.put(AssignmentsInfo.class,
                                              "assignmentsinfo");
 
+            Map<Class<?>, String> serviceTaskPropertiesMap = new HashMap<Class<?>, String>();
+            put(ServiceTask.class,
+                serviceTaskPropertiesMap);
+            serviceTaskPropertiesMap.put(AssignmentsInfo.class,
+                                         "assignmentsinfo");
+            serviceTaskPropertiesMap.put(TaskName.class,
+                                         "taskname");
+
             Map<Class<?>, String> startNoneEventPropertiesMap = new HashMap<Class<?>, String>();
             put(StartNoneEvent.class,
                 startNoneEventPropertiesMap);
@@ -422,8 +437,8 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
     }
 
     @Override
-    public String getOryxDefinitionId(final Class<?> clazz) {
-        return defMappings.get(clazz);
+    public String getOryxDefinitionId(final Object def) {
+        return defMappings.get(def.getClass());
     }
 
     @Override

@@ -192,7 +192,7 @@ public class CreateConnectorActionTest {
         tested.getTitle(canvasHandler,
                         NODE_UUID);
         verify(translationService,
-               times(1)).getKeyValue(eq(CreateConnectorAction.KEY_TITLE));
+               times(1)).getValue(eq(CreateConnectorAction.KEY_TITLE));
     }
 
     @Test

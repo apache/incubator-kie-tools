@@ -67,8 +67,10 @@ public class ShapeViewHandlersDef<W, V extends ShapeView, D extends ShapeViewDef
     }
 
     @Override
-    public Glyph getGlyph(Class<? extends W> type) {
-        return delegate.getGlyph(type);
+    public Glyph getGlyph(Class<? extends W> type,
+                          final String defId) {
+        return delegate.getGlyph(type,
+                                 defId);
     }
 
     public D getShapeViewDef() {

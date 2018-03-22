@@ -17,11 +17,11 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 public class Categories {
 
-    public static final String DIAGRAM = "DMN Diagram";
+    public static final String DIAGRAM = "DMNDiagram";
 
-    public static final String NODES = "DMN Nodes";
+    public static final String NODES = "DMNNodes";
 
-    public static final String CONNECTORS = "DMN Connectors";
+    public static final String CONNECTORS = "DMNConnectors";
 
-    public static final String MISCELLANEOUS = "DMN Miscellaneous objects - should not be in Palette";
+    public static final String MISCELLANEOUS = "DMNMiscellaneousObjects";
 }

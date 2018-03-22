@@ -16,19 +16,97 @@
 
 package org.kie.workbench.common.stunner.core.lookup.diagram;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.jboss.errai.common.client.api.annotations.NonPortable;
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.uberfire.backend.vfs.Path;
 
-public interface DiagramRepresentation {
+@Portable
+public class DiagramRepresentation {
 
-    String getName();
+    private final String name;
+    private final String title;
+    private final String defSetId;
+    private final String shapeSetId;
+    private final Path path;
+    private final String thumbImageData;
 
-    String getTitle();
+    DiagramRepresentation(final @MapsTo("name") String name,
+                          final @MapsTo("title") String title,
+                          final @MapsTo("defSetId") String defSetId,
+                          final @MapsTo("shapeSetId") String shapeSetId,
+                          final @MapsTo("path") Path path,
+                          final @MapsTo("thumbImageData") String thumbImageData) {
+        this.name = name;
+        this.title = title;
+        this.defSetId = defSetId;
+        this.shapeSetId = shapeSetId;
+        this.path = path;
+        this.thumbImageData = thumbImageData;
+    }
 
-    String getDefinitionSetId();
+    public String getName() {
+        return name;
+    }
 
-    String getShapeSetId();
+    public String getTitle() {
+        return title;
+    }
 
-    Path getPath();
+    public String getDefinitionSetId() {
+        return defSetId;
+    }
 
-    String getThumbImageData();
+    public String getShapeSetId() {
+        return shapeSetId;
+    }
+
+    public Path getPath() {
+        return path;
+    }
+
+    public String getThumbImageData() {
+        return thumbImageData;
+    }
+
+    @NonPortable
+    public static final class DiagramRepresentationBuilder {
+
+        private final Diagram diagram;
+        private final DiagramRepresentation representation;
+        private String shapeSetId;
+
+        public DiagramRepresentationBuilder(final Diagram diagram) {
+            this.diagram = diagram;
+            this.representation = null;
+        }
+
+        public DiagramRepresentationBuilder(final DiagramRepresentation representation) {
+            this.representation = representation;
+            this.diagram = null;
+        }
+
+        public DiagramRepresentationBuilder setShapeSetId(final String shapeSetId) {
+            this.shapeSetId = shapeSetId;
+            return this;
+        }
+
+        public DiagramRepresentation build() {
+            if (null != diagram) {
+                return new DiagramRepresentation(diagram.getName(),
+                                                 diagram.getMetadata().getTitle(),
+                                                 diagram.getMetadata().getDefinitionSetId(),
+                                                 null != shapeSetId ? shapeSetId : diagram.getMetadata().getShapeSetId(),
+                                                 diagram.getMetadata().getPath(),
+                                                 diagram.getMetadata().getThumbData());
+            }
+            return new DiagramRepresentation(representation.getName(),
+                                             representation.getTitle(),
+                                             representation.getDefinitionSetId(),
+                                             null != shapeSetId ? shapeSetId : representation.getShapeSetId(),
+                                             representation.getPath(),
+                                             representation.getThumbImageData());
+        }
+    }
 }

@@ -32,7 +32,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.client.widgets.components.glyph.DOMGlyphRenderers;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.group.DefinitionPaletteGroupWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.items.DefinitionPaletteItemWidget;
-import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteCategory;
+import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteCategory;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 @Templated
@@ -69,7 +69,7 @@ public class DefinitionPaletteCategoryWidgetViewImpl implements DefinitionPalett
     public void render(Glyph glyph,
                        double width,
                        double height) {
-        DefinitionPaletteCategory category = presenter.getCategory();
+        DefaultPaletteCategory category = presenter.getCategory();
         categoryIcon.setTitle(category.getTitle());
         header.setTextContent(category.getTitle());
         final org.jboss.errai.common.client.api.IsElement glyphElement =

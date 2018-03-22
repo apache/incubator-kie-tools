@@ -27,6 +27,7 @@ public abstract class AbstractMetadata implements Metadata {
     private String shapeSetId;
     private String canvasRootUUID;
     private String thumbData;
+    private Path root;
     private Path path;
 
     public AbstractMetadata() {
@@ -89,6 +90,16 @@ public abstract class AbstractMetadata implements Metadata {
     @Override
     public void setPath(final Path path) {
         this.path = path;
+    }
+
+    @Override
+    public Path getRoot() {
+        return root;
+    }
+
+    @Override
+    public void setRoot(final Path path) {
+        this.root = path;
     }
 
     public void setDefinitionSetId(final String defSetId) {

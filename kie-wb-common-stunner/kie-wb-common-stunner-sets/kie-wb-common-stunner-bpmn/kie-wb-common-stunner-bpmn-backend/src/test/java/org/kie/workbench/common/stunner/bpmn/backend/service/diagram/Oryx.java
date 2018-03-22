@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.service.diagram;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.Bpmn2OryxIdMappings;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.Bpmn2OryxManager;
@@ -32,15 +33,18 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.StringTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.TimerSettingsTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.VariablesTypeSerializer;
+import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 public class Oryx {
 
-    public static Bpmn2OryxManager createOryxManager(
-            DefinitionManager definitionManager, DefinitionUtils definitionUtils) {
+    public static Bpmn2OryxManager createOryxManager(final DefinitionManager definitionManager,
+                                                     final DefinitionUtils definitionUtils,
+                                                     final Supplier<WorkItemDefinitionRegistry> workItemDefinitionRegistry) {
         // Bpmn 2 oryx stuff.
-        Bpmn2OryxIdMappings oryxIdMappings = new Bpmn2OryxIdMappings(definitionManager);
+        Bpmn2OryxIdMappings oryxIdMappings = new Bpmn2OryxIdMappings(definitionManager,
+                                                                     workItemDefinitionRegistry);
         StringTypeSerializer stringTypeSerializer = new StringTypeSerializer();
         BooleanTypeSerializer booleanTypeSerializer = new BooleanTypeSerializer();
         ColorTypeSerializer colorTypeSerializer = new ColorTypeSerializer();

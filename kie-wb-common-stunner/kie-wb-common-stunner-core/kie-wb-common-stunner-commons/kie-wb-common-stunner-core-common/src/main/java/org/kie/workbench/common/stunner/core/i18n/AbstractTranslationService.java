@@ -26,68 +26,55 @@ public abstract class AbstractTranslationService implements StunnerTranslationSe
     public static final String I18N_SEPARATOR = ".";
 
     public static final String TITLE_SUFFIX = "title";
-    public static final String CATEGORY_SUFFIX = "category";
     public static final String DESCRIPTION_SUFFIX = "description";
     public static final String CAPTION_SUFFIX = "caption";
-
-    public abstract String getKeyValue(String key);
-
-    protected abstract String getKeyValue(String key,
-                                          Object... args);
 
     @Override
     public String getDefinitionSetDescription(String defSetId) {
         PortablePreconditions.checkNotNull("defSetId",
                                            defSetId);
-        return getKeyValue(defSetId + I18N_SEPARATOR + DESCRIPTION_SUFFIX);
+        return getValue(defSetId + I18N_SEPARATOR + DESCRIPTION_SUFFIX);
     }
 
     @Override
     public String getPropertySetName(String propSetId) {
-        return getKeyValue(propSetId + I18N_SEPARATOR + CAPTION_SUFFIX);
+        return getValue(propSetId + I18N_SEPARATOR + CAPTION_SUFFIX);
     }
 
     @Override
     public String getDefinitionTitle(String defId) {
         PortablePreconditions.checkNotNull("defId",
                                            defId);
-        return getKeyValue(defId + I18N_SEPARATOR + TITLE_SUFFIX);
-    }
-
-    @Override
-    public String getDefinitionCategory(String defId) {
-        PortablePreconditions.checkNotNull("defId",
-                                           defId);
-        return getKeyValue(defId + I18N_SEPARATOR + CATEGORY_SUFFIX);
+        return getValue(defId + I18N_SEPARATOR + TITLE_SUFFIX);
     }
 
     @Override
     public String getDefinitionDescription(String defId) {
         PortablePreconditions.checkNotNull("defId",
                                            defId);
-        return getKeyValue(defId + I18N_SEPARATOR + DESCRIPTION_SUFFIX);
+        return getValue(defId + I18N_SEPARATOR + DESCRIPTION_SUFFIX);
     }
 
     @Override
     public String getPropertyCaption(String propId) {
         PortablePreconditions.checkNotNull("propId",
                                            propId);
-        return getKeyValue(propId + I18N_SEPARATOR + CAPTION_SUFFIX);
+        return getValue(propId + I18N_SEPARATOR + CAPTION_SUFFIX);
     }
 
     @Override
     public String getPropertyDescription(String propId) {
         PortablePreconditions.checkNotNull("propId",
                                            propId);
-        return getKeyValue(propId + I18N_SEPARATOR + DESCRIPTION_SUFFIX);
+        return getValue(propId + I18N_SEPARATOR + DESCRIPTION_SUFFIX);
     }
 
     protected String getRuleViolationMessage(final RuleViolation ruleViolation) {
         final String type = ruleViolation.getClass().getName();
         final Optional<Object[]> arguments = ruleViolation.getArguments();
         return arguments.isPresent() ?
-                getKeyValue(type,
-                            arguments.get()) :
-                getKeyValue(type);
+                getValue(type,
+                         arguments.get()) :
+                getValue(type);
     }
 }

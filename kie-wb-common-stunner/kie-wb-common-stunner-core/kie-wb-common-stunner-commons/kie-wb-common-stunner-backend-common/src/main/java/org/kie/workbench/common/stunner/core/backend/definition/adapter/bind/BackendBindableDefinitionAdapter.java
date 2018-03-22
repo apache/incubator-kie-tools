@@ -16,9 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.backend.definition.adapter.bind;
 
+import java.util.Collections;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.AbstractBindableDefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -38,6 +40,22 @@ class BackendBindableDefinitionAdapter<T> extends AbstractBindableDefinitionAdap
 
     BackendBindableDefinitionAdapter(final DefinitionUtils definitionUtils) {
         super(definitionUtils);
+    }
+
+    @Override
+    public String getId(final Object pojo) {
+        final String fieldId = propertyIdFieldNames.get(pojo.getClass());
+        if (null != fieldId) {
+            try {
+                return BindableAdapterUtils.getDynamicDefinitionId(pojo.getClass(),
+                                                                   getFieldValue(pojo,
+                                                                                 fieldId));
+            } catch (IllegalAccessException e) {
+                LOG.error("Error obtaining the id for Definition " + pojo.getClass());
+            }
+            return null;
+        }
+        return getDefinitionId(pojo.getClass());
     }
 
     @Override
@@ -85,7 +103,7 @@ class BackendBindableDefinitionAdapter<T> extends AbstractBindableDefinitionAdap
         } catch (IllegalAccessException e) {
             LOG.error("Error obtaining labels for Definition with id " + getId(definition));
         }
-        return null;
+        return Collections.emptySet();
     }
 
     @Override
@@ -98,7 +116,7 @@ class BackendBindableDefinitionAdapter<T> extends AbstractBindableDefinitionAdap
         } catch (IllegalAccessException e) {
             LOG.error("Error obtaining property sets for Definition with id " + getId(definition));
         }
-        return null;
+        return Collections.emptySet();
     }
 
     @Override
@@ -113,7 +131,7 @@ class BackendBindableDefinitionAdapter<T> extends AbstractBindableDefinitionAdap
         } catch (IllegalAccessException e) {
             LOG.error("Error obtaining properties for Definition with id " + getId(definition));
         }
-        return null;
+        return Collections.emptySet();
     }
 
     @Override

@@ -22,7 +22,6 @@ import java.util.function.Predicate;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.gwtbootstrap3.extras.notify.client.ui.Notify;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
@@ -80,7 +79,7 @@ public class GenerateSelectedFormsSessionCommand extends AbstractClientSessionCo
             service.generateSelectedForms(getCanvasHandler().getDiagram(),
                                           selectedItems);
         } else {
-            formGenerationNotifier.showNotification(translationService.getKeyValue(FormsClientConstants.FormsNoItemsSelectedForGeneration));
+            formGenerationNotifier.showNotification(translationService.getValue(FormsClientConstants.FormsNoItemsSelectedForGeneration));
         }
     }
 

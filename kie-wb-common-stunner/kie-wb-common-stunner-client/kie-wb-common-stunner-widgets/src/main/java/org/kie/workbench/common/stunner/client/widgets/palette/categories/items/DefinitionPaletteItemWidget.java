@@ -16,30 +16,27 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette.categories.items;
 
+import java.util.function.Consumer;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
-import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
-import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteItem;
+import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteItem;
+import org.kie.workbench.common.stunner.core.client.components.palette.PaletteItemMouseEvent;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 @Dependent
-public class DefinitionPaletteItemWidget implements DefinitionPaletteItemWidgetView.Presenter,
-                                                    IsElement {
-
-    public static final double ICON_WIDTH = 15;
-    public static final double ICON_HEIGHT = 15;
+public class DefinitionPaletteItemWidget implements DefinitionPaletteItemWidgetView.Presenter {
 
     private final ShapeManager shapeManager;
     private final DefinitionPaletteItemWidgetView view;
 
-    private DefinitionPaletteItem item;
-    private Palette.ItemMouseDownCallback itemMouseDownCallback;
+    private DefaultPaletteItem item;
+    private Consumer<PaletteItemMouseEvent> itemMouseDownCallback;
 
     @Inject
     public DefinitionPaletteItemWidget(final ShapeManager shapeManager,
@@ -53,19 +50,20 @@ public class DefinitionPaletteItemWidget implements DefinitionPaletteItemWidgetV
         view.init(this);
     }
 
-    public void initialize(DefinitionPaletteItem item,
+    @Override
+    public void initialize(DefaultPaletteItem item,
                            ShapeFactory<?, ?> shapeFactory,
-                           Palette.ItemMouseDownCallback itemMouseDownCallback) {
+                           Consumer<PaletteItemMouseEvent> itemMouseDownCallback) {
         this.item = item;
         final Glyph glyph = shapeFactory.getGlyph(item.getDefinitionId());
         this.itemMouseDownCallback = itemMouseDownCallback;
         view.render(glyph,
-                    ICON_WIDTH,
-                    ICON_HEIGHT);
+                    item.getIconSize(),
+                    item.getIconSize());
     }
 
     @Override
-    public DefinitionPaletteItem getItem() {
+    public DefaultPaletteItem getItem() {
         return item;
     }
 
@@ -75,11 +73,11 @@ public class DefinitionPaletteItemWidget implements DefinitionPaletteItemWidgetV
                             int x,
                             int y) {
         if (itemMouseDownCallback != null) {
-            itemMouseDownCallback.onItemMouseDown(item.getId(),
-                                                  clientX,
-                                                  clientY,
-                                                  x,
-                                                  y);
+            itemMouseDownCallback.accept(new PaletteItemMouseEvent(item.getId(),
+                                                                   clientX,
+                                                                   clientY,
+                                                                   x,
+                                                                   y));
         }
     }
 

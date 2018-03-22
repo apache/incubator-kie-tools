@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.project.client.service;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -57,14 +58,9 @@ public class ClientProjectDiagramService extends AbstractClientDiagramService<Pr
                        final String name,
                        final String defSetId,
                        final String projName,
-                       final String projPkg,
+                       final Package projPkg,
                        final ServiceCallback<Path> callback) {
-        diagramServiceCaller.call(new RemoteCallback<Path>() {
-                                      @Override
-                                      public void callback(final Path path) {
-                                          callback.onSuccess(path);
-                                      }
-                                  },
+        diagramServiceCaller.call((RemoteCallback<Path>) callback::onSuccess,
                                   (message, throwable) -> {
                                       callback.onError(new ClientRuntimeError(throwable));
                                       return false;

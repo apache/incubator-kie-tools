@@ -17,6 +17,7 @@ package org.kie.workbench.common.stunner.bpmn.project.factory.impl;
 
 import javax.enterprise.context.Dependent;
 
+import org.guvnor.common.services.project.model.Package;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
@@ -79,15 +80,15 @@ public class BPMNProjectDiagramFactoryImpl
         final DiagramSet diagramSet = diagram.getDiagramSet();
         final String id = diagramSet.getId().getValue();
         if (id == null || id.isEmpty()) {
-            final String projectName = null != metadata.getProjectName() ? metadata.getProjectName() + "." : "";
+            final String projectName = null != metadata.getModuleName() ? metadata.getModuleName() + "." : "";
             diagramSet.getId().setValue(projectName + name);
         }
         final String p = diagramSet.getPackageProperty().getValue();
         if (p == null || p.isEmpty()) {
-            final String metadataPackage = metadata.getProjectPackage();
-            final String value = metadataPackage == null || metadataPackage.isEmpty() ?
+            final Package metadataPackage = metadata.getProjectPackage();
+            final String value = metadataPackage == null ?
                     org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package.DEFAULT_PACKAGE :
-                    metadata.getProjectPackage();
+                    metadata.getProjectPackage().getPackageName();
             diagramSet.getPackageProperty().setValue(value);
         }
         final String diagramName = diagramSet.getName().getValue();

@@ -102,7 +102,8 @@ public class SVGViewDefinitionGenerator
             final List<ShapeDefinition> stateViews = new LinkedList<>();
             SVGModelUtils.visit(viewDefinition,
                                 p -> {
-                                    if (p instanceof ShapeDefinition && p.getAlpha() > 0) {
+                                    if (p instanceof ShapeDefinition &&
+                                            SVGPrimitiveGeneratorUtils.CAN_GENERATE_PRIMITIVE_CODE.test(p)) {
                                         final ShapeDefinition shapeDefinition = (ShapeDefinition) p;
                                         shapeDefinition.getStateDefinition()
                                                 .ifPresent(s -> stateViews.add((ShapeDefinition) p));

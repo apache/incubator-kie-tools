@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.cm.backend;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.backend.service.XMLEncoderDiagramMetadataMarshaller;
 import org.kie.workbench.common.stunner.bpmn.backend.BaseDiagramMarshaller;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder.GraphObjectBuilderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxManager;
@@ -29,6 +28,8 @@ import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
+import org.kie.workbench.common.stunner.core.backend.service.XMLEncoderDiagramMetadataMarshaller;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
@@ -57,6 +58,11 @@ public class CaseManagementDiagramMarshaller extends BaseDiagramMarshaller<CaseM
               rulesManager,
               graphCommandManager,
               commandFactory);
+    }
+
+    @Override
+    protected String getPreProcessingData(final Metadata metadata) {
+        return null;
     }
 
     @Override

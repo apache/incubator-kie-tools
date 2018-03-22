@@ -24,10 +24,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.service.KieService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.service.DefinitionSetService;
@@ -63,6 +65,7 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
              null,
              null,
              null,
+             null,
              null);
     }
 
@@ -74,7 +77,8 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
                                      final @Named("ioStrategy") IOService ioService,
                                      final SessionInfo sessionInfo,
                                      final Event<ResourceOpenedEvent> resourceOpenedEvent,
-                                     final CommentedOptionFactory commentedOptionFactory) {
+                                     final CommentedOptionFactory commentedOptionFactory,
+                                     final KieModuleService moduleService) {
         this.ioService = ioService;
         this.sessionInfo = sessionInfo;
         this.resourceOpenedEvent = resourceOpenedEvent;
@@ -83,7 +87,8 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
                                           factoryManager,
                                           definitionSetServiceInstances,
                                           registryFactory,
-                                          ioService);
+                                          ioService,
+                                          moduleService);
     }
 
     @PostConstruct
@@ -106,7 +111,7 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
                        final String name,
                        final String defSetId,
                        final String projName,
-                       final String projPkg) {
+                       final Package projPkg) {
         return controller.create(path,
                                  name,
                                  defSetId,
@@ -141,7 +146,7 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
                      final ProjectDiagram content,
                      final Metadata metadata,
                      final String comment) {
-        LOG.warn("Saving diagram with UUID [" + content.getName() + "] into path [" + path + "].");
+        LOG.debug("Saving diagram with UUID [" + content.getName() + "] into path [" + path + "].");
         return controller.save(path,
                                content,
                                metadataService.setUpAttributes(path,
@@ -175,11 +180,13 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
                                                               final FactoryManager factoryManager,
                                                               final Instance<DefinitionSetService> definitionSetServiceInstances,
                                                               final BackendRegistryFactory registryFactory,
-                                                              final IOService ioService) {
+                                                              final IOService ioService,
+                                                              final KieModuleService moduleService) {
         return new ProjectDiagramServiceController(definitionManager,
                                                    factoryManager,
                                                    definitionSetServiceInstances,
                                                    ioService,
-                                                   registryFactory);
+                                                   registryFactory,
+                                                   moduleService);
     }
 }

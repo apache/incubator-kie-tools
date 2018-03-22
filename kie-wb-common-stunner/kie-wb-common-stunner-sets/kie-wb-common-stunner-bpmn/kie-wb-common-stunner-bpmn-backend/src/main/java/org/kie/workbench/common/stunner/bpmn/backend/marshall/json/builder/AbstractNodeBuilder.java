@@ -47,11 +47,14 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
         extends AbstractObjectBuilder<W, T> implements NodeObjectBuilder<W, T> {
 
     protected final Class<?> definitionClass;
+    protected final String definitionId;
     protected Set<String> childNodeIds;
 
-    public AbstractNodeBuilder(final Class<?> definitionClass) {
+    public AbstractNodeBuilder(final Class<?> definitionClass,
+                               final String definitionId) {
 
         this.definitionClass = definitionClass;
+        this.definitionId = definitionId;
         this.childNodeIds = new LinkedHashSet<String>();
     }
 
@@ -68,7 +71,8 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
 
     @Override
     public String toString() {
-        return super.toString() + " [defClass=" + definitionClass.getName() + "] [childrenIds=" + childNodeIds + "] ";
+        return super.toString() + " [defClass=" + definitionClass.getName() + ", defId=" + definitionId + "] " +
+                "[childrenIds=" + childNodeIds + "] ";
     }
 
     @Override
@@ -102,6 +106,9 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
     }
 
     protected String getDefinitionToBuild(final BuilderContext context) {
+        if (null != definitionId) {
+            return definitionId;
+        }
         return context.getOryxManager().getMappingsManager().getDefinitionId(definitionClass);
     }
 

@@ -16,18 +16,20 @@
 
 package org.kie.workbench.common.stunner.core.client.components.palette;
 
-import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
-import org.kie.workbench.common.stunner.core.client.components.palette.model.HasPaletteItems;
+import java.util.function.Consumer;
 
-public abstract class AbstractPalette<D extends HasPaletteItems> implements Palette<D> {
+import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
+import org.uberfire.mvp.Command;
+
+public abstract class AbstractPalette<D extends PaletteDefinition> implements Palette<D> {
 
     protected final ShapeManager shapeManager;
 
-    protected CloseCallback closeCallback;
-    protected ItemHoverCallback itemHoverCallback;
-    protected ItemOutCallback itemOutCallback;
-    protected ItemMouseDownCallback itemMouseDownCallback;
-    protected ItemClickCallback itemClickCallback;
+    protected Command closeCallback;
+    protected Consumer<PaletteItemMouseEvent> itemHoverCallback;
+    protected Consumer<PaletteItemEvent> itemOutCallback;
+    protected Consumer<PaletteItemMouseEvent> itemMouseDownCallback;
+    protected Consumer<PaletteItemMouseEvent> itemClickCallback;
     protected D paletteDefinition;
 
     protected AbstractPalette() {
@@ -62,35 +64,35 @@ public abstract class AbstractPalette<D extends HasPaletteItems> implements Pale
 
     @Override
     @SuppressWarnings("unchecked")
-    public AbstractPalette<D> onClose(final CloseCallback callback) {
+    public AbstractPalette<D> onClose(final Command callback) {
         this.closeCallback = callback;
         return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public AbstractPalette<D> onItemHover(final ItemHoverCallback callback) {
+    public AbstractPalette<D> onItemHover(final Consumer<PaletteItemMouseEvent> callback) {
         this.itemHoverCallback = callback;
         return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public AbstractPalette<D> onItemOut(final ItemOutCallback callback) {
+    public AbstractPalette<D> onItemOut(final Consumer<PaletteItemEvent> callback) {
         this.itemOutCallback = callback;
         return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public AbstractPalette<D> onItemMouseDown(final ItemMouseDownCallback callback) {
+    public AbstractPalette<D> onItemMouseDown(final Consumer<PaletteItemMouseEvent> callback) {
         this.itemMouseDownCallback = callback;
         return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public AbstractPalette<D> onItemClick(final ItemClickCallback callback) {
+    public AbstractPalette<D> onItemClick(final Consumer<PaletteItemMouseEvent> callback) {
         this.itemClickCallback = callback;
         return this;
     }
@@ -98,7 +100,7 @@ public abstract class AbstractPalette<D extends HasPaletteItems> implements Pale
     public boolean onClose() {
         doClose();
         if (null != closeCallback) {
-            return closeCallback.onClose();
+            closeCallback.execute();
         }
         return true;
     }
@@ -118,11 +120,11 @@ public abstract class AbstractPalette<D extends HasPaletteItems> implements Pale
                     itemX,
                     itemY);
         if (null != itemHoverCallback) {
-            return itemHoverCallback.onItemHover(getPaletteItemId(index),
-                                                 mouseX,
-                                                 mouseY,
-                                                 itemX,
-                                                 itemY);
+            itemHoverCallback.accept(new PaletteItemMouseEvent(getPaletteItemId(index),
+                                                               mouseX,
+                                                               mouseY,
+                                                               itemX,
+                                                               itemY));
         }
         return true;
     }
@@ -136,7 +138,7 @@ public abstract class AbstractPalette<D extends HasPaletteItems> implements Pale
 
     public boolean onItemOut(final int index) {
         if (null != itemOutCallback) {
-            return itemOutCallback.onItemOut(getPaletteItemId(index));
+            itemOutCallback.accept(new PaletteItemEvent(getPaletteItemId(index)));
         }
         return true;
     }
@@ -163,11 +165,11 @@ public abstract class AbstractPalette<D extends HasPaletteItems> implements Pale
                                    final double itemX,
                                    final double itemY) {
         if (null != itemMouseDownCallback) {
-            return itemMouseDownCallback.onItemMouseDown(id,
-                                                         mouseX,
-                                                         mouseY,
-                                                         itemX,
-                                                         itemY);
+            itemMouseDownCallback.accept(new PaletteItemMouseEvent(id,
+                                                                   mouseX,
+                                                                   mouseY,
+                                                                   itemX,
+                                                                   itemY));
         }
         return true;
     }
@@ -179,11 +181,11 @@ public abstract class AbstractPalette<D extends HasPaletteItems> implements Pale
                                final double itemY) {
         if (null != itemClickCallback) {
             final String id = getPaletteItemId(index);
-            return itemClickCallback.onItemClick(id,
-                                                 mouseX,
-                                                 mouseY,
-                                                 itemX,
-                                                 itemY);
+            itemClickCallback.accept(new PaletteItemMouseEvent(id,
+                                                               mouseX,
+                                                               mouseY,
+                                                               itemX,
+                                                               itemY));
         }
         return true;
     }
@@ -194,11 +196,11 @@ public abstract class AbstractPalette<D extends HasPaletteItems> implements Pale
                                final double itemX,
                                final double itemY) {
         if (null != itemClickCallback) {
-            return itemClickCallback.onItemClick(id,
-                                                 mouseX,
-                                                 mouseY,
-                                                 itemX,
-                                                 itemY);
+            itemClickCallback.accept(new PaletteItemMouseEvent(id,
+                                                               mouseX,
+                                                               mouseY,
+                                                               itemX,
+                                                               itemY));
         }
         return true;
     }

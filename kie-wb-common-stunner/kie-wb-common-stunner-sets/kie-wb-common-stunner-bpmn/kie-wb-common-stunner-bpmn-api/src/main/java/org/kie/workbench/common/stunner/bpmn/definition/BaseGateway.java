@@ -38,7 +38,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 public abstract class BaseGateway implements BPMNViewDefinition {
 
     @Category
-    public static final transient String category = Categories.GATEWAYS;
+    public static final transient String category = BPMNCategories.GATEWAYS;
 
     @PropertySet
     @FormField

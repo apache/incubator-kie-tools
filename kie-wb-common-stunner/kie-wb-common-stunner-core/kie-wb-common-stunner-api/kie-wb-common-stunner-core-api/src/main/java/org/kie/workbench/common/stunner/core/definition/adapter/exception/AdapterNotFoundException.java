@@ -31,6 +31,6 @@ public class AdapterNotFoundException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return "Adapter of type [" + adapterClass.getName() + "] not found for domain type [" + type.getName() + "].";
+        return "Adapter of type [" + adapterClass.getName() + "] not found for [" + type.getName() + "].";
     }
 }

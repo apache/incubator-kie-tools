@@ -166,11 +166,11 @@ public class TimerSettingsFieldEditorView
     @PostConstruct
     public void init() {
         timeDuration.setAttribute(PLACEHOLDER_ATTR,
-                                  translationService.getKeyValue(TimeDuration_Placeholder));
+                                  translationService.getValue(TimeDuration_Placeholder));
         timeCycle.setAttribute(PLACEHOLDER_ATTR,
-                               translationService.getKeyValue(TimeCycle_Placeholder));
+                               translationService.getValue(TimeCycle_Placeholder));
         timeDate.setAttribute(PLACEHOLDER_ATTR,
-                              translationService.getKeyValue(TimeDate_Placeholder));
+                              translationService.getValue(TimeDate_Placeholder));
 
         durationTimerHelp.setAttribute(DATA_CONTENT_ATTR,
                                        getDurationTimerHtmlHelpText());
@@ -184,7 +184,7 @@ public class TimerSettingsFieldEditorView
                                    getDateTimerHtmlHelpText());
         dateTimerHelpPopover.wrap(dateTimerHelp).popover();
 
-        timeDateTimePicker.setPlaceholder(translationService.getKeyValue(TimeDateTimePicker_Placeholder));
+        timeDateTimePicker.setPlaceholder(translationService.getValue(TimeDateTimePicker_Placeholder));
         timeDateTimePicker.setAutoClose(true);
         timeDateTimePicker.setHighlightToday(true);
         timeDateTimePicker.setShowTodayButton(true);
@@ -325,22 +325,22 @@ public class TimerSettingsFieldEditorView
     }
 
     private String getDurationTimerHtmlHelpText() {
-        return buildHtmlHelpText(translationService.getKeyValue(DurationTimer_Help_Header),
-                                 translationService.getKeyValue(DurationTimer_Help_Line_1),
-                                 translationService.getKeyValue(Expression_Help_Line));
+        return buildHtmlHelpText(translationService.getValue(DurationTimer_Help_Header),
+                                 translationService.getValue(DurationTimer_Help_Line_1),
+                                 translationService.getValue(Expression_Help_Line));
     }
 
     private String getMultipleTimerHtmlHelpText() {
-        return buildHtmlHelpText(translationService.getKeyValue(MultipleTimer_Help_Header),
-                                 translationService.getKeyValue(MultipleTimer_Help_Line1),
-                                 translationService.getKeyValue(MultipleTimer_Help_Line2),
-                                 translationService.getKeyValue(Expression_Help_Line));
+        return buildHtmlHelpText(translationService.getValue(MultipleTimer_Help_Header),
+                                 translationService.getValue(MultipleTimer_Help_Line1),
+                                 translationService.getValue(MultipleTimer_Help_Line2),
+                                 translationService.getValue(Expression_Help_Line));
     }
 
     private String getDateTimerHtmlHelpText() {
-        return buildHtmlHelpText(translationService.getKeyValue(DateTimer_Help_Header),
-                                 translationService.getKeyValue(DateTimer_Help_Line1),
-                                 translationService.getKeyValue(Expression_Help_Line));
+        return buildHtmlHelpText(translationService.getValue(DateTimer_Help_Header),
+                                 translationService.getValue(DateTimer_Help_Line1),
+                                 translationService.getValue(Expression_Help_Line));
     }
 
     private void showElement(HTMLElement element,

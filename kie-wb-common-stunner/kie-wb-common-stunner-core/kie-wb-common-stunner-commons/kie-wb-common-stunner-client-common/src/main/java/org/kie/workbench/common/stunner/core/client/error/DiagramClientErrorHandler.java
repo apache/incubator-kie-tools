@@ -40,8 +40,8 @@ public class DiagramClientErrorHandler extends ClientErrorHandler {
 
         String message = null;
         if (error.getThrowable() instanceof DefinitionNotFoundException) {
-            message = translationService.getKeyValue(CoreTranslationMessages.DIAGRAM_LOAD_FAIL_UNSUPPORTED_ELEMENTS,
-                                                     ((DefinitionNotFoundException) error.getThrowable()).getDefinitionId());
+            message = translationService.getValue(CoreTranslationMessages.DIAGRAM_LOAD_FAIL_UNSUPPORTED_ELEMENTS,
+                                                  ((DefinitionNotFoundException) error.getThrowable()).getDefinitionId());
         }
 
         showError.accept(Objects.nonNull(message) ? message : error.toString());

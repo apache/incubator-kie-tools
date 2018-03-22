@@ -68,32 +68,24 @@ public class CaseManagementOryxManagerTest {
     @Mock
     private FactoryManager factoryManager;
 
-    private OryxIdMappings oryxIdMappings;
-
-    private DefinitionUtils definitionUtils;
-
-    private List<Bpmn2OryxPropertySerializer<?>> oryxPropertySerializers;
-
-    private Bpmn2OryxPropertyManager oryxPropertyManager;
-
     private CaseManagementOryxManager oryxManager;
 
     @Before
     public void setup() {
-        this.oryxIdMappings = new Bpmn2OryxIdMappings(definitionManager);
-        this.definitionUtils = new DefinitionUtils(definitionManager,
-                                                   factoryManager);
-        this.oryxPropertySerializers = new ArrayList<>();
-        this.oryxPropertySerializers.add(new AssigneeTypeSerializer());
-        this.oryxPropertySerializers.add(new AssignmentsTypeSerializer());
-        this.oryxPropertySerializers.add(new BooleanTypeSerializer());
-        this.oryxPropertySerializers.add(new ColorTypeSerializer());
-        this.oryxPropertySerializers.add(new DoubleTypeSerializer());
-        this.oryxPropertySerializers.add(new EnumTypeSerializer(definitionUtils));
-        this.oryxPropertySerializers.add(new IntegerTypeSerializer());
-        this.oryxPropertySerializers.add(new StringTypeSerializer());
-        this.oryxPropertySerializers.add(new VariablesTypeSerializer());
-        this.oryxPropertyManager = new Bpmn2OryxPropertyManager(oryxPropertySerializers);
+        OryxIdMappings oryxIdMappings = new Bpmn2OryxIdMappings(definitionManager, WorkItemDefinitionEmptyRegistry::new);
+        DefinitionUtils definitionUtils = new DefinitionUtils(definitionManager,
+                                                              factoryManager);
+        List<Bpmn2OryxPropertySerializer<?>> oryxPropertySerializers = new ArrayList<>();
+        oryxPropertySerializers.add(new AssigneeTypeSerializer());
+        oryxPropertySerializers.add(new AssignmentsTypeSerializer());
+        oryxPropertySerializers.add(new BooleanTypeSerializer());
+        oryxPropertySerializers.add(new ColorTypeSerializer());
+        oryxPropertySerializers.add(new DoubleTypeSerializer());
+        oryxPropertySerializers.add(new EnumTypeSerializer(definitionUtils));
+        oryxPropertySerializers.add(new IntegerTypeSerializer());
+        oryxPropertySerializers.add(new StringTypeSerializer());
+        oryxPropertySerializers.add(new VariablesTypeSerializer());
+        Bpmn2OryxPropertyManager oryxPropertyManager = new Bpmn2OryxPropertyManager(oryxPropertySerializers);
         this.oryxManager = new CaseManagementOryxManager(oryxIdMappings,
                                                          oryxPropertyManager);
     }

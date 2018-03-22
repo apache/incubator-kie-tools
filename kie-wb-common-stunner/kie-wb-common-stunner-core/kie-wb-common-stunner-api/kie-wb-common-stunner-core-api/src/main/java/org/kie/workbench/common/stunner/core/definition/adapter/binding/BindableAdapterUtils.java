@@ -39,6 +39,21 @@ public class BindableAdapterUtils {
         return getGenericClassName(type);
     }
 
+    public static String getDynamicDefinitionId(final Class<?> type,
+                                                final String suffix) {
+        return getDefinitionId(type) + "." + suffix;
+    }
+
+    public static String getDynamicId(final Class<?> type,
+                                      final String definitionId) {
+        final String gcn = getGenericClassName(type);
+        final int gcnl = gcn.length();
+        final int dl = definitionId.length();
+        return dl > (gcnl + 1) ?
+                definitionId.substring(gcnl + 1, dl) :
+                null;
+    }
+
     public static String getDefinitionSetId(final Class<?> type) {
         return getDefinitionSetId(type,
                                   null);

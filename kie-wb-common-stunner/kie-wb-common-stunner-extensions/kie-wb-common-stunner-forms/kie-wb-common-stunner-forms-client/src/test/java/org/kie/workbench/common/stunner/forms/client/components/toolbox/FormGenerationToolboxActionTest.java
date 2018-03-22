@@ -70,7 +70,7 @@ public class FormGenerationToolboxActionTest {
             consumer.accept(formGenerationService);
             return null;
         }).when(formGenerationManager).call(any(Consumer.class));
-        when(translationService.getKeyValue(eq(FormsClientConstants.FormsGenerateTaskForm)))
+        when(translationService.getValue(eq(FormsClientConstants.FormsGenerateTaskForm)))
                 .thenReturn("generateTitle");
         tested = new FormGenerationToolboxAction(translationService,
                                                  formGenerationManager);

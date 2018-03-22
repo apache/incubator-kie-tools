@@ -17,9 +17,9 @@
 package org.kie.workbench.common.stunner.svg.client.shape.view;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 
-import com.ait.lienzo.client.core.shape.IPrimitive;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 public class SVGViewUtils {
@@ -29,10 +29,10 @@ public class SVGViewUtils {
                                         final String nonVisibleId) {
         getPrimitive(view,
                      visibleId)
-                .ifPresent(prim -> prim.setAlpha(1));
+                .ifPresent(prim -> prim.get().setAlpha(1));
         getPrimitive(view,
                      nonVisibleId)
-                .ifPresent(prim -> prim.setAlpha(0));
+                .ifPresent(prim -> prim.get().setAlpha(0));
     }
 
     @SuppressWarnings("unchecked")
@@ -45,23 +45,36 @@ public class SVGViewUtils {
         return null;
     }
 
-    public static Optional<IPrimitive> getPrimitive(final SVGShapeView<?> view,
-                                                    final String id) {
+    public static Optional<SVGPrimitive> getPrimitive(final SVGShapeView<?> view,
+                                                      final String id) {
+        return Optional.ofNullable(getPrimitive(view.getChildren(),
+                                                id));
+    }
 
-        final Collection<SVGPrimitive<?>> children = view.getChildren();
+    public static SVGPrimitive getPrimitive(final SVGContainer container,
+                                            final String id) {
+        return getPrimitive(container.getChildren(),
+                            id);
+    }
 
-        for (final SVGPrimitive<?> child : children) {
-            if (child instanceof SVGContainer) {
-                final IPrimitive primitive = ((SVGContainer) child).getPrimitive(id);
-                if (null != primitive) {
-                    return Optional.of(primitive);
-                }
-            } else {
-                if (child.getId().equals(id)) {
-                    return Optional.of(child.get());
-                }
-            }
+    public static SVGPrimitive getPrimitive(final Collection<SVGPrimitive<?>> primitives,
+                                            final String id) {
+        return primitives.stream()
+                .map(p -> getPrimitive(p,
+                                       id))
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static SVGPrimitive getPrimitive(final SVGPrimitive<?> primitive,
+                                            final String id) {
+        if (primitive instanceof SVGContainer) {
+            return getPrimitive((SVGContainer) primitive,
+                                id);
         }
-        return Optional.empty();
+        return id.equals(primitive.getId()) ?
+                primitive :
+                null;
     }
 }

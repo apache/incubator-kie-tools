@@ -98,12 +98,15 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
     public static final String ANNOTATION_DEFINITION_SET = "org.kie.workbench.common.stunner.core.definition.annotation.DefinitionSet";
 
     public static final String ANNOTATION_DEFINITION = "org.kie.workbench.common.stunner.core.definition.annotation.Definition";
+    public static final String ANNOTATION_DEFINITION_ID = "org.kie.workbench.common.stunner.core.definition.annotation.definition.Id";
     public static final String ANNOTATION_DEFINITION_CATEGORY = "org.kie.workbench.common.stunner.core.definition.annotation.definition.Category";
     public static final String ANNOTATION_DEFINITION_LABELS = "org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels";
     public static final String ANNOTATION_DEFINITION_TITLE = "org.kie.workbench.common.stunner.core.definition.annotation.definition.Title";
 
     public static final String[] DEFINITION_ANNOTATIONS = new String[]{
-            ANNOTATION_DEFINITION_CATEGORY, ANNOTATION_DEFINITION_LABELS,
+            ANNOTATION_DEFINITION_ID,
+            ANNOTATION_DEFINITION_CATEGORY,
+            ANNOTATION_DEFINITION_LABELS,
             ANNOTATION_DEFINITION_TITLE
     };
 
@@ -425,25 +428,31 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                 baseTypes.put(defintionClassName,
                               baseClassName);
             }
-            // Category fields.
+            // Id field.
+            processFieldName(classElement,
+                             defintionClassName,
+                             ANNOTATION_DEFINITION_ID,
+                             processingContext.getDefinitionAnnotations().getIdFieldNames(),
+                             false);
+            // Category field.
             processFieldName(classElement,
                              defintionClassName,
                              ANNOTATION_DEFINITION_CATEGORY,
                              processingContext.getDefinitionAnnotations().getCategoryFieldNames(),
                              true);
-            // Title fields.
+            // Title field.
             processFieldName(classElement,
                              defintionClassName,
                              ANNOTATION_DEFINITION_TITLE,
                              processingContext.getDefinitionAnnotations().getTitleFieldNames(),
                              false);
-            // Description fields.
+            // Description field.
             processFieldName(classElement,
                              defintionClassName,
                              ANNOTATION_DESCRIPTION,
                              processingContext.getDefinitionAnnotations().getDescriptionFieldNames(),
                              false);
-            // Labels fields.
+            // Labels field.
             processFieldName(classElement,
                              defintionClassName,
                              ANNOTATION_DEFINITION_LABELS,

@@ -40,7 +40,6 @@ import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.util.StunnerClientLogger;
 import org.kie.workbench.common.stunner.core.lookup.LookupManager;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequest;
-import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequestImpl;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramRepresentation;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 
@@ -103,7 +102,7 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
         // Notify some processing starts.
         fireProcessingStarted();
         clear();
-        final DiagramLookupRequest request = new DiagramLookupRequestImpl.Builder().build();
+        final DiagramLookupRequest request = new DiagramLookupRequest.Builder().build();
         clientDiagramServices.lookup(request,
                                      new ServiceCallback<LookupManager.LookupResponse<DiagramRepresentation>>() {
                                          @Override

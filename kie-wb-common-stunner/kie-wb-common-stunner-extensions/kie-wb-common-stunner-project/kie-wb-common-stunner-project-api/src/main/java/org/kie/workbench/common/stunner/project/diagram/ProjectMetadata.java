@@ -15,11 +15,12 @@
  */
 package org.kie.workbench.common.stunner.project.diagram;
 
+import org.guvnor.common.services.project.model.Package;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 
 public interface ProjectMetadata extends Metadata {
 
-    String getProjectPackage();
+    String getModuleName();
 
-    String getProjectName();
+    Package getProjectPackage();
 }

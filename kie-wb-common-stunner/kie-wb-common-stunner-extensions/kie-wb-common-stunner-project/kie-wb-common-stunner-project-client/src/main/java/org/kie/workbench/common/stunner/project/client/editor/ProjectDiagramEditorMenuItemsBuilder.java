@@ -70,7 +70,7 @@ public class ProjectDiagramEditorMenuItemsBuilder {
                 new Button() {{
                     setSize(ButtonSize.SMALL);
                     setIcon(IconType.PLAY);
-                    setTitle(translationService.getKeyValue(CoreTranslationMessages.VISIT_GRAPH));
+                    setTitle(translationService.getValue(CoreTranslationMessages.VISIT_GRAPH));
                     addClickHandler(clickEvent -> command.execute());
                 }});
     }
@@ -84,7 +84,7 @@ public class ProjectDiagramEditorMenuItemsBuilder {
                 new Button() {{
                     setSize(ButtonSize.SMALL);
                     setIcon(IconType.TH);
-                    setTitle(translationService.getKeyValue(CoreTranslationMessages.SWITCH_GRID));
+                    setTitle(translationService.getValue(CoreTranslationMessages.SWITCH_GRID));
                     addClickHandler(clickEvent -> command.execute());
                 }});
     }
@@ -103,12 +103,12 @@ public class ProjectDiagramEditorMenuItemsBuilder {
                 new Button() {{
                     setSize(ButtonSize.SMALL);
                     setIcon(IconType.ERASER);
-                    setTitle(translationService.getKeyValue(CoreTranslationMessages.CLEAR_DIAGRAM));
+                    setTitle(translationService.getValue(CoreTranslationMessages.CLEAR_DIAGRAM));
                     addClickHandler(clickEvent ->
                                             ProjectDiagramEditorMenuItemsBuilder.this.executeWithConfirm(command,
-                                                                                                         translationService.getKeyValue(CoreTranslationMessages.CLEAR_DIAGRAM),
-                                                                                                         translationService.getKeyValue(CoreTranslationMessages.CLEAR_DIAGRAM),
-                                                                                                         translationService.getKeyValue(CoreTranslationMessages.CONFIRM_CLEAR_DIAGRAM)));
+                                                                                                         translationService.getValue(CoreTranslationMessages.CLEAR_DIAGRAM),
+                                                                                                         translationService.getValue(CoreTranslationMessages.CLEAR_DIAGRAM),
+                                                                                                         translationService.getValue(CoreTranslationMessages.CONFIRM_CLEAR_DIAGRAM)));
                 }});
     }
 
@@ -121,7 +121,7 @@ public class ProjectDiagramEditorMenuItemsBuilder {
                 new Button() {{
                     setSize(ButtonSize.SMALL);
                     setIcon(IconType.COPY);
-                    setTitle(translationService.getKeyValue(CoreTranslationMessages.COPY_SELECTION));
+                    setTitle(translationService.getValue(CoreTranslationMessages.COPY_SELECTION));
                     addClickHandler(clickEvent -> command.execute());
                 }});
     }
@@ -135,7 +135,7 @@ public class ProjectDiagramEditorMenuItemsBuilder {
                 new Button() {{
                     setSize(ButtonSize.SMALL);
                     setIcon(IconType.PASTE);
-                    setTitle(translationService.getKeyValue(CoreTranslationMessages.PASTE_SELECTION));
+                    setTitle(translationService.getValue(CoreTranslationMessages.PASTE_SELECTION));
                     addClickHandler(clickEvent -> command.execute());
                 }});
     }
@@ -149,7 +149,7 @@ public class ProjectDiagramEditorMenuItemsBuilder {
                 new Button() {{
                     setSize(ButtonSize.SMALL);
                     setIcon(IconType.CUT);
-                    setTitle(translationService.getKeyValue(CoreTranslationMessages.CUT_SELECTION));
+                    setTitle(translationService.getValue(CoreTranslationMessages.CUT_SELECTION));
                     addClickHandler(clickEvent -> command.execute());
                 }});
     }
@@ -163,7 +163,7 @@ public class ProjectDiagramEditorMenuItemsBuilder {
                 new Button() {{
                     setSize(ButtonSize.SMALL);
                     setIcon(IconType.TRASH_O);
-                    setTitle(translationService.getKeyValue(CoreTranslationMessages.DELETE_SELECTION));
+                    setTitle(translationService.getValue(CoreTranslationMessages.DELETE_SELECTION));
                     addClickHandler(clickEvent -> command.execute());
                 }});
     }
@@ -177,7 +177,7 @@ public class ProjectDiagramEditorMenuItemsBuilder {
                 new Button() {{
                     setSize(ButtonSize.SMALL);
                     setIcon(IconType.UNDO);
-                    setTitle(translationService.getKeyValue(CoreTranslationMessages.UNDO));
+                    setTitle(translationService.getValue(CoreTranslationMessages.UNDO));
                     addClickHandler(clickEvent -> command.execute());
                 }});
     }
@@ -195,7 +195,7 @@ public class ProjectDiagramEditorMenuItemsBuilder {
                     //class is available. This assignment is ok for now, since this stuff will sooner or later be refactored to
                     //elemental2.
                     addStyleName("fa-flip-horizontal");
-                    setTitle(translationService.getKeyValue(CoreTranslationMessages.REDO));
+                    setTitle(translationService.getValue(CoreTranslationMessages.REDO));
                     addClickHandler(clickEvent -> command.execute());
                 }});
     }
@@ -207,28 +207,28 @@ public class ProjectDiagramEditorMenuItemsBuilder {
         final DropDownMenu menu = new DropDownMenu() {{
             setPull(Pull.RIGHT);
         }};
-        menu.add(new AnchorListItem(translationService.getKeyValue(CoreTranslationMessages.EXPORT_PNG)) {{
+        menu.add(new AnchorListItem(translationService.getValue(CoreTranslationMessages.EXPORT_PNG)) {{
             setIcon(IconType.FILE_IMAGE_O);
             setIconPosition(IconPosition.LEFT);
-            setTitle(translationService.getKeyValue(CoreTranslationMessages.EXPORT_PNG));
+            setTitle(translationService.getValue(CoreTranslationMessages.EXPORT_PNG));
             addClickHandler(event -> exportPNGCommand.execute());
         }});
-        menu.add(new AnchorListItem(translationService.getKeyValue(CoreTranslationMessages.EXPORT_JPG)) {{
+        menu.add(new AnchorListItem(translationService.getValue(CoreTranslationMessages.EXPORT_JPG)) {{
             setIcon(IconType.FILE_IMAGE_O);
             setIconPosition(IconPosition.LEFT);
-            setTitle(translationService.getKeyValue(CoreTranslationMessages.EXPORT_JPG));
+            setTitle(translationService.getValue(CoreTranslationMessages.EXPORT_JPG));
             addClickHandler(event -> exportJPGCommand.execute());
         }});
-        menu.add(new AnchorListItem(translationService.getKeyValue(CoreTranslationMessages.EXPORT_PDF)) {{
+        menu.add(new AnchorListItem(translationService.getValue(CoreTranslationMessages.EXPORT_PDF)) {{
             setIcon(IconType.FILE_PDF_O);
             setIconPosition(IconPosition.LEFT);
-            setTitle(translationService.getKeyValue(CoreTranslationMessages.EXPORT_PDF));
+            setTitle(translationService.getValue(CoreTranslationMessages.EXPORT_PDF));
             addClickHandler(event -> exportPDFCommand.execute());
         }});
-        menu.add(new AnchorListItem(translationService.getKeyValue(CoreTranslationMessages.EXPORT_BPMN)) {{
+        menu.add(new AnchorListItem(translationService.getValue(CoreTranslationMessages.EXPORT_BPMN)) {{
             setIcon(IconType.FILE_TEXT_O);
             setIconPosition(IconPosition.LEFT);
-            setTitle(translationService.getKeyValue(CoreTranslationMessages.EXPORT_BPMN));
+            setTitle(translationService.getValue(CoreTranslationMessages.EXPORT_BPMN));
             addClickHandler(event -> exportBPMNCommand.execute());
         }});
 
@@ -238,7 +238,7 @@ public class ProjectDiagramEditorMenuItemsBuilder {
                 setDataToggle(Toggle.DROPDOWN);
                 setIcon(IconType.DOWNLOAD);
                 setSize(ButtonSize.SMALL);
-                setTitle(translationService.getKeyValue(StunnerProjectClientConstants.DOWNLOAD_DIAGRAM));
+                setTitle(translationService.getValue(StunnerProjectClientConstants.DOWNLOAD_DIAGRAM));
             }});
             add(menu);
         }};
@@ -254,7 +254,7 @@ public class ProjectDiagramEditorMenuItemsBuilder {
                 new Button() {{
                     setSize(ButtonSize.SMALL);
                     setIcon(IconType.CHECK);
-                    setTitle(translationService.getKeyValue(CoreTranslationMessages.VALIDATE));
+                    setTitle(translationService.getValue(CoreTranslationMessages.VALIDATE));
                     addClickHandler(clickEvent -> command.execute());
                 }});
     }

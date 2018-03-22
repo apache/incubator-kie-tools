@@ -82,7 +82,7 @@ public class ClientFormGenerationManagerTest {
         final FormGeneratedEvent event = mock(FormGeneratedEvent.class);
         when(event.getName()).thenReturn("name1");
         tested.onFormGeneratedEvent(event);
-        verify(translationService, times(1)).getKeyValue(eq(FormsClientConstants.FormsGenerationSuccess),
+        verify(translationService, times(1)).getValue(eq(FormsClientConstants.FormsGenerationSuccess),
                                                          eq("name1"));
         verify(formGenerationNotifier, times(1)).showNotification(anyString());
         verify(formGenerationNotifier, never()).showError(anyString());
@@ -93,7 +93,7 @@ public class ClientFormGenerationManagerTest {
         final FormGenerationFailureEvent event = mock(FormGenerationFailureEvent.class);
         when(event.getName()).thenReturn("name1");
         tested.onFormGenerationFailureEvent(event);
-        verify(translationService, times(1)).getKeyValue(eq(FormsClientConstants.FormsGenerationFailure),
+        verify(translationService, times(1)).getValue(eq(FormsClientConstants.FormsGenerationFailure),
                                                          eq("name1"));
         verify(formGenerationNotifier, times(1)).showError(anyString());
         verify(formGenerationNotifier, never()).showNotification(anyString());

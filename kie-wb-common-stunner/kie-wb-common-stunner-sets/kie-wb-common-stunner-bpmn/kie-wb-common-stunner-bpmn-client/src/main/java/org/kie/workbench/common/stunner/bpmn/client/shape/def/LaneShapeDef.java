@@ -59,7 +59,8 @@ public class LaneShapeDef extends BaseDimensionedShapeDef
     }
 
     @Override
-    public Glyph getGlyph(final Class<? extends Lane> type) {
+    public Glyph getGlyph(final Class<? extends Lane> type,
+                          final String defId) {
         return BPMNSVGGlyphFactory.LANE_GLYPH;
     }
 }

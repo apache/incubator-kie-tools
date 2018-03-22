@@ -16,12 +16,10 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram;
 
-import org.kie.workbench.common.stunner.backend.ApplicationFactoryManager;
 import org.kie.workbench.common.stunner.backend.definition.factory.TestScopeModelFactory;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
-import org.kie.workbench.common.stunner.core.api.AbstractFactoryManager;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.api.FactoryManager;
+import org.kie.workbench.common.stunner.core.backend.BackendFactoryManager;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -36,27 +34,22 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.service.FactoryService;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.service.diagram.BPMNDirectDiagramMarshallerTest.BPMN_DEF_SET_ID;
 
-public class MockApplicationFactoryManager extends AbstractFactoryManager implements FactoryService,
-                                                                                     FactoryManager {
+public class MockApplicationFactoryManager extends BackendFactoryManager {
 
     private final GraphFactory bpmnGraphFactory;
     private final TestScopeModelFactory testScopeModelFactory;
     private final EdgeFactory<Object> connectionEdgeFactory;
     private final NodeFactory<Object> viewNodeFactory;
 
-    public MockApplicationFactoryManager(
-            DefinitionManager definitionManager,
-            GraphFactory bpmnGraphFactory,
-            TestScopeModelFactory testScopeModelFactory,
-            EdgeFactory<Object> connectionEdgeFactory,
-            NodeFactory<Object> viewNodeFactory) {
-
-        super(null, definitionManager);
-
+    public MockApplicationFactoryManager(final DefinitionManager definitionManager,
+                                         final GraphFactory bpmnGraphFactory,
+                                         final TestScopeModelFactory testScopeModelFactory,
+                                         final EdgeFactory<Object> connectionEdgeFactory,
+                                         final NodeFactory<Object> viewNodeFactory) {
+        super(definitionManager);
         this.bpmnGraphFactory = bpmnGraphFactory;
         this.testScopeModelFactory = testScopeModelFactory;
         this.connectionEdgeFactory = connectionEdgeFactory;

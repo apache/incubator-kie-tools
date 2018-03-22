@@ -20,7 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.DefinitionPaletteCategoryWidget;
-import org.kie.workbench.common.stunner.client.widgets.palette.factory.BS3PaletteViewFactory;
+import org.kie.workbench.common.stunner.client.widgets.palette.categories.items.DefinitionPaletteItemWidget;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
@@ -51,7 +51,7 @@ public class BS3PaletteWidgetImplTest {
     private ManagedInstance<DefinitionPaletteCategoryWidget> categoryWidgetInstance;
 
     @Mock
-    private BS3PaletteViewFactory viewFactory;
+    private ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgets;
 
     private BS3PaletteWidgetImpl palette;
 
@@ -61,9 +61,9 @@ public class BS3PaletteWidgetImplTest {
                                                 clientFactoryServices,
                                                 view,
                                                 shapeGlyphDragHandler,
-                                                categoryWidgetInstance);
+                                                categoryWidgetInstance,
+                                                definitionPaletteItemWidgets);
         this.palette.init();
-        this.palette.setViewFactory(viewFactory);
     }
 
     @Test
@@ -71,7 +71,7 @@ public class BS3PaletteWidgetImplTest {
         palette.doDestroy();
 
         verify(categoryWidgetInstance).destroyAll();
-        verify(viewFactory).destroy();
+        verify(definitionPaletteItemWidgets).destroyAll();
         verify(view).destroy();
     }
 

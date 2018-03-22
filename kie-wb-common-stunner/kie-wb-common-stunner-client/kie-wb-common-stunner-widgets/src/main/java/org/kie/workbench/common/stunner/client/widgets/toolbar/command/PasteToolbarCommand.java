@@ -40,12 +40,12 @@ public class PasteToolbarCommand extends AbstractToolbarCommand<ClientFullSessio
 
     @Override
     public String getCaption() {
-        return translationService.getKeyValue(CoreTranslationMessages.PASTE_SELECTION);
+        return translationService.getValue(CoreTranslationMessages.PASTE_SELECTION);
     }
 
     @Override
     public String getTooltip() {
-        return translationService.getKeyValue(CoreTranslationMessages.PASTE_SELECTION);
+        return translationService.getValue(CoreTranslationMessages.PASTE_SELECTION);
     }
 
     @Override

@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.registry.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -43,7 +44,7 @@ public class AdapterRegistryImpl implements AdapterRegistry,
     private final List<DefinitionSetAdapter> definitionSetAdapters = new LinkedList<>();
     private final List<DefinitionSetRuleAdapter> definitionSetRuleAdapters = new LinkedList<>();
     private final List<DefinitionAdapter> definitionAdapters = new LinkedList<>();
-    private final List<PropertySetAdapter> propertySetAdapters = new ArrayList<PropertySetAdapter>();
+    private final List<PropertySetAdapter> propertySetAdapters = new ArrayList<>();
     private final List<PropertyAdapter> propertyAdapters = new LinkedList<>();
     private final List<MorphAdapter> morphAdapters = new LinkedList<>();
 
@@ -103,7 +104,7 @@ public class AdapterRegistryImpl implements AdapterRegistry,
                 return adapter;
             }
         }
-        return nullHandling(PriorityAdapter.class,
+        return nullHandling(PropertyAdapter.class,
                             type);
     }
 
@@ -202,8 +203,7 @@ public class AdapterRegistryImpl implements AdapterRegistry,
     }
 
     private static <T extends PriorityAdapter> void sortAdapters(final List<T> adapters) {
-        Collections.sort(adapters,
-                         (o1, o2) -> o1.getPriority() - o2.getPriority());
+        Collections.sort(adapters, Comparator.comparingInt(PriorityAdapter::getPriority));
     }
 
     private <T> T nullHandling(final Class<? extends Adapter> adapterType,

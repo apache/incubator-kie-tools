@@ -45,7 +45,7 @@ public class ExportToBpmnToolbarCommandTest
     @Test
     public void testExport() {
         when(sessionCommandFactory.newExportToBpmnSessionCommand()).thenReturn(sessionCommand);
-        when(translationService.getKeyValue(CoreTranslationMessages.EXPORT_BPMN)).thenReturn(CAPTION);
+        when(translationService.getValue(CoreTranslationMessages.EXPORT_BPMN)).thenReturn(CAPTION);
         final ExportToBpmnToolbarCommand tested = new ExportToBpmnToolbarCommand(sessionCommandFactory,
                                                                                  translationService);
         verify(sessionCommandFactory,

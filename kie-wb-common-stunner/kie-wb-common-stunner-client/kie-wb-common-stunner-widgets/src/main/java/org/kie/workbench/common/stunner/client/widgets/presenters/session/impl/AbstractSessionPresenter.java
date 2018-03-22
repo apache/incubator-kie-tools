@@ -24,15 +24,15 @@ import org.kie.workbench.common.stunner.client.widgets.notification.Notification
 import org.kie.workbench.common.stunner.client.widgets.notification.NotificationContext;
 import org.kie.workbench.common.stunner.client.widgets.notification.NotificationsObserver;
 import org.kie.workbench.common.stunner.client.widgets.notification.ValidationFailedNotification;
+import org.kie.workbench.common.stunner.client.widgets.palette.DefaultPaletteFactory;
 import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidget;
-import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidgetFactory;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarFactory;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinition;
+import org.kie.workbench.common.stunner.core.client.components.palette.PaletteDefinition;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -43,7 +43,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
 
     private final SessionManager sessionManager;
     private final Optional<ToolbarFactory<S>> toolbarFactory;
-    private final Optional<PaletteWidgetFactory<PaletteDefinition, ?>> paletteFactory;
+    private final Optional<DefaultPaletteFactory<H>> paletteFactory;
     private final SessionPresenter.View view;
     private final NotificationsObserver notificationsObserver;
 
@@ -58,7 +58,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     protected AbstractSessionPresenter(final SessionManager sessionManager,
                                        final SessionPresenter.View view,
                                        final Optional<? extends ToolbarFactory<S>> toolbarFactory,
-                                       final Optional<PaletteWidgetFactory<PaletteDefinition, ?>> paletteFactory,
+                                       final Optional<DefaultPaletteFactory<H>> paletteFactory,
                                        final NotificationsObserver notificationsObserver) {
         this.sessionManager = sessionManager;
         this.toolbarFactory = (Optional<ToolbarFactory<S>>) toolbarFactory;
@@ -218,6 +218,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         getView().showLoading(true);
     }
 
+    @SuppressWarnings("unchecked")
     protected void onSessionOpened(final S session) {
         destroyToolbar();
         destroyPalette();
@@ -226,7 +227,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
             getView().setToolbarWidget(toolbar.getView());
         }
         if (hasPalette) {
-            this.palette = buildPalette(session);
+            this.palette = (PaletteWidget<PaletteDefinition>) buildPalette(session);
             getView().setPaletteWidget(getPalette());
         }
         getView().setCanvasWidget(getDisplayer().getView());
@@ -266,14 +267,12 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     }
 
     @SuppressWarnings("unchecked")
-    private PaletteWidget<PaletteDefinition> buildPalette(final S session) {
+    private PaletteWidget<? extends PaletteDefinition> buildPalette(final S session) {
         if (!paletteFactory.isPresent()) {
             throw new UnsupportedOperationException("This session presenter with type [" + this.getClass().getName() + "] does not supports the palette.");
         }
-        final Diagram diagram = session.getCanvasHandler().getDiagram();
         return paletteFactory.get()
-                .newPalette(diagram.getMetadata().getShapeSetId(),
-                            session.getCanvasHandler());
+                .newPalette((H) session.getCanvasHandler());
     }
 
     private void destroyToolbar() {

@@ -49,4 +49,9 @@ public interface SVGContainerShapeView<T extends SVGContainerShapeView>
      * for other composite SVG views.
      */
     IContainer<?, IPrimitive<?>> getContainer();
+
+    /**
+     * Refresh children layout for the shape.
+     */
+    void refresh();
 }

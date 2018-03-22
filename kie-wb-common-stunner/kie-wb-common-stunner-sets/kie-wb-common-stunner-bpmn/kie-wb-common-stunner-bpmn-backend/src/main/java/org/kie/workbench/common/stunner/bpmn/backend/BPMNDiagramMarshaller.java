@@ -16,16 +16,21 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend;
 
+import java.util.stream.Collectors;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.backend.service.XMLEncoderDiagramMetadataMarshaller;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder.GraphObjectBuilderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxManager;
+import org.kie.workbench.common.stunner.bpmn.backend.workitem.WorkItemDefinitionBackendRegistry;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
+import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
+import org.kie.workbench.common.stunner.core.backend.service.XMLEncoderDiagramMetadataMarshaller;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
@@ -33,6 +38,8 @@ import org.kie.workbench.common.stunner.core.rule.RuleManager;
 
 @Dependent
 public class BPMNDiagramMarshaller extends BaseDiagramMarshaller<BPMNDiagramImpl> {
+
+    private final WorkItemDefinitionBackendRegistry workItemDefinitionRegistry;
 
     @Inject
     public BPMNDiagramMarshaller(final XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller,
@@ -43,7 +50,8 @@ public class BPMNDiagramMarshaller extends BaseDiagramMarshaller<BPMNDiagramImpl
                                  final FactoryManager factoryManager,
                                  final RuleManager rulesManager,
                                  final GraphCommandManager graphCommandManager,
-                                 final GraphCommandFactory commandFactory) {
+                                 final GraphCommandFactory commandFactory,
+                                 final WorkItemDefinitionBackendRegistry workItemDefinitionRegistry) {
         super(diagramMetadataMarshaller,
               bpmnGraphBuilderFactory,
               definitionManager,
@@ -53,6 +61,17 @@ public class BPMNDiagramMarshaller extends BaseDiagramMarshaller<BPMNDiagramImpl
               rulesManager,
               graphCommandManager,
               commandFactory);
+        this.workItemDefinitionRegistry = workItemDefinitionRegistry;
+    }
+
+    @Override
+    protected String getPreProcessingData(final Metadata metadata) {
+        return workItemDefinitionRegistry
+                .load(metadata)
+                .items()
+                .stream()
+                .map(WorkItemDefinition::getName)
+                .collect(Collectors.joining(","));
     }
 
     @Override

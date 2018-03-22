@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.session;
 
+import java.util.function.Consumer;
+
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+
 /**
  * A factory type for client side sessions.
  * Stunner provides built-in support by default for two kind of sessions:
@@ -29,7 +33,8 @@ public interface ClientSessionFactory<S extends ClientSession> {
      * Builds and initializes a new session instance of type <code>S</code>.
      * It should not be opened at this time.
      */
-    S newSession();
+    void newSession(Metadata metadata,
+                    Consumer<S> sessionConsumer);
 
     /**
      * Return the type for the session produced.

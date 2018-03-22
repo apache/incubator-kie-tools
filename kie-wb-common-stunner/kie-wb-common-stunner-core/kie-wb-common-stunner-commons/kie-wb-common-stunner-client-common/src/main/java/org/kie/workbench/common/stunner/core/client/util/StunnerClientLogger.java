@@ -16,12 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.client.util;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.logging.client.LogConfiguration;
+import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
@@ -31,6 +34,10 @@ import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
 import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -51,6 +58,74 @@ public class StunnerClientLogger {
             return t1.getMessage();
         }
         return null != message ? message : " -- No message -- ";
+    }
+
+    public static void logDefinition(final DefinitionManager definitionManager,
+                                     final Object def) {
+        final DefinitionAdapter<Object> defAdapter =
+                definitionManager.adapters().registry().getDefinitionAdapter(def.getClass());
+        final String id = defAdapter.getId(def);
+        final String category = defAdapter.getCategory(def);
+        final String description = defAdapter.getDescription(def);
+        final String title = defAdapter.getTitle(def);
+        final Set<String> labels = defAdapter.getLabels(def);
+        final Set<Object> propertiesVisited = new HashSet<>();
+        GWT.log("");
+        GWT.log("********************************************************");
+        GWT.log("ID = " + id);
+        GWT.log("CATEGORY = " + category);
+        GWT.log("DESC = " + description);
+        GWT.log("TITLE = " + title);
+        GWT.log("LABELS = " + labels);
+        defAdapter.getPropertySets(def)
+                .forEach(propSet -> logPropertySet(definitionManager,
+                                                   propSet,
+                                                   propertiesVisited));
+        defAdapter.getProperties(def)
+                .stream()
+                .filter(prop -> !propertiesVisited.contains(prop))
+                .forEach(prop -> logProperty(definitionManager,
+                                             prop,
+                                             new HashSet<>()));
+        GWT.log("********************************************************");
+        GWT.log("");
+    }
+
+    public static void logPropertySet(final DefinitionManager definitionManager,
+                                      final Object propSet,
+                                      final Set<Object> propertiesVisited) {
+        final PropertySetAdapter<Object> adapter =
+                definitionManager.adapters().registry().getPropertySetAdapter(propSet.getClass());
+        final String id = adapter.getId(propSet);
+        final String name = adapter.getName(propSet);
+        GWT.log("    ==================================================");
+        GWT.log("    ID = " + id);
+        GWT.log("    NAME = " + name);
+        final Set<?> properties = adapter.getProperties(propSet);
+        properties.forEach(prop -> logProperty(definitionManager,
+                                               prop,
+                                               propertiesVisited));
+        GWT.log("    ==================================================");
+    }
+
+    public static void logProperty(final DefinitionManager definitionManager,
+                                   final Object prop,
+                                   final Set<Object> propertiesVisited) {
+        final PropertyAdapter<Object, ?> adapter =
+                definitionManager.adapters().registry().getPropertyAdapter(prop.getClass());
+        final String id = adapter.getId(prop);
+        final String caption = adapter.getCaption(prop);
+        final String description = adapter.getDescription(prop);
+        final PropertyType type = adapter.getType(prop);
+        final Object value = adapter.getValue(prop);
+        GWT.log("    -------------------------------------------------");
+        GWT.log("    ID = " + id);
+        GWT.log("    CAPTION = " + caption);
+        GWT.log("    DESC = " + description);
+        GWT.log("    TYPE = " + type);
+        GWT.log("    VALUE = " + value);
+        GWT.log("    -------------------------------------------------");
+        propertiesVisited.add(prop);
     }
 
     public static void logBounds(final Element<? extends View<?>> item) {
@@ -171,15 +246,15 @@ public class StunnerClientLogger {
         return idx;
     }
 
-    private static void log(final String message) {
+    public static void log(final String message) {
         if (LogConfiguration.loggingIsEnabled()) {
             LOGGER.log(Level.INFO,
                        message);
         }
     }
 
-    private static void log(final Level level,
-                            final String message) {
+    public static void log(final Level level,
+                           final String message) {
         if (LogConfiguration.loggingIsEnabled()) {
             LOGGER.log(level,
                        message);

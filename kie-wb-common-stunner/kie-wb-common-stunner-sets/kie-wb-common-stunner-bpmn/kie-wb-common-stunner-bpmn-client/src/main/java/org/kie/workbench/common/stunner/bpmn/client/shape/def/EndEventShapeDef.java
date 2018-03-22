@@ -89,7 +89,8 @@ public class EndEventShapeDef
     }
 
     @Override
-    public Glyph getGlyph(final Class<? extends BaseEndEvent> type) {
+    public Glyph getGlyph(final Class<? extends BaseEndEvent> type,
+                          final String defId) {
         return GLYPHS.get(type);
     }
 }

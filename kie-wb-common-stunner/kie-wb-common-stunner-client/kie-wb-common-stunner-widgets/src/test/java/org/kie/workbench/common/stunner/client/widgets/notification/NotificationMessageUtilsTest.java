@@ -58,10 +58,10 @@ public class NotificationMessageUtilsTest {
 
     @Before
     public void setup() {
-        when(translationService.getKeyValue(eq(CoreTranslationMessages.REASON))).thenReturn("R");
-        when(translationService.getKeyValue(eq(CoreTranslationMessages.ELEMENT_UUID))).thenReturn("E");
-        when(translationService.getKeyValue(eq(CoreTranslationMessages.REASON))).thenReturn("R");
-        when(translationService.getKeyValue(eq(CoreTranslationMessages.REASON))).thenReturn("R");
+        when(translationService.getValue(eq(CoreTranslationMessages.REASON))).thenReturn("R");
+        when(translationService.getValue(eq(CoreTranslationMessages.ELEMENT_UUID))).thenReturn("E");
+        when(translationService.getValue(eq(CoreTranslationMessages.REASON))).thenReturn("R");
+        when(translationService.getValue(eq(CoreTranslationMessages.REASON))).thenReturn("R");
     }
 
     @Test
@@ -99,7 +99,7 @@ public class NotificationMessageUtilsTest {
         when(ruleViolation.getViolationType()).thenReturn(Violation.Type.ERROR);
         when(ruleViolation.getViolationType()).thenReturn(Violation.Type.ERROR);
         final Iterable<CanvasViolation> violations = Collections.singletonList(canvasViolation);
-        when(translationService.getKeyValue(eq("aKey"))).thenReturn("aValue");
+        when(translationService.getValue(eq("aKey"))).thenReturn("aValue");
         when(translationService.getViolationMessage(eq(canvasViolation))).thenReturn("cv1");
         String message = NotificationMessageUtils.getCanvasValidationsErrorMessage(translationService,
                                                                                    "aKey",
@@ -127,7 +127,7 @@ public class NotificationMessageUtilsTest {
         when(diagramViolation.getGraphViolations()).thenReturn(Collections.singletonList(ruleViolation));
         when(ruleViolation.getViolationType()).thenReturn(Violation.Type.WARNING);
         when(translationService.getViolationMessage(eq(ruleViolation))).thenReturn("rv1");
-        when(translationService.getKeyValue(eq("aKey"))).thenReturn("aValue");
+        when(translationService.getValue(eq("aKey"))).thenReturn("aValue");
         String message = NotificationMessageUtils.getDiagramValidationsErrorMessage(translationService,
                                                                                     "aKey",
                                                                                     Collections.singleton(diagramViolation));

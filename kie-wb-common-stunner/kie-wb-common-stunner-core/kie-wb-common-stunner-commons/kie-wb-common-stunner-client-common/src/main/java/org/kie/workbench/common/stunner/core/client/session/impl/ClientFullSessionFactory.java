@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.core.client.session.impl;
 
+import java.util.function.Consumer;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
@@ -22,6 +24,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 
 /**
  * Stunner's default session factory for sessions of type <code>ClientFullSession</code>.
@@ -42,8 +45,9 @@ public class ClientFullSessionFactory implements ClientSessionFactory<ClientFull
     }
 
     @Override
-    public ClientFullSession newSession() {
-        return this.fullSessionInstances.get();
+    public void newSession(final Metadata metadata,
+                           final Consumer<ClientFullSession> sessionConsumer) {
+        sessionConsumer.accept(this.fullSessionInstances.get());
     }
 
     @Override

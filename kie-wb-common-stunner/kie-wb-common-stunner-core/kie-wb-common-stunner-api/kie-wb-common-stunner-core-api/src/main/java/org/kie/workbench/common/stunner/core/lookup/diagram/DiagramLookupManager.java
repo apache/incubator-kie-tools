@@ -21,6 +21,7 @@ import org.kie.workbench.common.stunner.core.lookup.LookupManager;
 /**
  * The lookup manager type for Diagrams.
  */
-public interface DiagramLookupManager extends LookupManager<DiagramRepresentation, DiagramLookupRequest> {
+public interface DiagramLookupManager
+        extends LookupManager<DiagramRepresentation, DiagramLookupRequest> {
 
 }

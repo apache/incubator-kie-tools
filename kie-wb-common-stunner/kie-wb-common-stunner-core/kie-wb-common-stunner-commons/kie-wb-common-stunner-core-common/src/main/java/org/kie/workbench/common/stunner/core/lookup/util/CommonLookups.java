@@ -40,11 +40,9 @@ import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.lookup.LookupManager;
 import org.kie.workbench.common.stunner.core.lookup.definition.DefinitionLookupManager;
 import org.kie.workbench.common.stunner.core.lookup.definition.DefinitionLookupRequest;
-import org.kie.workbench.common.stunner.core.lookup.definition.DefinitionLookupRequestImpl;
 import org.kie.workbench.common.stunner.core.lookup.definition.DefinitionRepresentation;
 import org.kie.workbench.common.stunner.core.lookup.rule.RuleLookupManager;
 import org.kie.workbench.common.stunner.core.lookup.rule.RuleLookupRequest;
-import org.kie.workbench.common.stunner.core.lookup.rule.RuleLookupRequestImpl;
 import org.kie.workbench.common.stunner.core.rule.Rule;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleSet;
@@ -312,7 +310,7 @@ public class CommonLookups {
                                        final Set<String> labels) {
         if (null != labels && !labels.isEmpty()) {
             final DefinitionLookupRequest request =
-                    new DefinitionLookupRequestImpl.Builder()
+                    new DefinitionLookupRequest.Builder()
                             .definitionSetId(defSetId)
                             .labels(labels)
                             .page(0)
@@ -335,7 +333,6 @@ public class CommonLookups {
     /**
      * Returns the allowed edge identifiers that satisfy connection rules for the given
      * source definition.
-     *
      * @oaram sourceDefinition The domain model object ( not a graph element ).
      */
     private <T> Set<String> getConnectionRulesAllowedEdges(final String defSetId,
@@ -401,9 +398,9 @@ public class CommonLookups {
                                                  final int pageSize) {
         if (null != defSetId) {
             final Set<String> defLabels = getDefinitionLabels(sourceDefinition);
-            final RuleLookupRequestImpl.Builder builder = new RuleLookupRequestImpl.Builder();
+            final RuleLookupRequest.Builder builder = new RuleLookupRequest.Builder();
             builder.definitionSetId(defSetId)
-                    .type(RuleLookupRequestImpl.Builder.RuleType.CONNECTION)
+                    .type(RuleLookupRequest.Builder.RuleType.CONNECTION)
                     .from(defLabels)
                     .page(page)
                     .pageSize(pageSize);

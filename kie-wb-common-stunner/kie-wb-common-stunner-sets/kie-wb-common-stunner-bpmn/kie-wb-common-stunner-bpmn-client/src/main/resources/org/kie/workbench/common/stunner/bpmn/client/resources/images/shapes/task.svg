@@ -49,6 +49,9 @@
 	z M416,72v272c0,11-3.9,20.4-11.8,28.2S387,384,376,384H40c-11,0-20.4-3.9-28.2-11.8S0,355,0,344V72c0-11,3.9-20.4,11.8-28.2
 	S29,32,40,32h336c11,0,20.4,3.9,28.2,11.8S416,61,416,72z"/>
   </g>
+  <g class="task_group_service" id="task_group_service" stunner:transform="non-scalable">
+    <image x="10px" y="10px" id="task_service_icon" class="task_service" href="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="/>
+  </g>
   <defs>
 
     <filter id="selectShadow" height="300%" width="300%" x="-75%" y="-75%">

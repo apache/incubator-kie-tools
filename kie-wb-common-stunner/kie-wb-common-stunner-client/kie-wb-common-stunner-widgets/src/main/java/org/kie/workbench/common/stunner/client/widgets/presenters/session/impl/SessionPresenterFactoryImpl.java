@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.event.SessionDiagramOpenedEvent;
 import org.kie.workbench.common.stunner.client.widgets.notification.NotificationsObserver;
-import org.kie.workbench.common.stunner.client.widgets.palette.factory.BS3PaletteFactory;
+import org.kie.workbench.common.stunner.client.widgets.palette.DefaultPaletteFactory;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
@@ -53,7 +53,7 @@ public class SessionPresenterFactoryImpl implements SessionPresenterFactory<Diag
     private final ManagedInstance<WidgetWrapperView> diagramViewerViewInstances;
     private final ManagedInstance<SessionPresenter.View> viewInstances;
     private final ManagedInstance<NotificationsObserver> notificationsObserverInstances;
-    private final BS3PaletteFactory paletteWidgetFactory;
+    private final DefaultPaletteFactory<AbstractCanvasHandler> paletteWidgetFactory;
     private final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEventInstances;
     private final ScreenResizeEventObserver screenResizeEventObserver;
 
@@ -80,7 +80,7 @@ public class SessionPresenterFactoryImpl implements SessionPresenterFactory<Diag
                                        final ManagedInstance<WidgetWrapperView> diagramViewerViewInstances,
                                        final ManagedInstance<SessionPresenter.View> viewInstances,
                                        final ManagedInstance<NotificationsObserver> notificationsObserverInstances,
-                                       final BS3PaletteFactory paletteWidgetFactory,
+                                       final DefaultPaletteFactory<AbstractCanvasHandler> paletteWidgetFactory,
                                        final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEventInstances,
                                        final ScreenResizeEventObserver screenResizeEventObserver) {
         this.sessionManager = sessionManager;

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.cm.client.session;
 
+import java.util.function.Consumer;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -23,6 +25,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 
 @ApplicationScoped
 @CaseManagementEditor
@@ -40,8 +43,9 @@ public class CaseManagementReadOnlySessionFactory implements ClientSessionFactor
     }
 
     @Override
-    public ClientReadOnlySession newSession() {
-        return this.readOnlySessionInstances.get();
+    public void newSession(final Metadata metadata,
+                           final Consumer<ClientReadOnlySession> sessionConsumer) {
+        sessionConsumer.accept(this.readOnlySessionInstances.get());
     }
 
     @Override

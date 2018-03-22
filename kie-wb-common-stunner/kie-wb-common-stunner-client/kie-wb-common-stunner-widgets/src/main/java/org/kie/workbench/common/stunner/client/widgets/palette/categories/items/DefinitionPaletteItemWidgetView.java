@@ -16,7 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette.categories.items;
 
-import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteItem;
+import org.kie.workbench.common.stunner.client.widgets.palette.BS3PaletteWidgetPresenter;
+import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteItem;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.uberfire.client.mvp.UberElement;
 
@@ -26,9 +27,9 @@ public interface DefinitionPaletteItemWidgetView extends UberElement<DefinitionP
                 double width,
                 double height);
 
-    interface Presenter {
+    interface Presenter extends BS3PaletteWidgetPresenter<DefaultPaletteItem> {
 
-        DefinitionPaletteItem getItem();
+        DefaultPaletteItem getItem();
 
         void onMouseDown(int clientX,
                          int clientY,

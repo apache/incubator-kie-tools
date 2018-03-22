@@ -31,7 +31,6 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.lookup.LookupManager;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequest;
-import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequestImpl;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramRepresentation;
 import org.uberfire.backend.vfs.Path;
 
@@ -55,7 +54,7 @@ public class ShowcaseDiagramService {
 
     public void loadByName(final String name,
                            final ServiceCallback<Diagram> callback) {
-        final DiagramLookupRequest request = new DiagramLookupRequestImpl.Builder().withName(name).build();
+        final DiagramLookupRequest request = new DiagramLookupRequest.Builder().withName(name).build();
         clientDiagramServices.lookup(request,
                                      new ServiceCallback<LookupManager.LookupResponse<DiagramRepresentation>>() {
                                          @Override

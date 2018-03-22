@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.widgets.event.SessionDiagramOpenedEvent;
 import org.kie.workbench.common.stunner.client.widgets.notification.NotificationsObserver;
 import org.kie.workbench.common.stunner.client.widgets.palette.BS3PaletteWidget;
-import org.kie.workbench.common.stunner.client.widgets.palette.factory.BS3PaletteFactory;
+import org.kie.workbench.common.stunner.client.widgets.palette.DefaultPaletteFactory;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.EditorToolbar;
@@ -51,7 +51,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
@@ -88,7 +87,7 @@ public class SessionEditorPresenterTest {
     private NotificationsObserver notificationsObserverInstances;
 
     @Mock
-    private BS3PaletteFactory paletteWidgetFactory;
+    private DefaultPaletteFactory<AbstractCanvasHandler> paletteWidgetFactory;
 
     @Mock
     private Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEventInstances;
@@ -129,7 +128,7 @@ public class SessionEditorPresenterTest {
                                                               viewInstances,
                                                               screenResizeEventObserver);
 
-        when(paletteWidgetFactory.newPalette(anyString())).thenReturn(paletteWidget);
+        when(paletteWidgetFactory.newPalette(any(AbstractCanvasHandler.class))).thenReturn(paletteWidget);
         when(editorToolbarFactoryInstances.build(clientFullSession)).thenReturn(toolbar);
 
         when(clientFullSession.getCanvasHandler()).thenReturn(canvasHandler);
@@ -138,8 +137,7 @@ public class SessionEditorPresenterTest {
 
         when(diagram.getMetadata()).thenReturn(Mockito.mock(Metadata.class));
 
-        when(paletteWidgetFactory.newPalette(anyString(),
-                                             any())).thenReturn(paletteWidget);
+        when(paletteWidgetFactory.newPalette(any(AbstractCanvasHandler.class))).thenReturn(paletteWidget);
 
         when(viewInstances.setPaletteWidget(any())).thenReturn(viewInstances);
 

@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
-import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.BPMNViewHandlers;
+import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.BPMNShapeViewHandlers;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
@@ -47,15 +47,15 @@ public interface BPMNShapeDef<W extends BPMNViewDefinition, V extends ShapeView>
     }
 
     default TitleHandler<ShapeView> newTitleHandler() {
-        return BPMNViewHandlers.TITLE_HANDLER;
+        return BPMNShapeViewHandlers.TITLE_HANDLER;
     }
 
-    default BPMNViewHandlers.FontHandlerBuilder<W, V> newFontHandlerBuilder() {
-        return new BPMNViewHandlers.FontHandlerBuilder<>();
+    default BPMNShapeViewHandlers.FontHandlerBuilder<W, V> newFontHandlerBuilder() {
+        return new BPMNShapeViewHandlers.FontHandlerBuilder<>();
     }
 
-    default BPMNViewHandlers.ViewAttributesHandlerBuilder<W, V> newViewAttributesHandlerBuilder() {
-        return new BPMNViewHandlers.ViewAttributesHandlerBuilder<W, V>();
+    default BPMNShapeViewHandlers.ViewAttributesHandlerBuilder<W, V> newViewAttributesHandlerBuilder() {
+        return new BPMNShapeViewHandlers.ViewAttributesHandlerBuilder<W, V>();
     }
 
     default FontHandler<W, V> newFontHandler() {

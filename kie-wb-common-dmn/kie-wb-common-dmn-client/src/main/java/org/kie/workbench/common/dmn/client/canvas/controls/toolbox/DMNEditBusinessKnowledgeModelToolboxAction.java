@@ -66,7 +66,7 @@ public class DMNEditBusinessKnowledgeModelToolboxAction implements ToolboxAction
     @Override
     public String getTitle(final AbstractCanvasHandler canvasHandler,
                            final String uuid) {
-        return translationService.getKeyValue(CoreTranslationMessages.EDIT);
+        return translationService.getValue(CoreTranslationMessages.EDIT);
     }
 
     @Override

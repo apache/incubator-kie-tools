@@ -95,7 +95,8 @@ public class CatchingIntermediateEventShapeDef
     }
 
     @Override
-    public Glyph getGlyph(final Class<? extends BaseCatchingIntermediateEvent> type) {
+    public Glyph getGlyph(final Class<? extends BaseCatchingIntermediateEvent> type,
+                          final String defId) {
         return GLYPHS.get(type);
     }
 }

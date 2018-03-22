@@ -30,6 +30,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -63,14 +64,15 @@ public class ShapeViewHandlersDefTest {
         when(delegate.fontHandler()).thenReturn(Optional.of(fontHandler));
         when(delegate.titleHandler()).thenReturn(Optional.of(titleHandler));
         when(delegate.viewHandler()).thenReturn(viewHandler);
-        when(delegate.getGlyph(any(Class.class))).thenReturn(glyph);
+        when(delegate.getGlyph(any(Class.class), anyString())).thenReturn(glyph);
         tested = new ShapeViewHandlersDef<>(delegate);
     }
 
     @Test
     public void testGettersAndDelegates() {
         assertEquals(delegate, tested.getShapeViewDef());
-        assertEquals(glyph, tested.getGlyph(Object.class));
+        assertEquals(glyph, tested.getGlyph(Object.class,
+                                            ""));
     }
 
     @Test

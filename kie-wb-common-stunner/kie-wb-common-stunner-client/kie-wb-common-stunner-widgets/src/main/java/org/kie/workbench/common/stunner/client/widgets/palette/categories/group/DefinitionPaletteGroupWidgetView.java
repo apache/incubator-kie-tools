@@ -16,8 +16,9 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette.categories.group;
 
+import org.kie.workbench.common.stunner.client.widgets.palette.BS3PaletteWidgetPresenter;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.items.DefinitionPaletteItemWidget;
-import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteGroup;
+import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteGroup;
 import org.uberfire.client.mvp.UberElement;
 
 public interface DefinitionPaletteGroupWidgetView extends UberElement<DefinitionPaletteGroupWidgetView.Presenter> {
@@ -30,13 +31,13 @@ public interface DefinitionPaletteGroupWidgetView extends UberElement<Definition
 
     void showLessAnchor();
 
-    interface Presenter {
+    interface Presenter extends BS3PaletteWidgetPresenter<DefaultPaletteGroup> {
 
         void showMore();
 
         void showLess();
 
-        DefinitionPaletteGroup getItem();
+        DefaultPaletteGroup getItem();
     }
 
     void initView();

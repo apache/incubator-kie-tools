@@ -18,12 +18,17 @@ package org.kie.workbench.common.stunner.project.backend.service;
 
 import java.io.IOException;
 
+import org.guvnor.common.services.project.model.Package;
+import org.junit.Before;
 import org.junit.Test;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.stunner.core.backend.service.AbstractVFSDiagramService;
 import org.kie.workbench.common.stunner.core.backend.service.AbstractVFSDiagramServiceTest;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
+import org.mockito.Mock;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.file.DeleteOption;
@@ -38,13 +43,35 @@ import static org.mockito.Mockito.when;
 public class ProjectDiagramServiceControllerTest
         extends AbstractVFSDiagramServiceTest<ProjectMetadata, ProjectDiagram> {
 
+    @Mock
+    private KieModuleService moduleService;
+
+    @Mock
+    private KieModule kieModule;
+
+    @Mock
+    private Package kiePackage;
+
+    @Mock
+    private Path rootModulePath;
+
+    @Before
+    public void setUp() throws IOException {
+        super.setUp();
+        when(moduleService.resolveModule(any(Path.class))).thenReturn(kieModule);
+        when(moduleService.resolvePackage(any(Path.class))).thenReturn(kiePackage);
+        when(kieModule.getModuleName()).thenReturn("kieModule1");
+        when(kiePackage.getModuleRootPath()).thenReturn(rootModulePath);
+    }
+
     @Override
     public AbstractVFSDiagramService<ProjectMetadata, ProjectDiagram> createVFSDiagramService() {
         ProjectDiagramServiceController service = new ProjectDiagramServiceController(definitionManager,
                                                                                       factoryManager,
                                                                                       definitionSetServiceInstances,
                                                                                       ioService,
-                                                                                      registryFactory);
+                                                                                      registryFactory,
+                                                                                      moduleService);
         service.initialize();
         return service;
     }
@@ -64,7 +91,7 @@ public class ProjectDiagramServiceControllerTest
     }
 
     @Test
-    public void testSaveOrUpdate() throws IOException {
+    public void testSaveOrUpdate() {
         Path path = mock(Path.class);
         when(path.toURI()).thenReturn(FILE_URI);
         when(metadata.getPath()).thenReturn(path);
@@ -78,7 +105,7 @@ public class ProjectDiagramServiceControllerTest
     }
 
     @Test
-    public void testDelete() throws IOException {
+    public void testDelete() {
         Path path = mock(Path.class);
         when(path.toURI()).thenReturn(FILE_URI);
         when(metadata.getPath()).thenReturn(path);

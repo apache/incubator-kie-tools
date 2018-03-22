@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.svg.gen.translator.SVGElementTranslator;
 import org.kie.workbench.common.stunner.svg.gen.translator.impl.SVGCircleTranslator;
 import org.kie.workbench.common.stunner.svg.gen.translator.impl.SVGDocumentTranslatorImpl;
 import org.kie.workbench.common.stunner.svg.gen.translator.impl.SVGGroupTranslator;
+import org.kie.workbench.common.stunner.svg.gen.translator.impl.SVGImageTranslator;
 import org.kie.workbench.common.stunner.svg.gen.translator.impl.SVGMultiPathTranslator;
 import org.kie.workbench.common.stunner.svg.gen.translator.impl.SVGRectTranslator;
 import org.kie.workbench.common.stunner.svg.gen.translator.impl.SVGUseTranslator;
@@ -47,6 +48,7 @@ public class ViewGenerators {
                 new SVGMultiPathTranslator(),
                 new SVGRectTranslator(),
                 new SVGCircleTranslator(),
+                new SVGImageTranslator(),
                 new SVGGroupTranslator(),
                 new SVGUseTranslator()
         };
@@ -58,6 +60,7 @@ public class ViewGenerators {
                 new MultiPathDefinitionGenerator(),
                 new RectDefinitionGenerator(),
                 new CircleDefinitionGenerator(),
+                new ImageDefinitionGenerator(),
                 new GroupDefinitionGenerator()
         };
     }

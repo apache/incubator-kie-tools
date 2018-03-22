@@ -18,20 +18,33 @@ package org.kie.workbench.common.stunner.core.lookup.definition;
 
 import java.util.Set;
 
-public interface DefinitionRepresentation {
+import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
-    /**
-     * The definition identifier.
-     */
-    String getDefinitionId();
+@Portable
+public class DefinitionRepresentation {
 
-    /**
-     * Returns true if the definition is a Node, otherwise only can be an edge.
-     */
-    boolean isNode();
+    private final String id;
+    private final boolean isNode;
+    private final Set<String> labels;
 
-    /**
-     * The collection of labels.
-     */
-    Set<String> getLabels();
+    public DefinitionRepresentation(final @MapsTo("id") String id,
+                                    final @MapsTo("isNode") boolean isNode,
+                                    final @MapsTo("labels") Set<String> labels) {
+        this.id = id;
+        this.isNode = isNode;
+        this.labels = labels;
+    }
+
+    public String getDefinitionId() {
+        return id;
+    }
+
+    public boolean isNode() {
+        return isNode;
+    }
+
+    public Set<String> getLabels() {
+        return labels;
+    }
 }

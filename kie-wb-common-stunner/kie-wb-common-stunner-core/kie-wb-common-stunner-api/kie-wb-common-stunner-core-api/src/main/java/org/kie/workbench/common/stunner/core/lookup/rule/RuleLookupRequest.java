@@ -16,9 +16,91 @@
 
 package org.kie.workbench.common.stunner.core.lookup.rule;
 
-import org.kie.workbench.common.stunner.core.lookup.LookupManager;
+import java.util.Set;
 
-public interface RuleLookupRequest extends LookupManager.LookupRequest {
+import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.jboss.errai.common.client.api.annotations.NonPortable;
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.stunner.core.lookup.AbstractLookupRequest;
+import org.kie.workbench.common.stunner.core.lookup.AbstractLookupRequestBuilder;
 
-    String getDefinitionSetId();
+@Portable
+public class RuleLookupRequest extends AbstractLookupRequest {
+
+    private final String definitionSetId;
+
+    public RuleLookupRequest(final @MapsTo("criteria") String criteria,
+                             final @MapsTo("page") int page,
+                             final @MapsTo("pageSize") int pageSize,
+                             final @MapsTo("definitionSetId") String definitionSetId) {
+        super(criteria,
+              page,
+              pageSize);
+        this.definitionSetId = definitionSetId;
+    }
+
+    public String getDefinitionSetId() {
+        return definitionSetId;
+    }
+
+    @NonPortable
+    public static class Builder extends AbstractLookupRequestBuilder<Builder> {
+
+        public enum RuleType {
+            CONNECTION,
+            CONTAINMENT,
+            CARDINALITY,
+            EDGECARDINALITY;
+        }
+
+        public enum EdgeType {
+            INCOMING,
+            OUTGOING;
+        }
+
+        private String defSetId;
+        private final StringBuilder criteria = new StringBuilder();
+
+        public Builder id(final String id) {
+            criteria.append("id=").append(id).append(";");
+            return this;
+        }
+
+        public Builder type(final RuleType ruleType) {
+            criteria.append("type=").append(ruleType.toString().toLowerCase()).append(";");
+            return this;
+        }
+
+        public Builder definitionSetId(final String defSetId) {
+            this.defSetId = defSetId;
+            return this;
+        }
+
+        public Builder from(final Set<String> labels) {
+            criteria.append("from=").append(fromSet(labels)).append(";");
+            return this;
+        }
+
+        public Builder role(final String role) {
+            criteria.append("role=").append(role).append(";");
+            return this;
+        }
+
+        public Builder roleIn(final Set<String> roles) {
+            criteria.append("roleIn=").append(fromSet(roles)).append(";");
+            return this;
+        }
+
+        public Builder edgeType(final EdgeType type) {
+            criteria.append(" edgeType=").append(type.name().toLowerCase()).append(";");
+            return this;
+        }
+
+        public RuleLookupRequest build() {
+            return new RuleLookupRequest(criteria.toString(),
+                                         page,
+                                         pageSize,
+                                         defSetId);
+        }
+    }
 }

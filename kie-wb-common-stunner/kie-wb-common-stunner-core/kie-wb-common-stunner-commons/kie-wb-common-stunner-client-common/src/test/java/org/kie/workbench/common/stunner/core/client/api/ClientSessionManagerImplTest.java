@@ -21,6 +21,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
 import org.kie.workbench.common.stunner.core.client.session.event.OnSessionErrorEvent;
@@ -30,41 +31,72 @@ import org.kie.workbench.common.stunner.core.client.session.event.SessionPausedE
 import org.kie.workbench.common.stunner.core.client.session.event.SessionResumedEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
 import org.kie.workbench.common.stunner.core.command.exception.CommandException;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ClientSessionManagerImplTest {
 
     @Mock
-    DefinitionUtils definitionUtils;
+    private DefinitionUtils definitionUtils;
+
     @Mock
-    ManagedInstance<ClientSessionFactory> sessionFactoriesInstances;
+    private ManagedInstance<ClientSessionFactory> sessionFactoriesInstances;
+
     @Mock
-    EventSourceMock<SessionOpenedEvent> sessionOpenedEventMock;
+    private EventSourceMock<SessionOpenedEvent> sessionOpenedEventMock;
+
     @Mock
-    EventSourceMock<SessionPausedEvent> sessionPausedEventMock;
+    private EventSourceMock<SessionPausedEvent> sessionPausedEventMock;
+
     @Mock
-    EventSourceMock<SessionResumedEvent> sessionResumedEventMock;
+    private EventSourceMock<SessionResumedEvent> sessionResumedEventMock;
+
     @Mock
-    EventSourceMock<SessionDestroyedEvent> sessionDestroyedEventMock;
+    private EventSourceMock<SessionDestroyedEvent> sessionDestroyedEventMock;
+
     @Mock
-    EventSourceMock<OnSessionErrorEvent> sessionErrorEventMock;
+    private EventSourceMock<OnSessionErrorEvent> sessionErrorEventMock;
+
     @Mock
-    AbstractClientSession session;
+    private AbstractClientSession session;
+
     @Mock
-    AbstractClientSession session1;
+    private AbstractCanvasHandler handler;
+
+    @Mock
+    private Diagram diagram;
+
+    @Mock
+    private Metadata metadata;
+
+    @Mock
+    private Graph graph;
+
+    @Mock
+    private AbstractClientSession session1;
 
     private ClientSessionManagerImpl tested;
 
     @Before
     public void setup() throws Exception {
+        when(session.getCanvasHandler()).thenReturn(handler);
+        when(handler.getDiagram()).thenReturn(diagram);
+        when(diagram.getMetadata()).thenReturn(metadata);
+        when(diagram.getGraph()).thenReturn(graph);
         this.tested = new ClientSessionManagerImpl(definitionUtils,
                                                    sessionFactoriesInstances,
                                                    sessionOpenedEventMock,
@@ -139,6 +171,9 @@ public class ClientSessionManagerImplTest {
 
     @Test
     public void testPostDestroy() {
+        when(session.getSessionUUID()).thenReturn("sessionUUID");
+        when(diagram.getName()).thenReturn("diagramName");
+        when(graph.getUUID()).thenReturn("graphUUID");
         tested.current = session;
         tested.destroy();
         verify(sessionOpenedEventMock,
@@ -149,8 +184,40 @@ public class ClientSessionManagerImplTest {
                times(0)).fire(any(SessionResumedEvent.class));
         verify(sessionErrorEventMock,
                times(0)).fire(any(OnSessionErrorEvent.class));
+        ArgumentCaptor<SessionDestroyedEvent> destroyedEventArgumentCaptor =
+                ArgumentCaptor.forClass(SessionDestroyedEvent.class);
         verify(sessionDestroyedEventMock,
-               times(1)).fire(any(SessionDestroyedEvent.class));
+               times(1)).fire(destroyedEventArgumentCaptor.capture());
+        SessionDestroyedEvent event = destroyedEventArgumentCaptor.getValue();
+        assertEquals("sessionUUID", event.getSessionUUID());
+        assertEquals("diagramName", event.getDiagramName());
+        assertEquals("graphUUID", event.getGraphUuid());
+        assertEquals(metadata, event.getMetadata());
+    }
+
+    @Test
+    public void testPostDestroyButNoDiagram() {
+        when(session.getSessionUUID()).thenReturn("sessionUUID");
+        when(handler.getDiagram()).thenReturn(null);
+        tested.current = session;
+        tested.destroy();
+        verify(sessionOpenedEventMock,
+               times(0)).fire(any(SessionOpenedEvent.class));
+        verify(sessionPausedEventMock,
+               times(0)).fire(any(SessionPausedEvent.class));
+        verify(sessionResumedEventMock,
+               times(0)).fire(any(SessionResumedEvent.class));
+        verify(sessionErrorEventMock,
+               times(0)).fire(any(OnSessionErrorEvent.class));
+        ArgumentCaptor<SessionDestroyedEvent> destroyedEventArgumentCaptor =
+                ArgumentCaptor.forClass(SessionDestroyedEvent.class);
+        verify(sessionDestroyedEventMock,
+               times(1)).fire(destroyedEventArgumentCaptor.capture());
+        SessionDestroyedEvent event = destroyedEventArgumentCaptor.getValue();
+        assertEquals("sessionUUID", event.getSessionUUID());
+        assertNull(event.getDiagramName());
+        assertNull(event.getGraphUuid());
+        assertNull(event.getMetadata());
     }
 
     @Test

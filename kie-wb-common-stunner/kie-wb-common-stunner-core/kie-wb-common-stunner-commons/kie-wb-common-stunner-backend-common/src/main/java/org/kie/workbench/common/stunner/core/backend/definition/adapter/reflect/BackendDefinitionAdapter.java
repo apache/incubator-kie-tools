@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -35,6 +36,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
+import org.kie.workbench.common.stunner.core.definition.annotation.definition.Id;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
@@ -73,7 +75,20 @@ public class BackendDefinitionAdapter<T> extends AbstractReflectAdapter<T>
     }
 
     @Override
-    public String getId(T definition) {
+    public String getId(final T definition) {
+        final Id id = getClassAnnotation(definition.getClass(),
+                                         Id.class);
+        if (null != id) {
+            try {
+
+                return BindableAdapterUtils.getDynamicDefinitionId(definition.getClass(),
+                                                                   getAnnotatedFieldValue(definition,
+                                                                                          Id.class));
+            } catch (Exception e) {
+                LOG.error("Error obtaining annotated id for Definition " + definition.getClass().getName());
+            }
+            return null;
+        }
         return getDefinitionId(definition.getClass());
     }
 
@@ -136,7 +151,7 @@ public class BackendDefinitionAdapter<T> extends AbstractReflectAdapter<T>
         } catch (Exception e) {
             LOG.error("Error obtaining annotated labels for Definition with id " + getId(definition));
         }
-        return null;
+        return Collections.emptySet();
     }
 
     @Override
@@ -157,7 +172,7 @@ public class BackendDefinitionAdapter<T> extends AbstractReflectAdapter<T>
             });
             return result;
         }
-        return null;
+        return Collections.emptySet();
     }
 
     @Override
@@ -185,7 +200,7 @@ public class BackendDefinitionAdapter<T> extends AbstractReflectAdapter<T>
                 return result;
             }
         }
-        return null;
+        return Collections.emptySet();
     }
 
     @SuppressWarnings("unchecked")

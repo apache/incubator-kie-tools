@@ -16,10 +16,15 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder;
 
+import java.util.function.Supplier;
+
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxManager;
+import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.BindableMorphAdapter;
@@ -34,17 +39,31 @@ import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 @ApplicationScoped
 public class BPMNGraphObjectBuilderFactory implements GraphObjectBuilderFactory {
 
-    DefinitionManager definitionManager;
-    OryxManager oryxManager;
+    private final DefinitionManager definitionManager;
+    private final OryxManager oryxManager;
+    private final Supplier<WorkItemDefinitionRegistry> workItemDefinitionRegistries;
+
+    public BPMNGraphObjectBuilderFactory() {
+        this.definitionManager = null;
+        this.oryxManager = null;
+        this.workItemDefinitionRegistries = null;
+    }
 
     @Inject
     public BPMNGraphObjectBuilderFactory(final DefinitionManager definitionManager,
-                                         final OryxManager oryxManager) {
+                                         final OryxManager oryxManager,
+                                         final Instance<WorkItemDefinitionRegistry> workItemDefinitionRegistries) {
         this.definitionManager = definitionManager;
         this.oryxManager = oryxManager;
+        this.workItemDefinitionRegistries = workItemDefinitionRegistries::get;
     }
 
-    public BPMNGraphObjectBuilderFactory() {
+    public BPMNGraphObjectBuilderFactory(final DefinitionManager definitionManager,
+                                         final OryxManager oryxManager,
+                                         final Supplier<WorkItemDefinitionRegistry> workItemDefinitionRegistries) {
+        this.definitionManager = definitionManager;
+        this.oryxManager = oryxManager;
+        this.workItemDefinitionRegistries = workItemDefinitionRegistries;
     }
 
     @Override
@@ -53,16 +72,21 @@ public class BPMNGraphObjectBuilderFactory implements GraphObjectBuilderFactory 
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("all")
     public GraphObjectBuilder<?, ?> builderFor(final String oryxId) {
         if (oryxId == null) {
             throw new NullPointerException();
         }
-        Class<?> defClass = oryxManager.getMappingsManager().getDefinition(oryxId);
+        final Class<?> defClass = oryxManager.getMappingsManager().getDefinition(oryxId);
         if (null != defClass) {
+            final String defId = oryxManager.getMappingsManager().getDefinitionId(oryxId);
+            if (ServiceTask.class.equals(defClass)) {
+                return new ServiceTaskNodeBuilder(defId,
+                                                  workItemDefinitionRegistries);
+            }
             MorphAdapter<Object> morphAdapter = definitionManager.adapters().registry().getMorphAdapter(defClass);
             BindablePropertyMorphDefinition propertyMorphDefinition = null;
-            if (morphAdapter != null) {
+            if (null != morphAdapter) {
                 final Iterable<MorphDefinition> morphDefinitions =
                         ((BindableMorphAdapter<Object>) morphAdapter).getMorphDefinitionsForType(defClass);
                 if (null != morphDefinitions && morphDefinitions.iterator().hasNext()) {
@@ -81,7 +105,8 @@ public class BPMNGraphObjectBuilderFactory implements GraphObjectBuilderFactory 
             } else {
                 Class<? extends ElementFactory> elementFactory = BackendDefinitionAdapter.getGraphFactory(defClass);
                 if (isNodeFactory(elementFactory)) {
-                    return new NodeBuilderImpl(defClass);
+                    return new NodeBuilderImpl(defClass,
+                                               defId);
                 } else if (isEdgeFactory(elementFactory)) {
                     return new EdgeBuilderImpl(defClass);
                 } else {

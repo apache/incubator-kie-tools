@@ -66,19 +66,19 @@ public class ScriptTask extends BaseTask {
 
         @Override
         public ScriptTask build() {
-            return new ScriptTask(new TaskGeneralSet(new Name("Task"),
-                                                     new Documentation("")),
-                                  new ScriptTaskExecutionSet(),
-                                  new BackgroundSet(),
-                                  new FontSet(),
-                                  new RectangleDimensionsSet(),
-                                  new SimulationSet(),
-                                  new TaskType(TaskTypes.SCRIPT));
+            return new ScriptTask();
         }
     }
 
     public ScriptTask() {
-        super(TaskTypes.SCRIPT);
+        this(new TaskGeneralSet(new Name("Task"),
+                                new Documentation("")),
+             new ScriptTaskExecutionSet(),
+             new BackgroundSet(),
+             new FontSet(),
+             new RectangleDimensionsSet(),
+             new SimulationSet(),
+             new TaskType(TaskTypes.SCRIPT));
     }
 
     public ScriptTask(final @MapsTo("general") TaskGeneralSet general,

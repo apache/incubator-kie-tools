@@ -16,26 +16,28 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.factory;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
+import org.kie.workbench.common.stunner.core.util.DefinitionIdMap;
 
 @Dependent
 public class DelegateShapeFactory<W, S extends Shape> extends AbstractShapeFactory<W, S> {
 
-    private final Map<String, DefinitionTypeBindings> definitionTypeBindings = new HashMap<>();
+    private final DefinitionIdMap<DefinitionTypeBindings> definitionTypeBindings;
+
+    public DelegateShapeFactory() {
+        this.definitionTypeBindings = new DefinitionIdMap<>();
+    }
 
     public DelegateShapeFactory<W, S> delegate(final Class<? extends W> definitionType,
                                                final ShapeDef<? extends W> shapeDef,
                                                final Supplier<? extends ShapeDefFactory> factory) {
-        definitionTypeBindings.put(getDefinitionId(definitionType),
+        definitionTypeBindings.put(definitionType,
                                    new DefinitionTypeBindings(definitionType,
                                                               shapeDef,
                                                               factory));
@@ -57,7 +59,8 @@ public class DelegateShapeFactory<W, S extends Shape> extends AbstractShapeFacto
     protected Glyph getGlyphFor(final String definitionId) {
         final DefinitionTypeBindings bindings = definitionTypeBindings.get(definitionId);
         final Class defType = bindings.defType;
-        return bindings.shapeDef.getGlyph(defType);
+        return bindings.shapeDef.getGlyph(defType,
+                                          definitionId);
     }
 
     private class DefinitionTypeBindings {
@@ -75,12 +78,8 @@ public class DelegateShapeFactory<W, S extends Shape> extends AbstractShapeFacto
         }
     }
 
-    static String getDefinitionId(final Class<?> type) {
-        return BindableAdapterUtils.getDefinitionId(type);
-    }
-
     private DefinitionTypeBindings getBindings(final Class<?> type) {
-        final DefinitionTypeBindings bindings = this.definitionTypeBindings.get(getDefinitionId(type));
+        final DefinitionTypeBindings bindings = this.definitionTypeBindings.get(type);
         if (null == bindings) {
             throw new RuntimeException("No ShapeDefinition or ShapeFactory binding found for " +
                                                "the Definition type [" + type + "]");

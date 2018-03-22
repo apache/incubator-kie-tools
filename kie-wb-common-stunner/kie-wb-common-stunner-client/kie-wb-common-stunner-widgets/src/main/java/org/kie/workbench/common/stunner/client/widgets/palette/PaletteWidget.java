@@ -16,63 +16,31 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette;
 
+import java.util.function.Consumer;
+
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
-import org.kie.workbench.common.stunner.core.client.components.palette.model.PaletteDefinition;
+import org.kie.workbench.common.stunner.core.client.components.palette.PaletteDefinition;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMinimizedEvent;
-import org.kie.workbench.common.stunner.core.client.shape.Shape;
-import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 public interface PaletteWidget<D extends PaletteDefinition>
         extends Palette<D> {
 
-    interface ItemDropCallback {
+    PaletteWidget<D> onItemDrop(Consumer<PaletteIDefinitionItemEvent> callback);
 
-        void onDropItem(final Object definition,
-                        final ShapeFactory<?, ? extends Shape> factory,
-                        final double x,
-                        final double y);
-    }
+    PaletteWidget<D> onItemDragStart(Consumer<PaletteIDefinitionItemEvent> callback);
 
-    interface ItemDragStartCallback {
+    PaletteWidget<D> onItemDragUpdate(Consumer<PaletteIDefinitionItemEvent> callback);
 
-        void onDragStartItem(final Object definition,
-                             final ShapeFactory<?, ? extends Shape> factory,
-                             final double x,
-                             final double y);
-    }
-
-    interface ItemDragUpdateCallback {
-
-        void onDragUpdateItem(final Object definition,
-                              final ShapeFactory<?, ? extends Shape> factory,
-                              final double x,
-                              final double y);
-    }
-
-    interface PaletteVisibility {
-
-        boolean isVisible();
-    }
-
-    PaletteVisibility VISIBLE = () -> true;
-
-    PaletteVisibility HIDDEN = () -> false;
-
-    PaletteWidget<D> onItemDrop(final ItemDropCallback callback);
-
-    PaletteWidget<D> onItemDragStart(final ItemDragStartCallback callback);
-
-    PaletteWidget<D> onItemDragUpdate(final ItemDragUpdateCallback callback);
-
-    void unbind();
-
-    void setVisible(PaletteVisibility visibility);
+    void setVisible(boolean visible);
 
     void onScreenMaximized(ScreenMaximizedEvent event);
 
     void onScreenMinimized(ScreenMinimizedEvent event);
 
     HTMLElement getElement();
+
+    Glyph getShapeGlyph(String definitionId);
 }

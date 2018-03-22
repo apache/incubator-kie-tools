@@ -55,6 +55,10 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     @DataResource.MimeType("image/svg+xml")
     DataResource categorySequence();
 
+    @ClientBundle.Source("images/categories/service-tasks.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource categoryServiceTasks();
+
     // ******* Task *******
     @ClientBundle.Source("images/icons/task/task.svg")
     @DataResource.MimeType("image/svg+xml")
@@ -184,6 +188,9 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     DataResource sequenceFlow();
 
     // ******* Misc *******
+
+    @ClientBundle.Source("images/icons/default-service-node-icon.png")
+    ImageResource serviceNodeIcon();
 
     @ClientBundle.Source("images/misc/circle.svg")
     @DataResource.MimeType("image/svg+xml")

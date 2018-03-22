@@ -19,9 +19,9 @@ package org.kie.workbench.common.stunner.cm.backend;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.backend.service.AbstractDefinitionSetService;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.cm.resource.CaseManagementDefinitionSetResourceType;
+import org.kie.workbench.common.stunner.core.backend.service.AbstractDefinitionSetService;
 import org.kie.workbench.common.stunner.core.definition.DefinitionSetResourceType;
 
 @ApplicationScoped

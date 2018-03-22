@@ -70,7 +70,8 @@ public class GatewayShapeDef
     }
 
     @Override
-    public Glyph getGlyph(final Class<? extends BaseGateway> type) {
+    public Glyph getGlyph(final Class<? extends BaseGateway> type,
+                          final String defId) {
         return GLYPHS.get(type);
     }
 }

@@ -36,6 +36,7 @@ import org.kie.workbench.common.stunner.core.client.session.event.SessionPausedE
 import org.kie.workbench.common.stunner.core.client.session.event.SessionResumedEvent;
 import org.kie.workbench.common.stunner.core.command.exception.CommandException;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
@@ -79,12 +80,12 @@ public class ClientSessionManagerImpl extends AbstractClientSessionManager {
     }
 
     @Override
-    protected <D extends Diagram> List<ClientSessionFactory<?>> getFactories(final D diagram) {
-        checkNotNull("diagram",
-                     diagram);
-        final String defSetId = diagram.getMetadata().getDefinitionSetId();
+    protected List<ClientSessionFactory> getFactories(final Metadata metadata) {
+        checkNotNull("metadata",
+                     metadata);
+        final String defSetId = metadata.getDefinitionSetId();
         final Annotation qualifier = definitionUtils.getQualifier(defSetId);
-        final List<ClientSessionFactory<?>> result = new LinkedList<>();
+        final List<ClientSessionFactory> result = new LinkedList<>();
         sessionFactoriesInstances.select(qualifier).forEach(result::add);
         // If no custem session factories for this diagram, look for the default ones.
         if (result.isEmpty()) {
@@ -93,20 +94,36 @@ public class ClientSessionManagerImpl extends AbstractClientSessionManager {
         return result;
     }
 
-    protected void postOpen() {
+    public void postOpen() {
         this.sessionOpenedEvent.fire(new SessionOpenedEvent(current));
     }
 
-    protected void postPause() {
+    public void postPause() {
         this.sessionPausedEvent.fire(new SessionPausedEvent(current));
     }
 
-    protected void postResume() {
+    public void postResume() {
         this.sessionResumedEvent.fire(new SessionResumedEvent(current));
     }
 
-    protected void postDestroy() {
-        this.sessionDestroyedEvent.fire(new SessionDestroyedEvent(current));
+    @Override
+    public void destroy() {
+        SessionDestroyedEvent destroyedEvent = null;
+        if (null != current) {
+            final String uuid = current.getSessionUUID();
+            final Diagram diagram = current.getCanvasHandler().getDiagram();
+            final String name = null != diagram ? diagram.getName() : null;
+            final String graphUuid = null != diagram ? diagram.getGraph().getUUID() : null;
+            final Metadata metadata = null != diagram ? diagram.getMetadata() : null;
+            destroyedEvent = new SessionDestroyedEvent(uuid,
+                                                       name,
+                                                       graphUuid,
+                                                       metadata);
+        }
+        super.destroy();
+        if (null != destroyedEvent) {
+            this.sessionDestroyedEvent.fire(destroyedEvent);
+        }
     }
 
     @Override

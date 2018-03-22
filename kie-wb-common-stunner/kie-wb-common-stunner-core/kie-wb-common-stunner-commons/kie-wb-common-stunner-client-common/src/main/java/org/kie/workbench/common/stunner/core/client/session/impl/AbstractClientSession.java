@@ -44,6 +44,11 @@ public abstract class AbstractClientSession implements ClientSession<AbstractCan
 
     protected abstract void doDestroy();
 
+    @Override
+    public String getSessionUUID() {
+        return canvasHandler.getUuid();
+    }
+
     public void open() {
         doOpen();
         this.isOpened = true;

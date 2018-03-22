@@ -19,8 +19,23 @@ package org.kie.workbench.common.stunner.client.lienzo.shape.util;
 import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.shape.Picture;
+import org.uberfire.mvp.Command;
 
 public class LienzoPictureUtils {
+
+    public static void forceLoad(final Picture picture,
+                                 final String data,
+                                 final Command loadCallback) {
+        final Command loadHandler = () -> {
+            picture.getImageProxy().setImageShapeLoadedHandler(p -> loadCallback.execute());
+            picture.getImageProxy().load(data);
+        };
+        if (picture.getImageProxy().isLoaded()) {
+            loadHandler.execute();
+        } else {
+            picture.getImageProxy().setImageShapeLoadedHandler(p -> loadHandler.execute());
+        }
+    }
 
     public static void tryDestroy(final Picture picture,
                                   final Consumer<Picture> retryCallback) {

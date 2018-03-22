@@ -85,7 +85,7 @@ public class DeleteNodeActionTest {
         tested.getTitle(canvasHandler,
                         E_UUID);
         verify(translationService,
-               times(1)).getKeyValue(eq(CoreTranslationMessages.DELETE));
+               times(1)).getValue(eq(CoreTranslationMessages.DELETE));
     }
 
     @Test

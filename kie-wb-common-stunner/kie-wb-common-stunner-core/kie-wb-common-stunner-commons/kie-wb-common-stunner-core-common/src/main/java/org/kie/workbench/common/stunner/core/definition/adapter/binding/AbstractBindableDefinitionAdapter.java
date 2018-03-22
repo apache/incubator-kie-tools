@@ -35,6 +35,7 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
     protected Map<Class, Set<String>> propertySetsFieldNames;
     protected Map<Class, Set<String>> propertiesFieldNames;
     protected Map<Class, Class> propertyGraphFactoryFieldNames;
+    protected Map<Class, String> propertyIdFieldNames;
     protected Map<Class, String> propertyLabelsFieldNames;
     protected Map<Class, String> propertyTitleFieldNames;
     protected Map<Class, String> propertyCategoryFieldNames;
@@ -52,6 +53,7 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
                             final Map<Class, Set<String>> propertySetsFieldNames,
                             final Map<Class, Set<String>> propertiesFieldNames,
                             final Map<Class, Class> propertyGraphFactoryFieldNames,
+                            final Map<Class, String> propertyIdFieldNames,
                             final Map<Class, String> propertyLabelsFieldNames,
                             final Map<Class, String> propertyTitleFieldNames,
                             final Map<Class, String> propertyCategoryFieldNames,
@@ -61,6 +63,7 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
         this.propertySetsFieldNames = propertySetsFieldNames;
         this.propertiesFieldNames = propertiesFieldNames;
         this.propertyGraphFactoryFieldNames = propertyGraphFactoryFieldNames;
+        this.propertyIdFieldNames = propertyIdFieldNames;
         this.propertyLabelsFieldNames = propertyLabelsFieldNames;
         this.propertyTitleFieldNames = propertyTitleFieldNames;
         this.propertyCategoryFieldNames = propertyCategoryFieldNames;
@@ -92,10 +95,6 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
             return result.toArray(new String[result.size()]);
         }
         return null;
-    }
-
-    public String getId(final T pojo) {
-        return getDefinitionId(pojo.getClass());
     }
 
     @Override
@@ -165,6 +164,10 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
 
     protected Map<Class, Class> getPropertyGraphFactoryFieldNames() {
         return propertyGraphFactoryFieldNames;
+    }
+
+    protected Map<Class, String> getPropertyIdFieldNames() {
+        return propertyIdFieldNames;
     }
 
     protected Map<Class, String> getPropertyLabelsFieldNames() {

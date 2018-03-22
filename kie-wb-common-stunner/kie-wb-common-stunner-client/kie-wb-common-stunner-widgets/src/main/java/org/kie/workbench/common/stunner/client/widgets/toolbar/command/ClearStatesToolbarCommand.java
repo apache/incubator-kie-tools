@@ -41,12 +41,12 @@ public class ClearStatesToolbarCommand extends AbstractToolbarCommand<ClientRead
 
     @Override
     public String getCaption() {
-        return translationService.getKeyValue(CoreTranslationMessages.CLEAR_SHAPES);
+        return translationService.getValue(CoreTranslationMessages.CLEAR_SHAPES);
     }
 
     @Override
     public String getTooltip() {
-        return translationService.getKeyValue(CoreTranslationMessages.CLEAR_SHAPES);
+        return translationService.getValue(CoreTranslationMessages.CLEAR_SHAPES);
     }
 
     @Override

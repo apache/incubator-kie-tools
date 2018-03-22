@@ -15,6 +15,7 @@ SVG - Supported elements
 | Rectangle |
 | Circle |
 | Path |
+| Image |
 | Group |
 
 
@@ -42,6 +43,7 @@ SVG - Supported attributes
 | circle  | cx  |
 | circle  | cy  |
 | circle  | r  |
+| image   | href  |
 | path  | d  |
 
 SVG - Custom attributes

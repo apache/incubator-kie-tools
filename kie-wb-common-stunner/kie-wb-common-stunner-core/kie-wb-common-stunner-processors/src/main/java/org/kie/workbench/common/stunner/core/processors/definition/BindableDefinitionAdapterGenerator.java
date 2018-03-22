@@ -56,6 +56,9 @@ public class BindableDefinitionAdapterGenerator extends AbstractBindableAdapterG
         addFields("baseTypes",
                   root,
                   processingDefinitionAnnotations.getBaseTypes());
+        addFields("idFieldNames",
+                  root,
+                  processingDefinitionAnnotations.getIdFieldNames());
         addFields("categoryFieldNames",
                   root,
                   processingDefinitionAnnotations.getCategoryFieldNames());

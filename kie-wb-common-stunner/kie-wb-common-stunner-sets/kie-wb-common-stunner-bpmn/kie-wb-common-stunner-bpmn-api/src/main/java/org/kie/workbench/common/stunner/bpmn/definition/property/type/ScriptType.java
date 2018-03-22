@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Portable
 public class ScriptType implements PropertyType {
 
-    public static final String name = "stunner.ScriptType";
+    public static final String name = "stunner.bpmn.ScriptType";
 
     @Override
     public String getName() {

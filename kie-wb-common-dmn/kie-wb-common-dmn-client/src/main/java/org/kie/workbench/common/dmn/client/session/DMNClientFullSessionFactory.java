@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.session;
 
+import java.util.function.Consumer;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -23,6 +25,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 
 @ApplicationScoped
 @DMNEditor
@@ -40,8 +43,9 @@ public class DMNClientFullSessionFactory implements ClientSessionFactory<ClientF
     }
 
     @Override
-    public ClientFullSession newSession() {
-        return this.fullSessionInstances.get();
+    public void newSession(final Metadata metadata,
+                           final Consumer<ClientFullSession> sessionConsumer) {
+        sessionConsumer.accept(fullSessionInstances.get());
     }
 
     @Override

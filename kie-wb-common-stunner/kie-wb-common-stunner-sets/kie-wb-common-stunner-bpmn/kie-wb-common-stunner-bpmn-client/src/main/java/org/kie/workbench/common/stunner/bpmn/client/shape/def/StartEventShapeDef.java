@@ -101,7 +101,8 @@ public class StartEventShapeDef
     }
 
     @Override
-    public Glyph getGlyph(final Class<? extends BaseStartEvent> type) {
+    public Glyph getGlyph(final Class<? extends BaseStartEvent> type,
+                          final String defId) {
         return GLYPHS.get(type);
     }
 }

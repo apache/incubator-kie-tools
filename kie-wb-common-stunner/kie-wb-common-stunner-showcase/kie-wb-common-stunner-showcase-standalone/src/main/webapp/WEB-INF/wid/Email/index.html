@@ -1,0 +1,29 @@
+<html>
+<body>
+<H2>Email <IMG src="email.gif"/></H2>
+A service for sending emails, using <TT>javax.mail</TT>.<BR/>
+
+
+<H3>Parameters</H3>
+<table border="1" cellpadding="3" ><tbody>
+<tr><td><B>From</B></td><td>String</td><td>The email adres that the email is sent from</td></tr>
+<tr><td><B>Reply-To</B></td><td>String</td><td>The reply-to email adres</td></tr>
+<tr><td><B>To</B></td><td>String</td><td>Recipient(s) of the email, multiple recipients are separated by a semi-colon</td></tr>
+<tr><td><B>Cc</B></td><td>String</td><td>CC recipient(s) of the email, multiple recipients are separated by a semi-colon</td></tr>
+<tr><td><B>Bcc</B></td><td>String</td><td>BCC recipient(s) of the email, multiple recipients are separated by a semi-colon</td></tr>
+<tr><td><B>Subject</B></td><td>String</td><td>The subject of the email</td></tr>
+<tr><td><B>Body</B></td><td>String</td><td>The body of the email</td></tr>
+</tbody></table>
+</body>
+
+<H3>Results</H3>
+
+<H3>Handler</H3>
+<TT>org.jbpm.process.workitem.email.EmailWorkItemHandler</TT>
+<P/>
+Can be configured using <TT>setConnection(host, port, username, password)</TT>
+<H3>Editor</H3>
+<IMG src="Email.png"/>
+<P/>
+<IMG src="Email2.png"/>
+</html>

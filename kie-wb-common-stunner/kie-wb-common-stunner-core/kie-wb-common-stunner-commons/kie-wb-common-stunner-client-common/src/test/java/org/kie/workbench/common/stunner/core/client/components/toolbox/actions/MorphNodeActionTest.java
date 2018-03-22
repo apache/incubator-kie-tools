@@ -127,7 +127,7 @@ public class MorphNodeActionTest {
         tested.getTitle(canvasHandler,
                         E_UUID);
         verify(translationService,
-               times(1)).getKeyValue(eq(MorphNodeAction.KEY_TITLE));
+               times(1)).getValue(eq(MorphNodeAction.KEY_TITLE));
     }
 
     @Test

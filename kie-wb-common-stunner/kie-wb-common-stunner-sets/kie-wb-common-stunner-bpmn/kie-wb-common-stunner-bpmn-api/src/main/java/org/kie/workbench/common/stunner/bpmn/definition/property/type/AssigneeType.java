@@ -21,7 +21,7 @@ import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 @Portable
 public class AssigneeType implements PropertyType {
 
-    public static final String name = "stunner.assignee";
+    public static final String name = "stunner.bpmn.assignee";
 
     @Override
     public String getName() {

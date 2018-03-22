@@ -86,15 +86,17 @@ public class SVGViewUtilsTest {
 
     @Test
     public void testGetPrimitive() {
-        Optional<IPrimitive> r1 = SVGViewUtils.getPrimitive(svgShape,
-                                                            "p1");
+        Optional<SVGPrimitive> r1 = SVGViewUtils.getPrimitive(svgShape,
+                                                              "p1");
         assertTrue(r1.isPresent());
-        assertEquals(p1, r1.get());
+        assertEquals(primitive1, r1.get());
+        assertEquals(p1, r1.get().get());
 
-        Optional<IPrimitive> r2 = SVGViewUtils.getPrimitive(svgShape,
-                                                            "p2");
+        Optional<SVGPrimitive> r2 = SVGViewUtils.getPrimitive(svgShape,
+                                                              "p2");
         assertTrue(r2.isPresent());
-        assertEquals(p2, r2.get());
+        assertEquals(primitive2, r2.get());
+        assertEquals(p2, r2.get().get());
     }
 
     @Test

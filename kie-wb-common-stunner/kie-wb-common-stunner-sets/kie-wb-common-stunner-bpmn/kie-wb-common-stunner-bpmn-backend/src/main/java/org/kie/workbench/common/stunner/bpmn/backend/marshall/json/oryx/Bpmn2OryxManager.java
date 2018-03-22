@@ -33,7 +33,10 @@ public class Bpmn2OryxManager extends BaseOryxManager {
     public static final String TARGET = ".target";
     public static final String MAGNET_AUTO_CONNECTION = "isAutoConnection";
 
+    // CDI Proxy.
     protected Bpmn2OryxManager() {
+        this(null,
+             null);
     }
 
     @Inject
@@ -52,7 +55,6 @@ public class Bpmn2OryxManager extends BaseOryxManager {
     @Override
     public Set<Class<?>> getDefinitionClasses() {
         final BPMNDefinitionSet set = new BPMNDefinitionSet.BPMNDefinitionSetBuilder().build();
-        final Set<Class<?>> defClasses = BackendBindableDefinitionUtils.getDefinitions(set);
-        return defClasses;
+        return BackendBindableDefinitionUtils.getDefinitions(set);
     }
 }

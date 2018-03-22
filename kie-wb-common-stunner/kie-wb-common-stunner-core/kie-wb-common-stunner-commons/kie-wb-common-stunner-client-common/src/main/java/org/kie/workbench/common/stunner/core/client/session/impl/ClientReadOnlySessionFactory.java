@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.stunner.core.client.session.impl;
 
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -23,14 +24,13 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 
 /**
  * Stunner's default session factory for sessions of type <code>ClientReadOnlySession</code>.
  */
 @ApplicationScoped
 public class ClientReadOnlySessionFactory implements ClientSessionFactory<ClientReadOnlySession> {
-
-    private static Logger LOGGER = Logger.getLogger(ClientReadOnlySessionFactory.class.getName());
 
     private final ManagedInstance<ClientReadOnlySessionImpl> readOnlySessionInstances;
 
@@ -44,8 +44,9 @@ public class ClientReadOnlySessionFactory implements ClientSessionFactory<Client
     }
 
     @Override
-    public ClientReadOnlySession newSession() {
-        return this.readOnlySessionInstances.get();
+    public void newSession(final Metadata metadata,
+                           final Consumer<ClientReadOnlySession> sessionConsumer) {
+        sessionConsumer.accept(this.readOnlySessionInstances.get());
     }
 
     @Override

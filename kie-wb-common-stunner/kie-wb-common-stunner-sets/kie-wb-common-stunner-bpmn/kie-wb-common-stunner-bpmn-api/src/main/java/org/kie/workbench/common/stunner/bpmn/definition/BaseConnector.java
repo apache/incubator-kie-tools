@@ -37,7 +37,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 public abstract class BaseConnector implements BPMNViewDefinition {
 
     @Category
-    public static final transient String category = Categories.CONNECTING_OBJECTS;
+    public static final transient String category = BPMNCategories.CONNECTING_OBJECTS;
 
     @PropertySet
     @FormField
@@ -122,7 +122,7 @@ public abstract class BaseConnector implements BPMNViewDefinition {
     public boolean equals(Object o) {
         if (o instanceof BaseConnector) {
             BaseConnector other = (BaseConnector) o;
-            return  Objects.equals(general, other.general) &&
+            return Objects.equals(general, other.general) &&
                     Objects.equals(backgroundSet, other.backgroundSet) &&
                     Objects.equals(fontSet, other.fontSet) &&
                     Objects.equals(labels, other.labels);

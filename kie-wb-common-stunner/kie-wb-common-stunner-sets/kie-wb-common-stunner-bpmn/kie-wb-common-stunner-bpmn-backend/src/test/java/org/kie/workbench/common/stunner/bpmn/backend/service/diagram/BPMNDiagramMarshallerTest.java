@@ -50,9 +50,7 @@ import org.jboss.drools.MetaDataType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.backend.ApplicationFactoryManager;
 import org.kie.workbench.common.stunner.backend.definition.factory.TestScopeModelFactory;
-import org.kie.workbench.common.stunner.backend.service.XMLEncoderDiagramMetadataMarshaller;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.backend.BPMNDiagramMarshaller;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.resource.JBPMBpmn2ResourceImpl;
@@ -70,8 +68,10 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.ScriptTypeListTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.ScriptTypeTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.StringTypeSerializer;
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.TaskTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.TimerSettingsTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.VariablesTypeSerializer;
+import org.kie.workbench.common.stunner.bpmn.backend.workitem.WorkItemDefinitionBackendRegistry;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
@@ -118,12 +118,16 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
+import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.backend.BackendFactoryManager;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.bind.BackendBindableMorphAdapter;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendPropertyAdapter;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendPropertySetAdapter;
+import org.kie.workbench.common.stunner.core.backend.service.XMLEncoderDiagramMetadataMarshaller;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.clone.CloneManager;
@@ -175,6 +179,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -210,7 +215,7 @@ public class BPMNDiagramMarshallerTest {
     private static final String BPMN_REUSABLE_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/reusableSubprocessCalledElement.bpmn";
     private static final String BPMN_EMBEDDED_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/embeddedSubprocess.bpmn";
     private static final String BPMN_EVENT_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/eventSubprocess.bpmn";
-    private static final String BPMN_EVENT_SUBPROCESS_STARTERROREVENT= "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/isInterruptingStartErrorEvent.bpmn";
+    private static final String BPMN_EVENT_SUBPROCESS_STARTERROREVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/isInterruptingStartErrorEvent.bpmn";
     private static final String BPMN_ADHOC_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/adHocSubProcess.bpmn";
     private static final String BPMN_MULTIPLE_INSTANCE_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/multipleInstanceSubprocess.bpmn";
     private static final String BPMN_SCRIPTTASK = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/scriptTask.bpmn";
@@ -224,6 +229,7 @@ public class BPMNDiagramMarshallerTest {
     private static final String BPMN_MAGNETDOCKERS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/magnetDockers.bpmn";
     private static final String BPMN_MAGNETSINLANE = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/magnetsInLane.bpmn";
     private static final String BPMN_ENDERROR_EVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endErrorEvent.bpmn";
+    private static final String BPMN_SERVICE_TASKS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/serviceTasks.bpmn";
 
     private static final String NEW_LINE = System.lineSeparator();
 
@@ -246,7 +252,7 @@ public class BPMNDiagramMarshallerTest {
     CloneManager cloneManager;
 
     @Mock
-    ApplicationFactoryManager applicationFactoryManager;
+    BackendFactoryManager applicationFactoryManager;
 
     EdgeFactory<Object> connectionEdgeFactory;
     NodeFactory<Object> viewNodeFactory;
@@ -259,6 +265,7 @@ public class BPMNDiagramMarshallerTest {
 
     Bpmn2OryxIdMappings oryxIdMappings;
     Bpmn2OryxPropertyManager oryxPropertyManager;
+    WorkItemDefinitionRegistry workItemDefinitionMockRegistry;
     Bpmn2OryxManager oryxManager;
 
     TestScopeModelFactory testScopeModelFactory;
@@ -283,12 +290,15 @@ public class BPMNDiagramMarshallerTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
+        // Work Items.
+        workItemDefinitionMockRegistry = new WorkItemDefinitionMockRegistry();
         // Graph utils.
         when(definitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.registry()).thenReturn(adapterRegistry);
         definitionUtils = new DefinitionUtils(definitionManager,
                                               applicationFactoryManager);
-        testScopeModelFactory = new TestScopeModelFactory(new BPMNDefinitionSet.BPMNDefinitionSetBuilder().build());
+        testScopeModelFactory = new BPMNTestScopeModelFactory(new BPMNDefinitionSet.BPMNDefinitionSetBuilder().build(),
+                                                              workItemDefinitionMockRegistry);
         // Definition manager.
         final BackendDefinitionAdapter definitionAdapter = new BackendDefinitionAdapter(definitionUtils);
         final BackendDefinitionSetAdapter definitionSetAdapter = new BackendDefinitionSetAdapter(definitionAdapter);
@@ -375,7 +385,8 @@ public class BPMNDiagramMarshallerTest {
                                                       anyString(),
                                                       any(Metadata.class));
         // Bpmn 2 oryx stuff.
-        oryxIdMappings = new Bpmn2OryxIdMappings(definitionManager);
+        oryxIdMappings = new Bpmn2OryxIdMappings(definitionManager,
+                                                 () -> workItemDefinitionMockRegistry);
         StringTypeSerializer stringTypeSerializer = new StringTypeSerializer();
         BooleanTypeSerializer booleanTypeSerializer = new BooleanTypeSerializer();
         ColorTypeSerializer colorTypeSerializer = new ColorTypeSerializer();
@@ -387,6 +398,8 @@ public class BPMNDiagramMarshallerTest {
         TimerSettingsTypeSerializer timerSettingsTypeSerializer = new TimerSettingsTypeSerializer();
         ScriptTypeTypeSerializer scriptTypeTypeSerializer = new ScriptTypeTypeSerializer();
         ScriptTypeListTypeSerializer scriptTypeListTypeSerializer = new ScriptTypeListTypeSerializer();
+        TaskTypeSerializer taskTypeSerializer = new TaskTypeSerializer(definitionUtils,
+                                                                       enumTypeSerializer);
         List<Bpmn2OryxPropertySerializer<?>> propertySerializers = new LinkedList<>();
         propertySerializers.add(stringTypeSerializer);
         propertySerializers.add(booleanTypeSerializer);
@@ -399,13 +412,15 @@ public class BPMNDiagramMarshallerTest {
         propertySerializers.add(timerSettingsTypeSerializer);
         propertySerializers.add(scriptTypeTypeSerializer);
         propertySerializers.add(scriptTypeListTypeSerializer);
+        propertySerializers.add(taskTypeSerializer);
         oryxPropertyManager = new Bpmn2OryxPropertyManager(propertySerializers);
         oryxManager = new Bpmn2OryxManager(oryxIdMappings,
                                            oryxPropertyManager);
         oryxManager.init();
         // Marshalling factories.
         objectBuilderFactory = new BPMNGraphObjectBuilderFactory(definitionManager,
-                                                                 oryxManager);
+                                                                 oryxManager,
+                                                                 () -> workItemDefinitionMockRegistry);
         taskMorphDefinition = new TaskTypeMorphDefinition();
         Collection<MorphDefinition> morphDefinitions = new ArrayList<MorphDefinition>() {{
             add(taskMorphDefinition);
@@ -422,6 +437,13 @@ public class BPMNDiagramMarshallerTest {
         GraphIndexBuilder<?> indexBuilder = new MapIndexBuilder();
         when(rulesManager.evaluate(any(RuleSet.class),
                                    any(RuleEvaluationContext.class))).thenReturn(new DefaultRuleViolations());
+        // The work item definition registry.
+        WorkItemDefinitionBackendRegistry widRegistry = mock(WorkItemDefinitionBackendRegistry.class);
+        when(widRegistry.getRegistry()).thenReturn(workItemDefinitionMockRegistry);
+        when(widRegistry.items()).thenReturn(workItemDefinitionMockRegistry.items());
+        when(widRegistry.load(any(Metadata.class))).thenReturn(widRegistry);
+        doAnswer(invocationOnMock -> workItemDefinitionMockRegistry.get((String) invocationOnMock.getArguments()[0]))
+                .when(widRegistry).get(anyString());
         // The tested BPMN marshaller.
         tested = new BPMNDiagramMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
                                            objectBuilderFactory,
@@ -431,7 +453,8 @@ public class BPMNDiagramMarshallerTest {
                                            applicationFactoryManager,
                                            rulesManager,
                                            commandManager,
-                                           commandFactory);
+                                           commandFactory,
+                                           widRegistry);
     }
 
     // 4 nodes expected: BPMNDiagram, StartNode, Task and EndNode
@@ -656,7 +679,7 @@ public class BPMNDiagramMarshallerTest {
         assertNotNull(startErrorEvent.getExecutionSet().getErrorRef());
         assertEquals("MyError",
                      startErrorEvent.getExecutionSet().getErrorRef().getValue());
-        assertEquals(true,startErrorEvent.getExecutionSet().getIsInterrupting().getValue());
+        assertEquals(true, startErrorEvent.getExecutionSet().getIsInterrupting().getValue());
         DataIOSet dataIOSet = startErrorEvent.getDataIOSet();
         AssignmentsInfo assignmentsInfo = dataIOSet.getAssignmentsinfo();
         assertEquals("||errorOutput_:String||[dout]errorOutput_->var1",
@@ -666,7 +689,7 @@ public class BPMNDiagramMarshallerTest {
     @Test
     public void testUnmarshallIsInterruptingStartErrorEvent() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_EVENT_SUBPROCESS_STARTERROREVENT);
-        assertDiagram(diagram,7);
+        assertDiagram(diagram, 7);
         assertEquals("EventSubprocessStartErrorEvent", diagram.getMetadata().getTitle());
 
         // Check first start event with all FILLED properties
@@ -2156,7 +2179,7 @@ public class BPMNDiagramMarshallerTest {
                       2);
 
         Diagram<Graph, Metadata> marshalledDiagram = unmarshall(getStream(result));
-        assertDiagram(marshalledDiagram,7);
+        assertDiagram(marshalledDiagram, 7);
         assertEquals("EventSubprocessStartErrorEvent", marshalledDiagram.getMetadata().getTitle());
 
         Node<? extends Definition, ?> filledEventNode = testIt.getGraph().getNode("9ABD5C04-C6E2-4DF3-829F-ADB283330AD6");
@@ -2818,7 +2841,7 @@ public class BPMNDiagramMarshallerTest {
         return (Iterator<Element>) diagram.getGraph().nodes().iterator();
     }
 
-    private InputStream loadStream(String path) {
+    private static InputStream loadStream(String path) {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
     }
 
@@ -3011,5 +3034,58 @@ public class BPMNDiagramMarshallerTest {
             }
         }
         return null;
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshallWorkItems() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_SERVICE_TASKS);
+        assertDiagram(diagram,
+                      5);
+        // Email service task assertions.
+        Node<? extends Definition, ?> emailNode = diagram.getGraph().getNode("_277CE006-5E6E-4960-A68C-CC8A5347C33F");
+        assertTrue(emailNode.getContent().getDefinition() instanceof ServiceTask);
+        ServiceTask email = (ServiceTask) emailNode.getContent().getDefinition();
+        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getName(),
+                     email.getName());
+        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getCategory(),
+                     email.getCategory());
+        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getDefaultHandler(),
+                     email.getDefaultHandler());
+        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getDescription(),
+                     email.getDescription());
+        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getDisplayName(),
+                     email.getGeneral().getName().getValue());
+        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getDocumentation(),
+                     email.getGeneral().getDocumentation().getValue());
+        // Log service task assertions.
+        Node<? extends Definition, ?> logNode = diagram.getGraph().getNode("_A940748F-A658-4FB8-84FD-B69F4B7A9205");
+        assertTrue(logNode.getContent().getDefinition() instanceof ServiceTask);
+        ServiceTask log = (ServiceTask) logNode.getContent().getDefinition();
+        assertEquals(WorkItemDefinitionMockRegistry.LOG.getName(),
+                     log.getName());
+        assertEquals(WorkItemDefinitionMockRegistry.LOG.getCategory(),
+                     log.getCategory());
+        assertEquals(WorkItemDefinitionMockRegistry.LOG.getDefaultHandler(),
+                     log.getDefaultHandler());
+        assertEquals(WorkItemDefinitionMockRegistry.LOG.getDescription(),
+                     log.getDescription());
+        assertEquals(WorkItemDefinitionMockRegistry.LOG.getDisplayName(),
+                     log.getGeneral().getName().getValue());
+        assertEquals(WorkItemDefinitionMockRegistry.LOG.getDocumentation(),
+                     log.getGeneral().getDocumentation().getValue());
+    }
+
+    @Test
+    public void testMarshallWorkItems() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_SERVICE_TASKS);
+        String result = tested.marshall(diagram);
+        System.out.println(result);
+        assertDiagram(result,
+                      1,
+                      4,
+                      3);
+        assertTrue(result.contains("drools:taskName=\"Email\""));
+        assertTrue(result.contains("drools:taskName=\"Log\""));
     }
 }

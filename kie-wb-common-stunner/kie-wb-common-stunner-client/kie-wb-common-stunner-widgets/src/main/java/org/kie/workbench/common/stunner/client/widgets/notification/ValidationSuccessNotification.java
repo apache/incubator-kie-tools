@@ -43,7 +43,7 @@ public final class ValidationSuccessNotification extends AbstractNotification<Vo
             final String message =
                     new SafeHtmlBuilder()
                             .appendEscaped(translationService
-                                                   .getKeyValue(CoreTranslationMessages.VALIDATION_SUCCESS))
+                                                   .getValue(CoreTranslationMessages.VALIDATION_SUCCESS))
                             .toSafeHtml().asString();
             return new ValidationSuccessNotification(message,
                                                      context);

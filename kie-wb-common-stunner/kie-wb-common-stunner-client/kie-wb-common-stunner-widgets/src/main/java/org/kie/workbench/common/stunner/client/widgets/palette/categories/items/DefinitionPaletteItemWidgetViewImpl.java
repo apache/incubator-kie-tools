@@ -34,6 +34,11 @@ import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 public class DefinitionPaletteItemWidgetViewImpl implements DefinitionPaletteItemWidgetView,
                                                             IsElement {
 
+    private static final String DISPLAY = "display";
+    private static final String DISPLAY_INLINE = "inline";
+    private static final String DISPLAY_NONE = "none";
+    private static final String PADDING_RIGHT = "padding-right";
+
     @Inject
     @DataField
     private Paragraph itemAnchor;
@@ -65,7 +70,20 @@ public class DefinitionPaletteItemWidgetViewImpl implements DefinitionPaletteIte
                                          width,
                                          height);
         icon.appendChild(glyphElement.getElement());
-        name.setTextContent(presenter.getItem().getTitle());
+        final String title = presenter.getItem().getTitle();
+        if (!isEmpty(title)) {
+            name.setTextContent(presenter.getItem().getTitle());
+            name.getStyle().setProperty(DISPLAY, DISPLAY_INLINE);
+        } else {
+            name.getStyle().setProperty(DISPLAY, DISPLAY_NONE);
+            icon.getStyle().setProperty(PADDING_RIGHT, "0");
+        }
+        final String tooltip = presenter.getItem().getTooltip();
+        if (!isEmpty(tooltip)) {
+            itemAnchor.setTitle(tooltip);
+        } else {
+            itemAnchor.setTitle("");
+        }
     }
 
     @EventHandler("itemAnchor")
@@ -74,5 +92,9 @@ public class DefinitionPaletteItemWidgetViewImpl implements DefinitionPaletteIte
                               mouseDownEvent.getClientY(),
                               mouseDownEvent.getX(),
                               mouseDownEvent.getY());
+    }
+
+    private static boolean isEmpty(final String s) {
+        return null == s || s.trim().length() == 0;
     }
 }

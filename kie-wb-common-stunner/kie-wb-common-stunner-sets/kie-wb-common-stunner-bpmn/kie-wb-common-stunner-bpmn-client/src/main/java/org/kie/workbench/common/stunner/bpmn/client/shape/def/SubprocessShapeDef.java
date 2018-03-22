@@ -93,7 +93,8 @@ public class SubprocessShapeDef extends BaseDimensionedShapeDef
     }
 
     @Override
-    public Glyph getGlyph(final Class<? extends BaseSubprocess> type) {
+    public Glyph getGlyph(final Class<? extends BaseSubprocess> type,
+                          final String defId) {
         return GLYPHS.get(type);
     }
 }

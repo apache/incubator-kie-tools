@@ -105,6 +105,10 @@
     opacity: 0;
 }
 
+.task_group_service {
+    opacity: 0;
+}
+
 .task_business_rule_icon {
     fill: #393f44;
 }
@@ -121,7 +125,9 @@
     opacity: 1;
 }
 
-
+#serviceTask .task_group_service {
+    opacity: 1;
+}
 
 #event-background,
 #event-type #intermediate-noninterrupting,

@@ -46,12 +46,11 @@ public class ExportToJpgToolbarCommand extends AbstractToolbarCommand<AbstractCl
 
     @Override
     public String getCaption() {
-        return translationService.getKeyValue(CoreTranslationMessages.EXPORT_JPG);
+        return translationService.getValue(CoreTranslationMessages.EXPORT_JPG);
     }
 
     @Override
     public String getTooltip() {
-        return translationService.getKeyValue(CoreTranslationMessages.EXPORT_JPG);
-
+        return translationService.getValue(CoreTranslationMessages.EXPORT_JPG);
     }
 }

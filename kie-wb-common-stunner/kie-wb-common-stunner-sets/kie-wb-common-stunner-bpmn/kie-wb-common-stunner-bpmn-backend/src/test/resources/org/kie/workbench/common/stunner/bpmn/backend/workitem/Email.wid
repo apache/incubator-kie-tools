@@ -1,0 +1,28 @@
+import org.drools.core.process.core.datatype.impl.type.StringDataType;
+
+[
+
+  [
+    "name" : "Email",
+    "description" : "Sending emails",
+    "version" : "1.0",
+    "parameters" : [
+    	"From" : new StringDataType(),
+    	"To" : new StringDataType(),
+    	"Subject" : new StringDataType(),
+    	"Body" : new StringDataType()
+    ],
+    "displayName" : "Email",
+    "icon" : "email.gif",
+    "eclipse:customEditor" : "org.drools.eclipse.flow.common.editor.editpart.work.EmailCustomEditor",
+    "category" : "Communication",
+    "defaultHandler" : "org.jbpm.process.workitem.email.EmailWorkItemHandler",
+    "documentation" : "index.html",
+    "dependencies" : [ 
+      "file:./lib/jbpm-email.jar", 
+      "file:./lib/mail-1.4.jar", 
+      "file:./lib/activation-1.1.jar"
+    ]
+  ]
+
+]

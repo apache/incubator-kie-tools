@@ -46,7 +46,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.backend.definition.factory.TestScopeModelFactory;
-import org.kie.workbench.common.stunner.backend.service.XMLEncoderDiagramMetadataMarshaller;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.backend.BPMNDirectDiagramMarshaller;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsConverter;
@@ -98,10 +97,12 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.variables.Proce
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
+import org.kie.workbench.common.stunner.core.backend.BackendFactoryManager;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendPropertyAdapter;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendPropertySetAdapter;
+import org.kie.workbench.common.stunner.core.backend.service.XMLEncoderDiagramMetadataMarshaller;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -173,7 +174,7 @@ public class BPMNDirectDiagramMarshallerTest {
     private static final String BPMN_ENDTERMINATEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endTerminateEvent.bpmn";
     private static final String BPMN_PROCESSPROPERTIES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/processProperties.bpmn";
     private static final String BPMN_BUSINESSRULETASKRULEFLOWGROUP = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/businessRuleTask.bpmn";
-    private static final String BPMN_EVENT_SUBPROCESS_STARTERROREVENT= "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/isInterruptingStartErrorEvent.bpmn";
+    private static final String BPMN_EVENT_SUBPROCESS_STARTERROREVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/isInterruptingStartErrorEvent.bpmn";
     private static final String BPMN_REUSABLE_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/reusableSubprocessCalledElement.bpmn";
     private static final String BPMN_EMBEDDED_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/embeddedSubprocess.bpmn";
     private static final String BPMN_EVENT_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/eventSubprocess.bpmn";
@@ -205,7 +206,7 @@ public class BPMNDirectDiagramMarshallerTest {
     @Mock
     RuleManager rulesManager;
 
-    FactoryManager applicationFactoryManager;
+    BackendFactoryManager applicationFactoryManager;
 
     private BPMNDirectDiagramMarshaller tested;
 
@@ -694,7 +695,7 @@ public class BPMNDirectDiagramMarshallerTest {
     @Test
     public void testUnmarshallIsInterruptingStartErrorEvent() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_EVENT_SUBPROCESS_STARTERROREVENT);
-        assertDiagram(diagram,7);
+        assertDiagram(diagram, 7);
         assertEquals("EventSubprocessStartErrorEvent", diagram.getMetadata().getTitle());
 
         // Check first start event with all FILLED properties

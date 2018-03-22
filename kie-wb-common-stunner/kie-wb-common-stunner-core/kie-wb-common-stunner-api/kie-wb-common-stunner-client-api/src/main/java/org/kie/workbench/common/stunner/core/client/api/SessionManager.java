@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.core.client.api;
 
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
-import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 
 /**
  * A singleton instance for each application's client that handles the different Stunner's sessions on client side.
@@ -40,8 +40,8 @@ public interface SessionManager {
     /**
      * Returns the factory instance for the given session type.and targeted for the given Diagram type..
      */
-    <D extends Diagram, S extends ClientSession> ClientSessionFactory<S> getSessionFactory(final D diagram,
-                                                                                           final Class<S> sessionType);
+    <S extends ClientSession> ClientSessionFactory<S> getSessionFactory(final Metadata metadata,
+                                                                        final Class<S> sessionType);
 
     /**
      * Returns the current active session.

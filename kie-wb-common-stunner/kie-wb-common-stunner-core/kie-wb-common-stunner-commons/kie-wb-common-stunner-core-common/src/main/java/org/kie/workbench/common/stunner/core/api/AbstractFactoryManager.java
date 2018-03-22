@@ -41,6 +41,11 @@ public abstract class AbstractFactoryManager {
         this.definitionManager = definitionManager;
     }
 
+    protected AbstractFactoryManager(final DefinitionManager definitionManager) {
+        this.factoryRegistry = null;
+        this.definitionManager = definitionManager;
+    }
+
     @SuppressWarnings("unchecked")
     public <T> T newDefinition(final String id) {
         final DefinitionFactory<T> factory = factoryRegistry.getDefinitionFactory(id);

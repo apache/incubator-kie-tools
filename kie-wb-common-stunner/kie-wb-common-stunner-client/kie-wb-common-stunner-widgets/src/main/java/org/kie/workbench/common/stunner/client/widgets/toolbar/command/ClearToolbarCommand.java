@@ -41,12 +41,12 @@ public class ClearToolbarCommand extends AbstractToolbarCommand<ClientFullSessio
 
     @Override
     public String getCaption() {
-        return translationService.getKeyValue(CoreTranslationMessages.CLEAR_DIAGRAM);
+        return translationService.getValue(CoreTranslationMessages.CLEAR_DIAGRAM);
     }
 
     @Override
     public String getTooltip() {
-        return translationService.getKeyValue(CoreTranslationMessages.CLEAR_DIAGRAM);
+        return translationService.getValue(CoreTranslationMessages.CLEAR_DIAGRAM);
     }
 
     @Override

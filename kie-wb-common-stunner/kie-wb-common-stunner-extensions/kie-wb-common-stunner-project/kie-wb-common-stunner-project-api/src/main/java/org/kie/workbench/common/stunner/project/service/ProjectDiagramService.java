@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.project.service;
 
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.file.SupportsUpdate;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.stunner.core.service.BaseDiagramService;
@@ -33,5 +34,5 @@ public interface ProjectDiagramService extends BaseDiagramService<ProjectMetadat
                 final String name,
                 final String defSetId,
                 final String projName,
-                final String projPkg);
+                final Package projPkg);
 }

@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.event.SessionDiagramOpenedEvent;
 import org.kie.workbench.common.stunner.client.widgets.notification.NotificationsObserver;
-import org.kie.workbench.common.stunner.client.widgets.palette.factory.BS3PaletteFactory;
+import org.kie.workbench.common.stunner.client.widgets.palette.DefaultPaletteFactory;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.EditorToolbarFactory;
@@ -64,7 +64,7 @@ public class SessionPresenterFactoryImpl extends org.kie.workbench.common.stunne
                                        final ManagedInstance<WidgetWrapperView> diagramViewerViewInstances,
                                        final ManagedInstance<SessionPresenter.View> viewInstances,
                                        final ManagedInstance<NotificationsObserver> notificationsObserverInstances,
-                                       final BS3PaletteFactory paletteWidgetFactory,
+                                       final DefaultPaletteFactory<AbstractCanvasHandler> paletteWidgetFactory,
                                        final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEventInstances,
                                        final ScreenResizeEventObserver screenResizeEventObserver) {
         super(sessionManager,

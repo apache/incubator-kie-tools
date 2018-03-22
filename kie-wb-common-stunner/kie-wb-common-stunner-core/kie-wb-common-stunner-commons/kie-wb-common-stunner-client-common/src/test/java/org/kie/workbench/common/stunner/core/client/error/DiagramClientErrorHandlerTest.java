@@ -47,8 +47,8 @@ public class DiagramClientErrorHandlerTest {
     @Before
     public void setUp() {
         diagramClientErrorHandler = new DiagramClientErrorHandler(clientTranslationService);
-        when(clientTranslationService.getKeyValue(CoreTranslationMessages.DIAGRAM_LOAD_FAIL_UNSUPPORTED_ELEMENTS,
-                                                  DEFINITION_ID)).thenReturn(ERROR_MESSAGE);
+        when(clientTranslationService.getValue(CoreTranslationMessages.DIAGRAM_LOAD_FAIL_UNSUPPORTED_ELEMENTS,
+                                               DEFINITION_ID)).thenReturn(ERROR_MESSAGE);
     }
 
     @Test

@@ -17,23 +17,15 @@
 package org.kie.workbench.common.stunner.backend.service;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.Collection;
-import java.util.HashMap;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.inject.Named;
-import javax.servlet.ServletContext;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.jboss.errai.bus.server.api.RpcContext;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.backend.service.AbstractVFSDiagramService;
@@ -50,8 +42,6 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.StandardDeleteOption;
 
 @ApplicationScoped
@@ -63,13 +53,11 @@ public class DiagramServiceImpl
     private static final Logger LOG = LoggerFactory.getLogger(DiagramServiceImpl.class.getName());
 
     private static final String METADATA_EXTENSION = "meta";
-    private static final String VFS_ROOT_PATH = "default://stunner";
-    private static final String VFS_DIAGRAMS_PATH = "diagrams";
-    private static final String APP_DIAGRAMS_PATH = "WEB-INF/diagrams";
+    private static final String DIAGRAMS_PATH = "diagrams";
 
-    private FileSystem fileSystem;
-    private org.uberfire.java.nio.file.Path root;
+    private final BackendFileSystemManagerImpl backendFileSystemManager;
 
+    // CDI proxy.
     protected DiagramServiceImpl() {
         this(null,
              null,
@@ -82,21 +70,19 @@ public class DiagramServiceImpl
     public DiagramServiceImpl(final DefinitionManager definitionManager,
                               final FactoryManager factoryManager,
                               final Instance<DefinitionSetService> definitionSetServiceInstances,
-                              final @Named("ioStrategy") IOService ioService,
-                              final BackendRegistryFactory registryFactory) {
+                              final BackendRegistryFactory registryFactory,
+                              final BackendFileSystemManagerImpl backendFileSystemManager) {
         super(definitionManager,
               factoryManager,
               definitionSetServiceInstances,
-              ioService,
               registryFactory);
+        this.backendFileSystemManager = backendFileSystemManager;
     }
 
     @PostConstruct
     public void init() {
         // Initialize caches.
         super.initialize();
-        // Initialize the application's VFS.
-        initFileSystem();
         // Register packaged diagrams into VFS.
         registerAppDefinitions();
         // Load vfs diagrams and put into the parent registry.
@@ -120,18 +106,40 @@ public class DiagramServiceImpl
 
     @Override
     protected Metadata buildMetadataInstance(final org.uberfire.backend.vfs.Path path,
-                                             String defSetId,
-                                             String title) {
+                                             final String defSetId,
+                                             final String title) {
         return new MetadataImpl.MetadataImplBuilder(defSetId,
                                                     getDefinitionManager())
+                .setRoot(getRoot())
                 .setPath(path)
                 .setTitle(title)
                 .build();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    protected InputStream loadMetadataForPath(final Path path) {
-        return doLoadMetadataStreamByDiagramPath(path);
+    protected Metadata obtainMetadata(DefinitionSetService services,
+                                      final org.uberfire.backend.vfs.Path diagramFilePath,
+                                      final String defSetId,
+                                      final String fileName) {
+        Metadata metadata = null;
+        final InputStream metaDataStream = loadMetadataForPath(diagramFilePath);
+        if (null != metaDataStream) {
+            try {
+                metadata = services.getDiagramMarshaller().getMetadataMarshaller().unmarshall(metaDataStream);
+                if (null == metadata.getRoot() || null == metadata.getRoot().toURI()) {
+                    metadata.setRoot(getRoot());
+                }
+            } catch (java.io.IOException e) {
+                LOG.error("Cannot unmarshall metadata for diagram's path [" + diagramFilePath + "]",
+                          e);
+            }
+        }
+        return metadata;
+    }
+
+    private org.uberfire.backend.vfs.Path getRoot() {
+        return Paths.convert(backendFileSystemManager.getRootPath());
     }
 
     @Override
@@ -139,12 +147,16 @@ public class DiagramServiceImpl
         return Metadata.class;
     }
 
+    private InputStream loadMetadataForPath(final Path path) {
+        return doLoadMetadataStreamByDiagramPath(path);
+    }
+
     @Override
     protected Metadata doSave(final Diagram diagram,
                               final String raw,
                               final String metadata) {
         try {
-            getIoService().startBatch(fileSystem);
+            getIoService().startBatch(backendFileSystemManager.getFileSystem());
             final Path _path = diagram.getMetadata().getPath();
             final String name = null != _path ? _path.getFileName() : getNewFileName(diagram);
             final org.uberfire.java.nio.file.Path path =
@@ -179,7 +191,7 @@ public class DiagramServiceImpl
     protected boolean doDelete(final Path _path) {
         final org.uberfire.java.nio.file.Path path = Paths.convert(_path);
         if (getIoService().exists(path)) {
-            getIoService().startBatch(fileSystem);
+            getIoService().startBatch(backendFileSystemManager.getFileSystem());
             try {
                 getIoService().deleteIfExists(path,
                                               StandardDeleteOption.NON_EMPTY_DIRECTORIES);
@@ -192,6 +204,15 @@ public class DiagramServiceImpl
             }
         }
         return true;
+    }
+
+    @Override
+    protected IOService getIoService() {
+        return backendFileSystemManager.getIoService();
+    }
+
+    public org.uberfire.java.nio.file.Path getDiagramsPath() {
+        return backendFileSystemManager.getRootPath().resolve(DIAGRAMS_PATH);
     }
 
     private InputStream doLoadMetadataStreamByDiagramPath(final Path dPath) {
@@ -212,87 +233,14 @@ public class DiagramServiceImpl
     }
 
     private Collection<Diagram<Graph, Metadata>> getAllDiagrams() {
-        return getDiagramsByPath(root);
+        return getDiagramsByPath(getDiagramsPath());
     }
 
     private void registerAppDefinitions() {
-        deployAppDiagrams(APP_DIAGRAMS_PATH);
-    }
-
-    private void initFileSystem() {
-        try {
-            fileSystem = getIoService().newFileSystem(URI.create(VFS_ROOT_PATH),
-                                                      new HashMap<String, Object>() {{
-                                                          put("init",
-                                                              Boolean.TRUE);
-                                                          put("internal",
-                                                              Boolean.TRUE);
-                                                      }});
-        } catch (FileSystemAlreadyExistsException e) {
-            fileSystem = getIoService().getFileSystem(URI.create(VFS_ROOT_PATH));
-        }
-        this.root = fileSystem.getRootDirectories().iterator().next();
-    }
-
-    private void deployAppDiagrams(final String path) {
-        ServletContext servletContext = RpcContext.getServletRequest().getServletContext();
-        if (null != servletContext) {
-            String dir = servletContext.getRealPath(path);
-            if (dir != null && new File(dir).exists()) {
-                dir = dir.replaceAll("\\\\",
-                                     "/");
-                findAndDeployDiagrams(dir);
-            }
-        } else {
-            LOG.warn("No servlet context available. Cannot deploy the application diagrams.");
-        }
-    }
-
-    private void findAndDeployDiagrams(final String directory) {
-        if (!StringUtils.isBlank(directory)) {
-            // Look for data sets deploy
-            File[] files = new File(directory).listFiles(_deployFilter);
-            if (files != null) {
-                for (File f : files) {
-                    try {
-                        String name = f.getName();
-                        if (isFileNameAccepted(name)) {
-                            // Register it into VFS storage.
-                            registerIntoVFS(f);
-                        }
-                    } catch (Exception e) {
-                        LOG.error("Error loading the application default diagrams.",
-                                  e);
-                    }
-                }
-            }
-        }
-    }
-
-    private void registerIntoVFS(final File file) {
-        String name = file.getName();
-        org.uberfire.java.nio.file.Path actualPath = getDiagramsPath().resolve(name);
-        boolean exists = getIoService().exists(actualPath);
-        if (!exists) {
-            getIoService().startBatch(fileSystem);
-            try {
-                String content = FileUtils.readFileToString(file);
-                org.uberfire.java.nio.file.Path diagramPath = getDiagramsPath().resolve(file.getName());
-                getIoService().write(diagramPath,
-                                     content);
-            } catch (Exception e) {
-                LOG.error("Error registering diagram into app's VFS",
-                          e);
-            } finally {
-                getIoService().endBatch();
-            }
-        } else {
-            LOG.warn("Diagram [" + name + "] already exists on VFS storage. This file should not be longer present here.");
-        }
-    }
-
-    public org.uberfire.java.nio.file.Path getDiagramsPath() {
-        return root.resolve(VFS_DIAGRAMS_PATH);
+        final String diagramsAppPath = backendFileSystemManager.getPathRelativeToApp(DIAGRAMS_PATH);
+        backendFileSystemManager.findAndDeployFiles(new File(diagramsAppPath),
+                                                    (dir, name) -> isFileNameAccepted(name),
+                                                    getDiagramsPath());
     }
 
     private boolean isFileNameAccepted(final String name) {
@@ -305,6 +253,4 @@ public class DiagramServiceImpl
     private boolean isMetadataFile(final String name) {
         return null != name && name.endsWith("." + METADATA_EXTENSION);
     }
-
-    private FilenameFilter _deployFilter = (dir, name) -> true;
 }

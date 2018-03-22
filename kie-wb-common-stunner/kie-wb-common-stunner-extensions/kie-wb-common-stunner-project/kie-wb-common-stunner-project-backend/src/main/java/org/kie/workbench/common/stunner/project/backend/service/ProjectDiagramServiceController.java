@@ -16,11 +16,13 @@
 
 package org.kie.workbench.common.stunner.project.backend.service;
 
-import java.io.InputStream;
 import java.util.Map;
 
 import javax.enterprise.inject.Instance;
 
+import org.guvnor.common.services.project.model.Package;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.backend.service.AbstractVFSDiagramService;
@@ -43,16 +45,21 @@ class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectM
     private static final Logger LOG =
             LoggerFactory.getLogger(ProjectDiagramServiceController.class.getName());
 
+    private final IOService ioService;
+    private final KieModuleService moduleService;
+
     ProjectDiagramServiceController(final DefinitionManager definitionManager,
                                     final FactoryManager factoryManager,
                                     final Instance<DefinitionSetService> definitionSetServiceInstances,
                                     final IOService ioService,
-                                    final BackendRegistryFactory registryFactory) {
+                                    final BackendRegistryFactory registryFactory,
+                                    final KieModuleService moduleService) {
         super(definitionManager,
               factoryManager,
               definitionSetServiceInstances,
-              ioService,
               registryFactory);
+        this.ioService = ioService;
+        this.moduleService = moduleService;
     }
 
     @Override
@@ -73,46 +80,51 @@ class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectM
         return create(path,
                       name,
                       defSetId,
-                      null,
+                      getCurrentModule(path).getModuleName(),
                       null);
     }
 
     public Path create(final Path path,
                        final String name,
                        final String defSetId,
-                       final String projName,
-                       final String projPkg) {
-        ProjectMetadata metadata = buildProjectMetadataInstance(path,
-                                                                name,
-                                                                defSetId,
-                                                                projName,
-                                                                projPkg);
+                       final String moduleName,
+                       final Package projPkg) {
+        final ProjectMetadata metadata = buildProjectMetadataInstance(path,
+                                                                      name,
+                                                                      defSetId,
+                                                                      moduleName,
+                                                                      projPkg);
         return this.create(path,
                            name,
                            defSetId,
                            metadata);
     }
 
-    // TODO: Jeremy - set project name and package values when loading a diagram.
     @Override
-    protected ProjectMetadata buildMetadataInstance(final org.uberfire.backend.vfs.Path path,
-                                                    final String defSetId,
-                                                    final String title) {
+    protected Metadata buildMetadataInstance(final Path path,
+                                             final String defSetId,
+                                             final String title) {
+        final Package modulePackage = moduleService.resolvePackage(path);
+        final KieModule kieModule = getCurrentModule(path);
         return buildProjectMetadataInstance(path,
                                             title,
                                             defSetId,
-                                            null,
-                                            null);
+                                            kieModule.getModuleName(),
+                                            modulePackage);
+    }
+
+    private KieModule getCurrentModule(final Path path) {
+        return moduleService.resolveModule(path);
     }
 
     private ProjectMetadata buildProjectMetadataInstance(final Path path,
                                                          final String name,
                                                          final String defSetId,
-                                                         final String projName,
-                                                         final String projPkg) {
+                                                         final String moduleName,
+                                                         final Package projPkg) {
         return new ProjectMetadataImpl.ProjectMetadataBuilder()
                 .forDefinitionSetId(defSetId)
-                .forProjectName(projName)
+                .forModuleName(moduleName)
                 .forProjectPackage(projPkg)
                 .forTitle(name)
                 .forPath(path)
@@ -120,7 +132,10 @@ class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectM
     }
 
     @Override
-    protected InputStream loadMetadataForPath(final Path path) {
+    protected ProjectMetadata obtainMetadata(final DefinitionSetService services,
+                                             final Path diagramFilePath,
+                                             final String defSetId,
+                                             final String fileName) {
         return null;
     }
 
@@ -176,5 +191,10 @@ class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectM
     protected boolean doDelete(final Path path) {
         return delete(path,
                       "");
+    }
+
+    @Override
+    protected IOService getIoService() {
+        return ioService;
     }
 }

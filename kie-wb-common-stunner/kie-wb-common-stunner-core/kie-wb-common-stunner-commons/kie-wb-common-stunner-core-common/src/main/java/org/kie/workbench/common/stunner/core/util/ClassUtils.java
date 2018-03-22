@@ -28,13 +28,13 @@ public class ClassUtils {
     private final Map<Class<?>, Class<?>> WRAPPER_MAP = new HashMap<>();
     private boolean initialized;
 
-    public ClassUtils(){
+    public ClassUtils() {
         init();
     }
 
     @PostConstruct
     private void init() {
-        if(initialized){
+        if (initialized) {
             return;
         }
 
@@ -48,6 +48,14 @@ public class ClassUtils {
         WRAPPER_MAP.put(Float.class, Float.TYPE);
         WRAPPER_MAP.put(Void.class, Void.TYPE);
         initialized = true;
+    }
+
+    /**
+     * Server and client side oriented type checking.
+     */
+    public static boolean isTypeOf(Class<?> type,
+                                   Object instance) {
+        return instance.getClass().getName().equals(type.getName());
     }
 
     public boolean isPrimitiveClass(Class<?> type) {

@@ -40,6 +40,12 @@ public class ${className} extends ${parentAdapterClassName}<Object> {
         </#list>
     }};
 
+    private static final Map<Class, String> idFieldNames = new HashMap<Class, String>(${idFieldNamesSize}) {{
+        <#list idFieldNames as idFieldName>
+            put( ${idFieldName.className}.class, "${idFieldName.methodName}" );
+        </#list>
+    }};
+
     private static final Map<Class, String> categoryFieldNames = new HashMap<Class, String>(${categoryFieldNamesSize}) {{
         <#list categoryFieldNames as categoryFieldName>
             put( ${categoryFieldName.className}.class, "${categoryFieldName.methodName}" );
@@ -111,6 +117,7 @@ public class ${className} extends ${parentAdapterClassName}<Object> {
                 propertySetsFieldNames,
                 propertiesFieldNames,
                 graphFactoryFieldNames,
+                idFieldNames,
                 labelsFieldNames,
                 titleFieldNames,
                 categoryFieldNames,

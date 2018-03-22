@@ -16,9 +16,69 @@
 
 package org.kie.workbench.common.stunner.core.lookup.definition;
 
-import org.kie.workbench.common.stunner.core.lookup.LookupManager;
+import java.util.Set;
 
-public interface DefinitionLookupRequest extends LookupManager.LookupRequest {
+import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.jboss.errai.common.client.api.annotations.NonPortable;
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.stunner.core.lookup.AbstractLookupRequest;
+import org.kie.workbench.common.stunner.core.lookup.AbstractLookupRequestBuilder;
 
-    String getDefinitionSetId();
+@Portable
+public class DefinitionLookupRequest extends AbstractLookupRequest {
+
+    private final String definitionSetId;
+
+    public DefinitionLookupRequest(final @MapsTo("criteria") String criteria,
+                                   final @MapsTo("page") int page,
+                                   final @MapsTo("pageSize") int pageSize,
+                                   final @MapsTo("definitionSetId") String definitionSetId) {
+        super(criteria,
+              page,
+              pageSize);
+        this.definitionSetId = definitionSetId;
+    }
+
+    public String getDefinitionSetId() {
+        return definitionSetId;
+    }
+
+    @NonPortable
+    public static class Builder extends AbstractLookupRequestBuilder<Builder> {
+
+        enum Type {
+            NODE,
+            EDGE;
+        }
+
+        private String defSetId;
+        private final StringBuilder criteria = new StringBuilder();
+
+        public Builder definitionSetId(final String defSetId) {
+            this.defSetId = defSetId;
+            return this;
+        }
+
+        public Builder id(final String id) {
+            criteria.append("id=").append(id).append(";");
+            return this;
+        }
+
+        public Builder type(final Type type) {
+            criteria.append("type=").append(type.name().toLowerCase()).append(";");
+            return this;
+        }
+
+        public Builder labels(final Set<String> labels) {
+            criteria.append("labels=").append(fromSet(labels)).append(";");
+            return this;
+        }
+
+        public DefinitionLookupRequest build() {
+            return new DefinitionLookupRequest(criteria.toString(),
+                                               page,
+                                               pageSize,
+                                               defSetId);
+        }
+    }
 }

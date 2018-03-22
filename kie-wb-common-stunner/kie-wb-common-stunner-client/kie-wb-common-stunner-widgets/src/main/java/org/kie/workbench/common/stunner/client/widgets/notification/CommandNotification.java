@@ -74,7 +74,7 @@ public final class CommandNotification
 
         private static String getSuccessMessage(final ClientTranslationService translationService,
                                                 final CommandResult<CanvasViolation> result) {
-            return translationService.getKeyValue(CoreTranslationMessages.COMMAND_SUCCESS);
+            return translationService.getValue(CoreTranslationMessages.COMMAND_SUCCESS);
         }
 
         private static String getErrorMessage(final ClientTranslationService translationService,

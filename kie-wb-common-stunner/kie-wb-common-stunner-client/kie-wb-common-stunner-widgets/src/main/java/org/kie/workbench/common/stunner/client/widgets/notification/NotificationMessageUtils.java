@@ -39,8 +39,8 @@ public class NotificationMessageUtils {
     public static String getDiagramValidationsErrorMessage(final ClientTranslationService translationService,
                                                            final String key,
                                                            final Collection<DiagramElementViolation<RuleViolation>> result) {
-        final String message = translationService.getKeyValue(key) + DOT + NEW_LINE
-                + translationService.getKeyValue(CoreTranslationMessages.REASON) + COLON + NEW_LINE
+        final String message = translationService.getValue(key) + DOT + NEW_LINE
+                + translationService.getValue(CoreTranslationMessages.REASON) + COLON + NEW_LINE
                 + getValidationMessages(translationService,
                                         result);
         return message;
@@ -49,8 +49,8 @@ public class NotificationMessageUtils {
     public static String getCanvasValidationsErrorMessage(final ClientTranslationService translationService,
                                                           final String key,
                                                           final Iterable<CanvasViolation> result) {
-        final String message = translationService.getKeyValue(key) + DOT + NEW_LINE
-                + translationService.getKeyValue(CoreTranslationMessages.REASON) + COLON + NEW_LINE
+        final String message = translationService.getValue(key) + DOT + NEW_LINE
+                + translationService.getValue(CoreTranslationMessages.REASON) + COLON + NEW_LINE
                 + getValidationMessages(translationService,
                                         result);
         return message;
@@ -90,7 +90,7 @@ public class NotificationMessageUtils {
         if (!skip) {
             final StringBuilder message = new StringBuilder()
                     .append(OPEN_BRA)
-                    .append(translationService.getKeyValue(CoreTranslationMessages.ELEMENT_UUID))
+                    .append(translationService.getValue(CoreTranslationMessages.ELEMENT_UUID))
                     .append(COLON)
                     .append(uuid)
                     .append(CLOSE_BRA).append(NEW_LINE);

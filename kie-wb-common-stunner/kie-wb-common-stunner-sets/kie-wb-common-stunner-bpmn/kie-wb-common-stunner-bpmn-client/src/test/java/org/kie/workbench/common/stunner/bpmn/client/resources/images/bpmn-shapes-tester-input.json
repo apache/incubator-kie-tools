@@ -100,6 +100,18 @@
       }
     },
     {
+      "id": "serviceTask",
+      "name": "Task - Service",
+      "shape": {
+        "path": "shapes/",
+        "file": "task.svg"
+      },
+      "icon": {
+        "path": "icons/task/",
+        "file": "task.svg"
+      }
+    },
+    {
       "id": "reusableSubProcess",
       "name": "Subprocess - Reusable",
       "shape": {

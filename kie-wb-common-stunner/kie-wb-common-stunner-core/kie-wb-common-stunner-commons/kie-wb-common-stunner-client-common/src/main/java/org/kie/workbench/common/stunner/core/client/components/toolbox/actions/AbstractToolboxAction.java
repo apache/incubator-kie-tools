@@ -54,7 +54,7 @@ public abstract class AbstractToolboxAction implements ToolboxAction<AbstractCan
                                             uuid);
         final String titleDefinitionId = getTitleDefinitionId(canvasHandler,
                                                               uuid);
-        return translationService.getKeyValue(titleKey) + " " +
+        return translationService.getValue(titleKey) + " " +
                 definitionUtils.getTitle(titleDefinitionId);
     }
 

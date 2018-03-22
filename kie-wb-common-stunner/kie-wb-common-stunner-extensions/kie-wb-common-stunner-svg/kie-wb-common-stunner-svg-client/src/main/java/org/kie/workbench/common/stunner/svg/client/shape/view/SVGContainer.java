@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.svg.client.shape.view;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import com.ait.lienzo.client.core.shape.ContainerNode;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IContainer;
@@ -26,6 +29,7 @@ import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 public final class SVGContainer extends SVGPrimitive<Group> {
 
     private final String id;
+    private final List<SVGPrimitive<?>> children;
 
     public SVGContainer(final String id,
                         final Group primitive,
@@ -33,6 +37,7 @@ public final class SVGContainer extends SVGPrimitive<Group> {
                         final LayoutContainer.Layout layout) {
         super(primitive, scalable, layout);
         this.id = id;
+        this.children = new LinkedList<>();
     }
 
     @SuppressWarnings("unchecked")
@@ -45,16 +50,21 @@ public final class SVGContainer extends SVGPrimitive<Group> {
     }
 
     public SVGContainer add(final SVGPrimitiveShape primitive) {
+        children.add(primitive);
         addPrimitive(primitive.get());
         return this;
     }
 
-    public IPrimitive getPrimitive(final String uuid) {
-        return getPrimitive(get(), uuid);
-    }
-
     public String getId() {
         return id;
+    }
+
+    public List<SVGPrimitive<?>> getChildren() {
+        return children;
+    }
+
+    public IPrimitive getPrimitive(final String uuid) {
+        return getPrimitive(get(), uuid);
     }
 
     @SuppressWarnings("unchecked")

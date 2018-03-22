@@ -34,7 +34,8 @@ public interface CaseManagementShapeDef<W extends BPMNViewDefinition, V extends 
     }
 
     @Override
-    default Glyph getGlyph(final Class<? extends W> type) {
+    default Glyph getGlyph(final Class<? extends W> type,
+                           final String defId) {
         return GLYPH_OOME_HACK;
     }
 }

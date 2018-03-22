@@ -76,7 +76,7 @@ public class DeleteNodeAction implements ToolboxAction<AbstractCanvasHandler> {
     @Override
     public String getTitle(final AbstractCanvasHandler canvasHandler,
                            final String uuid) {
-        return translationService.getKeyValue(CoreTranslationMessages.DELETE);
+        return translationService.getValue(CoreTranslationMessages.DELETE);
     }
 
     @Override

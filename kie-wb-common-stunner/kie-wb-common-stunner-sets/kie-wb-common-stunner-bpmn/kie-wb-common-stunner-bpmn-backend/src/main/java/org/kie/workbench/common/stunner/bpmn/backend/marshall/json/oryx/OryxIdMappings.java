@@ -32,7 +32,7 @@ public interface OryxIdMappings {
 
     Map<Class<?>, Map<Class<?>, String>> getDefinitionMappings();
 
-    String getOryxDefinitionId(final Class<?> clazz);
+    String getOryxDefinitionId(final Object definition);
 
     String getOryxPropertyId(final Class<?> clazz);
 

@@ -41,12 +41,12 @@ public class UndoToolbarCommand extends AbstractToolbarCommand<ClientFullSession
 
     @Override
     public String getCaption() {
-        return translationService.getKeyValue(CoreTranslationMessages.UNDO);
+        return translationService.getValue(CoreTranslationMessages.UNDO);
     }
 
     @Override
     public String getTooltip() {
-        return translationService.getKeyValue(CoreTranslationMessages.UNDO);
+        return translationService.getValue(CoreTranslationMessages.UNDO);
     }
 
     @Override

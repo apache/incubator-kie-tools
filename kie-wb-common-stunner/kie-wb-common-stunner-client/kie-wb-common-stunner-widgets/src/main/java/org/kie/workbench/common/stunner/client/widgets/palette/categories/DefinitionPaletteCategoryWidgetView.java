@@ -16,9 +16,10 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette.categories;
 
+import org.kie.workbench.common.stunner.client.widgets.palette.BS3PaletteWidgetPresenter;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.group.DefinitionPaletteGroupWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.items.DefinitionPaletteItemWidget;
-import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteCategory;
+import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteCategory;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.uberfire.client.mvp.UberElement;
 
@@ -32,9 +33,9 @@ public interface DefinitionPaletteCategoryWidgetView extends UberElement<Definit
 
     void addGroup(DefinitionPaletteGroupWidget groupWidget);
 
-    interface Presenter {
+    interface Presenter extends BS3PaletteWidgetPresenter<DefaultPaletteCategory> {
 
-        DefinitionPaletteCategory getCategory();
+        DefaultPaletteCategory getCategory();
 
         void onMouseDown(int clientX,
                          int clientY,

@@ -70,13 +70,13 @@ public class FormGenerationNotifier {
     }
 
     private void doShowNotification(String message) {
-        showNotification(translationService.getKeyValue(FormsClientConstants.FormsNotificationTitle, INFO),
+        showNotification(translationService.getValue(FormsClientConstants.FormsNotificationTitle, INFO),
                          message,
                          IconType.CHECK);
     }
 
     private void doShowError(final String message) {
-        showNotification(translationService.getKeyValue(FormsClientConstants.FormsNotificationTitle, ERROR),
+        showNotification(translationService.getValue(FormsClientConstants.FormsNotificationTitle, ERROR),
                          message,
                          IconType.EXCLAMATION);
     }

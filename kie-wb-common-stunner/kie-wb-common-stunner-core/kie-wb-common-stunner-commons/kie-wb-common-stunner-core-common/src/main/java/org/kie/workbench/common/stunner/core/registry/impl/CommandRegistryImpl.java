@@ -17,9 +17,9 @@
 package org.kie.workbench.common.stunner.core.registry.impl;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
@@ -68,7 +68,7 @@ public class CommandRegistryImpl<C extends Command> implements CommandRegistry<C
 
     @Override
     public List<C> getCommandHistory() {
-        return new ArrayList<C>(commands);
+        return commands.stream().collect(Collectors.toList());
     }
 
     @Override

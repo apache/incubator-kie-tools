@@ -65,12 +65,9 @@ import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
-import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
-import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
-import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -78,6 +75,7 @@ import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -89,84 +87,76 @@ import static org.mockito.Mockito.when;
 public class ProjectDiagramEditorTest {
 
     @Mock
-    EventSourceMock<ChangeTitleWidgetEvent> changeTitleNotification;
+    private VersionRecordManager versionRecordManager;
     @Mock
-    EventSourceMock<NotificationEvent> notification;
+    private PlaceRequest placeRequest;
     @Mock
-    VersionRecordManager versionRecordManager;
+    private AbstractProjectDiagramEditor.View view;
     @Mock
-    BasicFileMenuBuilder menuBuilder;
+    private PlaceManager placeManager;
     @Mock
-    DefaultFileNameValidator fileNameValidator;
+    private ErrorPopupPresenter errorPopupPresenter;
     @Mock
-    PlaceRequest placeRequest;
+    private EventSourceMock<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
     @Mock
-    AbstractProjectDiagramEditor.View view;
+    private SavePopUpPresenter savePopUpPresenter;
     @Mock
-    PlaceManager placeManager;
+    private ClientResourceType resourceType;
     @Mock
-    ErrorPopupPresenter errorPopupPresenter;
+    private ClientProjectDiagramService projectDiagramServices;
     @Mock
-    EventSourceMock<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
+    private AbstractClientSessionManager clientSessionManager;
     @Mock
-    SavePopUpPresenter savePopUpPresenter;
+    private SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> presenterFactory;
     @Mock
-    ClientResourceType resourceType;
+    private SessionPresenter presenter;
     @Mock
-    ClientProjectDiagramService projectDiagramServices;
+    private SessionCommandFactory sessionCommandFactory;
     @Mock
-    AbstractClientSessionManager clientSessionManager;
+    private ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder;
     @Mock
-    SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> presenterFactory;
+    private VisitGraphSessionCommand sessionVisitGraphCommand;
     @Mock
-    SessionPresenter presenter;
+    private SwitchGridSessionCommand sessionSwitchGridCommand;
     @Mock
-    SessionCommandFactory sessionCommandFactory;
+    private ClearSessionCommand sessionClearCommand;
     @Mock
-    ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder;
+    private DeleteSelectionSessionCommand sessionDeleteSelectionCommand;
     @Mock
-    VisitGraphSessionCommand sessionVisitGraphCommand;
+    private UndoSessionCommand sessionUndoCommand;
     @Mock
-    SwitchGridSessionCommand sessionSwitchGridCommand;
+    private RedoSessionCommand sessionRedoCommand;
     @Mock
-    ClearSessionCommand sessionClearCommand;
+    private ValidateSessionCommand sessionValidateCommand;
     @Mock
-    DeleteSelectionSessionCommand sessionDeleteSelectionCommand;
+    private ClientFullSessionImpl fullSession;
     @Mock
-    UndoSessionCommand sessionUndoCommand;
+    private ObservablePath path;
     @Mock
-    RedoSessionCommand sessionRedoCommand;
+    private ProjectDiagram diagram;
     @Mock
-    ValidateSessionCommand sessionValidateCommand;
+    private ProjectMetadata metadata;
     @Mock
-    ClientFullSessionImpl fullSession;
+    private  OverviewWidgetPresenter overviewWidgetMock;
     @Mock
-    ObservablePath path;
+    private ClientSessionFactory<ClientFullSession> clientSessionFactory;
     @Mock
-    ProjectDiagram diagram;
+    private AbstractCanvasHandler canvasHandler;
     @Mock
-    ProjectMetadata metadata;
+    private EventSourceMock<OnDiagramFocusEvent> onDiagramFocusEvent;
     @Mock
-    OverviewWidgetPresenter overviewWidgetMock;
+    private EventSourceMock<OnDiagramLoseFocusEvent> onDiagramLostFocusEven;
     @Mock
-    ClientSessionFactory<ClientFullSession> clientSessionFactory;
+    private ProjectMessagesListener projectMessagesListener;
     @Mock
-    AbstractCanvasHandler canvasHandler;
+    private DiagramClientErrorHandler diagramClientErrorHandler;
     @Mock
-    EventSourceMock<OnDiagramFocusEvent> onDiagramFocusEvent;
-    @Mock
-    EventSourceMock<OnDiagramLoseFocusEvent> onDiagramLostFocusEven;
-    @Mock
-    ProjectMessagesListener projectMessagesListener;
-    @Mock
-    DiagramClientErrorHandler diagramClientErrorHandler;
-    @Mock
-    ClientTranslationService translationService;
+    private ClientTranslationService translationService;
 
     private ProjectDiagramEditorStub tested;
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         VersionRecordManager versionRecordManagerMock = versionRecordManager;
         when(versionRecordManager.getCurrentPath()).thenReturn(path);
         when(sessionCommandFactory.newClearCommand()).thenReturn(sessionClearCommand);
@@ -178,9 +168,15 @@ public class ProjectDiagramEditorTest {
         when(sessionCommandFactory.newValidateCommand()).thenReturn(sessionValidateCommand);
         when(presenterFactory.newPresenterEditor()).thenReturn(presenter);
         when(clientSessionManager.getCurrentSession()).thenReturn(fullSession);
-        when(clientSessionManager.getSessionFactory(diagram,
+        when(clientSessionManager.getSessionFactory(metadata,
                                                     ClientFullSession.class)).thenReturn(clientSessionFactory);
-        when(clientSessionFactory.newSession()).thenReturn((fullSession));
+        doAnswer(invocationOnMock -> {
+            final Consumer<ClientFullSessionImpl> sessionConsumer =
+                    (Consumer<ClientFullSessionImpl>) invocationOnMock.getArguments()[1];
+            sessionConsumer.accept(fullSession);
+            return null;
+        }).when(clientSessionFactory).newSession(eq(metadata),
+                                                     any(Consumer.class));
         when(presenter.getInstance()).thenReturn(fullSession);
         when(presenter.withToolbar(anyBoolean())).thenReturn(presenter);
         when(presenter.withPalette(anyBoolean())).thenReturn(presenter);
@@ -191,8 +187,6 @@ public class ProjectDiagramEditorTest {
         when(canvasHandler.getDiagram()).thenReturn(diagram);
 
         when(placeRequest.getIdentifier()).thenReturn(ProjectDiagramEditorStub.EDITOR_ID);
-
-        ClientProjectDiagramService mock = mock(ClientProjectDiagramService.class);
 
         this.tested = new ProjectDiagramEditorStub(view,
                                                    placeManager,

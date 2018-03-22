@@ -88,8 +88,8 @@ public class BPMNDiagramEditorHelper {
         String newName = currentName.substring(0,
                                                currentName.length() - currentExtension.length());
 
-        String commitMessage = translationService.getKeyValue(BPMNClientConstants.EditorMigrateCommitMessage,
-                                                              path.getFileName());
+        String commitMessage = translationService.getValue(BPMNClientConstants.EditorMigrateCommitMessage,
+                                                           path.getFileName());
 
         editorService.call((RemoteCallback<MigrationResult>) result -> {
             if (result.hasError()) {
@@ -105,10 +105,10 @@ public class BPMNDiagramEditorHelper {
 
     private String getErrorMessage(MigrationResult result) {
         if (BPMNDiagramEditorService.ServiceError.MIGRATION_ERROR_PROCESS_ALREADY_EXIST == result.getError()) {
-            return translationService.getKeyValue(BPMNClientConstants.EditorMigrateErrorProcessAlreadyExists,
-                                                  result.getPath().getFileName());
+            return translationService.getValue(BPMNClientConstants.EditorMigrateErrorProcessAlreadyExists,
+                                               result.getPath().getFileName());
         } else {
-            return translationService.getKeyValue(BPMNClientConstants.EditorMigrateErrorGeneric);
+            return translationService.getValue(BPMNClientConstants.EditorMigrateErrorGeneric);
         }
     }
 

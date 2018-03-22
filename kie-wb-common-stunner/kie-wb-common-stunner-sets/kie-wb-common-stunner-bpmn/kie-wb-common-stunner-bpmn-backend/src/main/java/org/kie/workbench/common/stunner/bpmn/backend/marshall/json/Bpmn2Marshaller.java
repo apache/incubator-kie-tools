@@ -44,19 +44,21 @@ public class Bpmn2Marshaller extends Bpmn2JsonUnmarshaller {
         this.oryxManager = oryxManager;
     }
 
-    public String marshall(final Diagram<Graph, Metadata> diagram) throws IOException {
-        JBPMBpmn2ResourceImpl res = marshallToBpmn2Resource(diagram);
+    public String marshall(final Diagram<Graph, Metadata> diagram,
+                           final String preProcessingData) throws IOException {
+        JBPMBpmn2ResourceImpl res = marshallToBpmn2Resource(diagram, preProcessingData);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         res.save(outputStream,
                  new HashMap<>());
         return StringEscapeUtils.unescapeHtml4(outputStream.toString("UTF-8"));
     }
 
-    public JBPMBpmn2ResourceImpl marshallToBpmn2Resource(final Diagram<Graph, Metadata> diagram) throws IOException {
+    public JBPMBpmn2ResourceImpl marshallToBpmn2Resource(final Diagram<Graph, Metadata> diagram,
+                                                         final String preProcessingData) throws IOException {
         DroolsFactoryImpl.init();
         BpsimFactoryImpl.init();
         BPMN2JsonParser parser = createParser(diagram);
-        return (JBPMBpmn2ResourceImpl) super.unmarshall(parser, null);
+        return (JBPMBpmn2ResourceImpl) super.unmarshall(parser, preProcessingData);
     }
 
     private BPMN2JsonParser createParser(final Diagram<Graph, Metadata> diagram) {

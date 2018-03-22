@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Portable
 public class TimerSettingsType implements PropertyType {
 
-    public static final String name = "stunner.TimerSettings";
+    public static final String name = "stunner.bpmn.TimerSettings";
 
     @Override
     public String getName() {

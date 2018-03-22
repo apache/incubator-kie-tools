@@ -32,7 +32,8 @@ public interface ShapeDef<W> {
 
     Class<? extends ShapeDef> getType();
 
-    default Glyph getGlyph(final Class<? extends W> type) {
+    default Glyph getGlyph(final Class<? extends W> type,
+                           final String defId) {
         return ShapeGlyph.create();
     }
 }

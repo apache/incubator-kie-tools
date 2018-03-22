@@ -70,7 +70,7 @@ public abstract class ElementParser<T extends Element<View>> extends ObjectParse
         // Custom extended prpoerties, if any.
         parseExtendedProperties(propertiesParser);
         // Stencil id field.
-        String defId = context.getOryxManager().getMappingsManager().getOryxDefinitionId(definition.getClass());
+        String defId = context.getOryxManager().getMappingsManager().getOryxDefinitionId(definition);
         super.addParser(new ObjectParser("stencil").addParser(new StringFieldParser("id",
                                                                                     defId)));
         // Bounds.

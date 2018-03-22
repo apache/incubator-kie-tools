@@ -19,7 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.resource.DMNDefinitionSetResourceType;
-import org.kie.workbench.common.stunner.backend.service.AbstractDefinitionSetService;
+import org.kie.workbench.common.stunner.core.backend.service.AbstractDefinitionSetService;
 import org.kie.workbench.common.stunner.core.definition.DefinitionSetResourceType;
 
 @ApplicationScoped

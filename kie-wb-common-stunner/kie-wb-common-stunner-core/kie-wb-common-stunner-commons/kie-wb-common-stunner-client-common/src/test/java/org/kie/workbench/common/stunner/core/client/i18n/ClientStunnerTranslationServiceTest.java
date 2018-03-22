@@ -24,7 +24,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService.CAPTION_SUFFIX;
-import static org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService.CATEGORY_SUFFIX;
 import static org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService.DESCRIPTION_SUFFIX;
 import static org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService.TITLE_SUFFIX;
 import static org.mockito.Mockito.verify;
@@ -59,11 +58,6 @@ public class ClientStunnerTranslationServiceTest {
 
         verify(translationService).getTranslation(getKey(DEFINITION,
                                                          TITLE_SUFFIX));
-
-        stunnerTranlationService.getDefinitionCategory(DEFINITION);
-
-        verify(translationService).getTranslation(getKey(DEFINITION,
-                                                         CATEGORY_SUFFIX));
 
         stunnerTranlationService.getDefinitionDescription(DEFINITION);
 

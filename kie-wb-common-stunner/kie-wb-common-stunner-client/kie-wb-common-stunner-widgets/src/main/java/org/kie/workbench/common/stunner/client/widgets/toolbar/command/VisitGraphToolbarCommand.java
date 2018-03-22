@@ -41,12 +41,12 @@ public class VisitGraphToolbarCommand extends AbstractToolbarCommand<ClientSessi
 
     @Override
     public String getCaption() {
-        return translationService.getKeyValue(CoreTranslationMessages.VISIT_GRAPH);
+        return translationService.getValue(CoreTranslationMessages.VISIT_GRAPH);
     }
 
     @Override
     public String getTooltip() {
-        return translationService.getKeyValue(CoreTranslationMessages.VISIT_GRAPH);
+        return translationService.getValue(CoreTranslationMessages.VISIT_GRAPH);
     }
 
     @Override

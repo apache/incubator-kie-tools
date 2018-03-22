@@ -98,8 +98,8 @@ public class BPMNDiagramEditorHelperTest {
 
     private void prepareOnMigrate() {
         when(sourcePath.getFileName()).thenReturn(FILE_NAME);
-        when(translationService.getKeyValue(BPMNClientConstants.EditorMigrateCommitMessage,
-                                            FILE_NAME)).thenReturn(COMMIT_MESSAGE);
+        when(translationService.getValue(BPMNClientConstants.EditorMigrateCommitMessage,
+                                         FILE_NAME)).thenReturn(COMMIT_MESSAGE);
     }
 
     @Test
@@ -108,8 +108,8 @@ public class BPMNDiagramEditorHelperTest {
         BPMNDiagramEditorService.ServiceError someError = BPMNDiagramEditorService.ServiceError.MIGRATION_ERROR_PROCESS_ALREADY_EXIST;
         final MigrationResult migrationResult = new MigrationResult(sourcePath,
                                                                     someError);
-        when(translationService.getKeyValue(BPMNClientConstants.EditorMigrateErrorProcessAlreadyExists,
-                                            FILE_NAME)).thenReturn(ERROR_MESSAGE);
+        when(translationService.getValue(BPMNClientConstants.EditorMigrateErrorProcessAlreadyExists,
+                                         FILE_NAME)).thenReturn(ERROR_MESSAGE);
 
         when(editorService.migrateDiagram(sourcePath,
                                           "MyProcess",

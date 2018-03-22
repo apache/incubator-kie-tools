@@ -52,7 +52,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 public class Lane implements BPMNViewDefinition {
 
     @Category
-    public static final transient String category = Categories.CONTAINERS;
+    public static final transient String category = BPMNCategories.CONTAINERS;
 
     @PropertySet
     @FormField

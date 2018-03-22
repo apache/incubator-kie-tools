@@ -47,44 +47,43 @@ import static org.mockito.Mockito.when;
 public class ProjectDiagramNewResourceHandlerTest {
 
     private static final String DEFSET_ID = "ds1";
-    private static final String PROJ_PKG = "org.kie.stunner.test";
     private static final String PROJ_ROOT_FILENAME = "rootFileName";
     private static final String MODULE_NAME = "moduleName";
 
     @Mock
-    DefinitionManager definitionManager;
+    private DefinitionManager definitionManager;
     @Mock
-    ClientProjectDiagramService projectDiagramServices;
+    private ClientProjectDiagramService projectDiagramServices;
     @Mock
-    BusyIndicatorView indicatorView;
+    private BusyIndicatorView indicatorView;
     @Mock
-    ClientResourceType projectDiagramResourceType;
+    private ClientResourceType projectDiagramResourceType;
     @Mock
-    TypeDefinitionSetRegistry definitionSetRegistry;
+    private TypeDefinitionSetRegistry definitionSetRegistry;
     @Mock
-    AdapterManager adapterManager;
+    private AdapterManager adapterManager;
     @Mock
-    DefinitionSetAdapter definitionSetAdapter;
+    private DefinitionSetAdapter definitionSetAdapter;
     @Mock
-    Object definitionSet;
+    private Object definitionSet;
     @Mock
-    Package aPackage;
+    private Package aPackage;
     @Mock
-    NewResourcePresenter presenter;
+    private NewResourcePresenter presenter;
     @Mock
-    WorkspaceProjectContext context;
+    private WorkspaceProjectContext context;
     @Mock
-    Path path;
+    private Path path;
     @Mock
-    Path moduleRootPath;
+    private Path moduleRootPath;
     @Mock
-    Module module;
+    private Module module;
 
     private ProjectDiagramNewResourceHandlerStub tested;
 
     @Before
     @SuppressWarnings("unchecked")
-    public void setup() throws Exception {
+    public void setup() {
         when(definitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.forDefinitionSet()).thenReturn(definitionSetAdapter);
         when(definitionManager.definitionSets()).thenReturn(definitionSetRegistry);
@@ -92,7 +91,7 @@ public class ProjectDiagramNewResourceHandlerTest {
         when(definitionSetRegistry.getDefinitionSetByType(any(Class.class))).thenReturn(definitionSet);
         when(definitionSetAdapter.getId(eq(definitionSet))).thenReturn(DEFSET_ID);
         when(aPackage.getPackageMainResourcesPath()).thenReturn(path);
-        when(aPackage.getPackageName()).thenReturn(PROJ_PKG);
+        when(aPackage.getPackageName()).thenReturn("packageName");
         when(aPackage.getModuleRootPath()).thenReturn(moduleRootPath);
         when(moduleRootPath.getFileName()).thenReturn(PROJ_ROOT_FILENAME);
         when(context.getActiveModule()).thenReturn(Optional.of(module));
@@ -117,7 +116,7 @@ public class ProjectDiagramNewResourceHandlerTest {
                                 eq("file1"),
                                 eq(DEFSET_ID),
                                 eq(MODULE_NAME),
-                                eq(PROJ_PKG),
+                                any(Package.class),
                                 any(ServiceCallback.class));
     }
 

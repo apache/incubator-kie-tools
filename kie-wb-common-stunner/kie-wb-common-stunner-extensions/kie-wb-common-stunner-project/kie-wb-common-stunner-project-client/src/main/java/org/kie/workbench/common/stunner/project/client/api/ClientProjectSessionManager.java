@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.project.client.api;
 
-import java.util.logging.Logger;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
@@ -37,8 +35,6 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 @ApplicationScoped
 @Specializes
 public class ClientProjectSessionManager extends ClientSessionManagerImpl {
-
-    private static Logger LOGGER = Logger.getLogger(ClientProjectSessionManager.class.getName());
 
     protected ClientProjectSessionManager() {
         this(null,
@@ -65,20 +61,5 @@ public class ClientProjectSessionManager extends ClientSessionManagerImpl {
               sessionPausedEvent,
               sessionResumedEvent,
               sessionErrorEvent);
-    }
-
-    @Override
-    protected void postOpen() {
-        super.postOpen();
-    }
-
-    @Override
-    protected void postResume() {
-        super.postResume();
-    }
-
-    @Override
-    protected void postDestroy() {
-        super.postDestroy();
     }
 }

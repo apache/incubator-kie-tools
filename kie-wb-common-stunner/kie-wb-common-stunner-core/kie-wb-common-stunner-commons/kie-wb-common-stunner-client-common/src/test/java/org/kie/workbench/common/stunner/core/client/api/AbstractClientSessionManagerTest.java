@@ -23,9 +23,12 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
@@ -33,40 +36,45 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class AbstractClientSessionManagerTest {
 
     @Mock
-    AbstractClientSession session;
+    private AbstractClientSession session;
     @Mock
-    AbstractClientSession session1;
+    private AbstractCanvasHandler canvasHandler;
+    @Mock
+    private Diagram diagram;
+    @Mock
+    private Metadata metadata;
+    @Mock
+    private Graph graph;
+    @Mock
+    private AbstractClientSession session1;
 
     private AbstractClientSessionManager tested;
 
     @Before
     public void setup() throws Exception {
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(diagram.getName()).thenReturn("diagram1");
+        when(diagram.getMetadata()).thenReturn(metadata);
+        when(diagram.getGraph()).thenReturn(graph);
+        when(graph.getUUID()).thenReturn("uuid1");
+
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(diagram.getName()).thenReturn("diagram1");
+        when(diagram.getMetadata()).thenReturn(metadata);
+        when(diagram.getGraph()).thenReturn(graph);
+        when(graph.getUUID()).thenReturn("uuid1");
         this.tested = spy(new AbstractClientSessionManager() {
-
             @Override
-            protected <D extends Diagram> List<ClientSessionFactory<?>> getFactories(final D diagram) {
-                return new ArrayList<ClientSessionFactory<?>>(0);
-            }
-
-            @Override
-            protected void postOpen() {
-            }
-
-            @Override
-            protected void postPause() {
-            }
-
-            @Override
-            protected void postResume() {
-            }
-
-            @Override
-            protected void postDestroy() {
+            protected List<ClientSessionFactory> getFactories(final Metadata metadata) {
+                return new ArrayList<>(0);
             }
         });
     }

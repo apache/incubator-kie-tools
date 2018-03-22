@@ -18,24 +18,23 @@ package org.kie.workbench.common.stunner.client.widgets.palette.categories.group
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.items.DefinitionPaletteItemWidget;
-import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
-import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteGroup;
-import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteItem;
+import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteGroup;
+import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteItem;
+import org.kie.workbench.common.stunner.core.client.components.palette.PaletteItemMouseEvent;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 
 @Dependent
-public class DefinitionPaletteGroupWidget implements DefinitionPaletteGroupWidgetView.Presenter,
-                                                     IsElement {
+public class DefinitionPaletteGroupWidget implements DefinitionPaletteGroupWidgetView.Presenter {
 
     private enum State {
         COMPACT,
@@ -50,11 +49,11 @@ public class DefinitionPaletteGroupWidget implements DefinitionPaletteGroupWidge
 
     private DefinitionPaletteGroupWidgetView view;
 
-    private DefinitionPaletteGroup group;
+    private DefaultPaletteGroup group;
 
     private ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgets;
 
-    private Palette.ItemMouseDownCallback itemMouseDownCallback;
+    private Consumer<PaletteItemMouseEvent> itemMouseDownCallback;
 
     @Inject
     public DefinitionPaletteGroupWidget(DefinitionPaletteGroupWidgetView view,
@@ -68,17 +67,18 @@ public class DefinitionPaletteGroupWidget implements DefinitionPaletteGroupWidge
         view.init(this);
     }
 
-    public void initialize(DefinitionPaletteGroup group,
+    @Override
+    public void initialize(DefaultPaletteGroup group,
                            ShapeFactory<?, ?> shapeFactory,
-                           Palette.ItemMouseDownCallback itemMouseDownCallback) {
+                           Consumer<PaletteItemMouseEvent> itemMouseDownCallback) {
         this.group = group;
-        this.itemMouseDownCallback = (id, mouseX, mouseY, itemX, itemY) -> {
+        this.itemMouseDownCallback = (event) -> {
             switchState(State.COMPACT);
-            return itemMouseDownCallback.onItemMouseDown(id,
-                                                         mouseX,
-                                                         mouseY,
-                                                         itemX,
-                                                         itemY);
+            itemMouseDownCallback.accept(new PaletteItemMouseEvent(event.getId(),
+                                                                   event.getMouseX(),
+                                                                   event.getMouseY(),
+                                                                   event.getItemX(),
+                                                                   event.getItemY()));
         };
 
         loadItems(shapeFactory);
@@ -88,10 +88,10 @@ public class DefinitionPaletteGroupWidget implements DefinitionPaletteGroupWidge
         view.initView();
         definitionPaletteItemWidgets.destroyAll();
 
-        List<DefinitionPaletteItem> items = group.getItems();
+        List<DefaultPaletteItem> items = group.getItems();
 
         for (int i = 0; i < items.size(); i++) {
-            DefinitionPaletteItem item = items.get(i);
+            DefaultPaletteItem item = items.get(i);
             DefinitionPaletteItemWidget itemWidget = definitionPaletteItemWidgets.get();
 
             itemWidget.initialize(item,
@@ -138,7 +138,7 @@ public class DefinitionPaletteGroupWidget implements DefinitionPaletteGroupWidge
     }
 
     @Override
-    public DefinitionPaletteGroup getItem() {
+    public DefaultPaletteGroup getItem() {
         return group;
     }
 

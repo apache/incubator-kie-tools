@@ -16,58 +16,25 @@
 
 package org.kie.workbench.common.stunner.core.client.components.palette;
 
-import org.kie.workbench.common.stunner.core.client.components.palette.model.HasPaletteItems;
+import java.util.function.Consumer;
 
-public interface Palette<I extends HasPaletteItems> {
+import org.uberfire.mvp.Command;
 
-    interface CloseCallback {
+public interface Palette<I extends PaletteDefinition> {
 
-        boolean onClose();
-    }
+    Palette<I> bind(I paletteDefinition);
 
-    interface ItemHoverCallback {
+    void unbind();
 
-        boolean onItemHover(final String id,
-                            final double mouseX,
-                            final double mouseY,
-                            final double itemX,
-                            final double itemY);
-    }
+    Palette<I> onItemHover(Consumer<PaletteItemMouseEvent> callback);
 
-    interface ItemOutCallback {
+    Palette<I> onItemOut(Consumer<PaletteItemEvent> callback);
 
-        boolean onItemOut(final String id);
-    }
+    Palette<I> onItemMouseDown(Consumer<PaletteItemMouseEvent> callback);
 
-    interface ItemMouseDownCallback {
+    Palette<I> onItemClick(Consumer<PaletteItemMouseEvent> callback);
 
-        boolean onItemMouseDown(final String id,
-                                final double mouseX,
-                                final double mouseY,
-                                final double itemX,
-                                final double itemY);
-    }
-
-    interface ItemClickCallback {
-
-        boolean onItemClick(final String id,
-                            final double mouseX,
-                            final double mouseY,
-                            final double itemX,
-                            final double itemY);
-    }
-
-    Palette<I> onItemHover(final ItemHoverCallback callback);
-
-    Palette<I> onItemOut(final ItemOutCallback callback);
-
-    Palette<I> onItemMouseDown(final ItemMouseDownCallback callback);
-
-    Palette<I> onItemClick(final ItemClickCallback callback);
-
-    Palette<I> onClose(final CloseCallback callback);
-
-    Palette<I> bind(final I paletteDefinition);
+    Palette<I> onClose(Command callback);
 
     I getDefinition();
 

@@ -37,7 +37,8 @@ public final class SequenceFlowConnectorDef
     }
 
     @Override
-    public Glyph getGlyph(Class type) {
+    public Glyph getGlyph(final Class type,
+                          final String defId) {
         return SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.sequenceFlow().getSafeUri());
     }
 }

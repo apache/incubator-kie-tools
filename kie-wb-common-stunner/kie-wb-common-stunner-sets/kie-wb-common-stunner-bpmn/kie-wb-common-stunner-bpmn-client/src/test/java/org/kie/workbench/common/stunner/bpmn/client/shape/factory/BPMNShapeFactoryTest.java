@@ -64,6 +64,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.DelegateShapeFactory;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
@@ -92,6 +93,9 @@ public class BPMNShapeFactoryTest {
     private SVGShapeFactory svgShapeFactory;
 
     @Mock
+    private WorkItemDefinitionRegistry workItemDefinitionRegistry;
+
+    @Mock
     private DelegateShapeFactory<BPMNDefinition, Shape> delegateShapeFactory;
 
     private BPMNShapeFactory tested;
@@ -105,7 +109,8 @@ public class BPMNShapeFactoryTest {
                 .thenReturn(delegateShapeFactory);
         this.tested = new BPMNShapeFactory(basicShapesFactory,
                                            svgShapeFactory,
-                                           delegateShapeFactory);
+                                           delegateShapeFactory,
+                                           () -> workItemDefinitionRegistry);
     }
 
     @Test

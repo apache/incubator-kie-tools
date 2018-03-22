@@ -35,10 +35,12 @@ import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -48,27 +50,34 @@ public class BPMNProjectDiagramFactoryTest {
 
     private static final String NAME = "name1";
     private static final String DIAGRAM_NODE_UUID = "dnuuid";
-    private static final String PKG = "org.kie.wb.common.stunner.bpmn.project.test";
+    private static final org.guvnor.common.services.project.model.Package PKG =
+            new org.guvnor.common.services.project.model.Package(mock(Path.class),
+                                                                 mock(Path.class),
+                                                                 mock(Path.class),
+                                                                 mock(Path.class),
+                                                                 mock(Path.class),
+                                                                 "packageName",
+                                                                 "packageCaption",
+                                                                 "");
 
     @Mock
-    ProjectMetadata metadata;
+    private ProjectMetadata metadata;
     @Mock
-    Graph graph;
+    private Graph graph;
     @Mock
-    Node diagramNode;
+    private Node diagramNode;
     @Mock
-    Bounds bounds;
-    BPMNDiagramImpl diagram;
-    private View<BPMNDiagram> diagramNodeContent;
+    private Bounds bounds;
+    private BPMNDiagramImpl diagram;
     private final List<Node> graphNodes = new ArrayList<>(1);
 
     private BPMNProjectDiagramFactoryImpl tested;
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         diagram = new BPMNDiagramImpl.BPMNDiagramBuilder().build();
-        diagramNodeContent = new ViewImpl<BPMNDiagram>(diagram,
-                                                       bounds);
+        View<BPMNDiagram> diagramNodeContent = new ViewImpl<>(diagram,
+                                                                         bounds);
         graphNodes.add(diagramNode);
         when(diagramNode.getUUID()).thenReturn(DIAGRAM_NODE_UUID);
         when(diagramNode.getContent()).thenReturn(diagramNodeContent);
@@ -94,9 +103,7 @@ public class BPMNProjectDiagramFactoryTest {
     @SuppressWarnings("unchecked")
     public void testBuildNoPackageSpecified() {
         when(metadata.getProjectPackage()).thenReturn(null);
-        ProjectDiagram pdiagram = tested.build(NAME,
-                                               metadata,
-                                               graph);
+        ProjectDiagram pdiagram = tested.build(NAME, metadata, graph);
         assertNotNull(pdiagram);
         assertEquals(graph,
                      pdiagram.getGraph());
@@ -113,16 +120,15 @@ public class BPMNProjectDiagramFactoryTest {
     public void testBuild() {
         final String pName = "p1";
         when(metadata.getProjectPackage()).thenReturn(PKG);
-        when(metadata.getProjectName()).thenReturn(pName);
-        ProjectDiagram pdiagram = tested.build(NAME,
-                                               metadata,
-                                               graph);
+        when(metadata.getModuleName()).thenReturn(pName);
+        ProjectDiagram pdiagram = tested.build(NAME, metadata, graph);
+
         assertNotNull(pdiagram);
         assertEquals(graph,
                      pdiagram.getGraph());
         assertEquals(pName + "." + NAME,
                      diagram.getDiagramSet().getId().getValue());
-        assertEquals(PKG,
+        assertEquals("packageName",
                      diagram.getDiagramSet().getPackageProperty().getValue());
         verify(metadata,
                times(1)).setCanvasRootUUID(eq(DIAGRAM_NODE_UUID));

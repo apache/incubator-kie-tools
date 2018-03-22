@@ -35,13 +35,13 @@ public class ClientTranslationService extends AbstractTranslationService {
     }
 
     @Override
-    public String getKeyValue(final String key) {
+    public String getValue(final String key) {
         return erraiTranslationService.getTranslation(key);
     }
 
     @Override
-    public String getKeyValue(final String key,
-                                 final Object... args) {
+    public String getValue(final String key,
+                           final Object... args) {
         return erraiTranslationService.format(key,
                                               args);
     }

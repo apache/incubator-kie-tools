@@ -16,12 +16,18 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx;
 
+import java.util.function.Supplier;
+
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
+import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 
 /**
  * This class contains the mappings for the different stencil identifiers that are different from
@@ -30,9 +36,48 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 @Dependent
 public class Bpmn2OryxIdMappings extends BaseOryxIdMappings {
 
+    private final Supplier<WorkItemDefinitionRegistry> workItemDefinitionRegistry;
+
     @Inject
-    public Bpmn2OryxIdMappings(final DefinitionManager definitionManager) {
+    public Bpmn2OryxIdMappings(final DefinitionManager definitionManager,
+                               final Instance<WorkItemDefinitionRegistry> workItemDefinitionRegistry) {
         super(definitionManager);
+        this.workItemDefinitionRegistry = workItemDefinitionRegistry::get;
+    }
+
+    public Bpmn2OryxIdMappings(final DefinitionManager definitionManager,
+                               final Supplier<WorkItemDefinitionRegistry> workItemDefinitionRegistry) {
+        super(definitionManager);
+        this.workItemDefinitionRegistry = workItemDefinitionRegistry;
+    }
+
+    @Override
+    public String getOryxDefinitionId(final Object def) {
+        if (ServiceTask.isWorkItem(def)) {
+            return ((ServiceTask) def).getName();
+        }
+        return super.getOryxDefinitionId(def);
+    }
+
+    @Override
+    public Class<?> getDefinition(final String oryxId) {
+        if (isWorkItem(oryxId)) {
+            return ServiceTask.class;
+        }
+        return super.getDefinition(oryxId);
+    }
+
+    @Override
+    public String getDefinitionId(final String oryxId) {
+        if (isWorkItem(oryxId)) {
+            return BindableAdapterUtils.getDynamicDefinitionId(ServiceTask.class,
+                                                               oryxId);
+        }
+        return super.getDefinitionId(oryxId);
+    }
+
+    public boolean isWorkItem(final String oryxId) {
+        return null != workItemDefinitionRegistry.get().get(oryxId);
     }
 
     @Override

@@ -27,7 +27,6 @@ public class AbstractClientBindableAdapterTest {
     public static final String DEFINITION_SET_DESCRIPTION = "DefinitionSet Description";
     public static final String DEFINITION_DESCRIPTION = "Definition Description";
     public static final String DEFINITION_TITLE = "Definition Title";
-    public static final String DEFINITION_CATEGORY = "Definition Category";
     public static final String PROPERTY_SET_NAME = "PropertySet Name";
     public static final String PROPERTY_CAPTION = "Property Caption";
     public static final String PROPERTY_DESCRIPTION = "Property Description";
@@ -47,7 +46,6 @@ public class AbstractClientBindableAdapterTest {
 
         when(translationService.getDefinitionDescription(model.getClass().getName())).thenReturn(DEFINITION_DESCRIPTION);
         when(translationService.getDefinitionTitle(model.getClass().getName())).thenReturn(DEFINITION_TITLE);
-        when(translationService.getDefinitionCategory(model.getClass().getName())).thenReturn(DEFINITION_CATEGORY);
 
         when(translationService.getPropertySetName(model.getClass().getName())).thenReturn(PROPERTY_SET_NAME);
 

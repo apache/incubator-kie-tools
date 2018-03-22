@@ -33,7 +33,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.backend.definition.factory.TestScopeModelFactory;
-import org.kie.workbench.common.stunner.backend.service.XMLEncoderDiagramMetadataMarshaller;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.backend.BPMNDiagramMarshaller;
 import org.kie.workbench.common.stunner.bpmn.backend.BPMNDirectDiagramMarshaller;
@@ -51,19 +50,23 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.ScriptTypeListTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.ScriptTypeTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.StringTypeSerializer;
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.TaskTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.TimerSettingsTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.VariablesTypeSerializer;
+import org.kie.workbench.common.stunner.bpmn.backend.workitem.WorkItemDefinitionBackendRegistry;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
+import org.kie.workbench.common.stunner.core.backend.BackendFactoryManager;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.bind.BackendBindableMorphAdapter;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendPropertyAdapter;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendPropertySetAdapter;
+import org.kie.workbench.common.stunner.core.backend.service.XMLEncoderDiagramMetadataMarshaller;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.clone.CloneManager;
@@ -164,7 +167,7 @@ public class MigrationDiagramMarshallerTest {
     @Mock
     private CloneManager cloneManager;
     @Mock
-    private FactoryManager applicationFactoryManager;
+    private BackendFactoryManager applicationFactoryManager;
 
     private EdgeFactory<Object> connectionEdgeFactory;
     private NodeFactory<Object> viewNodeFactory;
@@ -174,6 +177,7 @@ public class MigrationDiagramMarshallerTest {
 
     private BPMNDiagramMarshaller oldMarshaller;
     private BPMNDirectDiagramMarshaller newMarshaller;
+    private WorkItemDefinitionMockRegistry workItemDefinitionMockRegistry;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -263,8 +267,12 @@ public class MigrationDiagramMarshallerTest {
         }).when(applicationFactoryManager).newDiagram(anyString(),
                                                       anyString(),
                                                       any(Metadata.class));
+        // Work items stuff.
+        workItemDefinitionMockRegistry = new WorkItemDefinitionMockRegistry();
+
         // Bpmn 2 oryx stuff.
-        Bpmn2OryxIdMappings oryxIdMappings = new Bpmn2OryxIdMappings(definitionManager);
+        Bpmn2OryxIdMappings oryxIdMappings = new Bpmn2OryxIdMappings(definitionManager,
+                                                                     () -> workItemDefinitionMockRegistry);
         StringTypeSerializer stringTypeSerializer = new StringTypeSerializer();
         BooleanTypeSerializer booleanTypeSerializer = new BooleanTypeSerializer();
         ColorTypeSerializer colorTypeSerializer = new ColorTypeSerializer();
@@ -276,6 +284,8 @@ public class MigrationDiagramMarshallerTest {
         TimerSettingsTypeSerializer timerSettingsTypeSerializer = new TimerSettingsTypeSerializer();
         ScriptTypeTypeSerializer scriptTypeTypeSerializer = new ScriptTypeTypeSerializer();
         ScriptTypeListTypeSerializer scriptTypeListTypeSerializer = new ScriptTypeListTypeSerializer();
+        TaskTypeSerializer taskTypeSerializer = new TaskTypeSerializer(definitionUtils1,
+                                                                       enumTypeSerializer);
         List<Bpmn2OryxPropertySerializer<?>> propertySerializers = new LinkedList<>();
         propertySerializers.add(stringTypeSerializer);
         propertySerializers.add(booleanTypeSerializer);
@@ -288,13 +298,15 @@ public class MigrationDiagramMarshallerTest {
         propertySerializers.add(timerSettingsTypeSerializer);
         propertySerializers.add(scriptTypeTypeSerializer);
         propertySerializers.add(scriptTypeListTypeSerializer);
+        propertySerializers.add(taskTypeSerializer);
         Bpmn2OryxPropertyManager oryxPropertyManager = new Bpmn2OryxPropertyManager(propertySerializers);
         Bpmn2OryxManager oryxManager = new Bpmn2OryxManager(oryxIdMappings,
                                                             oryxPropertyManager);
         oryxManager.init();
         // Marshalling factories.
         BPMNGraphObjectBuilderFactory objectBuilderFactory = new BPMNGraphObjectBuilderFactory(definitionManager,
-                                                                                               oryxManager);
+                                                                                               oryxManager,
+                                                                                               () -> workItemDefinitionMockRegistry);
         taskMorphDefinition = new TaskTypeMorphDefinition();
         Collection<MorphDefinition> morphDefinitions = new ArrayList<MorphDefinition>() {{
             add(taskMorphDefinition);
@@ -311,6 +323,14 @@ public class MigrationDiagramMarshallerTest {
         GraphIndexBuilder<?> indexBuilder = new MapIndexBuilder();
         when(rulesManager.evaluate(any(RuleSet.class),
                                    any(RuleEvaluationContext.class))).thenReturn(new DefaultRuleViolations());
+        // The work item definition registry.
+        WorkItemDefinitionBackendRegistry widRegistry = mock(WorkItemDefinitionBackendRegistry.class);
+        when(widRegistry.getRegistry()).thenReturn(workItemDefinitionMockRegistry);
+        when(widRegistry.items()).thenReturn(workItemDefinitionMockRegistry.items());
+        when(widRegistry.load(any(Metadata.class))).thenReturn(widRegistry);
+        doAnswer(invocationOnMock -> workItemDefinitionMockRegistry.get((String) invocationOnMock.getArguments()[0]))
+                .when(widRegistry).get(anyString());
+
         // The tested BPMN marshaller.
         oldMarshaller = new BPMNDiagramMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
                                                   objectBuilderFactory,
@@ -320,7 +340,8 @@ public class MigrationDiagramMarshallerTest {
                                                   applicationFactoryManager,
                                                   rulesManager,
                                                   commandManager1,
-                                                  commandFactory1);
+                                                  commandFactory1,
+                                                  widRegistry);
 
         // Graph utils.
         when(definitionManager.adapters()).thenReturn(adapterManager);

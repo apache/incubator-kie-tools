@@ -17,12 +17,40 @@
 package org.kie.workbench.common.stunner.core.client.session.event;
 
 import org.jboss.errai.common.client.api.annotations.NonPortable;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.uberfire.workbench.events.UberFireEvent;
 
 @NonPortable
-public class SessionDestroyedEvent extends AbstractSessionEvent {
+public class SessionDestroyedEvent implements UberFireEvent {
 
-    public SessionDestroyedEvent(final ClientSession session) {
-        super(session);
+    private final String sessionUUID;
+    private final String diagramName;
+    private final String graphUuid;
+    private final Metadata metadata;
+
+    public SessionDestroyedEvent(final String sessionUUID,
+                                 final String diagramName,
+                                 final String graphUuid,
+                                 final Metadata metadata) {
+        this.sessionUUID = sessionUUID;
+        this.diagramName = diagramName;
+        this.graphUuid = graphUuid;
+        this.metadata = metadata;
+    }
+
+    public String getSessionUUID() {
+        return sessionUUID;
+    }
+
+    public String getDiagramName() {
+        return diagramName;
+    }
+
+    public String getGraphUuid() {
+        return graphUuid;
+    }
+
+    public Metadata getMetadata() {
+        return metadata;
     }
 }

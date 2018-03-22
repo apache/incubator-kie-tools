@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefTestStubs.TestShapeDefFactoryStub;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefTestStubs.TestShapeDefType1;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefTestStubs.TestShapeDefType2;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeGlyph;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -63,7 +64,7 @@ public class DelegateShapeFactoryTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testDelegate1() {
-        final String definition1Id = DelegateShapeFactory.getDefinitionId(Definition1.class);
+        final String definition1Id = BindableAdapterUtils.getDefinitionId(Definition1.class);
         tested.delegate(Definition1.class,
                         shapeDef1,
                         () -> shapeDefFactoryStub);
@@ -82,7 +83,7 @@ public class DelegateShapeFactoryTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testDelegate2() {
-        final String definition2Id = DelegateShapeFactory.getDefinitionId(Definition2.class);
+        final String definition2Id = BindableAdapterUtils.getDefinitionId(Definition2.class);
         tested.delegate(Definition2.class,
                         shapeDef2,
                         () -> shapeDefFactoryStub);

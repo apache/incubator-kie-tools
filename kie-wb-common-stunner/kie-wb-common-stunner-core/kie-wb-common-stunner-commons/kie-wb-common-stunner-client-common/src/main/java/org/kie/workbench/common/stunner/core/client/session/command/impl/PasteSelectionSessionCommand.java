@@ -182,7 +182,7 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<C
         CommandResult<CanvasViolation> connectorsResult = processConnectors(processedNodesCountdown);
 
         //After nodes and connectors command execution than it is necessary to update the command registry (to allow a single undo/redo)
-        if(!CommandUtils.isError(connectorsResult)) {
+        if (!CommandUtils.isError(connectorsResult)) {
             updateCommandsRegistry();
         }
 
@@ -244,7 +244,9 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<C
     }
 
     public void clear() {
-        clipboardControl.clear();
+        if (null != clipboardControl) {
+            clipboardControl.clear();
+        }
         clonedElements.clear();
         yPositionStatistics = null;
     }

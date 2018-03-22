@@ -46,12 +46,11 @@ public class ExportToPdfToolbarCommand extends AbstractToolbarCommand<AbstractCl
 
     @Override
     public String getCaption() {
-        return translationService.getKeyValue(CoreTranslationMessages.EXPORT_PDF);
+        return translationService.getValue(CoreTranslationMessages.EXPORT_PDF);
     }
 
     @Override
     public String getTooltip() {
-        return translationService.getKeyValue(CoreTranslationMessages.EXPORT_PDF);
-
+        return translationService.getValue(CoreTranslationMessages.EXPORT_PDF);
     }
 }

@@ -105,7 +105,7 @@ public class GenerateSelectedFormsSessionCommandTest
         verify(callback, times(1)).onSuccess();
         verify(callback, never()).onError(anyObject());
         verify(acceptor, never()).test(any(Element.class));
-        verify(translationService).getKeyValue(FormsClientConstants.FormsNoItemsSelectedForGeneration);
+        verify(translationService).getValue(FormsClientConstants.FormsNoItemsSelectedForGeneration);
         verify(formGenerationNotifier).showNotification(anyString());
     }
 
@@ -124,7 +124,7 @@ public class GenerateSelectedFormsSessionCommandTest
         verify(acceptor, times(1)).test(eq(element2));
         verify(callback, times(1)).onSuccess();
         verify(callback, never()).onError(anyObject());
-        verify(translationService, never()).getKeyValue(FormsClientConstants.FormsNoItemsSelectedForGeneration);
+        verify(translationService, never()).getValue(FormsClientConstants.FormsNoItemsSelectedForGeneration);
         verify(formGenerationNotifier, never()).showNotification(anyString());
     }
 }

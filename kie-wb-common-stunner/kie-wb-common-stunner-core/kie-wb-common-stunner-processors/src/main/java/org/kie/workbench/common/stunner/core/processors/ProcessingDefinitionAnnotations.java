@@ -26,6 +26,7 @@ public class ProcessingDefinitionAnnotations {
     private final Map<String, Set<String>> propertySetFieldNames = new HashMap<>();
     private final Map<String, Set<String>> propertyFieldNames = new HashMap<>();
     private final Map<String, String> graphFactoryFieldNames = new HashMap<>();
+    private final Map<String, String> idFieldNames = new HashMap<>();
     private final Map<String, String> labelsFieldNames = new HashMap<>();
     private final Map<String, String> titleFieldNames = new HashMap<>();
     private final Map<String, String> categoryFieldNames = new HashMap<>();
@@ -47,6 +48,10 @@ public class ProcessingDefinitionAnnotations {
 
     public Map<String, String> getGraphFactoryFieldNames() {
         return graphFactoryFieldNames;
+    }
+
+    public Map<String, String> getIdFieldNames() {
+        return idFieldNames;
     }
 
     public Map<String, String> getLabelsFieldNames() {

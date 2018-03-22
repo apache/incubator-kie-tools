@@ -17,19 +17,17 @@
 package org.kie.workbench.common.stunner.core.lookup.criteria;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import org.kie.workbench.common.stunner.core.lookup.AbstractLookupManager;
 import org.kie.workbench.common.stunner.core.lookup.LookupManager;
 
 public abstract class AbstractCriteriaLookupManager<I, T, R extends LookupManager.LookupRequest>
         extends AbstractLookupManager<I, T, R> {
-
-    private static Logger LOGGER = Logger.getLogger(AbstractCriteriaLookupManager.class.getName());
 
     protected static final String CRITERIA_SEPARATOR = ";";
     protected static final String VALUE_SEPARATOR = "=";
@@ -59,7 +57,7 @@ public abstract class AbstractCriteriaLookupManager<I, T, R extends LookupManage
     }
 
     public static Map<String, String> parseCriteria(final String criteria) {
-        if (null != criteria) {
+        if (null != criteria && criteria.trim().length() > 0) {
             final Map<String, String> result = new HashMap<>(criteria.length());
             final String[] criterias = criteria.split(CRITERIA_SEPARATOR);
             for (String c : criterias) {
@@ -71,7 +69,7 @@ public abstract class AbstractCriteriaLookupManager<I, T, R extends LookupManage
             }
             return result;
         }
-        return null;
+        return Collections.emptyMap();
     }
 
     public static String[] parseCriteriaPair(final String criteria) {

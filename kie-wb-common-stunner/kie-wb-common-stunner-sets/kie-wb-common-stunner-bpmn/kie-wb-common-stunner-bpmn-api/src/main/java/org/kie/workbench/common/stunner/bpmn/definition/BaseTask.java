@@ -44,8 +44,22 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @MorphBase(defaultType = NoneTask.class, targets = {ReusableSubprocess.class})
 public abstract class BaseTask implements BPMNViewDefinition {
 
+    public static final Set<String> TASK_LABELS = new HashSet<String>() {{
+        add("all");
+        add("sequence_start");
+        add("sequence_end");
+        add("from_task_event");
+        add("to_task_event");
+        add("FromEventbasedGateway");
+        add("messageflow_start");
+        add("messageflow_end");
+        add("fromtoall");
+        add("ActivitiesMorph");
+        add("cm_activity");
+    }};
+
     @Category
-    public static final transient String category = Categories.ACTIVITIES;
+    public static final transient String category = BPMNCategories.ACTIVITIES;
 
     @PropertySet
     @FormField
@@ -95,23 +109,7 @@ public abstract class BaseTask implements BPMNViewDefinition {
     }
 
     @Labels
-    protected final Set<String> labels = new HashSet<String>() {{
-        add("all");
-        add("sequence_start");
-        add("sequence_end");
-        add("from_task_event");
-        add("to_task_event");
-        add("FromEventbasedGateway");
-        add("messageflow_start");
-        add("messageflow_end");
-        add("fromtoall");
-        add("ActivitiesMorph");
-        add("cm_activity");
-    }};
-
-    protected BaseTask(final TaskTypes type) {
-        this.taskType = new TaskType(type);
-    }
+    protected final Set<String> labels = new HashSet<String>(TASK_LABELS);
 
     public BaseTask(final @MapsTo("general") TaskGeneralSet general,
                     final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
@@ -198,7 +196,7 @@ public abstract class BaseTask implements BPMNViewDefinition {
     public boolean equals(Object o) {
         if (o instanceof BaseTask) {
             BaseTask other = (BaseTask) o;
-            return  Objects.equals(general, other.general) &&
+            return Objects.equals(general, other.general) &&
                     Objects.equals(taskType, other.taskType) &&
                     Objects.equals(backgroundSet, other.backgroundSet) &&
                     Objects.equals(fontSet, other.fontSet) &&

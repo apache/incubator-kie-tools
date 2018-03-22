@@ -41,12 +41,12 @@ public class DeleteSelectionToolbarCommand extends AbstractToolbarCommand<Client
 
     @Override
     public String getCaption() {
-        return translationService.getKeyValue(CoreTranslationMessages.DELETE_SELECTION);
+        return translationService.getValue(CoreTranslationMessages.DELETE_SELECTION);
     }
 
     @Override
     public String getTooltip() {
-        return translationService.getKeyValue(CoreTranslationMessages.DELETE_SELECTION);
+        return translationService.getValue(CoreTranslationMessages.DELETE_SELECTION);
     }
 
     @Override

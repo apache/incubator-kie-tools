@@ -56,12 +56,12 @@ import org.kie.workbench.common.stunner.core.util.UUID;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.kie.workbench.common.stunner.core.validation.impl.ValidationUtils;
+import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.annotations.WorkbenchContextId;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.lifecycle.OnClose;
@@ -91,7 +91,6 @@ public class SessionDiagramEditorScreen {
     private final ShowcaseDiagramService diagramService;
     private final SessionManager sessionManager;
     private final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory;
-    private final PlaceManager placeManager;
     private final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
     private final MenuDevCommandsBuilder menuDevCommandsBuilder;
     private final ScreenPanelView screenPanelView;
@@ -108,7 +107,6 @@ public class SessionDiagramEditorScreen {
                                       final ShowcaseDiagramService diagramService,
                                       final SessionManager sessionManager,
                                       final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory,
-                                      final PlaceManager placeManager,
                                       final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
                                       final MenuDevCommandsBuilder menuDevCommandsBuilder,
                                       final ScreenPanelView screenPanelView,
@@ -118,7 +116,6 @@ public class SessionDiagramEditorScreen {
         this.diagramService = diagramService;
         this.sessionManager = sessionManager;
         this.sessionPresenterFactory = sessionPresenterFactory;
-        this.placeManager = placeManager;
         this.changeTitleNotificationEvent = changeTitleNotificationEvent;
         this.menuDevCommandsBuilder = menuDevCommandsBuilder;
         this.screenPanelView = screenPanelView;
@@ -254,16 +251,22 @@ public class SessionDiagramEditorScreen {
 
     private void openDiagram(Diagram diagram,
                              Command callback) {
-        final AbstractClientFullSession session = newSession(diagram);
-        presenter = sessionPresenterFactory.newPresenterEditor();
-        screenPanelView.setWidget(presenter.getView());
-        presenter
-                .withToolbar(true)
-                .withPalette(true)
-                .displayNotifications(type -> true)
-                .open(diagram,
-                      session,
-                      new ScreenPresenterCallback(callback));
+        final Metadata metadata = diagram.getMetadata();
+        sessionManager.getSessionFactory(metadata,
+                                         ClientFullSession.class)
+                .newSession(metadata,
+                            s -> {
+                                final AbstractClientFullSession session = (AbstractClientFullSession) s;
+                                presenter = sessionPresenterFactory.newPresenterEditor();
+                                screenPanelView.setWidget(presenter.getView());
+                                presenter
+                                        .withToolbar(true)
+                                        .withPalette(true)
+                                        .displayNotifications(type -> true)
+                                        .open(diagram,
+                                              session,
+                                              new ScreenPresenterCallback(callback));
+                            });
     }
 
     private Metadata buildMetadata(final String defSetId,
@@ -272,6 +275,7 @@ public class SessionDiagramEditorScreen {
         return new MetadataImpl.MetadataImplBuilder(defSetId,
                                                     definitionManager)
                 .setTitle(title)
+                .setRoot(PathFactory.newPath(".", "default://master@stunner/"))
                 .setShapeSetId(shapeSetId)
                 .build();
     }
@@ -390,11 +394,6 @@ public class SessionDiagramEditorScreen {
         SessionDiagramEditorScreen.this.title = title;
         changeTitleNotificationEvent.fire(new ChangeTitleWidgetEvent(placeRequest,
                                                                      this.title));
-    }
-
-    private AbstractClientFullSession newSession(final Diagram diagram) {
-        return (AbstractClientFullSession) sessionManager.getSessionFactory(diagram,
-                                                                            ClientFullSession.class).newSession();
     }
 
     private AbstractClientFullSession getSession() {

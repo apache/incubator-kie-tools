@@ -16,10 +16,12 @@
 package org.kie.workbench.common.stunner.cm.backend.marshall.json.builder;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder.BPMNGraphObjectBuilderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxManager;
+import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 
@@ -32,8 +34,10 @@ public class CaseManagementGraphObjectBuilderFactory extends BPMNGraphObjectBuil
 
     @Inject
     public CaseManagementGraphObjectBuilderFactory(final DefinitionManager definitionManager,
-                                                   final @CaseManagementEditor OryxManager oryxManager) {
+                                                   final @CaseManagementEditor OryxManager oryxManager,
+                                                   final Instance<WorkItemDefinitionRegistry> workItemDefinitionRegistries) {
         super(definitionManager,
-              oryxManager);
+              oryxManager,
+              workItemDefinitionRegistries::get);
     }
 }

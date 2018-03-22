@@ -40,7 +40,7 @@ public abstract class BaseCatchingIntermediateEvent
                    DataIOModel {
 
     @Category
-    public static final transient String category = Categories.EVENTS;
+    public static final transient String category = BPMNCategories.EVENTS;
 
     @Labels
     protected final Set<String> labels = new HashSet<String>();
@@ -163,7 +163,7 @@ public abstract class BaseCatchingIntermediateEvent
     public boolean equals(Object o) {
         if (o instanceof BaseCatchingIntermediateEvent) {
             BaseCatchingIntermediateEvent other = (BaseCatchingIntermediateEvent) o;
-            return  Objects.equals(general, other.general) &&
+            return Objects.equals(general, other.general) &&
                     Objects.equals(backgroundSet, other.backgroundSet) &&
                     Objects.equals(fontSet, other.fontSet) &&
                     Objects.equals(dimensionsSet, other.dimensionsSet) &&

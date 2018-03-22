@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.cm.client.session;
 
+import java.util.function.Consumer;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -23,6 +25,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 
 @ApplicationScoped
 @CaseManagementEditor
@@ -40,8 +43,9 @@ public class CaseManagementFullSessionFactory implements ClientSessionFactory<Cl
     }
 
     @Override
-    public ClientFullSession newSession() {
-        return this.fullSessionInstances.get();
+    public void newSession(final Metadata metadata,
+                           final Consumer<ClientFullSession> sessionConsumer) {
+        sessionConsumer.accept(this.fullSessionInstances.get());
     }
 
     @Override

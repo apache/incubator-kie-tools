@@ -16,8 +16,50 @@
 
 package org.kie.workbench.common.stunner.core.lookup.diagram;
 
-import org.kie.workbench.common.stunner.core.lookup.LookupManager;
+import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.jboss.errai.common.client.api.annotations.NonPortable;
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.stunner.core.lookup.VFSLookupRequest;
+import org.uberfire.backend.vfs.Path;
 
-public interface DiagramLookupRequest extends LookupManager.LookupRequest {
+@Portable
+public class DiagramLookupRequest extends VFSLookupRequest {
 
+    public static final String CRITERIA_NAME = "name";
+
+    public DiagramLookupRequest(final @MapsTo("path") Path path,
+                                final @MapsTo("criteria") String criteria,
+                                final @MapsTo("page") int page,
+                                final @MapsTo("pageSize") int pageSize) {
+        super(path,
+              criteria,
+              page,
+              pageSize);
+    }
+
+    @NonPortable
+    public static class Builder extends VFSLookupRequest.Builder {
+
+        private String name;
+
+        public Builder withName(final String name) {
+            this.name = null != name && name.trim().length() > 0 ? name : null;
+            return this;
+        }
+
+        @Override
+        public String getCriteria() {
+            return null != name ?
+                    fromKeyValue(CRITERIA_NAME, name) + super.getCriteria() :
+                    super.getCriteria();
+        }
+
+        @Override
+        public DiagramLookupRequest build() {
+            return new DiagramLookupRequest(getPath(),
+                                            getCriteria(),
+                                            page,
+                                            pageSize);
+        }
+    }
 }

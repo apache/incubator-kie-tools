@@ -202,7 +202,7 @@ public class CreateNodeActionTest {
         tested.getTitle(canvasHandler,
                         NODE_UUID);
         verify(translationService,
-               times(1)).getKeyValue(eq(CreateNodeAction.KEY_TITLE));
+               times(1)).getValue(eq(CreateNodeAction.KEY_TITLE));
     }
 
     @Test

@@ -17,34 +17,30 @@
 package org.kie.workbench.common.stunner.client.widgets.palette.categories;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.group.DefinitionPaletteGroupWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.items.DefinitionPaletteItemWidget;
-import org.kie.workbench.common.stunner.client.widgets.palette.factory.BS3PaletteViewFactory;
-import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
-import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteCategory;
-import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteGroup;
-import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteItem;
+import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteCategory;
+import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteGroup;
+import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteItem;
+import org.kie.workbench.common.stunner.core.client.components.palette.PaletteGroup;
+import org.kie.workbench.common.stunner.core.client.components.palette.PaletteItemMouseEvent;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 @Dependent
-public class DefinitionPaletteCategoryWidget implements DefinitionPaletteCategoryWidgetView.Presenter,
-                                                        IsElement {
+public class DefinitionPaletteCategoryWidget implements DefinitionPaletteCategoryWidgetView.Presenter {
 
-    private static final double ICON_WIDTH = 20;
-    private static final double ICON_HEIGHT = 20;
-
-    private DefinitionPaletteCategory category;
-    private Palette.ItemMouseDownCallback itemMouseDownCallback;
+    private DefaultPaletteCategory category;
+    private Consumer<PaletteItemMouseEvent> itemMouseDownCallback;
 
     private DefinitionPaletteCategoryWidgetView view;
     private ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgetInstance;
@@ -69,27 +65,27 @@ public class DefinitionPaletteCategoryWidget implements DefinitionPaletteCategor
         return view.getElement();
     }
 
-    public void initialize(final DefinitionPaletteCategory category,
-                           final BS3PaletteViewFactory viewFactory,
+    @Override
+    public void initialize(final DefaultPaletteCategory category,
                            final ShapeFactory<?, ?> shapeFactory,
-                           final Palette.ItemMouseDownCallback itemMouseDownCallback) {
+                           final Consumer<PaletteItemMouseEvent> itemMouseDownCallback) {
         this.category = category;
         this.itemMouseDownCallback = itemMouseDownCallback;
-        final Glyph categoryGlyph = viewFactory.getCategoryGlyph(category.getId());
+        final Glyph categoryGlyph = category.getGlyph();
         view.render(categoryGlyph,
-                    ICON_WIDTH,
-                    ICON_HEIGHT);
+                    category.getIconSize(),
+                    category.getIconSize());
         renderItems(category.getItems(),
                     shapeFactory);
     }
 
-    private void renderItems(final List<DefinitionPaletteItem> items,
+    private void renderItems(final List<DefaultPaletteItem> items,
                              final ShapeFactory<?, ?> shapeFactory) {
         if (items != null && !items.isEmpty()) {
             items.forEach(item -> {
-                if (item instanceof DefinitionPaletteGroup) {
+                if (item instanceof PaletteGroup) {
 
-                    renderGroup((DefinitionPaletteGroup) item,
+                    renderGroup((DefaultPaletteGroup) item,
                                 shapeFactory);
                 } else {
                     DefinitionPaletteItemWidget categoryItemWidget = definitionPaletteItemWidgetInstance.get();
@@ -104,7 +100,7 @@ public class DefinitionPaletteCategoryWidget implements DefinitionPaletteCategor
         }
     }
 
-    private void renderGroup(final DefinitionPaletteGroup group,
+    private void renderGroup(final DefaultPaletteGroup group,
                              final ShapeFactory<?, ?> shapeFactory) {
         DefinitionPaletteGroupWidget groupWidget = definitionPaletteGroupWidgetInstance.get();
 
@@ -120,7 +116,7 @@ public class DefinitionPaletteCategoryWidget implements DefinitionPaletteCategor
     }
 
     @Override
-    public DefinitionPaletteCategory getCategory() {
+    public DefaultPaletteCategory getCategory() {
         return category;
     }
 
@@ -130,11 +126,11 @@ public class DefinitionPaletteCategoryWidget implements DefinitionPaletteCategor
                             int x,
                             int y) {
         if (itemMouseDownCallback != null) {
-            itemMouseDownCallback.onItemMouseDown(category.getId(),
-                                                  clientX,
-                                                  clientY,
-                                                  x,
-                                                  y);
+            itemMouseDownCallback.accept(new PaletteItemMouseEvent(category.getId(),
+                                                                   clientX,
+                                                                   clientY,
+                                                                   x,
+                                                                   y));
         }
     }
 

@@ -49,7 +49,7 @@ public class BPMNDiagramEditorMenuItemsBuilder {
         return MenuUtils.buildItem(
                 new Button() {{
                     setSize(ButtonSize.SMALL);
-                    setText(translationService.getKeyValue(BPMNClientConstants.EditorMigrateActionMenu));
+                    setText(translationService.getValue(BPMNClientConstants.EditorMigrateActionMenu));
                     addClickHandler(clickEvent -> migrateCommand.execute());
                 }});
     }
@@ -61,22 +61,22 @@ public class BPMNDiagramEditorMenuItemsBuilder {
             setPull(Pull.RIGHT);
         }};
 
-        menu.add(new AnchorListItem(translationService.getKeyValue(BPMNClientConstants.EditorGenerateProcessForm)) {{
+        menu.add(new AnchorListItem(translationService.getValue(BPMNClientConstants.EditorGenerateProcessForm)) {{
             setIcon(IconType.LIST_ALT);
             setIconPosition(IconPosition.LEFT);
-            setTitle(translationService.getKeyValue(BPMNClientConstants.EditorGenerateProcessForm));
+            setTitle(translationService.getValue(BPMNClientConstants.EditorGenerateProcessForm));
             addClickHandler(event -> generateProcessForm.execute());
         }});
-        menu.add(new AnchorListItem(translationService.getKeyValue(BPMNClientConstants.EditorGenerateAllForms)) {{
+        menu.add(new AnchorListItem(translationService.getValue(BPMNClientConstants.EditorGenerateAllForms)) {{
             setIcon(IconType.LIST_ALT);
             setIconPosition(IconPosition.LEFT);
-            setTitle(translationService.getKeyValue(BPMNClientConstants.EditorGenerateAllForms));
+            setTitle(translationService.getValue(BPMNClientConstants.EditorGenerateAllForms));
             addClickHandler(event -> generateAllForms.execute());
         }});
-        menu.add(new AnchorListItem(translationService.getKeyValue(BPMNClientConstants.EditorGenerateSelectionForms)) {{
+        menu.add(new AnchorListItem(translationService.getValue(BPMNClientConstants.EditorGenerateSelectionForms)) {{
             setIcon(IconType.LIST_ALT);
             setIconPosition(IconPosition.LEFT);
-            setTitle(translationService.getKeyValue(BPMNClientConstants.EditorGenerateSelectionForms));
+            setTitle(translationService.getValue(BPMNClientConstants.EditorGenerateSelectionForms));
             addClickHandler(event -> generateSelectedForms.execute());
         }});
         final IsWidget group = new ButtonGroup() {{
@@ -85,7 +85,7 @@ public class BPMNDiagramEditorMenuItemsBuilder {
                 setDataToggle(Toggle.DROPDOWN);
                 setIcon(IconType.LIST_ALT);
                 setSize(ButtonSize.SMALL);
-                setTitle(translationService.getKeyValue(BPMNClientConstants.EditorFormGenerationTitle));
+                setTitle(translationService.getValue(BPMNClientConstants.EditorFormGenerationTitle));
             }});
             add(menu);
         }};

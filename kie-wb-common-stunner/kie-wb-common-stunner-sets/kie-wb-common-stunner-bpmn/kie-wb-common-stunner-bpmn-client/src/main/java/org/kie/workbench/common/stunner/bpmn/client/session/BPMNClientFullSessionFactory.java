@@ -20,28 +20,37 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientRegistry;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
-import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
+import org.kie.workbench.common.stunner.core.client.session.impl.ClientFullSessionImpl;
 
 @ApplicationScoped
 @BPMN
-public class BPMNClientFullSessionFactory implements ClientSessionFactory<ClientFullSession> {
+public class BPMNClientFullSessionFactory extends AbstractBPMNClientSessionFactory<ClientFullSession> {
 
-    private final ManagedInstance<BPMNClientFullSession> fullSessionInstances;
+    private final WorkItemDefinitionClientRegistry workItemDefinitionRegistry;
+    private final ManagedInstance<ClientFullSessionImpl> fullSessionInstances;
 
     protected BPMNClientFullSessionFactory() {
-        this(null);
+        this(null, null);
     }
 
     @Inject
-    public BPMNClientFullSessionFactory(final @BPMN ManagedInstance<BPMNClientFullSession> fullSessionInstances) {
+    public BPMNClientFullSessionFactory(final WorkItemDefinitionClientRegistry workItemDefinitionRegistry,
+                                        final ManagedInstance<ClientFullSessionImpl> fullSessionInstances) {
+        this.workItemDefinitionRegistry = workItemDefinitionRegistry;
         this.fullSessionInstances = fullSessionInstances;
     }
 
     @Override
-    public ClientFullSession newSession() {
-        return this.fullSessionInstances.get();
+    protected WorkItemDefinitionClientRegistry getWorkItemDefinitionRegistry() {
+        return workItemDefinitionRegistry;
+    }
+
+    @Override
+    protected ClientFullSession buildSessionInstance() {
+        return fullSessionInstances.get();
     }
 
     @Override

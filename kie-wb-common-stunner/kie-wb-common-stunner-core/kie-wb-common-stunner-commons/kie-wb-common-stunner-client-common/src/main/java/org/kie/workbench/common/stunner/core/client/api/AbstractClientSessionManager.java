@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
 import org.kie.workbench.common.stunner.core.command.exception.CommandException;
-import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -36,34 +36,14 @@ public abstract class AbstractClientSessionManager implements SessionManager {
 
     ClientSession current;
 
-    protected abstract <D extends Diagram> List<ClientSessionFactory<?>> getFactories(final D diagram);
-
-    /**
-     * Called once a session has been opened.
-     */
-    protected abstract void postOpen();
-
-    /**
-     * Called once active session has been paused.
-     */
-    protected abstract void postPause();
-
-    /**
-     * Called once a session has been resumed.
-     */
-    protected abstract void postResume();
-
-    /**
-     * Called once active session has been destroyed.
-     */
-    protected abstract void postDestroy();
+    protected abstract List<ClientSessionFactory> getFactories(final Metadata metadata);
 
     @Override
     @SuppressWarnings("unchecked")
-    public <D extends Diagram, S extends ClientSession> ClientSessionFactory<S> getSessionFactory(final D diagram,
-                                                                                                  final Class<S> sessionType) {
-        return (ClientSessionFactory<S>) getFactories(diagram).stream()
-                .filter(f -> f.getSessionType().equals(sessionType))
+    public <S extends ClientSession> ClientSessionFactory<S> getSessionFactory(final Metadata metadata,
+                                                                               final Class<S> sessionType) {
+        return getFactories(metadata).stream()
+                .filter(factory -> factory.getSessionType().equals(sessionType))
                 .findFirst()
                 .orElse(null);
     }
@@ -145,6 +125,30 @@ public abstract class AbstractClientSessionManager implements SessionManager {
         log(Level.SEVERE,
             "An error on client side happened",
             error.getThrowable());
+    }
+
+    /**
+     * Called once a session has been opened.
+     */
+    public void postOpen() {
+    }
+
+    /**
+     * Called once active session has been paused.
+     */
+    public void postPause() {
+    }
+
+    /**
+     * Called once a session has been resumed.
+     */
+    public void postResume() {
+    }
+
+    /**
+     * Called once active session has been destroyed.
+     */
+    public void postDestroy() {
     }
 
     protected AbstractClientSession getCurrentAbstractSession() {

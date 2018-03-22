@@ -29,7 +29,6 @@ import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.soup.commons.validation.PortablePreconditions;
-import org.kie.workbench.common.stunner.client.widgets.palette.categories.DefinitionPaletteCategoryWidget;
 import org.kie.workbench.common.stunner.core.client.components.drag.DragProxy;
 import org.kie.workbench.common.stunner.core.client.components.drag.DragProxyCallback;
 import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
@@ -117,7 +116,7 @@ public class BS3PaletteWidgetViewImpl implements BS3PaletteWidgetView,
     }
 
     @Override
-    public void add(DefinitionPaletteCategoryWidget widget) {
+    public void add(BS3PaletteWidgetPresenter widget) {
         PortablePreconditions.checkNotNull("widget",
                                            widget);
         addElement(widget.getElement());

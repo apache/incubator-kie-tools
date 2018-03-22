@@ -21,20 +21,20 @@ import org.kie.workbench.common.stunner.svg.annotation.SVGViewFactory;
 
 /**
  * A Shape View type for SVG representations.
- * <p/>
+ * <p>
  * This type provides basic support for displaying the
  * (generated) view that are built from SVG structures.
- * <p/>
+ * <p>
  * The SVGShapeView instances are usually generated at compile by parsing
  * and translating SVG images into the concrete view's domain.
  * @param <T> The SVGShapeView type.
  * @See {@link SVGViewFactory}
  * @See {@link SVGSource}
- * <p/>
+ * <p>
  * This view type can be composed by other SVG view instances
  * of same type, this way SVG images can be their-self
  * referenced along an HTML page and same way in the Canvas.
- * <p/>
+ * <p>
  * Each SVG shape view instance must provide a unique name,
  * this way the different SVG view children that compose
  * the view can be referenced as well.

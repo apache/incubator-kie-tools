@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 @Portable
 public class VariablesType implements PropertyType {
 
-    public static final String name = "stunner.variables";
+    public static final String name = "stunner.bpmn.variables";
 
     @Override
     public String getName() {

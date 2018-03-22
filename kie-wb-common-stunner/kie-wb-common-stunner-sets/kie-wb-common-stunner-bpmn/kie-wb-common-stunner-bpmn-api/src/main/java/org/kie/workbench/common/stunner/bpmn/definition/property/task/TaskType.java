@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.definition.property.task;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -24,13 +25,25 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.Fiel
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18nMode;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
+import org.kie.workbench.common.stunner.bpmn.definition.property.type.TaskPropertyType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.AllowedValues;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Type;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
-import org.kie.workbench.common.stunner.core.definition.property.type.EnumType;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
+/**
+ * The TaskType property behaves different from the one in the spec. and in other
+ * engines or tools focusing the BPMN domain.
+ * In case of service tasks (work items), the Stunner BPMN domain considers
+ * all types of services as just "service tasks", this way the task type
+ * can be just an Enum type wich has well supported support on other areas
+ * as well (like forms).
+ * On the other hand, other domains cannot apply the same consideration, this way
+ * this property class provides an String member in order to store that information
+ * into the model and be able to manage it.
+ */
 @Portable
 @Bindable
 @Property
@@ -38,19 +51,21 @@ import org.kie.workbench.common.stunner.core.definition.property.type.EnumType;
 public class TaskType implements BPMNProperty {
 
     @Type
-    public static final PropertyType type = new EnumType();
+    public static final PropertyType type = new TaskPropertyType();
 
     @AllowedValues
-    public static final Iterable<TaskTypes> allowedValues = new ArrayList<TaskTypes>(4) {{
+    public static final Iterable<TaskTypes> allowedValues = new ArrayList<TaskTypes>(5) {{
         add(TaskTypes.NONE);
         add(TaskTypes.USER);
         add(TaskTypes.SCRIPT);
         add(TaskTypes.BUSINESS_RULE);
+        add(TaskTypes.SERVICE_TASK);
     }};
 
     @Value
     @FieldValue
     private TaskTypes value;
+    private String rawType;
 
     public TaskType() {
         this(TaskTypes.NONE);
@@ -76,8 +91,20 @@ public class TaskType implements BPMNProperty {
         this.value = value;
     }
 
+    public String getRawType() {
+        return rawType;
+    }
+
+    public void setRawType(String rawType) {
+        this.rawType = rawType;
+    }
+
     @Override
     public int hashCode() {
+        if (null != rawType && null != value) {
+            return HashUtil.combineHashCodes(value.hashCode(),
+                                             rawType.hashCode());
+        }
         return (null != value) ? value.hashCode() : 0;
     }
 
@@ -85,7 +112,8 @@ public class TaskType implements BPMNProperty {
     public boolean equals(Object o) {
         if (o instanceof TaskType) {
             TaskType other = (TaskType) o;
-            return (null != value) ? value.equals(other.value) : null == other.value;
+            return Objects.equals(value, other.value) &&
+                    Objects.equals(rawType, other.rawType);
         }
         return false;
     }

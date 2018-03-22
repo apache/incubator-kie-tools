@@ -116,6 +116,10 @@
     z-index: 10000;
 }
 
+.kie-palette-item-icon-spacer {
+    margin: auto;
+}
+
 .kie-palette .list-group-item .list-group-item-value {
     display: block;
     line-height: 2em;

@@ -32,11 +32,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class AdHocOrderingProviderTest {
 
-    private static String SEQUENTIAL_KEY = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.AdHocOrderingProvider.sequential";
-
-    private static String PARALELL_KEY = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.AdHocOrderingProvider.parallel";
-
-    private static final String PARALELL_LABEL = "PARALELL";
+    private static final String PARALLEL_LABEL = "PARALLEL";
 
     private static final String SEQUENTIAL_LABEL = "SEQUENTIAL";
 
@@ -50,8 +46,11 @@ public class AdHocOrderingProviderTest {
 
     @Before
     public void setUp() {
-        when(translationService.getKeyValue(PARALELL_KEY)).thenReturn(PARALELL_LABEL);
-        when(translationService.getKeyValue(SEQUENTIAL_KEY)).thenReturn(SEQUENTIAL_LABEL);
+        final String PARALLEL_KEY = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.AdHocOrderingProvider.parallel";
+        final String SEQUENTIAL_KEY = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.AdHocOrderingProvider.sequential";
+
+        when(translationService.getValue(PARALLEL_KEY)).thenReturn(PARALLEL_LABEL);
+        when(translationService.getValue(SEQUENTIAL_KEY)).thenReturn(SEQUENTIAL_LABEL);
         provider = new AdHocOrderingProvider(translationService);
         provider.init();
     }
@@ -66,7 +65,7 @@ public class AdHocOrderingProviderTest {
                      selectorData.getSelectedValue());
         assertEquals(SEQUENTIAL_LABEL,
                      selectorData.getValues().get("Sequential"));
-        assertEquals(PARALELL_LABEL,
+        assertEquals(PARALLEL_LABEL,
                      selectorData.getValues().get("Parallel"));
     }
 }

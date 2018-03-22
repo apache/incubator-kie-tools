@@ -46,11 +46,11 @@ public class ExportToBpmnToolbarCommand extends AbstractToolbarCommand<AbstractC
 
     @Override
     public String getCaption() {
-        return translationService.getKeyValue(CoreTranslationMessages.EXPORT_BPMN);
+        return translationService.getValue(CoreTranslationMessages.EXPORT_BPMN);
     }
 
     @Override
     public String getTooltip() {
-        return translationService.getKeyValue(CoreTranslationMessages.EXPORT_BPMN);
+        return translationService.getValue(CoreTranslationMessages.EXPORT_BPMN);
     }
 }

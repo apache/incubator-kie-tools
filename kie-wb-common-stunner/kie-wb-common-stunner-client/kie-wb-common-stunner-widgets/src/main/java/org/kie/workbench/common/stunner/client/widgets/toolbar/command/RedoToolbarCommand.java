@@ -46,12 +46,12 @@ public class RedoToolbarCommand extends AbstractToolbarCommand<ClientFullSession
 
     @Override
     public String getCaption() {
-        return translationService.getKeyValue(CoreTranslationMessages.REDO);
+        return translationService.getValue(CoreTranslationMessages.REDO);
     }
 
     @Override
     public String getTooltip() {
-        return translationService.getKeyValue(CoreTranslationMessages.REDO);
+        return translationService.getValue(CoreTranslationMessages.REDO);
     }
 
     @Override

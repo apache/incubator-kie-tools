@@ -17,9 +17,11 @@
 package org.kie.workbench.common.stunner.core.client.definition.adapter.binding;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.AbstractBindableDefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -35,15 +37,24 @@ class ClientBindableDefinitionAdapter extends AbstractBindableDefinitionAdapter<
         this.translationService = translationService;
     }
 
-    public String getCategory(final Object pojo) {
-        String category = translationService.getDefinitionCategory(pojo.getClass().getName());
-        if (category != null) {
-            return category;
+    @Override
+    public String getId(final Object pojo) {
+        final String fieldId = propertyIdFieldNames.get(pojo.getClass());
+        if (null != fieldId) {
+            return BindableAdapterUtils.getDynamicDefinitionId(pojo.getClass(),
+                                                               getProxiedValue(pojo,
+                                                                               fieldId));
         }
+        return getDefinitionId(pojo.getClass());
+    }
+
+    @Override
+    public String getCategory(final Object pojo) {
         return getProxiedValue(pojo,
                                getPropertyCategoryFieldNames().get(pojo.getClass()));
     }
 
+    @Override
     public String getTitle(final Object pojo) {
         String title = translationService.getDefinitionTitle(pojo.getClass().getName());
         if (title != null) {
@@ -53,6 +64,7 @@ class ClientBindableDefinitionAdapter extends AbstractBindableDefinitionAdapter<
                                getPropertyTitleFieldNames().get(pojo.getClass()));
     }
 
+    @Override
     public String getDescription(final Object pojo) {
         String description = translationService.getDefinitionDescription(pojo.getClass().getName());
         if (description != null) {
@@ -62,12 +74,15 @@ class ClientBindableDefinitionAdapter extends AbstractBindableDefinitionAdapter<
                                getPropertyDescriptionFieldNames().get(pojo.getClass()));
     }
 
+    @Override
     public Set<String> getLabels(final Object pojo) {
         final String fName = getPropertyLabelsFieldNames().get(pojo.getClass());
-        return getProxiedValue(pojo,
-                               fName);
+        final Set<String> labels = getProxiedValue(pojo,
+                                                   fName);
+        return null != labels ? labels : Collections.emptySet();
     }
 
+    @Override
     public Set<?> getPropertySets(final Object pojo) {
         return getProxiedSet(pojo,
                              getPropertySetsFieldNames().get(pojo.getClass()));
@@ -89,13 +104,5 @@ class ClientBindableDefinitionAdapter extends AbstractBindableDefinitionAdapter<
                                         final Collection<String> fieldNames) {
         return ClientBindingUtils.getProxiedSet(pojo,
                                                 fieldNames);
-    }
-
-    private <T, V> void setProxiedValue(final T pojo,
-                                        final String fieldName,
-                                        final V value) {
-        ClientBindingUtils.setProxiedValue(pojo,
-                                           fieldName,
-                                           value);
     }
 }

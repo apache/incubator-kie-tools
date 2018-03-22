@@ -250,12 +250,12 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
                 migrate();
             }
         };
-        popupUtil.showConfirmPopup(getTranslationService().getKeyValue(BPMNClientConstants.EditorMigrateActionTitle),
-                                   getTranslationService().getKeyValue(BPMNClientConstants.EditorMigrateActionWarning),
+        popupUtil.showConfirmPopup(getTranslationService().getValue(BPMNClientConstants.EditorMigrateActionTitle),
+                                   getTranslationService().getValue(BPMNClientConstants.EditorMigrateActionWarning),
                                    InlineNotification.InlineNotificationType.WARNING,
-                                   getTranslationService().getKeyValue(BPMNClientConstants.EditorMigrateAction),
+                                   getTranslationService().getValue(BPMNClientConstants.EditorMigrateAction),
                                    org.uberfire.client.views.pfly.widgets.Button.ButtonStyleType.PRIMARY,
-                                   getTranslationService().getKeyValue(BPMNClientConstants.EditorMigrateConfirmAction),
+                                   getTranslationService().getValue(BPMNClientConstants.EditorMigrateConfirmAction),
                                    onMigrateCommand);
     }
 

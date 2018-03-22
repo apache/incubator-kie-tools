@@ -73,7 +73,8 @@ public class TaskShapeDef extends BaseDimensionedShapeDef
     }
 
     @Override
-    public Glyph getGlyph(final Class<? extends BaseTask> type) {
+    public Glyph getGlyph(final Class<? extends BaseTask> type,
+                          final String defId) {
         return GLYPHS.get(type);
     }
 }

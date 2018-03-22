@@ -51,6 +51,9 @@ public interface BPMNSVGViewFactory {
     @SVGSource(PATH_TASK)
     SVGShapeViewResource businessRuleTask();
 
+    @SVGSource(PATH_TASK)
+    SVGShapeViewResource serviceTask();
+
     @SVGSource(PATH_GATEWAY)
     SVGShapeViewResource parallelMultipleGateway();
 

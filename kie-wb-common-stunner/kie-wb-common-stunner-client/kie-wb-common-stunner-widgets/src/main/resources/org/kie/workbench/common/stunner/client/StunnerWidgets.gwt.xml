@@ -22,7 +22,7 @@
   <inherits name='com.google.gwt.user.User'/>
   <inherits name="org.gwtbootstrap3.extras.notify.Notify"/>
   <inherits name="org.gwtbootstrap3.extras.animate.Animate"/>
-  <inherits name="org.kie.workbench.common.stunner.client.StunnerLienzo"/>
+  <inherits name="org.kie.workbench.common.stunner.svg.StunnerSvgClient"/>
   <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>
   <inherits name="org.uberfire.client.views.PatternFlyTheme"/>
 

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.project.client.editor;
 
+import java.util.function.Predicate;
 import java.util.logging.Level;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -118,6 +119,7 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     private BPMNDiagramEditor diagramEditor;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() {
         commandCaptor = ArgumentCaptor.forClass(Command.class);
         migrateDiagramEventCaptor = ArgumentCaptor.forClass(BPMNMigrateDiagramEvent.class);
@@ -134,11 +136,12 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         when(generateDiagramFormsSessionCommands.get()).thenReturn(generateDiagramFormsSessionCommand);
         when(generateProcessFormSessionCommands.get()).thenReturn(generateProcessFormsSessionCommand);
         when(generateSelectedFormsSessionCommands.get()).thenReturn(generateSelectedFormsSessionCommand);
+        when(generateSelectedFormsSessionCommand.setElementAcceptor(any(Predicate.class))).thenReturn(generateSelectedFormsSessionCommand);
 
-        when(translationService.getKeyValue(BPMNClientConstants.EditorMigrateActionTitle)).thenReturn(MIGRATE_ACTION_TITLE);
-        when(translationService.getKeyValue(BPMNClientConstants.EditorMigrateActionWarning)).thenReturn(MIGRATE_ACTION_WARNING);
-        when(translationService.getKeyValue(BPMNClientConstants.EditorMigrateAction)).thenReturn(MIGRATE_ACTION);
-        when(translationService.getKeyValue(BPMNClientConstants.EditorMigrateConfirmAction)).thenReturn(MIGRATE_CONFIRM_ACTION);
+        when(translationService.getValue(BPMNClientConstants.EditorMigrateActionTitle)).thenReturn(MIGRATE_ACTION_TITLE);
+        when(translationService.getValue(BPMNClientConstants.EditorMigrateActionWarning)).thenReturn(MIGRATE_ACTION_WARNING);
+        when(translationService.getValue(BPMNClientConstants.EditorMigrateAction)).thenReturn(MIGRATE_ACTION);
+        when(translationService.getValue(BPMNClientConstants.EditorMigrateConfirmAction)).thenReturn(MIGRATE_CONFIRM_ACTION);
 
         super.setUp();
     }
@@ -258,5 +261,14 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                      migrateDiagramEventCaptor.getValue().getSourcePath());
         assertEquals(currentPlace,
                      migrateDiagramEventCaptor.getValue().getSourcePlace());
+    }
+
+    @Test
+    @Override
+    public void testCloseEditor() {
+        super.testCloseEditor();
+        verify(generateDiagramFormsSessionCommand, times(1)).unbind();
+        verify(generateProcessFormsSessionCommand, times(1)).unbind();
+        verify(generateSelectedFormsSessionCommand, times(1)).unbind();
     }
 }

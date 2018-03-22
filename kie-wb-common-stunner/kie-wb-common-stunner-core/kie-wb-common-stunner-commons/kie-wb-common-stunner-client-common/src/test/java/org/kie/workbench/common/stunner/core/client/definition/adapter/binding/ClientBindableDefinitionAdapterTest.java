@@ -47,13 +47,6 @@ public class ClientBindableDefinitionAdapterTest extends AbstractClientBindableA
         assertEquals(DEFINITION_DESCRIPTION,
                      description);
 
-        String category = clientBindableDefinitionAdapter.getCategory(model);
-
-        verify(translationService).getDefinitionCategory(model.getClass().getName());
-
-        assertEquals(DEFINITION_CATEGORY,
-                     category);
-
         String title = clientBindableDefinitionAdapter.getTitle(model);
 
         verify(translationService).getDefinitionTitle(model.getClass().getName());

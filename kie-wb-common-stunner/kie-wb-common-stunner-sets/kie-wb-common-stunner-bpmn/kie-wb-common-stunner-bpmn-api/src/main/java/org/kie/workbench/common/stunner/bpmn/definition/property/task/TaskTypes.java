@@ -21,10 +21,8 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public enum TaskTypes {
     NONE,
-
     USER,
-
     SCRIPT,
-
-    BUSINESS_RULE;
+    BUSINESS_RULE,
+    SERVICE_TASK;
 }

@@ -47,9 +47,8 @@ public class ClientBindingUtils {
     @SuppressWarnings("unchecked")
     public static <T, R> Set<R> getProxiedSet(final T pojo,
                                               final Collection<String> fieldNames) {
-        Set<R> result = null;
+        Set<R> result = new LinkedHashSet<>();
         if (null != pojo && null != fieldNames && !fieldNames.isEmpty()) {
-            result = new LinkedHashSet<>();
             for (String fieldName : fieldNames) {
                 HasProperties hasProperties = (HasProperties) DataBinder.forModel(pojo).getModel();
                 result.add((R) hasProperties.get(fieldName));

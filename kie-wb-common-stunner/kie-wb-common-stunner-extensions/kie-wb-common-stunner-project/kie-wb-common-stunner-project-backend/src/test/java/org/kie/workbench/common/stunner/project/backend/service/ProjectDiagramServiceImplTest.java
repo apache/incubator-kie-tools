@@ -24,11 +24,13 @@ import javax.inject.Named;
 
 import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.service.DefinitionSetService;
@@ -61,7 +63,7 @@ public class ProjectDiagramServiceImplTest {
 
     private static final String DEF_SET_ID = "DEF_SET_ID";
 
-    private static final String PACKAGE = "PACKAGE";
+    private static final Package PACKAGE = new Package();
 
     private static final String RAW_CONTENT = "RAW_CONTENT";
 
@@ -85,6 +87,9 @@ public class ProjectDiagramServiceImplTest {
 
     @Mock
     private MetadataServerSideService metadataService;
+
+    @Mock
+    private KieModuleService moduleService;
 
     @Mock
     private EventSourceMock<ResourceOpenedEvent> resourceOpenedEvent;
@@ -118,7 +123,8 @@ public class ProjectDiagramServiceImplTest {
                                                        ioService,
                                                        sessionInfo,
                                                        resourceOpenedEvent,
-                                                       commentedOptionFactory) {
+                                                       commentedOptionFactory,
+                                                       moduleService) {
 
             {
                 metadataService = ProjectDiagramServiceImplTest.this.metadataService;
@@ -129,7 +135,8 @@ public class ProjectDiagramServiceImplTest {
                                                                       FactoryManager factoryManager,
                                                                       Instance<DefinitionSetService> definitionSetServiceInstances,
                                                                       BackendRegistryFactory registryFactory,
-                                                                      @Named("ioStrategy") IOService ioService) {
+                                                                      @Named("ioStrategy") IOService ioService,
+                                                                      KieModuleService moduleService) {
                 return diagramServiceController;
             }
         };

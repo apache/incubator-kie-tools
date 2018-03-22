@@ -24,7 +24,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
@@ -68,19 +67,19 @@ public class UserTask extends BaseTask implements DataIOModel {
 
         @Override
         public UserTask build() {
-            return new UserTask(new TaskGeneralSet(new Name("Task"),
-                                                   new Documentation("")),
-                                new UserTaskExecutionSet(),
-                                new BackgroundSet(),
-                                new FontSet(),
-                                new RectangleDimensionsSet(),
-                                new SimulationSet(),
-                                new TaskType(TaskTypes.USER));
+            return new UserTask();
         }
     }
 
     public UserTask() {
-        super(TaskTypes.USER);
+        this(new TaskGeneralSet(new Name("Task"),
+                                new Documentation("")),
+             new UserTaskExecutionSet(),
+             new BackgroundSet(),
+             new FontSet(),
+             new RectangleDimensionsSet(),
+             new SimulationSet(),
+             new TaskType(TaskTypes.USER));
     }
 
     public UserTask(final @MapsTo("general") TaskGeneralSet general,
