@@ -40,7 +40,7 @@ import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry
         |From:String,Subject:String,To:String,Body:String|||[din]From=vfrom,[din]Subject=vsubject,[din]To=vto,[din]Body=vbody
  */
 
-class WorkItemDefinitionMockRegistry implements WorkItemDefinitionRegistry {
+public class WorkItemDefinitionMockRegistry implements WorkItemDefinitionRegistry {
 
     public static final String WID_EMAIL = "Email";
     public static final String WID_LOG = "Log";

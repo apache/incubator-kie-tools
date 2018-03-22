@@ -33,7 +33,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.kie.workbench.common.stunner.backend.definition.factory.TestScopeModelFactory;
-import org.kie.workbench.common.stunner.backend.service.XMLEncoderDiagramMetadataMarshaller;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.backend.BPMNDiagramMarshaller;
 import org.kie.workbench.common.stunner.bpmn.backend.BPMNDirectDiagramMarshaller;
@@ -56,6 +55,8 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property
 import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.MockApplicationFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.TaskTypeMorphDefinition;
 import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.Unmarshalling;
+import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.WorkItemDefinitionMockRegistry;
+import org.kie.workbench.common.stunner.bpmn.backend.workitem.WorkItemDefinitionBackendRegistry;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
@@ -67,6 +68,7 @@ import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendPropertyAdapter;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendPropertySetAdapter;
+import org.kie.workbench.common.stunner.core.backend.service.XMLEncoderDiagramMetadataMarshaller;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.clone.CloneManager;
@@ -140,10 +142,13 @@ public abstract class BPMNDiagramMarshallerBase {
 
     protected BPMNDiagramMarshaller oldMarshaller;
     protected BPMNDirectDiagramMarshaller newMarshaller;
+    protected WorkItemDefinitionMockRegistry workItemDefinitionMockRegistry;
 
     @SuppressWarnings("unchecked")
     protected void init() {
         initMocks(this);
+        // Work Items.
+        workItemDefinitionMockRegistry = new WorkItemDefinitionMockRegistry();
         definitionManager = mock(DefinitionManager.class);
         adapterManager = mock(AdapterManager.class);
         adapterRegistry = mock(AdapterRegistry.class);
@@ -230,7 +235,8 @@ public abstract class BPMNDiagramMarshallerBase {
                                                       anyString(),
                                                       any(Metadata.class));
         // Bpmn 2 oryx stuff.
-        Bpmn2OryxIdMappings oryxIdMappings = new Bpmn2OryxIdMappings(definitionManager);
+        Bpmn2OryxIdMappings oryxIdMappings = new Bpmn2OryxIdMappings(definitionManager,
+                                                                     () -> workItemDefinitionMockRegistry);
         StringTypeSerializer stringTypeSerializer = new StringTypeSerializer();
         BooleanTypeSerializer booleanTypeSerializer = new BooleanTypeSerializer();
         ColorTypeSerializer colorTypeSerializer = new ColorTypeSerializer();
@@ -260,7 +266,8 @@ public abstract class BPMNDiagramMarshallerBase {
         oryxManager.init();
         // Marshalling factories.
         BPMNGraphObjectBuilderFactory objectBuilderFactory = new BPMNGraphObjectBuilderFactory(definitionManager,
-                                                                                               oryxManager);
+                                                                                               oryxManager,
+                                                                                               () -> workItemDefinitionMockRegistry);
         taskMorphDefinition = new TaskTypeMorphDefinition();
         Collection<MorphDefinition> morphDefinitions = new ArrayList<MorphDefinition>() {{
             add(taskMorphDefinition);
@@ -277,6 +284,13 @@ public abstract class BPMNDiagramMarshallerBase {
         GraphIndexBuilder<?> indexBuilder = new MapIndexBuilder();
         when(rulesManager.evaluate(any(RuleSet.class),
                                    any(RuleEvaluationContext.class))).thenReturn(new DefaultRuleViolations());
+        // The work item definition registry.
+        WorkItemDefinitionBackendRegistry widRegistry = mock(WorkItemDefinitionBackendRegistry.class);
+        when(widRegistry.getRegistry()).thenReturn(workItemDefinitionMockRegistry);
+        when(widRegistry.items()).thenReturn(workItemDefinitionMockRegistry.items());
+        when(widRegistry.load(any(Metadata.class))).thenReturn(widRegistry);
+        doAnswer(invocationOnMock -> workItemDefinitionMockRegistry.get((String) invocationOnMock.getArguments()[0]))
+                .when(widRegistry).get(anyString());
         // The tested BPMN marshaller.
         oldMarshaller = new BPMNDiagramMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
                                                   objectBuilderFactory,
@@ -286,7 +300,8 @@ public abstract class BPMNDiagramMarshallerBase {
                                                   applicationFactoryManager,
                                                   rulesManager,
                                                   commandManager1,
-                                                  commandFactory1);
+                                                  commandFactory1,
+                                                  widRegistry);
 
         // Graph utils.
         when(definitionManager.adapters()).thenReturn(adapterManager);
@@ -487,5 +502,4 @@ public abstract class BPMNDiagramMarshallerBase {
                 || e.getContent() instanceof Child
                 || e.getContent() instanceof Dock;
     }
-
 }
