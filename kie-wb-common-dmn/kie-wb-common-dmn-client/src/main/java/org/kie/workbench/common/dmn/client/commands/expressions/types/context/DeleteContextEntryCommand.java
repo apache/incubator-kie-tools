@@ -117,7 +117,7 @@ public class DeleteContextEntryCommand extends AbstractCanvasGraphCommand implem
     public void updateRowNumbers() {
         CommandUtils.updateRowNumbers(uiModel,
                                       IntStream.range(0,
-                                                      uiModel.getRowCount()));
+                                                      uiModel.getRowCount() - 1));
     }
 
     public void updateParentInformation() {

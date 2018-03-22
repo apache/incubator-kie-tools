@@ -36,10 +36,13 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
@@ -340,6 +343,36 @@ public class DeleteContextEntryCommandTest {
         verify(canvasOperation).execute();
     }
 
+    @Test
+    public void testCanvasCommandExecuteRowNumbering() {
+        makeCommand(0);
+
+        setupRowNumbers();
+
+        command.newCanvasCommand(handler).execute(handler);
+
+        assertEquals(2, uiModel.getRowCount());
+
+        assertEquals(1, uiModel.getCell(0, 0).getValue().getValue());
+        assertNull(uiModel.getCell(1, 0).getValue());
+    }
+
+    @Test
+    public void testCanvasCommandUndoRowNumbering() {
+        makeCommand(0);
+
+        setupRowNumbers();
+
+        command.newCanvasCommand(handler).execute(handler);
+        command.newCanvasCommand(handler).undo(handler);
+
+        assertEquals(3, uiModel.getRowCount());
+
+        assertEquals(1, uiModel.getCell(0, 0).getValue().getValue());
+        assertEquals(2, uiModel.getCell(1, 0).getValue().getValue());
+        assertNull(uiModel.getCell(2, 0).getValue());
+    }
+
     private void addContextEntries(final int entriesCount) {
         final int originalRowCount = uiModel.getRowCount();
         for (int i = 0; i < originalRowCount; i++) {
@@ -351,5 +384,16 @@ public class DeleteContextEntryCommandTest {
             context.getContextEntry().add(new ContextEntry());
             uiModel.appendRow(new DMNGridRow());
         }
+    }
+
+    private void setupRowNumbers() {
+        uiModel.appendRow(new BaseGridRow());
+        uiModel.appendRow(new BaseGridRow());
+
+        uiModel.setCellValue(0, 0, new BaseGridCellValue<>(1));
+        uiModel.setCellValue(1, 0, new BaseGridCellValue<>(2));
+        uiModel.setCellValue(2, 0, null);
+
+        assertEquals(3, uiModel.getRowCount());
     }
 }
