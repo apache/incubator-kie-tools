@@ -27,13 +27,13 @@ import org.guvnor.structure.server.config.SecureConfigItem;
 
 public class ConfigurationFactoryImpl implements ConfigurationFactory {
 
-    private PasswordService secureService;
+    protected PasswordService secureService;
 
     public ConfigurationFactoryImpl() {
     }
 
     @Inject
-    public ConfigurationFactoryImpl(PasswordService secureService) {
+    public ConfigurationFactoryImpl(final PasswordService secureService) {
         this.secureService = secureService;
     }
 
@@ -41,10 +41,32 @@ public class ConfigurationFactoryImpl implements ConfigurationFactory {
     public ConfigGroup newConfigGroup(final ConfigType type,
                                       final String name,
                                       final String description) {
+        if (type.hasNamespace()) {
+            throw new RuntimeException("The ConfigType " + type.toString() + " requires a namespace.");
+        }
+
         final ConfigGroup configGroup = new ConfigGroup();
         configGroup.setDescription(description);
         configGroup.setName(name);
         configGroup.setType(type);
+        configGroup.setEnabled(true);
+        return configGroup;
+    }
+
+    @Override
+    public ConfigGroup newConfigGroup(final ConfigType type,
+                                      final String namespace,
+                                      final String name,
+                                      final String description) {
+        if (!type.hasNamespace() && namespace != null && !namespace.isEmpty()) {
+            throw new RuntimeException("The ConfigType " + type.toString() + " does not support namespaces.");
+        }
+
+        final ConfigGroup configGroup = new ConfigGroup();
+        configGroup.setDescription(description);
+        configGroup.setName(name);
+        configGroup.setType(type);
+        configGroup.setNamespace(namespace);
         configGroup.setEnabled(true);
         return configGroup;
     }

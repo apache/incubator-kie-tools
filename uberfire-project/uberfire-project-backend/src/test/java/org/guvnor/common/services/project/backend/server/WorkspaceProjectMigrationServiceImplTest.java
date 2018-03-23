@@ -135,6 +135,7 @@ public class WorkspaceProjectMigrationServiceImplTest {
 
         final Repository legacyRepository = mockLegacyRepository();
 
+        doReturn(new Space("space")).when(organizationalUnit).getSpace();
         final WorkspaceProject legacyWorkspaceProject = new WorkspaceProject(organizationalUnit,
                                                                              legacyRepository,
                                                                              legacyMasterBranch,

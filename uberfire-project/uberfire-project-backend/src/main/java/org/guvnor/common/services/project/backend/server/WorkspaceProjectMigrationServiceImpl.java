@@ -124,10 +124,12 @@ public class WorkspaceProjectMigrationServiceImpl
         }
 
         private void createRepository(final Module module) {
+            final RepositoryEnvironmentConfigurations configurations = new RepositoryEnvironmentConfigurations();
+            configurations.setSpace(legacyWorkspaceProject.getOrganizationalUnit().getSpace().getName());
             final Repository repository = repositoryService.createRepository(legacyWorkspaceProject.getOrganizationalUnit(),
                                                                              GitRepository.SCHEME.toString(),
                                                                              repositoryCopier.makeSafeRepositoryName(module.getModuleName()),
-                                                                             new RepositoryEnvironmentConfigurations());
+                                                                             configurations);
 
             newRepositories.put(module.getModuleName(),
                                 repository);

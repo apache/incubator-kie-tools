@@ -16,6 +16,7 @@
 package org.guvnor.structure.backend.config;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -45,11 +46,9 @@ import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.WatchContext;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.DirectoryStream;
@@ -61,47 +60,45 @@ import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchKey;
 import org.uberfire.java.nio.file.WatchService;
 
-import static org.uberfire.backend.server.util.Paths.convert;
-
 @ApplicationScoped
 public class ConfigurationServiceImpl implements ConfigurationService,
                                                  AsyncWatchServiceCallback {
 
-    private static final Logger logger = LoggerFactory.getLogger(ConfigurationServiceImpl.class);
+    protected static final String MONITOR_DISABLED = "org.uberfire.sys.repo.monitor.disabled";
 
-    private static final String MONITOR_DISABLED = "org.uberfire.sys.repo.monitor.disabled";
-    //    private static final String MONITOR_CHECK_INTERVAL = "org.uberfire.sys.repo.monitor.interval";
     // mainly for windows as *NIX is based on POSIX but escape always to keep it consistent
-    private static final String INVALID_FILENAME_CHARS = "[\\,/,:,*,?,\",<,>,|]";
+    protected static final String INVALID_FILENAME_CHARS = "[\\,/,:,*,?,\",<,>,|]";
 
-    private org.guvnor.structure.repositories.Repository systemRepository;
+    protected org.guvnor.structure.repositories.Repository systemRepository;
 
-    private ConfigGroupMarshaller marshaller;
+    protected ConfigGroupMarshaller marshaller;
 
-    private User identity;
+    protected User identity;
 
     //Cache of ConfigGroups to avoid reloading them from file
-    private final Map<ConfigType, List<ConfigGroup>> configuration = new ConcurrentHashMap<ConfigType, List<ConfigGroup>>();
-    private AtomicLong localLastModifiedValue = new AtomicLong(-1);
+    protected final Map<ConfigType, List<ConfigGroup>> configGroupsByTypeWithoutNamespace = new ConcurrentHashMap<>();
+    protected final Map<ConfigType, Map<String, List<ConfigGroup>>> configGroupsByTypeWithNamespace = new ConcurrentHashMap<>();
 
-    private IOService ioService;
+    protected AtomicLong localLastModifiedValue = new AtomicLong(-1);
+
+    protected IOService ioService;
 
     // monitor capabilities
-    private Event<SystemRepositoryChangedEvent> repoChangedEvent;
-    private Event<SystemRepositoryChangedEvent> orgUnitChangedEvent;
-    private Event<SystemRepositoryChangedEvent> changedEvent;
+    protected Event<SystemRepositoryChangedEvent> repoChangedEvent;
+    protected Event<SystemRepositoryChangedEvent> spaceChangedEvent;
+    protected Event<SystemRepositoryChangedEvent> changedEvent;
 
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    protected final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-    private final Set<Future<?>> jobs = new CopyOnWriteArraySet<Future<?>>();
+    protected final Set<Future<?>> jobs = new CopyOnWriteArraySet<>();
 
-    private ConfigServiceWatchServiceExecutor executor = null;
+    protected ConfigServiceWatchServiceExecutor executor = null;
 
-    private CheckConfigurationUpdates configUpdates = null;
+    protected CheckConfigurationUpdates configUpdates = null;
 
-    private WatchService watchService = null;
+    protected WatchService watchService = null;
 
-    private FileSystem fs;
+    protected FileSystem fs;
 
     public ConfigurationServiceImpl() {
     }
@@ -112,7 +109,7 @@ public class ConfigurationServiceImpl implements ConfigurationService,
                                     final User identity,
                                     final @Named("configIO") IOService ioService,
                                     final @Repository Event<SystemRepositoryChangedEvent> repoChangedEvent,
-                                    final @OrgUnit Event<SystemRepositoryChangedEvent> orgUnitChangedEvent,
+                                    final @OrgUnit Event<SystemRepositoryChangedEvent> spaceChangedEvent,
                                     final Event<SystemRepositoryChangedEvent> changedEvent,
                                     final @Named("systemFS") FileSystem fs) {
         this.systemRepository = systemRepository;
@@ -120,7 +117,7 @@ public class ConfigurationServiceImpl implements ConfigurationService,
         this.identity = identity;
         this.ioService = ioService;
         this.repoChangedEvent = repoChangedEvent;
-        this.orgUnitChangedEvent = orgUnitChangedEvent;
+        this.spaceChangedEvent = spaceChangedEvent;
         this.changedEvent = changedEvent;
         this.fs = fs;
     }
@@ -203,23 +200,99 @@ public class ConfigurationServiceImpl implements ConfigurationService,
 
     @Override
     public List<ConfigGroup> getConfiguration(final ConfigType type) {
-        if (configuration.containsKey(type)) {
-            return configuration.get(type);
+        if (type.hasNamespace()) {
+            throw new RuntimeException("The ConfigType " + type.toString() + " requires a namespace.");
         }
-        final List<ConfigGroup> configGroups = new ArrayList<ConfigGroup>();
-        final DirectoryStream<Path> foundConfigs = ioService.newDirectoryStream(ioService.get(systemRepository.getUri()),
-                                                                                new DirectoryStream.Filter<Path>() {
-                                                                                    @Override
-                                                                                    public boolean accept(final Path entry) throws IOException {
-                                                                                        if (!Files.isDirectory(entry) &&
-                                                                                                !entry.getFileName().toString().startsWith(".") &&
-                                                                                                entry.getFileName().toString().endsWith(type.getExt())) {
-                                                                                            return true;
-                                                                                        }
-                                                                                        return false;
-                                                                                    }
-                                                                                }
-        );
+
+        if (configGroupsByTypeWithoutNamespace.containsKey(type)) {
+            return configGroupsByTypeWithoutNamespace.get(type);
+        }
+
+        final Path typeDir = ioService.get(systemRepository.getUri()).resolve(type.getDir());
+
+        final List<ConfigGroup> configGroups = getConfiguration(typeDir,
+                                                                type);
+        if (configGroups != null) {
+            configGroupsByTypeWithoutNamespace.put(type,
+                                                   configGroups);
+        } else {
+            return Collections.emptyList();
+        }
+
+        return configGroups;
+    }
+
+    @Override
+    public List<ConfigGroup> getConfiguration(final ConfigType type,
+                                              final String namespace) {
+        if (!type.hasNamespace() && namespace != null && !namespace.isEmpty()) {
+            throw new RuntimeException("The ConfigType " + type.toString() + " does not support namespaces.");
+        }
+
+        if (configGroupsByTypeWithNamespace.containsKey(type)) {
+            final Map<String, List<ConfigGroup>> configGroupsByNamespace = configGroupsByTypeWithNamespace.get(type);
+            if (configGroupsByNamespace.containsKey(namespace)) {
+                return configGroupsByNamespace.get(namespace);
+            }
+        }
+
+        final Path typeDir = ioService.get(systemRepository.getUri()).resolve(type.getDir());
+        final Path namespaceDir = typeDir.resolve(namespace);
+
+        final List<ConfigGroup> configGroups = getConfiguration(namespaceDir,
+                                                                type);
+        if (configGroups != null) {
+            if (!configGroupsByTypeWithNamespace.containsKey(type)) {
+                configGroupsByTypeWithNamespace.put(type,
+                                                    new ConcurrentHashMap<>());
+            }
+
+            final Map<String, List<ConfigGroup>> configGroupsByNamespace = configGroupsByTypeWithNamespace.get(type);
+            configGroupsByNamespace.put(namespace,
+                                        configGroups);
+        } else {
+            return Collections.emptyList();
+        }
+
+        return configGroups;
+    }
+
+    @Override
+    public Map<String, List<ConfigGroup>> getConfigurationByNamespace(final ConfigType type) {
+        if (!type.hasNamespace()) {
+            throw new RuntimeException("The ConfigType " + type.toString() + " does not support namespaces.");
+        }
+
+        final Path typeDir = ioService.get(systemRepository.getUri()).resolve(type.getDir());
+        if (!ioService.exists(typeDir)) {
+            return Collections.emptyMap();
+        }
+
+        final DirectoryStream<Path> foundNamespaces = getDirectoryStreamForDirectories(typeDir);
+
+        // Force cache update for all namespaces in that type
+        final Iterator<Path> it = foundNamespaces.iterator();
+        while (it.hasNext()) {
+            final String namespace = Paths.convert(it.next()).getFileName();
+            getConfiguration(type,
+                             namespace);
+        }
+
+        // Return the updated cache
+        return configGroupsByTypeWithNamespace.get(type);
+    }
+
+    private List<ConfigGroup> getConfiguration(final Path dir,
+                                               final ConfigType type) {
+        final List<ConfigGroup> configGroups = new ArrayList<>();
+
+        if (!ioService.exists(dir)) {
+            return configGroups;
+        }
+
+        final DirectoryStream<Path> foundConfigs = getDirectoryStreamForFilesWithParticularExtension(dir,
+                                                                                                     type.getExt());
+
         //Only load and cache if a file was found!
         final Iterator<Path> it = foundConfigs.iterator();
         if (it.hasNext()) {
@@ -228,55 +301,100 @@ public class ConfigurationServiceImpl implements ConfigurationService,
                 final ConfigGroup configGroup = marshaller.unmarshall(content);
                 configGroups.add(configGroup);
             }
-            configuration.put(type,
-                              configGroups);
+
+            return configGroups;
         }
-        return configGroups;
+
+        return null;
+    }
+
+    private DirectoryStream<Path> getDirectoryStreamForFilesWithParticularExtension(final Path dir,
+                                                                                    final String extension) {
+        return ioService.newDirectoryStream(dir,
+                                            entry -> {
+                                                if (!Files.isDirectory(entry) &&
+                                                        !entry.getFileName().toString().startsWith(".") &&
+                                                        entry.getFileName().toString().endsWith(extension)) {
+                                                    return true;
+                                                }
+                                                return false;
+                                            });
+    }
+
+    private DirectoryStream<Path> getDirectoryStreamForDirectories(final Path dir) {
+        return ioService.newDirectoryStream(dir,
+                                            entry -> Files.isDirectory(entry));
     }
 
     @Override
     public boolean addConfiguration(final ConfigGroup configGroup) {
-        String filename = configGroup.getName().replaceAll(INVALID_FILENAME_CHARS,
-                                                           "_");
+        final Path filePath = resolveConfigGroupPath(configGroup);
+        final String commitMessage = "Created config " + filePath.getFileName();
 
-        final Path filePath = ioService.get(systemRepository.getUri()).resolve(filename + configGroup.getType().getExt());
-        // avoid duplicated writes to not cause cyclic cluster sync
-        if (ioService.exists(filePath)) {
-            return true;
-        }
-
-        final CommentedOption commentedOption = new CommentedOption(getIdentityName(),
-                                                                    "Created config " + filePath.getFileName());
-        try {
-            ioService.startBatch(filePath.getFileSystem());
-            ioService.write(filePath,
-                            marshaller.marshall(configGroup),
-                            commentedOption);
-
-            updateLastModified();
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        } finally {
-            ioService.endBatch();
-        }
-        //Invalidate cache if a new item has been created; otherwise cached value is stale
-        configuration.remove(configGroup.getType());
-
-        return true;
+        return saveConfiguration(configGroup,
+                                 filePath,
+                                 commitMessage,
+                                 true);
     }
 
     @Override
     public boolean updateConfiguration(ConfigGroup configGroup) {
-        String filename = configGroup.getName().replaceAll(INVALID_FILENAME_CHARS,
-                                                           "_");
+        final Path filePath = resolveConfigGroupPath(configGroup);
+        final String commitMessage = "Updated config " + filePath.getFileName();
 
-        final Path filePath = ioService.get(systemRepository.getUri()).resolve(filename + configGroup.getType().getExt());
+        return saveConfiguration(configGroup,
+                                 filePath,
+                                 commitMessage,
+                                 false);
+    }
+
+    private Path resolveConfigGroupPath(final ConfigGroup configGroup) {
+        final ConfigType type = configGroup.getType();
+        final String namespace = configGroup.getNamespace();
+
+        if (type.hasNamespace() && (namespace == null || namespace.isEmpty())) {
+            throw new RuntimeException("The ConfigType " + type.toString() + " requires a namespace.");
+        } else if (!type.hasNamespace() && namespace != null && !namespace.isEmpty()) {
+            throw new RuntimeException("The ConfigType " + type.toString() + " does not support namespaces.");
+        }
+
+        final String filename = configGroup.getName().replaceAll(INVALID_FILENAME_CHARS,
+                                                                 "_");
+
+        Path path = ioService.get(systemRepository.getUri()).resolve(type.getDir());
+        if (type.hasNamespace()) {
+            path = path.resolve(namespace);
+        }
+
+        return path.resolve(filename + type.getExt());
+    }
+
+    private void invalidateCacheAfterUpdatingConfigGroup(final ConfigGroup configGroup) {
+        final ConfigType type = configGroup.getType();
+
+        if (!type.hasNamespace()) {
+            configGroupsByTypeWithoutNamespace.remove(type);
+        } else {
+            if (configGroupsByTypeWithNamespace.containsKey(type)) {
+                configGroupsByTypeWithNamespace.get(type).remove(configGroup.getNamespace());
+            }
+        }
+    }
+
+    private boolean saveConfiguration(final ConfigGroup configGroup,
+                                      final Path path,
+                                      final String commitMessage,
+                                      final boolean isNew) {
+        // avoid duplicated writes to not cause cyclic cluster sync
+        if (isNew && ioService.exists(path)) {
+            return true;
+        }
 
         final CommentedOption commentedOption = new CommentedOption(getIdentityName(),
-                                                                    "Updated config " + filePath.getFileName());
+                                                                    commitMessage);
         try {
-            ioService.startBatch(filePath.getFileSystem());
-            ioService.write(filePath,
+            ioService.startBatch(path.getFileSystem());
+            ioService.write(path,
                             marshaller.marshall(configGroup),
                             commentedOption);
 
@@ -286,25 +404,20 @@ public class ConfigurationServiceImpl implements ConfigurationService,
         } finally {
             ioService.endBatch();
         }
-        //Invalidate cache if a new item has been created; otherwise cached value is stale
-        configuration.remove(configGroup.getType());
+
+        invalidateCacheAfterUpdatingConfigGroup(configGroup);
 
         return true;
     }
 
     @Override
     public boolean removeConfiguration(final ConfigGroup configGroup) {
+        final Path filePath = resolveConfigGroupPath(configGroup);
 
-        //Invalidate cache if an item has been removed; otherwise cached value is stale
-        configuration.remove(configGroup.getType());
-        String filename = configGroup.getName().replaceAll(INVALID_FILENAME_CHARS,
-                                                           "_");
-        final Path filePath = ioService.get(systemRepository.getUri()).resolve(filename + configGroup.getType().getExt());
-
-        // avoid duplicated writes to not cause cyclic cluster sync
         if (!ioService.exists(filePath)) {
             return true;
         }
+
         boolean result;
         try {
             ioService.startBatch(filePath.getFileSystem());
@@ -317,6 +430,8 @@ public class ConfigurationServiceImpl implements ConfigurationService,
         } finally {
             ioService.endBatch();
         }
+
+        invalidateCacheAfterUpdatingConfigGroup(configGroup);
 
         return result;
     }
@@ -344,15 +459,17 @@ public class ConfigurationServiceImpl implements ConfigurationService,
                         new Date().toString().getBytes(),
                         commentedOption);
 
-        // update the last value to avoid to be retriggered byt the monitor
+        // update the last value to avoid to be re-triggered by the monitor
         localLastModifiedValue.set(getLastModified());
     }
 
     @Override
     public void callback(long value) {
         localLastModifiedValue.set(value);
+
         // invalidate cached values as system repo has changed
-        configuration.clear();
+        configGroupsByTypeWithoutNamespace.clear();
+        configGroupsByTypeWithNamespace.clear();
     }
 
     private class CheckConfigurationUpdates implements AsyncConfigWatchService {
@@ -442,7 +559,7 @@ public class ConfigurationServiceImpl implements ConfigurationService,
                 ((ConfigServiceWatchServiceExecutorImpl) _executor).setConfig(systemRepository,
                                                                               ioService,
                                                                               repoChangedEvent,
-                                                                              orgUnitChangedEvent,
+                                                                              spaceChangedEvent,
                                                                               changedEvent);
             }
             executor = _executor;

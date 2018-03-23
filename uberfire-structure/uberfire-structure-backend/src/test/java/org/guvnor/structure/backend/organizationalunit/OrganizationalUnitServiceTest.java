@@ -207,7 +207,7 @@ public class OrganizationalUnitServiceTest {
 
         ConfigGroup configGroup = new ConfigGroup();
         configGroup.setName("A");
-        when(configurationService.getConfiguration(ConfigType.ORGANIZATIONAL_UNIT)).thenReturn(Collections.singletonList(configGroup));
+        when(configurationService.getConfiguration(ConfigType.SPACE)).thenReturn(Collections.singletonList(configGroup));
 
         organizationalUnitService.removeOrganizationalUnit("A");
 

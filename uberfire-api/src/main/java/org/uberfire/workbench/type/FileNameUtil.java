@@ -28,8 +28,33 @@ public final class FileNameUtil {
         if (type == null) {
             return fileName;
         }
-        final int index = indexOfExtension(type,
-                                           fileName);
+        return removeExtension(path,
+                               type.getSuffix());
+    }
+
+    public static String removeExtension(final Path path,
+                                         final String extension) {
+        if (path == null) {
+            return null;
+        }
+
+        final String fileName = path.getFileName();
+        return removeExtension(fileName,
+                               extension);
+    }
+
+    public static String removeExtension(final String fileName,
+                                         final String extension) {
+        if (fileName == null) {
+            return null;
+        }
+
+        if (extension == null || extension.isEmpty()) {
+            return fileName;
+        }
+
+        final int index = indexOfExtension(fileName,
+                                           extension);
         if (index == -1) {
             return fileName;
         } else {
@@ -38,12 +63,12 @@ public final class FileNameUtil {
         }
     }
 
-    private static int indexOfExtension(final ResourceTypeDefinition type,
-                                        final String fileName) {
+    private static int indexOfExtension(final String fileName,
+                                        final String extension) {
         if (fileName == null) {
             return -1;
         }
-        final String suffix = (type.getSuffix() == null ? "" : type.getSuffix());
+        final String suffix = (extension == null ? "" : extension);
         final int extensionPos = fileName.lastIndexOf("." + suffix);
         return extensionPos;
     }

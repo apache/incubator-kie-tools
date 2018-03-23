@@ -24,6 +24,7 @@ public class ConfigGroup {
     private String name;
     private String description;
     private ConfigType type;
+    private String namespace;
     private boolean enabled;
 
     private Map<String, ConfigItem> items = new ConcurrentHashMap<String, ConfigItem>();
@@ -50,6 +51,14 @@ public class ConfigGroup {
 
     public void setType(final ConfigType type) {
         this.type = type;
+    }
+
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
     }
 
     public Collection<ConfigItem> getItems() {

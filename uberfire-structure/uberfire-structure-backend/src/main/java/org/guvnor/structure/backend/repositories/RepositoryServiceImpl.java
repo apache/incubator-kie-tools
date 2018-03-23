@@ -15,10 +15,6 @@
 
 package org.guvnor.structure.backend.repositories;
 
-import static org.guvnor.structure.repositories.EnvironmentParameters.SCHEME;
-import static org.guvnor.structure.server.config.ConfigType.REPOSITORY;
-import static org.uberfire.backend.server.util.Paths.convert;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,7 +22,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -66,6 +61,10 @@ import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.spaces.Space;
 import org.uberfire.spaces.SpacesAPI;
 
+import static org.guvnor.structure.repositories.EnvironmentParameters.SCHEME;
+import static org.guvnor.structure.server.config.ConfigType.REPOSITORY;
+import static org.uberfire.backend.server.util.Paths.convert;
+
 @Service
 @ApplicationScoped
 public class RepositoryServiceImpl implements RepositoryService {
@@ -74,45 +73,63 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     private static final int HISTORY_PAGE_SIZE = 10;
 
-    @Inject
-    @Named("ioStrategy")
     private IOService ioService;
 
-    @Inject
     private GitMetadataStore metadataStore;
 
-    @Inject
     private ConfigurationService configurationService;
 
-    @Inject
     private OrganizationalUnitService organizationalUnitService;
 
-    @Inject
     private ConfigurationFactory configurationFactory;
 
-    @Inject
     private RepositoryFactory repositoryFactory;
 
-    @Inject
     private Event<NewRepositoryEvent> event;
 
-    @Inject
     private Event<RepositoryRemovedEvent> repositoryRemovedEvent;
 
-    @Inject
     private BackwardCompatibleUtil backward;
 
-    @Inject
     private ConfiguredRepositories configuredRepositories;
 
-    @Inject
     private AuthorizationManager authorizationManager;
 
-    @Inject
     private SessionInfo sessionInfo;
 
-    @Inject
     private SpacesAPI spacesAPI;
+
+    public RepositoryServiceImpl() {
+    }
+
+    @Inject
+    public RepositoryServiceImpl(@Named("ioStrategy") final IOService ioService,
+                                 final GitMetadataStore metadataStore,
+                                 final ConfigurationService configurationService,
+                                 final OrganizationalUnitService organizationalUnitService,
+                                 final ConfigurationFactory configurationFactory,
+                                 final RepositoryFactory repositoryFactory,
+                                 final Event<NewRepositoryEvent> event,
+                                 final Event<RepositoryRemovedEvent> repositoryRemovedEvent,
+                                 final BackwardCompatibleUtil backward,
+                                 final ConfiguredRepositories configuredRepositories,
+                                 final AuthorizationManager authorizationManager,
+                                 final SessionInfo sessionInfo,
+                                 final SpacesAPI spacesAPI) {
+        this.ioService = ioService;
+        this.metadataStore = metadataStore;
+        this.configurationService = configurationService;
+        this.organizationalUnitService = organizationalUnitService;
+        this.configurationFactory = configurationFactory;
+        this.repositoryFactory = repositoryFactory;
+        this.event = event;
+        this.repositoryRemovedEvent = repositoryRemovedEvent;
+        this.backward = backward;
+        this.configuredRepositories = configuredRepositories;
+        this.authorizationManager = authorizationManager;
+        this.sessionInfo = sessionInfo;
+        this.spacesAPI = spacesAPI;
+    }
 
     @Override
     public RepositoryInfo getRepositoryInfo(final Space space,
@@ -301,8 +318,10 @@ public class RepositoryServiceImpl implements RepositoryService {
         return alias + suffix;
     }
 
-    protected ConfigGroup findRepositoryConfig(final String alias) {
-        final Collection<ConfigGroup> groups = configurationService.getConfiguration(ConfigType.REPOSITORY);
+    protected ConfigGroup findRepositoryConfig(final String alias,
+                                               final String spaceName) {
+        final Collection<ConfigGroup> groups = configurationService.getConfiguration(ConfigType.REPOSITORY,
+                                                                                     spaceName);
         if (groups != null) {
             for (ConfigGroup groupConfig : groups) {
                 if (groupConfig.getName().equals(alias)) {
@@ -316,7 +335,8 @@ public class RepositoryServiceImpl implements RepositoryService {
     @Override
     public void removeRepository(final Space space,
                                  final String alias) {
-        final ConfigGroup thisRepositoryConfig = findRepositoryConfig(alias);
+        final ConfigGroup thisRepositoryConfig = findRepositoryConfig(alias,
+                                                                      space.getName());
 
         try {
             configurationService.startBatch();
@@ -351,7 +371,8 @@ public class RepositoryServiceImpl implements RepositoryService {
             for (final String alias : aliases) {
                 doRemoveRepository(orgUnit,
                                    alias,
-                                   findRepositoryConfig(alias),
+                                   findRepositoryConfig(alias,
+                                                        space.getName()),
                                    repo -> {
                                    });
             }
@@ -395,7 +416,8 @@ public class RepositoryServiceImpl implements RepositoryService {
     @Override
     public void addGroup(final Repository repository,
                          final String group) {
-        final ConfigGroup thisRepositoryConfig = findRepositoryConfig(repository.getAlias());
+        final ConfigGroup thisRepositoryConfig = findRepositoryConfig(repository.getAlias(),
+                                                                      repository.getSpace().getName());
 
         if (thisRepositoryConfig != null) {
             final ConfigItem<List> groups = backward.compat(thisRepositoryConfig).getConfigItem("security:groups");
@@ -414,7 +436,8 @@ public class RepositoryServiceImpl implements RepositoryService {
     @Override
     public void removeGroup(Repository repository,
                             String group) {
-        final ConfigGroup thisRepositoryConfig = findRepositoryConfig(repository.getAlias());
+        final ConfigGroup thisRepositoryConfig = findRepositoryConfig(repository.getAlias(),
+                                                                      repository.getSpace().getName());
 
         if (thisRepositoryConfig != null) {
             final ConfigItem<List> groups = backward.compat(thisRepositoryConfig).getConfigItem("security:groups");
@@ -452,6 +475,7 @@ public class RepositoryServiceImpl implements RepositoryService {
         try {
             configurationService.startBatch();
             final ConfigGroup repositoryConfig = configurationFactory.newConfigGroup(REPOSITORY,
+                                                                                     space.getName(),
                                                                                      alias,
                                                                                      "");
             repositoryConfig.addConfigItem(configurationFactory.newConfigItem("security:groups",

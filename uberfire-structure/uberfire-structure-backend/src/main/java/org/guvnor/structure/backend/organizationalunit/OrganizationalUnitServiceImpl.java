@@ -84,6 +84,9 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
     private RepositoryService repositoryService;
 
+    public OrganizationalUnitServiceImpl() {
+    }
+
     @Inject
     public OrganizationalUnitServiceImpl(final ConfigurationService configurationService,
                                          final ConfigurationFactory configurationFactory,
@@ -115,7 +118,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
     @PostConstruct
     public void loadOrganizationalUnits() {
-        Collection<ConfigGroup> groups = configurationService.getConfiguration(ConfigType.ORGANIZATIONAL_UNIT);
+        Collection<ConfigGroup> groups = configurationService.getConfiguration(ConfigType.SPACE);
         if (groups != null) {
             for (ConfigGroup groupConfig : groups) {
                 // Make sure existing Organizational Units are correctly initialized with a default group id.
@@ -203,7 +206,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
         try {
             configurationService.startBatch();
-            final ConfigGroup groupConfig = configurationFactory.newConfigGroup(ConfigType.ORGANIZATIONAL_UNIT,
+            final ConfigGroup groupConfig = configurationFactory.newConfigGroup(ConfigType.SPACE,
                                                                                 name,
                                                                                 "");
             groupConfig.addConfigItem(configurationFactory.newConfigItem("owner",
@@ -411,7 +414,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
     }
 
     protected ConfigGroup findGroupConfig(final String name) {
-        final Collection<ConfigGroup> groups = configurationService.getConfiguration(ConfigType.ORGANIZATIONAL_UNIT);
+        final Collection<ConfigGroup> groups = configurationService.getConfiguration(ConfigType.SPACE);
         if (groups != null) {
             for (ConfigGroup groupConfig : groups) {
                 if (groupConfig.getName().equals(name)) {

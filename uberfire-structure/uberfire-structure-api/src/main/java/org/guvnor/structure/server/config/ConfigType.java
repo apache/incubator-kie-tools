@@ -17,21 +17,37 @@ package org.guvnor.structure.server.config;
 
 public enum ConfigType {
 
-    GLOBAL(".global"),
-    SPACE(".space"),
-    REPOSITORY(".repository"),
-    ORGANIZATIONAL_UNIT(".organizationalunit"),
-    PROJECT(".project"),
-    EDITOR(".editor"),
-    DEPLOYMENT(".deployment");
+    GLOBAL(".global", "global", false),
+    @Deprecated ORGANIZATIONAL_UNIT(".organizationalunit", "organizationalunits", false), // Required for migration purposes.
+    SPACE(".space", "spaces", false),
+    REPOSITORY(".repository", "repositories", true),
+    PROJECT(".project", "projects", false),
+    EDITOR(".editor", "editors", false),
+    DEPLOYMENT(".deployment", "deployments", false);
 
     private String ext;
+
+    private String dir;
+
+    private boolean hasNamespace;
+
+    ConfigType(final String ext,
+               final String dir,
+               final boolean hasNamespace) {
+        this.ext = ext;
+        this.dir = dir;
+        this.hasNamespace = hasNamespace;
+    }
 
     public String getExt() {
         return this.ext;
     }
 
-    private ConfigType(String ext) {
-        this.ext = ext;
+    public String getDir() {
+        return dir;
+    }
+
+    public boolean hasNamespace() {
+        return hasNamespace;
     }
 }

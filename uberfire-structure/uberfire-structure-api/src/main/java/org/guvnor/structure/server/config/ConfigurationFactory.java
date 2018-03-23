@@ -23,6 +23,11 @@ public interface ConfigurationFactory {
                                String name,
                                String description);
 
+    ConfigGroup newConfigGroup(ConfigType type,
+                               String namespace,
+                               String name,
+                               String description);
+
     ConfigItem<String> newConfigItem(String name,
                                      String valueType);
 

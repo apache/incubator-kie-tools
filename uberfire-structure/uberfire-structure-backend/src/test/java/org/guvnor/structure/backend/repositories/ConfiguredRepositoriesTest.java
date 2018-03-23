@@ -18,6 +18,8 @@ package org.guvnor.structure.backend.repositories;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
@@ -35,11 +37,8 @@ import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.spaces.Space;
 
 import static org.guvnor.structure.server.config.ConfigType.REPOSITORY;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ConfiguredRepositoriesTest {
@@ -62,37 +61,42 @@ public class ConfiguredRepositoriesTest {
 
     @Before
     public void setUp() throws Exception {
+        final Map<String, List<ConfigGroup>> repoConfigsBySpace = new HashMap<>();
 
-        final ArrayList<ConfigGroup> configGroups = new ArrayList<>();
+        final List<ConfigGroup> space1RepoConfigs = new ArrayList<>();
+        space1RepoConfigs.add(addRepository(SPACE1,
+                                            REPO1S1,
+                                            "master"));
+        space1RepoConfigs.add(addRepository(SPACE1,
+                                            REPO2S1,
+                                            "master",
+                                            "dev",
+                                            "release"));
+        repoConfigsBySpace.put(SPACE1.getName(),
+                               space1RepoConfigs);
 
-        configGroups.add(addRepository(SPACE1,
-                                       REPO1S1,
-                                       "master"));
-        configGroups.add(addRepository(SPACE1,
-                                       REPO2S1,
-                                       "master",
-                                       "dev",
-                                       "release"));
+        final List<ConfigGroup> space2RepoConfigs = new ArrayList<>();
+        space2RepoConfigs.add(addRepository(SPACE2,
+                                            REPO1S2,
+                                            "master"));
+        space2RepoConfigs.add(addRepository(SPACE2,
+                                            REPO2S2,
+                                            "master",
+                                            "dev",
+                                            "release"));
+        space2RepoConfigs.add(addRepository(SPACE2,
+                                            REPO2S3,
+                                            "master",
+                                            "dev",
+                                            "release"));
+        repoConfigsBySpace.put(SPACE2.getName(),
+                               space2RepoConfigs);
 
-        configGroups.add(addRepository(SPACE2,
-                                       REPO1S2,
-                                       "master"));
-        configGroups.add(addRepository(SPACE2,
-                                       REPO2S2,
-                                       "master",
-                                       "dev",
-                                       "release"));
-        configGroups.add(addRepository(SPACE2,
-                                       REPO2S3,
-                                       "master",
-                                       "dev",
-                                       "release"));
+        when(configurationService.getConfigurationByNamespace(REPOSITORY)).thenReturn(repoConfigsBySpace);
 
-        when(configurationService.getConfiguration(REPOSITORY)).thenReturn(configGroups);
-
-        configuredRepositories = new ConfiguredRepositories(configurationService,
-                                                            repositoryFactory,
-                                                            SystemRepository.SYSTEM_REPO);
+        configuredRepositories = new ConfiguredRepositoriesImpl(configurationService,
+                                                                repositoryFactory,
+                                                                SystemRepository.SYSTEM_REPO);
 
         configuredRepositories.reloadRepositories();
     }
