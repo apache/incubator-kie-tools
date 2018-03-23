@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
+import org.guvnor.structure.repositories.Repository;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.kie.workbench.common.forms.migration.legacy.model.Form;
@@ -40,7 +41,9 @@ import org.kie.workbench.common.migration.cli.MigrationTool;
 import org.kie.workbench.common.migration.cli.SystemAccess;
 import org.kie.workbench.common.migration.cli.ToolConfig;
 import org.kie.workbench.common.project.ProjectMigrationTool;
+import org.kie.workbench.common.project.cli.MigrationSetup;
 import org.uberfire.backend.server.util.Paths;
+import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.FileVisitResult;
 import org.uberfire.java.nio.file.Files;
@@ -65,12 +68,12 @@ public class FormsMigrationTool implements MigrationTool {
 
     @Override
     public String getDescription() {
-        return "Moves old jBPM Form Modeler forms into the new Forms format. Requires " + ProjectMigrationTool.NAME.toUpperCase() + " to be already executed";
+        return "Moves old jBPM Form Modeler forms into the new Forms format.";
     }
 
     @Override
     public Integer getPriority() {
-        return 1;
+        return 2;
     }
 
     @Override
@@ -82,35 +85,38 @@ public class FormsMigrationTool implements MigrationTool {
 
         system.out().println("\nStarting Forms migration");
 
-        if (validateTarget()) {
+        if (projectMigrationWasExecuted()) {
             try {
-                configureProperties();
-
-                pipeline = new MigrationPipeline();
-
-                if(!config.isBatch()) {
-
-                    system.out().println(pipeline.getAllInfo());
-
-                    Collection<String> validResponses = Arrays.asList("yes", "no");
-
-                    String response;
-                    do {
-                        response = system.console().readLine("\nDo you want to continue? [yes/no]: ").toLowerCase();
-                    } while (!validResponses.contains(response));
-
-                    if("no".equals(response)) {
-                        return;
-                    }
-                }
-
+                MigrationSetup.configureProperties(system,
+                                                   niogitDir);
                 weldContainer = new Weld().initialize();
-
                 cdiWrapper = weldContainer.instance().select(MigrationServicesCDIWrapper.class).get();
 
-                WorkspaceProjectService service = weldContainer.instance().select(WorkspaceProjectService.class).get();
+                if (systemMigrationWasExecuted()) {
 
-                service.getAllWorkspaceProjects().forEach(this::processWorkspaceProject);
+                    pipeline = new MigrationPipeline();
+
+                    if (!config.isBatch()) {
+
+                        system.out().println(pipeline.getAllInfo());
+
+                        Collection<String> validResponses = Arrays.asList("yes",
+                                                                          "no");
+
+                        String response;
+                        do {
+                            response = system.console().readLine("\nDo you want to continue? [yes/no]: ").toLowerCase();
+                        } while (!validResponses.contains(response));
+
+                        if ("no".equals(response)) {
+                            return;
+                        }
+                    }
+
+                    WorkspaceProjectService service = weldContainer.instance().select(WorkspaceProjectService.class).get();
+
+                    service.getAllWorkspaceProjects().forEach(this::processWorkspaceProject);
+                }
             } finally {
                 if (weldContainer != null) {
                     try {
@@ -170,10 +176,20 @@ public class FormsMigrationTool implements MigrationTool {
         pipeline.migrate(context);
     }
 
-    private boolean validateTarget() {
-
+    private boolean projectMigrationWasExecuted() {
         if (!config.getTarget().resolve("system").resolve(MigrationConstants.SYSTEM_GIT).toFile().exists()) {
-            system.err().println(String.format("The target path (%s) looks like it doesn't contain an updated filesystem, %s must be excuted before migrating forms", niogitDir, ProjectMigrationTool.NAME.toUpperCase()));
+            system.err().println(String.format("The PROJECT STRUCTURE MIGRATION must be ran before this one."));
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean systemMigrationWasExecuted() {
+        final IOService systemIoService = cdiWrapper.getSystemIoService();
+        final Repository systemRepository = cdiWrapper.getSystemRepository();
+        if (!systemIoService.exists(systemIoService.get(systemRepository.getUri()).resolve("spaces"))) {
+            system.err().println(String.format("The SYSTEM CONFIGURATION DIRECTORY STRUCTURE MIGRATION must be ran before this one."));
             return false;
         }
 

@@ -25,21 +25,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.guvnor.common.services.project.project.WorkspaceProjectMigrationService;
-import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.ConfigType;
-import org.guvnor.structure.server.config.ConfigurationService;
 import org.kie.workbench.common.migration.cli.SystemAccess;
+import org.kie.workbench.common.project.config.MigrationConfigurationServiceImpl;
+import org.kie.workbench.common.project.config.MigrationRepositoryServiceImpl;
+import org.kie.workbench.common.project.config.MigrationWorkspaceProjectMigrationServiceImpl;
+import org.kie.workbench.common.project.config.MigrationWorkspaceProjectServiceImpl;
 
 /**
  * <p>
@@ -50,16 +49,16 @@ import org.kie.workbench.common.migration.cli.SystemAccess;
 public class InternalMigrationService {
 
     @Inject
-    private WorkspaceProjectService projectService;
+    private MigrationWorkspaceProjectServiceImpl projectService;
 
     @Inject
-    private ConfigurationService configService;
+    private MigrationConfigurationServiceImpl configService;
 
     @Inject
-    private WorkspaceProjectMigrationService projectMigrationService;
+    private MigrationWorkspaceProjectMigrationServiceImpl projectMigrationService;
 
     @Inject
-    private RepositoryService repoService;
+    private MigrationRepositoryServiceImpl repoService;
 
     @Inject
     private SystemAccess system;

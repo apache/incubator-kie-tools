@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
+import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.forms.services.backend.serialization.FormDefinitionSerializer;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -35,13 +36,21 @@ public class MigrationServicesCDIWrapper {
 
     private CommentedOptionFactory commentedOptionFactory;
 
+    private Repository systemRepository;
+
+    private IOService systemIoService;
+
     @Inject
-    public MigrationServicesCDIWrapper(@Named("ioStrategy") IOService ioService,
-                                       FormDefinitionSerializer formDefinitionSerializer,
-                                       CommentedOptionFactory commentedOptionFactory) {
+    public MigrationServicesCDIWrapper(final @Named("ioStrategy") IOService ioService,
+                                       final FormDefinitionSerializer formDefinitionSerializer,
+                                       final CommentedOptionFactory commentedOptionFactory,
+                                       final @Named("system") Repository systemRepository,
+                                       final @Named("configIO") IOService systemIoService) {
         this.ioService = ioService;
         this.formDefinitionSerializer = formDefinitionSerializer;
         this.commentedOptionFactory = commentedOptionFactory;
+        this.systemRepository = systemRepository;
+        this.systemIoService = systemIoService;
     }
 
     public IOService getIOService() {
@@ -54,5 +63,13 @@ public class MigrationServicesCDIWrapper {
 
     public void write(Path path, String content, String comment) {
         ioService.write(Paths.convert(path), content, commentedOptionFactory.makeCommentedOption(comment));
+    }
+
+    public Repository getSystemRepository() {
+        return systemRepository;
+    }
+
+    public IOService getSystemIoService() {
+        return systemIoService;
     }
 }

@@ -168,6 +168,7 @@ public class ExamplesServiceImplTest {
         when(user.getIdentifier()).thenReturn("user");
         when(configurationFactory.newConfigGroup(any(ConfigType.class),
                                                  anyString(),
+                                                 anyString(),
                                                  anyString())).thenReturn(mock(ConfigGroup.class));
     }
 
@@ -484,6 +485,7 @@ public class ExamplesServiceImplTest {
 
         ConfigGroup configGroup = new ConfigGroup();
         when(configurationFactory.newConfigGroup(any(ConfigType.class),
+                                                 anyString(),
                                                  anyString(),
                                                  anyString())).thenReturn(configGroup);
         doCallRealMethod().when(configurationFactory).newConfigItem(anyString(),

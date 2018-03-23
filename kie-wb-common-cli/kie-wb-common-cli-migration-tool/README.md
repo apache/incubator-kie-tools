@@ -8,7 +8,9 @@ Included Migration Tools
 
 * **Project Migration Tool:** migrates KIE projects from the old project layout (7.4.x and previous) to the new project-oriented structure.
 
-* **Forms Migration Tool:** migrates old jBPM Form Modeler forms into the new Forms format. Requires **Project Migration Tool** to be executed first
+* **System Configuration Migration Tool:** migrates the previously used directory structure into the new one. Requires **Project Migration Tool** to be executed first.
+
+* **Forms Migration Tool:** migrates old jBPM Form Modeler forms into the new Forms format. Requires **Project Migration Tool** and **System Configuration Migration Tool:** to be executed first.
 
 Maven Build
 -----------
@@ -59,13 +61,13 @@ Windows -
 
 The tool will show a Wizard to choose between:
 
-* Run one of the available migration tools (Project or Forms Migration)
+* Run one of the available migration tools (Project, System Configuration or Forms Migration)
 * Run all the available migration tools sequentially.
 * Exit the migration tool. 
 
 The tool will do the migration in-place: when the tool finishes a successful run, the `$NIOGIT` directory will be ready for use with the new workbench.
 
-*IMPORTANT*: Because the tool migrates in-place, it's important to make backups before use.
+*VERY IMPORTANT*: Because the tool migrates in-place, it's important to make backups before use.
 
 Batch Mode
 ----------

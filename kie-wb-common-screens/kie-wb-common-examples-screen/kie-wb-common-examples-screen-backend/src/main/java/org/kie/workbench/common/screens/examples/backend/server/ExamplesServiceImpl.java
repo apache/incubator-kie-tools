@@ -281,6 +281,7 @@ public class ExamplesServiceImpl implements ExamplesService {
             }};
 
             final ConfigGroup repositoryConfig = configurationFactory.newConfigGroup(REPOSITORY,
+                                                                                     "system",
                                                                                      alias,
                                                                                      "");
             for (final Map.Entry<String, Object> entry : env.entrySet()) {

@@ -1,19 +1,17 @@
 package org.kie.workbench.common.project;
 
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Optional;
 
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.kie.workbench.common.migration.cli.MigrationConstants;
+import org.kie.workbench.common.migration.cli.MigrationTool;
 import org.kie.workbench.common.migration.cli.SystemAccess;
 import org.kie.workbench.common.migration.cli.ToolConfig;
-import org.kie.workbench.common.migration.cli.MigrationTool;
 import org.kie.workbench.common.project.cli.ExternalMigrationService;
 import org.kie.workbench.common.project.cli.InternalMigrationService;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration;
+import org.kie.workbench.common.project.cli.MigrationSetup;
+import org.kie.workbench.common.project.cli.PromptService;
 
 public class ProjectMigrationTool implements MigrationTool {
 
@@ -22,7 +20,6 @@ public class ProjectMigrationTool implements MigrationTool {
     private SystemAccess system;
     private ToolConfig config;
     private Path niogitDir;
-    private ExternalMigrationService externalService;
 
     @Override
     public String getTitle() {
@@ -44,17 +41,19 @@ public class ProjectMigrationTool implements MigrationTool {
 
         this.config = config;
         this.system = system;
-
         this.niogitDir = config.getTarget();
+
+        final PromptService promptService = new PromptService(system,
+                                                              config);
 
         system.out().println("Starting project structure migration");
 
-        if(validateTarget() && maybePromptForBackup()) {
-            this.externalService = new ExternalMigrationService(system);
-
+        if (validateTarget() && promptService.maybePromptForBackup()) {
+            final ExternalMigrationService externalService = new ExternalMigrationService(system);
             externalService.moveSystemRepos(niogitDir);
 
-            configureProperties();
+            MigrationSetup.configureProperties(system,
+                                               niogitDir);
             migrate();
         }
     }
@@ -67,22 +66,6 @@ public class ProjectMigrationTool implements MigrationTool {
         }
 
         return true;
-    }
-
-    private boolean maybePromptForBackup() {
-        return config.isBatch() || promptForBackup();
-    }
-
-    private boolean promptForBackup() {
-        SystemAccess.Console console = system.console();
-        console.format("WARNING: Please ensure that you have made backups of the directory [%s] before proceeding.\n", niogitDir);
-        Collection<String> validResponses = Arrays.asList("yes", "no");
-        String response;
-        do {
-            response = console.readLine("Do you wish to continue? [yes/no]: ").toLowerCase();
-        } while (!validResponses.contains(response));
-
-        return "yes".equals(response);
     }
 
     private void migrate() {
@@ -107,13 +90,6 @@ public class ProjectMigrationTool implements MigrationTool {
         } catch (Throwable ignore) {
             // Suppress exceptions from bad shutdown
         }
-    }
-
-    private void configureProperties() {
-        system.setProperty(JGitFileSystemProviderConfiguration.GIT_NIO_DIR, niogitDir.getParent().toString());
-        system.setProperty(JGitFileSystemProviderConfiguration.GIT_NIO_DIR_NAME, niogitDir.getFileName().toString());
-        system.setProperty(JGitFileSystemProviderConfiguration.GIT_DAEMON_ENABLED, "false");
-        system.setProperty(JGitFileSystemProviderConfiguration.GIT_SSH_ENABLED, "false");
     }
 
     private static InternalMigrationService loadInternalService(WeldContainer container) {

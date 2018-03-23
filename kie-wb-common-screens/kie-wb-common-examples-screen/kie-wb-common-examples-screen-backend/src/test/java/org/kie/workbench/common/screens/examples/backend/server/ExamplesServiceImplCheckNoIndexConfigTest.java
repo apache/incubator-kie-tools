@@ -115,9 +115,10 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
     @Test
     public void testCheckRepositoryConfig_NoIndex() {
         final ConfigGroup configGroup = new ConfigGroup();
-        when(configurationFactory.newConfigGroup(any(ConfigType.class),
-                                                 anyString(),
-                                                 anyString())).thenReturn(configGroup);
+        doReturn(configGroup).when(configurationFactory).newConfigGroup(any(ConfigType.class),
+                                                                        anyString(),
+                                                                        anyString(),
+                                                                        anyString());
 
         service.getProjects(new ExampleRepository("https://github.com/guvnorngtestuser1/guvnorng-playground.git"));
 

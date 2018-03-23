@@ -1,0 +1,16 @@
+<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/beans_1_2.xsd"
+       bean-discovery-mode="all">
+  <alternatives>
+    <class>org.kie.workbench.common.project.config.MigrationConfigurationFactoryImpl</class>
+    <class>org.kie.workbench.common.project.config.MigrationConfigurationServiceImpl</class>
+    <class>org.kie.workbench.common.project.config.MigrationConfiguredRepositories</class>
+    <class>org.kie.workbench.common.project.config.MigrationOrganizationalUnitFactoryImpl</class>
+    <class>org.kie.workbench.common.project.config.MigrationOrganizationalUnitServiceImpl</class>
+    <class>org.kie.workbench.common.project.config.MigrationRepositoryCopierImpl</class>
+    <class>org.kie.workbench.common.project.config.MigrationRepositoryServiceImpl</class>
+    <class>org.kie.workbench.common.project.config.MigrationWorkspaceProjectMigrationServiceImpl</class>
+    <class>org.kie.workbench.common.project.config.MigrationWorkspaceProjectServiceImpl</class>
+  </alternatives>
+</beans>
