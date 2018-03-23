@@ -80,6 +80,9 @@ public class DateRangePickerOptions {
     public native void setDrops(String drops);
 
     @JsProperty
+    public native void setParentEl(String parentEl);
+
+    @JsProperty
     protected native void setLocale(Object locale);
 
     @JsProperty(name = "locale.format")
