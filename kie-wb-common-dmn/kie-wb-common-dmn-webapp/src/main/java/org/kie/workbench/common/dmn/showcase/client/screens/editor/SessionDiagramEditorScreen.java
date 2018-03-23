@@ -429,8 +429,9 @@ public class SessionDiagramEditorScreen {
                                                                                 presenter,
                                                                                 sessionManager,
                                                                                 sessionCommandManager,
-                                                                                event.getHasName(),
-                                                                                event.getHasExpression()));
+                                                                                event.getNodeUUID(),
+                                                                                event.getHasExpression(),
+                                                                                event.getHasName()));
         }
     }
 

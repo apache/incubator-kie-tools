@@ -27,22 +27,29 @@ import org.kie.workbench.common.stunner.core.client.session.event.AbstractSessio
 @NonPortable
 public class EditExpressionEvent extends AbstractSessionEvent {
 
-    private Optional<HasName> hasName;
-    private HasExpression hasExpression;
+    private final String nodeUUID;
+    private final HasExpression hasExpression;
+    private final Optional<HasName> hasName;
 
     public EditExpressionEvent(final ClientSession session,
-                               final Optional<HasName> hasName,
-                               final HasExpression hasExpression) {
+                               final String nodeUUID,
+                               final HasExpression hasExpression,
+                               final Optional<HasName> hasName) {
         super(session);
-        this.hasName = hasName;
+        this.nodeUUID = nodeUUID;
         this.hasExpression = hasExpression;
+        this.hasName = hasName;
     }
 
-    public Optional<HasName> getHasName() {
-        return hasName;
+    public String getNodeUUID() {
+        return nodeUUID;
     }
 
     public HasExpression getHasExpression() {
         return hasExpression;
+    }
+
+    public Optional<HasName> getHasName() {
+        return hasName;
     }
 }

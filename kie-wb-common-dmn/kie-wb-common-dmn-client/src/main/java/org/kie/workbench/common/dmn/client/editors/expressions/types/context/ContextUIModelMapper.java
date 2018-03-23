@@ -105,6 +105,7 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                         final Optional<BaseExpressionGrid> editor = ed.getEditor(new GridCellTuple(rowIndex,
                                                                                                    columnIndex,
                                                                                                    gridWidget),
+                                                                                 Optional.empty(),
                                                                                  ce,
                                                                                  expression,
                                                                                  Optional.ofNullable(ce.getVariable()),

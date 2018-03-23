@@ -23,13 +23,16 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseBounds;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
@@ -50,6 +53,9 @@ public abstract class BaseExpressionGridTest {
     protected DMNGridLayer gridLayer;
 
     @Mock
+    protected DefinitionUtils definitionUtils;
+
+    @Mock
     protected Viewport viewport;
 
     @Mock
@@ -59,7 +65,13 @@ public abstract class BaseExpressionGridTest {
     protected SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
+    protected CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+
+    @Mock
     protected CellEditorControlsView.Presenter cellEditorControls;
+
+    @Mock
+    protected ListSelectorView.Presenter listSelector;
 
     @Mock
     protected TranslationService translationService;

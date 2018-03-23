@@ -30,23 +30,38 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.DeleteHeaderValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPropertyCommand;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
 import org.uberfire.mvp.Command;
@@ -54,7 +69,10 @@ import org.uberfire.mvp.Command;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils.assertCommands;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -66,11 +84,23 @@ public class LiteralExpressionGridTest {
 
     private static final String EXPRESSION_TEXT = "expression";
 
+    private static final String NODE_UUID = "uuid";
+
+    private GridCellTuple tupleWithoutValue;
+
+    private GridCellValueTuple tupleWithValue;
+
     @Mock
     private DMNGridPanel gridPanel;
 
     @Mock
     private DMNGridLayer gridLayer;
+
+    @Mock
+    private GridWidget gridWidget;
+
+    @Mock
+    private DefinitionUtils definitionUtils;
 
     @Mock
     private SessionManager sessionManager;
@@ -79,19 +109,28 @@ public class LiteralExpressionGridTest {
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
+    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+
+    @Mock
     private ClientSession session;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
 
     @Mock
+    private Index index;
+
+    @Mock
+    private Element element;
+
+    @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
 
     @Mock
-    private TranslationService translationService;
+    private ListSelectorView.Presenter listSelector;
 
     @Mock
-    private ListSelectorView.Presenter listSelector;
+    private TranslationService translationService;
 
     @Mock
     private GridCellTuple parent;
@@ -109,13 +148,18 @@ public class LiteralExpressionGridTest {
 
     @Before
     public void setup() {
+        tupleWithoutValue = new GridCellTuple(0, 0, gridWidget);
+        tupleWithValue = new GridCellValueTuple<>(0, 0, gridWidget, new BaseGridCellValue<>("value"));
+
         definition = new LiteralExpressionEditorDefinition(gridPanel,
                                                            gridLayer,
+                                                           definitionUtils,
                                                            sessionManager,
                                                            sessionCommandManager,
+                                                           canvasCommandFactory,
                                                            cellEditorControls,
-                                                           translationService,
-                                                           listSelector);
+                                                           listSelector,
+                                                           translationService);
 
         final Decision decision = new Decision();
         decision.setName(new Name("name"));
@@ -126,10 +170,20 @@ public class LiteralExpressionGridTest {
         doReturn(session).when(sessionManager).getCurrentSession();
         doReturn(canvasHandler).when(session).getCanvasHandler();
         doReturn(mock(Bounds.class)).when(gridLayer).getVisibleBounds();
+
+        when(gridWidget.getModel()).thenReturn(new BaseGridData(false));
+        when(canvasHandler.getGraphIndex()).thenReturn(index);
+        when(index.get(anyString())).thenReturn(element);
+        when(element.getContent()).thenReturn(mock(Definition.class));
+        when(definitionUtils.getNameIdentifier(any())).thenReturn("name");
+        when(canvasCommandFactory.updatePropertyValue(any(Element.class),
+                                                      anyString(),
+                                                      any())).thenReturn(mock(UpdateElementPropertyCommand.class));
     }
 
     private void setupGrid(final int nesting) {
         this.grid = spy((LiteralExpressionGrid) definition.getEditor(parent,
+                                                                     nesting == 0 ? Optional.of(NODE_UUID) : Optional.empty(),
                                                                      hasExpression,
                                                                      expression,
                                                                      hasName,
@@ -262,4 +316,45 @@ public class LiteralExpressionGridTest {
 
         verify(command).execute();
     }
+
+    @Test
+    public void testBodyFactoryWhenNested() {
+        setupGrid(1);
+
+        final TextAreaSingletonDOMElementFactory factory = grid.getBodyTextAreaFactory();
+        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteCellValueCommand.class);
+        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetCellValueCommand.class);
+    }
+
+    @Test
+    public void testBodyFactoryWhenNotNested() {
+        setupGrid(0);
+
+        final TextAreaSingletonDOMElementFactory factory = grid.getBodyTextAreaFactory();
+        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteCellValueCommand.class);
+        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetCellValueCommand.class);
+    }
+
+    @Test
+    public void testHeaderFactoryWhenNested() {
+        setupGrid(1);
+
+        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderHasNameTextBoxFactory();
+        assertCommands(factory.getHasNoValueCommand().apply(tupleWithoutValue),
+                       DeleteHeaderValueCommand.class);
+        assertCommands(factory.getHasValueCommand().apply(tupleWithValue),
+                       SetHeaderValueCommand.class);
+    }
+
+    @Test
+    public void testHeaderFactoryWhenNotNested() {
+        setupGrid(0);
+
+        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderHasNameTextBoxFactory();
+        assertCommands(factory.getHasNoValueCommand().apply(tupleWithoutValue),
+                       DeleteHeaderValueCommand.class, UpdateElementPropertyCommand.class);
+        assertCommands(factory.getHasValueCommand().apply(tupleWithValue),
+                       SetHeaderValueCommand.class, UpdateElementPropertyCommand.class);
+    }
 }
+

@@ -45,30 +45,34 @@ import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMapper> implements HasListSelectorControl {
 
-    private final ListSelectorView.Presenter listSelector;
-
-    private final TextAreaSingletonDOMElementFactory factory;
-    private final TextBoxSingletonDOMElementFactory headerFactory;
+    private final TextAreaSingletonDOMElementFactory factory = getBodyTextAreaFactory();
+    private final TextBoxSingletonDOMElementFactory headerFactory = getHeaderTextBoxFactory();
 
     public RelationGrid(final GridCellTuple parent,
+                        final Optional<String> nodeUUID,
                         final HasExpression hasExpression,
                         final Optional<Relation> expression,
                         final Optional<HasName> hasName,
                         final DMNGridPanel gridPanel,
                         final DMNGridLayer gridLayer,
+                        final DefinitionUtils definitionUtils,
                         final SessionManager sessionManager,
                         final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                        final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                         final CellEditorControlsView.Presenter cellEditorControls,
-                        final TranslationService translationService,
                         final ListSelectorView.Presenter listSelector,
+                        final TranslationService translationService,
                         final int nesting) {
         super(parent,
+              nodeUUID,
               hasExpression,
               expression,
               hasName,
@@ -80,27 +84,14 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
                                    expression,
                                    gridLayer::batch),
               new RelationGridRenderer(),
+              definitionUtils,
               sessionManager,
               sessionCommandManager,
+              canvasCommandFactory,
               cellEditorControls,
+              listSelector,
               translationService,
               nesting);
-        this.listSelector = listSelector;
-
-        this.factory = new TextAreaSingletonDOMElementFactory(gridPanel,
-                                                              gridLayer,
-                                                              this,
-                                                              sessionManager,
-                                                              sessionCommandManager,
-                                                              newCellHasNoValueCommand(),
-                                                              newCellHasValueCommand());
-        this.headerFactory = new TextBoxSingletonDOMElementFactory(gridPanel,
-                                                                   gridLayer,
-                                                                   this,
-                                                                   sessionManager,
-                                                                   sessionCommandManager,
-                                                                   newHeaderHasNoValueCommand(),
-                                                                   newHeaderHasValueCommand());
 
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
 

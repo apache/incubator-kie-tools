@@ -48,8 +48,10 @@ import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -75,11 +77,16 @@ import static org.mockito.Mockito.when;
 @RunWith(LienzoMockitoTestRunner.class)
 public class UndefinedExpressionGridTest {
 
+    private static final String NODE_UUID = "uuid";
+
     @Mock
     private DMNGridPanel gridPanel;
 
     @Mock
     private DMNGridLayer gridLayer;
+
+    @Mock
+    private DefinitionUtils definitionUtils;
 
     @Mock
     private SessionManager sessionManager;
@@ -94,16 +101,19 @@ public class UndefinedExpressionGridTest {
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
-    private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
 
     @Mock
+    private ListSelectorView.Presenter listSelector;
+
+    @Mock
     private TranslationService translationService;
 
     @Mock
-    private ListSelectorView.Presenter listSelector;
+    private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
     @Mock
     private GridCellTuple parent;
@@ -141,12 +151,14 @@ public class UndefinedExpressionGridTest {
     public void setup() {
         definition = new UndefinedExpressionEditorDefinition(gridPanel,
                                                              gridLayer,
+                                                             definitionUtils,
                                                              sessionManager,
                                                              sessionCommandManager,
-                                                             expressionEditorDefinitionsSupplier,
+                                                             canvasCommandFactory,
                                                              cellEditorControls,
+                                                             listSelector,
                                                              translationService,
-                                                             listSelector);
+                                                             expressionEditorDefinitionsSupplier);
 
         expression = definition.getModelClass();
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
@@ -158,6 +170,7 @@ public class UndefinedExpressionGridTest {
         doReturn(LiteralExpression.class.getSimpleName()).when(literalExpressionEditorDefinition).getName();
         doReturn(Optional.of(literalExpression)).when(literalExpressionEditorDefinition).getModelClass();
         doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
+                                                                                                         any(Optional.class),
                                                                                                          any(HasExpression.class),
                                                                                                          any(Optional.class),
                                                                                                          any(Optional.class),
@@ -174,6 +187,7 @@ public class UndefinedExpressionGridTest {
 
     private void setupGrid(final int nesting) {
         this.grid = spy((UndefinedExpressionGrid) definition.getEditor(parent,
+                                                                       nesting == 0 ? Optional.of(NODE_UUID) : Optional.empty(),
                                                                        hasExpression,
                                                                        expression,
                                                                        hasName,
@@ -338,16 +352,28 @@ public class UndefinedExpressionGridTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testOnExpressionTypeChanged() {
-        setupGrid(0);
+    public void testOnExpressionTypeChangedWhenNested() {
+        assertOnExpressionTypeChanged(1);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testOnExpressionTypeChangedWhenNotNested() {
+        assertOnExpressionTypeChanged(0);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void assertOnExpressionTypeChanged(final int nesting) {
+        setupGrid(nesting);
 
         grid.onExpressionTypeChanged(ExpressionType.LITERAL_EXPRESSION);
 
         verify(literalExpressionEditorDefinition).getEditor(eq(parent),
+                                                            eq(nesting == 0 ? Optional.of(NODE_UUID) : Optional.empty()),
                                                             eq(hasExpression),
                                                             eq(Optional.of(literalExpression)),
                                                             eq(hasName),
-                                                            eq(0));
+                                                            eq(nesting));
 
         verify(sessionCommandManager).execute(eq(handler),
                                               setCellValueCommandArgumentCaptor.capture());

@@ -26,30 +26,43 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.List;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationColumnCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationRowCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationColumnCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationRowCommand;
+import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.DeleteHeaderValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueCommand;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNClientFullSession;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
@@ -87,6 +100,12 @@ public class RelationGridTest {
 
     private final static int DELETE_ROW = 6;
 
+    private static final String NODE_UUID = "uuid";
+
+    private GridCellTuple tupleWithoutValue;
+
+    private GridCellValueTuple tupleWithValue;
+
     @Mock
     private GridWidget parentGridWidget;
 
@@ -99,19 +118,17 @@ public class RelationGridTest {
     @Mock
     private HasExpression hasExpression;
 
-    private GridCellTuple parent;
-
-    private Relation relation = new Relation();
-
-    private Optional<Relation> expression = Optional.of(relation);
-
-    private Optional<HasName> hasName = Optional.empty();
-
     @Mock
     private DMNGridPanel gridPanel;
 
     @Mock
     private DMNGridLayer gridLayer;
+
+    @Mock
+    private GridWidget gridWidget;
+
+    @Mock
+    private DefinitionUtils definitionUtils;
 
     @Mock
     private SessionManager sessionManager;
@@ -120,19 +137,22 @@ public class RelationGridTest {
     private DMNClientFullSession dmnClientFullSession;
 
     @Mock
-    private AbstractCanvasHandler abstractCanvasHandler;
+    private AbstractCanvasHandler canvasHandler;
 
     @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
+    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+
+    @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
 
     @Mock
-    private TranslationService translationService;
+    private ListSelectorView.Presenter listSelector;
 
     @Mock
-    private ListSelectorView.Presenter listSelector;
+    private TranslationService translationService;
 
     @Captor
     private ArgumentCaptor<AddRelationColumnCommand> addColumnCommand;
@@ -146,40 +166,70 @@ public class RelationGridTest {
     @Captor
     private ArgumentCaptor<DeleteRelationRowCommand> deleteRowCommand;
 
-    private RelationGrid relationGrid;
+    private GridCellTuple parent;
+
+    private Relation relation = new Relation();
+
+    private Optional<Relation> expression = Optional.of(relation);
+
+    private Optional<HasName> hasName = Optional.empty();
+
+    private RelationEditorDefinition definition;
+
+    private RelationGrid grid;
 
     @Before
     public void setUp() throws Exception {
-        doReturn(abstractCanvasHandler).when(dmnClientFullSession).getCanvasHandler();
+        tupleWithoutValue = new GridCellTuple(0, 1, gridWidget);
+        tupleWithValue = new GridCellValueTuple<>(0, 1, gridWidget, new BaseGridCellValue<>("value"));
+
+        definition = new RelationEditorDefinition(gridPanel,
+                                                  gridLayer,
+                                                  definitionUtils,
+                                                  sessionManager,
+                                                  sessionCommandManager,
+                                                  canvasCommandFactory,
+                                                  cellEditorControls,
+                                                  listSelector,
+                                                  translationService);
+
+        final Decision decision = new Decision();
+        decision.setName(new Name("name"));
+        hasName = Optional.of(decision);
+        expression = definition.getModelClass();
+
+        doReturn(canvasHandler).when(dmnClientFullSession).getCanvasHandler();
         doReturn(dmnClientFullSession).when(sessionManager).getCurrentSession();
-        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
+        doReturn(parentGridData).when(parentGridWidget).getModel();
+        doReturn(Collections.singletonList(parentGridColumn)).when(parentGridData).getColumns();
+
         parent = spy(new GridCellTuple(0, 0, parentGridWidget));
+
+        when(gridWidget.getModel()).thenReturn(new BaseGridData(false));
+
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
     }
 
     private void setupGrid(final int nesting) {
-        relationGrid = spy(new RelationGrid(parent,
-                                            hasExpression,
-                                            expression,
-                                            hasName,
-                                            gridPanel,
-                                            gridLayer,
-                                            sessionManager,
-                                            sessionCommandManager,
-                                            cellEditorControls,
-                                            translationService,
-                                            listSelector,
-                                            nesting));
-        doReturn(parentGridData).when(parentGridWidget).getModel();
-        doReturn(Collections.singletonList(parentGridColumn)).when(parentGridData).getColumns();
+        this.grid = spy((RelationGrid) definition.getEditor(parent,
+                                                            nesting == 0 ? Optional.of(NODE_UUID) : Optional.empty(),
+                                                            hasExpression,
+                                                            expression,
+                                                            hasName,
+                                                            nesting).get());
     }
 
     @Test
     public void testInitialiseUiColumnsEmptyModel() throws Exception {
+        expression = Optional.of(new Relation());
+
         setupGrid(0);
 
-        assertEquals(0, relationGrid.getModel().getRowCount());
-        assertEquals(1, relationGrid.getModel().getColumns().size());
-        assertTrue(relationGrid.getModel().getColumns().get(0) instanceof RowNumberColumn);
+        assertEquals(0,
+                     grid.getModel().getRowCount());
+        assertEquals(1,
+                     grid.getModel().getColumns().size());
+        assertTrue(grid.getModel().getColumns().get(0) instanceof RowNumberColumn);
     }
 
     @Test
@@ -189,11 +239,15 @@ public class RelationGridTest {
             getName().setValue(columnHeader);
         }});
 
+        expression = Optional.of(relation);
+
         setupGrid(0);
 
-        assertEquals(2, relationGrid.getModel().getColumns().size());
-        assertTrue(relationGrid.getModel().getColumns().get(0) instanceof RowNumberColumn);
-        assertEquals(columnHeader, relationGrid.getModel().getColumns().get(1).getHeaderMetaData().get(0).getTitle());
+        assertEquals(2,
+                     grid.getModel().getColumns().size());
+        assertTrue(grid.getModel().getColumns().get(0) instanceof RowNumberColumn);
+        assertEquals(columnHeader,
+                     grid.getModel().getColumns().get(1).getHeaderMetaData().get(0).getTitle());
     }
 
     @Test
@@ -214,32 +268,54 @@ public class RelationGridTest {
             }});
         }});
 
+        expression = Optional.of(relation);
+
         setupGrid(0);
 
-        assertEquals(2, relationGrid.getModel().getRowCount());
-        assertEquals(firstRowValue, relationGrid.getModel().getRow(0).getCells().get(1).getValue().getValue());
-        assertEquals(secondRowValue, relationGrid.getModel().getRow(1).getCells().get(1).getValue().getValue());
+        assertEquals(2,
+                     grid.getModel().getRowCount());
+        assertEquals(firstRowValue,
+                     grid.getModel().getRow(0).getCells().get(1).getValue().getValue());
+        assertEquals(secondRowValue,
+                     grid.getModel().getRow(1).getCells().get(1).getValue().getValue());
+    }
+
+    @Test
+    public void testInitialSetupFromDefinition() {
+        setupGrid(0);
+
+        final GridData uiModel = grid.getModel();
+        assertThat(uiModel).isInstanceOf(RelationGridData.class);
+
+        assertThat(uiModel.getColumnCount()).isEqualTo(2);
+        assertThat(uiModel.getColumns().get(0)).isInstanceOf(RowNumberColumn.class);
+        assertThat(uiModel.getColumns().get(1)).isInstanceOf(RelationColumn.class);
+
+        assertThat(uiModel.getRowCount()).isEqualTo(1);
+
+        assertThat(uiModel.getCell(0, 0).getValue().getValue()).isEqualTo(1);
+        assertThat(uiModel.getCell(0, 1).getValue().getValue()).isEqualTo("");
     }
 
     @Test
     public void testHeaderVisibilityWhenNested() {
         setupGrid(1);
 
-        assertFalse(relationGrid.isHeaderHidden());
+        assertFalse(grid.isHeaderHidden());
     }
 
     @Test
     public void testHeaderVisibilityWhenNotNested() {
         setupGrid(0);
 
-        assertFalse(relationGrid.isHeaderHidden());
+        assertFalse(grid.isHeaderHidden());
     }
 
     @Test
     public void testGetItems() {
         setupGrid(0);
 
-        final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(0, 0);
+        final java.util.List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
 
         assertThat(items.size()).isEqualTo(7);
         assertListSelectorItem(items.get(INSERT_COLUMN_BEFORE),
@@ -272,7 +348,7 @@ public class RelationGridTest {
         final HasListSelectorControl.ListSelectorTextItem listSelectorItem = mock(HasListSelectorControl.ListSelectorTextItem.class);
         when(listSelectorItem.getCommand()).thenReturn(command);
 
-        relationGrid.onItemSelected(listSelectorItem);
+        grid.onItemSelected(listSelectorItem);
 
         verify(command).execute();
     }
@@ -281,26 +357,26 @@ public class RelationGridTest {
     public void testOnItemSelectedInsertColumnBefore() {
         setupGrid(0);
 
-        final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(0, 0);
+        final java.util.List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_COLUMN_BEFORE);
 
-        relationGrid.onItemSelected(ti);
+        grid.onItemSelected(ti);
 
         verify(cellEditorControls).hide();
-        verify(relationGrid).addColumn(eq(0));
+        verify(grid).addColumn(eq(0));
     }
 
     @Test
     public void testOnItemSelectedInsertColumnAfter() {
         setupGrid(0);
 
-        final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(0, 0);
+        final java.util.List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_COLUMN_AFTER);
 
-        relationGrid.onItemSelected(ti);
+        grid.onItemSelected(ti);
 
         verify(cellEditorControls).hide();
-        verify(relationGrid).addColumn(eq(1));
+        verify(grid).addColumn(eq(1));
     }
 
     @Test
@@ -320,13 +396,13 @@ public class RelationGridTest {
         setupGrid(0);
 
         //Cannot delete column 0 since it is the RowNumber column. The first Relation column is 1.
-        final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(0, RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
+        final java.util.List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(DELETE_COLUMN);
 
-        relationGrid.onItemSelected(ti);
+        grid.onItemSelected(ti);
 
         verify(cellEditorControls).hide();
-        verify(relationGrid).deleteColumn(eq(1));
+        verify(grid).deleteColumn(eq(1));
     }
 
     @Test
@@ -334,12 +410,11 @@ public class RelationGridTest {
         setupGrid(0);
 
         //Grid has one Relation column that cannot be deleted.
-        relationGrid.getModel().appendColumn(mock(RelationColumn.class));
         assertListSelectorItemEnabled(0, 0, DELETE_COLUMN, false);
         assertListSelectorItemEnabled(0, 1, DELETE_COLUMN, false);
 
         //Grid has two Relation columns. Columns 1 and 2 can be deleted.
-        relationGrid.getModel().appendColumn(mock(RelationColumn.class));
+        grid.getModel().appendColumn(mock(RelationColumn.class));
         assertListSelectorItemEnabled(0, 0, DELETE_COLUMN, false);
         assertListSelectorItemEnabled(0, 1, DELETE_COLUMN, true);
         assertListSelectorItemEnabled(0, 2, DELETE_COLUMN, true);
@@ -349,26 +424,26 @@ public class RelationGridTest {
     public void testOnItemSelectedInsertRowAbove() {
         setupGrid(0);
 
-        final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(0, 0);
+        final java.util.List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_ROW_ABOVE);
 
-        relationGrid.onItemSelected(ti);
+        grid.onItemSelected(ti);
 
         verify(cellEditorControls).hide();
-        verify(relationGrid).addRow(eq(0));
+        verify(grid).addRow(eq(0));
     }
 
     @Test
     public void testOnItemSelectedInsertRowBelow() {
         setupGrid(0);
 
-        final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(0, 0);
+        final java.util.List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_ROW_BELOW);
 
-        relationGrid.onItemSelected(ti);
+        grid.onItemSelected(ti);
 
         verify(cellEditorControls).hide();
-        verify(relationGrid).addRow(eq(1));
+        verify(grid).addRow(eq(1));
     }
 
     @Test
@@ -387,13 +462,13 @@ public class RelationGridTest {
         relation.getRow().add(new List());
         setupGrid(0);
 
-        final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(0, 0);
+        final java.util.List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(DELETE_ROW);
 
-        relationGrid.onItemSelected(ti);
+        grid.onItemSelected(ti);
 
         verify(cellEditorControls).hide();
-        verify(relationGrid).deleteRow(eq(0));
+        verify(grid).deleteRow(eq(0));
     }
 
     @Test
@@ -401,11 +476,10 @@ public class RelationGridTest {
         setupGrid(0);
 
         //Grid has one row that cannot be deleted.
-        relationGrid.getModel().appendRow(new BaseGridRow());
         assertListSelectorItemEnabled(0, 0, DELETE_ROW, false);
 
         //Grid has two rows. Rows 1 and 2 can be deleted.
-        relationGrid.getModel().appendRow(new BaseGridRow());
+        grid.getModel().appendRow(new BaseGridRow());
         assertListSelectorItemEnabled(0, 0, DELETE_ROW, true);
         assertListSelectorItemEnabled(1, 0, DELETE_ROW, true);
     }
@@ -414,7 +488,7 @@ public class RelationGridTest {
                                                final int uiColumnIndex,
                                                final int listItemIndex,
                                                final boolean enabled) {
-        final java.util.List<HasListSelectorControl.ListSelectorItem> items = relationGrid.getItems(uiRowIndex, uiColumnIndex);
+        final java.util.List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(uiRowIndex, uiColumnIndex);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(listItemIndex);
         assertThat(ti.isEnabled()).isEqualTo(enabled);
     }
@@ -423,13 +497,13 @@ public class RelationGridTest {
     public void testAddColumn() throws Exception {
         setupGrid(0);
 
-        relationGrid.addColumn(0);
+        grid.addColumn(0);
 
-        verify(sessionCommandManager).execute(eq(abstractCanvasHandler), addColumnCommand.capture());
+        verify(sessionCommandManager).execute(eq(canvasHandler), addColumnCommand.capture());
 
-        addColumnCommand.getValue().execute(abstractCanvasHandler);
-        verify(parent).proposeContainingColumnWidth(relationGrid.getWidth() + relationGrid.getPadding() * 2);
-        verify(parentGridColumn).setWidth(relationGrid.getWidth() + relationGrid.getPadding() * 2);
+        addColumnCommand.getValue().execute(canvasHandler);
+        verify(parent).proposeContainingColumnWidth(grid.getWidth() + grid.getPadding() * 2);
+        verify(parentGridColumn).setWidth(grid.getWidth() + grid.getPadding() * 2);
         verify(gridLayer).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
@@ -441,13 +515,13 @@ public class RelationGridTest {
         setupGrid(0);
 
         //Cannot delete column 0 since it is the RowNumber column. The first Relation column is 1.
-        relationGrid.deleteColumn(RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
+        grid.deleteColumn(RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
 
-        verify(sessionCommandManager).execute(eq(abstractCanvasHandler), deleteColumnCommand.capture());
+        verify(sessionCommandManager).execute(eq(canvasHandler), deleteColumnCommand.capture());
 
-        deleteColumnCommand.getValue().execute(abstractCanvasHandler);
-        verify(parent).proposeContainingColumnWidth(relationGrid.getWidth() + relationGrid.getPadding() * 2);
-        verify(parentGridColumn).setWidth(relationGrid.getWidth() + relationGrid.getPadding() * 2);
+        deleteColumnCommand.getValue().execute(canvasHandler);
+        verify(parent).proposeContainingColumnWidth(grid.getWidth() + grid.getPadding() * 2);
+        verify(parentGridColumn).setWidth(grid.getWidth() + grid.getPadding() * 2);
         verify(gridLayer).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
@@ -457,11 +531,11 @@ public class RelationGridTest {
     public void testAddRow() throws Exception {
         setupGrid(0);
 
-        relationGrid.addRow(0);
+        grid.addRow(0);
 
-        verify(sessionCommandManager).execute(eq(abstractCanvasHandler), addRowCommand.capture());
+        verify(sessionCommandManager).execute(eq(canvasHandler), addRowCommand.capture());
 
-        addRowCommand.getValue().execute(abstractCanvasHandler);
+        addRowCommand.getValue().execute(canvasHandler);
         verify(gridLayer).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
@@ -472,13 +546,49 @@ public class RelationGridTest {
         relation.getRow().add(new List());
         setupGrid(0);
 
-        relationGrid.deleteRow(0);
+        grid.deleteRow(0);
 
-        verify(sessionCommandManager).execute(eq(abstractCanvasHandler), deleteRowCommand.capture());
+        verify(sessionCommandManager).execute(eq(canvasHandler), deleteRowCommand.capture());
 
-        deleteRowCommand.getValue().execute(abstractCanvasHandler);
+        deleteRowCommand.getValue().execute(canvasHandler);
         verify(gridLayer).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
+    }
+
+    @Test
+    public void testBodyFactoryWhenNested() {
+        setupGrid(1);
+
+        final TextAreaSingletonDOMElementFactory factory = grid.getBodyTextAreaFactory();
+        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteCellValueCommand.class);
+        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetCellValueCommand.class);
+    }
+
+    @Test
+    public void testBodyFactoryWhenNotNested() {
+        setupGrid(0);
+
+        final TextAreaSingletonDOMElementFactory factory = grid.getBodyTextAreaFactory();
+        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteCellValueCommand.class);
+        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetCellValueCommand.class);
+    }
+
+    @Test
+    public void testHeaderFactoryWhenNested() {
+        setupGrid(1);
+
+        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderTextBoxFactory();
+        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteHeaderValueCommand.class);
+        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetHeaderValueCommand.class);
+    }
+
+    @Test
+    public void testHeaderFactoryWhenNotNested() {
+        setupGrid(0);
+
+        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderTextBoxFactory();
+        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteHeaderValueCommand.class);
+        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetHeaderValueCommand.class);
     }
 }

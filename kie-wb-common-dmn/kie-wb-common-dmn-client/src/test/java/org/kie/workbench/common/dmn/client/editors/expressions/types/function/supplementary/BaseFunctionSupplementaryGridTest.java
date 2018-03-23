@@ -40,7 +40,9 @@ import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
@@ -61,22 +63,28 @@ public abstract class BaseFunctionSupplementaryGridTest<D extends ExpressionEdit
     protected DMNGridLayer gridLayer;
 
     @Mock
+    protected DefinitionUtils definitionUtils;
+
+    @Mock
     protected SessionManager sessionManager;
 
     @Mock
     protected SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
-    protected Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+    protected CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     @Mock
     protected CellEditorControlsView.Presenter cellEditorControls;
 
     @Mock
+    protected ListSelectorView.Presenter listSelector;
+
+    @Mock
     protected TranslationService translationService;
 
     @Mock
-    protected ListSelectorView.Presenter listSelector;
+    protected Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
     @Mock
     private GridCellTuple parent;
@@ -113,6 +121,7 @@ public abstract class BaseFunctionSupplementaryGridTest<D extends ExpressionEdit
         doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
         doReturn(Optional.of(literalExpression)).when(literalExpressionEditorDefinition).getModelClass();
         doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
+                                                                                                         any(Optional.class),
                                                                                                          any(HasExpression.class),
                                                                                                          any(Optional.class),
                                                                                                          any(Optional.class),
@@ -121,6 +130,7 @@ public abstract class BaseFunctionSupplementaryGridTest<D extends ExpressionEdit
 
     private void setupGrid(final int nesting) {
         this.grid = (FunctionSupplementaryGrid) definition.getEditor(parent,
+                                                                     Optional.empty(),
                                                                      hasExpression,
                                                                      expression,
                                                                      hasName,

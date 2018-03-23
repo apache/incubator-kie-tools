@@ -19,19 +19,25 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 public abstract class BaseEditorDefinition<T extends Expression> implements ExpressionEditorDefinition<T> {
 
     protected DMNGridPanel gridPanel;
     protected DMNGridLayer gridLayer;
+    protected DefinitionUtils definitionUtils;
     protected SessionManager sessionManager;
     protected SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+    protected CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     protected CellEditorControlsView.Presenter cellEditorControls;
+    protected ListSelectorView.Presenter listSelector;
     protected TranslationService translationService;
 
     public BaseEditorDefinition() {
@@ -40,15 +46,21 @@ public abstract class BaseEditorDefinition<T extends Expression> implements Expr
 
     public BaseEditorDefinition(final DMNGridPanel gridPanel,
                                 final DMNGridLayer gridLayer,
+                                final DefinitionUtils definitionUtils,
                                 final SessionManager sessionManager,
                                 final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                 final CellEditorControlsView.Presenter cellEditorControls,
+                                final ListSelectorView.Presenter listSelector,
                                 final TranslationService translationService) {
         this.gridPanel = gridPanel;
         this.gridLayer = gridLayer;
+        this.definitionUtils = definitionUtils;
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
+        this.canvasCommandFactory = canvasCommandFactory;
         this.cellEditorControls = cellEditorControls;
+        this.listSelector = listSelector;
         this.translationService = translationService;
     }
 }

@@ -123,6 +123,8 @@ public class DMNEditBusinessKnowledgeModelToolboxActionTest {
                times(1)).fire(eventCaptor.capture());
 
         final EditExpressionEvent editExprEvent = eventCaptor.getValue();
+        assertEquals(E_UUID,
+                     editExprEvent.getNodeUUID());
         assertEquals(bkmFunction,
                      editExprEvent.getHasExpression());
         assertEquals(bkm,

@@ -52,7 +52,9 @@ import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
@@ -62,22 +64,25 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
     private static final String EXPRESSION_COLUMN_GROUP = "InvocationGrid$ExpressionColumn1";
 
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
-    private final ListSelectorView.Presenter listSelector;
 
     public InvocationGrid(final GridCellTuple parent,
+                          final Optional<String> nodeUUID,
                           final HasExpression hasExpression,
                           final Optional<Invocation> expression,
                           final Optional<HasName> hasName,
                           final DMNGridPanel gridPanel,
                           final DMNGridLayer gridLayer,
+                          final DefinitionUtils definitionUtils,
                           final SessionManager sessionManager,
                           final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                          final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
+                          final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                           final CellEditorControlsView.Presenter cellEditorControls,
-                          final TranslationService translationService,
                           final ListSelectorView.Presenter listSelector,
-                          final int nesting) {
+                          final TranslationService translationService,
+                          final int nesting,
+                          final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
         super(parent,
+              nodeUUID,
               hasExpression,
               expression,
               hasName,
@@ -89,13 +94,15 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
                                      expression,
                                      gridLayer::batch),
               new InvocationGridRenderer(nesting > 0),
+              definitionUtils,
               sessionManager,
               sessionCommandManager,
+              canvasCommandFactory,
               cellEditorControls,
+              listSelector,
               translationService,
               nesting);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
-        this.listSelector = listSelector;
 
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
 
@@ -120,21 +127,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
 
     @Override
     protected void initialiseUiColumns() {
-        final TextBoxSingletonDOMElementFactory factory = new TextBoxSingletonDOMElementFactory(gridPanel,
-                                                                                                gridLayer,
-                                                                                                this,
-                                                                                                sessionManager,
-                                                                                                sessionCommandManager,
-                                                                                                newCellHasNoValueCommand(),
-                                                                                                newCellHasValueCommand());
-        final TextBoxSingletonDOMElementFactory headerFactory = new TextBoxSingletonDOMElementFactory(gridPanel,
-                                                                                                      gridLayer,
-                                                                                                      this,
-                                                                                                      sessionManager,
-                                                                                                      sessionCommandManager,
-                                                                                                      newHeaderHasNoValueCommand(),
-                                                                                                      newHeaderHasValueCommand());
-
+        final TextBoxSingletonDOMElementFactory headerFactory = getHeaderHasNameTextBoxFactory();
         final InvocationColumnExpressionHeaderMetaData expressionHeaderMetaData = new InvocationColumnExpressionHeaderMetaData(this::getExpressionText,
                                                                                                                                this::setExpressionText,
                                                                                                                                headerFactory);
@@ -142,7 +135,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
                                                                                                 (s) -> hasName.orElse(HasName.NOP).getName().setValue(s),
                                                                                                 headerFactory),
                                                                    expressionHeaderMetaData),
-                                                     factory,
+                                                     getBodyTextBoxFactory(),
                                                      this);
         final ExpressionEditorColumn expressionColumn = new ExpressionEditorColumn(gridLayer,
                                                                                    Arrays.asList(new BaseHeaderMetaData("",

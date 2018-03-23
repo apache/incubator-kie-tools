@@ -46,8 +46,10 @@ import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.Session;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @ApplicationScoped
 public class DecisionTableEditorDefinition extends BaseEditorDefinition<DecisionTable> {
@@ -62,7 +64,6 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
 
     static final String RULE_DESCRIPTION = "A rule";
 
-    private ListSelectorView.Presenter listSelector;
     private HitPolicyEditorView.Presenter hitPolicyEditor;
 
     public DecisionTableEditorDefinition() {
@@ -72,19 +73,23 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
     @Inject
     public DecisionTableEditorDefinition(final @DMNEditor DMNGridPanel gridPanel,
                                          final @DMNEditor DMNGridLayer gridLayer,
+                                         final DefinitionUtils definitionUtils,
                                          final SessionManager sessionManager,
                                          final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                         final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                          final CellEditorControlsView.Presenter cellEditorControls,
-                                         final TranslationService translationService,
                                          final ListSelectorView.Presenter listSelector,
+                                         final TranslationService translationService,
                                          final HitPolicyEditorView.Presenter hitPolicyEditor) {
         super(gridPanel,
               gridLayer,
+              definitionUtils,
               sessionManager,
               sessionCommandManager,
+              canvasCommandFactory,
               cellEditorControls,
+              listSelector,
               translationService);
-        this.listSelector = listSelector;
         this.hitPolicyEditor = hitPolicyEditor;
     }
 
@@ -135,22 +140,26 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
     @Override
     @SuppressWarnings("unused")
     public Optional<BaseExpressionGrid> getEditor(final GridCellTuple parent,
+                                                  final Optional<String> nodeUUID,
                                                   final HasExpression hasExpression,
                                                   final Optional<DecisionTable> expression,
                                                   final Optional<HasName> hasName,
                                                   final int nesting) {
         return Optional.of(new DecisionTableGrid(parent,
+                                                 nodeUUID,
                                                  hasExpression,
                                                  expression,
                                                  hasName,
                                                  gridPanel,
                                                  gridLayer,
+                                                 definitionUtils,
                                                  sessionManager,
                                                  sessionCommandManager,
+                                                 canvasCommandFactory,
                                                  cellEditorControls,
-                                                 translationService,
                                                  listSelector,
-                                                 hitPolicyEditor,
-                                                 nesting));
+                                                 translationService,
+                                                 nesting,
+                                                 hitPolicyEditor));
     }
 }

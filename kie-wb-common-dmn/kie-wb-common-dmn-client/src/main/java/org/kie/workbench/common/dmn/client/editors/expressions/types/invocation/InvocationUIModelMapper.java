@@ -96,6 +96,7 @@ public class InvocationUIModelMapper extends BaseUIModelMapper<Invocation> {
                         final Optional<BaseExpressionGrid> editor = ed.getEditor(new GridCellTuple(rowIndex,
                                                                                                    columnIndex,
                                                                                                    gridWidget),
+                                                                                 Optional.empty(),
                                                                                  binding,
                                                                                  expression,
                                                                                  Optional.ofNullable(binding.getParameter()),

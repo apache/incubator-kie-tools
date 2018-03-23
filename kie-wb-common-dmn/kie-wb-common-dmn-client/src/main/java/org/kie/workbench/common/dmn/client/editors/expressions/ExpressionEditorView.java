@@ -37,8 +37,9 @@ public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.ap
 
         void init(final SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter);
 
-        void setExpression(final Optional<HasName> hasName,
-                           final HasExpression hasExpression);
+        void setExpression(final String nodeUUID,
+                           final HasExpression hasExpression,
+                           final Optional<HasName> hasName);
 
         void setExitCommand(final Command exitCommand);
 
@@ -47,6 +48,7 @@ public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.ap
         void exit();
     }
 
-    void setExpression(final Optional<HasName> hasName,
-                       final HasExpression hasExpression);
+    void setExpression(final String nodeUUID,
+                       final HasExpression hasExpression,
+                       final Optional<HasName> hasName);
 }

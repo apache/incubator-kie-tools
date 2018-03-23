@@ -127,7 +127,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                               listSelector,
                                                               sessionManager,
                                                               sessionCommandManager,
-                                                              expressionEditorDefinitionsSupplier);
+                                                              expressionEditorDefinitionsSupplier,
+                                                              this::setReturnToDRGText);
         gridLayer.removeAll();
         gridLayer.add(expressionContainerGrid);
         gridLayer.select(expressionContainerGrid);
@@ -149,11 +150,17 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     }
 
     @Override
-    public void setExpression(final Optional<HasName> hasName,
-                              final HasExpression hasExpression) {
-        expressionContainerGrid.setExpression(hasName,
-                                              hasExpression);
+    public void setExpression(final String nodeUUID,
+                              final HasExpression hasExpression,
+                              final Optional<HasName> hasName) {
+        expressionContainerGrid.setExpression(nodeUUID,
+                                              hasExpression,
+                                              hasName);
 
+        setReturnToDRGText(hasName);
+    }
+
+    private void setReturnToDRGText(final Optional<HasName> hasName) {
         hasName.ifPresent(name -> returnToDRG.setTextContent(translationService.format(DMNEditorConstants.ExpressionEditor_ReturnToDRG,
                                                                                        name.getName().getValue())));
     }

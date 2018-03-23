@@ -45,7 +45,9 @@ import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
@@ -63,19 +65,25 @@ public class DecisionTableEditorDefinitionTest {
     private DMNGridLayer gridLayer;
 
     @Mock
+    private DefinitionUtils definitionUtils;
+
+    @Mock
     private SessionManager sessionManager;
 
     @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
+    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+
+    @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
 
     @Mock
-    private TranslationService translationService;
+    private ListSelectorView.Presenter listSelector;
 
     @Mock
-    private ListSelectorView.Presenter listSelector;
+    private TranslationService translationService;
 
     @Mock
     private HitPolicyEditorView.Presenter hitPolicyEditor;
@@ -95,11 +103,13 @@ public class DecisionTableEditorDefinitionTest {
     public void setup() {
         this.definition = new DecisionTableEditorDefinition(gridPanel,
                                                             gridLayer,
+                                                            definitionUtils,
                                                             sessionManager,
                                                             sessionCommandManager,
+                                                            canvasCommandFactory,
                                                             cellEditorControls,
-                                                            translationService,
                                                             listSelector,
+                                                            translationService,
                                                             hitPolicyEditor);
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
     }
@@ -147,6 +157,7 @@ public class DecisionTableEditorDefinitionTest {
     public void testEditor() {
         final Optional<DecisionTable> expression = definition.getModelClass();
         final Optional<BaseExpressionGrid> oEditor = definition.getEditor(parent,
+                                                                          Optional.empty(),
                                                                           hasExpression,
                                                                           expression,
                                                                           hasName,

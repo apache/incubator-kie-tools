@@ -40,7 +40,9 @@ import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
@@ -62,22 +64,28 @@ public class ContextEditorDefinitionTest {
     private DMNGridLayer gridLayer;
 
     @Mock
+    private DefinitionUtils definitionUtils;
+
+    @Mock
     private SessionManager sessionManager;
 
     @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
-    private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
 
     @Mock
+    private ListSelectorView.Presenter listSelector;
+
+    @Mock
     private TranslationService translationService;
 
     @Mock
-    private ListSelectorView.Presenter listSelector;
+    private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
     @Mock
     private GridCellTuple parent;
@@ -94,12 +102,14 @@ public class ContextEditorDefinitionTest {
     public void setup() {
         this.definition = new ContextEditorDefinition(gridPanel,
                                                       gridLayer,
+                                                      definitionUtils,
                                                       sessionManager,
                                                       sessionCommandManager,
-                                                      expressionEditorDefinitionsSupplier,
+                                                      canvasCommandFactory,
                                                       cellEditorControls,
+                                                      listSelector,
                                                       translationService,
-                                                      listSelector);
+                                                      expressionEditorDefinitionsSupplier);
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add((ExpressionEditorDefinition) definition);
 
@@ -138,6 +148,7 @@ public class ContextEditorDefinitionTest {
     public void testEditor() {
         final Optional<Context> expression = definition.getModelClass();
         final Optional<BaseExpressionGrid> oEditor = definition.getEditor(parent,
+                                                                          Optional.empty(),
                                                                           hasExpression,
                                                                           expression,
                                                                           hasName,

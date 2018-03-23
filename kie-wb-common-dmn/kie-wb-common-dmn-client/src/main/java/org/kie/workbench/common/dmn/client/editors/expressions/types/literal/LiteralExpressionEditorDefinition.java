@@ -37,13 +37,13 @@ import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.Session;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @ApplicationScoped
 public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<LiteralExpression> {
-
-    private ListSelectorView.Presenter listSelector;
 
     public LiteralExpressionEditorDefinition() {
         //CDI proxy
@@ -52,18 +52,22 @@ public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<Lite
     @Inject
     public LiteralExpressionEditorDefinition(final @DMNEditor DMNGridPanel gridPanel,
                                              final @DMNEditor DMNGridLayer gridLayer,
+                                             final DefinitionUtils definitionUtils,
                                              final SessionManager sessionManager,
                                              final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                             final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                              final CellEditorControlsView.Presenter cellEditorControls,
-                                             final TranslationService translationService,
-                                             final ListSelectorView.Presenter listSelector) {
+                                             final ListSelectorView.Presenter listSelector,
+                                             final TranslationService translationService) {
         super(gridPanel,
               gridLayer,
+              definitionUtils,
               sessionManager,
               sessionCommandManager,
+              canvasCommandFactory,
               cellEditorControls,
+              listSelector,
               translationService);
-        this.listSelector = listSelector;
     }
 
     @Override
@@ -83,21 +87,25 @@ public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<Lite
 
     @Override
     public Optional<BaseExpressionGrid> getEditor(final GridCellTuple parent,
+                                                  final Optional<String> nodeUUID,
                                                   final HasExpression hasExpression,
                                                   final Optional<LiteralExpression> expression,
                                                   final Optional<HasName> hasName,
                                                   final int nesting) {
         return Optional.of(new LiteralExpressionGrid(parent,
+                                                     nodeUUID,
                                                      hasExpression,
                                                      expression,
                                                      hasName,
                                                      gridPanel,
                                                      gridLayer,
+                                                     definitionUtils,
                                                      sessionManager,
                                                      sessionCommandManager,
+                                                     canvasCommandFactory,
                                                      cellEditorControls,
-                                                     translationService,
                                                      listSelector,
+                                                     translationService,
                                                      nesting));
     }
 }

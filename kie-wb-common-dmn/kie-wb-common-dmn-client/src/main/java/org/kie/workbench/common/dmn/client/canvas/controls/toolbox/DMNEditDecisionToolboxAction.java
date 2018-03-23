@@ -82,8 +82,9 @@ public class DMNEditDecisionToolboxAction implements ToolboxAction<AbstractCanva
                 .asNode();
         final Decision decision = decisionNode.getContent().getDefinition();
         editExpressionEvent.fire(new EditExpressionEvent(sessionManager.getCurrentSession(),
-                                                         Optional.of(decision),
-                                                         decision));
+                                                         uuid,
+                                                         decision,
+                                                         Optional.of(decision)));
 
         return this;
     }

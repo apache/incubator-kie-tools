@@ -26,12 +26,14 @@ public class JavaFunctionSupplementaryGridTest extends BaseFunctionSupplementary
     protected JavaFunctionEditorDefinition getEditorDefinition() {
         return new JavaFunctionEditorDefinition(gridPanel,
                                                 gridLayer,
+                                                definitionUtils,
                                                 sessionManager,
                                                 sessionCommandManager,
-                                                expressionEditorDefinitionsSupplier,
+                                                canvasCommandFactory,
                                                 cellEditorControls,
+                                                listSelector,
                                                 translationService,
-                                                listSelector);
+                                                expressionEditorDefinitionsSupplier);
     }
 
     protected String[] getExpectedNames() {

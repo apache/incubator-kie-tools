@@ -59,9 +59,11 @@ import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.mvp.Command;
@@ -73,13 +75,13 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
 
     public static final String DESCRIPTION_GROUP = "DecisionTable$Description";
 
-    private final ListSelectorView.Presenter listSelector;
     private final HitPolicyEditorView.Presenter hitPolicyEditor;
 
-    private final TextBoxSingletonDOMElementFactory textBoxFactory;
-    private final TextAreaSingletonDOMElementFactory textAreaFactory;
-    private final TextBoxSingletonDOMElementFactory headerTextBoxFactory;
-    private final TextAreaSingletonDOMElementFactory headerTextAreaFactory;
+    private final TextBoxSingletonDOMElementFactory textBoxFactory = getBodyTextBoxFactory();
+    private final TextAreaSingletonDOMElementFactory textAreaFactory = getBodyTextAreaFactory();
+    private final TextBoxSingletonDOMElementFactory headerTextBoxFactory = getHeaderTextBoxFactory();
+    private final TextBoxSingletonDOMElementFactory headerHasNameTextBoxFactory = getHeaderHasNameTextBoxFactory();
+    private final TextAreaSingletonDOMElementFactory headerTextAreaFactory = getHeaderTextAreaFactory();
 
     private class ListSelectorItemDefinition {
 
@@ -97,19 +99,23 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
     }
 
     public DecisionTableGrid(final GridCellTuple parent,
+                             final Optional<String> nodeUUID,
                              final HasExpression hasExpression,
                              final Optional<DecisionTable> expression,
                              final Optional<HasName> hasName,
                              final DMNGridPanel gridPanel,
                              final DMNGridLayer gridLayer,
+                             final DefinitionUtils definitionUtils,
                              final SessionManager sessionManager,
                              final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                             final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                              final CellEditorControlsView.Presenter cellEditorControls,
-                             final TranslationService translationService,
                              final ListSelectorView.Presenter listSelector,
-                             final HitPolicyEditorView.Presenter hitPolicyEditor,
-                             final int nesting) {
+                             final TranslationService translationService,
+                             final int nesting,
+                             final HitPolicyEditorView.Presenter hitPolicyEditor) {
         super(parent,
+              nodeUUID,
               hasExpression,
               expression,
               hasName,
@@ -121,42 +127,15 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                         expression,
                                         gridLayer::batch),
               new DecisionTableGridRenderer(),
+              definitionUtils,
               sessionManager,
               sessionCommandManager,
+              canvasCommandFactory,
               cellEditorControls,
+              listSelector,
               translationService,
               nesting);
-        this.listSelector = listSelector;
         this.hitPolicyEditor = hitPolicyEditor;
-
-        this.textBoxFactory = new TextBoxSingletonDOMElementFactory(gridPanel,
-                                                                    gridLayer,
-                                                                    this,
-                                                                    sessionManager,
-                                                                    sessionCommandManager,
-                                                                    newCellHasNoValueCommand(),
-                                                                    newCellHasValueCommand());
-        this.textAreaFactory = new TextAreaSingletonDOMElementFactory(gridPanel,
-                                                                      gridLayer,
-                                                                      this,
-                                                                      sessionManager,
-                                                                      sessionCommandManager,
-                                                                      newCellHasNoValueCommand(),
-                                                                      newCellHasValueCommand());
-        this.headerTextBoxFactory = new TextBoxSingletonDOMElementFactory(gridPanel,
-                                                                          gridLayer,
-                                                                          this,
-                                                                          sessionManager,
-                                                                          sessionCommandManager,
-                                                                          newHeaderHasNoValueCommand(),
-                                                                          newHeaderHasValueCommand());
-        this.headerTextAreaFactory = new TextAreaSingletonDOMElementFactory(gridPanel,
-                                                                            gridLayer,
-                                                                            this,
-                                                                            sessionManager,
-                                                                            sessionCommandManager,
-                                                                            newHeaderHasNoValueCommand(),
-                                                                            newHeaderHasValueCommand());
 
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
 
@@ -221,7 +200,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                     final Name n = name.getName();
                     metaData.add(new OutputClauseColumnExpressionNameHeaderMetaData(n::getValue,
                                                                                     n::setValue,
-                                                                                    headerTextBoxFactory));
+                                                                                    headerHasNameTextBoxFactory));
                 } else {
                     metaData.add(new BaseHeaderMetaData(translationService.format(DMNEditorConstants.DecisionTableEditor_OutputClauseHeader)));
                 }

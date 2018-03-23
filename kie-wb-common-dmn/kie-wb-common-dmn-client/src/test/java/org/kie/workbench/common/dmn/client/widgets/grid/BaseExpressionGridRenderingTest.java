@@ -152,15 +152,19 @@ public class BaseExpressionGridRenderingTest extends BaseExpressionGridTest {
         final Optional<HasName> hasName = Optional.of(mock(HasName.class));
 
         return new BaseExpressionGrid(parent,
+                                      Optional.empty(),
                                       hasExpression,
                                       expression,
                                       hasName,
                                       gridPanel,
                                       gridLayer,
                                       renderer,
+                                      definitionUtils,
                                       sessionManager,
                                       sessionCommandManager,
+                                      canvasCommandFactory,
                                       cellEditorControls,
+                                      listSelector,
                                       translationService,
                                       0) {
             @Override

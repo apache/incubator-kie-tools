@@ -27,8 +27,8 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.command.Command;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.BaseSingletonDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -38,16 +38,16 @@ public class TextBoxSingletonDOMElementFactory extends BaseSingletonDOMElementFa
 
     private final SessionManager sessionManager;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    private final Function<GridCellTuple, AbstractCanvasGraphCommand> hasNoValueCommand;
-    private final Function<GridCellValueTuple, AbstractCanvasGraphCommand> hasValueCommand;
+    private final Function<GridCellTuple, Command> hasNoValueCommand;
+    private final Function<GridCellValueTuple, Command> hasValueCommand;
 
     public TextBoxSingletonDOMElementFactory(final DMNGridPanel gridPanel,
                                              final GridLayer gridLayer,
                                              final GridWidget gridWidget,
                                              final SessionManager sessionManager,
                                              final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                             final Function<GridCellTuple, AbstractCanvasGraphCommand> hasNoValueCommand,
-                                             final Function<GridCellValueTuple, AbstractCanvasGraphCommand> hasValueCommand) {
+                                             final Function<GridCellTuple, Command> hasNoValueCommand,
+                                             final Function<GridCellValueTuple, Command> hasValueCommand) {
         super(gridPanel,
               gridLayer,
               gridWidget);
@@ -55,6 +55,14 @@ public class TextBoxSingletonDOMElementFactory extends BaseSingletonDOMElementFa
         this.sessionCommandManager = sessionCommandManager;
         this.hasNoValueCommand = hasNoValueCommand;
         this.hasValueCommand = hasValueCommand;
+    }
+
+    public Function<GridCellTuple, Command> getHasNoValueCommand() {
+        return hasNoValueCommand;
+    }
+
+    public Function<GridCellValueTuple, Command> getHasValueCommand() {
+        return hasValueCommand;
     }
 
     @Override

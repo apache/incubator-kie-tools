@@ -47,47 +47,52 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
 
     static final NoOperationGraphCommand NOP_GRAPH_COMMAND = new NoOperationGraphCommand();
 
-    protected ExpressionEditorView.Presenter editor;
-    protected SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter;
-    protected SessionManager sessionManager;
-    protected SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    protected Optional<HasName> hasName;
-    protected HasExpression hasExpression;
+    protected final ExpressionEditorView.Presenter editor;
+    protected final SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter;
+    protected final SessionManager sessionManager;
+    protected final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+    protected final String nodeUUID;
+    protected final HasExpression hasExpression;
+    protected final Optional<HasName> hasName;
 
     public BaseNavigateCommand(final ExpressionEditorView.Presenter editor,
                                final SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter,
                                final SessionManager sessionManager,
                                final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                               final Optional<HasName> hasName,
-                               final HasExpression hasExpression) {
+                               final String nodeUUID,
+                               final HasExpression hasExpression,
+                               final Optional<HasName> hasName) {
         this.editor = editor;
         this.presenter = presenter;
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
-        this.hasName = hasName;
+        this.nodeUUID = nodeUUID;
         this.hasExpression = hasExpression;
+        this.hasName = hasName;
     }
 
-    protected void navigateToExpressionEditor(final Optional<HasName> hasName,
-                                              final HasExpression hasExpression) {
+    protected void navigateToExpressionEditor(final HasExpression hasExpression,
+                                              final Optional<HasName> hasName) {
         sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                       new NavigateToExpressionEditorCommand(editor,
                                                                             presenter,
                                                                             sessionManager,
                                                                             sessionCommandManager,
-                                                                            hasName,
-                                                                            hasExpression));
+                                                                            nodeUUID,
+                                                                            hasExpression,
+                                                                            hasName));
     }
 
-    protected void navigateToDRGEditor(final Optional<HasName> hasName,
-                                       final HasExpression hasExpression) {
+    protected void navigateToDRGEditor(final HasExpression hasExpression,
+                                       final Optional<HasName> hasName) {
         sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                       new NavigateToDRGEditorCommand(editor,
                                                                      presenter,
                                                                      sessionManager,
                                                                      sessionCommandManager,
-                                                                     hasName,
-                                                                     hasExpression));
+                                                                     nodeUUID,
+                                                                     hasExpression,
+                                                                     hasName));
     }
 
     protected void enableHandlers(final boolean enabled) {

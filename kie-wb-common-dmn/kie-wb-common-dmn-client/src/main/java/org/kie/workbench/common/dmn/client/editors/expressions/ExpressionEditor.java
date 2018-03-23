@@ -66,10 +66,12 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
     }
 
     @Override
-    public void setExpression(final Optional<HasName> hasName,
-                              final HasExpression hasExpression) {
-        view.setExpression(hasName,
-                           hasExpression);
+    public void setExpression(final String nodeUUID,
+                              final HasExpression hasExpression,
+                              final Optional<HasName> hasName) {
+        view.setExpression(nodeUUID,
+                           hasExpression,
+                           hasName);
 
         toolbarCommandStateHandler.enter();
     }

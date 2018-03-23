@@ -36,7 +36,9 @@ import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
@@ -54,19 +56,25 @@ public class LiteralExpressionEditorDefinitionTest {
     private DMNGridLayer gridLayer;
 
     @Mock
+    private DefinitionUtils definitionUtils;
+
+    @Mock
     private SessionManager sessionManager;
 
     @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
+    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+
+    @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
 
     @Mock
-    private TranslationService translationService;
+    private ListSelectorView.Presenter listSelector;
 
     @Mock
-    private ListSelectorView.Presenter listSelector;
+    private TranslationService translationService;
 
     @Mock
     private GridCellTuple parent;
@@ -83,11 +91,13 @@ public class LiteralExpressionEditorDefinitionTest {
     public void setup() {
         this.definition = new LiteralExpressionEditorDefinition(gridPanel,
                                                                 gridLayer,
+                                                                definitionUtils,
                                                                 sessionManager,
                                                                 sessionCommandManager,
+                                                                canvasCommandFactory,
                                                                 cellEditorControls,
-                                                                translationService,
-                                                                listSelector);
+                                                                listSelector,
+                                                                translationService);
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
     }
 
@@ -111,6 +121,7 @@ public class LiteralExpressionEditorDefinitionTest {
     public void testEditor() {
         final Optional<LiteralExpression> expression = definition.getModelClass();
         final Optional<BaseExpressionGrid> oEditor = definition.getEditor(parent,
+                                                                          Optional.empty(),
                                                                           hasExpression,
                                                                           expression,
                                                                           hasName,

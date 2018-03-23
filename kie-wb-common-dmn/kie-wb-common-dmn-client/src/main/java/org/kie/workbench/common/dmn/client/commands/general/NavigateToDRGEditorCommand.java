@@ -42,14 +42,16 @@ public class NavigateToDRGEditorCommand extends BaseNavigateCommand implements V
                                       final SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter,
                                       final SessionManager sessionManager,
                                       final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                      final Optional<HasName> hasName,
-                                      final HasExpression hasExpression) {
+                                      final String nodeUUID,
+                                      final HasExpression hasExpression,
+                                      final Optional<HasName> hasName) {
         super(editor,
               presenter,
               sessionManager,
               sessionCommandManager,
-              hasName,
-              hasExpression);
+              nodeUUID,
+              hasExpression,
+              hasName);
     }
 
     @Override
@@ -73,10 +75,11 @@ public class NavigateToDRGEditorCommand extends BaseNavigateCommand implements V
             public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
                 enableHandlers(false);
                 hidePaletteWidget(true);
-                editor.setExpression(hasName,
-                                     hasExpression);
-                editor.setExitCommand(() -> navigateToExpressionEditor(hasName,
-                                                                       hasExpression));
+                editor.setExpression(nodeUUID,
+                                     hasExpression,
+                                     hasName);
+                editor.setExitCommand(() -> navigateToExpressionEditor(hasExpression,
+                                                                       hasName));
                 addExpressionEditorToCanvasWidget();
 
                 return CanvasCommandResultBuilder.SUCCESS;

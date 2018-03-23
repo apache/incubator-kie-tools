@@ -39,6 +39,8 @@ import static org.mockito.Mockito.when;
 @RunWith(LienzoMockitoTestRunner.class)
 public class ExpressionEditorTest {
 
+    private static final String NODE_UUID = "uuid";
+
     @Mock
     private ExpressionEditorView view;
 
@@ -80,9 +82,13 @@ public class ExpressionEditorTest {
     public void testSetExpression() {
         testedEditor.init(sessionPresenter);
 
-        testedEditor.setExpression(Optional.of(hasName), hasExpression);
+        testedEditor.setExpression(NODE_UUID,
+                                   hasExpression,
+                                   Optional.of(hasName));
 
-        verify(view).setExpression(eq(Optional.of(hasName)), eq(hasExpression));
+        verify(view).setExpression(eq(NODE_UUID),
+                                   eq(hasExpression),
+                                   eq(Optional.of(hasName)));
         verify(editorToolbar, atLeast(1)).disable(any(ToolbarCommand.class));
     }
 
@@ -90,7 +96,9 @@ public class ExpressionEditorTest {
     @SuppressWarnings("unchecked")
     public void testExitWithCommand() {
         testedEditor.init(sessionPresenter);
-        testedEditor.setExpression(Optional.of(hasName), hasExpression);
+        testedEditor.setExpression(NODE_UUID,
+                                   hasExpression,
+                                   Optional.of(hasName));
         testedEditor.setExitCommand(command);
 
         testedEditor.exit();

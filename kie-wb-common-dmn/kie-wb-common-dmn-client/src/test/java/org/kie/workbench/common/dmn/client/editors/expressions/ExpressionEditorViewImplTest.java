@@ -70,6 +70,8 @@ import static org.mockito.Mockito.verify;
 @RunWith(LienzoMockitoTestRunner.class)
 public class ExpressionEditorViewImplTest {
 
+    private static final String NODE_UUID = "uuid";
+
     @Mock
     private Anchor returnToDRG;
 
@@ -142,6 +144,7 @@ public class ExpressionEditorViewImplTest {
         doReturn(viewportMediators).when(viewport).getMediators();
         doReturn(gridPanelElement).when(gridPanel).getElement();
         doReturn(Optional.of(editor)).when(editorDefinition).getEditor(any(GridCellTuple.class),
+                                                                       any(Optional.class),
                                                                        any(HasExpression.class),
                                                                        any(Optional.class),
                                                                        any(Optional.class),
@@ -166,6 +169,7 @@ public class ExpressionEditorViewImplTest {
         doReturn(Optional.empty()).when(undefinedExpressionEditorDefinition).getModelClass();
         doReturn(new BaseGridData()).when(undefinedExpressionEditor).getModel();
         doReturn(Optional.of(undefinedExpressionEditor)).when(undefinedExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
+                                                                                                             any(Optional.class),
                                                                                                              any(HasExpression.class),
                                                                                                              any(Optional.class),
                                                                                                              any(Optional.class),
@@ -227,8 +231,9 @@ public class ExpressionEditorViewImplTest {
         doReturn(name).when(hasNameMock).getName();
         final Optional<HasName> hasName = Optional.of(hasNameMock);
 
-        view.setExpression(hasName,
-                           hasExpression);
+        view.setExpression(NODE_UUID,
+                           hasExpression,
+                           hasName);
 
         verify(returnToDRG).setTextContent(eq(NAME));
     }
@@ -237,8 +242,9 @@ public class ExpressionEditorViewImplTest {
     public void testSetEditorDoesNotUpdateReturnToDRGTextWhenHasNameIsEmpty() {
         final Optional<HasName> hasName = Optional.empty();
 
-        view.setExpression(hasName,
-                           hasExpression);
+        view.setExpression(NODE_UUID,
+                           hasExpression,
+                           hasName);
 
         verify(returnToDRG, never()).setTextContent(any(String.class));
     }

@@ -42,28 +42,44 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.Del
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.SetBuiltinAggregatorCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.SetHitPolicyCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.SetOrientationCommand;
+import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.DeleteHeaderValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyEditorView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPropertyCommand;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
 import org.uberfire.mvp.Command;
 
@@ -71,6 +87,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils.assertCommands;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -101,11 +118,19 @@ public class DecisionTableGridTest {
 
     private static final String HASNAME_NAME = "name";
 
+    private static final String NODE_UUID = "uuid";
+
     @Mock
     private DMNGridPanel gridPanel;
 
     @Mock
     private DMNGridLayer gridLayer;
+
+    @Mock
+    private GridWidget gridWidget;
+
+    @Mock
+    private DefinitionUtils definitionUtils;
 
     @Mock
     private SessionManager sessionManager;
@@ -114,10 +139,19 @@ public class DecisionTableGridTest {
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
+    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+
+    @Mock
     private ClientSession session;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
+
+    @Mock
+    private Index index;
+
+    @Mock
+    private Element element;
 
     @Mock
     private GraphCommandExecutionContext graphCommandContext;
@@ -132,10 +166,10 @@ public class DecisionTableGridTest {
     private CellEditorControlsView.Presenter cellEditorControls;
 
     @Mock
-    private TranslationService translationService;
+    private ListSelectorView.Presenter listSelector;
 
     @Mock
-    private ListSelectorView.Presenter listSelector;
+    private TranslationService translationService;
 
     @Mock
     private HitPolicyEditorView.Presenter hitPolicyEditor;
@@ -187,11 +221,13 @@ public class DecisionTableGridTest {
     public void setup() {
         this.definition = new DecisionTableEditorDefinition(gridPanel,
                                                             gridLayer,
+                                                            definitionUtils,
                                                             sessionManager,
                                                             sessionCommandManager,
+                                                            canvasCommandFactory,
                                                             cellEditorControls,
-                                                            translationService,
                                                             listSelector,
+                                                            translationService,
                                                             hitPolicyEditor);
 
         expression = definition.getModelClass();
@@ -200,12 +236,22 @@ public class DecisionTableGridTest {
         doReturn(canvasHandler).when(session).getCanvasHandler();
         doReturn(graphCommandContext).when(canvasHandler).getGraphExecutionContext();
 
+        when(gridWidget.getModel()).thenReturn(new BaseGridData(false));
+        when(canvasHandler.getGraphIndex()).thenReturn(index);
+        when(index.get(anyString())).thenReturn(element);
+        when(element.getContent()).thenReturn(mock(Definition.class));
+        when(definitionUtils.getNameIdentifier(any())).thenReturn("name");
+        when(canvasCommandFactory.updatePropertyValue(any(Element.class),
+                                                      anyString(),
+                                                      any())).thenReturn(mock(UpdateElementPropertyCommand.class));
+
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
     }
 
     private void setupGrid(final Optional<HasName> hasName,
                            final int nesting) {
         this.grid = spy((DecisionTableGrid) definition.getEditor(parent,
+                                                                 nesting == 0 ? Optional.of(NODE_UUID) : Optional.empty(),
                                                                  hasExpression,
                                                                  expression,
                                                                  hasName,
@@ -691,5 +737,129 @@ public class DecisionTableGridTest {
         verify(gridLayer).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
+    }
+
+    @Test
+    public void testBodyTextBoxFactoryWhenNested() {
+        setupGrid(makeHasNameForDecision(), 1);
+
+        final GridCellTuple tupleWithoutValue = new GridCellTuple(0, 3, gridWidget);
+        final GridCellValueTuple tupleWithValue = new GridCellValueTuple<>(0, 3, gridWidget, new BaseGridCellValue<>("value"));
+
+        final TextBoxSingletonDOMElementFactory factory = grid.getBodyTextBoxFactory();
+        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteCellValueCommand.class);
+        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetCellValueCommand.class);
+    }
+
+    @Test
+    public void testBodyTextBoxFactoryWhenNotNested() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        final GridCellTuple tupleWithoutValue = new GridCellTuple(0, 3, gridWidget);
+        final GridCellValueTuple tupleWithValue = new GridCellValueTuple<>(0, 3, gridWidget, new BaseGridCellValue<>("value"));
+
+        final TextBoxSingletonDOMElementFactory factory = grid.getBodyTextBoxFactory();
+        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteCellValueCommand.class);
+        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetCellValueCommand.class);
+    }
+
+    @Test
+    public void testBodyTextAreaFactoryWhenNested() {
+        setupGrid(makeHasNameForDecision(), 1);
+
+        final GridCellTuple tupleWithoutValue = new GridCellTuple(0, 1, gridWidget);
+        final GridCellValueTuple tupleWithValue = new GridCellValueTuple<>(0, 1, gridWidget, new BaseGridCellValue<>("value"));
+
+        final TextAreaSingletonDOMElementFactory factory = grid.getBodyTextAreaFactory();
+        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteCellValueCommand.class);
+        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetCellValueCommand.class);
+    }
+
+    @Test
+    public void testBodyTextAreaFactoryWhenNotNested() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        final GridCellTuple tupleWithoutValue = new GridCellTuple(0, 1, gridWidget);
+        final GridCellValueTuple tupleWithValue = new GridCellValueTuple<>(0, 1, gridWidget, new BaseGridCellValue<>("value"));
+
+        final TextAreaSingletonDOMElementFactory factory = grid.getBodyTextAreaFactory();
+        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteCellValueCommand.class);
+        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetCellValueCommand.class);
+    }
+
+    @Test
+    public void testHeaderTextBoxFactoryWhenNested() {
+        setupGrid(makeHasNameForDecision(), 1);
+
+        final GridCellTuple tupleWithoutValue = new GridCellTuple(0, 2, gridWidget);
+        final GridCellValueTuple tupleWithValue = new GridCellValueTuple<>(0, 2, gridWidget, new BaseGridCellValue<>("value"));
+
+        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderTextBoxFactory();
+        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteHeaderValueCommand.class);
+        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetHeaderValueCommand.class);
+    }
+
+    @Test
+    public void testHeaderTextBoxFactoryWhenNotNested() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        final GridCellTuple tupleWithoutValue = new GridCellTuple(0, 2, gridWidget);
+        final GridCellValueTuple tupleWithValue = new GridCellValueTuple<>(0, 2, gridWidget, new BaseGridCellValue<>("value"));
+
+        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderTextBoxFactory();
+        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteHeaderValueCommand.class);
+        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetHeaderValueCommand.class);
+    }
+
+    @Test
+    public void testHeaderHasNameTextBoxFactoryWhenNested() {
+        setupGrid(makeHasNameForDecision(), 1);
+
+        final GridCellTuple tupleWithoutValue = new GridCellTuple(0, 2, gridWidget);
+        final GridCellValueTuple tupleWithValue = new GridCellValueTuple<>(0, 2, gridWidget, new BaseGridCellValue<>("value"));
+
+        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderHasNameTextBoxFactory();
+        assertCommands(factory.getHasNoValueCommand().apply(tupleWithoutValue),
+                       DeleteHeaderValueCommand.class);
+        assertCommands(factory.getHasValueCommand().apply(tupleWithValue),
+                       SetHeaderValueCommand.class);
+    }
+
+    @Test
+    public void testHeaderHasNameTextBoxFactoryWhenNotNested() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        final GridCellTuple tupleWithoutValue = new GridCellTuple(0, 2, gridWidget);
+        final GridCellValueTuple tupleWithValue = new GridCellValueTuple<>(0, 2, gridWidget, new BaseGridCellValue<>("value"));
+
+        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderHasNameTextBoxFactory();
+        assertCommands(factory.getHasNoValueCommand().apply(tupleWithoutValue),
+                       DeleteHeaderValueCommand.class, UpdateElementPropertyCommand.class);
+        assertCommands(factory.getHasValueCommand().apply(tupleWithValue),
+                       SetHeaderValueCommand.class, UpdateElementPropertyCommand.class);
+    }
+
+    @Test
+    public void testHeaderTextAreaFactoryWhenNested() {
+        setupGrid(makeHasNameForDecision(), 1);
+
+        final GridCellTuple tupleWithoutValue = new GridCellTuple(0, 1, gridWidget);
+        final GridCellValueTuple tupleWithValue = new GridCellValueTuple<>(0, 1, gridWidget, new BaseGridCellValue<>("value"));
+
+        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderTextBoxFactory();
+        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteHeaderValueCommand.class);
+        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetHeaderValueCommand.class);
+    }
+
+    @Test
+    public void testHeaderTextAreaFactoryWhenNotNested() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        final GridCellTuple tupleWithoutValue = new GridCellTuple(0, 1, gridWidget);
+        final GridCellValueTuple tupleWithValue = new GridCellValueTuple<>(0, 1, gridWidget, new BaseGridCellValue<>("value"));
+
+        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderTextBoxFactory();
+        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteHeaderValueCommand.class);
+        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetHeaderValueCommand.class);
     }
 }

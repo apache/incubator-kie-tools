@@ -36,6 +36,8 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.Lit
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
@@ -50,7 +52,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InvocationUIModelMapperTest {
@@ -78,6 +82,9 @@ public class InvocationUIModelMapperTest {
 
     @Mock
     private LiteralExpressionGrid literalExpressionEditor;
+
+    @Captor
+    private ArgumentCaptor<GridCellTuple> parentCaptor;
 
     private LiteralExpression literalExpression = new LiteralExpression();
 
@@ -110,6 +117,7 @@ public class InvocationUIModelMapperTest {
         doReturn(Optional.of(literalExpression)).when(literalExpressionEditorDefinition).getModelClass();
         doReturn(Optional.of(literalExpression)).when(literalExpressionEditor).getExpression();
         doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
+                                                                                                         any(Optional.class),
                                                                                                          any(HasExpression.class),
                                                                                                          any(Optional.class),
                                                                                                          any(Optional.class),
@@ -157,6 +165,7 @@ public class InvocationUIModelMapperTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testFromDMNModelBindingExpression() {
         mapper.fromDMNModel(0, 2);
 
@@ -166,6 +175,17 @@ public class InvocationUIModelMapperTest {
         final ExpressionCellValue dcv = (ExpressionCellValue) uiModel.getCell(0, 2).getValue();
         assertEquals(literalExpressionEditor,
                      dcv.getValue().get());
+
+        verify(literalExpressionEditorDefinition).getEditor(parentCaptor.capture(),
+                                                            eq(Optional.empty()),
+                                                            eq(invocation.getBinding().get(0)),
+                                                            eq(Optional.of(invocation.getBinding().get(0).getExpression())),
+                                                            eq(Optional.of(invocation.getBinding().get(0).getParameter())),
+                                                            eq(1));
+        final GridCellTuple parent = parentCaptor.getValue();
+        assertEquals(0, parent.getRowIndex());
+        assertEquals(2, parent.getColumnIndex());
+        assertEquals(gridWidget, parent.getGridWidget());
     }
 
     @Test

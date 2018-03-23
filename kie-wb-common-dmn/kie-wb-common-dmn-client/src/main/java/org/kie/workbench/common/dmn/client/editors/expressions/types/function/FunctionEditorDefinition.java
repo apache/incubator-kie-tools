@@ -41,15 +41,16 @@ import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.Session;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @ApplicationScoped
 public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefinition> {
 
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
-    private ListSelectorView.Presenter listSelector;
     private ParametersEditorView.Presenter parametersEditor;
 
     public FunctionEditorDefinition() {
@@ -59,23 +60,27 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
     @Inject
     public FunctionEditorDefinition(final @DMNEditor DMNGridPanel gridPanel,
                                     final @DMNEditor DMNGridLayer gridLayer,
+                                    final DefinitionUtils definitionUtils,
                                     final SessionManager sessionManager,
                                     final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                    final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                                    final CellEditorControlsView.Presenter cellEditorControls,
+                                    final ListSelectorView.Presenter listSelector,
+                                    final TranslationService translationService,
                                     final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                     final @FunctionGridSupplementaryEditor Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier,
-                                    final CellEditorControlsView.Presenter cellEditorControls,
-                                    final TranslationService translationService,
-                                    final ListSelectorView.Presenter listSelector,
                                     final ParametersEditorView.Presenter parametersEditor) {
         super(gridPanel,
               gridLayer,
+              definitionUtils,
               sessionManager,
               sessionCommandManager,
+              canvasCommandFactory,
               cellEditorControls,
+              listSelector,
               translationService);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.supplementaryEditorDefinitionsSupplier = supplementaryEditorDefinitionsSupplier;
-        this.listSelector = listSelector;
         this.parametersEditor = parametersEditor;
     }
 
@@ -100,24 +105,28 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
 
     @Override
     public Optional<BaseExpressionGrid> getEditor(final GridCellTuple parent,
+                                                  final Optional<String> nodeUUID,
                                                   final HasExpression hasExpression,
                                                   final Optional<FunctionDefinition> expression,
                                                   final Optional<HasName> hasName,
                                                   final int nesting) {
         return Optional.of(new FunctionGrid(parent,
+                                            nodeUUID,
                                             hasExpression,
                                             expression,
                                             hasName,
                                             gridPanel,
                                             gridLayer,
+                                            definitionUtils,
                                             sessionManager,
                                             sessionCommandManager,
+                                            canvasCommandFactory,
+                                            cellEditorControls,
+                                            listSelector,
+                                            translationService,
+                                            nesting,
                                             expressionEditorDefinitionsSupplier,
                                             supplementaryEditorDefinitionsSupplier,
-                                            cellEditorControls,
-                                            translationService,
-                                            listSelector,
-                                            parametersEditor,
-                                            nesting));
+                                            parametersEditor));
     }
 }

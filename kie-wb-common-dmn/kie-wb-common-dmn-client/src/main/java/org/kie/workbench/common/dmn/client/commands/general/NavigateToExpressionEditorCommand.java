@@ -42,14 +42,16 @@ public class NavigateToExpressionEditorCommand extends BaseNavigateCommand imple
                                              final SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter,
                                              final SessionManager sessionManager,
                                              final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                             final Optional<HasName> hasName,
-                                             final HasExpression hasExpression) {
+                                             final String nodeUUID,
+                                             final HasExpression hasExpression,
+                                             final Optional<HasName> hasName) {
         super(editor,
               presenter,
               sessionManager,
               sessionCommandManager,
-              hasName,
-              hasExpression);
+              nodeUUID,
+              hasExpression,
+              hasName);
     }
 
     @Override
@@ -64,10 +66,11 @@ public class NavigateToExpressionEditorCommand extends BaseNavigateCommand imple
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
                 enableHandlers(false);
                 hidePaletteWidget(true);
-                editor.setExpression(hasName,
-                                     hasExpression);
-                editor.setExitCommand(() -> navigateToDRGEditor(hasName,
-                                                                hasExpression));
+                editor.setExpression(nodeUUID,
+                                     hasExpression,
+                                     hasName);
+                editor.setExitCommand(() -> navigateToDRGEditor(hasExpression,
+                                                                hasName));
                 addExpressionEditorToCanvasWidget();
 
                 return CanvasCommandResultBuilder.SUCCESS;

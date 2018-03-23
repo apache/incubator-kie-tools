@@ -45,7 +45,6 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.function.pa
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -56,7 +55,9 @@ import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.mvp.Command;
@@ -66,39 +67,44 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
 
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
-    private final ListSelectorView.Presenter listSelector;
     private final ParametersEditorView.Presenter parametersEditor;
 
     public FunctionGrid(final GridCellTuple parent,
+                        final Optional<String> nodeUUID,
                         final HasExpression hasExpression,
                         final Optional<FunctionDefinition> expression,
                         final Optional<HasName> hasName,
                         final DMNGridPanel gridPanel,
                         final DMNGridLayer gridLayer,
+                        final DefinitionUtils definitionUtils,
                         final SessionManager sessionManager,
                         final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                        final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                        final CellEditorControlsView.Presenter cellEditorControls,
+                        final ListSelectorView.Presenter listSelector,
+                        final TranslationService translationService,
+                        final int nesting,
                         final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                         final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier,
-                        final CellEditorControlsView.Presenter cellEditorControls,
-                        final TranslationService translationService,
-                        final ListSelectorView.Presenter listSelector,
-                        final ParametersEditorView.Presenter parametersEditor,
-                        final int nesting) {
+                        final ParametersEditorView.Presenter parametersEditor) {
         super(parent,
+              nodeUUID,
               hasExpression,
               expression,
               hasName,
               gridPanel,
               gridLayer,
               new FunctionGridRenderer(nesting > 0),
+              definitionUtils,
               sessionManager,
               sessionCommandManager,
+              canvasCommandFactory,
               cellEditorControls,
+              listSelector,
               translationService,
               nesting);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.supplementaryEditorDefinitionsSupplier = supplementaryEditorDefinitionsSupplier;
-        this.listSelector = listSelector;
         this.parametersEditor = parametersEditor;
 
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
@@ -125,17 +131,10 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
 
     @Override
     protected void initialiseUiColumns() {
-        final TextBoxSingletonDOMElementFactory headerFactory = new TextBoxSingletonDOMElementFactory(gridPanel,
-                                                                                                      gridLayer,
-                                                                                                      this,
-                                                                                                      sessionManager,
-                                                                                                      sessionCommandManager,
-                                                                                                      newHeaderHasNoValueCommand(),
-                                                                                                      newHeaderHasValueCommand());
         final GridColumn expressionColumn = new ExpressionEditorColumn(gridLayer,
                                                                        Arrays.asList(new FunctionColumnNameHeaderMetaData(() -> hasName.orElse(HasName.NOP).getName().getValue(),
                                                                                                                           (s) -> hasName.orElse(HasName.NOP).getName().setValue(s),
-                                                                                                                          headerFactory),
+                                                                                                                          getHeaderHasNameTextBoxFactory()),
                                                                                      new FunctionColumnParametersHeaderMetaData(expression::get,
                                                                                                                                 cellEditorControls,
                                                                                                                                 parametersEditor,
@@ -291,6 +290,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
                                                                      this);
             final Optional<Expression> expression = definition.getModelClass();
             final Optional<BaseExpressionGrid> gridWidget = definition.getEditor(expressionParent,
+                                                                                 Optional.empty(),
                                                                                  hasExpression,
                                                                                  expression,
                                                                                  hasName,

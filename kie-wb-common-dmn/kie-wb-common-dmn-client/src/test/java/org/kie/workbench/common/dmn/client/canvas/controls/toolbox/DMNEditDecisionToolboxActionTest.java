@@ -119,6 +119,8 @@ public class DMNEditDecisionToolboxActionTest {
                times(1)).fire(eventCaptor.capture());
 
         final EditExpressionEvent editExprEvent = eventCaptor.getValue();
+        assertEquals(E_UUID,
+                     editExprEvent.getNodeUUID());
         assertEquals(decision,
                      editExprEvent.getHasExpression());
         assertEquals(decision,

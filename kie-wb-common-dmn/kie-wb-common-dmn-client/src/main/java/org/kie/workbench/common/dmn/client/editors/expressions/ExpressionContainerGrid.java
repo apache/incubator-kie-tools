@@ -26,6 +26,7 @@ import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.general.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
@@ -44,6 +45,7 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
+import org.uberfire.mvp.ParameterizedCommand;
 
 public class ExpressionContainerGrid extends BaseGridWidget implements HasListSelectorControl {
 
@@ -58,8 +60,9 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final GridCellTuple parent = new GridCellTuple(0, 0, this);
 
-    private Optional<HasName> hasName;
+    private String nodeUUID;
     private HasExpression hasExpression;
+    private Optional<HasName> hasName = Optional.empty();
 
     private ExpressionContainerUIModelMapper uiModelMapper;
 
@@ -70,7 +73,8 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
                                    final ListSelectorView.Presenter listSelector,
                                    final SessionManager sessionManager,
                                    final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                   final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitions) {
+                                   final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitions,
+                                   final ParameterizedCommand<Optional<HasName>> onHasNameChanged) {
         super(new DMNGridData(),
               gridLayer,
               gridLayer,
@@ -85,8 +89,9 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
         this.uiModelMapper = new ExpressionContainerUIModelMapper(parent,
                                                                   this::getModel,
                                                                   () -> Optional.ofNullable(hasExpression.getExpression()),
-                                                                  () -> hasName,
+                                                                  () -> nodeUUID,
                                                                   () -> hasExpression,
+                                                                  () -> spyHasName(onHasNameChanged),
                                                                   expressionEditorDefinitions,
                                                                   listSelector);
 
@@ -104,6 +109,38 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
         getRenderer().setColumnRenderConstraint((isSelectionLayer, gridColumn) -> !isSelectionLayer || gridColumn.equals(expressionColumn));
     }
 
+    Optional<HasName> spyHasName(final ParameterizedCommand<Optional<HasName>> onHasNameChanged) {
+        final Name name = new Name() {
+            @Override
+            public String getValue() {
+                return hasName.orElse(HasName.NOP).getName().getValue();
+            }
+
+            @Override
+            public void setValue(final String value) {
+                hasName.ifPresent(hn -> {
+                    hn.getName().setValue(value);
+                    onHasNameChanged.execute(hasName);
+                });
+            }
+        };
+
+        return Optional.of(new HasName() {
+            @Override
+            public Name getName() {
+                return name;
+            }
+
+            @Override
+            public void setName(final Name name) {
+                hasName.ifPresent(hn -> {
+                    hn.setName(name);
+                    onHasNameChanged.execute(hasName);
+                });
+            }
+        });
+    }
+
     @Override
     public boolean onDragHandle(final INodeXYEvent event) {
         return false;
@@ -115,10 +152,12 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
         super.deselect();
     }
 
-    public void setExpression(final Optional<HasName> hasName,
-                              final HasExpression hasExpression) {
-        this.hasName = hasName;
+    public void setExpression(final String nodeUUID,
+                              final HasExpression hasExpression,
+                              final Optional<HasName> hasName) {
+        this.nodeUUID = nodeUUID;
         this.hasExpression = hasExpression;
+        this.hasName = hasName;
 
         uiModelMapper.fromDMNModel(0, 0);
 

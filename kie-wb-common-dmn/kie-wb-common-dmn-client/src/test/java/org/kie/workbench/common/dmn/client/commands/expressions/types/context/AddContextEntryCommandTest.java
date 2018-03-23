@@ -156,6 +156,7 @@ public class AddContextEntryCommandTest {
         doReturn(parent).when(undefinedExpressionEditor).getParentInformation();
         doReturn(Optional.empty()).when(undefinedExpressionEditorDefinition).getModelClass();
         doReturn(Optional.of(undefinedExpressionEditor)).when(undefinedExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
+                                                                                                             any(Optional.class),
                                                                                                              any(HasExpression.class),
                                                                                                              any(Optional.class),
                                                                                                              any(Optional.class),

@@ -42,7 +42,9 @@ import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
@@ -62,25 +64,31 @@ public class FunctionEditorDefinitionTest {
     private DMNGridLayer gridLayer;
 
     @Mock
+    private DefinitionUtils definitionUtils;
+
+    @Mock
     private SessionManager sessionManager;
 
     @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
-    private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
-
-    @Mock
-    private Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
+    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
 
     @Mock
+    private ListSelectorView.Presenter listSelector;
+
+    @Mock
     private TranslationService translationService;
 
     @Mock
-    private ListSelectorView.Presenter listSelector;
+    private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+
+    @Mock
+    private Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
 
     @Mock
     private ParametersEditorView.Presenter parametersEditor;
@@ -100,13 +108,15 @@ public class FunctionEditorDefinitionTest {
     public void setup() {
         this.definition = new FunctionEditorDefinition(gridPanel,
                                                        gridLayer,
+                                                       definitionUtils,
                                                        sessionManager,
                                                        sessionCommandManager,
+                                                       canvasCommandFactory,
+                                                       cellEditorControls,
+                                                       listSelector,
+                                                       translationService,
                                                        expressionEditorDefinitionsSupplier,
                                                        supplementaryEditorDefinitionsSupplier,
-                                                       cellEditorControls,
-                                                       translationService,
-                                                       listSelector,
                                                        parametersEditor);
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add((ExpressionEditorDefinition) definition);
@@ -145,6 +155,7 @@ public class FunctionEditorDefinitionTest {
     public void testEditor() {
         final Optional<FunctionDefinition> expression = definition.getModelClass();
         final Optional<BaseExpressionGrid> oEditor = definition.getEditor(parent,
+                                                                          Optional.empty(),
                                                                           hasExpression,
                                                                           expression,
                                                                           hasName,

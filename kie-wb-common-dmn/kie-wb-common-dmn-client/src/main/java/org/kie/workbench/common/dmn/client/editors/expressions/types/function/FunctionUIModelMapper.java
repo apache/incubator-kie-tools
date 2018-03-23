@@ -97,6 +97,7 @@ public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition>
                                                                  gridWidget);
         final Optional<Expression> expression = Optional.ofNullable(function.getExpression());
         final Optional<BaseExpressionGrid> editor = ed.getEditor(expressionParent,
+                                                                 Optional.empty(),
                                                                  function,
                                                                  expression,
                                                                  Optional.empty(),

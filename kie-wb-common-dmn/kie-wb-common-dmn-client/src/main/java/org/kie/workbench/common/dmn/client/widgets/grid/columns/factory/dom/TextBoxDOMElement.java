@@ -23,8 +23,8 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.command.Command;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
@@ -33,16 +33,16 @@ public class TextBoxDOMElement extends org.uberfire.ext.wires.core.grids.client.
 
     private final SessionManager sessionManager;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    private final Function<GridCellTuple, AbstractCanvasGraphCommand> hasNoValueCommand;
-    private final Function<GridCellValueTuple, AbstractCanvasGraphCommand> hasValueCommand;
+    private final Function<GridCellTuple, Command> hasNoValueCommand;
+    private final Function<GridCellValueTuple, Command> hasValueCommand;
 
     public TextBoxDOMElement(final TextBox widget,
                              final GridLayer gridLayer,
                              final GridWidget gridWidget,
                              final SessionManager sessionManager,
                              final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                             final Function<GridCellTuple, AbstractCanvasGraphCommand> hasNoValueCommand,
-                             final Function<GridCellValueTuple, AbstractCanvasGraphCommand> hasValueCommand) {
+                             final Function<GridCellTuple, Command> hasNoValueCommand,
+                             final Function<GridCellValueTuple, Command> hasValueCommand) {
         super(widget,
               gridLayer,
               gridWidget);
@@ -53,6 +53,7 @@ public class TextBoxDOMElement extends org.uberfire.ext.wires.core.grids.client.
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void flush(final String value) {
         final int rowIndex = context.getRowIndex();
         final int columnIndex = context.getColumnIndex();

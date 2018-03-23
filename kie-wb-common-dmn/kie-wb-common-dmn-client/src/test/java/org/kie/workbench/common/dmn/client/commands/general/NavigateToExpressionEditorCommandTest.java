@@ -33,6 +33,8 @@ import static org.mockito.Mockito.verify;
 @RunWith(GwtMockitoTestRunner.class)
 public class NavigateToExpressionEditorCommandTest extends BaseNavigationCommandTest {
 
+    private static final String NODE_UUID = "uuid";
+
     @Override
     @SuppressWarnings("unchecked")
     protected BaseNavigateCommand getCommand() {
@@ -40,8 +42,9 @@ public class NavigateToExpressionEditorCommandTest extends BaseNavigationCommand
                                                      sessionPresenter,
                                                      sessionManager,
                                                      sessionCommandManager,
-                                                     Optional.of(hasName),
-                                                     hasExpression);
+                                                     NODE_UUID,
+                                                     hasExpression,
+                                                     Optional.of(hasName));
     }
 
     @Test
@@ -56,6 +59,9 @@ public class NavigateToExpressionEditorCommandTest extends BaseNavigationCommand
         verify(command).addExpressionEditorToCanvasWidget();
         verify(sessionPresenterView).setCanvasWidget(editorContainerForErrai1090);
         verify(sessionPresenterView).setContentScrollType(eq(SessionPresenter.View.ScrollType.CUSTOM));
+        verify(editor).setExpression(eq(NODE_UUID),
+                                     eq(hasExpression),
+                                     eq(Optional.of(hasName)));
     }
 
     @Test

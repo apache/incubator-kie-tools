@@ -38,6 +38,8 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.function.C
 import org.kie.workbench.common.dmn.client.commands.expressions.types.function.RemoveParameterCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.function.SetKindCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.function.UpdateParameterNameCommand;
+import org.kie.workbench.common.dmn.client.commands.general.DeleteHeaderValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
@@ -46,22 +48,31 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Exp
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersEditorView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPropertyCommand;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
@@ -71,6 +82,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils.assertCommands;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -87,6 +99,8 @@ public class FunctionGridTest {
 
     private static final String PARAMETER_NAME = "name";
 
+    private static final String NODE_UUID = "uuid";
+
     private static final int KIND_FEEL = 0;
 
     private static final int KIND_JAVA = 1;
@@ -97,11 +111,21 @@ public class FunctionGridTest {
 
     private final static int CLEAR_EXPRESSION_TYPE = 4;
 
+    private GridCellTuple tupleWithoutValue;
+
+    private GridCellValueTuple tupleWithValue;
+
     @Mock
     private DMNGridPanel gridPanel;
 
     @Mock
     private DMNGridLayer gridLayer;
+
+    @Mock
+    private GridWidget gridWidget;
+
+    @Mock
+    private DefinitionUtils definitionUtils;
 
     @Mock
     private SessionManager sessionManager;
@@ -110,10 +134,28 @@ public class FunctionGridTest {
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
+    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+
+    @Mock
     private ClientSession session;
 
     @Mock
-    private AbstractCanvasHandler handler;
+    private AbstractCanvasHandler canvasHandler;
+
+    @Mock
+    private Index index;
+
+    @Mock
+    private Element element;
+
+    @Mock
+    private CellEditorControlsView.Presenter cellEditorControls;
+
+    @Mock
+    private ListSelectorView.Presenter listSelector;
+
+    @Mock
+    private TranslationService translationService;
 
     @Mock
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
@@ -122,16 +164,7 @@ public class FunctionGridTest {
     private Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
 
     @Mock
-    private ListSelectorView.Presenter listSelector;
-
-    @Mock
     private ParametersEditorView.Presenter parametersEditor;
-
-    @Mock
-    private CellEditorControlsView.Presenter cellEditorControls;
-
-    @Mock
-    private TranslationService translationService;
 
     @Mock
     private GridCellTuple parent;
@@ -177,15 +210,20 @@ public class FunctionGridTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
+        tupleWithoutValue = new GridCellTuple(0, 0, gridWidget);
+        tupleWithValue = new GridCellValueTuple<>(0, 0, gridWidget, new BaseGridCellValue<>("value"));
+
         definition = new FunctionEditorDefinition(gridPanel,
                                                   gridLayer,
+                                                  definitionUtils,
                                                   sessionManager,
                                                   sessionCommandManager,
+                                                  canvasCommandFactory,
+                                                  cellEditorControls,
+                                                  listSelector,
+                                                  translationService,
                                                   expressionEditorDefinitionsSupplier,
                                                   supplementaryEditorDefinitionsSupplier,
-                                                  cellEditorControls,
-                                                  translationService,
-                                                  listSelector,
                                                   parametersEditor);
 
         expression = definition.getModelClass();
@@ -207,6 +245,7 @@ public class FunctionGridTest {
         doReturn(ExpressionType.LITERAL_EXPRESSION).when(literalExpressionEditorDefinition).getType();
         doReturn(Optional.of(literalExpression)).when(literalExpressionEditorDefinition).getModelClass();
         doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
+                                                                                                         any(Optional.class),
                                                                                                          any(HasExpression.class),
                                                                                                          any(Optional.class),
                                                                                                          any(Optional.class),
@@ -214,6 +253,7 @@ public class FunctionGridTest {
 
         doReturn(Optional.of(supplementaryLiteralExpression)).when(supplementaryLiteralExpressionEditorDefinition).getModelClass();
         doReturn(Optional.of(supplementaryLiteralExpressionEditor)).when(supplementaryLiteralExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
+                                                                                                                                   any(Optional.class),
                                                                                                                                    any(HasExpression.class),
                                                                                                                                    any(Optional.class),
                                                                                                                                    any(Optional.class),
@@ -222,13 +262,23 @@ public class FunctionGridTest {
         doReturn(uiLiteralExpressionModel).when(literalExpressionEditor).getModel();
 
         doReturn(session).when(sessionManager).getCurrentSession();
-        doReturn(handler).when(session).getCanvasHandler();
+        doReturn(canvasHandler).when(session).getCanvasHandler();
+
+        when(gridWidget.getModel()).thenReturn(new BaseGridData(false));
+        when(canvasHandler.getGraphIndex()).thenReturn(index);
+        when(index.get(anyString())).thenReturn(element);
+        when(element.getContent()).thenReturn(mock(Definition.class));
+        when(definitionUtils.getNameIdentifier(any())).thenReturn("name");
+        when(canvasCommandFactory.updatePropertyValue(any(Element.class),
+                                                      anyString(),
+                                                      any())).thenReturn(mock(UpdateElementPropertyCommand.class));
 
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
     }
 
     private void setupGrid(final int nesting) {
         this.grid = spy((FunctionGrid) definition.getEditor(parent,
+                                                            nesting == 0 ? Optional.of(NODE_UUID) : Optional.empty(),
                                                             hasExpression,
                                                             expression,
                                                             hasName,
@@ -308,7 +358,7 @@ public class FunctionGridTest {
 
         ((HasListSelectorControl.ListSelectorTextItem) items.get(CLEAR_EXPRESSION_TYPE)).getCommand().execute();
         verify(cellEditorControls).hide();
-        verify(sessionCommandManager).execute(eq(handler),
+        verify(sessionCommandManager).execute(eq(canvasHandler),
                                               any(org.kie.workbench.common.dmn.client.commands.general.ClearExpressionTypeCommand.class));
     }
 
@@ -417,7 +467,7 @@ public class FunctionGridTest {
 
         grid.addParameter(() -> {/*Nothing*/});
 
-        verify(sessionCommandManager).execute(eq(handler),
+        verify(sessionCommandManager).execute(eq(canvasHandler),
                                               any(AddParameterCommand.class));
     }
 
@@ -428,7 +478,7 @@ public class FunctionGridTest {
         grid.removeParameter(parameter,
                              () -> {/*Nothing*/});
 
-        verify(sessionCommandManager).execute(eq(handler),
+        verify(sessionCommandManager).execute(eq(canvasHandler),
                                               any(RemoveParameterCommand.class));
     }
 
@@ -439,7 +489,7 @@ public class FunctionGridTest {
         grid.updateParameterName(parameter,
                                  "name");
 
-        verify(sessionCommandManager).execute(eq(handler),
+        verify(sessionCommandManager).execute(eq(canvasHandler),
                                               any(UpdateParameterNameCommand.class));
     }
 
@@ -492,7 +542,7 @@ public class FunctionGridTest {
         assertEquals(expectedEditor,
                      gridWidgetCaptor.getValue().get());
 
-        verify(sessionCommandManager).execute(eq(handler),
+        verify(sessionCommandManager).execute(eq(canvasHandler),
                                               any(SetKindCommand.class));
     }
 
@@ -502,7 +552,7 @@ public class FunctionGridTest {
 
         grid.clearExpressionType();
 
-        verify(sessionCommandManager).execute(eq(handler),
+        verify(sessionCommandManager).execute(eq(canvasHandler),
                                               any(ClearExpressionTypeCommand.class));
     }
 
@@ -530,5 +580,27 @@ public class FunctionGridTest {
 
         verify(gridLayer).draw();
         verify(gridLayer).select(eq(literalExpressionEditor));
+    }
+
+    @Test
+    public void testHeaderFactoryWhenNested() {
+        setupGrid(1);
+
+        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderHasNameTextBoxFactory();
+        assertCommands(factory.getHasNoValueCommand().apply(tupleWithoutValue),
+                       DeleteHeaderValueCommand.class);
+        assertCommands(factory.getHasValueCommand().apply(tupleWithValue),
+                       SetHeaderValueCommand.class);
+    }
+
+    @Test
+    public void testHeaderFactoryWhenNotNested() {
+        setupGrid(0);
+
+        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderHasNameTextBoxFactory();
+        assertCommands(factory.getHasNoValueCommand().apply(tupleWithoutValue),
+                       DeleteHeaderValueCommand.class, UpdateElementPropertyCommand.class);
+        assertCommands(factory.getHasValueCommand().apply(tupleWithValue),
+                       SetHeaderValueCommand.class, UpdateElementPropertyCommand.class);
     }
 }
