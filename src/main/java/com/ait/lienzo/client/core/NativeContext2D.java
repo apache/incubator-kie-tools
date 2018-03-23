@@ -125,6 +125,14 @@ public final class NativeContext2D extends JavaScriptObject
 		return this;
     }-*/;
 
+    public final void saveContainer() {
+        this.save();
+    }
+
+    public final void restoreContainer() {
+        this.restore();
+    }
+
     public final native void save()
     /*-{
 		this.save();

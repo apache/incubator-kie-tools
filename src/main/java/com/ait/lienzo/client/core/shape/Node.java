@@ -100,7 +100,6 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.touch.client.Point;
 
 /**
  * Node is the base class for {@link ContainerNode} and {@link Shape}.
@@ -487,7 +486,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
         }
         if (context.isDrag() || isVisible())
         {
-            context.save();
+            context.saveContainer();
 
             final Transform xfrm = getPossibleNodeTransform();
 
@@ -497,7 +496,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
             }
             drawWithoutTransforms(context, alpha, bounds);
 
-            context.restore();
+            context.restoreContainer();
         }
     }
 

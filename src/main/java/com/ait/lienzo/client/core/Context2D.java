@@ -59,11 +59,31 @@ public class Context2D
         return m_jso;
     }
 
+    /**
+     * Save and push a new container context to the stack
+     */
+    public void saveContainer(){
+        m_jso.saveContainer();
+    }
+
+    /**
+     * Restore and pop the current container context from the stack returning to the previous context
+     */
+    public void restoreContainer(){
+        m_jso.restoreContainer();
+    }
+
+    /**
+     * Saves the current context state (i.e style, fill, stroke...) pushing to the stack
+     */
     public void save()
     {
         m_jso.save();
     }
 
+    /**
+     * Restore the saved context state (i.e style, fill, stroke...) by popping from the stack
+     */
     public void restore()
     {
         m_jso.restore();
