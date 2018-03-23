@@ -25,13 +25,15 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
-import org.guvnor.structure.events.AfterCreateOrganizationalUnitEvent;
+import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.OrganizationalUnitRepositoryInfo;
+import org.kie.workbench.common.screens.library.api.cluster.ClusterLibraryEvent;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.popup.OrganizationalUnitPopUpPresenter;
@@ -126,7 +128,7 @@ public class OrganizationalUnitsScreen {
         }
     }
 
-    private void setupOrganizationalUnits() {
+    void setupOrganizationalUnits() {
         if (organizationalUnitController.canReadOrgUnits()) {
             view.showBusyIndicator();
             libraryService.call((List<OrganizationalUnit> allOrganizationalUnits) -> {
@@ -174,9 +176,16 @@ public class OrganizationalUnitsScreen {
         organizationalUnitPopUpPresenter.show();
     }
 
-    public void organizationalUnitCreated(@Observes final AfterCreateOrganizationalUnitEvent afterCreateOrganizationalUnitEvent) {
-        organizationalUnits.add(afterCreateOrganizationalUnitEvent.getOrganizationalUnit());
-        refresh();
+    public void onNewOrganizationalUnitEvent(@Observes final NewOrganizationalUnitEvent newOrganizationalUnitEvent) {
+        setupOrganizationalUnits();
+    }
+
+    public void onRemoveOrganizationalUnitEvent(@Observes final RemoveOrganizationalUnitEvent removeOrganizationalUnitEvent) {
+        setupOrganizationalUnits();
+    }
+
+    public void onClusterLibraryEvent(@Observes ClusterLibraryEvent clusterLibraryEvent) {
+        setupOrganizationalUnits();
     }
 
     public boolean canCreateOrganizationalUnit() {

@@ -25,7 +25,9 @@ import org.guvnor.common.services.project.client.context.WorkspaceProjectContext
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.events.AfterCreateOrganizationalUnitEvent;
+import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -34,6 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.api.LibraryService;
+import org.kie.workbench.common.screens.library.api.cluster.ClusterLibraryEvent;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.popup.OrganizationalUnitPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
@@ -196,21 +199,16 @@ public class OrganizationalUnitsScreenTest {
     }
 
     @Test
-    public void organizationalUnitCreatedTest() {
-        final OrganizationalUnit newOrganizationalUnit = new OrganizationalUnitImpl("newOu",
-                                                                                    "newOwner",
-                                                                                    "newDefaultGroupId");
-        List<OrganizationalUnit> organizationalUnits = new ArrayList<>();
-        organizationalUnits.add(organizationalUnit1);
-        organizationalUnits.add(organizationalUnit2);
-        organizationalUnits.add(organizationalUnit3);
-        organizationalUnits.add(newOrganizationalUnit);
+    public void ouEventsShouldReloadOUs() {
 
-        presenter.init();
-        presenter.organizationalUnitCreated(new AfterCreateOrganizationalUnitEvent(newOrganizationalUnit));
+        presenter.onNewOrganizationalUnitEvent(new NewOrganizationalUnitEvent());
 
-        assertEquals(organizationalUnits,
-                     presenter.organizationalUnits);
+        presenter.onClusterLibraryEvent(new ClusterLibraryEvent());
+
+        presenter.onRemoveOrganizationalUnitEvent(new RemoveOrganizationalUnitEvent());
+
+        verify(presenter, times(3)).setupOrganizationalUnits();
+        verify(libraryService, times(3)).getOrganizationalUnits();
     }
 
     @Test
