@@ -24,9 +24,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.uberfire.ext.editor.commons.client.file.exports.FileExportResources;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class FileExportScriptInjectorTest {
@@ -50,6 +52,7 @@ public class FileExportScriptInjectorTest {
         final String script = scriptCaptor.getValue();
         final String fsNsObject = FileExportScriptInjector.buildNamespaceObject(JsFileSaver.class.getName() + ".saveAs");
         final String jsPdfNsObject = FileExportScriptInjector.buildNamespaceObject(JsPdf.class.getName());
+        final String c2sNsObject = FileExportResources.INSTANCE.canvas2svg().getText();
         assertEquals("var " +
                              fsNsObject +
                              " = function(blob, fileName, disableAutoBOM) {\n" +
@@ -59,7 +62,8 @@ public class FileExportScriptInjectorTest {
                              " = function(settings) {\n" +
                              "jsPdf\n" +
                              "var saveAs = org.uberfire.ext.editor.commons.client.file.exports.jso.JsFileSaver.saveAs; " +
-                             "return new jsPDF(settings);};" + "\n",
+                             "return new jsPDF(settings);};" + "\n" +
+                             c2sNsObject + "\n",
                      script);
     }
 

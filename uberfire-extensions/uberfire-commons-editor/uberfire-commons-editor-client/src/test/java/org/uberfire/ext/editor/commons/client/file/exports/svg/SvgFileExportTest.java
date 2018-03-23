@@ -1,11 +1,11 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,35 +14,40 @@
  * limitations under the License.
  */
 
-package org.uberfire.ext.editor.commons.client.file.exports;
+package org.uberfire.ext.editor.commons.client.file.exports.svg;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.common.client.dom.Blob;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.uberfire.ext.editor.commons.client.file.exports.AbstractFileExportTest;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class TextFileExportTest extends AbstractFileExportTest {
+public class SvgFileExportTest extends AbstractFileExportTest{
 
-    private TextFileExport tested;
+    private static final String SVG = "svg content";
+    private SvgFileExport svgFileExport;
+
+    @Mock
+    private IContext2D context;
 
     @Before
-    public void setup() {
-        tested = new TextFileExport(fileSaver);
+    public void setUp() throws Exception {
+        Mockito.when(context.getSerializedSvg()).thenReturn(SVG);
+        this.svgFileExport = new SvgFileExport(fileSaver);
     }
 
     @Test
     public void testExport() {
-        final TextContent content = TextContent.create("testing");
-        tested.export(content, FILE_NAME);
-        verify(fileSaver,
-               times(1)).accept(any(Blob.class),
-                                eq(FILE_NAME));
+        svgFileExport.export(context,FILE_NAME);
+        verify(context).getSerializedSvg();
+        verify(fileSaver).accept(any(Blob.class), eq(FILE_NAME));
     }
 }

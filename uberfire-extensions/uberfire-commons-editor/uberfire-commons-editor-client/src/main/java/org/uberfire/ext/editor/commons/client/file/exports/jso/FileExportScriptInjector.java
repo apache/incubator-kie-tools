@@ -18,6 +18,7 @@ package org.uberfire.ext.editor.commons.client.file.exports.jso;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import com.google.gwt.core.client.ScriptInjector;
@@ -51,8 +52,10 @@ public class FileExportScriptInjector {
     public void inject() {
         final String fileSaver = getFileSaverSource();
         final String jsPdf = getJsPdfSource();
+        final String c2sSource = getC2SSource();
         scriptInjector.accept("var " + fileSaver + "\n" +
-                                      jsPdf + "\n");
+                                      jsPdf + "\n" +
+                                      c2sSource + "\n");
     }
 
     private String getFileSaverSource() {
@@ -70,6 +73,10 @@ public class FileExportScriptInjector {
                 jsPdfScript + "\n" +
                 "var saveAs = " + NS + "JsFileSaver.saveAs; " +
                 "return new jsPDF(settings);};";
+    }
+
+    private String getC2SSource() {
+        return FileExportResources.INSTANCE.canvas2svg().getText();
     }
 
     private static void inject(final String raw) {

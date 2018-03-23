@@ -34,7 +34,7 @@ public abstract class AbstractFileExport<T> implements FileExport<T> {
         });
     }
 
-    AbstractFileExport(final BiConsumer<Blob, String> saveAs) {
+    protected AbstractFileExport(final BiConsumer<Blob, String> saveAs) {
         this.fileSaver = saveAs;
     }
 

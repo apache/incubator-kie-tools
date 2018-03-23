@@ -22,6 +22,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.uberfire.ext.editor.commons.client.file.exports.jso.FileExportScriptInjector;
+import org.uberfire.ext.editor.commons.client.file.exports.svg.SvgFileExport;
 
 /**
  * The FileExport bean factory.
@@ -59,5 +60,10 @@ public class FileExportProducer {
     @Produces
     public ImageFileExport forImage() {
         return new ImageFileExport();
+    }
+
+    @Produces
+    public SvgFileExport forSvg() {
+        return new SvgFileExport();
     }
 }

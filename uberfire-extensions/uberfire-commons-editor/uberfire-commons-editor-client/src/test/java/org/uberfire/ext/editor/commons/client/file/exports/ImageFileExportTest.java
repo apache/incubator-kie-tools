@@ -16,24 +16,20 @@
 
 package org.uberfire.ext.editor.commons.client.file.exports;
 
-import java.util.function.BiConsumer;
-
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.common.client.dom.Blob;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class ImageFileExportTest {
-
-    @Mock
-    private BiConsumer<Blob, String> fileSaver;
+public class ImageFileExportTest extends AbstractFileExportTest {
 
     private ImageFileExport tested;
 
@@ -52,9 +48,9 @@ public class ImageFileExportTest {
         assertEquals("9j/4AAQSkZJRgABAQEASABIAAD",
                      imageContent.getData());
         tested.export(imageContent,
-                      "image-file");
+                      FILE_NAME);
         verify(fileSaver,
                times(1)).accept(any(Blob.class),
-                                eq("image-file"));
+                                eq(FILE_NAME));
     }
 }

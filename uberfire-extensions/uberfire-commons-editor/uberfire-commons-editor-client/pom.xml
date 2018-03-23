@@ -144,6 +144,29 @@
               <overWriteSnapshots>true</overWriteSnapshots>
             </configuration>
           </execution>
+
+          <execution>
+            <id>unpack-canvas2svg</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.webjars.bowergithub.gliffy</groupId>
+                  <artifactId>canvas2svg</artifactId>
+                  <version>${version.org.webjars.bowergithub.gliffy.canvas2svg}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/canvas2svg</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
+
         </executions>
       </plugin>
       <plugin>
@@ -181,6 +204,25 @@
                   <directory>${project.build.directory}/jspdf/META-INF/resources/webjars/jspdf/${version.org.webjars.bower.jspdf}/dist/</directory>
                   <includes>
                     <include>jspdf.min.js</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>copy-canvas2svg-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/org/uberfire/ext/editor/commons/client/file/exports/js</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.build.directory}/canvas2svg/META-INF/resources/webjars/canvas2svg/</directory>
+                  <includes>
+                    <include>canvas2svg.js</include>
                   </includes>
                 </resource>
               </resources>

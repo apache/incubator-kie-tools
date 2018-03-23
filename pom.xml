@@ -77,6 +77,7 @@
         produces a conflict with the UF ace js plugin once trying to create a new jsPDF
         instance.-->
     <version.org.webjars.bower.jspdf>1.2.61</version.org.webjars.bower.jspdf>
+    <version.org.webjars.bowergithub.gliffy.canvas2svg>0.1</version.org.webjars.bowergithub.gliffy.canvas2svg>
     <version.org.gwtbootstrap3>0.9.3</version.org.gwtbootstrap3>
 
     <version.org.jboss.byteman>3.0.10</version.org.jboss.byteman>
