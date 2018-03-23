@@ -36,8 +36,7 @@ import com.google.gwt.dom.client.Element;
  * @see <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#2dcontext">Canvas 2d Context</a> 
  */
 
-public final class NativeContext2D extends JavaScriptObject
-{
+public class NativeContext2D extends JavaScriptObject implements INativeContext2D {
     private static final native NativeContext2D make_0(CanvasElement element)
     /*-{
 		return element.getContext("2d");

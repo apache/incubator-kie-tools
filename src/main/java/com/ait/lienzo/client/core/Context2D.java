@@ -42,19 +42,19 @@ import com.google.gwt.dom.client.Element;
  */
 public class Context2D
 {
-    private final NativeContext2D m_jso;
+    private final INativeContext2D m_jso;
 
     public Context2D(final CanvasElement element)
     {
         this(NativeContext2D.make(element));
     }
 
-    public Context2D(final NativeContext2D jso)
+    public Context2D(final INativeContext2D jso)
     {
         m_jso = jso;
     }
 
-    public NativeContext2D getNativeContext()
+    public INativeContext2D getNativeContext()
     {
         return m_jso;
     }

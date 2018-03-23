@@ -690,7 +690,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         return draw(getContext());
     }
 
-    protected Layer draw(Context2D context)
+    public Layer draw(Context2D context)
     {
         if (LienzoCore.IS_CANVAS_SUPPORTED)
         {

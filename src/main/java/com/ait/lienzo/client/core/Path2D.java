@@ -189,7 +189,7 @@ public class Path2D
         return this;
     }
 
-    static final class NativePath2D extends JavaScriptObject
+    public static final class NativePath2D extends JavaScriptObject
     {
         protected NativePath2D()
         {

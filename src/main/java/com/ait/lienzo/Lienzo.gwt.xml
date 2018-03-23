@@ -24,4 +24,5 @@
 	<entry-point class='com.ait.lienzo.client.core.config.LienzoCoreEntryPoint' />
 	<source path='client' />
 	<source path='shared' />
+
 </module>
