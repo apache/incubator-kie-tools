@@ -19,12 +19,15 @@ package org.kie.workbench.common.forms.adf.engine.shared.formGeneration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.forms.adf.engine.shared.FormElementFilter;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.model.Person;
 import org.kie.workbench.common.forms.adf.engine.shared.test.AbstractFormGenerationTest;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.mockito.runners.MockitoJUnitRunner;
 
-;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FormGeneratorTest extends AbstractFormGenerationTest {
@@ -57,5 +60,42 @@ public class FormGeneratorTest extends AbstractFormGenerationTest {
 
         testGeneratedForm(form,
                           Person.class.getName());
+    }
+
+    @Test
+    public void testGenerateFormForModelWithFilters() {
+        FormDefinition form = generator.generateFormForModel(model, getFilters());
+
+        checkFormGeneratedWithFilters(form);
+    }
+
+    @Test
+    public void testGenerateFormForClassWithFilters() {
+        FormDefinition form = generator.generateFormForClass(Person.class, getFilters());
+
+        checkFormGeneratedWithFilters(form);
+    }
+
+    @Test
+    public void testGenerateFormForClassNameWithFilters() {
+        FormDefinition form = generator.generateFormForClassName(Person.class.getName(), getFilters());
+
+        checkFormGeneratedWithFilters(form);
+    }
+
+    protected FormElementFilter[] getFilters() {
+        FormElementFilter nameFilter = new FormElementFilter("name", o -> false);
+        FormElementFilter lastNameFilter = new FormElementFilter("lastName", o -> false);
+
+        return new FormElementFilter[]{nameFilter, lastNameFilter};
+    }
+
+    protected void checkFormGeneratedWithFilters(FormDefinition formDefinition) {
+        assertNotNull(formDefinition);
+
+        assertEquals(formDefinition.getFields().size(), formDefinition.getLayoutTemplate().getRows().size());
+
+        assertNull(formDefinition.getFieldByBinding("name"));
+        assertNull(formDefinition.getFieldByBinding("lastName"));
     }
 }

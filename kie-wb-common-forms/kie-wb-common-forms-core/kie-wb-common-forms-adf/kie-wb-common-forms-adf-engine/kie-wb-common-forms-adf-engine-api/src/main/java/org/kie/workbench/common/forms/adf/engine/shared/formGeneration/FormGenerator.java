@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.forms.adf.engine.shared.formGeneration;
 
+import org.kie.workbench.common.forms.adf.engine.shared.FormElementFilter;
 import org.kie.workbench.common.forms.adf.service.definitions.FormDefinitionSettings;
 import org.kie.workbench.common.forms.model.FormDefinition;
 
@@ -26,19 +27,19 @@ public interface FormGenerator {
 
     /**
      * Generates a {@link FormDefinition} for the given model if there are {@link FormDefinitionSettings} on the ADF
-     * Engine for it.
+     * Engine for it. It uses the {@link FormElementFilter} params to filter form fields if needed.
      */
-    FormDefinition generateFormForModel(Object model);
+    FormDefinition generateFormForModel(Object model, FormElementFilter... filters);
 
     /**
      * Generates a {@link FormDefinition} for the given Class if there are {@link FormDefinitionSettings} on the ADF
-     * Engine for it.
+     * Engine for it. It uses the {@link FormElementFilter} params to filter form fields if needed.
      */
-    FormDefinition generateFormForClass(Class clazz);
+    FormDefinition generateFormForClass(Class clazz, FormElementFilter... filters);
 
     /**
      * Generates a {@link FormDefinition} for the given className if there are {@link FormDefinitionSettings} on the ADF
-     * Engine for it.
+     * Engine for it. It uses the {@link FormElementFilter} params to filter form fields if needed.
      */
-    FormDefinition generateFormForClassName(String className);
+    FormDefinition generateFormForClassName(String className, FormElementFilter... filters);
 }

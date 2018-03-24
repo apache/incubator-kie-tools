@@ -20,6 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.forms.adf.engine.shared.FormBuildingService;
+import org.kie.workbench.common.forms.adf.engine.shared.FormElementFilter;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.FormGenerator;
 import org.kie.workbench.common.forms.model.FormDefinition;
 
@@ -34,29 +35,29 @@ public class FormBuildingServiceImpl implements FormBuildingService {
     }
 
     @Override
-    public FormDefinition generateFormForModel(Object model) {
+    public FormDefinition generateFormForModel(Object model, FormElementFilter... filters) {
         if (model == null) {
             throw new IllegalArgumentException("Cannot generate form: Model cannot be null");
         }
 
-        return formGenerator.generateFormForModel(model);
+        return formGenerator.generateFormForModel(model, filters);
     }
 
     @Override
-    public FormDefinition generateFormForClass(Class clazz) {
+    public FormDefinition generateFormForClass(Class clazz, FormElementFilter... filters) {
         if (clazz == null) {
             throw new IllegalArgumentException("Cannot generate form: Class cannot be null");
         }
 
-        return formGenerator.generateFormForClass(clazz);
+        return formGenerator.generateFormForClass(clazz, filters);
     }
 
     @Override
-    public FormDefinition generateFormForClassName(String className) {
+    public FormDefinition generateFormForClassName(String className, FormElementFilter... filters) {
         if (className == null) {
             throw new IllegalArgumentException("Cannot generate form: Class cannot be null");
         }
 
-        return formGenerator.generateFormForClassName(className);
+        return formGenerator.generateFormForClassName(className, filters);
     }
 }

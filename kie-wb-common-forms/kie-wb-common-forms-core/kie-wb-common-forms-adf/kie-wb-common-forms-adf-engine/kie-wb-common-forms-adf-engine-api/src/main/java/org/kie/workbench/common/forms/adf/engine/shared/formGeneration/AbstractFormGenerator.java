@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.adf.engine.shared.formGeneration;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kie.workbench.common.forms.adf.engine.shared.FormElementFilter;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.layout.LayoutGenerator;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.FormElementProcessor;
 import org.kie.workbench.common.forms.adf.service.building.FieldStatusModifier;
@@ -73,39 +74,43 @@ public abstract class AbstractFormGenerator implements FormGenerator {
     }
 
     @Override
-    public FormDefinition generateFormForModel(Object model) {
+    public FormDefinition generateFormForModel(Object model, FormElementFilter... filters) {
 
         FormDefinitionSettings settings = formDefinitionSettings.get(model.getClass().getName());
 
         if (settings != null) {
             return generateFormDefinition(settings,
-                                          model);
+                                          model,
+                                          filters);
         }
 
         return null;
     }
 
     @Override
-    public FormDefinition generateFormForClass(Class clazz) {
-        return generateFormForClassName(clazz.getName());
+    public FormDefinition generateFormForClass(Class clazz, FormElementFilter... filters) {
+        return generateFormForClassName(clazz.getName(), filters);
     }
 
     @Override
-    public FormDefinition generateFormForClassName(String className) {
+    public FormDefinition generateFormForClassName(String className, FormElementFilter... filters) {
         FormDefinitionSettings settings = formDefinitionSettings.get(className);
         if (settings != null) {
             return generateFormDefinition(settings,
-                                          null);
+                                          null,
+                                          filters);
         }
         return null;
     }
 
     protected FormDefinition generateFormDefinition(FormDefinitionSettings settings,
-                                                    Object model) {
+                                                    Object model,
+                                                    FormElementFilter... filters) {
 
         FormGenerationContext context = new FormGenerationContext(model,
                                                                   settings,
-                                                                  getI18nHelper(settings.getI18nSettings()));
+                                                                  getI18nHelper(settings.getI18nSettings()),
+                                                                  filters);
 
         context.setFieldStatusModifierReferences(fieldModifierReferences);
 
@@ -133,11 +138,16 @@ public abstract class AbstractFormGenerator implements FormGenerator {
             FormElementProcessor processor = processors.get(formElement.getClass());
 
             if (processor != null) {
-                LayoutComponent layoutComponent = processor.processFormElement(formElement,
-                                                                               context);
-                if (layoutComponent != null) {
-                    layoutGenerator.addComponent(layoutComponent,
-                                                 formElement.getLayoutSettings());
+
+                FormElementFilter filter  = context.getFilter(formElement.getName());
+
+                if(filter == null || filter.getPredicate().test(context.getModel())) {
+                    LayoutComponent layoutComponent = processor.processFormElement(formElement,
+                                                                                   context);
+                    if (layoutComponent != null) {
+                        layoutGenerator.addComponent(layoutComponent,
+                                                     formElement.getLayoutSettings());
+                    }
                 }
             }
         });

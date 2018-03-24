@@ -18,7 +18,9 @@ package org.kie.workbench.common.forms.adf.engine.shared.formGeneration;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
+import org.kie.workbench.common.forms.adf.engine.shared.FormElementFilter;
 import org.kie.workbench.common.forms.adf.service.building.FieldStatusModifier;
 import org.kie.workbench.common.forms.adf.service.definitions.FormDefinitionSettings;
 import org.kie.workbench.common.forms.model.FormDefinition;
@@ -37,13 +39,16 @@ public class FormGenerationContext {
 
     private Map<String, FieldStatusModifier> fieldStatusModifiers = new HashMap<>();
 
+    private Map<String, FormElementFilter> filters = new HashMap<>();
+
     private I18nHelper i18nHelper;
 
     private Object model;
 
     public FormGenerationContext(Object model,
                                  FormDefinitionSettings settings,
-                                 I18nHelper i18nHelper) {
+                                 I18nHelper i18nHelper,
+                                 FormElementFilter... filters) {
         this.model = model;
         this.formDefinitionSettings = settings;
         this.i18nHelper = i18nHelper;
@@ -52,6 +57,7 @@ public class FormGenerationContext {
 
         formDefinition.setName(settings.getModelType());
         formDefinition.setId(settings.getModelType());
+        Stream.of(filters).forEach(filter -> this.filters.put(filter.getElementName(), filter));
     }
 
     public FormDefinition getFormDefinition() {
@@ -83,6 +89,10 @@ public class FormGenerationContext {
         }
 
         return null;
+    }
+
+    public FormElementFilter getFilter(String elementName) {
+        return filters.get(elementName);
     }
 
     public Object getModel() {

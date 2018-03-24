@@ -33,9 +33,8 @@ import org.jboss.errai.databinding.client.HasProperties;
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
@@ -226,6 +225,14 @@ public class FormPropertiesWidget implements IsElement,
                            getSessionRenderMode());
             }
         }
+    }
+
+    void onCanvasElementUpdatedEvent(final @Observes CanvasElementUpdatedEvent canvasElementUpdatedEvent) {
+        checkNotNull("canvasElementUpdatedEvent",
+                     canvasElementUpdatedEvent);
+        final String uuid = canvasElementUpdatedEvent.getElement().getUUID();
+        showByUUID(uuid,
+                   getSessionRenderMode());
     }
 
     void onCanvasSessionOpened(@Observes SessionOpenedEvent sessionOpenedEvent) {

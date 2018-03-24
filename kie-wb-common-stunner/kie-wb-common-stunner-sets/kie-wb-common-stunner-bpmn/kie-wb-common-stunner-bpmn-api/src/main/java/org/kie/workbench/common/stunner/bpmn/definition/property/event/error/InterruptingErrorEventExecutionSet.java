@@ -35,17 +35,23 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Portable
 @Bindable
 @PropertySet
-@FormDefinition(startElement = "errorRef",
+@FormDefinition(startElement = "isInterrupting",
         policy = FieldPolicy.ONLY_MARKED)
 public class InterruptingErrorEventExecutionSet implements BPMNPropertySet {
 
     @Property
-    @FormField(type = CheckBoxFieldType.class)
+    @FormField(
+            type = CheckBoxFieldType.class,
+            readonly = true
+    )
     @Valid
     private IsInterrupting isInterrupting;
 
     @Property
-    @FormField(type = ComboBoxFieldType.class)
+    @FormField(
+            type = ComboBoxFieldType.class,
+            afterElement = "isInterrupting"
+    )
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.CLIENT,
             className = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.ProcessErrorRefProvider"

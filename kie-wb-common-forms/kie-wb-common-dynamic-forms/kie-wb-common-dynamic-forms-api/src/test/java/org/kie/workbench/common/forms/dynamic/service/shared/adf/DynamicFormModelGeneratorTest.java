@@ -20,14 +20,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.adf.engine.shared.FormBuildingService;
+import org.kie.workbench.common.forms.adf.engine.shared.FormElementFilter;
+import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.model.Address;
 import org.kie.workbench.common.forms.adf.engine.shared.impl.FormBuildingServiceImpl;
 import org.kie.workbench.common.forms.adf.engine.shared.test.AbstractFormGenerationTest;
 import org.kie.workbench.common.forms.adf.engine.shared.test.TestPropertyValueExtractor;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.StaticModelFormRenderingContext;
+import org.kie.workbench.common.forms.model.FormDefinition;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DynamicFormModelGeneratorTest extends AbstractFormGenerationTest {
@@ -62,5 +66,33 @@ public class DynamicFormModelGeneratorTest extends AbstractFormGenerationTest {
             testGeneratedForm(form,
                               id);
         });
+    }
+
+    @Test
+    public void testGenerateContextForModelWithFilters() {
+        FormElementFilter nameFilter = new FormElementFilter("name", o -> true);
+        FormElementFilter lastNameFilter = new FormElementFilter("lastName", o -> false);
+        FormElementFilter addressStreetFilter = new FormElementFilter("address.street", o -> true);
+        FormElementFilter addressNumFilter = new FormElementFilter("address.number", o -> false);
+
+        StaticModelFormRenderingContext context = dynamicFormModelGenerator.getContextForModel(model, nameFilter, lastNameFilter, addressStreetFilter, addressNumFilter);
+
+        assertEquals(3, context.getAvailableForms().size());
+
+        FormDefinition rootForm = context.getRootForm();
+
+        assertNotNull(rootForm);
+        assertEquals(rootForm.getFields().size(), rootForm.getLayoutTemplate().getRows().size());
+
+        assertNotNull(rootForm.getFieldByBinding("name"));
+        assertNull(rootForm.getFieldByBinding("lastName"));
+
+        FormDefinition addressForm = context.getAvailableForms().get(Address.class.getName());
+
+        assertNotNull(addressForm);
+        assertEquals(addressForm.getFields().size(), addressForm.getLayoutTemplate().getRows().size());
+
+        assertNotNull(addressForm.getFieldByBinding("street"));
+        assertNull(addressForm.getFieldByBinding("number"));
     }
 }
