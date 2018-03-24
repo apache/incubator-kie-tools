@@ -41,7 +41,7 @@ public abstract class BaseThrowingIntermediateEvent
                    DataIOModel {
 
     @Category
-    public static final transient String category = BPMNCategories.EVENTS;
+    public static final transient String category = BPMNCategories.INTERMEDIATE_EVENTS;
 
     @Labels
     protected final Set<String> labels = new HashSet<String>();

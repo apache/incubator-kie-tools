@@ -41,8 +41,8 @@ public class ThrowingIntermediateEventShapeDef
 
     public static final Map<Class<? extends BaseThrowingIntermediateEvent>, SvgDataUriGlyph> GLYPHS =
             new HashMap<Class<? extends BaseThrowingIntermediateEvent>, SvgDataUriGlyph>() {{
-                put(IntermediateSignalEventThrowing.class, BPMNSVGGlyphFactory.INTERMEDIATE_SIGNAL_EVENT_GLYPH);
-                put(IntermediateMessageEventThrowing.class, BPMNSVGGlyphFactory.INTERMEDIATE_MESSAGE_EVENT_GLYPH);
+                put(IntermediateSignalEventThrowing.class, BPMNSVGGlyphFactory.INTERMEDIATE_SIGNAL_EVENT_THROWING_GLYPH);
+                put(IntermediateMessageEventThrowing.class, BPMNSVGGlyphFactory.INTERMEDIATE_MESSAGE_EVENT_THROWING_GLYPH);
             }};
 
     @Override

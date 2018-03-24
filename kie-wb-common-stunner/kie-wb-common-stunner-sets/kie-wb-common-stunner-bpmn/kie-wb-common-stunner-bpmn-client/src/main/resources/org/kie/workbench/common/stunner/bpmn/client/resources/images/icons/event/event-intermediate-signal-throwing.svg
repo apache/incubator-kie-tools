@@ -15,14 +15,15 @@
   ~ limitations under the License.
   -->
 
-<svg version="1.1" id="eventEndError" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+<!-- Generator: Adobe Illustrator 20.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="eventIntermediateSignalThrowing" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
 	 width="448px" height="448px" viewBox="0 0 448 448" style="enable-background:new 0 0 448 448;" xml:space="preserve">
 <style type="text/css">
 	.st0{display:none;}
 	.st1{display:inline;}
 	.st2{opacity:0.3;fill:none;enable-background:new    ;}
 	.st3{fill:none;}
-	.event-end-error-css { fill: #a30000; }
+	.event-intermediate-signal-throwing-css {fill: #007a87;}
 </style>
 <g id="Grid" class="st0">
 	<g id="icomoon-ignore" class="st1">
@@ -82,7 +83,7 @@
 		<line class="st2" x1="0" y1="432" x2="448" y2="432"/>
 	</g>
 </g>
-<path id="Icon" class="event-end-error-css" d="M288,209.7L413.7,101c0,0,5.5-7.7,13-4.5s4.9,12.2,4.9,12.2s-97.2,270-100.3,276.8c-3.2,7.1-4.8,11.2-11.4,13.6
-	c-6.3,2.3-11.2-0.4-16.8-5.7L160,239.2L34.3,347c0,0-5.5,7.7-13,4.5s-4.9-12.2-4.9-12.2s87.2-270.1,90.4-276.8
-	c3.9-8.1,4.8-11.2,11.4-13.6c6.3-2.3,11.2,0.4,16.8,5.7S288,209.7,288,209.7z"/>
+<path id="Icon" class="event-intermediate-signal-throwing-css" d="M252.7,16.8l191.8,352c5.8,10.5,5.7,21-0.5,31.5c-2.8,4.8-6.7,8.7-11.6,11.5s-10.2,4.2-15.9,4.2H33
+	c-5.7,0-10.9-1.4-15.9-4.2s-8.8-6.7-11.6-11.5c-6.2-10.5-6.3-21-0.5-31.5l191.8-352c2.8-5.2,6.7-9.2,11.7-12.2s10.4-4.5,16.2-4.5
+	s11.2,1.5,16.2,4.5C246,7.5,249.9,11.6,252.7,16.8z"/>
 </svg>

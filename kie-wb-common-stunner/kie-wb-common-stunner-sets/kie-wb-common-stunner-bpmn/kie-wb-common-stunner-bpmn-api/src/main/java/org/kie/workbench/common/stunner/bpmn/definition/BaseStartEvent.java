@@ -40,7 +40,7 @@ public abstract class BaseStartEvent implements BPMNViewDefinition,
                                                 DataIOModel {
 
     @Category
-    public static final transient String category = BPMNCategories.EVENTS;
+    public static final transient String category = BPMNCategories.START_EVENTS;
 
     @Labels
     protected final Set<String> labels = new HashSet<String>();

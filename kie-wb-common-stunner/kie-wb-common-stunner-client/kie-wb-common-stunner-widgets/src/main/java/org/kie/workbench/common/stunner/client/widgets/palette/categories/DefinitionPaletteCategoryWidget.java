@@ -79,6 +79,14 @@ public class DefinitionPaletteCategoryWidget implements DefinitionPaletteCategor
                     shapeFactory);
     }
 
+    public void setVisible(final boolean visible) {
+        view.setVisible(visible);
+    }
+
+    public boolean isVisible() {
+        return view.isVisible();
+    }
+
     private void renderItems(final List<DefaultPaletteItem> items,
                              final ShapeFactory<?, ?> shapeFactory) {
         if (items != null && !items.isEmpty()) {
@@ -132,6 +140,11 @@ public class DefinitionPaletteCategoryWidget implements DefinitionPaletteCategor
                                                                    x,
                                                                    y));
         }
+    }
+
+    @Override
+    public void onClose() {
+        view.setVisible(false);
     }
 
     @PreDestroy

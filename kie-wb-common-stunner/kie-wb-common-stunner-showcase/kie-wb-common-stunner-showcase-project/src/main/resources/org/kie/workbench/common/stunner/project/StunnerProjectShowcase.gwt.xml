@@ -85,7 +85,7 @@
   <inherits name="org.dashbuilder.renderer.GChartsRenderer"/>
 
   <!-- Specify the application specific style sheet. -->
-  <stylesheet src='css/drools-workbench.css'/>
+  <stylesheet src='css/stunner-project-showcase.css'/>
 
   <!-- Specify the paths for translatable code -->
   <source path='client'/>

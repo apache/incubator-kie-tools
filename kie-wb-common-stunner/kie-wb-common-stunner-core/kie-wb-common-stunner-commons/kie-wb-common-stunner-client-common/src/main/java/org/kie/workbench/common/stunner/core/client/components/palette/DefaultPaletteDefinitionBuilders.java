@@ -22,10 +22,11 @@ import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 public class DefaultPaletteDefinitionBuilders {
 
-    public static final int DEFAULT_ICON_SIZE = 15;
+    public static final int DEFAULT_ICON_SIZE = 14;
 
     public static abstract class AbstractItemBuilder<I extends DefaultPaletteItem, T extends AbstractItemBuilder> {
 
+        protected int priority;
         protected String itemId;
         protected String title;
         protected String description;
@@ -34,6 +35,7 @@ public class DefaultPaletteDefinitionBuilders {
         protected int iconSize;
 
         public AbstractItemBuilder() {
+            this.priority = -1;
             this.itemId = null;
             this.title = "";
             this.description = "";
@@ -43,6 +45,11 @@ public class DefaultPaletteDefinitionBuilders {
         }
 
         public abstract I build();
+
+        public T setPriority(final int priority) {
+            this.priority = priority;
+            return cast();
+        }
 
         public T setItemId(final String itemId) {
             this.itemId = itemId;
@@ -83,7 +90,8 @@ public class DefaultPaletteDefinitionBuilders {
     public static class ItemBuilder extends AbstractItemBuilder<DefaultPaletteItem, ItemBuilder> {
 
         public DefaultPaletteItem build() {
-            return new DefaultPaletteItem(itemId,
+            return new DefaultPaletteItem(priority,
+                                          itemId,
                                           definitionId,
                                           title,
                                           description,
@@ -95,7 +103,8 @@ public class DefaultPaletteDefinitionBuilders {
     public static class GroupBuilder extends AbstractItemBuilder<DefaultPaletteGroup, GroupBuilder> {
 
         public DefaultPaletteGroup build() {
-            return new DefaultPaletteGroup(itemId,
+            return new DefaultPaletteGroup(priority,
+                                           itemId,
                                            definitionId,
                                            title,
                                            description,
@@ -107,7 +116,7 @@ public class DefaultPaletteDefinitionBuilders {
 
     public static class CategoryBuilder extends AbstractItemBuilder<DefaultPaletteCategory, CategoryBuilder> {
 
-        private static final int ICON_SIZE = 20;
+        private static final int ICON_SIZE = 21;
 
         private Glyph glyph;
 
@@ -121,7 +130,8 @@ public class DefaultPaletteDefinitionBuilders {
         }
 
         public DefaultPaletteCategory build() {
-            return new DefaultPaletteCategory(itemId,
+            return new DefaultPaletteCategory(priority,
+                                              itemId,
                                               definitionId,
                                               title,
                                               description,

@@ -19,12 +19,14 @@ package org.kie.workbench.common.stunner.client.widgets.palette.categories;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.MouseDownEvent;
+import org.jboss.errai.common.client.dom.Button;
+import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Document;
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.Paragraph;
-import org.jboss.errai.common.client.dom.Span;
+import org.jboss.errai.common.client.dom.ListItem;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -40,12 +42,18 @@ import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 public class DefinitionPaletteCategoryWidgetViewImpl implements DefinitionPaletteCategoryWidgetView,
                                                                 IsElement {
 
+    private static final String SHOW_FLYOUT_CSS = "kie-palette-show-flyout";
+
     @Inject
     private Document document;
 
     @Inject
     @DataField
-    private Paragraph categoryIcon;
+    private ListItem listGroupItem;
+
+    @Inject
+    @DataField
+    private Button categoryIcon;
 
     @Inject
     @DataField
@@ -53,7 +61,7 @@ public class DefinitionPaletteCategoryWidgetViewImpl implements DefinitionPalett
 
     @Inject
     @DataField
-    private Span header;
+    private Button closeCategoryButton;
 
     @Inject
     private DOMGlyphRenderers domGlyphRenderers;
@@ -70,8 +78,6 @@ public class DefinitionPaletteCategoryWidgetViewImpl implements DefinitionPalett
                        double width,
                        double height) {
         DefaultPaletteCategory category = presenter.getCategory();
-        categoryIcon.setTitle(category.getTitle());
-        header.setTextContent(category.getTitle());
         final org.jboss.errai.common.client.api.IsElement glyphElement =
                 domGlyphRenderers.render(glyph,
                                          width,
@@ -94,11 +100,33 @@ public class DefinitionPaletteCategoryWidgetViewImpl implements DefinitionPalett
         floatingPanel.appendChild(groupWidget.getElement());
     }
 
+    @Override
+    public void setVisible(boolean visible) {
+        if (visible) {
+            DOMUtil.addCSSClass(listGroupItem,
+                                SHOW_FLYOUT_CSS);
+        } else {
+            DOMUtil.removeCSSClass(listGroupItem,
+                                   SHOW_FLYOUT_CSS);
+        }
+    }
+
+    @Override
+    public boolean isVisible() {
+        return DOMUtil.hasCSSClass(listGroupItem,
+                                   "kie-palette-show-flyout");
+    }
+
     @EventHandler("categoryIcon")
     public void onMouseDown(MouseDownEvent mouseDownEvent) {
         presenter.onMouseDown(mouseDownEvent.getClientX(),
                               mouseDownEvent.getClientY(),
                               mouseDownEvent.getX(),
                               mouseDownEvent.getY());
+    }
+
+    @EventHandler("closeCategoryButton")
+    public void onClose(ClickEvent mouseClickEvent) {
+        presenter.onClose();
     }
 }

@@ -18,6 +18,8 @@ package org.kie.workbench.common.stunner.core.client.components.palette;
 
 public interface PaletteItem {
 
+    int getPriority();
+
     String getId();
 
     String getTitle();

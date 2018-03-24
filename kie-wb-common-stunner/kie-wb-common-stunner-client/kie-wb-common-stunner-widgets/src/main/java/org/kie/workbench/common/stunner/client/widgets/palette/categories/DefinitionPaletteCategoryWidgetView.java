@@ -33,6 +33,10 @@ public interface DefinitionPaletteCategoryWidgetView extends UberElement<Definit
 
     void addGroup(DefinitionPaletteGroupWidget groupWidget);
 
+    void setVisible(boolean visible);
+
+    boolean isVisible();
+
     interface Presenter extends BS3PaletteWidgetPresenter<DefaultPaletteCategory> {
 
         DefaultPaletteCategory getCategory();
@@ -41,5 +45,7 @@ public interface DefinitionPaletteCategoryWidgetView extends UberElement<Definit
                          int clientY,
                          int x,
                          int y);
+
+        void onClose();
     }
 }

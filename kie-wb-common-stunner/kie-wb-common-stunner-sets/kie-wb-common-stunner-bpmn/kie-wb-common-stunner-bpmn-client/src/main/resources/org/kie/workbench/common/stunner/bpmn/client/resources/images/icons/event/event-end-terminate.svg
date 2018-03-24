@@ -18,5 +18,5 @@
 <svg version="1.1" id="eventEndTerminate" xmlns="http://www.w3.org/2000/svg"
 	 x="0px" y="0px" width="30px" height="30px"
 	 viewBox="0 0 30 30" style="enable-background:new 0 0 30 30;" xml:space="preserve">
-<circle cx="15px" cy="15px" r="7.5px" style="fill:black;"/>
+<circle cx="15px" cy="15px" r="7.5px" style="fill:#a30000;"/>
 </svg>

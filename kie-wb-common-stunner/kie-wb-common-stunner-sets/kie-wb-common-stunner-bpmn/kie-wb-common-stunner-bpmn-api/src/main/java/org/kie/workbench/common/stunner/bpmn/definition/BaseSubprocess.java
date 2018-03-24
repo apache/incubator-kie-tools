@@ -38,7 +38,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 public abstract class BaseSubprocess implements BPMNViewDefinition {
 
     @Category
-    public static final transient String category = BPMNCategories.ACTIVITIES;
+    public static final transient String category = BPMNCategories.SUB_PROCESSES;
 
     @PropertySet
     @FormField

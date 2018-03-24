@@ -39,7 +39,7 @@ public abstract class BaseEndEvent implements BPMNViewDefinition,
                                               DataIOModel {
 
     @Category
-    public static final transient String category = BPMNCategories.EVENTS;
+    public static final transient String category = BPMNCategories.END_EVENTS;
     @Labels
     protected final Set<String> labels = new HashSet<String>();
     @PropertySet

@@ -35,6 +35,10 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     @DataResource.MimeType("image/svg+xml")
     DataResource categoryActivity();
 
+    @ClientBundle.Source("images/categories/sub-process.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource categorySubProcess();
+
     @ClientBundle.Source("images/categories/container.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource categoryContainer();
@@ -43,9 +47,17 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     @DataResource.MimeType("image/svg+xml")
     DataResource categoryGateway();
 
-    @ClientBundle.Source("images/categories/event.svg")
+    @ClientBundle.Source("images/categories/start-events.svg")
     @DataResource.MimeType("image/svg+xml")
-    DataResource categoryEvent();
+    DataResource categoryStartEvents();
+
+    @ClientBundle.Source("images/categories/intermediate-events.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource categoryIntermediateEvents();
+
+    @ClientBundle.Source("images/categories/end-events.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource categoryEndEvents();
 
     @ClientBundle.Source("images/categories/library.svg")
     @DataResource.MimeType("image/svg+xml")
@@ -89,6 +101,18 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     @DataResource.MimeType("image/svg+xml")
     DataResource eventEnd();
 
+    @ClientBundle.Source("images/icons/event/event-end-none.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource eventEndNone();
+
+    @ClientBundle.Source("images/icons/event/event-end-signal.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource eventEndSignal();
+
+    @ClientBundle.Source("images/icons/event/event-end-message.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource eventEndMessage();
+
     @ClientBundle.Source("images/icons/event/event-end-terminate.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource eventEndTerminate();
@@ -97,40 +121,56 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     @DataResource.MimeType("image/svg+xml")
     DataResource eventEndError();
 
-    @ClientBundle.Source("images/icons/event/event-intermediate.svg")
+    @ClientBundle.Source("images/icons/event/event-intermediate-message.svg")
     @DataResource.MimeType("image/svg+xml")
-    DataResource eventIntermediate();
+    DataResource eventIntermediateMessage();
 
     @ClientBundle.Source("images/icons/event/event-intermediate-error.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource eventIntermediateError();
 
-    @ClientBundle.Source("images/icons/event/event-start.svg")
+    @ClientBundle.Source("images/icons/event/event-intermediate-timer.svg")
     @DataResource.MimeType("image/svg+xml")
-    DataResource eventStart();
+    DataResource eventIntermediateTimer();
+
+    @ClientBundle.Source("images/icons/event/event-intermediate-signal.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource eventIntermediateSignal();
+
+    @ClientBundle.Source("images/icons/event/event-intermediate-signal-throwing.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource eventIntermediateSignalThrowing();
+
+    @ClientBundle.Source("images/icons/event/event-intermediate-message-throwing.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource eventIntermediateMessageThrowing();
+
+    @ClientBundle.Source("images/icons/event/event-start-none.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource eventStartNone();
 
     @ClientBundle.Source("images/icons/event/event-start-error.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource eventStartError();
 
-    @ClientBundle.Source("images/icons/event/event-signal.svg")
+    @ClientBundle.Source("images/icons/event/event-start-signal.svg")
     @DataResource.MimeType("image/svg+xml")
-    DataResource eventSignal();
+    DataResource eventStartSignal();
 
-    @ClientBundle.Source("images/icons/event/event-message.svg")
+    @ClientBundle.Source("images/icons/event/event-start-message.svg")
     @DataResource.MimeType("image/svg+xml")
-    DataResource eventMessage();
+    DataResource eventStartMessage();
 
-    @ClientBundle.Source("images/icons/event/event-timer.svg")
+    @ClientBundle.Source("images/icons/event/event-start-timer.svg")
     @DataResource.MimeType("image/svg+xml")
-    DataResource eventTimer();
+    DataResource eventStartTimer();
 
     // ******* Gateway *******
     @ClientBundle.Source("images/icons/gateway/parallel-event.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource gatewayParallelEvent();
 
-    @ClientBundle.Source("images/icons/gateway/parallel_multiple.svg")
+    @ClientBundle.Source("images/icons/gateway/parallel-multiple.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource gatewayParallelMultiple();
 
@@ -191,10 +231,6 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
 
     @ClientBundle.Source("images/icons/default-service-node-icon.png")
     ImageResource serviceNodeIcon();
-
-    @ClientBundle.Source("images/misc/circle.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource cagetoryEvents();
 
     //This is a hack for OOME related to SVG, or image/svg+xml;base64 URLs
     @Source("images/glyph-oome-hack.png")

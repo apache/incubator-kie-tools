@@ -22,13 +22,14 @@ public class DefaultPaletteGroup
         extends AbstractPaletteItems<DefaultPaletteItem>
         implements PaletteGroup<DefaultPaletteItem> {
 
-    DefaultPaletteGroup(final String itemId,
+    DefaultPaletteGroup(final int priority,
+                        final String itemId,
                         final String definitionId,
                         final String title,
                         final String description,
                         final String tooltip,
                         final int iconSize,
                         final List<DefaultPaletteItem> items) {
-        super(itemId, definitionId, title, description, tooltip, iconSize, items);
+        super(priority, itemId, definitionId, title, description, tooltip, iconSize, items);
     }
 }

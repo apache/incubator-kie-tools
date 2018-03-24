@@ -18,9 +18,9 @@
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
 	 viewBox="0 0 420 420" style="enable-background:new 0 0 420 420;" xml:space="preserve">
 <style type="text/css">
-	.container-svg-css {fill:#4D5258;}
+	.start-events-svg-css {fill:#4AA241;}
 </style>
-<path id="Icon" class="container-svg-css" d="M380,60H40C17.9,60,0,77.9,0,100v240c0,22.1,17.9,40,40,40h340c22.1,0,40-17.9,40-40V100
-	C420,77.9,402.1,60,380,60z M60,340V100h320v240H60z M100,140h60v60h-60V140z M100,240h60v60h-60V240z M200,140h140v60H200V140z
-	 M200,240h140v60H200V240z"/>
+<path id="Icon" class="start-events-svg-css" d="M210,0C94,0,0,94,0,210s94,210,210,210s210-94,210-210S326,0,210,0z M330.2,330.2
+	C298.1,362.3,255.4,380,210,380s-88.1-17.7-120.2-49.8S40,255.4,40,210s17.7-88.1,49.8-120.2S164.6,40,210,40s88.1,17.7,120.2,49.8
+	S380,164.6,380,210S362.3,298.1,330.2,330.2z"/>
 </svg>

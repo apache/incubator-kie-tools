@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.components.palette;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public abstract class AbstractPaletteItems<I extends PaletteItem>
@@ -23,14 +25,16 @@ public abstract class AbstractPaletteItems<I extends PaletteItem>
 
     protected final List<I> items;
 
-    AbstractPaletteItems(final String itemId,
+    AbstractPaletteItems(final int priority,
+                         final String itemId,
                          final String defId,
                          final String title,
                          final String description,
                          final String tooltip,
                          final int iconSize,
                          final List<I> items) {
-        super(itemId,
+        super(priority,
+              itemId,
               defId,
               title,
               description,
@@ -41,5 +45,10 @@ public abstract class AbstractPaletteItems<I extends PaletteItem>
 
     public List<I> getItems() {
         return items;
+    }
+
+    public void sortItems(Comparator<I> comparator) {
+        Collections.sort(items,
+                         comparator);
     }
 }

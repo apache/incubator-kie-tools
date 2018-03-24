@@ -15,17 +15,17 @@
   ~ limitations under the License.
   -->
 
-<svg version="1.1" id="eventEndError" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+<svg version="1.1" id="eventIntermediateMessageThrowing" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
 	 width="448px" height="448px" viewBox="0 0 448 448" style="enable-background:new 0 0 448 448;" xml:space="preserve">
 <style type="text/css">
 	.st0{display:none;}
 	.st1{display:inline;}
 	.st2{opacity:0.3;fill:none;enable-background:new    ;}
 	.st3{fill:none;}
-	.event-end-error-css { fill: #a30000; }
+	.event-intermediate-message-throwing-css {fill: #007a87;}
 </style>
 <g id="Grid" class="st0">
-	<g id="icomoon-ignore" class="st1">
+	<g id="icomoon-ignore_1_" class="st1">
 		<line class="st2" x1="16" y1="0" x2="16" y2="448"/>
 		<line class="st3" x1="32" y1="0" x2="32" y2="448"/>
 		<line class="st2" x1="48" y1="0" x2="48" y2="448"/>
@@ -82,7 +82,12 @@
 		<line class="st2" x1="0" y1="432" x2="448" y2="432"/>
 	</g>
 </g>
-<path id="Icon" class="event-end-error-css" d="M288,209.7L413.7,101c0,0,5.5-7.7,13-4.5s4.9,12.2,4.9,12.2s-97.2,270-100.3,276.8c-3.2,7.1-4.8,11.2-11.4,13.6
-	c-6.3,2.3-11.2-0.4-16.8-5.7L160,239.2L34.3,347c0,0-5.5,7.7-13,4.5s-4.9-12.2-4.9-12.2s87.2-270.1,90.4-276.8
-	c3.9-8.1,4.8-11.2,11.4-13.6c6.3-2.3,11.2,0.4,16.8,5.7S288,209.7,288,209.7z"/>
+<path id="Icon" class="event-intermediate-message-throwing-css" d="M448,177.5V376c0,11-3.9,20.4-11.8,28.2S419,416,408,416H40c-11,0-20.4-3.9-28.2-11.8S0,387,0,376V177.5
+	c7.3,8.2,15.8,15.4,25.2,21.8c60.3,41,101.8,69.8,124.2,86.2c9.5,7,17.2,12.5,23.1,16.4s13.8,7.9,23.6,12s19,6.1,27.5,6.1h0.5
+	c8.5,0,17.7-2,27.5-6.1c9.8-4.1,17.7-8.1,23.6-12s13.6-9.4,23.1-16.4c28.3-20.5,69.8-49.2,124.5-86.2
+	C432.5,192.8,440.8,185.5,448,177.5z M448,104c0,13.2-4.1,25.8-12.2,37.8s-18.3,22.2-30.5,30.8c-62.7,43.5-101.7,70.6-117,81.2
+	c-1.7,1.2-5.2,3.7-10.6,7.6s-9.9,7.1-13.5,9.5s-7.9,5.1-13,8.1c-5.1,3-9.9,5.2-14.4,6.8s-8.7,2.2-12.5,2.2h-0.5
+	c-3.8,0-8-0.8-12.5-2.2s-9.3-3.8-14.4-6.8s-9.4-5.7-13-8.1s-8.1-5.6-13.5-9.5s-9-6.5-10.6-7.6c-15.2-10.7-37-25.9-65.5-45.6
+	S48.7,176.5,43,172.5c-10.3-7-20.1-16.6-29.2-28.9S0,120,0,109.5c0-13,3.5-23.8,10.4-32.5S27.2,64,40,64h368
+	c10.8,0,20.2,3.9,28.1,11.8S448,93,448,104z"/>
 </svg>

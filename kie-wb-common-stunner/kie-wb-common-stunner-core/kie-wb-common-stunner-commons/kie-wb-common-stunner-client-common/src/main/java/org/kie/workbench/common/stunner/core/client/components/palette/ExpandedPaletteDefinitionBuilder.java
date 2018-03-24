@@ -59,6 +59,8 @@ public class ExpandedPaletteDefinitionBuilder
     private Function<String, Glyph> categoryGlyphProvider;
     private ItemMessageProvider groupMessageProvider;
     private ItemMessageProvider categoryMessageProvider;
+    private Function<String, String> customGroupIdProvider;
+    private ItemMessageProvider customGroupMessageProvider;
 
     public ExpandedPaletteDefinitionBuilder categoryDefinitionIdProvider(final Function<String, String> categoryDefinitionIdProvider) {
         this.categoryDefinitionIdProvider = categoryDefinitionIdProvider;
@@ -90,6 +92,16 @@ public class ExpandedPaletteDefinitionBuilder
         return this;
     }
 
+    public ExpandedPaletteDefinitionBuilder customGroupIdProvider(final Function<String, String> customGroupIdProvider) {
+        this.customGroupIdProvider = customGroupIdProvider;
+        return this;
+    }
+
+    public ExpandedPaletteDefinitionBuilder customGroupMessages(final ItemMessageProvider provider) {
+        this.customGroupMessageProvider = provider;
+        return this;
+    }
+
     @Inject
     public ExpandedPaletteDefinitionBuilder(final DefinitionUtils definitionUtils,
                                             final ClientFactoryService clientFactoryServices,
@@ -108,11 +120,13 @@ public class ExpandedPaletteDefinitionBuilder
         DefaultPaletteCategory result = null;
         DefaultPaletteCategory category = (DefaultPaletteCategory) itemSupplier.apply(categoryId);
         if (null == category) {
+            final int catPriority = getItemPriority(categoryId);
             final String catDefId = categoryDefinitionIdProvider.apply(categoryId);
             final String catTitle = categoryMessageProvider.getTitle(categoryId);
             final String catDesc = categoryMessageProvider.getDescription(categoryId);
             final Glyph categoryGlyph = categoryGlyphProvider.apply(categoryId);
             category = new CategoryBuilder()
+                    .setPriority(catPriority)
                     .setItemId(categoryId)
                     .setDefinitionId(catDefId)
                     .setTitle(catTitle)
@@ -134,9 +148,11 @@ public class ExpandedPaletteDefinitionBuilder
                         .filter(g -> g.getId().equals(morphBaseId))
                         .findFirst();
                 if (!groupOp.isPresent()) {
+                    final int groupPriority = getItemPriority(morphBaseId);
                     final String groupTitle = groupMessageProvider.getTitle(morphBaseId);
                     final String groupDesc = groupMessageProvider.getDescription(morphBaseId);
                     group = new GroupBuilder()
+                            .setPriority(groupPriority)
                             .setItemId(morphBaseId)
                             .setDefinitionId(morphDefault)
                             .setTitle(groupTitle)
@@ -147,12 +163,36 @@ public class ExpandedPaletteDefinitionBuilder
                     group = (DefaultPaletteGroup) groupOp.get();
                 }
             }
+        } else {
+            //item has no morph base, but might belong to a custom group
+            final String customGroupId = customGroupIdProvider != null ? customGroupIdProvider.apply(id) : null;
+            if (customGroupId != null && groupFilter.test(customGroupId)) {
+                final Optional<DefaultPaletteItem> groupOp = category.getItems().stream()
+                        .filter(g -> g.getId().equals(customGroupId))
+                        .findFirst();
+                if (!groupOp.isPresent()) {
+                    final int groupPriority = getItemPriority(customGroupId);
+                    final String groupTitle = customGroupMessageProvider.getTitle(customGroupId);
+                    final String groupDesc = groupMessageProvider.getDescription(customGroupId);
+                    group = new GroupBuilder()
+                            .setPriority(groupPriority)
+                            .setItemId(customGroupId)
+                            .setTitle(groupTitle)
+                            .setDescription(groupDesc)
+                            .build();
+                    category.getItems().add(group);
+                } else {
+                    group = (DefaultPaletteGroup) groupOp.get();
+                }
+            }
         }
 
+        final int itemPriority = getItemPriority(id);
         final String title = definitionAdapter.getTitle(definition);
         final String description = definitionAdapter.getDescription(definition);
         final DefaultPaletteItem item =
                 new ItemBuilder()
+                        .setPriority(itemPriority)
                         .setItemId(id)
                         .setDefinitionId(id)
                         .setTitle(title)

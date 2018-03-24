@@ -41,7 +41,7 @@ public class DefinitionPaletteGroupWidget implements DefinitionPaletteGroupWidge
         FULL_LIST
     }
 
-    public static final int COMPACT_ELEMENTS_LIST_SIZE = 3;
+    public static final int COMPACT_ELEMENTS_LIST_SIZE = 5;
 
     private State state = State.COMPACT;
 

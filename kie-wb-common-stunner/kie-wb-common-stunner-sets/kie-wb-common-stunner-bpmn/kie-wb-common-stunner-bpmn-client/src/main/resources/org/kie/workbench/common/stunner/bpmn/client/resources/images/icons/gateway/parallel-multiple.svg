@@ -20,10 +20,11 @@
 	 viewBox="0 0 352 448" style="enable-background:new 0 0 352 448;" xml:space="preserve">
 <style type="text/css">
 	.st0{display:none;}
+	.parallel-multiple-svg-css { fill: #ec7a08; }
 </style>
 <g id="icomoon-ignore" class="st0">
 </g>
-<path d="M352,184v48c0,6.7-2.3,12.3-7,17s-10.3,7-17,7H224v104c0,6.7-2.3,12.3-7,17s-10.3,7-17,7h-48c-6.7,0-12.3-2.3-17-7
+<path id="Icon" class="parallel-multiple-svg-css" d="M352,184v48c0,6.7-2.3,12.3-7,17s-10.3,7-17,7H224v104c0,6.7-2.3,12.3-7,17s-10.3,7-17,7h-48c-6.7,0-12.3-2.3-17-7
 	s-7-10.3-7-17V256H24c-6.7,0-12.3-2.3-17-7s-7-10.3-7-17v-48c0-6.7,2.3-12.3,7-17s10.3-7,17-7h104V56c0-6.7,2.3-12.3,7-17
 	s10.3-7,17-7h48c6.7,0,12.3,2.3,17,7s7,10.3,7,17v104h104c6.7,0,12.3,2.3,17,7S352,177.3,352,184z"/>
 </svg>

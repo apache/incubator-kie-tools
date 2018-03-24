@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import javax.annotation.PostConstruct;
@@ -54,8 +56,6 @@ public class BS3PaletteWidgetImpl
         implements BS3PaletteWidget,
                    IsElement {
 
-    public static final String BG_COLOR = "#D3D3D3";
-
     private static final int GLYPH_ICON_SIZE = 30;
     private static final int PADDING = 10;
 
@@ -66,6 +66,7 @@ public class BS3PaletteWidgetImpl
     private Consumer<PaletteIDefinitionItemEvent> itemDropCallback;
     private Consumer<PaletteIDefinitionItemEvent> itemDragStartCallback;
     private Consumer<PaletteIDefinitionItemEvent> itemDragUpdateCallback;
+    private Map<String, DefinitionPaletteCategoryWidget> categoryWidgets = new HashMap<>();
 
     private BS3PaletteWidgetView view;
 
@@ -92,7 +93,6 @@ public class BS3PaletteWidgetImpl
     public void init() {
         view.init(this);
         view.setShapeGlyphDragHandler(shapeGlyphDragHandler);
-        view.setBackgroundColor(BG_COLOR);
         view.showEmptyView(true);
     }
 
@@ -188,11 +188,16 @@ public class BS3PaletteWidgetImpl
     protected AbstractPalette<DefaultPaletteDefinition> bind() {
         if (null != paletteDefinition) {
             paletteDefinition.getItems().forEach(item -> {
-                final BS3PaletteWidgetPresenter widget = item instanceof DefaultPaletteCategory ?
-                        categoryWidgetInstances.get() :
-                        definitionPaletteItemWidgetInstances.get();
+                BS3PaletteWidgetPresenter widget;
+                if (item instanceof DefaultPaletteCategory) {
+                    widget = categoryWidgetInstances.get();
+                    categoryWidgets.put(item.getId(),
+                                        (DefinitionPaletteCategoryWidget) widget);
+                } else {
+                    widget = definitionPaletteItemWidgetInstances.get();
+                }
                 final Consumer<PaletteItemMouseEvent> itemMouseEventHandler =
-                        event -> handleMouseDownEvent(item, event);
+                        this::handleMouseDownEvent;
                 widget.initialize(item,
                                   getShapeFactory(),
                                   itemMouseEventHandler);
@@ -224,15 +229,11 @@ public class BS3PaletteWidgetImpl
         return getShapeFactory().getGlyph(definitionId);
     }
 
-    private void handleMouseDownEvent(final DefaultPaletteItem item,
-                                      final PaletteItemMouseEvent event) {
+    private void handleMouseDownEvent(final PaletteItemMouseEvent event) {
         PortablePreconditions.checkNotNull("event",
                                            event);
-        if (event.getId().equals(item.getId())) {
-            final String catDefId = item.getDefinitionId();
-            BS3PaletteWidgetImpl.this.onPaletteItemMouseDown(catDefId,
-                                                             event.getMouseX(),
-                                                             event.getMouseY());
+        if (categoryWidgets.containsKey(event.getId())) {
+            showCategory(event.getId());
         } else {
             final String defId = getItemDefinitionId(event.getId());
             BS3PaletteWidgetImpl.this.onPaletteItemMouseDown(defId,
@@ -244,6 +245,12 @@ public class BS3PaletteWidgetImpl
     private String getItemDefinitionId(final String itemId) {
         return DefaultPaletteUtils.getPaletteItemDefinitionId(paletteDefinition,
                                                               itemId);
+    }
+
+    private void showCategory(final String categoryId) {
+        categoryWidgets.entrySet().stream().filter(entry -> !entry.getKey().equals(categoryId)).forEach(entry -> entry.getValue().setVisible(false));
+        DefinitionPaletteCategoryWidget widget = categoryWidgets.get(categoryId);
+        widget.setVisible(!widget.isVisible());
     }
 
     private void onPaletteItemMouseDown(final String id,

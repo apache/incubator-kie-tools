@@ -132,6 +132,28 @@ public class DefaultPaletteDefinitionProviders {
         }
     }
 
+    /**
+     * It uses the translator service to obtain the custom groups messages given the group id..
+     */
+    public static class DefaultCustomGroupMessageProvider implements ItemMessageProvider {
+
+        private final StunnerTranslationService translationService;
+
+        public DefaultCustomGroupMessageProvider(final StunnerTranslationService translationService) {
+            this.translationService = translationService;
+        }
+
+        @Override
+        public String getTitle(final String id) {
+            return translationService.getValue(id);
+        }
+
+        @Override
+        public String getDescription(final String id) {
+            return translationService.getValue(id);
+        }
+    }
+
     public static final Function<String, Glyph> DEFAULT_CATEGORY_GLYPH_PROVIDER =
             category -> SvgDataUriGlyph.Builder.build(StunnerCommonImageResources.INSTANCE.gears().getSafeUri());
 
