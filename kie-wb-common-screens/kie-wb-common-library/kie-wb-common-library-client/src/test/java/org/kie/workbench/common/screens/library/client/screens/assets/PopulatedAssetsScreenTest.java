@@ -16,19 +16,6 @@
 
 package org.kie.workbench.common.screens.library.client.screens.assets;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -48,6 +35,7 @@ import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
 import org.kie.workbench.common.screens.library.client.screens.EmptyState;
 import org.kie.workbench.common.screens.library.client.screens.ProjectScreenTestBase;
+import org.kie.workbench.common.screens.library.client.screens.assets.events.UpdatedAssetsEvent;
 import org.kie.workbench.common.screens.library.client.util.CategoryUtils;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.project.AssetItemWidget;
@@ -62,6 +50,19 @@ import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.workbench.category.Others;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
@@ -113,8 +114,12 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
     @Mock
     private Event<WorkspaceProjectContextChangeEvent> contextChangeEvent;
 
+    private AssetQueryService assetQueryService;
+
     @Before
     public void setUp() {
+        assetQueryService = spy(new AssetQueryService(new CallerMock<>(libraryService)));
+
         populatedAssetsScreen = spy(new PopulatedAssetsScreen(view,
                                                               categoriesManagerCache,
                                                               resourceTypeManagerCache,
@@ -129,7 +134,7 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
                                                               new EventSourceMock<>(),
                                                               emptyState,
                                                               categoryUtils,
-                                                              new AssetQueryService(new CallerMock<>(libraryService)),
+                                                              assetQueryService,
                                                               contextChangeEvent));
     }
 
@@ -179,6 +184,20 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
 
         assertEquals(10,
                      assetsCount);
+    }
+
+    @Test
+    public void testOnAssetsUpdate() throws Exception {
+        final UpdatedAssetsEvent mockedEvent = mock(UpdatedAssetsEvent.class);
+        final ProjectAssetsQuery mockedQuery = mock(ProjectAssetsQuery.class);
+        doReturn(mockedQuery)
+                .when(populatedAssetsScreen)
+                .createProjectQuery("", "ALL", 0, 0);
+        populatedAssetsScreen.init();
+
+        populatedAssetsScreen.onAssetsUpdated(mockedEvent);
+
+        verify(assetQueryService).getNumberOfAssets(mockedQuery);
     }
 
     @Test

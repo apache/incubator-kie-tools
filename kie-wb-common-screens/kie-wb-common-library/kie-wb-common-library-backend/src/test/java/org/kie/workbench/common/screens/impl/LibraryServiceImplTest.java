@@ -707,4 +707,19 @@ public class LibraryServiceImplTest {
         assertEquals("user",
                      users.get(1).getUserName());
     }
+
+    @Test
+    public void testGetNumberOfAssets() throws Exception {
+        final Path path = mock(Path.class);
+        final WorkspaceProject project = mock(WorkspaceProject.class);
+        final ProjectAssetsQuery query = mock(ProjectAssetsQuery.class);
+
+        doReturn(project).when(query).getProject();
+        doReturn(path).when(project).getRootPath();
+        doReturn("some.unique.uri").when(path).toURI();
+
+        libraryService.getNumberOfAssets(query);
+
+        verify(refactoringQueryService).queryHitCount(any(RefactoringPageRequest.class));
+    }
 }
