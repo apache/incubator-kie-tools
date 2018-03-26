@@ -45,6 +45,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberCol
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -103,12 +104,16 @@ public class DeleteRelationColumnCommandTest {
                                                        listSelector);
     }
 
-    private void makeCommand() {
+    private void makeCommand(final int uiColumnIndex) {
         this.command = spy(new DeleteRelationColumnCommand(relation,
                                                            uiModel,
-                                                           1,
+                                                           uiColumnIndex,
                                                            uiModelMapper,
                                                            canvasOperation));
+    }
+
+    private void makeCommand() {
+        makeCommand(1);
     }
 
     @Test
@@ -138,6 +143,37 @@ public class DeleteRelationColumnCommandTest {
                      relation.getRow().size());
         assertEquals(0,
                      relation.getRow().get(0).getExpression().size());
+    }
+
+    @Test
+    public void testGraphCommandExecuteDeleteMiddleWithRows() {
+        uiModel.appendColumn(mock(RelationColumn.class));
+        uiModel.appendColumn(mock(RelationColumn.class));
+        relation.getColumn().add(new InformationItem());
+        relation.getColumn().add(new InformationItem());
+        relation.getRow().add(new List());
+        final LiteralExpression firstExpression = new LiteralExpression();
+        final LiteralExpression lastExpression = new LiteralExpression();
+        relation.getRow().get(0).getExpression().add(firstExpression);
+        relation.getRow().get(0).getExpression().add(new LiteralExpression());
+        relation.getRow().get(0).getExpression().add(lastExpression);
+
+        makeCommand(2);
+
+        final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
+
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     c.execute(gce));
+        assertEquals(2,
+                     relation.getColumn().size());
+        assertEquals(1,
+                     relation.getRow().size());
+        assertEquals(2,
+                     relation.getRow().get(0).getExpression().size());
+        assertEquals(firstExpression,
+                     relation.getRow().get(0).getExpression().get(0));
+        assertEquals(lastExpression,
+                     relation.getRow().get(0).getExpression().get(1));
     }
 
     @Test

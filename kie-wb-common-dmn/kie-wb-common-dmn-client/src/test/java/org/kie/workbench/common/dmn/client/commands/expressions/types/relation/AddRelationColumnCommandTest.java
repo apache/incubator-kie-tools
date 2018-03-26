@@ -46,6 +46,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberCol
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -94,16 +95,21 @@ public class AddRelationColumnCommandTest {
                                                        () -> Optional.of(relation),
                                                        listSelector);
 
-        this.command = spy(new AddRelationColumnCommand(relation,
-                                                        informationItem,
-                                                        uiModel,
-                                                        uiModelColumn,
-                                                        1,
-                                                        uiModelMapper,
-                                                        canvasOperation));
+        makeCommand(1);
+
         doReturn(ruleManager).when(handler).getRuleManager();
         doReturn(0).when(uiRowNumberColumn).getIndex();
         doReturn(1).when(uiModelColumn).getIndex();
+    }
+
+    private void makeCommand(final int uiColumnIndex) {
+        command = spy(new AddRelationColumnCommand(relation,
+                                                   informationItem,
+                                                   uiModel,
+                                                   uiModelColumn,
+                                                   uiColumnIndex,
+                                                   uiModelMapper,
+                                                   canvasOperation));
     }
 
     @Test
@@ -161,6 +167,47 @@ public class AddRelationColumnCommandTest {
         assertTrue(relation.getRow().get(0).getExpression().get(0) instanceof LiteralExpression);
         assertEquals(existingLiteralExpression,
                      relation.getRow().get(0).getExpression().get(1));
+    }
+
+    @Test
+    public void testGraphCommandExecuteWithExistingColumn_InsertMiddle() {
+        makeCommand(2);
+
+        final InformationItem existingInformationItemFirst = new InformationItem();
+        relation.getColumn().add(existingInformationItemFirst);
+
+        final InformationItem existingInformationItemLast = new InformationItem();
+        relation.getColumn().add(existingInformationItemLast);
+
+        final List row = new List();
+        relation.getRow().add(row);
+
+        final LiteralExpression existingLiteralExpressionFirst = new LiteralExpression();
+        final LiteralExpression existingLiteralExpressionLast = new LiteralExpression();
+        row.getExpression().add(existingLiteralExpressionFirst);
+        row.getExpression().add(existingLiteralExpressionLast);
+
+        final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
+
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     c.execute(gce));
+        assertEquals(3,
+                     relation.getColumn().size());
+        assertEquals(existingInformationItemFirst,
+                     relation.getColumn().get(0));
+        assertEquals(informationItem,
+                     relation.getColumn().get(1));
+        assertEquals(existingInformationItemLast,
+                     relation.getColumn().get(2));
+        assertEquals(1,
+                     relation.getRow().size());
+        assertEquals(3,
+                     relation.getRow().get(0).getExpression().size());
+        assertEquals(existingLiteralExpressionFirst,
+                     relation.getRow().get(0).getExpression().get(0));
+        assertTrue(relation.getRow().get(0).getExpression().get(1) instanceof LiteralExpression);
+        assertEquals(existingLiteralExpressionLast,
+                     relation.getRow().get(0).getExpression().get(2));
     }
 
     @Test
@@ -250,6 +297,33 @@ public class AddRelationColumnCommandTest {
         verify(command).updateParentInformation();
 
         verify(canvasOperation).execute();
+    }
+
+    @Test
+    public void testCanvasCommandExecuteWithRowsAddColumnMiddle() {
+        makeCommand(2);
+
+        final InformationItem existingInformationItemFirst = new InformationItem();
+        relation.getColumn().add(existingInformationItemFirst);
+
+        final InformationItem existingInformationItemLast = new InformationItem();
+        relation.getColumn().add(existingInformationItemLast);
+
+        uiModel.appendColumn(mock(RelationColumn.class));
+        uiModel.appendColumn(mock(RelationColumn.class));
+        uiModel.appendRow(new DMNGridRow());
+
+        //Add Graph column first as RelationUIModelMapper relies on the model being first updated
+        command.newGraphCommand(handler).execute(gce);
+
+        final Command<AbstractCanvasHandler, CanvasViolation> cc = command.newCanvasCommand(handler);
+
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     cc.execute(handler));
+        assertEquals(4,
+                     uiModel.getColumnCount());
+        assertEquals(uiModelColumn,
+                     uiModel.getColumns().get(2));
     }
 
     @Test

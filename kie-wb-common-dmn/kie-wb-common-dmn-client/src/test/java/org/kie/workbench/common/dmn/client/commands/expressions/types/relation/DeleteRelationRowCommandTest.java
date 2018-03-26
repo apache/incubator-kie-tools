@@ -95,13 +95,17 @@ public class DeleteRelationRowCommandTest {
                                                        () -> Optional.of(relation),
                                                        listSelector);
 
-        this.command = spy(new DeleteRelationRowCommand(relation,
-                                                        uiModel,
-                                                        0,
-                                                        canvasOperation));
+        makeCommand(0);
         doReturn(ruleManager).when(handler).getRuleManager();
         doReturn(0).when(uiRowNumberColumn).getIndex();
         doReturn(1).when(uiModelColumn).getIndex();
+    }
+
+    private void makeCommand(final int uiRowIndex) {
+        this.command = spy(new DeleteRelationRowCommand(relation,
+                                                        uiModel,
+                                                        uiRowIndex,
+                                                        canvasOperation));
     }
 
     @Test
@@ -123,6 +127,34 @@ public class DeleteRelationRowCommandTest {
                      c.execute(gce));
         assertEquals(0,
                      relation.getRow().size());
+        assertEquals(1,
+                     relation.getColumn().size());
+    }
+
+    @Test
+    public void testGraphCommandExecuteRemoveMiddleWithColumns() {
+        uiModel.appendRow(new DMNGridRow());
+        uiModel.appendRow(new DMNGridRow());
+        final List firstRow = new List();
+        final List lastRow = new List();
+        relation.getRow().add(0, firstRow);
+        relation.getRow().add(lastRow);
+
+        relation.getColumn().add(new InformationItem());
+        relation.getRow().get(0).getExpression().add(new LiteralExpression());
+
+        makeCommand(1);
+
+        final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
+
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     c.execute(gce));
+        assertEquals(2,
+                     relation.getRow().size());
+        assertEquals(firstRow,
+                     relation.getRow().get(0));
+        assertEquals(lastRow,
+                     relation.getRow().get(1));
         assertEquals(1,
                      relation.getColumn().size());
     }
@@ -194,6 +226,41 @@ public class DeleteRelationRowCommandTest {
                      cc.execute(handler));
         assertEquals(0,
                      uiModel.getRowCount());
+        assertEquals(2,
+                     uiModel.getColumnCount());
+        assertEquals(uiRowNumberColumn,
+                     uiModel.getColumns().get(0));
+        assertEquals(uiModelColumn,
+                     uiModel.getColumns().get(1));
+
+        verify(command).updateRowNumbers();
+        verify(command).updateParentInformation();
+
+        verify(canvasOperation).execute();
+    }
+
+    @Test
+    public void testCanvasCommandExecuteRemoveMiddleWithColumns() {
+        uiModel.appendColumn(uiModelColumn);
+        final DMNGridRow firstRow = new DMNGridRow();
+        final DMNGridRow lastRow = new DMNGridRow();
+        uiModel.insertRow(0, firstRow);
+        uiModel.appendRow(lastRow);
+        relation.getRow().add(0, new List());
+        relation.getRow().add(new List());
+
+        makeCommand(1);
+
+        final Command<AbstractCanvasHandler, CanvasViolation> cc = command.newCanvasCommand(handler);
+
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     cc.execute(handler));
+        assertEquals(2,
+                     uiModel.getRowCount());
+        assertEquals(firstRow,
+                     uiModel.getRow(0));
+        assertEquals(lastRow,
+                     uiModel.getRow(1));
         assertEquals(2,
                      uiModel.getColumnCount());
         assertEquals(uiRowNumberColumn,

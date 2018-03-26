@@ -97,16 +97,21 @@ public class AddRelationRowCommandTest {
                                                        () -> Optional.of(relation),
                                                        listSelector);
 
-        this.command = spy(new AddRelationRowCommand(relation,
-                                                     row,
-                                                     uiModel,
-                                                     uiModelRow,
-                                                     0,
-                                                     uiModelMapper,
-                                                     canvasOperation));
+        makeCommand(0);
+
         doReturn(ruleManager).when(handler).getRuleManager();
         doReturn(0).when(uiRowNumberColumn).getIndex();
         doReturn(1).when(uiModelColumn).getIndex();
+    }
+
+    private void makeCommand(final int uiRowIndex) {
+        command = spy(new AddRelationRowCommand(relation,
+                                                row,
+                                                uiModel,
+                                                uiModelRow,
+                                                uiRowIndex,
+                                                uiModelMapper,
+                                                canvasOperation));
     }
 
     @Test
@@ -134,6 +139,29 @@ public class AddRelationRowCommandTest {
         assertEquals(1,
                      relation.getRow().get(0).getExpression().size());
         assertTrue(relation.getRow().get(0).getExpression().get(0) instanceof LiteralExpression);
+    }
+
+    @Test
+    public void testGraphCommandExecuteInsertMiddleWithColumns() {
+        relation.getRow().add(new List());
+        relation.getRow().add(new List());
+        relation.getColumn().add(new InformationItem());
+
+        makeCommand(1);
+
+        final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
+
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     c.execute(gce));
+        assertEquals(3,
+                     relation.getRow().size());
+        assertEquals(row,
+                     relation.getRow().get(1));
+        assertEquals(1,
+                     relation.getColumn().size());
+        assertEquals(1,
+                     relation.getRow().get(1).getExpression().size());
+        assertTrue(relation.getRow().get(1).getExpression().get(0) instanceof LiteralExpression);
     }
 
     @Test
@@ -190,8 +218,16 @@ public class AddRelationRowCommandTest {
 
     @Test
     public void testCanvasCommandExecuteWithColumns() {
+        relation.getRow().add(new List());
+        relation.getRow().add(new List());
+
         relation.getColumn().add(new InformationItem());
         uiModel.appendColumn(uiModelColumn);
+
+        uiModel.appendRow(new DMNGridRow());
+        uiModel.appendRow(new DMNGridRow());
+
+        makeCommand(1);
 
         //Add Graph row first as RelationUIModelMapper relies on the model being first updated
         command.newGraphCommand(handler).execute(gce);
@@ -200,22 +236,24 @@ public class AddRelationRowCommandTest {
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      cc.execute(handler));
-        assertEquals(1,
+        assertEquals(3,
                      uiModel.getRowCount());
         assertEquals(uiModelRow,
-                     uiModel.getRows().get(0));
+                     uiModel.getRows().get(1));
         assertEquals(2,
                      uiModel.getColumnCount());
         assertEquals(uiRowNumberColumn,
                      uiModel.getColumns().get(0));
+
+        // checking just the row added by command
         assertEquals(uiModelColumn,
                      uiModel.getColumns().get(1));
         assertEquals(2,
-                     uiModel.getRows().get(0).getCells().size());
-        assertEquals(1,
-                     uiModel.getCell(0, 0).getValue().getValue());
+                     uiModel.getRows().get(1).getCells().size());
+        assertEquals(2,
+                     uiModel.getCell(1, 0).getValue().getValue());
         assertEquals("",
-                     uiModel.getCell(0, 1).getValue().getValue());
+                     uiModel.getCell(1, 1).getValue().getValue());
 
         verify(command).updateRowNumbers();
         verify(command).updateParentInformation();
