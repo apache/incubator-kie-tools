@@ -23,9 +23,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.categories.Process;
 import org.kie.workbench.common.dmn.api.resource.DMNDefinitionSetResourceType;
 import org.kie.workbench.common.dmn.project.client.resources.DMNProjectImageResources;
-import org.guvnor.common.services.project.categories.Decision;
 import org.kie.workbench.common.stunner.project.client.type.AbstractStunnerClientResourceType;
-import org.uberfire.workbench.category.Category;
 
 @ApplicationScoped
 public class DMNDiagramResourceType extends AbstractStunnerClientResourceType<DMNDefinitionSetResourceType> {
