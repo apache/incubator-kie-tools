@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Spliterator;
@@ -249,6 +250,28 @@ public class DMNMarshallerTest {
                                                       any(Metadata.class));
 
         MappingContextSingleton.loadDynamicMarshallers();
+    }
+
+    @Test
+    public void testLoan() throws IOException {
+        roundTripUnmarshalMarshalThenUnmarshalDMN(getClass().getResourceAsStream("/Loan Pre-Qualification.dmn"));
+        DMNMarshaller m = new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
+                                           applicationFactoryManager);
+        Graph<?, ?> g = m.unmarshall(null, this.getClass().getResourceAsStream("/Loan Pre-Qualification.dmn"));
+        DiagramImpl diagram = new DiagramImpl("", null);
+        diagram.setGraph(g);
+        String mString = m.marshall(diagram);
+        final KieServices ks = KieServices.Factory.get();
+        final KieContainer kieContainer = KieHelper.getKieContainer(ks.newReleaseId("org.kie", "dmn-testLoan", "1.0"),
+        ks.getResources().newByteArrayResource(mString.getBytes()).setTargetPath("src/main/resources/Loan Pre-Qualification.dmn"));
+
+        final DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        Assert.assertNotNull(runtime);
+        DMNModel model = runtime.getModel("http://www.trisotech.com/definitions/_4e0a7f15-3176-427e-add8-68d30903c84c", "Loan Pre-Qualification");
+        DMNContext dmnContext = runtime.newContext();
+        dmnContext.set("Credit Score", new HashMap<String, Object>(){{ put("FICO", 400); }});
+        DMNResult dmnResult = runtime.evaluateByName(model, dmnContext, "Credit Score Rating");
+        assertFalse(dmnResult.getMessages().toString(), dmnResult.hasErrors());
     }
 
     @Test
