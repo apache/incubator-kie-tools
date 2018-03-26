@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
@@ -49,6 +50,7 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 
 public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, UndefinedExpressionUIModelMapper> implements HasListSelectorControl {
 
@@ -101,6 +103,17 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
     }
 
     @Override
+    protected NodeMouseClickHandler getGridMouseClickHandler(final GridSelectionManager selectionManager) {
+        return (event) -> gridLayer.select(parent.getGridWidget());
+    }
+
+    @Override
+    public void selectFirstCell() {
+        parent.getGridWidget().getModel().selectCell(parent.getRowIndex(),
+                                                     parent.getColumnIndex());
+    }
+
+    @Override
     protected void doInitialisation() {
         // Defer initialisation until after the constructor completes as
         // UndefinedExpressionColumn needs expressionEditorDefinitionsSupplier to have been set
@@ -111,7 +124,8 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
         return new UndefinedExpressionUIModelMapper(this::getModel,
                                                     () -> expression,
                                                     listSelector,
-                                                    hasExpression);
+                                                    hasExpression,
+                                                    parent);
     }
 
     @Override
@@ -202,7 +216,10 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new SetCellValueCommand(gcv,
                                                                   () -> uiModelMapper,
-                                                                  () -> synchroniseViewWhenExpressionEditorChanged(editor.get())));
+                                                                  () -> editor.ifPresent(e -> {
+                                                                      e.selectFirstCell();
+                                                                      synchroniseViewWhenExpressionEditorChanged(e);
+                                                                  })));
         });
     }
 }

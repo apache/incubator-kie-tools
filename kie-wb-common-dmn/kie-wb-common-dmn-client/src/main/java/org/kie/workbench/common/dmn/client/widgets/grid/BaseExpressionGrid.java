@@ -354,12 +354,6 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
     }
 
     @Override
-    public void select() {
-        selectFirstCell();
-        super.select();
-    }
-
-    @Override
     public void deselect() {
         getModel().clearSelections();
         super.deselect();

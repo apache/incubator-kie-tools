@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
+import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
@@ -58,6 +60,7 @@ import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
 import org.uberfire.mvp.Command;
 
@@ -122,6 +125,9 @@ public class UndefinedExpressionGridTest {
     private GridWidget parentGridWidget;
 
     @Mock
+    private GridData parentGridUiModel;
+
+    @Mock
     private HasExpression hasExpression;
 
     @Mock
@@ -129,6 +135,12 @@ public class UndefinedExpressionGridTest {
 
     @Mock
     private BaseExpressionGrid literalExpressionEditor;
+
+    @Mock
+    private GridSelectionManager selectionManager;
+
+    @Mock
+    private NodeMouseClickEvent mouseClickEvent;
 
     @Captor
     private ArgumentCaptor<SetCellValueCommand> setCellValueCommandArgumentCaptor;
@@ -183,6 +195,11 @@ public class UndefinedExpressionGridTest {
 
         doReturn(session).when(sessionManager).getCurrentSession();
         doReturn(handler).when(session).getCanvasHandler();
+
+        when(parentGridWidget.getModel()).thenReturn(parentGridUiModel);
+        when(parent.getGridWidget()).thenReturn(parentGridWidget);
+        when(parent.getRowIndex()).thenReturn(0);
+        when(parent.getColumnIndex()).thenReturn(1);
     }
 
     private void setupGrid(final int nesting) {
@@ -192,6 +209,26 @@ public class UndefinedExpressionGridTest {
                                                                        expression,
                                                                        hasName,
                                                                        nesting).get());
+    }
+
+    @Test
+    public void testGridMouseClickHandler() {
+        setupGrid(0);
+
+        final NodeMouseClickHandler handler = grid.getGridMouseClickHandler(selectionManager);
+
+        handler.onNodeMouseClick(mouseClickEvent);
+
+        verify(gridLayer).select(parentGridWidget);
+    }
+
+    @Test
+    public void testSelectFirstCell() {
+        setupGrid(0);
+
+        grid.selectFirstCell();
+
+        verify(parentGridUiModel).selectCell(eq(0), eq(1));
     }
 
     @Test
@@ -384,6 +421,7 @@ public class UndefinedExpressionGridTest {
         verify(parent).onResize();
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
+        verify(literalExpressionEditor).selectFirstCell();
 
         verify(gridLayer).batch(redrawCommandArgumentCaptor.capture());
 

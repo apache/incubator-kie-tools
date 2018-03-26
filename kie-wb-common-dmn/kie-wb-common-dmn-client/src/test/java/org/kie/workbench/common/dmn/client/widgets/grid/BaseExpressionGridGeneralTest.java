@@ -172,13 +172,6 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     }
 
     @Test
-    public void testSelect() {
-        grid.select();
-
-        verify(grid).selectFirstCell();
-    }
-
-    @Test
     public void testDeselect() {
         grid.getModel().appendRow(new DMNGridRow());
         appendColumns(GridColumn.class);

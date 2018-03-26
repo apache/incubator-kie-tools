@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
+import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
@@ -64,6 +66,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -73,6 +76,7 @@ import static org.kie.workbench.common.dmn.client.editors.expressions.types.Grid
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -136,7 +140,19 @@ public class LiteralExpressionGridTest {
     private GridCellTuple parent;
 
     @Mock
+    private GridWidget parentGridWidget;
+
+    @Mock
+    private GridData parentGridUiModel;
+
+    @Mock
     private HasExpression hasExpression;
+
+    @Mock
+    private GridSelectionManager selectionManager;
+
+    @Mock
+    private NodeMouseClickEvent mouseClickEvent;
 
     private Optional<LiteralExpression> expression = Optional.empty();
 
@@ -179,6 +195,10 @@ public class LiteralExpressionGridTest {
         when(canvasCommandFactory.updatePropertyValue(any(Element.class),
                                                       anyString(),
                                                       any())).thenReturn(mock(UpdateElementPropertyCommand.class));
+        when(parentGridWidget.getModel()).thenReturn(parentGridUiModel);
+        when(parent.getGridWidget()).thenReturn(parentGridWidget);
+        when(parent.getRowIndex()).thenReturn(0);
+        when(parent.getColumnIndex()).thenReturn(1);
     }
 
     private void setupGrid(final int nesting) {
@@ -188,6 +208,26 @@ public class LiteralExpressionGridTest {
                                                                      expression,
                                                                      hasName,
                                                                      nesting).get());
+    }
+
+    @Test
+    public void testGridMouseClickHandler() {
+        setupGrid(0);
+
+        final NodeMouseClickHandler handler = grid.getGridMouseClickHandler(selectionManager);
+
+        handler.onNodeMouseClick(mouseClickEvent);
+
+        verify(gridLayer).select(parentGridWidget);
+    }
+
+    @Test
+    public void testSelectFirstCell() {
+        setupGrid(0);
+
+        grid.selectFirstCell();
+
+        verify(parentGridUiModel).selectCell(eq(0), eq(1));
     }
 
     @Test

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
@@ -41,6 +42,7 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 
 public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression, LiteralExpressionUIModelMapper> implements HasListSelectorControl {
 
@@ -84,6 +86,17 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
     }
 
     @Override
+    protected NodeMouseClickHandler getGridMouseClickHandler(final GridSelectionManager selectionManager) {
+        return (event) -> gridLayer.select(parent.getGridWidget());
+    }
+
+    @Override
+    public void selectFirstCell() {
+        parent.getGridWidget().getModel().selectCell(parent.getRowIndex(),
+                                                     parent.getColumnIndex());
+    }
+
+    @Override
     protected void doInitialisation() {
         // Defer initialisation until after the constructor completes as
         // LiteralExpressionUIModelMapper needs ListSelector to have been set
@@ -93,7 +106,8 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
     public LiteralExpressionUIModelMapper makeUiModelMapper() {
         return new LiteralExpressionUIModelMapper(this::getModel,
                                                   () -> expression,
-                                                  listSelector);
+                                                  listSelector,
+                                                  parent);
     }
 
     @Override
