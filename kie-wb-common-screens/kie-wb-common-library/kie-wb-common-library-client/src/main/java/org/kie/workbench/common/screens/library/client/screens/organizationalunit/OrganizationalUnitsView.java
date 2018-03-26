@@ -86,9 +86,9 @@ public class OrganizationalUnitsView implements OrganizationalUnitsScreen.View,
     }
 
     @Override
-    public String getNumberOfRepositoriesLabel(int numberOfRepositories) {
-        return ts.format(LibraryConstants.NumberOfRepositories,
-                         numberOfRepositories);
+    public String getNumberOfProjectsLabel(int numberOfProjects) {
+        return ts.format(LibraryConstants.OrganizationalUnitView_NumberOfProjects,
+                         numberOfProjects);
     }
 
     @Override

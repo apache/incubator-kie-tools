@@ -198,7 +198,7 @@ public class LibraryConstants {
     public static final String NumberOfContributors = "NumberOfContributors";
 
     @TranslationKey(defaultValue = "")
-    public static final String NumberOfRepositories = "NumberOfRepositories";
+    public static final String OrganizationalUnitView_NumberOfProjects = "OrganizationalUnitView.NumberOfProjects";
 
     @TranslationKey(defaultValue = "")
     public static final String NumberOfAssets = "NumberOfAssets";
