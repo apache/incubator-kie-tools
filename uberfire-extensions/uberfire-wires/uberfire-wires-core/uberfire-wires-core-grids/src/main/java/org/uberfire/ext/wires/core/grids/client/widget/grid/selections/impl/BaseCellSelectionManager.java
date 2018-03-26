@@ -331,7 +331,7 @@ public class BaseCellSelectionManager implements CellSelectionManager {
                                                 uiColumnIndex);
 
         final Group header = gridWidget.getHeader();
-        final double clipMinY = gridWidget.getAbsoluteY() + header.getY() + renderer.getHeaderHeight();
+        final double clipMinY = gridWidget.getAbsoluteY() + (header == null ? 0.0 : header.getY()) + renderer.getHeaderHeight();
         final double clipMinX = gridWidget.getAbsoluteX() + floatingX + floatingWidth;
 
         final GridBodyCellEditContext context = new GridBodyCellEditContext(cellX,

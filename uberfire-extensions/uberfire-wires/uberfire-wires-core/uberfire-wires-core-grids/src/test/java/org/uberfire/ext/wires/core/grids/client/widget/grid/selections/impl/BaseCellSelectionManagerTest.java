@@ -576,10 +576,21 @@ public class BaseCellSelectionManagerTest {
     }
 
     @Test
+    public void startEditingCoordinateWithinGridBoundsWithHeader() {
+        assertStartEditingCoordinateWithinGridBounds(gridWidgetHeader);
+    }
+
+    @Test
+    public void startEditingCoordinateWithinGridBoundsWithNullHeader() {
+        assertStartEditingCoordinateWithinGridBounds(null);
+    }
+
     @SuppressWarnings("unchecked")
-    public void startEditingCoordinateWithinGridBounds() {
+    private void assertStartEditingCoordinateWithinGridBounds(final Group header) {
         final ArgumentCaptor<GridBodyCellRenderContext> contextArgumentCaptor = ArgumentCaptor.forClass(GridBodyCellRenderContext.class);
         final ArgumentCaptor<GridBodyCellEditContext> editContextArgumentCaptor = ArgumentCaptor.forClass(GridBodyCellEditContext.class);
+
+        when(gridWidget.getHeader()).thenReturn(header);
 
         cellSelectionManager.startEditingCell(0,
                                               1);
