@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.kie.workbench.screens</groupId>
     <artifactId>kie-wb-common-social-home-page</artifactId>
-    <version>7.7.0-SNAPSHOT</version>
+    <version>7.8.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-wb-common-social-home-page-api</artifactId>
