@@ -40,8 +40,6 @@ public class GeneralSettingsPresenter extends SettingsPresenter.Section {
 
         String getDescription();
 
-        String getURL();
-
         String getGroupId();
 
         String getArtifactId();
@@ -125,7 +123,7 @@ public class GeneralSettingsPresenter extends SettingsPresenter.Section {
         view.setGroupId(pom.getGav().getGroupId());
         view.setArtifactId(pom.getGav().getArtifactId());
         view.setVersion(pom.getGav().getVersion());
-        view.setURL(pom.getUrl() != null ? pom.getUrl() : "");
+        view.setURL(model.getGitUrl());
 
         return promises.create((resolve, reject) -> {
             gavPreferences.load(projectScopedResolutionStrategySupplier.get(),
@@ -205,11 +203,6 @@ public class GeneralSettingsPresenter extends SettingsPresenter.Section {
 
     void setGroupId(final String groupId) {
         pom.getGav().setGroupId(groupId);
-        fireChangeEvent();
-    }
-
-    void setUrl(final String url) {
-        pom.setUrl(url);
         fireChangeEvent();
     }
 

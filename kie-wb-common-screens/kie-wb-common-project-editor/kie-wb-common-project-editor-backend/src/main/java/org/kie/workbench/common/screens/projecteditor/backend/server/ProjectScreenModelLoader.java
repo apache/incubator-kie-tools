@@ -84,6 +84,7 @@ public class ProjectScreenModelLoader {
 
             loadPOM();
             loadKModule();
+            loadGitURL();
             loadImports();
             loadWhiteList();
             loadRepositories();
@@ -101,6 +102,17 @@ public class ProjectScreenModelLoader {
             model.setKModule(kModuleService.load(project.getKModuleXMLPath()));
             model.setKModuleMetaData(getMetadata(project.getKModuleXMLPath()));
             model.setPathToKModule(project.getKModuleXMLPath());
+        }
+
+        private void loadGitURL() {
+            String value = "";
+            try {
+                value = Paths.convert(project.getRootPath()).getFileSystem().toString();
+            } catch (final Exception ignore) {
+                //this is basically for tests that don't use git file system
+            }
+
+            model.setGitUrl(value.replace("\n", " | "));
         }
 
         private void loadImports() {

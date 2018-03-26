@@ -29,6 +29,7 @@ public class ProjectScreenModel {
 
     private POM pom;
     private KModuleModel KModule;
+    private String gitUrl;
     private ProjectImports projectImports;
     private ModuleRepositories repositories;
     private WhiteList whiteList;
@@ -57,6 +58,14 @@ public class ProjectScreenModel {
 
     public void setKModule(final KModuleModel KModule) {
         this.KModule = KModule;
+    }
+
+    public String getGitUrl() {
+        return gitUrl;
+    }
+
+    public void setGitUrl(String gitUrl) {
+        this.gitUrl = gitUrl;
     }
 
     public ProjectImports getProjectImports() {
@@ -186,6 +195,9 @@ public class ProjectScreenModel {
         if (KModule != null ? !KModule.equals(that.KModule) : that.KModule != null) {
             return false;
         }
+        if (gitUrl != null ? !gitUrl.equals(that.gitUrl) : that.gitUrl != null) {
+            return false;
+        }
         if (pathToKModule != null ? !pathToKModule.equals(that.pathToKModule) : that.pathToKModule != null) {
             return false;
         }
@@ -231,6 +243,8 @@ public class ProjectScreenModel {
         result = 31 * result + (POMMetaData != null ? POMMetaData.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (KModule != null ? KModule.hashCode() : 0);
+        result = ~~result;
+        result = 31 * result + (gitUrl != null ? gitUrl.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (pathToKModule != null ? pathToKModule.hashCode() : 0);
         result = ~~result;

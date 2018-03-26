@@ -122,11 +122,6 @@ public class GeneralSettingsView implements GeneralSettingsPresenter.View {
         presenter.setDescription(description.value);
     }
 
-    @EventHandler("url")
-    public void onUrlChanged(final ChangeEvent ignore) {
-        presenter.setUrl(url.value);
-    }
-
     @EventHandler("group-id")
     public void onGroupIdChanged(final ChangeEvent ignore) {
         presenter.setGroupId(groupId.value);
@@ -150,11 +145,6 @@ public class GeneralSettingsView implements GeneralSettingsPresenter.View {
     @Override
     public String getDescription() {
         return description.value;
-    }
-
-    @Override
-    public String getURL() {
-        return url.value;
     }
 
     @Override
