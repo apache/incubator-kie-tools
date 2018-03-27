@@ -20,7 +20,11 @@
              xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
              xmlns:bg="urn:import:org.gwtbootstrap3.client.ui.gwt"
              xmlns:bh="urn:import:org.gwtbootstrap3.client.ui.html"
-             xmlns:uf="urn:import:org.uberfire.ext.widgets.table.client">
+             xmlns:uf="urn:import:org.uberfire.ext.widgets.table.client"
+             xmlns:s="urn:import:org.gwtbootstrap3.extras.select.client.ui">
+
+  <ui:with field="i18n"
+           type="org.uberfire.ext.widgets.table.client.resources.i18n.CommonConstants"/>
 
   <ui:style>
     .dataGridContainer {
@@ -45,6 +49,15 @@
     .pager {
       margin: 0px;
     }
+
+    .pager td {
+      padding-top: 0px;
+    }
+
+    .pager-row {
+      padding-top: 5px;
+    }
+
   </ui:style>
 
   <g:FlowPanel addStyleNames="{style.dataGridContainer}">
@@ -70,9 +83,14 @@
         <bg:DataGrid ui:field="dataGrid"/>
       </b:Column>
     </b:Row>
-    <b:Row>
+    <b:Row addStyleNames="{style.pager-row}">
       <b:Column size="MD_6">
-        <b:ListBox ui:field="pageSizesSelector" width="100px"/>
+        <s:Select ui:field="pageSizesSelector" width="100px">
+          <s:Option text="5 {i18n.Items}"  value="5"/>
+          <s:Option text="10 {i18n.Items}"  value="10"/>
+          <s:Option text="15 {i18n.Items}"  value="15"/>
+          <s:Option text="20 {i18n.Items}"  value="20"/>
+        </s:Select>
       </b:Column>
       <b:Column size="MD_6">
         <uf:UberfireSimplePager ui:field="pager" addStyleNames="pagination pagination-right pull-right {style.pager}"/>

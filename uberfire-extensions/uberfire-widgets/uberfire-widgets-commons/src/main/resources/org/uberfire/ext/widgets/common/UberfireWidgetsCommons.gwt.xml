@@ -22,6 +22,7 @@
   <source path='client'/>
 
   <inherits name="org.gwtbootstrap3.GwtBootstrap3NoTheme"/>
+  <inherits name="org.gwtbootstrap3.extras.select.SelectNoResources"/>
   <inherits name="org.gwtbootstrap3.extras.datepicker.DatePicker"/>
 
   <inherits name="org.uberfire.UberfireAPI"/>

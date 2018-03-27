@@ -24,10 +24,12 @@ import com.google.gwtmockito.WithClassesToStub;
 import org.gwtbootstrap3.client.ui.Image;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.html.Text;
+import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.mockito.Mockito.*;
+import static org.uberfire.ext.widgets.common.client.tables.PagedTable.DEFAULT_PAGE_SIZE;
 
 @RunWith(GwtMockitoTestRunner.class)
 @WithClassesToStub({Image.class, Label.class, Text.class})
@@ -35,6 +37,9 @@ public class PagedTableTest {
 
     @GwtMock
     AsyncDataProvider dataProvider;
+
+    @GwtMock
+    Select select;
 
     @Test
     public void testSetDataProvider() throws Exception {
@@ -117,5 +122,24 @@ public class PagedTableTest {
         pagedTable.loadPageSizePreferences();
         verify(pagedTable.dataGrid,
                times(1)).setPageStart(0);
+    }
+
+
+    @Test
+    public void testPageSizeSelectStartValue() throws Exception {
+        final int size = 10;
+
+        new PagedTable(size);
+
+        verify(select).setValue(String.valueOf(size));
+        verify(select).addValueChangeHandler(any());
+    }
+
+    @Test
+    public void testDefaultPageSizeValue() throws Exception {
+        new PagedTable();
+
+        verify(select).setValue(String.valueOf(DEFAULT_PAGE_SIZE));
+        verify(select).addValueChangeHandler(any());
     }
 }

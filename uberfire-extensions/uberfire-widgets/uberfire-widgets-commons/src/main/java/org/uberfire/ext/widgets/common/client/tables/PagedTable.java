@@ -26,11 +26,10 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AbstractDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 import org.gwtbootstrap3.client.ui.Column;
-import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.uberfire.ext.services.shared.preferences.GridGlobalPreferences;
 import org.uberfire.ext.services.shared.preferences.GridPreferencesStore;
 import org.uberfire.ext.widgets.table.client.ColumnChangedHandler;
-import org.uberfire.ext.widgets.table.client.PagedTableHelper;
 import org.uberfire.ext.widgets.table.client.UberfireSimplePager;
 
 /**
@@ -50,7 +49,7 @@ public class PagedTable<T>
     public UberfireSimplePager pager;
 
     @UiField
-    public ListBox pageSizesSelector;
+    public Select pageSizesSelector;
 
     @UiField
     public Column topToolbar;
@@ -127,15 +126,15 @@ public class PagedTable<T>
         this.pageSize = pageSize;
         this.dataGrid.setPageStart(0);
         this.dataGrid.setPageSize(pageSize);
-        PagedTableHelper.setSelectedValue(pageSizesSelector,
-                                          String.valueOf(pageSize));
         this.pager.setDisplay(dataGrid);
         this.pageSizesSelector.setVisible(this.showPageSizesSelector);
         setShowFastFordwardPagerButton(showFFButton);
         setShowLastPagerButton(showLButton);
-        createPageSizesListBox(5,
-                               20,
-                               5);
+        this.pageSizesSelector.addValueChangeHandler(event -> {
+            storePageSizeInGridPreferences(Integer.parseInt(pageSizesSelector.getValue()));
+            loadPageSizePreferences();
+        });
+        loadPageSizePreferences();
 
         if (useFixedHeight == false) {
             dataGrid.addRangeChangeHandler(e -> Scheduler.get().scheduleDeferred(() -> setTableHeight()));
@@ -185,6 +184,7 @@ public class PagedTable<T>
         this.dataGrid.setPageStart(0);
         this.dataGrid.setPageSize(pageSize);
         this.pager.setPageSize(pageSize);
+        this.pageSizesSelector.setValue(String.valueOf(pageSize));
         setTableHeight();
     }
 
@@ -192,24 +192,6 @@ public class PagedTable<T>
         int base = useFixedHeight ? pageSize : dataGrid.getRowCount() - dataGrid.getVisibleRange().getStart();
         int height = ((base <= 0 ? 1 : base) * ROW_HEIGHT_PX) + HEIGHT_OFFSET_PX;
         this.dataGrid.setHeight(height + "px");
-    }
-
-    public void createPageSizesListBox(int minPageSize,
-                                       int maxPageSize,
-                                       int incPageSize) {
-        pageSizesSelector.clear();
-        PagedTableHelper.setSelectIndexOnPageSizesSelector(minPageSize,
-                                                           maxPageSize,
-                                                           incPageSize,
-                                                           pageSizesSelector,
-                                                           pageSize);
-
-        pageSizesSelector.addChangeHandler(event -> {
-            storePageSizeInGridPreferences(Integer.parseInt(pageSizesSelector.getSelectedValue()));
-            loadPageSizePreferences();
-        });
-
-        loadPageSizePreferences();
     }
 
     public void setShowLastPagerButton(boolean showLastPagerButton) {
