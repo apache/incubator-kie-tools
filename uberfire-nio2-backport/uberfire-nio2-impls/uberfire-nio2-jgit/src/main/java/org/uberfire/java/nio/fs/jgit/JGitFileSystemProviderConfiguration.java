@@ -71,7 +71,7 @@ public class JGitFileSystemProviderConfiguration {
     public static final String DEFAULT_SSH_ENABLED = "true";
     public static final String DEFAULT_SSH_PORT = "8001";
     public static final String DEFAULT_SSH_IDLE_TIMEOUT = "10000";
-    public static final String DEFAULT_SSH_ALGORITHM = "DSA";
+    public static final String DEFAULT_SSH_ALGORITHM = "RSA";
     public static final String DEFAULT_SSH_CERT_PASSPHRASE = "";
     public static final String DEFAULT_COMMIT_LIMIT_TO_GC = "20";
     public static final String DEFAULT_JGIT_FILE_SYSTEM_INSTANCES_CACHE = "20";
