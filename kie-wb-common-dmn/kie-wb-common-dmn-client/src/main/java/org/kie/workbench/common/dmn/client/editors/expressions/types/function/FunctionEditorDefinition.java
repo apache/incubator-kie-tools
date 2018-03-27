@@ -36,6 +36,7 @@ import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -47,7 +48,7 @@ import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @ApplicationScoped
-public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefinition> {
+public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefinition, DMNGridData> {
 
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
@@ -112,6 +113,7 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
                                                   final int nesting) {
         return Optional.of(new FunctionGrid(parent,
                                             nodeUUID,
+                                            this,
                                             hasExpression,
                                             expression,
                                             hasName,
@@ -128,5 +130,10 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
                                             expressionEditorDefinitionsSupplier,
                                             supplementaryEditorDefinitionsSupplier,
                                             parametersEditor));
+    }
+
+    @Override
+    protected DMNGridData makeGridData(final Optional<FunctionDefinition> expression) {
+        return new DMNGridData();
     }
 }

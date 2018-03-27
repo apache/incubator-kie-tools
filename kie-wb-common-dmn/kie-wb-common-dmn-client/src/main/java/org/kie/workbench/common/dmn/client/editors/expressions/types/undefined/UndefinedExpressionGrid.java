@@ -37,9 +37,11 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorCo
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridDataCache;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -52,7 +54,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 
-public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, UndefinedExpressionUIModelMapper> implements HasListSelectorControl {
+public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNGridData, UndefinedExpressionUIModelMapper> implements HasListSelectorControl {
 
     public static final double PADDING = 0.0;
 
@@ -62,6 +64,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
 
     public UndefinedExpressionGrid(final GridCellTuple parent,
                                    final Optional<String> nodeUUID,
+                                   final GridDataCache<Expression, DMNGridData> cache,
                                    final HasExpression hasExpression,
                                    final Optional<Expression> expression,
                                    final Optional<HasName> hasName,
@@ -83,6 +86,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, Unde
               hasName,
               gridPanel,
               gridLayer,
+              cache.getData(nodeUUID, expression),
               new UndefinedExpressionGridRenderer(),
               definitionUtils,
               sessionManager,

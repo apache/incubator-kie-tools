@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -43,7 +44,7 @@ import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @ApplicationScoped
-public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<LiteralExpression> {
+public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<LiteralExpression, DMNGridData> {
 
     public LiteralExpressionEditorDefinition() {
         //CDI proxy
@@ -94,6 +95,7 @@ public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<Lite
                                                   final int nesting) {
         return Optional.of(new LiteralExpressionGrid(parent,
                                                      nodeUUID,
+                                                     this,
                                                      hasExpression,
                                                      expression,
                                                      hasName,
@@ -107,5 +109,10 @@ public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<Lite
                                                      listSelector,
                                                      translationService,
                                                      nesting));
+    }
+
+    @Override
+    protected DMNGridData makeGridData(final Optional<LiteralExpression> expression) {
+        return new DMNGridData();
     }
 }

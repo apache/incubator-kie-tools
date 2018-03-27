@@ -42,9 +42,9 @@ import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxS
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridDataCache;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -69,12 +69,13 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManage
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 
-public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIModelMapper<E>> extends BaseGridWidget {
+public abstract class BaseExpressionGrid<E extends Expression, D extends GridData, M extends BaseUIModelMapper<E>> extends BaseGridWidget {
 
     public static final double DEFAULT_PADDING = 10.0;
 
     protected final GridCellTuple parent;
     protected final Optional<String> nodeUUID;
+    protected final GridDataCache.CacheResult<D> cacheResult;
 
     protected final HasExpression hasExpression;
     protected final Optional<E> expression;
@@ -104,6 +105,7 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
                               final Optional<HasName> hasName,
                               final DMNGridPanel gridPanel,
                               final DMNGridLayer gridLayer,
+                              final GridDataCache.CacheResult<D> cacheResult,
                               final GridRenderer gridRenderer,
                               final DefinitionUtils definitionUtils,
                               final SessionManager sessionManager,
@@ -113,48 +115,13 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
                               final ListSelectorView.Presenter listSelector,
                               final TranslationService translationService,
                               final int nesting) {
-        this(parent,
-             nodeUUID,
-             hasExpression,
-             expression,
-             hasName,
-             gridPanel,
-             gridLayer,
-             new DMNGridData(),
-             gridRenderer,
-             definitionUtils,
-             sessionManager,
-             sessionCommandManager,
-             canvasCommandFactory,
-             cellEditorControls,
-             listSelector,
-             translationService,
-             nesting);
-    }
-
-    public BaseExpressionGrid(final GridCellTuple parent,
-                              final Optional<String> nodeUUID,
-                              final HasExpression hasExpression,
-                              final Optional<E> expression,
-                              final Optional<HasName> hasName,
-                              final DMNGridPanel gridPanel,
-                              final DMNGridLayer gridLayer,
-                              final GridData gridData,
-                              final GridRenderer gridRenderer,
-                              final DefinitionUtils definitionUtils,
-                              final SessionManager sessionManager,
-                              final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                              final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
-                              final CellEditorControlsView.Presenter cellEditorControls,
-                              final ListSelectorView.Presenter listSelector,
-                              final TranslationService translationService,
-                              final int nesting) {
-        super(gridData,
+        super(cacheResult.getGridData(),
               gridLayer,
               gridLayer,
               gridRenderer);
         this.parent = parent;
         this.nodeUUID = nodeUUID;
+        this.cacheResult = cacheResult;
         this.gridPanel = gridPanel;
         this.gridLayer = gridLayer;
         this.definitionUtils = definitionUtils;
@@ -176,8 +143,11 @@ public abstract class BaseExpressionGrid<E extends Expression, M extends BaseUIM
     protected void doInitialisation() {
         this.uiModelMapper = makeUiModelMapper();
 
-        initialiseUiColumns();
-        initialiseUiModel();
+        //If the UiModel was retrieved from the cache then there is no need to reconstruct it.
+        if (!cacheResult.isCacheHit()) {
+            initialiseUiColumns();
+            initialiseUiModel();
+        }
     }
 
     protected abstract M makeUiModelMapper();

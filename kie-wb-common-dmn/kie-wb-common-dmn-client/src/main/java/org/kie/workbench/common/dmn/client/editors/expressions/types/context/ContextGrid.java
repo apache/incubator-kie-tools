@@ -38,9 +38,9 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridDataCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.HasRowDragRestrictions;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -56,8 +56,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlers
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState.GridWidgetHandlersOperation;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
-public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMapper> implements HasRowDragRestrictions,
-                                                                                              HasListSelectorControl {
+public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, ContextUIModelMapper> implements HasRowDragRestrictions,
+                                                                                                               HasListSelectorControl {
 
     private static final String EXPRESSION_COLUMN_GROUP = "ContextGrid$ExpressionColumn1";
 
@@ -65,6 +65,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
 
     public ContextGrid(final GridCellTuple parent,
                        final Optional<String> nodeUUID,
+                       final GridDataCache<Context, ContextGridData> cache,
                        final HasExpression hasExpression,
                        final Optional<Context> expression,
                        final Optional<HasName> hasName,
@@ -86,11 +87,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextUIModelMappe
               hasName,
               gridPanel,
               gridLayer,
-              new ContextGridData(new DMNGridData(),
-                                  sessionManager,
-                                  sessionCommandManager,
-                                  expression,
-                                  gridLayer::batch),
+              cache.getData(nodeUUID, expression),
               new ContextGridRenderer(nesting > 0),
               definitionUtils,
               sessionManager,

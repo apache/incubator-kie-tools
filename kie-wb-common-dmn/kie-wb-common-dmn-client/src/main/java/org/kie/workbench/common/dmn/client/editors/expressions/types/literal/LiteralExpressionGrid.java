@@ -31,8 +31,10 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorCo
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridDataCache;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -44,12 +46,13 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 
-public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression, LiteralExpressionUIModelMapper> implements HasListSelectorControl {
+public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression, DMNGridData, LiteralExpressionUIModelMapper> implements HasListSelectorControl {
 
     public static final double PADDING = 0.0;
 
     public LiteralExpressionGrid(final GridCellTuple parent,
                                  final Optional<String> nodeUUID,
+                                 final GridDataCache<LiteralExpression, DMNGridData> cache,
                                  final HasExpression hasExpression,
                                  final Optional<LiteralExpression> expression,
                                  final Optional<HasName> hasName,
@@ -70,6 +73,7 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
               hasName,
               gridPanel,
               gridLayer,
+              cache.getData(nodeUUID, expression),
               new LiteralExpressionGridRenderer(nesting > 0),
               definitionUtils,
               sessionManager,

@@ -41,6 +41,7 @@ import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -52,7 +53,7 @@ import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @ApplicationScoped
-public class DecisionTableEditorDefinition extends BaseEditorDefinition<DecisionTable> {
+public class DecisionTableEditorDefinition extends BaseEditorDefinition<DecisionTable, DecisionTableGridData> {
 
     static final String INPUT_CLAUSE_EXPRESSION_TEXT = "input";
 
@@ -147,6 +148,7 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
                                                   final int nesting) {
         return Optional.of(new DecisionTableGrid(parent,
                                                  nodeUUID,
+                                                 this,
                                                  hasExpression,
                                                  expression,
                                                  hasName,
@@ -161,5 +163,14 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
                                                  translationService,
                                                  nesting,
                                                  hitPolicyEditor));
+    }
+
+    @Override
+    protected DecisionTableGridData makeGridData(final Optional<DecisionTable> expression) {
+        return new DecisionTableGridData(new DMNGridData(),
+                                         sessionManager,
+                                         sessionCommandManager,
+                                         expression,
+                                         gridLayer::batch);
     }
 }

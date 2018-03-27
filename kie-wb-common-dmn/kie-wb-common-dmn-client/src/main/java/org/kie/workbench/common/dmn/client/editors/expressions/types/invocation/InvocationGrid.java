@@ -45,9 +45,9 @@ import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxS
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridDataCache;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -59,7 +59,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
-public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIModelMapper> implements HasListSelectorControl {
+public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGridData, InvocationUIModelMapper> implements HasListSelectorControl {
 
     private static final String EXPRESSION_COLUMN_GROUP = "InvocationGrid$ExpressionColumn1";
 
@@ -67,6 +67,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
 
     public InvocationGrid(final GridCellTuple parent,
                           final Optional<String> nodeUUID,
+                          final GridDataCache<Invocation, InvocationGridData> cache,
                           final HasExpression hasExpression,
                           final Optional<Invocation> expression,
                           final Optional<HasName> hasName,
@@ -88,11 +89,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationUIM
               hasName,
               gridPanel,
               gridLayer,
-              new InvocationGridData(new DMNGridData(),
-                                     sessionManager,
-                                     sessionCommandManager,
-                                     expression,
-                                     gridLayer::batch),
+              cache.getData(nodeUUID, expression),
               new InvocationGridRenderer(nesting > 0),
               definitionUtils,
               sessionManager,

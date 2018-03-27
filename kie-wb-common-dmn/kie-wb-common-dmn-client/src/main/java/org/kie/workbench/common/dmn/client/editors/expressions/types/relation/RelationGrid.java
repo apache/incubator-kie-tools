@@ -38,9 +38,9 @@ import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxS
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridDataCache;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -51,13 +51,14 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
-public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMapper> implements HasListSelectorControl {
+public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData, RelationUIModelMapper> implements HasListSelectorControl {
 
     private final TextAreaSingletonDOMElementFactory factory = getBodyTextAreaFactory();
     private final TextBoxSingletonDOMElementFactory headerFactory = getHeaderTextBoxFactory();
 
     public RelationGrid(final GridCellTuple parent,
                         final Optional<String> nodeUUID,
+                        final GridDataCache<Relation, RelationGridData> cache,
                         final HasExpression hasExpression,
                         final Optional<Relation> expression,
                         final Optional<HasName> hasName,
@@ -78,11 +79,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationUIModelMa
               hasName,
               gridPanel,
               gridLayer,
-              new RelationGridData(new DMNGridData(),
-                                   sessionManager,
-                                   sessionCommandManager,
-                                   expression,
-                                   gridLayer::batch),
+              cache.getData(nodeUUID, expression),
               new RelationGridRenderer(),
               definitionUtils,
               sessionManager,

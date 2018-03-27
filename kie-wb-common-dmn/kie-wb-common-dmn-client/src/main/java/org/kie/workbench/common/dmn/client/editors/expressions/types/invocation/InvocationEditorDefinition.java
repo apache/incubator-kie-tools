@@ -38,6 +38,7 @@ import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -49,7 +50,7 @@ import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @ApplicationScoped
-public class InvocationEditorDefinition extends BaseEditorDefinition<Invocation> {
+public class InvocationEditorDefinition extends BaseEditorDefinition<Invocation, InvocationGridData> {
 
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
@@ -111,6 +112,7 @@ public class InvocationEditorDefinition extends BaseEditorDefinition<Invocation>
                                                   final int nesting) {
         return Optional.of(new InvocationGrid(parent,
                                               nodeUUID,
+                                              this,
                                               hasExpression,
                                               expression,
                                               hasName,
@@ -125,5 +127,14 @@ public class InvocationEditorDefinition extends BaseEditorDefinition<Invocation>
                                               translationService,
                                               nesting,
                                               expressionEditorDefinitionsSupplier));
+    }
+
+    @Override
+    protected InvocationGridData makeGridData(final Optional<Invocation> expression) {
+        return new InvocationGridData(new DMNGridData(),
+                                      sessionManager,
+                                      sessionCommandManager,
+                                      expression,
+                                      gridLayer::batch);
     }
 }

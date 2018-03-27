@@ -32,7 +32,9 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridDataCache;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -73,6 +75,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
                                       hasName,
                                       gridPanel,
                                       gridLayer,
+                                      new GridDataCache.CacheResult(new DMNGridData(), false),
                                       renderer,
                                       definitionUtils,
                                       sessionManager,

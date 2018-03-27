@@ -36,10 +36,12 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.FunctionGridSupplementaryEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.FunctionSupplementaryGrid;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.FunctionSupplementaryGridData;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -52,7 +54,7 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @Dependent
 @FunctionGridSupplementaryEditor
-public class JavaFunctionEditorDefinition extends BaseEditorDefinition<Context> {
+public class JavaFunctionEditorDefinition extends BaseEditorDefinition<Context, FunctionSupplementaryGridData> {
 
     public static final String VARIABLE_CLASS = "class";
 
@@ -125,6 +127,7 @@ public class JavaFunctionEditorDefinition extends BaseEditorDefinition<Context> 
                                                   final int nesting) {
         return Optional.of(new FunctionSupplementaryGrid(parent,
                                                          nodeUUID,
+                                                         this,
                                                          hasExpression,
                                                          expression,
                                                          hasName,
@@ -139,5 +142,14 @@ public class JavaFunctionEditorDefinition extends BaseEditorDefinition<Context> 
                                                          translationService,
                                                          nesting,
                                                          expressionEditorDefinitionsSupplier));
+    }
+
+    @Override
+    protected FunctionSupplementaryGridData makeGridData(final Optional<Context> expression) {
+        return new FunctionSupplementaryGridData(new DMNGridData(),
+                                                 sessionManager,
+                                                 sessionCommandManager,
+                                                 expression,
+                                                 gridLayer::batch);
     }
 }

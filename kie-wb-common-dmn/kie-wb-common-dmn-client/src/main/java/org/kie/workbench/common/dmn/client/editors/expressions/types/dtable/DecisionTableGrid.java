@@ -52,9 +52,9 @@ import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxS
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridDataCache;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -68,8 +68,8 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.mvp.Command;
 
-public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, DecisionTableUIModelMapper> implements HasListSelectorControl,
-                                                                                                                HasHitPolicyControl {
+public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, DecisionTableGridData, DecisionTableUIModelMapper> implements HasListSelectorControl,
+                                                                                                                                       HasHitPolicyControl {
 
     public static final BuiltinAggregator DEFAULT_AGGREGATOR = BuiltinAggregator.COUNT;
 
@@ -100,6 +100,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
 
     public DecisionTableGrid(final GridCellTuple parent,
                              final Optional<String> nodeUUID,
+                             final GridDataCache<DecisionTable, DecisionTableGridData> cache,
                              final HasExpression hasExpression,
                              final Optional<DecisionTable> expression,
                              final Optional<HasName> hasName,
@@ -121,11 +122,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
               hasName,
               gridPanel,
               gridLayer,
-              new DecisionTableGridData(new DMNGridData(),
-                                        sessionManager,
-                                        sessionCommandManager,
-                                        expression,
-                                        gridLayer::batch),
+              cache.getData(nodeUUID, expression),
               new DecisionTableGridRenderer(),
               definitionUtils,
               sessionManager,

@@ -34,9 +34,9 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridDataCache;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -47,7 +47,7 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
-public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, ContextUIModelMapper> implements HasListSelectorControl {
+public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, FunctionSupplementaryGridData, ContextUIModelMapper> implements HasListSelectorControl {
 
     private static final String EXPRESSION_COLUMN_GROUP = "FunctionSupplementaryGrid$ExpressionColumn1";
 
@@ -55,6 +55,7 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Conte
 
     public FunctionSupplementaryGrid(final GridCellTuple parent,
                                      final Optional<String> nodeUUID,
+                                     final GridDataCache<Context, FunctionSupplementaryGridData> cache,
                                      final HasExpression hasExpression,
                                      final Optional<Context> expression,
                                      final Optional<HasName> hasName,
@@ -76,11 +77,7 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Conte
               hasName,
               gridPanel,
               gridLayer,
-              new FunctionSupplementaryGridData(new DMNGridData(),
-                                                sessionManager,
-                                                sessionCommandManager,
-                                                expression,
-                                                gridLayer::batch),
+              cache.getData(nodeUUID, expression),
               new ContextGridRenderer(true),
               definitionUtils,
               sessionManager,

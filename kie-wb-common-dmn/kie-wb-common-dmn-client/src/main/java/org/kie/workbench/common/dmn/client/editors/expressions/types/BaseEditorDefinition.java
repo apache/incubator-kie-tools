@@ -16,10 +16,15 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridDataCache;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -27,8 +32,10 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
-public abstract class BaseEditorDefinition<T extends Expression> implements ExpressionEditorDefinition<T> {
+public abstract class BaseEditorDefinition<E extends Expression, D extends GridData> implements ExpressionEditorDefinition<E>,
+                                                                                                GridDataCache<E, D> {
 
     protected DMNGridPanel gridPanel;
     protected DMNGridLayer gridLayer;
@@ -39,6 +46,8 @@ public abstract class BaseEditorDefinition<T extends Expression> implements Expr
     protected CellEditorControlsView.Presenter cellEditorControls;
     protected ListSelectorView.Presenter listSelector;
     protected TranslationService translationService;
+
+    protected Map<String, D> cache = new HashMap<>();
 
     public BaseEditorDefinition() {
         //CDI proxy
@@ -63,4 +72,21 @@ public abstract class BaseEditorDefinition<T extends Expression> implements Expr
         this.listSelector = listSelector;
         this.translationService = translationService;
     }
+
+    @Override
+    public CacheResult<D> getData(final Optional<String> nodeUUID,
+                                  final Optional<E> expression) {
+        if (!nodeUUID.isPresent()) {
+            return new CacheResult<>(makeGridData(expression), false);
+        }
+        if (!cache.containsKey(nodeUUID.get())) {
+            final D gridData = makeGridData(expression);
+            cache.put(nodeUUID.get(),
+                      gridData);
+            return new CacheResult<>(gridData, false);
+        }
+        return new CacheResult<>(cache.get(nodeUUID.get()), true);
+    }
+
+    protected abstract D makeGridData(final Optional<E> expression);
 }

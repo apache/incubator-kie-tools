@@ -48,9 +48,11 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridDataCache;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -62,8 +64,8 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.mvp.Command;
 
-public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, FunctionUIModelMapper> implements HasListSelectorControl,
-                                                                                                           HasParametersControl {
+public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGridData, FunctionUIModelMapper> implements HasListSelectorControl,
+                                                                                                                        HasParametersControl {
 
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
@@ -71,6 +73,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
 
     public FunctionGrid(final GridCellTuple parent,
                         final Optional<String> nodeUUID,
+                        final GridDataCache<FunctionDefinition, DMNGridData> cache,
                         final HasExpression hasExpression,
                         final Optional<FunctionDefinition> expression,
                         final Optional<HasName> hasName,
@@ -94,6 +97,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, Functio
               hasName,
               gridPanel,
               gridLayer,
+              cache.getData(nodeUUID, expression),
               new FunctionGridRenderer(nesting > 0),
               definitionUtils,
               sessionManager,

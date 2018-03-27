@@ -34,6 +34,7 @@ import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -45,7 +46,7 @@ import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @ApplicationScoped
-public class RelationEditorDefinition extends BaseEditorDefinition<Relation> {
+public class RelationEditorDefinition extends BaseEditorDefinition<Relation, RelationGridData> {
 
     public RelationEditorDefinition() {
         //CDI proxy
@@ -103,6 +104,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation> {
                                                   final int nesting) {
         return Optional.of(new RelationGrid(parent,
                                             nodeUUID,
+                                            this,
                                             hasExpression,
                                             expression,
                                             hasName,
@@ -116,5 +118,14 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation> {
                                             listSelector,
                                             translationService,
                                             nesting));
+    }
+
+    @Override
+    protected RelationGridData makeGridData(final Optional<Relation> expression) {
+        return new RelationGridData(new DMNGridData(),
+                                    sessionManager,
+                                    sessionCommandManager,
+                                    expression,
+                                    gridLayer::batch);
     }
 }
