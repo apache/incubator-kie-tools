@@ -22,7 +22,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Scheduler;
-import org.jboss.errai.common.client.dom.Document;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
@@ -46,8 +45,6 @@ public class HitPolicyEditorViewImpl implements HitPolicyEditorView {
     @DataField("lstDecisionTableOrientation")
     private Select lstDecisionTableOrientation;
 
-    private Document document;
-
     private HitPolicyEditorView.Presenter presenter;
 
     public HitPolicyEditorViewImpl() {
@@ -57,12 +54,10 @@ public class HitPolicyEditorViewImpl implements HitPolicyEditorView {
     @Inject
     public HitPolicyEditorViewImpl(final Select lstHitPolicies,
                                    final Select lstBuiltinAggregator,
-                                   final Select lstDecisionTableOrientation,
-                                   final Document document) {
+                                   final Select lstDecisionTableOrientation) {
         this.lstHitPolicies = lstHitPolicies;
         this.lstBuiltinAggregator = lstBuiltinAggregator;
         this.lstDecisionTableOrientation = lstDecisionTableOrientation;
-        this.document = document;
 
         setupHitPolicyEventHandler();
         setupBuiltinAggregatorEventHandler();
