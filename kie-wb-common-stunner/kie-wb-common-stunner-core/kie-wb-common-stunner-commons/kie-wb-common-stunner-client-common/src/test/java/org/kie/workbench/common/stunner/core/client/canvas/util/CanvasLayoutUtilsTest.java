@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
@@ -65,10 +66,6 @@ import static org.mockito.Mockito.when;
 public class CanvasLayoutUtilsTest {
 
     private final static double NEW_NODE_HEIGHT = 100;
-
-    private Point2D canvasMin;
-    private Point2D canvasMax;
-    private Point2D offset;
 
     @Mock
     private Diagram diagram;
@@ -147,6 +144,7 @@ public class CanvasLayoutUtilsTest {
     private TestingGraphInstanceBuilder.TestGraph2 graphInstanceParent;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         when(diagram.getMetadata()).thenReturn(metadata);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
@@ -164,16 +162,14 @@ public class CanvasLayoutUtilsTest {
 
         when(canvasHandler.getCanvas()).thenReturn(canvas);
 
-        canvasMin = new Point2D(0d,
-                                0d);
+        Point2D canvasMin = new Point2D(0d,
+                                        0d);
         when(minCanvasBound.getX()).thenReturn(canvasMin.getX());
         when(minCanvasBound.getY()).thenReturn(canvasMin.getY());
-        canvasMax = new Point2D(1200d,
-                                1200d);
+        Point2D canvasMax = new Point2D(1200d,
+                                        1200d);
         when(maxCanvasBound.getX()).thenReturn(canvasMax.getX());
         when(maxCanvasBound.getY()).thenReturn(canvasMax.getY());
-        offset = new Point2D(100d,
-                             100d);
         when(canvasHandler.getCanvas().getHeight()).thenReturn((int) canvasMax.getY());
         when(canvasHandler.getCanvas().getWidth()).thenReturn((int) canvasMax.getX());
 
@@ -194,7 +190,7 @@ public class CanvasLayoutUtilsTest {
     @Test
     public void isCanvasRootTrueTest() {
         when(diagram.getMetadata().getCanvasRootUUID()).thenReturn("canvas_root");
-        boolean isCanvasRoot = canvasLayoutUtils.isCanvasRoot(diagram,
+        boolean isCanvasRoot = CanvasLayoutUtils.isCanvasRoot(diagram,
                                                               parentCanvasRoot);
         assertTrue(isCanvasRoot);
     }
@@ -202,7 +198,7 @@ public class CanvasLayoutUtilsTest {
     @Test
     public void isCanvasRootFalseTest() {
         when(diagram.getMetadata().getCanvasRootUUID()).thenReturn("test");
-        boolean isCanvasRoot = canvasLayoutUtils.isCanvasRoot(diagram,
+        boolean isCanvasRoot = CanvasLayoutUtils.isCanvasRoot(diagram,
                                                               parentNotCanvasRoot);
         assertFalse(isCanvasRoot);
     }
@@ -210,7 +206,7 @@ public class CanvasLayoutUtilsTest {
     @Test
     public void isCanvasRootWithUuidTrueTest() {
         when(diagram.getMetadata().getCanvasRootUUID()).thenReturn("canvas_root");
-        boolean isCanvasRoot = canvasLayoutUtils.isCanvasRoot(diagram,
+        boolean isCanvasRoot = CanvasLayoutUtils.isCanvasRoot(diagram,
                                                               "canvas_root");
         assertTrue(isCanvasRoot);
     }
@@ -218,12 +214,15 @@ public class CanvasLayoutUtilsTest {
     @Test
     public void isCanvasRootWithUuidFalseTest() {
         when(diagram.getMetadata().getCanvasRootUUID()).thenReturn("test");
-        boolean isCanvasRoot = canvasLayoutUtils.isCanvasRoot(diagram,
+        boolean isCanvasRoot = CanvasLayoutUtils.isCanvasRoot(diagram,
                                                               "canvas_root");
         assertFalse(isCanvasRoot);
     }
 
-    // TODO (AlessioP & Roger): @Test
+    // TODO (AlessioP & Roger):
+    @Test
+    @Ignore
+    @SuppressWarnings("unchecked")
     public void getNextFromRoot() {
         Node node1 = mock(Node.class);
         Bounds boundsNode1 = new BoundsImpl(new BoundImpl(100d,
@@ -252,8 +251,8 @@ public class CanvasLayoutUtilsTest {
         View rootView = mock(View.class);
         when(nodeRoot.getContent()).thenReturn(rootView);
         when(rootView.getBounds()).thenReturn(rootBounds);
-        List<Node> nodes = new ArrayList<Node>();
-        List<Edge> edges = new ArrayList<Edge>();
+        List<Node> nodes = new ArrayList<>();
+        List<Edge> edges = new ArrayList<>();
 
         Edge edge = mock(Edge.class);
         edges.add(edge);
@@ -274,6 +273,7 @@ public class CanvasLayoutUtilsTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void getNextFromRootWithParent() {
         this.graphTestHandlerParent = new TestingGraphMockHandler();
         graphInstanceParent = TestingGraphInstanceBuilder.newGraph2(graphTestHandlerParent);
@@ -292,12 +292,15 @@ public class CanvasLayoutUtilsTest {
                                                  node);
 
         Node<View<?>, Edge> start = (Node<View<?>, Edge>) graphInstanceParent.startNode;
-        double[] size = GraphUtils.getNodeSize((View) start.getContent());
+        double[] size = GraphUtils.getNodeSize(start.getContent());
         assertTrue(next.getX() == CanvasLayoutUtils.getPaddingX());
         assertTrue(next.getY() > size[1]);
     }
 
-    // TODO (AlessioP & Roger): @Test
+    // TODO (AlessioP & Roger):
+    @Test
+    @Ignore
+    @SuppressWarnings("unchecked")
     public void getNextOutOfCanvas() {
         when(ruleManager.evaluate(eq(ruleSet),
                                   any(RuleEvaluationContext.class))).thenReturn(ruleViolations);
@@ -344,13 +347,16 @@ public class CanvasLayoutUtilsTest {
                                                  newNode);
 
         Node<View<?>, Edge> intermNode = (Node<View<?>, Edge>) graphInstance.intermNode;
-        double[] size = GraphUtils.getNodeSize((View) intermNode.getContent());
+        double[] size = GraphUtils.getNodeSize(intermNode.getContent());
 
         assertTrue(next.getX() > size[0]);
-        assertTrue(next.getY() == canvasLayoutUtils.getPaddingY());
+        assertTrue(next.getY() == CanvasLayoutUtils.getPaddingY());
     }
 
-    // TODO (AlessioP & Roger): @Test
+    // TODO (AlessioP & Roger):
+    @Test
+    @Ignore
+    @SuppressWarnings("unchecked")
     public void getNextFromNewTaskWithNonEmptyPositionWithParent() {
         when(ruleManager.evaluate(eq(ruleSet),
                                   any(RuleEvaluationContext.class))).thenReturn(ruleViolations);
@@ -384,12 +390,15 @@ public class CanvasLayoutUtilsTest {
                                                  graphInstanceParent.startNode,
                                                  newNode);
         Node<View<?>, Edge> intermNode = (Node<View<?>, Edge>) graphInstanceParent.intermNode;
-        double[] size = GraphUtils.getNodeSize((View) intermNode.getContent());
-        assertTrue(next.getX() == canvasLayoutUtils.getPaddingX());
+        double[] size = GraphUtils.getNodeSize(intermNode.getContent());
+        assertTrue(next.getX() == CanvasLayoutUtils.getPaddingX());
         assertTrue(next.getY() > size[1]);
     }
 
-    // TODO (AlessioP & Roger): @Test
+    // TODO (AlessioP & Roger):
+    @Test
+    @Ignore
+    @SuppressWarnings("unchecked")
     public void getNextNewTaskWithNonEmptyPosition() {
 
         when(ruleManager.evaluate(eq(ruleSet),
@@ -428,10 +437,10 @@ public class CanvasLayoutUtilsTest {
                                                  newNode);
 
         Node<View<?>, Edge> startNode = (Node<View<?>, Edge>) graphInstance.startNode;
-        double[] sizeStartNode = GraphUtils.getNodeSize((View) startNode.getContent());
+        double[] sizeStartNode = GraphUtils.getNodeSize(startNode.getContent());
         Node<View<?>, Edge> intermNode = (Node<View<?>, Edge>) graphInstance.intermNode;
-        double[] sizeIntermNode = GraphUtils.getNodeSize((View) intermNode.getContent());
-        assertTrue(next.getX() == sizeStartNode[0] + canvasLayoutUtils.getPaddingX());
+        double[] sizeIntermNode = GraphUtils.getNodeSize(intermNode.getContent());
+        assertTrue(next.getX() == sizeStartNode[0] + CanvasLayoutUtils.getPaddingX());
         assertTrue(next.getY() > sizeIntermNode[1]);
     }
 }

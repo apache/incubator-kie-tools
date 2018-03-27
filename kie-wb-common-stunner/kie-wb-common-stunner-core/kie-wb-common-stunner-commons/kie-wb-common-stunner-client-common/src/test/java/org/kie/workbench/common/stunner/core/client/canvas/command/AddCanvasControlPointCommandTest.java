@@ -56,7 +56,6 @@ public class AddCanvasControlPointCommandTest extends AbstractCanvasControlPoint
         assertTrue(CommandUtils.isError(result));
     }
 
-
     @Test
     public void execute() {
         CommandResult<CanvasViolation> result = addCanvasControlPointCommand.execute(canvasHandler);

@@ -74,6 +74,7 @@ public class ClearSessionCommandTest {
     private ArgumentCaptor<ClearSessionCommandExecutedEvent> commandExecutedEventCaptor;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() {
         when(session.getCommandManager()).thenReturn(sessionCommandManager);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);

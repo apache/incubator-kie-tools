@@ -58,7 +58,6 @@ public class UpdateChildNodeCommandTest {
     @Mock
     private Metadata metadata;
 
-    private TestingGraphMockHandler graphHandler;
     private TestingGraphInstanceBuilder.TestGraph2 graphHolder;
     private UpdateChildNodeCommand tested;
     private Node<View<?>, Edge> dockNode;
@@ -67,7 +66,7 @@ public class UpdateChildNodeCommandTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        this.graphHandler = new TestingGraphMockHandler();
+        TestingGraphMockHandler graphHandler = new TestingGraphMockHandler();
         this.graphHolder = TestingGraphInstanceBuilder.newGraph2(graphHandler);
         this.laneNode = graphHandler.newViewNode(LANE_UUID,
                                                  Optional.empty(),

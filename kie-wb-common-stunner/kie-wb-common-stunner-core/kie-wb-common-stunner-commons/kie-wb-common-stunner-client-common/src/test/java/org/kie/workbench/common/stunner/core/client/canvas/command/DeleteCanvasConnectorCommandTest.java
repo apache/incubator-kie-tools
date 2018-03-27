@@ -24,7 +24,6 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -79,7 +78,7 @@ public class DeleteCanvasConnectorCommandTest extends AbstractCanvasCommandTest 
     }
 
     @Test
-    public void testExecuteNullShape(){
+    public void testExecuteNullShape() {
         when(canvas.getShape(EDGE_ID)).thenReturn(null);
         assertFalse(CommandUtils.isError(tested.execute(canvasHandler)));
         verify(canvasHandler, never()).deregister(eq(candidate));

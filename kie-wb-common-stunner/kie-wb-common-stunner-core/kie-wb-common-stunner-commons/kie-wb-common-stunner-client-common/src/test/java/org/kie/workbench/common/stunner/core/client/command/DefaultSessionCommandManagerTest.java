@@ -165,8 +165,7 @@ public class DefaultSessionCommandManagerTest {
                 new CommandExceptionCanvasCommandManager();
         when(clientFullSession.getCommandManager()).thenReturn(commandManager);
         this.tested = new SessionCommandManagerStub();
-        CommandResult<CanvasViolation> result = tested.execute(canvasHandler,
-                                                               mock(Command.class));
+        tested.execute(canvasHandler, mock(Command.class));
         assertEquals(commandListener,
                      commandManager.listener);
         verify(clientSessionManager,

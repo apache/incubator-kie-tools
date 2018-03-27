@@ -67,8 +67,8 @@ public class CanvasControlRegistrationHandlerTest {
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         this.tested = spy(new CanvasControlRegistrationHandler<>(canvas,
-                                                             canvasHandler,
-                                                             disposer));
+                                                                 canvasHandler,
+                                                                 disposer));
         for (int x = 0; x < CONTROLS_SIZE; x++) {
             canvasControls.add(mock(CanvasControl.class));
             canvasHandlerControls.add(mock(CanvasControl.class));
@@ -85,10 +85,7 @@ public class CanvasControlRegistrationHandlerTest {
                times(1)).addRegistrationListener(any(CanvasShapeListener.class));
         verify(canvasHandler,
                times(1)).addRegistrationListener(any(CanvasElementListener.class));
-        canvasControls.forEach(c -> {
-            verify(c,
-                   times(1)).enable(eq(canvas));
-        });
+        canvasControls.forEach(c -> verify(c, times(1)).enable(eq(canvas)));
         canvasHandlerControls.forEach(c -> verify(c,
                                                   times(1)).enable(eq(canvasHandler)));
     }
@@ -129,6 +126,7 @@ public class CanvasControlRegistrationHandlerTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testDestroy() {
         tested.enable();
         tested.destroy();
@@ -136,8 +134,8 @@ public class CanvasControlRegistrationHandlerTest {
         verify(tested).clear();
         verify(canvas).clearRegistrationListeners();
         verify(canvasHandler).clearRegistrationListeners();
-        canvasControls.forEach(control-> verify(disposer).dispose(control));
-        canvasHandlerControls.forEach(control-> verify(disposer).dispose(control));
+        canvasControls.forEach(control -> verify(disposer).dispose(control));
+        canvasHandlerControls.forEach(control -> verify(disposer).dispose(control));
     }
 
     @Test

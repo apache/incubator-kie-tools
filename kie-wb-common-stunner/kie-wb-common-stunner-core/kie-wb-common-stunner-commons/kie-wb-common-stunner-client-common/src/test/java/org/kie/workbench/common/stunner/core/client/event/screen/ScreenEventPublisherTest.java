@@ -65,6 +65,7 @@ public class ScreenEventPublisherTest {
     private SyncBeanDef syncBeanDef;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
 
         screenEventPublisher = new ScreenEventPublisher(diagramEditorMaximizedEventEvent,
@@ -78,11 +79,10 @@ public class ScreenEventPublisherTest {
 
         when(syncBeanDef.getQualifiers()).thenReturn(Stream.of(annotationForMap(
                 DiagramEditor.class, new HashMap<>())).collect(toSet()));
-
     }
 
     @Test
-    public void onPlaceMaximizedEventTest(){
+    public void onPlaceMaximizedEventTest() {
         screenEventPublisher.onPlaceMaximizedEvent(placeMaximizedEvent);
         verify(diagramEditorMaximizedEventEvent, Mockito.times(1)).fire(new ScreenMaximizedEvent(true));
 
@@ -93,7 +93,7 @@ public class ScreenEventPublisherTest {
     }
 
     @Test
-    public void onPlaceMinimizedEventTest(){
+    public void onPlaceMinimizedEventTest() {
         screenEventPublisher.onPlaceMinimizedEvent(placeMinimizedEvent);
         verify(diagramEditorMinimizedEventEvent, Mockito.times(1)).fire(new ScreenMinimizedEvent(true));
 

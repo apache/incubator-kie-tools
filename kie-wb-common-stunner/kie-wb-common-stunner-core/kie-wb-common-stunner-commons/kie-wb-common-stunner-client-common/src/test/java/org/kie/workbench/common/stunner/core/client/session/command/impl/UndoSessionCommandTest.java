@@ -89,6 +89,7 @@ public class UndoSessionCommandTest extends BaseSessionCommandKeyboardTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testExecuteSuccess() {
         command.bind(session);
         when(sessionCommandManager.undo(canvasHandler)).thenReturn(null);

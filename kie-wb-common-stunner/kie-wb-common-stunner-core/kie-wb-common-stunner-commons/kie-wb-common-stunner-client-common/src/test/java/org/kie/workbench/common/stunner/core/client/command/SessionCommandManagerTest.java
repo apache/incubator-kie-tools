@@ -55,11 +55,10 @@ public class SessionCommandManagerTest {
     CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
 
     private SessionCommandManagerImpl tested;
-    private CanvasCommandManagerImpl commandManager;
 
     @Before
     public void setup() throws Exception {
-        this.commandManager = new CanvasCommandManagerImpl();
+        CanvasCommandManagerImpl commandManager = new CanvasCommandManagerImpl();
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(clientSessionManager.getCurrentSession()).thenReturn(clientFullSession);
         when(clientFullSession.getCommandRegistry()).thenReturn(commandRegistry);

@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.command;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -33,10 +34,12 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.Tree
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class CloneNodeCommandTest extends AbstractCanvasCommandTest {
 
     @Mock
@@ -49,8 +52,6 @@ public class CloneNodeCommandTest extends AbstractCanvasCommandTest {
 
     private static final String PARENT_UUID = UUID.uuid();
 
-    private Point2D position;
-
     private CloneNodeCommand cloneNodeCommand;
 
     @Mock
@@ -62,19 +63,19 @@ public class CloneNodeCommandTest extends AbstractCanvasCommandTest {
         when(candidate.getUUID()).thenReturn(NODE_UUID);
         when(candidate.getContent()).thenReturn(candidateContent);
         when(childrenTraverseProcessorManagedInstance.get()).thenReturn(new ChildrenTraverseProcessorImpl(new TreeWalkTraverseProcessorImpl()));
-        
-        this.position = new Point2D(1,1);
+
+        Point2D position = new Point2D(1, 1);
         this.cloneNodeCommand = new CloneNodeCommand(candidate, PARENT_UUID, position, null, childrenTraverseProcessorManagedInstance);
     }
 
     @Test
-    public void testNewGraphCommand() throws Exception {
+    public void testNewGraphCommand() {
         Command<GraphCommandExecutionContext, RuleViolation> graphCommand = cloneNodeCommand.newGraphCommand(canvasHandler);
         assertTrue(graphCommand instanceof org.kie.workbench.common.stunner.core.graph.command.impl.CloneNodeCommand);
     }
 
     @Test
-    public void testNewCanvasCommand() throws Exception {
+    public void testNewCanvasCommand() {
         Command<AbstractCanvasHandler, CanvasViolation> canvasCommand = cloneNodeCommand.newCanvasCommand(canvasHandler);
         assertTrue(canvasCommand instanceof CompositeCommand);
     }

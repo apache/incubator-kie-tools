@@ -141,7 +141,7 @@ public class CanvasDefinitionTooltipTest {
     }
 
     @Test
-    public void testDsetroy() {
+    public void testDestroy() {
         tested.destroy();
         verify(textTooltip,
                times(1)).destroy();

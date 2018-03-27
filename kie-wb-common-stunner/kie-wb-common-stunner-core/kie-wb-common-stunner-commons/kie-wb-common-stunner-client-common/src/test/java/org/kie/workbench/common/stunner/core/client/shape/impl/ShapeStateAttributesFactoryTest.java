@@ -19,7 +19,9 @@ package org.kie.workbench.common.stunner.core.client.shape.impl;
 import java.util.function.Function;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.stunner.core.client.shape.ShapeState.HIGHLIGHT;
@@ -34,6 +36,7 @@ import static org.kie.workbench.common.stunner.core.client.shape.impl.ShapeState
 import static org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateAttributesFactory.COLOR_INVALID;
 import static org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateAttributesFactory.COLOR_SELECTED;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ShapeStateAttributesFactoryTest {
 
     private Function<ShapeState, ShapeStateAttributeHandler.ShapeStateAttributes> fillAttributes = ShapeStateAttributesFactory::buildFillAttributes;

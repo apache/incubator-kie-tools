@@ -20,13 +20,16 @@ import java.util.Objects;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(MockitoJUnitRunner.class)
 public class LocalClipboardControlTest {
 
     private LocalClipboardControl localClipboardControl;
@@ -34,12 +37,12 @@ public class LocalClipboardControlTest {
 
     @Before
     public void setUp() throws Exception {
-            localClipboardControl = new LocalClipboardControl();
-            this.graphInstance = TestingGraphInstanceBuilder.newGraph2(new TestingGraphMockHandler());
+        localClipboardControl = new LocalClipboardControl();
+        this.graphInstance = TestingGraphInstanceBuilder.newGraph2(new TestingGraphMockHandler());
     }
 
     @Test
-    public void testSetAndGet() throws Exception {
+    public void testSetAndGet() {
         localClipboardControl.set(graphInstance.startNode);
         assertTrue(localClipboardControl.getElements().stream().anyMatch(node -> Objects.equals(node, graphInstance.startNode)));
         localClipboardControl.set(graphInstance.intermNode, graphInstance.endNode);
@@ -49,7 +52,7 @@ public class LocalClipboardControlTest {
     }
 
     @Test
-    public void testRemove() throws Exception {
+    public void testRemove() {
         localClipboardControl.set(graphInstance.startNode);
         assertTrue(localClipboardControl.hasElements());
         localClipboardControl.remove(graphInstance.startNode);
@@ -57,7 +60,7 @@ public class LocalClipboardControlTest {
     }
 
     @Test
-    public void testClear() throws Exception {
+    public void testClear() {
         localClipboardControl.set(graphInstance.startNode, graphInstance.intermNode, graphInstance.endNode);
         assertTrue(localClipboardControl.hasElements());
         localClipboardControl.clear();
@@ -65,7 +68,7 @@ public class LocalClipboardControlTest {
     }
 
     @Test
-    public void testGetParent() throws Exception {
+    public void testGetParent() {
         localClipboardControl.set(graphInstance.startNode);
         String parentUUID = localClipboardControl.getParent(graphInstance.startNode.getUUID());
         assertEquals(parentUUID, graphInstance.parentNode.getUUID());

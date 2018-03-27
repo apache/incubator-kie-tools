@@ -53,13 +53,12 @@ public class DeleteNodeCommandTest {
     @Mock
     private Metadata metadata;
 
-    private TestingGraphMockHandler graphHandler;
     private TestingGraphInstanceBuilder.TestGraph2 graphHolder;
     private DeleteNodeCommand tested;
 
     @Before
     public void setup() throws Exception {
-        this.graphHandler = new TestingGraphMockHandler();
+        TestingGraphMockHandler graphHandler = new TestingGraphMockHandler();
         this.graphHolder = TestingGraphInstanceBuilder.newGraph2(graphHandler);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
@@ -86,8 +85,7 @@ public class DeleteNodeCommandTest {
     public void startNodeTestCanvasCommands() {
         this.tested = new DeleteNodeCommand(graphHolder.startNode);
         final CommandResult<CanvasViolation> result = tested.allow(canvasHandler);
-        final AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation> compositeCommand =
-                (AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation>) tested.getCommand();
+        final AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation> compositeCommand = tested.getCommand();
         assertNotNull(compositeCommand);
         assertTrue(3 == compositeCommand.size());
         final List<Command<AbstractCanvasHandler, CanvasViolation>> commands = compositeCommand.getCommands();
@@ -124,8 +122,7 @@ public class DeleteNodeCommandTest {
     public void intermediateNodeTestCanvasCommands() {
         this.tested = new DeleteNodeCommand(graphHolder.intermNode);
         final CommandResult<CanvasViolation> result = tested.allow(canvasHandler);
-        final AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation> compositeCommand =
-                (AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation>) tested.getCommand();
+        final AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation> compositeCommand = tested.getCommand();
         assertNotNull(compositeCommand);
         assertTrue(4 == compositeCommand.size());
         final List<Command<AbstractCanvasHandler, CanvasViolation>> commands = compositeCommand.getCommands();

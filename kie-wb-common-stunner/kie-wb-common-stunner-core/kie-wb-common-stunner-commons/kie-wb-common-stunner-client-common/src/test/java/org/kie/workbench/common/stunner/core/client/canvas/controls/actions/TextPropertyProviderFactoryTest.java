@@ -21,8 +21,6 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -38,12 +36,6 @@ public class TextPropertyProviderFactoryTest {
 
     @Mock
     private Element element;
-
-    @Mock
-    private AbstractCanvasHandler canvasHandler;
-
-    @Mock
-    private RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
 
     private TextPropertyProviderFactory factory;
 

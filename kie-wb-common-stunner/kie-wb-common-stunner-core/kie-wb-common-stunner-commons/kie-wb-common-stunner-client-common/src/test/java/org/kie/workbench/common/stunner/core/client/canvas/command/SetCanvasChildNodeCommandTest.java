@@ -56,14 +56,13 @@ public class SetCanvasChildNodeCommandTest extends AbstractCanvasCommandTest {
     private ShapeView connectorShapeView2;
 
     private SetCanvasChildNodeCommand tested;
-    private TestingGraphMockHandler graphTestHandler;
     private TestingGraphInstanceBuilder.TestGraph1 graph1Instance;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         super.setUp();
-        this.graphTestHandler = new TestingGraphMockHandler();
+        TestingGraphMockHandler graphTestHandler = new TestingGraphMockHandler();
         graph1Instance = TestingGraphInstanceBuilder.newGraph1(graphTestHandler);
         when(diagram.getGraph()).thenReturn(graph1Instance.graph);
         when(graphIndex.getGraph()).thenReturn(graph1Instance.graph);
@@ -119,7 +118,7 @@ public class SetCanvasChildNodeCommandTest extends AbstractCanvasCommandTest {
         final Edge dockEdge = mock(Edge.class);
         when(dockEdge.getContent()).thenReturn(new Dock());
         graph1Instance.intermNode.getInEdges().add(dockEdge);
-        ;
+
         final CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
         assertNotEquals(CommandResult.Type.ERROR,
                         result.getType());

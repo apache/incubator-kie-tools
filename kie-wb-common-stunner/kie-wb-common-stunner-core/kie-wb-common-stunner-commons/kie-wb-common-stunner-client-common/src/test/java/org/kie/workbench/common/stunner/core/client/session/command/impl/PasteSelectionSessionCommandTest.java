@@ -25,7 +25,6 @@ import java.util.function.Consumer;
 
 import javax.enterprise.event.Event;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -164,6 +163,7 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
     private static final String CLONE2_UUID = UUID.uuid();
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         clipboardControl = spy(new LocalClipboardControl());
 
@@ -199,7 +199,8 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
     }
 
     @Test
-    public void execute() throws Exception {
+    @SuppressWarnings("unchecked")
+    public void execute() {
         pasteSelectionSessionCommand.bind(session);
 
         //Mock the callback of CloneNodeCommand
@@ -252,7 +253,8 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
     }
 
     @Test
-    public void executeWithMultiSelection() throws Exception {
+    @SuppressWarnings("unchecked")
+    public void executeWithMultiSelection() {
         pasteSelectionSessionCommand.bind(session);
 
         //Mock the callback of CloneNodeCommand
@@ -303,7 +305,7 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
         ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass(Command.class);
         verify(commandRegistry, times(1)).register(commandArgumentCaptor.capture());
         assertTrue(commandArgumentCaptor.getValue() instanceof CompositeCommand);
-        assertEquals(((CompositeCommand)commandArgumentCaptor.getValue()).size(), 2);
+        assertEquals(((CompositeCommand) commandArgumentCaptor.getValue()).size(), 2);
     }
 
     @Override

@@ -52,13 +52,12 @@ public class DeleteElementsCommandTest {
     @Mock
     private Metadata metadata;
 
-    private TestingGraphMockHandler graphHandler;
     private TestingGraphInstanceBuilder.TestGraph2 graphHolder;
     private DeleteElementsCommand tested;
 
     @Before
     public void setup() throws Exception {
-        this.graphHandler = new TestingGraphMockHandler();
+        TestingGraphMockHandler graphHandler = new TestingGraphMockHandler();
         this.graphHolder = TestingGraphInstanceBuilder.newGraph2(graphHandler);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(canvasHandler.getCanvas()).thenReturn(canvas);

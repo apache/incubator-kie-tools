@@ -67,12 +67,11 @@ public class ShapeStateAttributeHandlerTest {
     private ShapeView<?> view;
 
     private ShapeStateAttributeHandler<ShapeView<?>> tested;
-    private Function<ShapeState, ShapeStateAttributes> stateAttributesProvider;
     private Supplier<ShapeView<?>> viewSupplier;
 
     @Before
     public void setup() throws Exception {
-        stateAttributesProvider = STATE_ATTRIBUTES::get;
+        Function<ShapeState, ShapeStateAttributes> stateAttributesProvider = STATE_ATTRIBUTES::get;
         viewSupplier = () -> view;
         when(view.getFillColor()).thenReturn(FILL);
         when(view.getFillAlpha()).thenReturn(FILL_ALPHA);

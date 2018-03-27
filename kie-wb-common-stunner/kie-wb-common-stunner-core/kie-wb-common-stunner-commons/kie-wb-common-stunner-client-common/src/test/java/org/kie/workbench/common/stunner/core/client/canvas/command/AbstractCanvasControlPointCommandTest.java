@@ -36,11 +36,7 @@ public abstract class AbstractCanvasControlPointCommandTest extends AbstractCanv
 
     protected ControlPoint controlPoint1;
 
-    protected ControlPoint controlPoint2;
-
-    protected Point2D location1;
-
-    protected static final String EDGE_UUID = UUID.uuid();
+    private static final String EDGE_UUID = UUID.uuid();
 
     @Mock
     protected Edge edge;
@@ -52,16 +48,16 @@ public abstract class AbstractCanvasControlPointCommandTest extends AbstractCanv
     protected ShapeView shapeView;
 
     @Mock
-    protected ViewConnector viewConnector;
+    private ViewConnector viewConnector;
 
     protected List<ControlPoint> controlPointList;
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        location1 = new Point2D(0,0);
+        Point2D location1 = new Point2D(0, 0);
         controlPoint1 = new ControlPointImpl(location1);
-        controlPoint2 = new ControlPointImpl(location1, 1);
+        ControlPoint controlPoint2 = new ControlPointImpl(location1, 1);
         controlPointList = Arrays.asList(controlPoint1);
 
         when(shape.getShapeView()).thenReturn(shapeView);
@@ -70,5 +66,4 @@ public abstract class AbstractCanvasControlPointCommandTest extends AbstractCanv
         when(edge.getContent()).thenReturn(viewConnector);
         when(canvasHandler.getCanvas().getShape(EDGE_UUID)).thenReturn(shape);
     }
-
 }

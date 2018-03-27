@@ -39,42 +39,42 @@ public class ClientStunnerTranslationServiceTest {
     @Mock
     private TranslationService translationService;
 
-    private ClientTranslationService stunnerTranlationService;
+    private ClientTranslationService stunnerTranslationService;
 
     @Before
     public void init() {
-        stunnerTranlationService = new ClientTranslationService(translationService);
+        stunnerTranslationService = new ClientTranslationService(translationService);
     }
 
     @Test
-    public void testFunctionallity() {
+    public void testFunctionality() {
 
-        stunnerTranlationService.getDefinitionSetDescription(DEFINITION_SET);
+        stunnerTranslationService.getDefinitionSetDescription(DEFINITION_SET);
 
         verify(translationService).getTranslation(getKey(DEFINITION_SET,
                                                          DESCRIPTION_SUFFIX));
 
-        stunnerTranlationService.getDefinitionTitle(DEFINITION);
+        stunnerTranslationService.getDefinitionTitle(DEFINITION);
 
         verify(translationService).getTranslation(getKey(DEFINITION,
                                                          TITLE_SUFFIX));
 
-        stunnerTranlationService.getDefinitionDescription(DEFINITION);
+        stunnerTranslationService.getDefinitionDescription(DEFINITION);
 
         verify(translationService).getTranslation(getKey(DEFINITION,
                                                          DESCRIPTION_SUFFIX));
 
-        stunnerTranlationService.getPropertySetName(PROPERTY_SET);
+        stunnerTranslationService.getPropertySetName(PROPERTY_SET);
 
         verify(translationService).getTranslation(getKey(PROPERTY_SET,
                                                          CAPTION_SUFFIX));
 
-        stunnerTranlationService.getPropertyCaption(PROPERTY);
+        stunnerTranslationService.getPropertyCaption(PROPERTY);
 
         verify(translationService).getTranslation(getKey(PROPERTY,
                                                          CAPTION_SUFFIX));
 
-        stunnerTranlationService.getPropertyDescription(PROPERTY);
+        stunnerTranslationService.getPropertyDescription(PROPERTY);
 
         verify(translationService).getTranslation(getKey(PROPERTY,
                                                          DESCRIPTION_SUFFIX));

@@ -23,7 +23,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyDownEvent;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyUpEvent;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -41,9 +40,6 @@ public class KeyEventHandlerTest {
 
     @Mock
     private KeyboardControl.KeyShortcutCallback shortcutCallback;
-
-    @Mock
-    private KeyUpEvent keyUpEvent;
 
     @Mock
     private KeyDownEvent keyDownEvent;

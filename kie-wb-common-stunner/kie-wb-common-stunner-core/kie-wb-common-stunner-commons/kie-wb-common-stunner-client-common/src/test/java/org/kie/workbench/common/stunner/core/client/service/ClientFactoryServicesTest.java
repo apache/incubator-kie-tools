@@ -45,14 +45,12 @@ public class ClientFactoryServicesTest {
     FactoryService factoryService;
     @Mock
     Metadata metadata;
-    private Caller<FactoryService> factoryServiceCaller;
-    ;
 
     private ClientFactoryService tested;
 
     @Before
     public void setup() throws Exception {
-        this.factoryServiceCaller = new CallerMock<FactoryService>(factoryService);
+        Caller<FactoryService> factoryServiceCaller = new CallerMock<>(factoryService);
         this.tested = new ClientFactoryService(clientFactoryManager,
                                                factoryServiceCaller);
     }

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.core.client.shape;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +32,6 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
-import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 
 public class ShapeViewExtStub
         extends ShapeViewStub

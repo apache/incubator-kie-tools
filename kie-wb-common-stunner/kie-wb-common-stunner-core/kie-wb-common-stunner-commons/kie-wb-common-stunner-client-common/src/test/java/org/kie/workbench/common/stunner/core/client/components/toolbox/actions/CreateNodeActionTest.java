@@ -135,7 +135,6 @@ public class CreateNodeActionTest {
     private Index<Node<View<?>, Edge>, Edge<ViewConnector<?>, Node>> graphIndex;
 
     private CreateNodeAction tested;
-    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -181,8 +180,8 @@ public class CreateNodeActionTest {
         when(clientFactoryManager.newElement(anyString(),
                                              eq(TARGET_NODE_ID)))
                 .thenReturn((Element) targetNode);
-        this.canvasCommandFactory = new DefaultCanvasCommandFactory(null,
-                                                                    null);
+        CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory = new DefaultCanvasCommandFactory(null,
+                                                                                                           null);
         this.tested = new CreateNodeAction(definitionUtils,
                                            clientFactoryManager,
                                            canvasLayoutUtils,

@@ -38,7 +38,7 @@ public class ClientBindableDefinitionSetAdapterTest extends AbstractClientBindab
     }
 
     @Test
-    public void testFunctionallity() {
+    public void testFunctionality() {
         String description = clientBindableDefinitionSetAdapter.getDescription(model);
 
         verify(translationService).getDefinitionSetDescription(model.getClass().getName());

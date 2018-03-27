@@ -20,7 +20,6 @@ import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
 import org.kie.workbench.common.stunner.core.client.shape.view.IsConnector;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
-import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 public class ConnectorViewStub implements ShapeView<Object>,

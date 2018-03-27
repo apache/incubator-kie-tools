@@ -77,6 +77,7 @@ public class ExportToPngSessionCommandTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testExport() {
         this.tested.execute(callback);
         verify(canvasFileExport,

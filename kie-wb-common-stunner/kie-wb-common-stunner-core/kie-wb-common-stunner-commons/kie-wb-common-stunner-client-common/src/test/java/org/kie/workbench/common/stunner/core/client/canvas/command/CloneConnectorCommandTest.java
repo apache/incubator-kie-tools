@@ -65,6 +65,7 @@ public class CloneConnectorCommandTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void newCanvasCommand() {
         Command<AbstractCanvasHandler, CanvasViolation> command = cloneConnectorCommand.newCanvasCommand(context);
         assertTrue(command instanceof CompositeCommand);

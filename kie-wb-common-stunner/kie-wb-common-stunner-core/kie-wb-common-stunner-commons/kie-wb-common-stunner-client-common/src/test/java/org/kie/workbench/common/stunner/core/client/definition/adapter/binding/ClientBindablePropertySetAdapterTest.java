@@ -38,7 +38,7 @@ public class ClientBindablePropertySetAdapterTest extends AbstractClientBindable
     }
 
     @Test
-    public void testFunctionallity() {
+    public void testFunctionality() {
         String description = clientBindablePropertySetAdapter.getName(model);
 
         verify(translationService).getPropertySetName(model.getClass().getName());

@@ -21,11 +21,11 @@ import java.util.Objects;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.shape.EdgeShape;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.command.impl.AbstractCompositeCommand;
@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.C
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -44,6 +45,7 @@ import static org.mockito.Mockito.when;
 /**
  * Test based on the graph {@link TestingGraphInstanceBuilder.TestGraph2}
  */
+@RunWith(MockitoJUnitRunner.class)
 public class CloneCanvasNodeCommandTest extends AbstractCanvasCommandTest {
 
     @Mock
@@ -65,6 +67,7 @@ public class CloneCanvasNodeCommandTest extends AbstractCanvasCommandTest {
     private ManagedInstance<ChildrenTraverseProcessor> childrenTraverseProcessorManagedInstance;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         super.setUp();
 
@@ -85,29 +88,28 @@ public class CloneCanvasNodeCommandTest extends AbstractCanvasCommandTest {
     }
 
     @Test
-    public void testExecute() throws Exception {
+    public void testExecute() {
         cloneCanvasNodeCommand.execute(canvasHandler);
 
-        AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation> commands =
-                (AbstractCompositeCommand) cloneCanvasNodeCommand.getCommands();
+        AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation> commands = cloneCanvasNodeCommand.getCommands();
 
         assertEquals(commands.size(), 6);
         assertTrue(commands.getCommands().stream()
-                                  .filter(command -> command instanceof CloneCanvasNodeCommand)
-                                  .map(command -> (CloneCanvasNodeCommand) command)
-                                  .allMatch(command -> Objects.equals(command.getCandidate(), graphInstance.startNode) ||
-                                          Objects.equals(command.getCandidate(), graphInstance.intermNode) ||
-                                          Objects.equals(command.getCandidate(), graphInstance.endNode)));
+                           .filter(command -> command instanceof CloneCanvasNodeCommand)
+                           .map(command -> (CloneCanvasNodeCommand) command)
+                           .allMatch(command -> Objects.equals(command.getCandidate(), graphInstance.startNode) ||
+                                   Objects.equals(command.getCandidate(), graphInstance.intermNode) ||
+                                   Objects.equals(command.getCandidate(), graphInstance.endNode)));
 
         assertTrue(commands.getCommands().stream()
-                                  .filter(command -> command instanceof AddCanvasConnectorCommand)
-                                  .map(command -> (AddCanvasConnectorCommand) command)
-                                  .allMatch(command -> Objects.equals(command.getCandidate(), graphInstance.edge1) ||
-                                          Objects.equals(command.getCandidate(), graphInstance.edge2)));
+                           .filter(command -> command instanceof AddCanvasConnectorCommand)
+                           .map(command -> (AddCanvasConnectorCommand) command)
+                           .allMatch(command -> Objects.equals(command.getCandidate(), graphInstance.edge1) ||
+                                   Objects.equals(command.getCandidate(), graphInstance.edge2)));
     }
 
     @Test
-    public void testUndo() throws Exception {
+    public void testUndo() {
         testExecute();
         cloneCanvasNodeCommand.undo(canvasHandler);
         //nodes

@@ -52,13 +52,13 @@ public class RemoveCanvasChildCommandTest extends AbstractCanvasCommandTest {
     private ShapeView connectorShapeView2;
 
     private RemoveCanvasChildCommand tested;
-    private TestingGraphMockHandler graphTestHandler;
     private TestingGraphInstanceBuilder.TestGraph1 graph1Instance;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         super.setUp();
-        this.graphTestHandler = new TestingGraphMockHandler();
+        TestingGraphMockHandler graphTestHandler = new TestingGraphMockHandler();
         graph1Instance = TestingGraphInstanceBuilder.newGraph1(graphTestHandler);
         when(diagram.getGraph()).thenReturn(graph1Instance.graph);
         when(graphIndex.getGraph()).thenReturn(graph1Instance.graph);

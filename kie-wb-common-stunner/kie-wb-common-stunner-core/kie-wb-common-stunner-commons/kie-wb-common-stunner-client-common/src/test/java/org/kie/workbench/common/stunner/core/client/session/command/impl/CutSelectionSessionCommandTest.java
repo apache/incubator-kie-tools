@@ -72,6 +72,7 @@ public class CutSelectionSessionCommandTest extends BaseSessionCommandKeyboardSe
     private ClipboardControl<Element, AbstractCanvas, ClientSession> clipboardControl;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         clipboardControl = spy(new LocalClipboardControl());
         when(sessionCommandFactory.newCopySelectionCommand()).thenReturn(copySelectionSessionCommand);
@@ -85,6 +86,7 @@ public class CutSelectionSessionCommandTest extends BaseSessionCommandKeyboardSe
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testExecute() {
         cutSelectionSessionCommand.bind(session);
         cutSelectionSessionCommand.execute(mainCallback);

@@ -58,13 +58,12 @@ public class AddCanvasNodeCommandTest extends AbstractCanvasCommandTest {
     private ShapeView view;
 
     private AddCanvasNodeCommand tested;
-    private BoundingBox boundingBox;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         super.setUp();
-        boundingBox = new BoundingBox(0d, 0d, 50d, 50d);
+        BoundingBox boundingBox = new BoundingBox(0d, 0d, 50d, 50d);
         when(shape.getShapeView()).thenReturn(view);
         when(view.getBoundingBox()).thenReturn(boundingBox);
         when(canvas.getShape(eq("someUUID"))).thenReturn(shape);
@@ -102,10 +101,10 @@ public class AddCanvasNodeCommandTest extends AbstractCanvasCommandTest {
         verify(canvasHandler,
                times(1)).applyElementMutation(eq(candidate),
                                               any(MutationContext.class));
-        final ArgumentCaptor<Bounds> boundsrgumentCaptor = ArgumentCaptor.forClass(Bounds.class);
+        final ArgumentCaptor<Bounds> boundsArgumentCaptor = ArgumentCaptor.forClass(Bounds.class);
         verify(content,
-               times(1)).setBounds(boundsrgumentCaptor.capture());
-        final BoundsImpl bounds = (BoundsImpl) boundsrgumentCaptor.getValue();
+               times(1)).setBounds(boundsArgumentCaptor.capture());
+        final BoundsImpl bounds = (BoundsImpl) boundsArgumentCaptor.getValue();
         assertEquals(0d, bounds.getX(), 0d);
         assertEquals(0d, bounds.getY(), 0d);
         assertEquals(50d, bounds.getWidth(), 0d);

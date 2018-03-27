@@ -54,7 +54,7 @@ public class TransformImplTest {
     }
 
     @Test
-    public void testTranform() {
+    public void testTransform() {
         final Point2D t = tested.transform(1,
                                            1);
         assertEquals(12,

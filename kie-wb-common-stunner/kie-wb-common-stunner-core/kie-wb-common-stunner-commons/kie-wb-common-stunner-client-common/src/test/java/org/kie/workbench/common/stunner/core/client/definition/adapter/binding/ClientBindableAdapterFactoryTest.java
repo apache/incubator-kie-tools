@@ -36,7 +36,7 @@ public class ClientBindableAdapterFactoryTest extends AbstractClientBindableAdap
     }
 
     @Test
-    public void testFunctionallity() {
+    public void testFunctionality() {
         assertNotNull(clientBindableAdapterFactory.newBindableDefinitionSetAdapter());
         assertNotNull(clientBindableAdapterFactory.newBindableDefinitionAdapter());
         assertNotNull(clientBindableAdapterFactory.newBindablePropertySetAdapter());

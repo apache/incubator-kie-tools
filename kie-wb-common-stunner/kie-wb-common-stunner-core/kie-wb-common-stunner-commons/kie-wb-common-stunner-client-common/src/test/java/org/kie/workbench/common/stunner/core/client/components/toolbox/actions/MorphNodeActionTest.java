@@ -94,8 +94,10 @@ public class MorphNodeActionTest {
     @Mock
     private Index<?, ?> graphIndex;
 
-    private MorphNodeAction tested;
+    @Mock
     private CanvasCommand<AbstractCanvasHandler> morphNodeCommand;
+
+    private MorphNodeAction tested;
 
     @Before
     @SuppressWarnings("unchecked")

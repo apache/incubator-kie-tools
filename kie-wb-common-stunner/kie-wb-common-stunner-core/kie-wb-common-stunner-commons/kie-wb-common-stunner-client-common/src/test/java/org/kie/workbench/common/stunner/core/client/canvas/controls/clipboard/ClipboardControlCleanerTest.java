@@ -74,7 +74,7 @@ public class ClipboardControlCleanerTest {
     }
 
     @Test
-    public void onPlaceGainFocusEvent() throws Exception {
+    public void onPlaceGainFocusEvent() {
         clipboardControlCleaner.onPlaceGainFocusEvent(placeLostFocusEvent);
         verify(clipboardControl, times(1)).clear();
     }

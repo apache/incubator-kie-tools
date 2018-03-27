@@ -87,6 +87,7 @@ public class CopySelectionSessionCommandTest extends BaseSessionCommandKeyboardS
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testExecute() {
         copySelectionSessionCommand.bind(session);
 
@@ -107,6 +108,7 @@ public class CopySelectionSessionCommandTest extends BaseSessionCommandKeyboardS
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testExecuteMultiSelection() {
         copySelectionSessionCommand.bind(session);
 

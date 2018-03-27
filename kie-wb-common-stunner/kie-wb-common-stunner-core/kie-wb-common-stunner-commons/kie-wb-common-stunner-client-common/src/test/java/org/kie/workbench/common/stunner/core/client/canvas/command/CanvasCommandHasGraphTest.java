@@ -19,7 +19,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
@@ -42,8 +41,6 @@ public class CanvasCommandHasGraphTest extends AbstractCanvasCommandTest {
     Command<GraphCommandExecutionContext, RuleViolation> graphCommand;
     @Mock
     AbstractCanvasCommand canvasCommand;
-    @Mock
-    ClientFactoryService clientFactoryService;
 
     @Mock
     CommandResult<RuleViolation> successGraphCommandResult;

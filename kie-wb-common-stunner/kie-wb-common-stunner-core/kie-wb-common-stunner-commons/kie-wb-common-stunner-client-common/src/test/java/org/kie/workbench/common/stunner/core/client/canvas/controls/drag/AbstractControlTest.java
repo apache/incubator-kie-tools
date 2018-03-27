@@ -18,6 +18,9 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.drag;
 
 import java.util.Collections;
 
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
@@ -30,11 +33,13 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
-public abstract class AbstractControlTest {
+@RunWith(MockitoJUnitRunner.class)
+public class AbstractControlTest {
 
     @Mock
     AbstractCanvasHandler canvasHandler;
@@ -88,7 +93,11 @@ public abstract class AbstractControlTest {
         when(shapeEventHandler.supports(eq(ViewEventType.MOUSE_ENTER))).thenReturn(true);
         when(shapeEventHandler.supports(eq(ViewEventType.MOUSE_EXIT))).thenReturn(true);
         when(shapeEventHandler.supports(eq(ViewEventType.DRAG))).thenReturn(true);
+    }
 
-
+    @Ignore
+    @Test
+    public void testPlaceHolderForMissingTests() {
+        // placeholder for missing test too keep it track in maven report and Jenkins
     }
 }

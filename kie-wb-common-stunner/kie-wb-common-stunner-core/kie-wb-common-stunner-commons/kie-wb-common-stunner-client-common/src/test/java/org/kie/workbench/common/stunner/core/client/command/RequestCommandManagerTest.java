@@ -71,11 +71,10 @@ public class RequestCommandManagerTest {
     CanvasMouseUpEvent mouseUpEvent;
 
     private RequestCommandManager tested;
-    private CanvasCommandManagerImpl commandManager;
 
     @Before
     public void setup() throws Exception {
-        this.commandManager = new CanvasCommandManagerImpl();
+        CanvasCommandManagerImpl commandManager = new CanvasCommandManagerImpl();
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(clientSessionManager.getCurrentSession()).thenReturn(clientFullSession);
         when(clientFullSession.getCanvasHandler()).thenReturn(canvasHandler);
@@ -202,7 +201,7 @@ public class RequestCommandManagerTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testNoRequestComleted() {
+    public void testNoRequestCompleted() {
         when(command.execute(eq(canvasHandler))).thenReturn(CanvasCommandResultBuilder.SUCCESS);
         tested.onCanvasMouseDownEvent(mouseDownEvent);
         tested.execute(canvasHandler,

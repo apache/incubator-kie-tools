@@ -37,41 +37,39 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class UpdateElementPropertyCommandTest {
 
-  private String propertyId = "name";
+    private String uuid = UUID.randomUUID().toString();
 
-  private String uuid = UUID.randomUUID().toString();
+    @Mock
+    private Element element;
 
-  private String value = "updated value";
+    @Mock
+    private Node node;
 
-  @Mock
-  private Element element;
+    @Mock
+    private AbstractCanvasHandler abstractCanvasHandler;
 
-  @Mock
-  private Node node;
+    @Before
+    public void setup() {
+        when(element.getUUID()).thenReturn(uuid);
+        when(node.getUUID()).thenReturn(uuid);
+    }
 
-  @Mock
-  private AbstractCanvasHandler abstractCanvasHandler;
+    @Test
+    public void testNewGraphCommand() {
+        Command<GraphCommandExecutionContext, RuleViolation> command;
+        String propertyId = "name";
+        String value = "updated value";
 
-  @Before
-  public void setup() {
-    when(element.getUUID()).thenReturn(uuid);
-    when(node.getUUID()).thenReturn(uuid);
-  }
+        command = new UpdateElementPropertyCommand(element,
+                                                   propertyId,
+                                                   value).newGraphCommand(abstractCanvasHandler);
+        assertEquals(command.getClass(),
+                     UpdateElementPropertyValueCommand.class);
 
-  @Test
-  public void testNewGraphCommand() throws Exception {
-    Command<GraphCommandExecutionContext, RuleViolation> command;
-
-    command = new UpdateElementPropertyCommand(element,
-                                               propertyId,
-                                               value).newGraphCommand(abstractCanvasHandler);
-    assertEquals(command.getClass(),
-                 UpdateElementPropertyValueCommand.class);
-
-    command = new UpdateElementPropertyCommand(node,
-                                               propertyId,
-                                               value).newGraphCommand(abstractCanvasHandler);
-    assertEquals(command.getClass(),
-                 UpdateElementPropertyValueCommand.class);
-  }
+        command = new UpdateElementPropertyCommand(node,
+                                                   propertyId,
+                                                   value).newGraphCommand(abstractCanvasHandler);
+        assertEquals(command.getClass(),
+                     UpdateElementPropertyValueCommand.class);
+    }
 }

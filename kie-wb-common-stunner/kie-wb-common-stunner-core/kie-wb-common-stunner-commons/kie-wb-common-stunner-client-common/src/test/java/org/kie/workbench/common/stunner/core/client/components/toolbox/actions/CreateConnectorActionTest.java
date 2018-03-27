@@ -257,6 +257,7 @@ public class CreateConnectorActionTest {
                times(1)).highLight(eq(targetNode));
     }
 
+    @SuppressWarnings("unchecked")
     private DragProxyCallback testStartDrag() {
         final MouseClickEvent event = mock(MouseClickEvent.class);
         when(event.getX()).thenReturn(100d);

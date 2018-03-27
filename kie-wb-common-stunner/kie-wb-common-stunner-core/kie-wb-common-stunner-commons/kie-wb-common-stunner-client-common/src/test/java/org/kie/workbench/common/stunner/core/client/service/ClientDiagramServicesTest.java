@@ -58,8 +58,6 @@ public class ClientDiagramServicesTest {
     Diagram diagram;
     @Mock
     Metadata metadata;
-    private Caller<DiagramService> diagramServiceCaller;
-    private Caller<DiagramLookupService> diagramLookupServiceCaller;
 
     private ClientDiagramService tested;
 
@@ -70,8 +68,8 @@ public class ClientDiagramServicesTest {
         when(metadata.getDefinitionSetId()).thenReturn("ds1 ");
         when(metadata.getShapeSetId()).thenReturn("ss1 ");
         when(diagramService.saveOrUpdate(any(Diagram.class))).thenReturn(metadata);
-        this.diagramServiceCaller = new CallerMock<DiagramService>(diagramService);
-        this.diagramLookupServiceCaller = new CallerMock<DiagramLookupService>(diagramLookupService);
+        Caller<DiagramService> diagramServiceCaller = new CallerMock<>(diagramService);
+        Caller<DiagramLookupService> diagramLookupServiceCaller = new CallerMock<>(diagramLookupService);
         this.tested = new ClientDiagramService(shapeManager,
                                                diagramServiceCaller,
                                                diagramLookupServiceCaller);

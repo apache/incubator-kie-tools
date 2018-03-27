@@ -63,6 +63,7 @@ public class AbstractSelectionAwareSessionCommandTest {
     private Metadata metadata;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() {
         when(clientSession.getCanvasHandler()).thenReturn(canvasHandler);
         when(canvasHandler.getDiagram()).thenReturn(diagram);

@@ -100,14 +100,13 @@ public class MapSelectionControlTest {
     @Mock
     private HasControlPoints<ShapeViewExtStub> hasControlPoints;
 
-    private ShapeViewExtStub shapeView;
     private MapSelectionControl<AbstractCanvasHandler> tested;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        this.shapeView = new ShapeViewExtStub(shapeEventHandler,
-                                              hasControlPoints);
+        ShapeViewExtStub shapeView = new ShapeViewExtStub(shapeEventHandler,
+                                                          hasControlPoints);
         when(element.getUUID()).thenReturn(ELEMENT_UUID);
         when(element.getContent()).thenReturn(new ViewImpl<>(definition,
                                                              BoundsImpl.build(0, 0, 10, 10)));
@@ -231,7 +230,7 @@ public class MapSelectionControlTest {
     }
 
     @Test
-    public void testSelectReadOnly(){
+    public void testSelectReadOnly() {
         tested.enable(canvasHandler);
         tested.register(element);
         tested.setReadonly(true);

@@ -49,6 +49,7 @@ public abstract class AbstractCanvasCommandTest {
     @Mock
     protected CanvasCommandFactory canvasCommandFactory;
 
+    @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 

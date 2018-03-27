@@ -60,6 +60,7 @@ public class ClientReadOnlySessionTest {
     private ClientReadOnlySessionImpl tested;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         when(factory.newCanvas()).thenReturn(canvas);
         when(factory.newCanvasHandler()).thenReturn(canvasHandler);

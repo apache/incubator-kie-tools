@@ -45,8 +45,7 @@ public class ShapeImplTest {
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         this.view = spy(new ShapeViewExtStub());
-        this.tested = new ShapeImpl<ShapeView>(view,
-                                               shapeStateHandler);
+        this.tested = new ShapeImpl<>(view, shapeStateHandler);
     }
 
     @Test

@@ -229,6 +229,7 @@ public class ClientFullSessionTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testOpenSession() {
         buildTestedInstance();
         tested.open();
@@ -305,6 +306,7 @@ public class ClientFullSessionTest {
                times(1)).disable();
     }
 
+    @SuppressWarnings("unchecked")
     private void buildTestedInstance() {
         this.tested = new ClientFullSessionImpl(factory,
                                                 canvasCommandManager,
