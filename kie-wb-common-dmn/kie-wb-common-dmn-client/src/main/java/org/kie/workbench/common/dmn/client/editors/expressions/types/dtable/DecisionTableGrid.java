@@ -71,8 +71,6 @@ import org.uberfire.mvp.Command;
 public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, DecisionTableGridData, DecisionTableUIModelMapper> implements HasListSelectorControl,
                                                                                                                                        HasHitPolicyControl {
 
-    public static final BuiltinAggregator DEFAULT_AGGREGATOR = BuiltinAggregator.COUNT;
-
     public static final String DESCRIPTION_GROUP = "DecisionTable$Description";
 
     private final HitPolicyEditorView.Presenter hitPolicyEditor;
@@ -434,12 +432,9 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                              final Command onSuccess) {
         expression.ifPresent(dtable -> {
             final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder = new CompositeCommand.Builder<>();
-            if (requiresDefaultAggregation(hitPolicy)) {
-                commandBuilder.addCommand(new SetBuiltinAggregatorCommand(dtable,
-                                                                          getDefaultAggregation(dtable, hitPolicy),
-                                                                          gridLayer::batch));
-            }
-
+            commandBuilder.addCommand(new SetBuiltinAggregatorCommand(dtable,
+                                                                      null,
+                                                                      gridLayer::batch));
             commandBuilder.addCommand(new SetHitPolicyCommand(dtable,
                                                               hitPolicy,
                                                               () -> {
@@ -450,21 +445,6 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           commandBuilder.build());
         });
-    }
-
-    boolean requiresDefaultAggregation(final HitPolicy hitPolicy) {
-        return HitPolicy.COLLECT.equals(hitPolicy);
-    }
-
-    BuiltinAggregator getDefaultAggregation(final DecisionTable dtable,
-                                            final HitPolicy hitPolicy) {
-        if (requiresDefaultAggregation(hitPolicy)) {
-            if (dtable.getAggregation() == null) {
-                return DEFAULT_AGGREGATOR;
-            }
-            return dtable.getAggregation();
-        }
-        return null;
     }
 
     @Override

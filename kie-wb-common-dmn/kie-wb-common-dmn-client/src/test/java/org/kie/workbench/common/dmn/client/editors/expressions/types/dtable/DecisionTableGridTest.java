@@ -86,6 +86,7 @@ import org.uberfire.mvp.Command;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils.assertCommands;
 import static org.mockito.Matchers.any;
@@ -634,69 +635,18 @@ public class DecisionTableGridTest {
                                               setHitPolicyCommandCaptor.capture());
 
         final CompositeCommand<AbstractCanvasHandler, CanvasViolation> setHitPolicyCommand = setHitPolicyCommandCaptor.getValue();
-        assertEquals(1,
+        assertEquals(2,
                      setHitPolicyCommand.getCommands().size());
-        assertTrue(setHitPolicyCommand.getCommands().get(0) instanceof SetHitPolicyCommand);
+        assertTrue(setHitPolicyCommand.getCommands().get(0) instanceof SetBuiltinAggregatorCommand);
+        assertTrue(setHitPolicyCommand.getCommands().get(1) instanceof SetHitPolicyCommand);
 
         setHitPolicyCommand.execute(canvasHandler);
 
         verify(gridLayer, atLeast(1)).batch();
         verify(command).execute();
-    }
 
-    @Test
-    public void testSetHitPolicyRequiresBuiltInAggregator() {
-        final HitPolicy hitPolicy = HitPolicy.COLLECT;
-        final BuiltinAggregator aggregator = BuiltinAggregator.SUM;
-
-        setupGrid(makeHasNameForDecision(), 0);
-
-        expression.get().setAggregation(aggregator);
-
-        grid.setHitPolicy(hitPolicy,
-                          command);
-
-        verify(sessionCommandManager).execute(eq(canvasHandler),
-                                              setHitPolicyCommandCaptor.capture());
-
-        final CompositeCommand<AbstractCanvasHandler, CanvasViolation> setHitPolicyCommand = setHitPolicyCommandCaptor.getValue();
-        assertEquals(2,
-                     setHitPolicyCommand.getCommands().size());
-        assertTrue(setHitPolicyCommand.getCommands().get(0) instanceof SetBuiltinAggregatorCommand);
-        assertTrue(setHitPolicyCommand.getCommands().get(1) instanceof SetHitPolicyCommand);
-
-        setHitPolicyCommand.execute(canvasHandler);
-
-        assertEquals(hitPolicy,
-                     expression.get().getHitPolicy());
-        assertEquals(aggregator,
-                     expression.get().getAggregation());
-    }
-
-    @Test
-    public void testSetHitPolicyRequiresBuiltInAggregatorUseDefaultWhenNotSet() {
-        final HitPolicy hitPolicy = HitPolicy.COLLECT;
-
-        setupGrid(makeHasNameForDecision(), 0);
-
-        grid.setHitPolicy(hitPolicy,
-                          command);
-
-        verify(sessionCommandManager).execute(eq(canvasHandler),
-                                              setHitPolicyCommandCaptor.capture());
-
-        final CompositeCommand<AbstractCanvasHandler, CanvasViolation> setHitPolicyCommand = setHitPolicyCommandCaptor.getValue();
-        assertEquals(2,
-                     setHitPolicyCommand.getCommands().size());
-        assertTrue(setHitPolicyCommand.getCommands().get(0) instanceof SetBuiltinAggregatorCommand);
-        assertTrue(setHitPolicyCommand.getCommands().get(1) instanceof SetHitPolicyCommand);
-
-        setHitPolicyCommand.execute(canvasHandler);
-
-        assertEquals(hitPolicy,
-                     expression.get().getHitPolicy());
-        assertEquals(DecisionTableGrid.DEFAULT_AGGREGATOR,
-                     expression.get().getAggregation());
+        assertEquals(hitPolicy, expression.get().getHitPolicy());
+        assertNull(expression.get().getAggregation());
     }
 
     @Test

@@ -129,4 +129,7 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String DecisionTableEditor_DeleteOutputClause = "DecisionTableEditor.DeleteOutputClause";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DecisionTableEditor_NullBuiltinAggregator = "DecisionTableEditor.NullBuiltinAggregator";
 }

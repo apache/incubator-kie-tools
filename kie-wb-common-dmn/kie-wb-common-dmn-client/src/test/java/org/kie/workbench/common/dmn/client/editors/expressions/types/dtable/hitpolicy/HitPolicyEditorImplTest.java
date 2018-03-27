@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hit
 import java.util.List;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +33,9 @@ import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
@@ -52,6 +55,9 @@ public class HitPolicyEditorImplTest {
     @Mock
     private HasHitPolicyControl control;
 
+    @Mock
+    private TranslationService translationService;
+
     @Captor
     private ArgumentCaptor<List<HitPolicy>> hitPoliciesCaptor;
 
@@ -66,13 +72,19 @@ public class HitPolicyEditorImplTest {
 
     private HitPolicyEditorView.Presenter editor;
 
+    private BuiltinAggregatorUtils builtinAggregatorUtils;
+
     @Before
     public void setup() {
-        this.editor = new HitPolicyEditorImpl(view);
+        this.builtinAggregatorUtils = new BuiltinAggregatorUtils(translationService);
+        this.editor = new HitPolicyEditorImpl(view,
+                                              builtinAggregatorUtils);
 
         when(control.getHitPolicy()).thenReturn(null);
         when(control.getBuiltinAggregator()).thenReturn(null);
         when(control.getDecisionTableOrientation()).thenReturn(null);
+
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
     }
 
     @Test
@@ -83,7 +95,7 @@ public class HitPolicyEditorImplTest {
         verify(view).initDecisionTableOrientations(orientationsCaptor.capture());
 
         assertThat(hitPoliciesCaptor.getValue()).containsOnly(HitPolicy.values());
-        assertThat(builtInAggregatorsCaptor.getValue()).containsOnly(BuiltinAggregator.values());
+        assertThat(builtInAggregatorsCaptor.getValue()).containsOnlyElementsOf(builtinAggregatorUtils.getAllValues());
         assertThat(orientationsCaptor.getValue()).containsOnly(DecisionTableOrientation.values());
     }
 
@@ -138,13 +150,25 @@ public class HitPolicyEditorImplTest {
 
     @Test
     public void testBindNonNullControlHitPolicyWithAggregation() {
-        final HitPolicy hitPolicy = HitPolicy.COLLECT;
-        final BuiltinAggregator aggregator = BuiltinAggregator.COUNT;
+        assertHitPolicyAggregationConfiguration(HitPolicy.COLLECT, BuiltinAggregator.COUNT);
+    }
 
+    @Test
+    public void testBindNonNullControlHitPolicyWithoutAggregation() {
+        assertHitPolicyAggregationConfiguration(HitPolicy.COLLECT, null);
+    }
+
+    @Test
+    public void testBindNonNullControlHitPolicyNotRequiringAggregation() {
+        assertHitPolicyAggregationConfiguration(HitPolicy.ANY, null);
+    }
+
+    private void assertHitPolicyAggregationConfiguration(final HitPolicy hitPolicy,
+                                                         final BuiltinAggregator builtinAggregator) {
         reset(view);
 
         when(control.getHitPolicy()).thenReturn(hitPolicy);
-        when(control.getBuiltinAggregator()).thenReturn(aggregator);
+        when(control.getBuiltinAggregator()).thenReturn(builtinAggregator);
 
         editor.bind(control,
                     UI_ROW_INDEX,
@@ -152,8 +176,8 @@ public class HitPolicyEditorImplTest {
 
         verify(view).enableHitPolicies(eq(true));
         verify(view).initSelectedHitPolicy(eq(hitPolicy));
-        verify(view).enableBuiltinAggregators(eq(true));
-        verify(view).initSelectedBuiltinAggregator(eq(aggregator));
+        verify(view).enableBuiltinAggregators(eq(HitPolicy.COLLECT.equals(hitPolicy)));
+        verify(view).initSelectedBuiltinAggregator(eq(builtinAggregator));
         verify(view).enableDecisionTableOrientation(eq(false));
     }
 

@@ -45,6 +45,8 @@ public class HitPolicyEditorViewImpl implements HitPolicyEditorView {
     @DataField("lstDecisionTableOrientation")
     private Select lstDecisionTableOrientation;
 
+    private BuiltinAggregatorUtils builtinAggregatorUtils;
+
     private HitPolicyEditorView.Presenter presenter;
 
     public HitPolicyEditorViewImpl() {
@@ -54,10 +56,12 @@ public class HitPolicyEditorViewImpl implements HitPolicyEditorView {
     @Inject
     public HitPolicyEditorViewImpl(final Select lstHitPolicies,
                                    final Select lstBuiltinAggregator,
-                                   final Select lstDecisionTableOrientation) {
+                                   final Select lstDecisionTableOrientation,
+                                   final BuiltinAggregatorUtils builtinAggregatorUtils) {
         this.lstHitPolicies = lstHitPolicies;
         this.lstBuiltinAggregator = lstBuiltinAggregator;
         this.lstDecisionTableOrientation = lstDecisionTableOrientation;
+        this.builtinAggregatorUtils = builtinAggregatorUtils;
 
         setupHitPolicyEventHandler();
         setupBuiltinAggregatorEventHandler();
@@ -75,7 +79,7 @@ public class HitPolicyEditorViewImpl implements HitPolicyEditorView {
     private void setupBuiltinAggregatorEventHandler() {
         setupChangeEventHandler(lstBuiltinAggregator,
                                 () -> {
-                                    final BuiltinAggregator aggregator = BuiltinAggregator.fromValue(lstBuiltinAggregator.getValue());
+                                    final BuiltinAggregator aggregator = builtinAggregatorUtils.toEnum(lstBuiltinAggregator.getValue());
                                     presenter.setBuiltinAggregator(aggregator);
                                 });
     }
@@ -108,7 +112,7 @@ public class HitPolicyEditorViewImpl implements HitPolicyEditorView {
 
     @Override
     public void initBuiltinAggregators(final List<BuiltinAggregator> aggregators) {
-        aggregators.forEach(a -> lstBuiltinAggregator.addOption(a.value()));
+        aggregators.forEach(a -> lstBuiltinAggregator.addOption(builtinAggregatorUtils.toString(a)));
     }
 
     @Override
@@ -125,7 +129,7 @@ public class HitPolicyEditorViewImpl implements HitPolicyEditorView {
     @Override
     public void initSelectedBuiltinAggregator(final BuiltinAggregator aggregator) {
         initSelect(lstBuiltinAggregator,
-                   aggregator.value());
+                   builtinAggregatorUtils.toString(aggregator));
     }
 
     @Override

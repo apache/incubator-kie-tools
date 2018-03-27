@@ -38,12 +38,13 @@ public class HitPolicyEditorImpl implements HitPolicyEditorView.Presenter {
     }
 
     @Inject
-    public HitPolicyEditorImpl(final HitPolicyEditorView view) {
+    public HitPolicyEditorImpl(final HitPolicyEditorView view,
+                               final BuiltinAggregatorUtils builtinAggregatorUtils) {
         this.view = view;
 
         view.init(this);
         view.initHitPolicies(Arrays.asList(HitPolicy.values()));
-        view.initBuiltinAggregators(Arrays.asList(BuiltinAggregator.values()));
+        view.initBuiltinAggregators(builtinAggregatorUtils.getAllValues());
         view.initDecisionTableOrientations(Arrays.asList(DecisionTableOrientation.values()));
     }
 
@@ -68,12 +69,8 @@ public class HitPolicyEditorImpl implements HitPolicyEditorView.Presenter {
             } else {
                 view.enableHitPolicies(true);
                 view.initSelectedHitPolicy(b.getHitPolicy());
-                if (!HitPolicy.COLLECT.equals(b.getHitPolicy()) || b.getBuiltinAggregator() == null) {
-                    view.enableBuiltinAggregators(false);
-                } else {
-                    view.enableBuiltinAggregators(true);
-                    view.initSelectedBuiltinAggregator(b.getBuiltinAggregator());
-                }
+                view.enableBuiltinAggregators(HitPolicy.COLLECT.equals(b.getHitPolicy()));
+                view.initSelectedBuiltinAggregator(b.getBuiltinAggregator());
             }
 
             if (b.getDecisionTableOrientation() == null) {

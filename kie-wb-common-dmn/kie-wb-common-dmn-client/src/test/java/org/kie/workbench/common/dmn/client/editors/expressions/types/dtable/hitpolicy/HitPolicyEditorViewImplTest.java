@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +32,8 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 import org.mockito.Mock;
 import org.uberfire.client.views.pfly.widgets.Select;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
@@ -55,7 +58,12 @@ public class HitPolicyEditorViewImplTest {
     @Mock
     private HTMLElement lstDecisionTableOrientationElement;
 
+    @Mock
+    private TranslationService translationService;
+
     private HitPolicyEditorViewImpl testedView;
+
+    private BuiltinAggregatorUtils builtinAggregatorUtils;
 
     @Before
     public void setUp() throws Exception {
@@ -63,9 +71,13 @@ public class HitPolicyEditorViewImplTest {
         doReturn(lstBuiltinAggregatorElement).when(lstBuiltinAggregator).getElement();
         doReturn(lstDecisionTableOrientationElement).when(lstDecisionTableOrientation).getElement();
 
+        builtinAggregatorUtils = new BuiltinAggregatorUtils(translationService);
         testedView = new HitPolicyEditorViewImpl(lstHitPolicies,
                                                  lstBuiltinAggregator,
-                                                 lstDecisionTableOrientation);
+                                                 lstDecisionTableOrientation,
+                                                 builtinAggregatorUtils);
+
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(anyString());
     }
 
     @Test
@@ -77,10 +89,10 @@ public class HitPolicyEditorViewImplTest {
 
     @Test
     public void testInitAggregator() throws Exception {
-        final List<BuiltinAggregator> aggregators = Arrays.asList(BuiltinAggregator.values());
+        final List<BuiltinAggregator> aggregators = builtinAggregatorUtils.getAllValues();
         testedView.initBuiltinAggregators(aggregators);
 
-        aggregators.stream().forEach(agg -> verify(lstBuiltinAggregator).addOption(agg.value()));
+        aggregators.stream().forEach(agg -> verify(lstBuiltinAggregator).addOption(builtinAggregatorUtils.toString(agg)));
     }
 
     @Test
