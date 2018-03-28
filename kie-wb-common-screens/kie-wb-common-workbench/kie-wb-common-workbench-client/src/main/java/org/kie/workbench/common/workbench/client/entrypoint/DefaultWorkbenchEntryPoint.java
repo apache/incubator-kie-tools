@@ -108,7 +108,7 @@ public abstract class DefaultWorkbenchEntryPoint {
         }.run(500);
     }
 
-    private void initializeWorkbench() {
+    protected void initializeWorkbench() {
         loadPreferences();
         loadStyles();
     }
