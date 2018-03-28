@@ -223,7 +223,7 @@ public class MultipleLiveSearchSelectionHandlerTest {
     }
 
     private void checkHandlerSelectedValue(String value) {
-        if(value != null) {
+        if (value != null) {
             assertTrue(handler.getSelectedValues().contains(value));
         } else {
             assertTrue(handler.getSelectedValues().isEmpty());

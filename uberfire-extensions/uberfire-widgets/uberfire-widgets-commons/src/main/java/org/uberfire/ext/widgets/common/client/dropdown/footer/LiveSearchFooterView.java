@@ -14,26 +14,30 @@
  * limitations under the License.
  */
 
-package org.uberfire.ext.widgets.common.client.dropdown;
+package org.uberfire.ext.widgets.common.client.dropdown.footer;
 
-import org.jboss.errai.common.client.api.IsElement;
-import org.uberfire.mvp.Command;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.uberfire.client.mvp.UberElement;
 
-public interface LiveSearchSelectorItem<TYPE> extends IsElement{
+public interface LiveSearchFooterView extends UberElement<LiveSearchFooterView.Presenter> {
 
-    void init(TYPE key, String value);
+    void showReset(boolean show);
 
-    TYPE getKey();
+    void showAddNewEntry(boolean show);
 
-    String getValue();
+    void show(HTMLElement element);
 
-    void reset();
+    void restore();
 
-    void setMultipleSelection(boolean enable);
+    void setResetLabel(String resetLabel);
 
-    void onItemClick();
+    void setNewEntryLabel(String newEntryLabel);
 
-    void select();
+    interface Presenter {
 
-    void setSelectionCallback(Command selectionCallback);
+        void onNewEntryPressed();
+
+        void onResetPressed();
+    }
+
 }

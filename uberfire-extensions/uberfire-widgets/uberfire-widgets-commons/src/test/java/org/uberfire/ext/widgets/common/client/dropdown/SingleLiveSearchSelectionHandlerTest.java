@@ -135,7 +135,6 @@ public class SingleLiveSearchSelectionHandlerTest {
         checkHandlerSelectedValue(SELECTED_ITEM_TEXT);
     }
 
-
     @Test
     public void testClearSelection() {
         LiveSearchSelectorItem item = doTestSelectItem();

@@ -18,22 +18,9 @@ package org.uberfire.ext.widgets.common.client.dropdown;
 
 import org.jboss.errai.common.client.api.IsElement;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 
-public interface LiveSearchSelectorItem<TYPE> extends IsElement{
+public interface InlineCreationEditor<TYPE> extends EntryCreationEditor<TYPE>, IsElement{
 
-    void init(TYPE key, String value);
-
-    TYPE getKey();
-
-    String getValue();
-
-    void reset();
-
-    void setMultipleSelection(boolean enable);
-
-    void onItemClick();
-
-    void select();
-
-    void setSelectionCallback(Command selectionCallback);
+    void clear();
 }

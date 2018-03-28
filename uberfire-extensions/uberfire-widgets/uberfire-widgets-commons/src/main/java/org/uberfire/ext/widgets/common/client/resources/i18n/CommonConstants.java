@@ -155,6 +155,8 @@ public interface CommonConstants
 
     String liveSearchElementsSelected(int elements);
 
+    String liveSearchNewEntry();
+
     String liveSearchClearSelectionMessage();
 
     String liveSearchResetSelectionMessage();

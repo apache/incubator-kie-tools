@@ -24,6 +24,7 @@ import org.uberfire.ext.layout.editor.client.components.rows.RowDnDEvent;
 import org.uberfire.ext.layout.editor.client.event.LayoutEditorElementSelectEvent;
 import org.uberfire.ext.layout.editor.client.event.LayoutElementClearAllPropertiesEvent;
 import org.uberfire.ext.layout.editor.client.event.LayoutElementPropertyChangedEvent;
+import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchCallback;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchDropDown;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchResults;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchService;
@@ -72,19 +73,36 @@ public class LayoutEditorPropertiesPresenter {
     private Map<String,LayoutElementPropertiesPresenter> presenterMap = new HashMap<>();
 
     SingleLiveSearchSelectionHandler<String> selectionHandler = new SingleLiveSearchSelectionHandler<>();
-    LiveSearchService<String> searchService = (pattern, maxResults, callback) -> {
+    LiveSearchService<String> searchService = new LiveSearchService<String>() {
+        @Override
+        public void search(String pattern, int maxResults, LiveSearchCallback<String> callback) {
+            LiveSearchResults result = new LiveSearchResults(maxResults);
+            layoutEditor.getLayoutElements().stream()
+                    .filter(LayoutEditorPropertiesPresenter::isSupported)
+                    .forEach(element -> {
+                        String elementId = element.getId();
+                        String elementPosition = getDisplayPosition(element);
+                        if (elementPosition.toLowerCase().contains(pattern.toLowerCase())) {
+                            result.add(elementId, elementPosition);
+                        }
+                    });
+            callback.afterSearch(result);
+        }
 
-        LiveSearchResults result = new LiveSearchResults(maxResults);
-        layoutEditor.getLayoutElements().stream()
-                .filter(LayoutEditorPropertiesPresenter::isSupported)
-                .forEach(element -> {
-                    String elementId = element.getId();
-                    String elementPosition = getDisplayPosition(element);
-                    if (elementPosition.toLowerCase().contains(pattern.toLowerCase())) {
+        @Override
+        public void searchEntry(String key, LiveSearchCallback<String> callback) {
+            LiveSearchResults result = new LiveSearchResults(1);
+            layoutEditor.getLayoutElements().stream()
+                    .filter(element -> LayoutEditorPropertiesPresenter.isSupported(element) && element.getId().equals(key))
+                    .findAny()
+                    .ifPresent(element -> {
+                        String elementId = element.getId();
+                        String elementPosition = getDisplayPosition(element);
                         result.add(elementId, elementPosition);
-                    }
-                });
-        callback.afterSearch(result);
+                    });
+
+            callback.afterSearch(result);
+        }
     };
 
     static boolean isSupported(LayoutEditorElement element) {

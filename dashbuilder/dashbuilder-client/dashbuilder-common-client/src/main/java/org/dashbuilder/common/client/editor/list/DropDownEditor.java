@@ -35,6 +35,7 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchCallback;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchDropDown;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchResults;
+import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchService;
 import org.uberfire.ext.widgets.common.client.dropdown.SingleLiveSearchSelectionHandler;
 
 @Dependent
@@ -71,6 +72,18 @@ public class DropDownEditor implements IsWidget, LeafAttributeEditor<String> {
 
     public View view;
     LiveSearchDropDown<String> dropDown;
+    LiveSearchService<String> searchService = new LiveSearchService<String>() {
+        @Override
+        public void search(String pattern, int maxResults, LiveSearchCallback<String> callback) {
+            getDropDownEntries(pattern, maxResults, callback);
+        }
+
+        @Override
+        public void searchEntry(String key, LiveSearchCallback<String> callback) {
+
+        }
+    };
+
     SingleLiveSearchSelectionHandler<String> selectionHandler = new SingleLiveSearchSelectionHandler<>();
 
     Event<org.dashbuilder.common.client.event.ValueChangeEvent<String>> valueChangeEvent;
@@ -93,7 +106,7 @@ public class DropDownEditor implements IsWidget, LeafAttributeEditor<String> {
         view.setDropDown(dropDown);
         dropDown.setClearSelectionEnabled(false);
         dropDown.setSearchEnabled(false);
-        dropDown.init(this::getDropDownEntries, selectionHandler);
+        dropDown.init(searchService, selectionHandler);
         dropDown.setOnChange(this::onEntrySelected);
     }
 
@@ -107,6 +120,15 @@ public class DropDownEditor implements IsWidget, LeafAttributeEditor<String> {
         entries.stream()
                 .filter(e -> e.getHint().contains(pattern))
                 .forEach(e -> results.add(e.getValue(), e.getHint()));
+        callback.afterSearch(results);
+    }
+
+    public void getExactEntry(String key, LiveSearchCallback<String> callback) {
+        final LiveSearchResults results = new LiveSearchResults(1);
+        entries.stream()
+                .filter(e -> e.getValue().equals(key))
+                .findAny()
+                .ifPresent(e -> results.add(e.getValue(), e.getHint()));
         callback.afterSearch(results);
     }
 

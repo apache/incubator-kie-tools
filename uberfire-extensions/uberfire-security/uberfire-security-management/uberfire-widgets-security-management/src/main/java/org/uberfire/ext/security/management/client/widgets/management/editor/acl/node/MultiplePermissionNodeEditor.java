@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -31,6 +32,7 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.security.management.client.widgets.management.events.PermissionChangedEvent;
 import org.uberfire.ext.security.management.client.widgets.management.events.PermissionNodeAddedEvent;
 import org.uberfire.ext.security.management.client.widgets.management.events.PermissionNodeRemovedEvent;
+import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchCallback;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchDropDown;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchResults;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchService;
@@ -56,23 +58,49 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
     Map<String, PermissionNode> childSelectorNodeMap = new TreeMap<>();
     boolean expanded = false;
 
-    LiveSearchService childrenSearchService = (pattern, maxResults, callback) -> {
-        PermissionTreeProvider provider = permissionNode.getPermissionTreeProvider();
-        DefaultLoadOptions loadOptions = new DefaultLoadOptions();
-        loadOptions.setNodeNamePattern(pattern);
-        loadOptions.setMaxNodes(maxResults);
+    LiveSearchService<String> childrenSearchService = new LiveSearchService<String>() {
+        @Override
+        public void search(String pattern, int maxResults, LiveSearchCallback<String> callback) {
+            PermissionTreeProvider provider = permissionNode.getPermissionTreeProvider();
+            DefaultLoadOptions loadOptions = new DefaultLoadOptions();
+            loadOptions.setNodeNamePattern(pattern);
+            loadOptions.setMaxNodes(maxResults);
 
-        provider.loadChildren(permissionNode, loadOptions, children -> {
-            LiveSearchResults result = new LiveSearchResults(maxResults);
-            children.stream().filter(this::isNotEdited).forEach(node -> {
-                String permissionName = node.getPermissionList().get(0).getName();
-                result.add(permissionName, node.getNodeName());
-                childSelectorNodeMap.put(permissionName, node);
+            provider.loadChildren(permissionNode, loadOptions, children -> {
+                LiveSearchResults result = new LiveSearchResults(maxResults);
+                children.stream().filter(MultiplePermissionNodeEditor.this::isNotEdited).forEach(node -> {
+                    String permissionName = node.getPermissionList().get(0).getName();
+                    result.add(permissionName, node.getNodeName());
+                    childSelectorNodeMap.put(permissionName, node);
+                });
+
+                result.sortByValue();
+                callback.afterSearch(result);
             });
+        }
 
-            result.sortByValue();
-            callback.afterSearch(result);
-        });
+        @Override
+        public void searchEntry(String key, LiveSearchCallback<String> callback) {
+            PermissionTreeProvider provider = permissionNode.getPermissionTreeProvider();
+            DefaultLoadOptions loadOptions = new DefaultLoadOptions();
+            loadOptions.setNodeNamePattern(key);
+            loadOptions.setMaxNodes(1);
+
+            provider.loadChildren(permissionNode, loadOptions, children -> {
+                LiveSearchResults result = new LiveSearchResults(1);
+                children.stream()
+                        .filter(node -> isNotEdited(node) && node.getNodeName().equals(key))
+                        .findAny()
+                        .ifPresent(node -> {
+                            String permissionName = node.getPermissionList().get(0).getName();
+                            result.add(permissionName, node.getNodeName());
+                            childSelectorNodeMap.put(permissionName, node);
+                        });
+
+                result.sortByValue();
+                callback.afterSearch(result);
+            });
+        }
     };
 
     public LiveSearchService getChildrenSearchService() {

@@ -1,11 +1,11 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,6 +18,7 @@ package org.uberfire.ext.widgets.common.client.dropdown;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -49,6 +50,7 @@ public class LiveSearchDropDown<TYPE> implements IsWidget {
     private String notFoundMessage = null;
     private Command onChange;
 
+    private Command onAddItemPressed;
 
     @Inject
     public LiveSearchDropDown(View view,
@@ -96,12 +98,54 @@ public class LiveSearchDropDown<TYPE> implements IsWidget {
         this.notFoundMessage = noItemsMessage;
     }
 
-    public void init(LiveSearchService searchService,
-                     LiveSearchSelectionHandler selectionHandler) {
+    public void init(LiveSearchService<TYPE> searchService,
+                     LiveSearchSelectionHandler<TYPE> selectionHandler) {
         this.searchService = searchService;
         this.selectionHandler = selectionHandler;
-        selectionHandler.setLiveSearchSelectionCallback(() -> onItemSelected());
+
+        selectionHandler.setLiveSearchSelectionCallback(this::onItemSelected);
+
         view.setClearSelectionMessage(selectionHandler.isMultipleSelection());
+
+        if (searchService instanceof EntryCreationLiveSearchService) {
+
+            view.setNewInstanceEnabled(true);
+
+            EntryCreationLiveSearchService<TYPE, ?> creationService = (EntryCreationLiveSearchService<TYPE, ?>) searchService;
+
+            EntryCreationEditor<TYPE> editor = creationService.getEditor();
+
+            if (creationService.getEditor() instanceof InlineCreationEditor) {
+                InlineCreationEditor<TYPE> inlineEditor = (InlineCreationEditor<TYPE>) editor;
+                inlineEditor.init(this::addNewItem, view::restoreFooter);
+                onAddItemPressed = () -> view.showNewItemEditor(inlineEditor);
+            } else if (creationService.getEditor() instanceof ModalCreationEditor) {
+                ModalCreationEditor<TYPE> modalEditor = (ModalCreationEditor<TYPE>) editor;
+                modalEditor.init(this::addNewItem, () -> {});
+                onAddItemPressed = () -> modalEditor.show();
+            }
+        } else {
+            view.setNewInstanceEnabled(false);
+        }
+    }
+
+    protected void addNewItem(LiveSearchEntry<TYPE> entry) {
+
+        LiveSearchSelectorItem<TYPE> itemInstance = liveSearchSelectorItems.get();
+
+        itemInstance.init(entry.getKey(), entry.getValue());
+
+        selectionHandler.selectItem(itemInstance);
+
+        searchCache.clear();
+
+        String pattern = lastSearch;
+
+        lastSearch = null;
+
+        search(pattern);
+
+        view.restoreFooter();
     }
 
     public boolean isSearchCacheEnabled() {
@@ -148,21 +192,19 @@ public class LiveSearchDropDown<TYPE> implements IsWidget {
     }
 
     public void setSelectedItem(final TYPE key) {
-        searchService.search("",
-                             1000,
-                             results -> {
-                                 results.stream()
-                                         .filter(entry -> entry.getKey().equals(key))
-                                         .findFirst().ifPresent(entry -> {
-                                     changeCallbackEnabled = false;
-                                     LiveSearchSelectorItem<TYPE> item = getSelectorItemForEntry(entry);
-                                     selectionHandler.selectItem(item);
-                                     item.select();
-                                     view.clearItems();
-                                     lastSearch = null;
-                                     changeCallbackEnabled = true;
-                                 });
-                             });
+        searchService.searchEntry(key,
+                                  results -> {
+                                      if(results.size() == 1) {
+                                          LiveSearchEntry<TYPE> entry = results.get(0);
+                                          changeCallbackEnabled = false;
+                                          LiveSearchSelectorItem<TYPE> item = getSelectorItemForEntry(entry);
+                                          selectionHandler.selectItem(item);
+                                          item.select();
+                                          view.clearItems();
+                                          lastSearch = null;
+                                          changeCallbackEnabled = true;
+                                      }
+                                  });
     }
 
     protected void doSearch(String pattern) {
@@ -212,6 +254,7 @@ public class LiveSearchDropDown<TYPE> implements IsWidget {
     void onItemsShown() {
         Scheduler.get().scheduleDeferred(() -> {
             search(lastSearch);
+            view.restoreFooter();
         });
     }
 
@@ -226,7 +269,7 @@ public class LiveSearchDropDown<TYPE> implements IsWidget {
     void onItemSelected() {
         String message = selectionHandler.getDropDownMenuHeader();
 
-        if(message == null) {
+        if (message == null) {
             message = selectorHint;
         }
 
@@ -245,7 +288,19 @@ public class LiveSearchDropDown<TYPE> implements IsWidget {
         }
     }
 
+    public void showNewItem() {
+        if (onAddItemPressed != null) {
+            onAddItemPressed.execute();
+        }
+    }
+
     public interface View<TYPE> extends UberView<LiveSearchDropDown<TYPE>> {
+
+        void setNewInstanceEnabled(boolean enabled);
+
+        void showNewItemEditor(InlineCreationEditor editor);
+
+        void restoreFooter();
 
         void clearItems();
 
@@ -272,6 +327,10 @@ public class LiveSearchDropDown<TYPE> implements IsWidget {
         void setWidth(int minWidth);
 
         void setMaxHeight(int maxHeight);
+
+        void setNewEntryI18nMessage(String defaultNewInstanceI18nMessage);
+
+        String getDefaultNewEntryI18nMessage();
 
         String getDefaultSearchHintI18nMessage();
 

@@ -25,8 +25,10 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants;
+import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchCallback;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchDropDown;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchResults;
+import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchService;
 import org.uberfire.ext.widgets.common.client.dropdown.SingleLiveSearchSelectionHandler;
 import org.uberfire.mvp.Command;
 
@@ -34,6 +36,23 @@ import org.uberfire.mvp.Command;
 public class PriorityDropDown implements IsWidget {
 
     LiveSearchDropDown<String> liveSearchDropDown;
+    LiveSearchService<String> searchService = new LiveSearchService<String>() {
+        @Override
+        public void search(String pattern, int maxResults, LiveSearchCallback<String> callback) {
+            LiveSearchResults results = new LiveSearchResults(priorityItemList).sortByKey();
+            callback.afterSearch(results);
+        }
+
+        @Override
+        public void searchEntry(String key, LiveSearchCallback<String> callback) {
+            LiveSearchResults results = new LiveSearchResults(1);
+            if(priorityItemList.contains(key)) {
+                results.add(key);
+            }
+            callback.afterSearch(results);
+        }
+    };
+
     SingleLiveSearchSelectionHandler<String> selectionHandler = new SingleLiveSearchSelectionHandler<>();
     List<String> priorityItemList;
 
@@ -52,10 +71,9 @@ public class PriorityDropDown implements IsWidget {
         priorityItemList.add(UsersManagementWidgetsConstants.INSTANCE.priorityLow());
         priorityItemList.add(UsersManagementWidgetsConstants.INSTANCE.priorityVeryLow());
 
-        LiveSearchResults liveSearchResults = new LiveSearchResults(priorityItemList).sortByKey();
         liveSearchDropDown.setSelectorHint(UsersManagementWidgetsConstants.INSTANCE.selectPriorityHint());
         liveSearchDropDown.setSearchEnabled(false);
-        liveSearchDropDown.init((pattern, maxResults, callback) -> callback.afterSearch(liveSearchResults), selectionHandler);
+        liveSearchDropDown.init(searchService, selectionHandler);
     }
 
     @Override

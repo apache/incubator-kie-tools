@@ -24,13 +24,3 @@
     max-height: 250px;
     overflow-y: auto;
 }
-
-.appformer-live-search-selector-reset-panel{
-    border-top: 1px solid #bbb;
-}
-
-.appformer-live-search-selector-reset-anchor {
-    margin-right: 10px;
-    cursor: pointer;
-    float: right;
-}

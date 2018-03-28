@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.uberfire.ext.widgets.common.client.dropdown.items;
 
 import javax.inject.Inject;

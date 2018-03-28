@@ -25,12 +25,24 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.mvp.Command;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class LiveSearchDropDownTest {
@@ -43,6 +55,7 @@ public class LiveSearchDropDownTest {
 
     @Spy
     LiveSearchService<String> searchService = new LiveSearchService<String>() {
+
         @Override
         public void search(String pattern,
                            int maxResults,
@@ -51,18 +64,30 @@ public class LiveSearchDropDownTest {
             switch (pattern) {
                 case "a":
                     results.add("1", "a");
-                    callback.afterSearch(results);
                     break;
                 case "b":
                     results.add("1", "a");
                     results.add("2", "b");
                     results.add("3", "c");
-                    callback.afterSearch(results);
-                    break;
-                default:
-                    callback.afterSearch(results);
                     break;
             }
+
+            callback.afterSearch(results);
+        }
+
+        @Override
+        public void searchEntry(String key, LiveSearchCallback<String> callback) {
+            LiveSearchResults results = new LiveSearchResults();
+            switch (key) {
+                case "1":
+                    results.add("1", "a");
+                    break;
+                case "2":
+                    results.add("2", "b");
+                    break;
+            }
+
+            callback.afterSearch(results);
         }
     };
 
@@ -83,22 +108,19 @@ public class LiveSearchDropDownTest {
     @Before
     public void setUp() {
 
-        when(selectorItems.get()).thenAnswer(new Answer<LiveSearchSelectorItem<String>>() {
-            @Override
-            public LiveSearchSelectorItem<String> answer(InvocationOnMock invocationOnMock) throws Throwable {
-                final LiveSearchSelectorItem<String> result = mock(LiveSearchSelectorItem.class);
+        when(selectorItems.get()).thenAnswer((Answer<LiveSearchSelectorItem<String>>) invocationOnMock -> {
+            final LiveSearchSelectorItem<String> result = mock(LiveSearchSelectorItem.class);
 
-                doAnswer((Answer<Void>) invocationOnMock1 -> {
-                    String key = (String) invocationOnMock1.getArguments()[0];
-                    String value = (String) invocationOnMock1.getArguments()[1];
+            doAnswer((Answer<Void>) invocationOnMock1 -> {
+                String key = (String) invocationOnMock1.getArguments()[0];
+                String value = (String) invocationOnMock1.getArguments()[1];
 
-                    when(result.getKey()).thenReturn(key);
-                    when(result.getValue()).thenReturn(value);
-                    return null;
-                }).when(result).init(any(), any());
+                when(result.getKey()).thenReturn(key);
+                when(result.getValue()).thenReturn(value);
+                return null;
+            }).when(result).init(any(), any());
 
-                return result;
-            }
+            return result;
         });
 
         presenter = spy(new LiveSearchDropDown(view, selectorItems));
@@ -276,17 +298,13 @@ public class LiveSearchDropDownTest {
     public void testItemSelected() {
 
         doAnswer(invocationOnMock -> {
-            LiveSearchResults results = new LiveSearchResults();
+            LiveSearchResults results = new LiveSearchResults(1);
             results.add("1", "a");
-            results.add("2", "b");
-            results.add("3", "c");
-
-            LiveSearchCallback callback = (LiveSearchCallback)invocationOnMock.getArguments()[2];
+            LiveSearchCallback callback = (LiveSearchCallback) invocationOnMock.getArguments()[1];
             callback.afterSearch(results);
 
             return null;
-        }).when(searchService).search(anyString(), anyInt(), any());
-
+        }).when(searchService).searchEntry(anyString(), any());
 
         presenter.setSelectedItem("1");
 

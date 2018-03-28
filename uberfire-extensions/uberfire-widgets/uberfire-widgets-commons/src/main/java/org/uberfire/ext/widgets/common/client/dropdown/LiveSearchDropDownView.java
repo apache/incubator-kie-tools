@@ -1,11 +1,11 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,7 +25,6 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.user.client.ui.Composite;
-import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
@@ -35,6 +34,7 @@ import org.jboss.errai.common.client.dom.UnorderedList;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.uberfire.ext.widgets.common.client.dropdown.footer.LiveSearchFooter;
 import org.uberfire.ext.widgets.common.client.dropdown.noItems.NoItemsComponent;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 
@@ -81,16 +81,16 @@ public class LiveSearchDropDownView<TYPE> extends Composite
 
     @Inject
     @DataField
-    UnorderedList resetMenu;
+    private LiveSearchFooter liveSearchFooter;
 
     @Inject
     @DataField
-    Anchor resetAnchor;
+    private NoItemsComponent noItems;
 
-    @Inject
-    private NoItemsComponent noItemsComponent;
+    private boolean resetEnabled = true;
+    private boolean newItemEnabled = true;
 
-    LiveSearchDropDown presenter;
+    private LiveSearchDropDown presenter;
 
     @Override
     public void init(LiveSearchDropDown presenter) {
@@ -101,6 +101,18 @@ public class LiveSearchDropDownView<TYPE> extends Composite
     public void initialize() {
         setSearchHint(getDefaultSearchHintI18nMessage());
         setDropDownText(getDefaultSelectorHintI18nMessage());
+        setNewInstanceEnabled(false);
+        setNewEntryI18nMessage(getDefaultNewEntryI18nMessage());
+        liveSearchFooter.init(this::showNewItem, this::clearSelection);
+    }
+
+    private void showNewItem() {
+        presenter.showNewItem();
+    }
+
+
+    private void clearSelection() {
+        presenter.clearSelection();
     }
 
     @Override
@@ -119,32 +131,49 @@ public class LiveSearchDropDownView<TYPE> extends Composite
 
     @Override
     public void setSearchEnabled(boolean enabled) {
-        searchPanel.getStyle().removeProperty("display");
-        if (!enabled) {
-            searchPanel.getStyle().setProperty("display",
-                                               "none");
-        }
+        searchPanel.setHidden(!enabled);
     }
 
     @Override
     public void setClearSelectionEnabled(boolean enabled) {
-        resetMenu.getStyle().removeProperty("display");
-        if (!enabled) {
-            resetMenu.getStyle().setProperty("display",
-                                             "none");
-        }
+        resetEnabled = enabled;
+        liveSearchFooter.showReset(enabled);
+        refreshFooter();
+    }
+
+    @Override
+    public void setNewInstanceEnabled(boolean enabled) {
+        newItemEnabled = enabled;
+        liveSearchFooter.showAddNewEntry(enabled);
+        refreshFooter();
+    }
+
+    private void refreshFooter() {
+        liveSearchFooter.getElement().setHidden(!resetEnabled && !newItemEnabled);
+    }
+
+    @Override
+    public void showNewItemEditor(InlineCreationEditor editor) {
+        editor.clear();
+        liveSearchFooter.showEditor(editor);
+    }
+
+    @Override
+    public void restoreFooter() {
+        liveSearchFooter.restore();
     }
 
     @Override
     public void clearItems() {
         DOMUtil.removeAllChildren(dropDownMenu);
+        noItems.hide();
     }
 
     @Override
     public void noItems(String msg) {
         DOMUtil.removeAllChildren(dropDownMenu);
-        noItemsComponent.setMessage(msg);
-        dropDownMenu.appendChild(noItemsComponent.getElement());
+        noItems.setMessage(msg);
+        noItems.show();
     }
 
     @Override
@@ -196,8 +225,17 @@ public class LiveSearchDropDownView<TYPE> extends Composite
     @Override
     public void setClearSelectionMessage(boolean multipleSelection) {
         String message = multipleSelection ? getDefaultClearSelectionI18nMessage() : getDefaultResetSelectionI18nMessage();
+        liveSearchFooter.setResetLabel(message);
+    }
 
-        resetAnchor.setTextContent(message);
+    @Override
+    public void setNewEntryI18nMessage(String message) {
+        liveSearchFooter.setNewEntryLabel(message);
+    }
+
+    @Override
+    public String getDefaultNewEntryI18nMessage() {
+        return CommonConstants.INSTANCE.liveSearchNewEntry();
     }
 
     @Override
@@ -251,10 +289,5 @@ public class LiveSearchDropDownView<TYPE> extends Composite
     @EventHandler("dropDownButton")
     void onDropDownClick(ClickEvent event) {
         presenter.onItemsShown();
-    }
-
-    @EventHandler("resetAnchor")
-    void onResetAnchorClick(ClickEvent event) {
-        presenter.clearSelection();
     }
 }
