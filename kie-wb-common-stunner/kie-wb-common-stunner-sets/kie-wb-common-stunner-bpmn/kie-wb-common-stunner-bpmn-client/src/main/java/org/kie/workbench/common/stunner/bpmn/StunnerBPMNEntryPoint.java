@@ -16,11 +16,35 @@
 
 package org.kie.workbench.common.stunner.bpmn;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
+import org.kie.workbench.common.stunner.bpmn.client.forms.filters.StartEventFilterProvider;
+import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.forms.client.formFilters.FormFiltersProviderFactory;
 
 @EntryPoint
 @Bundle("resources/i18n/StunnerBPMNConstants.properties")
 public class StunnerBPMNEntryPoint {
 
+    private SessionManager sessionManager;
+
+    @Inject
+    public StunnerBPMNEntryPoint(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
+    }
+
+    @PostConstruct
+    public void init() {
+        FormFiltersProviderFactory.registerProvider(new StartEventFilterProvider(sessionManager, StartSignalEvent.class));
+        FormFiltersProviderFactory.registerProvider(new StartEventFilterProvider(sessionManager, StartMessageEvent.class));
+        FormFiltersProviderFactory.registerProvider(new StartEventFilterProvider(sessionManager, StartErrorEvent.class));
+        FormFiltersProviderFactory.registerProvider(new StartEventFilterProvider(sessionManager, StartTimerEvent.class));
+    }
 }

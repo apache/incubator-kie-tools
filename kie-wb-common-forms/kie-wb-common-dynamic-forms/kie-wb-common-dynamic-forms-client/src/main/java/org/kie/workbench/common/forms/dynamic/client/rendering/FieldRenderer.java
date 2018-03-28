@@ -18,6 +18,7 @@ package org.kie.workbench.common.forms.dynamic.client.rendering;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.PreDestroy;
@@ -32,6 +33,7 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.c
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.processing.engine.handling.CustomFieldValidator;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeListener;
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
 
@@ -94,6 +96,8 @@ public abstract class FieldRenderer<F extends FieldDefinition, FORM_GROUP extend
 
             formField.setReadOnly(renderingContext.getRenderMode().equals(RenderMode.READ_ONLY_MODE));
 
+            registerCustomFieldValidators(formField);
+
             return ElementWrapperWidget.getWidget(formGroup.getElement());
         }
     }
@@ -130,7 +134,11 @@ public abstract class FieldRenderer<F extends FieldDefinition, FORM_GROUP extend
         return true;
     }
 
-    public Collection<FieldChangeListener> getFieldChangeListeners() {
+    protected void registerCustomFieldValidators(FormFieldImpl field) {
+
+    }
+
+    private Collection<FieldChangeListener> getFieldChangeListeners() {
         return fieldChangeListeners;
     }
 

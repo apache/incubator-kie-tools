@@ -16,36 +16,36 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assigneeEditor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.FormFieldImpl;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
-import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
-import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Assignee;
-import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssigneeRow;
-import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
-import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
+import org.kie.workbench.common.forms.processing.engine.handling.CustomFieldValidator;
+import org.kie.workbench.common.forms.processing.engine.handling.ValidationResult;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.assigneeEditor.formGroup.AssigneeFormGroup;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.assigneeEditor.widget.AssigneeEditorWidget;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerBPMNConstants;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeEditorFieldDefinition;
-import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeType;
 
 @Dependent
-public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFieldDefinition, DefaultFormGroup>
-        implements AssigneeEditorWidgetView.Presenter {
+public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFieldDefinition, AssigneeFormGroup> {
 
-    private AssigneeEditorWidgetView view;
+    private AssigneeEditorWidget widget;
 
-    private List<String> names = new ArrayList<String>();
-
-    private ListBoxValues nameListBoxValues;
+    private TranslationService translationService;
 
     @Inject
-    public AssigneeEditorFieldRenderer(final AssigneeEditorWidgetView assigneeEditor) {
-        this.view = assigneeEditor;
+    public AssigneeEditorFieldRenderer(final AssigneeEditorWidget assigneeEditor, TranslationService translationService) {
+        this.widget = assigneeEditor;
+        this.translationService = translationService;
     }
 
     @Override
@@ -54,22 +54,12 @@ public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFie
     }
 
     @Override
-    public AssigneeType getType() {
-        return getField().getType();
-    }
-
-    @Override
-    public Integer getMax() {
-        return getField().getMax();
-    }
-
-    @Override
     protected FormGroup getFormGroup(RenderMode renderMode) {
-        DefaultFormGroup formGroup = formGroupsInstance.get();
+        AssigneeFormGroup formGroup = formGroupsInstance.get();
 
-        view.init(this);
+        widget.init(field.getType(), field.getMax());
 
-        formGroup.render(view.asWidget(), field);
+        formGroup.render(widget.asWidget(), field);
 
         return formGroup;
     }
@@ -85,108 +75,17 @@ public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFie
     }
 
     @Override
-    public void doSave() {
-        view.doSave();
-    }
+    protected void registerCustomFieldValidators(FormFieldImpl field) {
+        field.getCustomValidators().add((CustomFieldValidator<String>) value -> {
+            String[] assignees = value.split(",");
 
-    @Override
-    public void addAssignee() {
-        List<AssigneeRow> as = view.getAssigneeRows();
-        if (as.isEmpty()) {
-            view.setTableDisplayStyle();
-        }
+            Set<String> assigneeSet = new TreeSet<>(Arrays.asList(assignees));
 
-        int max = getMax();
-        if (max != -1 && as.size() >= max) {
-            view.showMaxAssigneesAdded();
-        } else {
-            AssigneeRow newAssignee = new AssigneeRow();
-            as.add(newAssignee);
-            AssigneeListItemWidgetView widget = view.getAssigneeWidget(view.getAssigneeRowsCount() - 1);
-            widget.setNames(nameListBoxValues);
-            widget.setParentWidget(this);
-        }
-    }
-
-    @Override
-    public void setNames(final List<String> names) {
-        this.names = names;
-        nameListBoxValues = new ListBoxValues(AssigneeListItemWidgetView.CUSTOM_PROMPT,
-                                              "Edit" + " ",
-                                              namesTester());
-        nameListBoxValues.addValues(names);
-        view.setAssigneesNames(nameListBoxValues);
-    }
-
-    @Override
-    public void notifyModelChanged() {
-        doSave();
-    }
-
-    @Override
-    public List<AssigneeRow> deserializeAssignees(final String s) {
-        List<AssigneeRow> assigneeRows = new ArrayList<AssigneeRow>();
-        if (s != null && !s.isEmpty()) {
-            String[] as = s.split(",");
-            for (String a : as) {
-                if (!a.isEmpty()) {
-                    Assignee assignee = Assignee.deserialize(a,
-                                                             names);
-                    if (assignee != null) {
-                        assigneeRows.add(new AssigneeRow(assignee));
-                    }
-                }
+            if (assigneeSet.size() != assignees.length) {
+                return ValidationResult.error(translationService.getTranslation(StunnerBPMNConstants.ASSIGNEE_WITH_DUPLICATES));
             }
-        }
-        return assigneeRows;
-    }
 
-    @Override
-    public String serializeAssignees(final List<AssigneeRow> assigneeRows) {
-        List<Assignee> assignees = new ArrayList<Assignee>();
-        for (AssigneeRow row : assigneeRows) {
-            if (!row.isEmpty()) {
-                assignees.add(new Assignee(row));
-            }
-        }
-        return StringUtils.getStringForList(assignees);
-    }
-
-    /**
-     * Tests whether a Row name occurs more than once in the list of rows
-     * @param name
-     * @return
-     */
-    public boolean isDuplicateName(final String name) {
-        if (name == null || name.trim().isEmpty()) {
-            return false;
-        }
-        List<AssigneeRow> as = view.getAssigneeRows();
-        if (as != null && !as.isEmpty()) {
-            int nameCount = 0;
-            for (AssigneeRow row : as) {
-                if (name.trim().compareTo(row.getName()) == 0) {
-                    nameCount++;
-                    if (nameCount > 1) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    public void removeAssignee(final AssigneeRow assigneeRow) {
-        view.getAssigneeRows().remove(assigneeRow);
-        doSave();
-    }
-
-    @Override
-    public ListBoxValues.ValueTester namesTester() {
-        return new ListBoxValues.ValueTester() {
-            public String getNonCustomValueForUserString(String userValue) {
-                return null;
-            }
-        };
+            return ValidationResult.valid();
+        });
     }
 }

@@ -27,6 +27,10 @@ public class Assignee {
     public Assignee() {
     }
 
+    public Assignee(String name) {
+        this.name = name;
+    }
+
     public Assignee(final AssigneeRow row) {
         this.name = row.getName();
         this.customName = row.getCustomName();

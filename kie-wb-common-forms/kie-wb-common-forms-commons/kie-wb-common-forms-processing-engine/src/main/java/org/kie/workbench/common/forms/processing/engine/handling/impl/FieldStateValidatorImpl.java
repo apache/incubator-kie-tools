@@ -30,8 +30,10 @@ import com.google.gwt.user.client.TakesValue;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.forms.processing.engine.handling.CustomFieldValidator;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldStateValidator;
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
+import org.kie.workbench.common.forms.processing.engine.handling.ValidationResult;
 import org.kie.workbench.common.forms.processing.engine.handling.resources.i18n.ProcessingEngineConstants;
 
 @Dependent
@@ -88,6 +90,15 @@ public class FieldStateValidatorImpl implements FieldStateValidator {
             return validateFieldValueRequired(field,
                                               value);
         }
+
+        for(CustomFieldValidator validator : field.getCustomValidators()) {
+            ValidationResult result = validator.validate(value);
+            if(!result.getStatus().isValid()) {
+                field.showError(result.getMessage());
+                return false;
+            }
+        }
+
         return true;
     }
 

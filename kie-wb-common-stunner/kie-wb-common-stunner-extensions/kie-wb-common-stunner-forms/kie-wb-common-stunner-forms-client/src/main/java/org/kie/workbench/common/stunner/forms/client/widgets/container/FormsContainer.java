@@ -26,7 +26,6 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -40,7 +39,6 @@ import org.uberfire.backend.vfs.Path;
 public class FormsContainer implements IsElement {
 
     private static Logger LOGGER = Logger.getLogger(FormsContainer.class.getName());
-
 
     private FormsContainerView view;
     private ManagedInstance<FormDisplayer> displayersInstance;
@@ -96,17 +94,27 @@ public class FormsContainer implements IsElement {
                 .stream()
                 .filter(entry -> entry.getGraphUuid().equals(graphUuid)).collect(Collectors.toList());
 
-        keys.forEach(key -> {
-            FormDisplayer displayer = formDisplayers.remove(key);
-            LOGGER.fine("Clearing form displayer for element: " + key.getElementUid());
-            view.removeDisplayer(displayer);
-            displayer.hide();
-            if(displayer.equals(currentDisplayer)) {
-                currentDisplayer = null;
-            }
-            displayersInstance.destroy(displayer);
-        });
+        keys.forEach(this::clearDisplayer);
         LOGGER.fine("Cleared properties forms for graph: " + graphUuid);
+    }
+
+    public void clearFormDisplayer(String graphUuid, String elementUid) {
+        formDisplayers.keySet()
+                .stream()
+                .filter(key -> key.getGraphUuid().equals(graphUuid) && key.getElementUid().equals(elementUid))
+                .findAny()
+                .ifPresent(this::clearDisplayer);
+    }
+
+    private void clearDisplayer(FormDisplayerKey key) {
+        FormDisplayer displayer = formDisplayers.remove(key);
+        LOGGER.fine("Clearing form displayer for element: " + key.getElementUid());
+        view.removeDisplayer(displayer);
+        displayer.hide();
+        if (displayer.equals(currentDisplayer)) {
+            currentDisplayer = null;
+        }
+        displayersInstance.destroy(displayer);
     }
 
     @Override

@@ -50,4 +50,6 @@ public interface FormField {
     }
 
     Collection<FieldChangeListener> getChangeListeners();
+
+    Collection<CustomFieldValidator> getCustomValidators();
 }

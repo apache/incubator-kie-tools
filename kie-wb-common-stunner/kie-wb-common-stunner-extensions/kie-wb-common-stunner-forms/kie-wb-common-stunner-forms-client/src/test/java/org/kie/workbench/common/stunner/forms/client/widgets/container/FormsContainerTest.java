@@ -33,6 +33,7 @@ import org.uberfire.backend.vfs.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -115,6 +116,33 @@ public class FormsContainerTest {
         verify(firstDisplayer, times(3)).hide();
         verify(view, times(1)).removeDisplayer(firstDisplayer);
         verify(displayersInstance, times(1)).destroy(firstDisplayer);
+
+        verify(secondDisplayer, times(2)).hide();
+        verify(view, times(1)).removeDisplayer(secondDisplayer);
+        verify(displayersInstance, times(1)).destroy(secondDisplayer);
+    }
+
+    @Test
+    public void testDestroyOneDisplayer() {
+        NodeImpl firstNode = getNode(FIRST_ELEMENT_UID);
+
+        FormDisplayer firstDisplayer = testRender(firstNode, 1, 1);
+
+        NodeImpl secondNode = getNode(SECOND_ELEMENT_UID);
+
+        FormDisplayer secondDisplayer = testRender(secondNode, 2, 1);
+
+        formsContainer.clearFormDisplayer(GRAPH_UID, FIRST_ELEMENT_UID);
+
+        verify(firstDisplayer, times(3)).hide();
+        verify(view, times(1)).removeDisplayer(firstDisplayer);
+        verify(displayersInstance, times(1)).destroy(firstDisplayer);
+
+        verify(secondDisplayer, times(1)).hide();
+        verify(view, never()).removeDisplayer(secondDisplayer);
+        verify(displayersInstance, never()).destroy(secondDisplayer);
+
+        formsContainer.clearFormDisplayer(GRAPH_UID, SECOND_ELEMENT_UID);
 
         verify(secondDisplayer, times(2)).hide();
         verify(view, times(1)).removeDisplayer(secondDisplayer);

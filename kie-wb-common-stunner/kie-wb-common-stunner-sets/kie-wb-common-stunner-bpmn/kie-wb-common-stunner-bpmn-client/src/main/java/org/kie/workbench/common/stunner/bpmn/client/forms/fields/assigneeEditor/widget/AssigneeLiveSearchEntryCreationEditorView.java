@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,28 +14,26 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.client.canvas.listener;
+package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assigneeEditor.widget;
 
-/**
- * A canvas shape/element registration listener.
- */
-public interface CanvasListener<C, E> {
+import org.uberfire.client.mvp.UberElement;
 
-    /**
-     * An item is registered on the canvas.
-     */
-    default void register(E item) {
+public interface AssigneeLiveSearchEntryCreationEditorView extends UberElement<AssigneeLiveSearchEntryCreationEditorView.Presenter> {
+
+    interface Presenter {
+
+        String getFieldLabel();
+
+        void onAccept();
+
+        void onCancel();
     }
 
-    /**
-     * An item is de-registered from the canvas.
-     */
-    default void deregister(E item) {
-    }
+    void clear();
 
-    /**
-     * All items removed from canvas.
-     */
-    default void clear() {
-    }
+    String getValue();
+
+    void showError(String errorMessage);
+
+    void clearErrors();
 }

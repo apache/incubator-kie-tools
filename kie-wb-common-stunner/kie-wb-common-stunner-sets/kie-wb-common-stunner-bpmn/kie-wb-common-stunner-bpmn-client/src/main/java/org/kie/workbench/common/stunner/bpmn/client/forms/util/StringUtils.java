@@ -80,9 +80,12 @@ public class StringUtils {
      */
     public static String getStringForList(List<? extends Object> objects) {
         StringBuilder sb = new StringBuilder();
-        for (Object o : objects) {
-            sb.append(o.toString()).append(',');
-        }
+        objects.forEach(object -> {
+            String value = object.toString();
+            if (value != null && !value.isEmpty()) {
+                sb.append(value).append(',');
+            }
+        });
         if (sb.length() > 0) {
             sb.setLength(sb.length() - 1);
         }

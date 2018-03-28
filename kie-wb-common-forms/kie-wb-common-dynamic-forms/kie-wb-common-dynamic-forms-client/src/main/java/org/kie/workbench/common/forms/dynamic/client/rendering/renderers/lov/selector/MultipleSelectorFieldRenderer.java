@@ -33,6 +33,7 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.sel
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.lists.selector.AbstractMultipleSelectorFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.lists.selector.MultipleSelectorFieldType;
+import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchCallback;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchEntry;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchResults;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchService;
@@ -45,7 +46,45 @@ public class MultipleSelectorFieldRenderer<TYPE> extends FieldRenderer<AbstractM
 
     private TranslationService translationService;
 
-    private LiveSearchService<TYPE> searchService;
+    private LiveSearchService<TYPE> searchService = new LiveSearchService<TYPE>() {
+        @Override
+        public void search(String pattern, int maxResults, LiveSearchCallback<TYPE> callback) {
+            List<TYPE> values = field.getListOfValues();
+
+            if (pattern != null & !pattern.isEmpty()) {
+                values = values.stream()
+                        .filter(value -> stringValue(value).toLowerCase().contains(pattern.toLowerCase()))
+                        .collect(Collectors.toList());
+            }
+
+            LiveSearchResults<TYPE> entries = new LiveSearchResults<>();
+
+            for (int i = 0; i < values.size() && i < maxResults; i++) {
+                TYPE value = values.get(i);
+                entries.add(new LiveSearchEntry<>(value,
+                                                  stringValue(value)));
+            }
+
+            callback.afterSearch(entries);
+        }
+
+        @Override
+        public void searchEntry(TYPE key, LiveSearchCallback<TYPE> callback) {
+            LiveSearchResults<TYPE> result = new LiveSearchResults<>(1);
+
+            List<TYPE> values = field.getListOfValues();
+
+            values.stream()
+                    .filter(value -> key.equals(value))
+                    .findAny()
+                    .ifPresent(value -> {
+                        result.add(new LiveSearchEntry<>(value,
+                                                         stringValue(value)));
+                    });
+
+            callback.afterSearch(result);
+        }
+    };
 
     @Inject
     public MultipleSelectorFieldRenderer(MultipleSelectorInput<TYPE> selector,
@@ -60,27 +99,6 @@ public class MultipleSelectorFieldRenderer<TYPE> extends FieldRenderer<AbstractM
         DefaultFormGroup formGroup = formGroupsInstance.get();
 
         final List<TYPE> values = field.getListOfValues();
-
-        searchService = (pattern, maxResults, callback) -> {
-
-            List<TYPE> result = values;
-
-            if (pattern != null & !pattern.isEmpty()) {
-                result = values.stream()
-                        .filter(value -> stringValue(value).toLowerCase().contains(pattern.toLowerCase()))
-                        .collect(Collectors.toList());
-            }
-
-            LiveSearchResults<TYPE> entries = new LiveSearchResults<>();
-
-            for (int i = 0; i < result.size() && i < maxResults; i++) {
-                TYPE value = result.get(i);
-                entries.add(new LiveSearchEntry<>(value,
-                                                stringValue(value)));
-            }
-
-            callback.afterSearch(entries);
-        };
 
         selector.init(searchService,
                       new MultipleLiveSearchSelectionHandler<>(field.getMaxElementsOnTitle()));
@@ -100,7 +118,7 @@ public class MultipleSelectorFieldRenderer<TYPE> extends FieldRenderer<AbstractM
     }
 
     protected String stringValue(TYPE value) {
-        if(value == null) {
+        if (value == null) {
             return "";
         }
 

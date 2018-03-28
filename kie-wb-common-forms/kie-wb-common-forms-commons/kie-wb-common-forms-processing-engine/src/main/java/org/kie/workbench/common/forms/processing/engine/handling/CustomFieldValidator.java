@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,28 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.client.canvas.listener;
+package org.kie.workbench.common.forms.processing.engine.handling;
 
-/**
- * A canvas shape/element registration listener.
- */
-public interface CanvasListener<C, E> {
+public interface CustomFieldValidator<VALUE> {
 
-    /**
-     * An item is registered on the canvas.
-     */
-    default void register(E item) {
-    }
-
-    /**
-     * An item is de-registered from the canvas.
-     */
-    default void deregister(E item) {
-    }
-
-    /**
-     * All items removed from canvas.
-     */
-    default void clear() {
-    }
+    ValidationResult validate(VALUE value);
 }

@@ -1,0 +1,15 @@
+.kie-wb-common-stunner-assignee-table {
+    margin-bottom: 5px !important;
+}
+
+.kie-wb-common-stunner-assignee-table-action-cell {
+    width: 10px;
+}
+
+.kie-wb-common-stunner-assignee-table-add-action {
+    cursor: pointer;
+}
+
+.kie-wb-common-stunner-assignee-table-add-action-icon {
+    padding-right: 5px;
+}

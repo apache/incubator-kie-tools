@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.forms.client.widgets.container.displayer;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.logging.Logger;
 
 import javax.annotation.PreDestroy;
@@ -28,7 +27,6 @@ import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.databinding.client.BindableProxy;
 import org.jboss.errai.databinding.client.BindableProxyFactory;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.forms.adf.engine.shared.FormElementFilter;
 import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
@@ -37,7 +35,7 @@ import org.kie.workbench.common.forms.dynamic.service.shared.impl.StaticModelFor
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.forms.client.formFilters.StunnerFilterProviderManager;
+import org.kie.workbench.common.stunner.forms.client.formFilters.FormFiltersProviderFactory;
 import org.kie.workbench.common.stunner.forms.context.PathAwareFormContext;
 import org.uberfire.backend.vfs.Path;
 
@@ -50,14 +48,12 @@ public class FormDisplayer implements FormDisplayerView.Presenter,
     private final FormDisplayerView view;
     private final DynamicFormRenderer renderer;
     private final DynamicFormModelGenerator modelGenerator;
-    private final ManagedInstance<StunnerFilterProviderManager> filterProviderManager;
 
     @Inject
-    public FormDisplayer(FormDisplayerView view, DynamicFormRenderer renderer, DynamicFormModelGenerator modelGenerator, ManagedInstance<StunnerFilterProviderManager> filterProviderManager) {
+    public FormDisplayer(FormDisplayerView view, DynamicFormRenderer renderer, DynamicFormModelGenerator modelGenerator) {
         this.view = view;
         this.renderer = renderer;
         this.modelGenerator = modelGenerator;
-        this.filterProviderManager = filterProviderManager;
 
         view.init(this);
     }
@@ -80,13 +76,8 @@ public class FormDisplayer implements FormDisplayerView.Presenter,
         }
 
         LOGGER.fine("Rendering a new form for element");
-        Collection<FormElementFilter> filters;
 
-        if (filterProviderManager.isUnsatisfied()) {
-            filters = Collections.EMPTY_LIST;
-        } else {
-            filters = filterProviderManager.get().getFilterForDefinition(element.getUUID(), element, definition);
-        }
+        Collection<FormElementFilter> filters = FormFiltersProviderFactory.getFilterForDefinition(element.getUUID(), element, definition);
 
         final BindableProxy<?> proxy = (BindableProxy<?>) BindableProxyFactory.getBindableProxy(definition);
         final StaticModelFormRenderingContext generatedCtx = modelGenerator.getContextForModel(proxy.deepUnwrap(), filters.stream().toArray(FormElementFilter[]::new));
