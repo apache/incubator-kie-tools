@@ -21,9 +21,13 @@ import java.util.Optional;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
+import org.guvnor.common.services.project.events.NewProjectEvent;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.events.AfterEditOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
@@ -38,6 +42,7 @@ import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
+import org.uberfire.spaces.Space;
 
 import static org.mockito.Mockito.*;
 
@@ -114,18 +119,18 @@ public class LibraryScreenTest {
         when(projectContext.getActiveRepositoryRoot()).thenReturn(Optional.empty());
         when(projectContext.getActivePackage()).thenReturn(Optional.empty());
 
-        libraryScreen = new LibraryScreen(view,
-                                          deleteOrganizationalUnitPopUpPresenters,
-                                          editContributorsPopUpPresenters,
-                                          projectContext,
-                                          organizationalUnitController,
-                                          projectController,
-                                          emptyLibraryScreen,
-                                          populatedLibraryScreen,
-                                          orgUnitsMetricsScreen,
-                                          contributorsListPresenter,
-                                          new CallerMock<>(libraryService),
-                                          libraryPlaces);
+        libraryScreen = spy(new LibraryScreen(view,
+                                              deleteOrganizationalUnitPopUpPresenters,
+                                              editContributorsPopUpPresenters,
+                                              projectContext,
+                                              organizationalUnitController,
+                                              projectController,
+                                              emptyLibraryScreen,
+                                              populatedLibraryScreen,
+                                              orgUnitsMetricsScreen,
+                                              contributorsListPresenter,
+                                              new CallerMock<>(libraryService),
+                                              libraryPlaces));
     }
 
     @Test
@@ -224,6 +229,56 @@ public class LibraryScreenTest {
     }
 
     @Test
+    public void onNewProjectShouldCallShowProjects() {
+
+        setupProjectContext("dora");
+
+        doNothing().when(libraryScreen).showProjects();
+
+        libraryScreen.onNewProject(setupNewProjectEvent("dora"));
+
+        verify(libraryScreen).showProjects();
+    }
+
+    @Test
+    public void onNewProjectShouldNeverCallShowProjectsForDifferentSpaces() {
+
+        setupProjectContext("dora");
+
+        doNothing().when(libraryScreen).showProjects();
+
+        libraryScreen.onNewProject(setupNewProjectEvent("bento"));
+
+        verify(libraryScreen,
+               never()).showProjects();
+    }
+
+    @Test
+    public void onRepositoryRemovedShouldCallShowProjects() {
+
+        setupProjectContext("dora");
+
+        doNothing().when(libraryScreen).showProjects();
+
+        libraryScreen.onRepositoryRemovedEvent(createRepositoryRemovedEvent("dora"));
+
+        verify(libraryScreen).showProjects();
+    }
+
+    @Test
+    public void onRepositoryRemovedShouldNeverCallShowProjectsForDifferentSpaces() {
+
+        setupProjectContext("dora");
+
+        doNothing().when(libraryScreen).showProjects();
+
+        libraryScreen.onRepositoryRemovedEvent(createRepositoryRemovedEvent("bento"));
+
+        verify(libraryScreen,
+               never()).showProjects();
+    }
+
+    @Test
     public void showNoProjectsTest() {
         doReturn(false).when(libraryService).hasProjects(any());
         final HTMLElement emptyLibraryScreenElement = mock(HTMLElement.class);
@@ -254,4 +309,31 @@ public class LibraryScreenTest {
         verify(orgUnitsMetricsScreen).refresh();
         verify(view).updateContent(any());
     }
+
+    private void setupProjectContext(String spaceName) {
+        OrganizationalUnit ouMock = mock(OrganizationalUnit.class);
+        when(ouMock.getSpace()).thenReturn(new Space(spaceName));
+        Optional<OrganizationalUnit> ou = Optional.of(ouMock);
+
+        when(projectContext.getActiveOrganizationalUnit()).thenReturn(ou);
+    }
+
+    private NewProjectEvent setupNewProjectEvent(String spaceName) {
+        NewProjectEvent newProjectEvent = mock(NewProjectEvent.class);
+        WorkspaceProject context = mock(WorkspaceProject.class);
+        when(context.getSpace()).thenReturn(new Space(spaceName));
+
+        when(newProjectEvent.getWorkspaceProject()).thenReturn(context);
+        return newProjectEvent;
+    }
+
+    private RepositoryRemovedEvent createRepositoryRemovedEvent(String spaceName) {
+        RepositoryRemovedEvent repositoryRemovedEvent = mock(RepositoryRemovedEvent.class);
+        Repository repository = mock(Repository.class);
+        when(repository.getSpace()).thenReturn(new Space(spaceName));
+
+        when(repositoryRemovedEvent.getRepository()).thenReturn(repository);
+        return repositoryRemovedEvent;
+    }
 }
+

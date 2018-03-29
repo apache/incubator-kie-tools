@@ -19,7 +19,7 @@ import org.guvnor.structure.config.SystemRepositoryChangedEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.library.api.cluster.ClusterLibraryEvent;
+import org.kie.workbench.common.screens.library.api.sync.ClusterLibraryEvent;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.commons.cluster.ClusterService;

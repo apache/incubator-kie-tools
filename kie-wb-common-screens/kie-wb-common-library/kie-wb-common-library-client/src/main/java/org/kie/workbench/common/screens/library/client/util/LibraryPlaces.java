@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -728,7 +727,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         closingLibraryPlaces = false;
     }
 
-    public WorkspaceProject getActiveWorkspaceContext(){
+    public WorkspaceProject getActiveWorkspaceContext() {
         return this.projectContext.getActiveWorkspaceProject().orElseThrow(() -> new IllegalStateException("No active workspace project found"));
     }
 

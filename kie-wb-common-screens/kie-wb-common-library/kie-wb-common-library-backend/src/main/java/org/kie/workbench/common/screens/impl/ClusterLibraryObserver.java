@@ -22,8 +22,8 @@ import javax.inject.Inject;
 
 import org.guvnor.structure.backend.config.OrgUnit;
 import org.guvnor.structure.config.SystemRepositoryChangedEvent;
-import org.kie.workbench.common.screens.library.api.cluster.ClusterLibraryEvent;
-import org.kie.workbench.common.screens.library.api.cluster.SpacesUpdated;
+import org.kie.workbench.common.screens.library.api.sync.ClusterLibraryEvent;
+import org.kie.workbench.common.screens.library.api.sync.SpacesUpdated;
 import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.services.cdi.Startup;
 

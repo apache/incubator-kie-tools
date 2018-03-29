@@ -17,16 +17,18 @@
 package org.kie.workbench.common.screens.library.client.screens;
 
 import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
+import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.events.AfterEditOrganizationalUnitEvent;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -41,6 +43,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.lifecycle.OnClose;
+import org.uberfire.spaces.Space;
 
 @WorkbenchScreen(identifier = LibraryPlaces.LIBRARY_SCREEN,
         owningPerspective = LibraryPerspective.class)
@@ -112,7 +115,7 @@ public class LibraryScreen {
     public void init() {
         view.init(this);
         view.setTitle(projectContext.getActiveOrganizationalUnit()
-                                    .orElseThrow(() -> new IllegalStateException("Cannot initialize library screen without an active organizational unit.")).getName());
+                              .orElseThrow(() -> new IllegalStateException("Cannot initialize library screen without an active organizational unit.")).getName());
         showProjects();
         view.setContributorsCount(contributorsListPresenter.getContributorsCount());
     }
@@ -141,7 +144,7 @@ public class LibraryScreen {
         if (userCanDeleteOrganizationalUnit()) {
             final DeleteOrganizationalUnitPopUpPresenter deleteOrganizationalUnitPopUpPresenter = deleteOrganizationalUnitPopUpPresenters.get();
             deleteOrganizationalUnitPopUpPresenter.show(projectContext.getActiveOrganizationalUnit()
-                                                                      .orElseThrow(() -> new IllegalStateException("Cannot delete organizational unit if none is active.")));
+                                                                .orElseThrow(() -> new IllegalStateException("Cannot delete organizational unit if none is active.")));
         }
     }
 
@@ -156,7 +159,7 @@ public class LibraryScreen {
                 view.setProjectsCount(0);
             }
         }).hasProjects(projectContext.getActiveOrganizationalUnit()
-                                     .orElseThrow(() -> new IllegalStateException("Cannot try to query library projects without an active organizational unit.")));
+                               .orElseThrow(() -> new IllegalStateException("Cannot try to query library projects without an active organizational unit.")));
     }
 
     public void showContributors() {
@@ -174,16 +177,37 @@ public class LibraryScreen {
 
     public boolean userCanUpdateOrganizationalUnit() {
         return organizationalUnitController.canUpdateOrgUnit(projectContext.getActiveOrganizationalUnit()
-                                                                           .orElseThrow(() -> new IllegalStateException("Cannot try to update an organizational unit when none is active.")));
+                                                                     .orElseThrow(() -> new IllegalStateException("Cannot try to update an organizational unit when none is active.")));
     }
 
     public boolean userCanDeleteOrganizationalUnit() {
         return organizationalUnitController.canDeleteOrgUnit(projectContext.getActiveOrganizationalUnit()
-                                                                           .orElseThrow(() -> new IllegalStateException("Cannot try to delete an organizational unit when none is active.")));
+                                                                     .orElseThrow(() -> new IllegalStateException("Cannot try to delete an organizational unit when none is active.")));
     }
 
     public void organizationalUnitEdited(@Observes final AfterEditOrganizationalUnitEvent afterEditOrganizationalUnitEvent) {
         view.setContributorsCount(afterEditOrganizationalUnitEvent.getEditedOrganizationalUnit().getContributors().size());
+    }
+
+    public void onNewProject(@Observes NewProjectEvent e) {
+        projectContext.getActiveOrganizationalUnit().ifPresent(p -> {
+            if (eventOnCurrentSpace(p, e.getWorkspaceProject().getSpace())) {
+                showProjects();
+            }
+        });
+    }
+
+    public void onRepositoryRemovedEvent(@Observes RepositoryRemovedEvent e) {
+        projectContext.getActiveOrganizationalUnit().ifPresent(p -> {
+            if (eventOnCurrentSpace(p, e.getRepository().getSpace())) {
+                showProjects();
+            }
+        });
+    }
+
+    boolean eventOnCurrentSpace(OrganizationalUnit p,
+                                Space space) {
+        return p.getSpace().getName().equalsIgnoreCase(space.getName());
     }
 
     @OnClose

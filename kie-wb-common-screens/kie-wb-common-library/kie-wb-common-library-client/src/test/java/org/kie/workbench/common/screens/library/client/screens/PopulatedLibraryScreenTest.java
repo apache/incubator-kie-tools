@@ -22,9 +22,12 @@ import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
+import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
@@ -40,6 +43,7 @@ import org.kie.workbench.common.screens.library.client.widgets.library.AddProjec
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
+import org.uberfire.spaces.Space;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -110,7 +114,6 @@ public class PopulatedLibraryScreenTest {
         projects.add(project1);
         projects.add(project2);
         projects.add(project3);
-
 
         when(projectContext.getActiveOrganizationalUnit()).thenReturn(Optional.of(organizationalUnit));
         when(projectContext.getActiveWorkspaceProject()).thenReturn(Optional.empty());
@@ -185,5 +188,87 @@ public class PopulatedLibraryScreenTest {
                      libraryScreen.filterProjects("roject1").size());
         assertEquals(0,
                      libraryScreen.filterProjects("unexistent").size());
+    }
+
+    @Test
+    public void onNewProjectShouldCallRefreshProjects() {
+
+        setupProjectContext("dora");
+
+        doNothing().when(libraryScreen).refreshProjects();
+
+        libraryScreen.onNewProjectEvent(setupNewProjectEvent("dora"));
+
+        //one for @Setup
+        verify(libraryScreen,
+               times(2)).refreshProjects();
+    }
+
+    @Test
+    public void onNewProjectShouldNeverCallShowProjectsForDifferentSpaces() {
+
+        setupProjectContext("dora");
+
+        doNothing().when(libraryScreen).setup();
+        doNothing().when(libraryScreen).refreshProjects();
+
+        libraryScreen.onNewProjectEvent(setupNewProjectEvent("bento"));
+
+        //one for @Setup
+        verify(libraryScreen,
+               times(1)).refreshProjects();
+    }
+
+    @Test
+    public void onRepositoryRemovedShouldCallShowProjects() {
+
+        setupProjectContext("dora");
+
+        doNothing().when(libraryScreen).refreshProjects();
+
+        libraryScreen.onRepositoryRemovedEvent(createRepositoryRemovedEvent("dora"));
+
+        //one for @Setup
+        verify(libraryScreen, times(2)).refreshProjects();
+    }
+
+    @Test
+    public void onRepositoryRemovedShouldNeverCallShowProjectsForDifferentSpaces() {
+
+        setupProjectContext("dora");
+
+        doNothing().when(libraryScreen).refreshProjects();
+
+        libraryScreen.onRepositoryRemovedEvent(createRepositoryRemovedEvent("bento"));
+
+        //one for @Setup
+        verify(libraryScreen,
+               times(1)).refreshProjects();
+    }
+
+    private void setupProjectContext(String spaceName) {
+        OrganizationalUnit ouMock = mock(OrganizationalUnit.class);
+        when(ouMock.getSpace()).thenReturn(new Space(spaceName));
+        Optional<OrganizationalUnit> ou = Optional.of(ouMock);
+
+        when(projectContext.getActiveOrganizationalUnit()).thenReturn(ou);
+    }
+
+    private NewProjectEvent setupNewProjectEvent(String spaceName) {
+        NewProjectEvent newProjectEvent = mock(NewProjectEvent.class);
+        WorkspaceProject context = mock(WorkspaceProject.class);
+        when(context.getSpace()).thenReturn(new Space(spaceName));
+
+        when(newProjectEvent.getWorkspaceProject()).thenReturn(context);
+        return newProjectEvent;
+    }
+
+    private RepositoryRemovedEvent createRepositoryRemovedEvent(String spaceName) {
+        RepositoryRemovedEvent repositoryRemovedEvent = mock(RepositoryRemovedEvent.class);
+        Repository repository = mock(Repository.class);
+        when(repository.getSpace()).thenReturn(new Space(spaceName));
+
+        when(repositoryRemovedEvent.getRepository()).thenReturn(repository);
+        return repositoryRemovedEvent;
     }
 }

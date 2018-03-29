@@ -18,17 +18,21 @@ package org.kie.workbench.common.screens.library.client.screens;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
+import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.dom.HTMLElement;
@@ -36,13 +40,13 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
-import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.common.TileWidget;
 import org.kie.workbench.common.screens.library.client.widgets.library.AddProjectButtonPresenter;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.mvp.Command;
+import org.uberfire.spaces.Space;
 
 public class PopulatedLibraryScreen {
 
@@ -106,9 +110,13 @@ public class PopulatedLibraryScreen {
             view.addAction(addProjectButtonPresenter.getView().getElement());
         }
 
+        refreshProjects();
+    }
+
+    void refreshProjects() {
         libraryService.call((RemoteCallback<LibraryInfo>) this::updateLibrary)
                 .getLibraryInfo(projectContext.getActiveOrganizationalUnit()
-                                              .orElseThrow(() -> new IllegalStateException("Cannot get library info without an active organizational unit.")));
+                                        .orElseThrow(() -> new IllegalStateException("Cannot get library info without an active organizational unit.")));
     }
 
     private void updateLibrary(final LibraryInfo libraryInfo) {
@@ -118,7 +126,7 @@ public class PopulatedLibraryScreen {
     }
 
     private void setupProjects() {
-        projects.sort((p1, p2) -> p1.getName().toUpperCase().compareTo(p2.getName().toUpperCase()));
+        projects.sort(Comparator.comparing(p -> p.getName().toUpperCase()));
         updateView(projects);
     }
 
@@ -178,5 +186,27 @@ public class PopulatedLibraryScreen {
 
     public View getView() {
         return view;
+    }
+
+    public void onNewProjectEvent(@Observes NewProjectEvent e) {
+
+        projectContext.getActiveOrganizationalUnit().ifPresent(p -> {
+            if (eventOnCurrentSpace(p, e.getWorkspaceProject().getSpace())) {
+                refreshProjects();
+            }
+        });
+    }
+
+    public void onRepositoryRemovedEvent(@Observes RepositoryRemovedEvent e) {
+        projectContext.getActiveOrganizationalUnit().ifPresent(p -> {
+            if (eventOnCurrentSpace(p, e.getRepository().getSpace())) {
+                refreshProjects();
+            }
+        });
+    }
+
+    boolean eventOnCurrentSpace(OrganizationalUnit p,
+                                Space space) {
+        return p.getSpace().getName().equalsIgnoreCase(space.getName());
     }
 }
