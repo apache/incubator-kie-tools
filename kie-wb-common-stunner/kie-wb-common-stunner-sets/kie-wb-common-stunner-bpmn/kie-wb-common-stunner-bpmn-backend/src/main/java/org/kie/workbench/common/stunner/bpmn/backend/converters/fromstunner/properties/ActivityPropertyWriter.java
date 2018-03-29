@@ -67,7 +67,6 @@ public class ActivityPropertyWriter extends PropertyWriter {
                                 .lookup(declaration.getRight()))
                 ).forEach(dia -> {
             this.addItemDefinition(dia.getItemDefinition());
-            this.addDataInput(dia.getDataInput());
             ioSpec.getInputSets().add(dia.getInputSet());
             ioSpec.getDataInputs().add(dia.getDataInput());
             activity.getDataInputAssociations().add(dia.getAssociation());
@@ -87,7 +86,6 @@ public class ActivityPropertyWriter extends PropertyWriter {
                 ))
                 .forEach(doa -> {
                     this.addItemDefinition(doa.getItemDefinition());
-                    this.addDataOutput(doa.getDataOutput());
                     ioSpec.getOutputSets().add(doa.getOutputSet());
                     ioSpec.getDataOutputs().add(doa.getDataOutput());
                     activity.getDataOutputAssociations().add(doa.getAssociation());

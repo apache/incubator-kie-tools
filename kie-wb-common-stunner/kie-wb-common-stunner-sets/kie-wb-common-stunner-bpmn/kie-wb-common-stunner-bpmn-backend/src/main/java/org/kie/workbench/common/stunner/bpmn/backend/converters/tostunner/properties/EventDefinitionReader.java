@@ -16,26 +16,24 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import org.eclipse.bpmn2.ItemDefinition;
-import org.eclipse.bpmn2.Property;
+import org.eclipse.bpmn2.Error;
+import org.eclipse.bpmn2.ErrorEventDefinition;
+import org.eclipse.bpmn2.Message;
+import org.eclipse.bpmn2.MessageEventDefinition;
 
-class ProcessVariableReader {
+public class EventDefinitionReader {
 
-    static String getProcessVariables(List<Property> properties) {
-        return properties
-                .stream()
-                .map(ProcessVariableReader::toProcessVariableString)
-                .collect(Collectors.joining(","));
+    public static String errorRefOf(ErrorEventDefinition e) {
+        return Optional.ofNullable(e.getErrorRef())
+                .map(Error::getErrorCode)
+                .orElse("");
     }
 
-    private static String toProcessVariableString(Property p) {
-        return Optional.ofNullable(p.getItemSubjectRef())
-                .map(ItemDefinition::getStructureRef)
-                .map(type -> p.getId() + ":" + type)
-                .orElse(p.getId());
+    public static String messageRefOf(MessageEventDefinition e) {
+        return Optional.ofNullable(e.getMessageRef())
+                .map(Message::getName)
+                .orElse("");
     }
 }

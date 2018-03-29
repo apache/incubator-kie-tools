@@ -73,6 +73,7 @@ public class StartEventConverter {
                 definition.getExecutionSet();
 
         p.addMessage(executionSet.getMessageRef());
+        event.setIsInterrupting(executionSet.getIsInterrupting().getValue());
 
         p.setBounds(n.getContent().getBounds());
         return p;
@@ -96,6 +97,7 @@ public class StartEventConverter {
                 definition.getExecutionSet();
 
         p.addError(executionSet.getErrorRef());
+        event.setIsInterrupting(executionSet.getIsInterrupting().getValue());
 
         p.setBounds(n.getContent().getBounds());
         return p;
@@ -110,12 +112,12 @@ public class StartEventConverter {
 
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
-        p.setDocumentation(general.getName().getValue());
+        p.setDocumentation(general.getDocumentation().getValue());
 
         InterruptingTimerEventExecutionSet executionSet = definition.getExecutionSet();
+        p.addTimer(executionSet.getTimerSettings());
         event.setIsInterrupting(executionSet.getIsInterrupting().getValue());
 
-        p.addTimer(executionSet.getTimerSettings());
         p.setSimulationSet(definition.getSimulationSet());
 
         p.setBounds(n.getContent().getBounds());
@@ -131,7 +133,7 @@ public class StartEventConverter {
 
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
-        p.setDocumentation(general.getName().getValue());
+        p.setDocumentation(general.getDocumentation().getValue());
 
         p.setAssignmentsInfo(
                 definition.getDataIOSet().getAssignmentsinfo());
@@ -140,6 +142,7 @@ public class StartEventConverter {
                 definition.getExecutionSet();
 
         p.addSignal(executionSet.getSignalRef());
+        event.setIsInterrupting(executionSet.getIsInterrupting().getValue());
 
         p.setBounds(n.getContent().getBounds());
         return p;
@@ -152,7 +155,7 @@ public class StartEventConverter {
         StartNoneEvent definition = n.getContent().getDefinition();
         CatchEventPropertyWriter p = propertyWriterFactory.of(event);
 
-        event.setIsInterrupting(false);
+        event.setIsInterrupting(definition.getIsInterrupting().getValue());
 
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());

@@ -48,7 +48,7 @@ public class CatchEventPropertyWriter extends EventPropertyWriter {
                 ))
                 .forEach(doa -> {
                     this.addItemDefinition(doa.getItemDefinition());
-                    this.addDataOutput(doa.getDataOutput());
+                    event.getDataOutputs().add(doa.getDataOutput());
                     event.setOutputSet(doa.getOutputSet());
                     event.getDataOutputAssociation().add(doa.getAssociation());
                 });

@@ -34,7 +34,7 @@ public class Ids {
     }
 
     public static String typedIdentifier(String parentScopeId, String identifier) {
-        return "var@" + parentScopeId + "::" + identifier;
+        return "var_" + parentScopeId + "_" + identifier;
     }
 
     public static String dataInput(String parentId, String inputId) {

@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import org.eclipse.bpmn2.CompensateEventDefinition;
 import org.eclipse.bpmn2.ConditionalEventDefinition;
+import org.eclipse.bpmn2.Error;
 import org.eclipse.bpmn2.ErrorEventDefinition;
 import org.eclipse.bpmn2.EscalationEventDefinition;
 import org.eclipse.bpmn2.EventDefinition;
@@ -32,6 +33,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.Match;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.CatchEventPropertyReader;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.EventDefinitionReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.EventPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
@@ -107,9 +109,7 @@ public class StartEventConverter {
 
         definition.setExecutionSet(new InterruptingErrorEventExecutionSet(
                 new IsInterrupting(event.isIsInterrupting()),
-                // FIXME this special case should be moved to ErrorRef constructor!
-                // avoids an ErrorRef(null) -- tests expect ""
-                new ErrorRef(Optional.ofNullable(e.getErrorRef().getErrorCode()).orElse(""))
+                new ErrorRef(EventDefinitionReader.errorRefOf(e))
         ));
 
         definition.setSimulationSet(p.getSimulationSet());
@@ -173,7 +173,7 @@ public class StartEventConverter {
 
         definition.setExecutionSet(new InterruptingMessageEventExecutionSet(
                 new IsInterrupting(event.isIsInterrupting()),
-                new MessageRef(e.getMessageRef().getName())
+                new MessageRef(EventDefinitionReader.messageRefOf(e))
         ));
 
         definition.setSimulationSet(p.getSimulationSet());
@@ -199,6 +199,10 @@ public class StartEventConverter {
         definition.setGeneral(new BPMNGeneralSet(
                 new Name(p.getName()),
                 new Documentation(p.getDocumentation())
+        ));
+
+        definition.setDataIOSet(new DataIOSet(
+                p.getAssignmentsInfo()
         ));
 
         definition.setExecutionSet(new InterruptingSignalEventExecutionSet(

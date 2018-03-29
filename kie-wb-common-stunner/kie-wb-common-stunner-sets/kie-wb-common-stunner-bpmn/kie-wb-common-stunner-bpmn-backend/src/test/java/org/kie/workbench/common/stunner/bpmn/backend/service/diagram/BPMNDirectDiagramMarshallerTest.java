@@ -2110,10 +2110,10 @@ public class BPMNDirectDiagramMarshallerTest {
 
         assertTrue(result.contains("<bpmn2:dataInput id=\"_FC6D8570-8C67-40C2-8B7B-953DE15765FB_input1InputX\" drools:dtype=\"String\" itemSubjectRef=\"__FC6D8570-8C67-40C2-8B7B-953DE15765FB_input1InputXItem\" name=\"input1\"/>"));
         assertTrue(result.contains("<bpmn2:dataOutput id=\"_FC6D8570-8C67-40C2-8B7B-953DE15765FB_output2OutputX\" drools:dtype=\"Float\" itemSubjectRef=\"__FC6D8570-8C67-40C2-8B7B-953DE15765FB_output2OutputXItem\" name=\"output2\"/>"));
-        assertTrue(result.contains("<bpmn2:sourceRef>var@Evaluation.ReusableSubprocess::pv1</bpmn2:sourceRef>"));
+        assertTrue(result.contains("<bpmn2:sourceRef>var_Evaluation.ReusableSubprocess_pv1</bpmn2:sourceRef>"));
         assertTrue(result.contains("<bpmn2:targetRef>_FC6D8570-8C67-40C2-8B7B-953DE15765FB_input1InputX</bpmn2:targetRef>"));
         assertTrue(result.contains("<bpmn2:sourceRef>_FC6D8570-8C67-40C2-8B7B-953DE15765FB_output2OutputX</bpmn2:sourceRef>"));
-        assertTrue(result.contains("<bpmn2:targetRef>var@Evaluation.ReusableSubprocess::pv2</bpmn2:targetRef>"));
+        assertTrue(result.contains("<bpmn2:targetRef>var_Evaluation.ReusableSubprocess_pv2</bpmn2:targetRef>"));
 
         String flatResult = result.replace(NEW_LINE,
                                            " ").replaceAll("( )+",

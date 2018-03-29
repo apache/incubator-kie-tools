@@ -62,8 +62,6 @@ public class SubProcessPropertyWriter extends PropertyWriter implements ElementC
         }
 
         this.itemDefinitions.addAll(p.itemDefinitions);
-        this.dataInputs.addAll(p.dataInputs);
-        this.dataOutputs.addAll(p.dataOutputs);
         this.rootElements.addAll(p.rootElements);
     }
 
