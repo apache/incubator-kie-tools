@@ -17,6 +17,7 @@ package org.guvnor.structure.backend.repositories;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +29,8 @@ import org.uberfire.backend.vfs.Path;
 
 public class ConfiguredRepositoriesBySpace {
 
-    private Map<String, Repository> repositoriesByAlias = new HashMap<>();
-    private Map<Path, Repository> repositoriesByBranchRoot = new HashMap<>();
+    private Map<String, Repository> repositoriesByAlias = Collections.synchronizedMap(new HashMap<>());
+    private Map<Path, Repository> repositoriesByBranchRoot = Collections.synchronizedMap(new HashMap<>());
 
     public void clear() {
 

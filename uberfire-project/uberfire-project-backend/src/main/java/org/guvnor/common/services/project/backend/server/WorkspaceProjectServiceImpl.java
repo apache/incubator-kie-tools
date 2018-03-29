@@ -92,11 +92,10 @@ public class WorkspaceProjectServiceImpl
         final List<WorkspaceProject> result = new ArrayList<>();
 
         Space space = spaces.getSpace(organizationalUnit.getName());
+
         for (final Repository repository : repositoryService.getAllRepositories(space)) {
 
-            if (containsRepository(organizationalUnit,
-                                   repository)
-                    && repository.getDefaultBranch().isPresent()) {
+            if (repository.getDefaultBranch().isPresent()) {
 
                 final WorkspaceProject project = new WorkspaceProject(organizationalUnit,
                                                                       repository,
@@ -107,19 +106,7 @@ public class WorkspaceProjectServiceImpl
                 }
             }
         }
-
         return result;
-    }
-
-    private boolean containsRepository(final OrganizationalUnit organizationalUnit,
-                                       final Repository repository) {
-        for (final Repository ouRepository : organizationalUnitService.getOrganizationalUnit(organizationalUnit.getName()).getRepositories()) {
-            if (ouRepository.getAlias().equals(repository.getAlias())) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     @Override

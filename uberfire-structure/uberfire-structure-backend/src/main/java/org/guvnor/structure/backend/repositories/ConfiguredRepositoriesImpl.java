@@ -17,6 +17,7 @@
 package org.guvnor.structure.backend.repositories;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,15 +54,15 @@ public class ConfiguredRepositoriesImpl implements ConfiguredRepositories {
     private ConfigurationService configurationService;
     private RepositoryFactory repositoryFactory;
     private Repository systemRepository;
-    private Map<Space, ConfiguredRepositoriesBySpace> repositoriesBySpace = new HashMap<>();
+    private Map<Space, ConfiguredRepositoriesBySpace> repositoriesBySpace = Collections.synchronizedMap(new HashMap<>());
 
     public ConfiguredRepositoriesImpl() {
     }
 
     @Inject
     public ConfiguredRepositoriesImpl(final ConfigurationService configurationService,
-                                  final RepositoryFactory repositoryFactory,
-                                  final @Named("system") Repository systemRepository) {
+                                      final RepositoryFactory repositoryFactory,
+                                      final @Named("system") Repository systemRepository) {
         this.configurationService = configurationService;
         this.repositoryFactory = repositoryFactory;
         this.systemRepository = systemRepository;
@@ -143,7 +144,7 @@ public class ConfiguredRepositoriesImpl implements ConfiguredRepositories {
     /**
      * @return Does not include system repository.
      */
-   public List<Repository> getAllConfiguredRepositories(final Space space) {
+    public List<Repository> getAllConfiguredRepositories(final Space space) {
         ConfiguredRepositoriesBySpace configuredRepositoriesBySpace = getConfiguredRepositoriesBySpace(space);
         return new ArrayList<>(configuredRepositoriesBySpace.getAllConfiguredRepositories());
     }
@@ -163,7 +164,6 @@ public class ConfiguredRepositoriesImpl implements ConfiguredRepositories {
     public void add(final Space space,
                     final Repository alias) {
         ConfiguredRepositoriesBySpace configuredRepositoriesBySpace = getConfiguredRepositoriesBySpace(space);
-
         configuredRepositoriesBySpace.add(alias);
     }
 
@@ -176,7 +176,7 @@ public class ConfiguredRepositoriesImpl implements ConfiguredRepositories {
 
     public void flush(final @Observes
                       @org.guvnor.structure.backend.config.Repository
-                      SystemRepositoryChangedEvent changedEvent) {
+                              SystemRepositoryChangedEvent changedEvent) {
         reloadRepositories();
     }
 }

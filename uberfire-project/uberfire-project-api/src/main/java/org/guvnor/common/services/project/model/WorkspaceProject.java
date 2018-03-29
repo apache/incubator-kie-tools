@@ -21,6 +21,7 @@ import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.data.Cacheable;
+import org.uberfire.spaces.Space;
 import org.uberfire.util.URIUtil;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
@@ -127,6 +128,10 @@ public class WorkspaceProject
      */
     public Path getRootPath() {
         return this.getBranch().getPath();
+    }
+
+    public Space getSpace(){
+        return getRepository().getSpace();
     }
 
     @Override
