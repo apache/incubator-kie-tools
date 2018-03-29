@@ -32,6 +32,9 @@ public class VariableDeclaration {
         String[] split = encoded.split(":");
         String identifier = split[0];
         String type = (split.length == 2) ? split[1] : null;
+        if (identifier.isEmpty()) {
+            throw new IllegalArgumentException("Variable identifier cannot be empty. Given: '" + encoded + "'");
+        }
         return new VariableDeclaration(identifier, type);
     }
 

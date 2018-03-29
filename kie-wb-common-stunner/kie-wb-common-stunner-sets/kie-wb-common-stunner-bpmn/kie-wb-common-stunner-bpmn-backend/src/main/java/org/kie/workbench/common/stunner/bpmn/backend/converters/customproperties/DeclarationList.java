@@ -37,6 +37,7 @@ public class DeclarationList {
     public static DeclarationList fromString(String encoded) {
         return new DeclarationList(
                 Arrays.stream(encoded.split(","))
+                        .filter(s -> !s.isEmpty()) // "" makes no sense
                         .map(VariableDeclaration::fromString)
                         .collect(Collectors.toList()));
     }
