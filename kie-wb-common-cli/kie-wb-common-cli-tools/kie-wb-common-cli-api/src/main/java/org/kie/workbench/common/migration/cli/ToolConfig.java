@@ -80,7 +80,7 @@ public class ToolConfig {
 
     public static void printHelp(PrintStream stream, String app) {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp(new PrintWriter(System.err, true),
+        formatter.printHelp(new PrintWriter(stream, true),
                             formatter.getWidth(),
                             app,
                             HELP_HEADER,

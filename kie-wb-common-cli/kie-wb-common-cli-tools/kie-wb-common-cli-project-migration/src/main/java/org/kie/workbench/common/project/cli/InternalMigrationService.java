@@ -137,7 +137,7 @@ public class InternalMigrationService {
         system.out().println("Finished moving repositories into space.");
     }
 
-    private static void createSpaceDirs(Path niogitDir, List<ConfigGroup> orgUnitConfigs) {
+    static void createSpaceDirs(Path niogitDir, List<ConfigGroup> orgUnitConfigs) {
         orgUnitConfigs
             .stream()
             .map(group -> group.getName())
@@ -165,7 +165,7 @@ public class InternalMigrationService {
         system.out().println("Finished updating repository configurations.");
     }
 
-    private static Map<String, String> getOrgUnitsByRepo(List<ConfigGroup> orgUnitConfigs) {
+    static Map<String, String> getOrgUnitsByRepo(List<ConfigGroup> orgUnitConfigs) {
         Map<String, String> orgUnitByRepo = new LinkedHashMap<>();
         orgUnitConfigs
                       .stream()
