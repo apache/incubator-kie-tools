@@ -69,6 +69,7 @@
     <exclude name="org.kie.workbench.common.stunner.client.workbench.**"/>
     <exclude name="org.kie.workbench.common.stunner.shapes.client.**"/>
     <exclude name="org.kie.workbench.common.stunner.svg.client.**"/>
+    <exclude name="org.kie.workbench.common.stunner.bpmn.StunnerBPMNEntryPoint"/>
     <exclude name="org.kie.workbench.common.stunner.bpmn.client.**"/>
     <exclude name="org.kie.workbench.common.stunner.bpmn.project.client.**"/>
     <exclude name="org.kie.workbench.common.stunner.project.client.**"/>

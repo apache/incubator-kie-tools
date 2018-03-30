@@ -1415,9 +1415,9 @@
             <configuration>
               <artifactItems>
                 <artifactItem>
-                  <groupId>org.wildfly</groupId>
+                  <groupId>org.jboss.errai</groupId>
                   <artifactId>wildfly-dist</artifactId>
-                  <version>${version.org.wildfly.gwt.sdm}</version>
+                  <version>${version.org.jboss.errai.wildfly}</version>
                   <type>zip</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}</outputDirectory>
