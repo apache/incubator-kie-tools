@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.pro
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.Lane;
 
-public class    LanePropertyWriter extends BasePropertyWriter {
+public class LanePropertyWriter extends BasePropertyWriter {
 
     private final Lane lane;
 

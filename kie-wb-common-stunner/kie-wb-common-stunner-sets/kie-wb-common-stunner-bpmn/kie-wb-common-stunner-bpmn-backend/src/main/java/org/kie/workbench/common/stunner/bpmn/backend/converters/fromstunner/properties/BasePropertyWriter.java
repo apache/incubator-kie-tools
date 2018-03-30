@@ -46,6 +46,10 @@ public abstract class BasePropertyWriter {
         this.variableScope = variableScope;
     }
 
+    public String getId() {
+        return this.baseElement.getId();
+    }
+
     public void setBounds(Bounds rect) {
         this.shape = di.createBPMNShape();
         shape.setBpmnElement(baseElement);

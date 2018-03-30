@@ -2141,6 +2141,18 @@ public class BPMNDirectDiagramMarshallerTest {
     }
 
     @Test
+    public void testMarshallEmbeddedSubprocessDuplicateElements() throws Exception {
+        String f = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/subprocessDuplicateElements.bpmn";
+        Diagram<Graph, Metadata> diagram = unmarshall(f);
+        String result = tested.marshall(diagram);
+
+        assertFalse(
+                "should not contain the same node twice",
+                result.replaceFirst("id=\"5FAC4991-B287-4787-9916-9D3D5D215977\"", "BLAH")
+                        .contains("id=\"5FAC4991-B287-4787-9916-9D3D5D215977\""));
+    }
+
+    @Test
     public void testMarshallEventSubprocess() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_EVENT_SUBPROCESS);
         assertDiagram(diagram,

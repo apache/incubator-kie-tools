@@ -17,7 +17,9 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.processes;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
@@ -28,9 +30,14 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.prop
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.BasePropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.BoundaryEventPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.LanePropertyWriter;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.SubProcessPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 public class AbstractProcessConverter {
 
@@ -42,26 +49,40 @@ public class AbstractProcessConverter {
 
     public void convertChildNodes(
             ElementContainer p,
-            Stream<? extends Node<View<? extends BPMNViewDefinition>, ?>> nodes,
-            Stream<? extends Node<View<? extends BPMNViewDefinition>, ?>> lanes) {
-        nodes.map(converterFactory.viewDefinitionConverter()::toFlowElement)
+            DefinitionsBuildingContext context) {
+
+        List<SubProcessPropertyWriter> subprocesses =
+                context.nodes().map(converterFactory.subProcessConverter()::convertSubProcess)
+                        .filter(Result::notIgnored)
+                        .map(Result::value)
+                        .collect(toList());
+
+        Set<String> processed = subprocesses.stream()
+                .flatMap(sub -> sub.getChildElements().stream().map(BasePropertyWriter::getId))
+                .collect(toSet());
+
+        subprocesses.forEach(p::addChildElement);
+
+        context.nodes()
+                .filter(e -> !processed.contains(e.getUUID()))
+                .map(converterFactory.viewDefinitionConverter()::toFlowElement)
                 .filter(Result::notIgnored)
                 .map(Result::value)
                 .forEach(p::addChildElement);
 
-        convertLanes(lanes, p);
+        convertLanes(context.lanes(), p);
     }
 
     private void convertLanes(
             Stream<? extends Node<View<? extends BPMNViewDefinition>, ?>> lanes,
             ElementContainer p) {
-        List<LanePropertyWriter> collect = lanes
+        Map<String, LanePropertyWriter> collect = lanes
                 .map(converterFactory.laneConverter()::toElement)
                 .filter(Result::notIgnored)
                 .map(Result::value)
-                .collect(Collectors.toList());
+                .collect(toMap(LanePropertyWriter::getId, Function.identity()));
 
-        p.addLaneSet(collect);
+        p.addLaneSet(collect.values());
     }
 
     public void convertEdges(ElementContainer p, DefinitionsBuildingContext context) {
@@ -71,7 +92,10 @@ public class AbstractProcessConverter {
                     // if it's null, then it's a root: skip it
                     if (pSrc != null) {
                         BasePropertyWriter pTgt = p.getChildElement(e.getTargetNode().getUUID());
-                        pTgt.setParent(pSrc);
+                        // if it's null, then this edge is not related to this process. ignore.
+                        if (pTgt != null) {
+                            pTgt.setParent(pSrc);
+                        }
                     }
                 });
 
@@ -87,6 +111,8 @@ public class AbstractProcessConverter {
 
         context.edges()
                 .map(e -> converterFactory.sequenceFlowConverter().toFlowElement(e, p))
+                .filter(Result::isSuccess)
+                .map(Result::value)
                 .forEach(p::addChildElement);
     }
 }

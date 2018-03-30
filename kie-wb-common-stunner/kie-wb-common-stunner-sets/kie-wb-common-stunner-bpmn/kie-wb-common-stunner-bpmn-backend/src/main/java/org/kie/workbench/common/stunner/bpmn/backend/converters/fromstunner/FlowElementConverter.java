@@ -49,7 +49,7 @@ public class FlowElementConverter {
                 .when(BaseTask.class, converterFactory.taskConverter()::toFlowElement)
                 .when(BaseGateway.class, converterFactory.gatewayConverter()::toFlowElement)
                 .when(ReusableSubprocess.class, converterFactory.reusableSubprocessConverter()::toFlowElement)
-                .when(BaseSubprocess.class, converterFactory.subProcessConverter()::convertSubProcess)
+                .ignore(BaseSubprocess.class)
                 .ignore(Lane.class)
                 .apply(node);
     }

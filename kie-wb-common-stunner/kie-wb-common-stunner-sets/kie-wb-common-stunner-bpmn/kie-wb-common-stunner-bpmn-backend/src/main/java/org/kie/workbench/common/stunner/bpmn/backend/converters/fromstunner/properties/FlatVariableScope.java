@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * </ul>
  * <p>
  * The FlatScope contains:
- * <p>
+ *
  * <ul>
  * <li>x</li>
  * <li>y</li>

@@ -43,7 +43,7 @@ public class RootProcessConverter extends AbstractProcessConverter {
     public ProcessPropertyWriter convertProcess() {
         ProcessPropertyWriter processRoot = convertProcessNode(context.firstNode());
 
-        super.convertChildNodes(processRoot, context.nodes(), context.lanes());
+        super.convertChildNodes(processRoot, context);
         super.convertEdges(processRoot, context);
 
         return processRoot;

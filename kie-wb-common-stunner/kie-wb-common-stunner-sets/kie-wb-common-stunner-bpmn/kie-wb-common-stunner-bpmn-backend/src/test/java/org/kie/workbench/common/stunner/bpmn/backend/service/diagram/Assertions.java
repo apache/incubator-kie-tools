@@ -60,12 +60,9 @@ public class Assertions {
                       "<bpmndi:BPMNShape");
         int e = count(result,
                       "<bpmndi:BPMNEdge");
-        assertEquals(diagramCount,
-                     d);
-        assertEquals(nodeCount,
-                     n);
-        assertEquals(edgeCount,
-                     e);
+        assertEquals("diagram count should match", diagramCount, d);
+        assertEquals("node count should match", nodeCount, n);
+        assertEquals("edge count should match", edgeCount, e);
     }
 
     public static List<Node> getNodes(Diagram<Graph, Metadata> diagram) {

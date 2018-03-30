@@ -18,13 +18,14 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.pro
 
 import org.eclipse.bpmn2.SubProcess;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.NodeMatch;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.ConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsBuildingContext;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.AdHocSubProcessPropertyWriter;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.SubProcessPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
@@ -51,20 +52,26 @@ public class SubProcessConverter extends AbstractProcessConverter {
         this.propertyWriterFactory = propertyWriterFactory;
     }
 
-    public PropertyWriter convertSubProcess(Node<View<BaseSubprocess>, ?> node) {
-        SubProcessPropertyWriter processRoot =
+    public Result<SubProcessPropertyWriter> convertSubProcess(Node<View<? extends BPMNViewDefinition>, ?> node) {
+        Result<SubProcessPropertyWriter> processRootResult =
                 NodeMatch.fromNode(BaseSubprocess.class, SubProcessPropertyWriter.class)
                         .when(EmbeddedSubprocess.class, this::convertEmbeddedSubprocessNode)
                         .when(EventSubprocess.class, this::convertEventSubprocessNode)
                         .when(AdHocSubprocess.class, this::convertAdHocSubprocessNode)
-                        .apply(node).value();
+                        .ignore(BPMNViewDefinition.class)
+                        .apply(node);
+
+        if (processRootResult.isIgnored()) {
+            return processRootResult;
+        }
 
         DefinitionsBuildingContext subContext = context.withRootNode(node);
+        SubProcessPropertyWriter processRoot = processRootResult.value();
 
-        super.convertChildNodes(processRoot, subContext.nodes(), subContext.lanes());
+        super.convertChildNodes(processRoot, subContext);
         super.convertEdges(processRoot, subContext);
 
-        return processRoot;
+        return processRootResult;
     }
 
     private SubProcessPropertyWriter convertAdHocSubprocessNode(Node<View<AdHocSubprocess>, ?> n) {
