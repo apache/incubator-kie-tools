@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas;
 
+import org.uberfire.ext.editor.commons.client.file.exports.svg.IContext2D;
+
 /**
  * Provides client side canvas exporting features.
  * <p>
@@ -29,13 +31,20 @@ package org.kie.workbench.common.stunner.core.client.canvas;
  */
 public interface CanvasExport<H extends CanvasHandler> {
 
-    public String toImageData(H canvasHandler,
+    String toImageData(H canvasHandler,
                               Layer.URLDataType urlDataType);
 
-    public String toImageData(H canvasHandler,
+    String toImageData(H canvasHandler,
                               Layer.URLDataType urlDataType,
                               int x,
                               int y,
                               int width,
                               int height);
+
+    /**
+     * Draw the canvas content returning an {@link IContext2D} that represents the drawn content on the context.
+     * @param canvasHandler
+     * @return
+     */
+    IContext2D toContext2D(H canvasHandler);
 }

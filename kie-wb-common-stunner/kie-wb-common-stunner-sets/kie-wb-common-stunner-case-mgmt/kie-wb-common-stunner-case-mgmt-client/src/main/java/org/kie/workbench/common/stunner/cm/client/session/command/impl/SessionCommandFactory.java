@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportT
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToJpgSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPdfSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPngSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToSvgSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.PasteSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SwitchGridSessionCommand;
@@ -57,6 +58,7 @@ public class SessionCommandFactory extends org.kie.workbench.common.stunner.core
                                  final ManagedInstance<ExportToPngSessionCommand> exportImageSessionCommand,
                                  final ManagedInstance<ExportToJpgSessionCommand> exportImageJPGSessionCommand,
                                  final ManagedInstance<ExportToPdfSessionCommand> exportPDFSessionCommand,
+                                 final ManagedInstance<ExportToSvgSessionCommand> exportSVGSessionCommand,
                                  final ManagedInstance<ExportToBpmnSessionCommand> exportBPMNSessionCommand,
                                  final ManagedInstance<CopySelectionSessionCommand> copySelectionSessionCommand,
                                  final @CaseManagementEditor ManagedInstance<PasteSelectionSessionCommand> pasteSelectionSessionCommand,
@@ -72,6 +74,7 @@ public class SessionCommandFactory extends org.kie.workbench.common.stunner.core
               exportImageSessionCommand,
               exportImageJPGSessionCommand,
               exportPDFSessionCommand,
+              exportSVGSessionCommand,
               exportBPMNSessionCommand,
               copySelectionSessionCommand,
               pasteSelectionSessionCommand,

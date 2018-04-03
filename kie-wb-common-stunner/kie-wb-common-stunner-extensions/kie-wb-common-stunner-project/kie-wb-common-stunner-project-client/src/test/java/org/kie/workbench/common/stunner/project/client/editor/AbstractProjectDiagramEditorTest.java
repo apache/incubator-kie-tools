@@ -40,6 +40,7 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportT
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToJpgSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPdfSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPngSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToSvgSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.PasteSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
@@ -194,6 +195,9 @@ public class AbstractProjectDiagramEditorTest {
     @Mock
     private CutSelectionSessionCommand cutSelectionSessionCommand;
 
+    @Mock
+    private ExportToSvgSessionCommand exportToSvgSessionCommand;
+
     abstract class ClientResourceTypeMock implements ClientResourceType {
 
     }
@@ -213,6 +217,7 @@ public class AbstractProjectDiagramEditorTest {
         doReturn(validateSessionCommand).when(sessionCommandFactory).newValidateCommand();
         doReturn(exportToPngSessionCommand).when(sessionCommandFactory).newExportToPngSessionCommand();
         doReturn(exportToJpgSessionCommand).when(sessionCommandFactory).newExportToJpgSessionCommand();
+        doReturn(exportToSvgSessionCommand).when(sessionCommandFactory).newExportToSvgSessionCommand();
         doReturn(exportToPdfSessionCommand).when(sessionCommandFactory).newExportToPdfSessionCommand();
         doReturn(exportToBpmnSessionCommand).when(sessionCommandFactory).newExportToBpmnSessionCommand();
         doReturn(copySelectionSessionCommand).when(sessionCommandFactory).newCopySelectionCommand();
@@ -226,7 +231,11 @@ public class AbstractProjectDiagramEditorTest {
         doReturn(mock(MenuItem.class)).when(projectMenuItemsBuilder).newUndoItem(any(Command.class));
         doReturn(mock(MenuItem.class)).when(projectMenuItemsBuilder).newRedoItem(any(Command.class));
         doReturn(mock(MenuItem.class)).when(projectMenuItemsBuilder).newValidateItem(any(Command.class));
-        doReturn(mock(MenuItem.class)).when(projectMenuItemsBuilder).newExportsItem(any(Command.class), any(Command.class), any(Command.class), any(Command.class));
+        doReturn(mock(MenuItem.class)).when(projectMenuItemsBuilder).newExportsItem(any(Command.class),
+                                                                                    any(Command.class),
+                                                                                    any(Command.class),
+                                                                                    any(Command.class),
+                                                                                    any(Command.class));
         doReturn(mock(MenuItem.class)).when(projectMenuItemsBuilder).newPasteItem(any(Command.class));
         doReturn(mock(MenuItem.class)).when(projectMenuItemsBuilder).newCopyItem(any(Command.class));
         doReturn(mock(MenuItem.class)).when(projectMenuItemsBuilder).newCutItem(any(Command.class));
@@ -355,6 +364,7 @@ public class AbstractProjectDiagramEditorTest {
         verify(exportToPngSessionCommand, times(1)).unbind();
         verify(exportToJpgSessionCommand, times(1)).unbind();
         verify(exportToPdfSessionCommand, times(1)).unbind();
+        verify(exportToSvgSessionCommand, times(1)).unbind();
         verify(copySelectionSessionCommand, times(1)).unbind();
         verify(pasteSelectionSessionCommand, times(1)).unbind();
         verify(cutSelectionSessionCommand, times(1)).unbind();

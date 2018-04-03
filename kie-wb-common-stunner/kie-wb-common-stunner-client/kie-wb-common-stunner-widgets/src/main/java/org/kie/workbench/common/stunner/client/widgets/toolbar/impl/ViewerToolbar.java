@@ -19,21 +19,30 @@ package org.kie.workbench.common.stunner.client.widgets.toolbar.impl;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarView;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ClearStatesToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ClearToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.CopyToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.CutToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.DeleteSelectionToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToJpgToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToPdfToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToPngToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToSvgToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.PasteToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.RedoToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.SwitchGridToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ToolbarCommandFactory;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.UndoToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ValidateToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.VisitGraphToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.item.AbstractToolbarItem;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 
 public class ViewerToolbar extends AbstractToolbar<AbstractClientReadOnlySession> {
 
-    private final ManagedInstance<AbstractToolbarItem<AbstractClientReadOnlySession>> items;
-    private final ToolbarCommandFactory commandFactory;
+    protected final ManagedInstance<AbstractToolbarItem<AbstractClientReadOnlySession>> items;
+    protected final ToolbarCommandFactory commandFactory;
 
-    ViewerToolbar(final ToolbarCommandFactory commandFactory,
+    protected ViewerToolbar(final ToolbarCommandFactory commandFactory,
                   final ManagedInstance<AbstractToolbarItem<AbstractClientReadOnlySession>> items,
                   final ToolbarView<AbstractToolbar> view) {
         super(view);
@@ -43,13 +52,14 @@ public class ViewerToolbar extends AbstractToolbar<AbstractClientReadOnlySession
     }
 
     @SuppressWarnings("unchecked")
-    private void addDefaultCommands() {
-        addCommand(commandFactory.newVisitGraphCommand());
-        addCommand(commandFactory.newClearStatesCommand());
-        addCommand(commandFactory.newSwitchGridCommand());
-        addCommand(commandFactory.newExportToPngToolbarCommand());
-        addCommand(commandFactory.newExportToJpgToolbarCommand());
-        addCommand(commandFactory.newExportToPdfToolbarCommand());
+    protected void addDefaultCommands() {
+        addCommand(VisitGraphToolbarCommand.class, commandFactory.newVisitGraphCommand());
+        addCommand(ClearStatesToolbarCommand.class, commandFactory.newClearStatesCommand());
+        addCommand(SwitchGridToolbarCommand.class, commandFactory.newSwitchGridCommand());
+        addCommand(ExportToPngToolbarCommand.class, commandFactory.newExportToPngToolbarCommand());
+        addCommand(ExportToJpgToolbarCommand.class, commandFactory.newExportToJpgToolbarCommand());
+        addCommand(ExportToSvgToolbarCommand.class, commandFactory.newExportToSvgToolbarCommand());
+        addCommand(ExportToPdfToolbarCommand.class, commandFactory.newExportToPdfToolbarCommand());
     }
 
     @Override
@@ -58,26 +68,30 @@ public class ViewerToolbar extends AbstractToolbar<AbstractClientReadOnlySession
     }
 
     public VisitGraphToolbarCommand getVisitGraphToolbarCommand() {
-        return (VisitGraphToolbarCommand) getCommand(0);
+        return getCommand(VisitGraphToolbarCommand.class);
     }
 
     public ClearStatesToolbarCommand getClearStatesToolbarCommand() {
-        return (ClearStatesToolbarCommand) getCommand(1);
+        return getCommand(ClearStatesToolbarCommand.class);
     }
 
     public SwitchGridToolbarCommand getSwitchGridToolbarCommand() {
-        return (SwitchGridToolbarCommand) getCommand(2);
+        return getCommand(SwitchGridToolbarCommand.class);
     }
 
     public ExportToPngToolbarCommand getExportToPngToolbarCommand() {
-        return (ExportToPngToolbarCommand) getCommand(3);
+        return getCommand(ExportToPngToolbarCommand.class);
     }
 
     public ExportToJpgToolbarCommand getExportToJpgToolbarCommand() {
-        return (ExportToJpgToolbarCommand) getCommand(4);
+        return getCommand(ExportToJpgToolbarCommand.class);
+    }
+
+    public ExportToSvgToolbarCommand getExportToSvgToolbarCommand() {
+        return getCommand(ExportToSvgToolbarCommand.class);
     }
 
     public ExportToPdfToolbarCommand getExportToPdfToolbarCommand() {
-        return (ExportToPdfToolbarCommand) getCommand(5);
+        return getCommand(ExportToPdfToolbarCommand.class);
     }
 }

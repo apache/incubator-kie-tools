@@ -66,7 +66,7 @@ public class AbstractToolbarTest {
         };
         when(toolbarItem.asWidget()).thenReturn(toolbarItemWidget);
 
-        toolbar.addCommand(toolbarCommand);
+        toolbar.addCommand(AbstractToolbar.class, toolbarCommand);
         toolbar.initialize(session);
     }
 

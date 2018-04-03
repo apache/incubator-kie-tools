@@ -202,6 +202,7 @@ public class ProjectDiagramEditorMenuItemsBuilder {
 
     public MenuItem newExportsItem(final Command exportPNGCommand,
                                    final Command exportJPGCommand,
+                                   final Command exportSVGCommand,
                                    final Command exportPDFCommand,
                                    final Command exportBPMNCommand) {
         final DropDownMenu menu = new DropDownMenu() {{
@@ -218,6 +219,12 @@ public class ProjectDiagramEditorMenuItemsBuilder {
             setIconPosition(IconPosition.LEFT);
             setTitle(translationService.getValue(CoreTranslationMessages.EXPORT_JPG));
             addClickHandler(event -> exportJPGCommand.execute());
+        }});
+        menu.add(new AnchorListItem(translationService.getValue(CoreTranslationMessages.EXPORT_SVG)) {{
+            setIcon(IconType.FILE_IMAGE_O);
+            setIconPosition(IconPosition.LEFT);
+            setTitle(translationService.getValue(CoreTranslationMessages.EXPORT_SVG));
+            addClickHandler(event -> exportSVGCommand.execute());
         }});
         menu.add(new AnchorListItem(translationService.getValue(CoreTranslationMessages.EXPORT_PDF)) {{
             setIcon(IconType.FILE_PDF_O);

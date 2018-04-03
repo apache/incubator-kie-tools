@@ -30,6 +30,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.editor.commons.client.file.exports.FileExport;
 import org.uberfire.ext.editor.commons.client.file.exports.ImageDataUriContent;
 import org.uberfire.ext.editor.commons.client.file.exports.PdfDocument;
+import org.uberfire.ext.editor.commons.client.file.exports.svg.IContext2D;
+import org.uberfire.ext.editor.commons.client.file.exports.svg.SvgFileExport;
 import org.uberfire.ext.editor.commons.file.exports.FileExportsPreferences;
 import org.uberfire.ext.editor.commons.file.exports.PdfExportPreferences;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -61,6 +63,9 @@ public class CanvasFileExportTest {
     private FileExport<PdfDocument> pdfFileExport;
 
     @Mock
+    private SvgFileExport svgFileExport;
+
+    @Mock
     private AbstractCanvasHandler canvasHandler;
 
     @Mock
@@ -73,6 +78,9 @@ public class CanvasFileExportTest {
     private FileExportsPreferences preferences;
 
     private CanvasFileExport tested;
+
+    @Mock
+    private IContext2D context2D;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -97,7 +105,8 @@ public class CanvasFileExportTest {
         this.tested = new CanvasFileExport(canvasExport,
                                            imageFileExport,
                                            pdfFileExport,
-                                           preferences);
+                                           preferences,
+                                           svgFileExport);
     }
 
     @Test
@@ -150,5 +159,12 @@ public class CanvasFileExportTest {
         verify(pdfFileExport,
                times(1)).export(any(PdfDocument.class),
                                 eq("file1.pdf"));
+    }
+
+    @Test
+    public void testExportToSVG() {
+        when(canvasExport.toContext2D(canvasHandler)).thenReturn(context2D);
+        tested.exportToSvg(canvasHandler, "file1");
+        verify(svgFileExport, times(1)).export(context2D, "file1.svg");
     }
 }

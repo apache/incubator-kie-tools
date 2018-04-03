@@ -30,9 +30,9 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientF
 @ApplicationScoped
 public class EditorToolbarFactory implements ToolbarFactory<AbstractClientFullSession> {
 
-    private final ToolbarCommandFactory commandFactory;
-    private final ManagedInstance<AbstractToolbarItem<AbstractClientFullSession>> itemInstances;
-    private final ManagedInstance<ToolbarView<AbstractToolbar>> viewInstances;
+    protected final ToolbarCommandFactory commandFactory;
+    protected final ManagedInstance<AbstractToolbarItem<AbstractClientFullSession>> itemInstances;
+    protected final ManagedInstance<ToolbarView<AbstractToolbar>> viewInstances;
 
     @Inject
     public EditorToolbarFactory(final ToolbarCommandFactory commandFactory,

@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.client.widgets.toolbar.command.DeleteSel
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToJpgToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToPdfToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToPngToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToSvgToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.PasteToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.RedoToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.SwitchGridToolbarCommand;
@@ -56,6 +57,7 @@ public class ToolbarCommandFactory extends org.kie.workbench.common.stunner.clie
                                  final ManagedInstance<ExportToPngToolbarCommand> exportToPngToolbarCommand,
                                  final ManagedInstance<ExportToJpgToolbarCommand> exportToJpgToolbarCommand,
                                  final ManagedInstance<ExportToPdfToolbarCommand> exportToPdfToolbarCommand,
+                                 final ManagedInstance<ExportToSvgToolbarCommand> exportToSvgToolbarCommand,
                                  final ManagedInstance<CopyToolbarCommand> copyToolbarCommand,
                                  final ManagedInstance<CutToolbarCommand> cutToolbarCommand,
                                  final @CaseManagementEditor ManagedInstance<PasteToolbarCommand> pasteToolbarCommand) {
@@ -69,6 +71,7 @@ public class ToolbarCommandFactory extends org.kie.workbench.common.stunner.clie
               validateCommand,
               exportToPngToolbarCommand,
               exportToJpgToolbarCommand,
+              exportToSvgToolbarCommand,
               exportToPdfToolbarCommand,
               copyToolbarCommand,
               cutToolbarCommand,

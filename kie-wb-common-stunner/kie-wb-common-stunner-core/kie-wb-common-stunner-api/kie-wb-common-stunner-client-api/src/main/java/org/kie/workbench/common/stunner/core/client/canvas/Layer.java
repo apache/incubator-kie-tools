@@ -43,7 +43,8 @@ public interface Layer<T, S, A> extends HasEventHandlers<T, A> {
 
     public enum URLDataType {
         PNG("image/png"),
-        JPG("image/jpeg");
+        JPG("image/jpeg"),
+        SVG("image/svg+xml");
 
         private final String mimeType;
 

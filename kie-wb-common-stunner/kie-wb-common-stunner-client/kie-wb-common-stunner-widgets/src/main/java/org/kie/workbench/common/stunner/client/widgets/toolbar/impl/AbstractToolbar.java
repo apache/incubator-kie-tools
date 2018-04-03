@@ -17,8 +17,6 @@
 package org.kie.workbench.common.stunner.client.widgets.toolbar.impl;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
@@ -30,7 +28,7 @@ import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 
 public abstract class AbstractToolbar<S extends ClientSession> implements Toolbar<S> {
 
-    private final List<ToolbarCommand<? super S>> commands = new LinkedList<>();
+    private final Map<Class<?>, ToolbarCommand<? super S>> commands = new HashMap<>();
     private final Map<ToolbarCommand<? super S>, AbstractToolbarItem<S>> items = new HashMap<>();
     private final ToolbarView<AbstractToolbar> view;
 
@@ -43,7 +41,7 @@ public abstract class AbstractToolbar<S extends ClientSession> implements Toolba
 
     @SuppressWarnings("unchecked")
     public void initialize(final S session) {
-        commands.stream()
+        commands.values().stream()
                 .forEach(command -> {
                     final AbstractToolbarItem<S> toolbarItem = newToolbarItem();
                     toolbarItem.setUUID(((AbstractToolbarCommand) command).getUuid());
@@ -59,8 +57,8 @@ public abstract class AbstractToolbar<S extends ClientSession> implements Toolba
         show();
     }
 
-    public void addCommand(final ToolbarCommand<? super S> item) {
-        commands.add(item);
+    public void addCommand(Class<? extends ToolbarCommand<? super S>> type, final ToolbarCommand<? super S> item) {
+        commands.put(type, item);
     }
 
     @Override
@@ -107,8 +105,8 @@ public abstract class AbstractToolbar<S extends ClientSession> implements Toolba
         return view;
     }
 
-    protected ToolbarCommand<? super S> getCommand(final int index) {
-        return commands.get(index);
+    protected <T extends ToolbarCommand<? super S>> T getCommand(final Class<T> type) {
+        return (T) commands.get(type);
     }
 
     @SuppressWarnings("unchecked")
@@ -123,7 +121,7 @@ public abstract class AbstractToolbar<S extends ClientSession> implements Toolba
     }
 
     private void afterDraw() {
-        commands.forEach(ToolbarCommand::refresh);
+        commands.values().forEach(ToolbarCommand::refresh);
     }
 
     private void show() {

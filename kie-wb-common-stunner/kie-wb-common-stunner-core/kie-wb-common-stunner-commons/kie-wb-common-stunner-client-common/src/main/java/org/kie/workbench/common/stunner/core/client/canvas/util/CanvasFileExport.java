@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -29,6 +30,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.uberfire.ext.editor.commons.client.file.exports.FileExport;
 import org.uberfire.ext.editor.commons.client.file.exports.ImageDataUriContent;
 import org.uberfire.ext.editor.commons.client.file.exports.PdfDocument;
+import org.uberfire.ext.editor.commons.client.file.exports.svg.SvgFileExport;
 import org.uberfire.ext.editor.commons.file.exports.FileExportsPreferences;
 import org.uberfire.ext.editor.commons.file.exports.PdfExportPreferences;
 
@@ -44,14 +46,17 @@ public class CanvasFileExport {
     private static final String EXT_PNG = "png";
     private static final String EXT_JPG = "jpg";
     private static final String EXT_PDF = "pdf";
+    private static final String EXT_SVG = "svg";
 
     private final CanvasExport<AbstractCanvasHandler> canvasExport;
     private final FileExport<ImageDataUriContent> imageFileExport;
     private final FileExport<PdfDocument> pdfFileExport;
     private final FileExportsPreferences preferences;
+    private final SvgFileExport svgFileExport;
 
     protected CanvasFileExport() {
         this(null,
+             null,
              null,
              null,
              null);
@@ -61,11 +66,19 @@ public class CanvasFileExport {
     public CanvasFileExport(final CanvasExport<AbstractCanvasHandler> canvasExport,
                             final FileExport<ImageDataUriContent> imageFileExport,
                             final FileExport<PdfDocument> pdfFileExport,
-                            final FileExportsPreferences preferences) {
+                            final FileExportsPreferences preferences,
+                            final SvgFileExport svgFileExport) {
         this.canvasExport = canvasExport;
         this.imageFileExport = imageFileExport;
         this.pdfFileExport = pdfFileExport;
         this.preferences = preferences;
+        this.svgFileExport = svgFileExport;
+    }
+
+    public void exportToSvg(final AbstractCanvasHandler canvasHandler,
+                            final String fileName) {
+        final String fullFileName = fileName + "." + getFileExtension(Layer.URLDataType.SVG);
+        svgFileExport.export(canvasExport.toContext2D(canvasHandler), fullFileName);
     }
 
     public void exportToJpg(final AbstractCanvasHandler canvasHandler,
@@ -133,6 +146,8 @@ public class CanvasFileExport {
                 return EXT_JPG;
             case PNG:
                 return EXT_PNG;
+            case SVG:
+                return EXT_SVG;
         }
         throw new UnsupportedOperationException("No mimeType supported for " + type);
     }

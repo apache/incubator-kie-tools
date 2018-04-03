@@ -24,10 +24,14 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarView;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ClearStatesToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ClearToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.CopyToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.CutToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.DeleteSelectionToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToJpgToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToPdfToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToPngToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToSvgToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.PasteToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.RedoToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.SwitchGridToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ToolbarCommandFactory;
@@ -84,7 +88,19 @@ public class EditorToolbarTest {
     private ExportToJpgToolbarCommand exportToJpgToolbarCommand;
 
     @Mock
+    private ExportToSvgToolbarCommand exportToSvgToolbarCommand;
+
+    @Mock
     private ExportToPdfToolbarCommand exportToPdfToolbarCommand;
+
+    @Mock
+    private CopyToolbarCommand copyToolbarCommand;
+
+    @Mock
+    private CutToolbarCommand cutToolbarCommand;
+
+    @Mock
+    private PasteToolbarCommand pasteToolbarCommand;
 
     private EditorToolbar toolbar;
 
@@ -102,6 +118,10 @@ public class EditorToolbarTest {
         when(commandFactory.newExportToPngToolbarCommand()).thenReturn(exportToPngToolbarCommand);
         when(commandFactory.newExportToJpgToolbarCommand()).thenReturn(exportToJpgToolbarCommand);
         when(commandFactory.newExportToPdfToolbarCommand()).thenReturn(exportToPdfToolbarCommand);
+        when(commandFactory.newExportToSvgToolbarCommand()).thenReturn(exportToSvgToolbarCommand);
+        when(commandFactory.newCopyCommand()).thenReturn(copyToolbarCommand);
+        when(commandFactory.newCutToolbarCommand()).thenReturn(cutToolbarCommand);
+        when(commandFactory.newPasteCommand()).thenReturn(pasteToolbarCommand);
         this.toolbar = new EditorToolbar(commandFactory,
                                          items,
                                          toolbarView);
@@ -131,5 +151,13 @@ public class EditorToolbarTest {
                      toolbar.getExportToJpgToolbarCommand());
         assertEquals(exportToPdfToolbarCommand,
                      toolbar.getExportToPdfToolbarCommand());
+        assertEquals(exportToSvgToolbarCommand,
+                     toolbar.getExportToSvgToolbarCommand());
+        assertEquals(copyToolbarCommand,
+                     toolbar.getCopyToolbarCommand());
+        assertEquals(cutToolbarCommand,
+                     toolbar.getCutToolbarCommand());
+        assertEquals(pasteToolbarCommand,
+                     toolbar.getPasteToolbarCommand());
     }
 }

@@ -30,9 +30,9 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientR
 @ApplicationScoped
 public class ViewerToolbarFactory implements ToolbarFactory<AbstractClientReadOnlySession> {
 
-    private final ToolbarCommandFactory commandFactory;
-    private final ManagedInstance<AbstractToolbarItem<AbstractClientReadOnlySession>> itemInstances;
-    private final ManagedInstance<ToolbarView> viewInstances;
+    protected final ToolbarCommandFactory commandFactory;
+    protected final ManagedInstance<AbstractToolbarItem<AbstractClientReadOnlySession>> itemInstances;
+    protected final ManagedInstance<ToolbarView> viewInstances;
 
     @Inject
     public ViewerToolbarFactory(final ToolbarCommandFactory commandFactory,

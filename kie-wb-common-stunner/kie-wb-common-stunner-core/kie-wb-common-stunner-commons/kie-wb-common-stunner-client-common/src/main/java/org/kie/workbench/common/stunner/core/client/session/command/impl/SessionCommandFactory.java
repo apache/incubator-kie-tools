@@ -35,6 +35,7 @@ public class SessionCommandFactory {
     private final ManagedInstance<ExportToPngSessionCommand> exportImagePNGSessionCommand;
     private final ManagedInstance<ExportToJpgSessionCommand> exportImageJPGSessionCommand;
     private final ManagedInstance<ExportToPdfSessionCommand> exportPDFSessionCommand;
+    private final ManagedInstance<ExportToSvgSessionCommand> exportSVGSessionCommand;
     private final ManagedInstance<ExportToBpmnSessionCommand> exportBPMNSessionCommand;
     private final ManagedInstance<CopySelectionSessionCommand> copySelectionSessionCommand;
     private final ManagedInstance<PasteSelectionSessionCommand> pasteSelectionSessionCommand;
@@ -42,6 +43,7 @@ public class SessionCommandFactory {
 
     protected SessionCommandFactory() {
         this(null,
+             null,
              null,
              null,
              null,
@@ -70,6 +72,7 @@ public class SessionCommandFactory {
                                  final ManagedInstance<ExportToPngSessionCommand> exportImageSessionCommand,
                                  final ManagedInstance<ExportToJpgSessionCommand> exportImageJPGSessionCommand,
                                  final ManagedInstance<ExportToPdfSessionCommand> exportPDFSessionCommand,
+                                 final ManagedInstance<ExportToSvgSessionCommand> exportSVGSessionCommand,
                                  final ManagedInstance<ExportToBpmnSessionCommand> exportBPMNSessionCommand,
                                  final ManagedInstance<CopySelectionSessionCommand> copySelectionSessionCommand,
                                  final ManagedInstance<PasteSelectionSessionCommand> pasteSelectionSessionCommand,
@@ -85,6 +88,7 @@ public class SessionCommandFactory {
         this.exportImagePNGSessionCommand = exportImageSessionCommand;
         this.exportImageJPGSessionCommand = exportImageJPGSessionCommand;
         this.exportPDFSessionCommand = exportPDFSessionCommand;
+        this.exportSVGSessionCommand = exportSVGSessionCommand;
         this.exportBPMNSessionCommand = exportBPMNSessionCommand;
         this.copySelectionSessionCommand = copySelectionSessionCommand;
         this.pasteSelectionSessionCommand = pasteSelectionSessionCommand;
@@ -145,6 +149,10 @@ public class SessionCommandFactory {
 
     public ExportToPdfSessionCommand newExportToPdfSessionCommand() {
         return exportPDFSessionCommand.get();
+    }
+
+    public ExportToSvgSessionCommand newExportToSvgSessionCommand() {
+        return exportSVGSessionCommand.get();
     }
 
     public ExportToBpmnSessionCommand newExportToBpmnSessionCommand() {

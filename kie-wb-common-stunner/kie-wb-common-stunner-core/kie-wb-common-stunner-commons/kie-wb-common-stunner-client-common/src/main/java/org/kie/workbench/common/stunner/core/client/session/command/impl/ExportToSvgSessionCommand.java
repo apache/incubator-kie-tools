@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,23 +22,23 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 
 @Dependent
-public class ExportToPngSessionCommand extends AbstractExportSessionCommand {
+public class ExportToSvgSessionCommand extends AbstractExportSessionCommand {
 
     private final CanvasFileExport canvasFileExport;
 
-    protected ExportToPngSessionCommand() {
+    protected ExportToSvgSessionCommand() {
         this(null);
     }
 
     @Inject
-    public ExportToPngSessionCommand(final CanvasFileExport canvasFileExport) {
+    public ExportToSvgSessionCommand(final CanvasFileExport canvasFileExport) {
         super(true);
         this.canvasFileExport = canvasFileExport;
     }
 
     @Override
     protected void export(final String fileName) {
-        canvasFileExport.exportToPng(getSession().getCanvasHandler(),
+        canvasFileExport.exportToSvg(getSession().getCanvasHandler(),
                                      fileName);
     }
 }

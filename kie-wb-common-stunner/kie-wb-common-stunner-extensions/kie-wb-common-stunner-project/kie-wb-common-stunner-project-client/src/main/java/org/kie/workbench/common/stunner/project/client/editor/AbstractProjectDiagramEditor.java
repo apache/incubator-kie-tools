@@ -51,6 +51,7 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportT
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToJpgSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPdfSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPngSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToSvgSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.PasteSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
@@ -352,10 +353,12 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
         final MenuItem exportsItem = menuItemsBuilder.newExportsItem(this::export_imagePNG,
                                                                      this::export_imageJPG,
+                                                                     this::export_imageSVG,
                                                                      this::export_imagePDF,
                                                                      this::export_fileBPMN);
         getCommand(ExportToPngSessionCommand.class).listen(() -> exportsItem.setEnabled(getCommand(ExportToPngSessionCommand.class).isEnabled()));
         getCommand(ExportToJpgSessionCommand.class).listen(() -> exportsItem.setEnabled(getCommand(ExportToJpgSessionCommand.class).isEnabled()));
+        getCommand(ExportToSvgSessionCommand.class).listen(() -> exportsItem.setEnabled(getCommand(ExportToSvgSessionCommand.class).isEnabled()));
         getCommand(ExportToPdfSessionCommand.class).listen(() -> exportsItem.setEnabled(getCommand(ExportToPdfSessionCommand.class).isEnabled()));
         getCommand(ExportToBpmnSessionCommand.class).listen(() -> exportsItem.setEnabled(getCommand(ExportToBpmnSessionCommand.class).isEnabled()));
 
@@ -463,6 +466,10 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     private void export_imagePDF() {
         getCommand(ExportToPdfSessionCommand.class).execute();
+    }
+
+    private void export_imageSVG() {
+        getCommand(ExportToSvgSessionCommand.class).execute();
     }
 
     private void export_fileBPMN() {
@@ -727,6 +734,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         commands.put(ValidateSessionCommand.class, sessionCommandFactory.newValidateCommand());
         commands.put(ExportToPngSessionCommand.class, sessionCommandFactory.newExportToPngSessionCommand());
         commands.put(ExportToJpgSessionCommand.class, sessionCommandFactory.newExportToJpgSessionCommand());
+        commands.put(ExportToSvgSessionCommand.class, sessionCommandFactory.newExportToSvgSessionCommand());
         commands.put(ExportToPdfSessionCommand.class, sessionCommandFactory.newExportToPdfSessionCommand());
         commands.put(ExportToBpmnSessionCommand.class, sessionCommandFactory.newExportToBpmnSessionCommand());
         commands.put(CopySelectionSessionCommand.class, sessionCommandFactory.newCopySelectionCommand());

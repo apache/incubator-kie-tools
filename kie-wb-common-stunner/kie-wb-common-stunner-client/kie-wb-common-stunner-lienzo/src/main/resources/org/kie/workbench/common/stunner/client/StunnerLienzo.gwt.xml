@@ -24,6 +24,7 @@
   <inherits name="org.gwtbootstrap3.extras.card.Card"/>
   <inherits name="org.kie.workbench.common.stunner.core.StunnerClientCommon"/>
   <inherits name="org.kie.workbench.common.stunner.StunnerLienzoExtensions"/>
+  <inherits name="org.uberfire.ext.editor.commons.UberfireCommonsEditorClient"/>
 
   <source path="lienzo"/>
 

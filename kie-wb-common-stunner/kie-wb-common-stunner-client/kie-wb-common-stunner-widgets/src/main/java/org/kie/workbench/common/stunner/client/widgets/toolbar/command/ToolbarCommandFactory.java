@@ -34,6 +34,7 @@ public class ToolbarCommandFactory {
     private final ManagedInstance<ValidateToolbarCommand> validateCommand;
     private final ManagedInstance<ExportToPngToolbarCommand> exportToPngToolbarCommand;
     private final ManagedInstance<ExportToJpgToolbarCommand> exportToJpgToolbarCommand;
+    private final ManagedInstance<ExportToSvgToolbarCommand> exportToSvgToolbarCommand;
     private final ManagedInstance<ExportToPdfToolbarCommand> exportToPdfToolbarCommand;
     private final ManagedInstance<CopyToolbarCommand> copyToolbarCommand;
     private final ManagedInstance<CutToolbarCommand> cutToolbarCommand;
@@ -41,6 +42,7 @@ public class ToolbarCommandFactory {
 
     protected ToolbarCommandFactory() {
         this(null,
+             null,
              null,
              null,
              null,
@@ -67,6 +69,7 @@ public class ToolbarCommandFactory {
                                  final ManagedInstance<ValidateToolbarCommand> validateCommand,
                                  final ManagedInstance<ExportToPngToolbarCommand> exportToPngToolbarCommand,
                                  final ManagedInstance<ExportToJpgToolbarCommand> exportToJpgToolbarCommand,
+                                 final ManagedInstance<ExportToSvgToolbarCommand> exportToSvgToolbarCommand,
                                  final ManagedInstance<ExportToPdfToolbarCommand> exportToPdfToolbarCommand,
                                  final ManagedInstance<CopyToolbarCommand> copyToolbarCommand,
                                  final ManagedInstance<CutToolbarCommand> cutToolbarCommand,
@@ -81,6 +84,7 @@ public class ToolbarCommandFactory {
         this.validateCommand = validateCommand;
         this.exportToPngToolbarCommand = exportToPngToolbarCommand;
         this.exportToJpgToolbarCommand = exportToJpgToolbarCommand;
+        this.exportToSvgToolbarCommand = exportToSvgToolbarCommand;
         this.exportToPdfToolbarCommand = exportToPdfToolbarCommand;
         this.copyToolbarCommand = copyToolbarCommand;
         this.cutToolbarCommand = cutToolbarCommand;
@@ -125,6 +129,10 @@ public class ToolbarCommandFactory {
 
     public ExportToJpgToolbarCommand newExportToJpgToolbarCommand() {
         return exportToJpgToolbarCommand.get();
+    }
+
+    public ExportToSvgToolbarCommand newExportToSvgToolbarCommand() {
+        return exportToSvgToolbarCommand.get();
     }
 
     public ExportToPdfToolbarCommand newExportToPdfToolbarCommand() {
