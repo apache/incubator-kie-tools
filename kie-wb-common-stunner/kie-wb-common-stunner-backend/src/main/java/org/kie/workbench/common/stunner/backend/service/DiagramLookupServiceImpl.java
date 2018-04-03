@@ -83,7 +83,7 @@ public class DiagramLookupServiceImpl
                               final Diagram<Graph, Metadata> item) {
         final Map<String, String> criteriaMap = AbstractCriteriaLookupManager.parseCriteria(criteria);
         final String name = criteriaMap.get(DiagramLookupRequest.CRITERIA_NAME);
-        if (null != name && name.trim().length() > 9) {
+        if (null != name && name.trim().length() > 0) {
             return name.equals(item.getName());
         }
         return true;
