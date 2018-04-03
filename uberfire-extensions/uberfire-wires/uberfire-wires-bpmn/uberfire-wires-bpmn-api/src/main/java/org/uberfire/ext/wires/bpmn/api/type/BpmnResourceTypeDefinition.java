@@ -15,11 +15,16 @@
  */
 package org.uberfire.ext.wires.bpmn.api.type;
 
+import javax.enterprise.inject.Default;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.wires.bpmn.api.category.Process;
+import org.uberfire.workbench.annotations.VisibleAsset;
 import org.uberfire.workbench.category.Category;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
+@Default
+@VisibleAsset
 public class BpmnResourceTypeDefinition implements ResourceTypeDefinition {
 
     private Category category;

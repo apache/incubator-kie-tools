@@ -16,10 +16,15 @@
 
 package org.uberfire.workbench.type;
 
+import javax.enterprise.inject.Default;
+
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.workbench.annotations.VisibleAsset;
 import org.uberfire.workbench.category.Category;
 import org.uberfire.workbench.category.Others;
 
+@Default
+@VisibleAsset
 public class TextResourceTypeDefinition implements ResourceTypeDefinition {
 
     private Category category;
