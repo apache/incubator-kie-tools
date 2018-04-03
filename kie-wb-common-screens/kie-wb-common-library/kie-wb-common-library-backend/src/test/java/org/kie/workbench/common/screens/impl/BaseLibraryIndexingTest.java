@@ -24,8 +24,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -65,6 +67,7 @@ import org.uberfire.ext.metadata.io.IndexersFactory;
 import org.uberfire.ext.metadata.io.MetadataConfigBuilder;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.workbench.type.AnyResourceTypeDefinition;
 
 import static org.mockito.Mockito.*;
 
@@ -234,7 +237,8 @@ public abstract class BaseLibraryIndexingTest {
             ioService = new IOServiceIndexedImpl(config.getIndexEngine(),
                                                  executorService);
 
-            final LibraryIndexer indexer = new LibraryIndexer(new LibraryAssetTypeDefinition());
+            final LibraryIndexer indexer = spy(new LibraryIndexer());
+            when(indexer.getVisibleResourceTypes()).thenReturn(new HashSet<>(Arrays.asList(new AnyResourceTypeDefinition())));
             IndexersFactory.clear();
             IndexersFactory.addIndexer(indexer);
 

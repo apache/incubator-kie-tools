@@ -18,7 +18,10 @@ package org.kie.workbench.common.screens.impl;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.Package;
@@ -40,7 +43,10 @@ import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.model.KObjectKey;
 import org.uberfire.ext.metadata.model.KProperty;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.workbench.annotations.VisibleAsset;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @ApplicationScoped
 public class LibraryIndexer extends AbstractFileIndexer {
@@ -49,15 +55,19 @@ public class LibraryIndexer extends AbstractFileIndexer {
 
     private static final String LIBRARY_CLASSIFIER = "library";
 
-    private LibraryAssetTypeDefinition filter;
+    private Set<ResourceTypeDefinition> visibleResourceTypes;
 
     // For proxying
     public LibraryIndexer() {
+        visibleResourceTypes = new HashSet<>();
     }
 
     @Inject
-    public LibraryIndexer(final LibraryAssetTypeDefinition filter) {
-        this.filter = filter;
+    public LibraryIndexer(@VisibleAsset final Instance<ResourceTypeDefinition> visibleResourceTypeDefinitions) {
+        this.visibleResourceTypes = StreamSupport
+                .stream(visibleResourceTypeDefinitions.spliterator(),
+                        false)
+                .collect(Collectors.toSet());
     }
 
     void setIOService(final IOService ioService) {
@@ -70,7 +80,15 @@ public class LibraryIndexer extends AbstractFileIndexer {
 
     @Override
     public boolean supportsPath(final Path path) {
-        return filter.accept(Paths.convert(path));
+        return !(this.isFolder(path) || this.isHidden(path)) && this.isSupportedByAnyResourceType(path);
+    }
+
+    private boolean isSupportedByAnyResourceType(Path path) {
+        org.uberfire.backend.vfs.Path convertedPath = convertPath(path);
+        return this.getVisibleResourceTypes()
+                .stream()
+                .anyMatch(resourceTypeDefinition ->
+                                  resourceTypeDefinition.accept(convertedPath));
     }
 
     @Override
@@ -161,12 +179,28 @@ public class LibraryIndexer extends AbstractFileIndexer {
                                         LIBRARY_CLASSIFIER);
     }
 
+    protected org.uberfire.backend.vfs.Path convertPath(Path path) {
+        return Paths.convert(path);
+    }
+
     protected KieModule getModule(final Path path) {
         return moduleService.resolveModule(Paths.convert(path));
     }
 
     protected Package getPackage(final Path path) {
         return moduleService.resolvePackage(Paths.convert(path));
+    }
+
+    protected boolean isFolder(final Path path) {
+        return Files.isDirectory(path);
+    }
+
+    protected boolean isHidden(Path path) {
+        return path.getFileName().startsWith(".");
+    }
+
+    protected Set<ResourceTypeDefinition> getVisibleResourceTypes() {
+        return this.visibleResourceTypes;
     }
 }
 

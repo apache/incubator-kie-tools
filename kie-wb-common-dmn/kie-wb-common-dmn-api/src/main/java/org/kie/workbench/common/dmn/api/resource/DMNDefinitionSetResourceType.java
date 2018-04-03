@@ -16,13 +16,17 @@
 package org.kie.workbench.common.dmn.api.resource;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.categories.Process;
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
 import org.kie.workbench.common.stunner.core.definition.AbstractDefinitionSetResourceType;
+import org.uberfire.workbench.annotations.VisibleAsset;
 import org.uberfire.workbench.category.Category;
 
+@Default
+@VisibleAsset
 @ApplicationScoped
 public class DMNDefinitionSetResourceType extends AbstractDefinitionSetResourceType {
 

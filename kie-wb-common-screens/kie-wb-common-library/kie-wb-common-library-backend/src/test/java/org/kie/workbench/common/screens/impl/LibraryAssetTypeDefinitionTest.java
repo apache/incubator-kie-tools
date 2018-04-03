@@ -17,14 +17,16 @@ package org.kie.workbench.common.screens.impl;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.workbench.type.ResourceTypeDefinition;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 @RunWith(Parameterized.class)
@@ -36,16 +38,23 @@ public class LibraryAssetTypeDefinitionTest {
 
     private boolean isAccepted;
 
-    private LibraryAssetTypeDefinition definition;
+    private LibraryIndexer definition;
 
     @Before
     public void setup() {
-        this.definition = new LibraryAssetTypeDefinition() {
-            @Override
-            boolean isFolder(final Path path) {
-                return isFolder;
-            }
-        };
+
+        ResourceTypeDefinition resourceTypeDefinition = mock(ResourceTypeDefinition.class);
+        when(resourceTypeDefinition.accept(any())).thenReturn(isAccepted);
+
+        final Path p = mock(Path.class);
+        when(p.getFileName()).thenReturn(fileName);
+
+        this.definition = spy(new LibraryIndexer());
+
+        doReturn(this.isFolder).when(this.definition).isFolder(any());
+        doReturn(new HashSet<>(Arrays.asList(resourceTypeDefinition))).when(this.definition).getVisibleResourceTypes();
+        doReturn(p).when(this.definition).convertPath(any());
+        doReturn(fileName.startsWith(".")).when(this.definition).isHidden(any());
     }
 
     public LibraryAssetTypeDefinitionTest(final String fileName,
@@ -63,16 +72,20 @@ public class LibraryAssetTypeDefinitionTest {
                         {"file.drl", false, true},
                         {".file.drl", false, false},
                         {"folder", true, false},
-                        {".folder", true, false}
+                        {".folder", true, false},
+                        {"persistence.xml", false, false},
+                        {"pom.xml", false, false},
+                        {"kmodule.xml", false, false},
+                        {"project.repositories", false, false},
+                        {"kie-deployment-descriptor.xml", false, false}
                 }
         );
     }
 
     @Test
     public void checkAccept() {
-        final Path path = mock(Path.class);
-        when(path.getFileName()).thenReturn(fileName);
+        final org.uberfire.java.nio.file.Path nioPath = mock(org.uberfire.java.nio.file.Path.class);
         assertEquals(isAccepted,
-                     definition.accept(path));
+                     definition.supportsPath(nioPath));
     }
 }
