@@ -17,13 +17,17 @@
 package org.drools.workbench.screens.guided.rule.type;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.categories.Decision;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.workbench.annotations.VisibleAsset;
 import org.uberfire.workbench.category.Category;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
+@Default
+@VisibleAsset
 @ApplicationScoped
 public class GuidedRuleDSLRResourceTypeDefinition
         implements ResourceTypeDefinition {
