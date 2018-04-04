@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.core.client.shape.EdgeShape;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -30,6 +31,7 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 public class MorphCanvasNodeCommand extends AbstractCanvasCommand {
 
@@ -48,6 +50,7 @@ public class MorphCanvasNodeCommand extends AbstractCanvasCommand {
     @Override
     @SuppressWarnings("unchecked")
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
+        final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> builder = new CompositeCommand.Builder<>();
         // Deregister the existing shape.
         Node parent = getParent();
         if (null != parent) {
@@ -93,7 +96,12 @@ public class MorphCanvasNodeCommand extends AbstractCanvasCommand {
                 }
             }
         }
-        return buildResult();
+
+        GraphUtils.getDockParent(candidate).ifPresent(dockParent-> {
+            builder.addCommand(new CanvasDockNodeCommand(dockParent , candidate));
+        });
+
+        return builder.build().execute(context);
     }
 
     @Override

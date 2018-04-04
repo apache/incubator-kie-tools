@@ -16,11 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.graph.util;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
+import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
@@ -34,12 +38,12 @@ import static org.junit.Assert.assertTrue;
 public class GraphUtilsTest {
 
     private TestingGraphMockHandler graphTestHandler;
-    private TestingGraphInstanceBuilder.TestGraph2 graphInstance;
+    private TestingGraphInstanceBuilder.TestGraph4 graphInstance;
 
     @Before
     public void setup() {
         this.graphTestHandler = new TestingGraphMockHandler();
-        graphInstance = TestingGraphInstanceBuilder.newGraph2(graphTestHandler);
+        graphInstance = TestingGraphInstanceBuilder.newGraph4(graphTestHandler);
     }
 
     @Test
@@ -94,5 +98,20 @@ public class GraphUtilsTest {
 
         childBounds = new BoundsImpl(new BoundImpl(51d, 49d), new BoundImpl(201d, 201d));
         assertFalse(GraphUtils.checkBoundsExceeded(parentBounds, childBounds));
+    }
+
+    @Test
+    public void isDockedNodeTest(){
+        assertTrue(GraphUtils.isDockedNode(graphInstance.dockedNode));
+        assertFalse(GraphUtils.isDockedNode(graphInstance.startNode));
+        assertFalse(GraphUtils.isDockedNode(graphInstance.intermNode));
+        assertFalse(GraphUtils.isDockedNode(graphInstance.endNode));
+    }
+
+    @Test
+    public void getDockedNodesTest(){
+        List<Node> dockedNodes = GraphUtils.getDockedNodes(graphInstance.intermNode);
+        assertEquals(dockedNodes.size(), 1);
+        assertEquals(dockedNodes.get(0), graphInstance.dockedNode);
     }
 }

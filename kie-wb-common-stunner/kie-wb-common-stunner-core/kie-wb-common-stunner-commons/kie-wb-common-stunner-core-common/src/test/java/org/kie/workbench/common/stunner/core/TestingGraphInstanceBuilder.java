@@ -19,6 +19,8 @@ package org.kie.workbench.common.stunner.core;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -35,20 +37,25 @@ public class TestingGraphInstanceBuilder {
     public static final String DEF1_ID = "def1";
     public static final Set<String> DEF1_LABELS = Collections.singleton("label1");
     public static final String DEF2_ID = "def2";
-    public static final Set<String> DEF2_LABELS = Collections.singleton("label2");
+    public static final Set<String> DEF2_LABELS = Stream.of("label2, dockLabel").collect(Collectors.toSet());
     public static final String DEF3_ID = "def3";
     public static final Set<String> DEF3_LABELS = Collections.singleton("label3");
     public static final String DEF4_ID = "def4";
     public static final Set<String> DEF4_LABELS = Collections.singleton("label4");
+    public static final String DEF5_ID = "def5";
+    public static final Set<String> DEF5_LABELS = Stream.of("label4", "dockLabel").collect(Collectors.toSet());
 
     public static final String EDGE1_ID = "edge11d";
     public static final String EDGE2_ID = "edge21d";
+    public static final String EDGE3_ID = "edge24d";
     public static final String PARENT_NODE_UUID = "parent1";
     public static final String START_NODE_UUID = "node1";
     public static final String INTERM_NODE_UUID = "node2";
     public static final String END_NODE_UUID = "node3";
+    public static final String DOCKED_NODE_UUID = "node4";
     public static final String EDGE1_UUID = "edge1";
     public static final String EDGE2_UUID = "edge2";
+    public static final String EDGE3_UUID = "edge3";
     public static final String CONTAINER_NODE_UUID = "container1";
 
     /**
@@ -138,8 +145,46 @@ public class TestingGraphInstanceBuilder {
         return buildTestGraph3(handler);
     }
 
+    /**
+     * **********
+     * * Graph4 *
+     * **********
+     * <p>
+     * Structure:
+     * -                 parentNode
+     * --------------------------------------------
+     * |                     |                     |
+     * startNode --(edge1)--> intermNode --(edge2)--> endNode
+     * |
+     * (edge3)
+     * |
+     * dockedNode
+     */
+    public static class TestGraph4 extends TestGraph2 {
+
+        public Node dockedNode;
+
+        public Edge edge3;
+
+        public TestGraph4(TestGraph2 testGraph2) {
+
+            graph = testGraph2.graph;
+            parentNode = testGraph2.parentNode;
+            startNode = testGraph2.startNode;
+            intermNode = testGraph2.intermNode;
+            endNode = testGraph2.endNode;
+            edge1 = testGraph2.edge1;
+            edge2 = testGraph2.edge2;
+            evaluationsCount = testGraph2.evaluationsCount;
+        }
+    }
+
+    public static TestGraph4 newGraph4(final TestingGraphMockHandler handler) {
+        return buildTestGraph4(handler);
+    }
+
     /*
-        ************ PRIVATE BUILDER METHODS ******************
+     ************ PRIVATE BUILDER METHODS ******************
      */
 
     private static TestGraph1 buildTestGraph1(final TestingGraphMockHandler graphTestHandler) {
@@ -278,6 +323,19 @@ public class TestingGraphInstanceBuilder {
                          result.intermNode)
                 .connectTo(result.edge2,
                            result.endNode);
+
+        return result;
+    }
+
+    private static TestGraph4 buildTestGraph4(final TestingGraphMockHandler graphTestHandler) {
+        TestGraph4 result = new TestGraph4(buildTestGraph2(graphTestHandler));
+
+        result.dockedNode = graphTestHandler.newNode(DOCKED_NODE_UUID,
+                                                     DEF5_ID,
+                                                     Optional.of(DEF5_LABELS));
+
+        result.edge3 = graphTestHandler.newEdge(EDGE3_UUID, EDGE3_ID, Optional.of(DEF4_LABELS));
+        graphTestHandler.dockTo(result.intermNode, result.dockedNode);
 
         return result;
     }

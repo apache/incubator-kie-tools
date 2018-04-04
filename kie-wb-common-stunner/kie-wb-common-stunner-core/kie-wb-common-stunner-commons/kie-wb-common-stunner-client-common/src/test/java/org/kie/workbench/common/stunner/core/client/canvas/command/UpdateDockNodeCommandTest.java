@@ -132,20 +132,14 @@ public class UpdateDockNodeCommandTest {
                                                 dockNode);
         CommandResult<CanvasViolation> result = tested.allow(canvasHandler);
         final List<Command<AbstractCanvasHandler, CanvasViolation>> commands = tested.getCommands();
-        assertTrue(3 == commands.size());
-        final RemoveChildCommand c1 = (RemoveChildCommand) commands.get(0);
-        assertNotNull(c1);
-        assertEquals(graphHolder.parentNode,
-                     c1.getParent());
-        assertEquals(dockNode,
-                     c1.getCandidate());
-        final SetChildNodeCommand c2 = (SetChildNodeCommand) commands.get(1);
+        assertEquals(commands.size(), 2);
+        final UpdateChildNodeCommand c2 = (UpdateChildNodeCommand) commands.get(0);
         assertNotNull(c2);
         assertEquals(laneNode,
                      c2.getParent());
         assertEquals(dockNode,
                      c2.getCandidate());
-        final DockNodeCommand c6 = (DockNodeCommand) commands.get(2);
+        final DockNodeCommand c6 = (DockNodeCommand) commands.get(1);
         assertNotNull(c6);
         assertEquals(graphHolder.endNode,
                      c6.getParent());

@@ -25,11 +25,19 @@ public class DockNodeCommand extends AbstractCanvasGraphCommand {
 
     private final Node parent;
     private final Node candidate;
+    private boolean adjustPosition;
 
     public DockNodeCommand(final Node parent,
                            final Node candidate) {
+        this(parent, candidate, false);
+    }
+
+    public DockNodeCommand(final Node parent,
+                           final Node candidate,
+                           final boolean adjustPosition) {
         this.parent = parent;
         this.candidate = candidate;
+        this.adjustPosition = adjustPosition;
     }
 
     @Override
@@ -41,8 +49,10 @@ public class DockNodeCommand extends AbstractCanvasGraphCommand {
 
     @Override
     protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
-        return new CanvasDockNodeCommand(parent,
-                                         candidate);
+        return (adjustPosition ?
+                new CanvasDockNodeCommand(parent, candidate,
+                                          position -> new UpdateElementPositionCommand(candidate, position).execute(context)) :
+                new CanvasDockNodeCommand(parent, candidate));
     }
 
     public Node getParent() {

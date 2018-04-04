@@ -34,14 +34,13 @@ public class UpdateCanvasElementPositionCommand extends AbstractCanvasCommand {
 
     @Override
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
-        context.updateElementPosition(element,
-                                      MutationContext.STATIC);
+        context.updateElementPosition(element, MutationContext.STATIC);
         moveConnectorsToTop(context);
         return buildResult();
     }
 
     private void moveConnectorsToTop(AbstractCanvasHandler context) {
-        if(getElement() instanceof Node){
+        if (getElement() instanceof Node) {
             ShapeUtils.moveViewConnectorsToTop(context,
                                                (Node<?, Edge>) getElement());
         }

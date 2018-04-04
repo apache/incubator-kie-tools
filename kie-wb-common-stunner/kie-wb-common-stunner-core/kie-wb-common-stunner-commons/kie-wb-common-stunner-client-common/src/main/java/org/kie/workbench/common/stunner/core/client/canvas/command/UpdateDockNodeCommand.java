@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -28,17 +29,25 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 public class UpdateDockNodeCommand extends AbstractCanvasCompositeCommand {
 
     private final Node parent;
     private final Node candidate;
+    private boolean adjustPosition;
 
     public UpdateDockNodeCommand(final Node parent,
                                  final Node candidate) {
+        this(parent, candidate, false);
+    }
+
+    public UpdateDockNodeCommand(final Node parent,
+                                 final Node candidate, boolean adjustPosition) {
         this.parent = parent;
         this.candidate = candidate;
+        this.adjustPosition = adjustPosition;
     }
 
     @Override
@@ -52,30 +61,34 @@ public class UpdateDockNodeCommand extends AbstractCanvasCompositeCommand {
         final Optional<Edge<?, Node>> childEdge = getEdge(candidate.getInEdges(),
                                                           e -> e.getContent() instanceof Child);
         // Obtain the parent for the target node for docking (the 'target' one).
-        final Element<?> parentParent = GraphUtils.getParent(parent);
+        final Element<?> parentParent = getParentOfParent(context, parent);
+
         // Let's check if the current candidate has some parent, because
         // the docking operation implies adding the 'candidate' in the same parent node for 'target'.
-        final boolean mustUpdateParent = null != parentParent &&
-                childEdge
-                        .filter(e -> !parentParent.equals(e.getSourceNode()))
-                        .isPresent();
-        if (mustUpdateParent) {
-            addCommand(new RemoveChildCommand(childEdge.get().getSourceNode(),
-                                              candidate));
-        }
-        // UnDock any existing source node from the candidate.
-        dockEdge.ifPresent(e -> addCommand(new UnDockNodeCommand(e.getSourceNode(),
-                                                                 candidate)));
+        final boolean mustUpdateParent = Objects.nonNull(parentParent) &&
+                childEdge.filter(e -> !parentParent.equals(e.getSourceNode())).isPresent();
+
         // Dock the candidate into the parent node, and update candidate's parent, if necessary,
         // to match the parent for 'target'.
         if (mustUpdateParent) {
-            addCommand(new SetChildNodeCommand((Node) parentParent,
-                                               candidate));
+            addCommand(new UpdateChildNodeCommand((Node) parentParent, candidate));
+        } else {
+            // UnDock any existing source node from the candidate.
+            // The UpdateChildNodeCommand already peforms the UnDockNodeCommand
+            dockEdge.ifPresent(e -> addCommand(new UnDockNodeCommand(e.getSourceNode(),
+                                                                     candidate)));
         }
-        // Finally, dock the canddiate into the parent.
-        addCommand(new DockNodeCommand(parent,
-                                       candidate));
+
+        // Finally, dock the candidate into the parent.
+        addCommand(new DockNodeCommand(parent, candidate, adjustPosition));
         return this;
+    }
+
+    private Element<?> getParentOfParent(AbstractCanvasHandler context, Node parent) {
+        final Element parentOfParent = GraphUtils.getParent(parent);
+        return (GraphUtils.isRootNode((Element<? extends View<?>>) parentOfParent, context.getGraphIndex().getGraph()) ?
+                context.getGraphIndex().getNode(context.getDiagram().getMetadata().getCanvasRootUUID()) :
+                parentOfParent);
     }
 
     protected Optional<Edge<?, Node>> getEdge(final List<Edge<?, Node>> edges,

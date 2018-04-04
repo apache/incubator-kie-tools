@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -49,14 +50,17 @@ import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
+import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
+import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -68,6 +72,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.anyObject;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -93,6 +98,10 @@ public class ResizeControlImplTest {
             new BoundImpl(30d,
                           40d)
     );
+
+    private static final String DOCKED_NODE_UUID = UUID.uuid();
+    private static final Double SHAPE_X = 0d;
+    private static final Double SHAPE_Y = 0d;
 
     @Mock
     private CanvasCommandManager<AbstractCanvasHandler> commandManager;
@@ -165,10 +174,22 @@ public class ResizeControlImplTest {
 
     private ResizeControlImpl tested;
 
+    @Mock
+    private Edge dockEdge;
+
+    @Mock
+    private Node dockedNode;
+
+    @Mock
+    private Shape dockedShape;
+
+    @Mock
+    private ShapeView dockedShapeView;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        this.canvasCommandFactory = new DefaultCanvasCommandFactory(null, null);
+        this.canvasCommandFactory = spy(new DefaultCanvasCommandFactory(null, null));
         this.shapeView = new ShapeViewExtStub(shapeEventHandler,
                                               hasControlPoints);
         when(canvasHandler.getDefinitionManager()).thenReturn(definitionManager);
@@ -204,6 +225,17 @@ public class ResizeControlImplTest {
         when(shape.getUUID()).thenReturn(ELEMENT_UUID);
         when(shape.getShapeView()).thenReturn(shapeView);
         when(shapeEventHandler.supports(eq(ViewEventType.RESIZE))).thenReturn(true);
+
+        when(element.getOutEdges()).thenReturn(Arrays.asList(dockEdge));
+        when(dockEdge.getContent()).thenReturn(new Dock());
+        when(dockEdge.getTargetNode()).thenReturn(dockedNode);
+        when(dockedNode.getUUID()).thenReturn(DOCKED_NODE_UUID);
+        when(canvas.getShape(DOCKED_NODE_UUID)).thenReturn(dockedShape);
+        when(dockedShape.getShapeView()).thenReturn(dockedShapeView);
+        when(dockedShapeView.getShapeX()).thenReturn(SHAPE_X);
+        when(dockedShapeView.getShapeY()).thenReturn(SHAPE_Y);
+
+
         this.tested = new ResizeControlImpl(canvasCommandFactory);
         tested.setCommandManagerProvider(() -> commandManager);
     }
@@ -269,7 +301,7 @@ public class ResizeControlImplTest {
         assertTrue(command instanceof AbstractCompositeCommand);
         final List commands = ((AbstractCompositeCommand) command).getCommands();
         assertNotNull(commands);
-        assertEquals(4,
+        assertEquals(5,
                      commands.size());
         assertTrue(commands.get(0) instanceof UpdateElementPositionCommand);
         final UpdateElementPositionCommand positionCommand = (UpdateElementPositionCommand) commands.get(0);
@@ -301,5 +333,12 @@ public class ResizeControlImplTest {
                      rPropertyCommand.getPropertyId());
         assertEquals(50d,
                      rPropertyCommand.getValue());
+
+        //test parent with docked node resize
+        ArgumentCaptor<Point2D> shapePoint2DArgumentCaptor = ArgumentCaptor.forClass(Point2D.class);
+        verify(canvasCommandFactory, times(1)).updatePosition(eq(dockedNode), shapePoint2DArgumentCaptor.capture());
+        Point2D shapePoint = shapePoint2DArgumentCaptor.getValue();
+        assertEquals(shapePoint.getX(), SHAPE_X, 0);
+        assertEquals(shapePoint.getY(), SHAPE_Y, 0);
     }
 }

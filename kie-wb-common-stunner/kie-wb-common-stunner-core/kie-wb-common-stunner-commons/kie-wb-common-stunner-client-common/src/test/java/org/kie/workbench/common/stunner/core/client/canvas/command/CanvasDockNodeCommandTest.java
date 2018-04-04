@@ -20,8 +20,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -31,20 +34,34 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CanvasDockNodeCommandTest extends AbstractCanvasCommandTest {
 
+    private static final String CANDIDATE_UUID = UUID.uuid();
+
     @Mock
     private Node parent;
+
     @Mock
     private Node candidate;
 
     private CanvasDockNodeCommand tested;
 
+    @Mock
+    private ShapeView shapeView;
+
+    @Mock
+    private Shape shape;
+
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        when(candidate.getUUID()).thenReturn(CANDIDATE_UUID);
+        when(canvasHandler.dock(parent, candidate)).thenReturn(true);
+        when(canvas.getShape(CANDIDATE_UUID)).thenReturn(shape);
+        when(shape.getShapeView()).thenReturn(shapeView);
         this.tested = new CanvasDockNodeCommand(parent,
                                                 candidate);
     }

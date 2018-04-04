@@ -73,6 +73,10 @@ public interface CanvasCommandFactory<H extends CanvasHandler> {
     CanvasCommand<H> updateDockNode(final Node parent,
                                     final Node candidate);
 
+    CanvasCommand<H> updateDockNode(final Node parent,
+                                    final Node candidate,
+                                    final boolean adjustPosition);
+
     CanvasCommand<H> draw();
 
     CanvasCommand<H> morphNode(final Node<? extends Definition<?>, Edge> candidate,

@@ -103,30 +103,36 @@ public class UpdateChildNodeCommandTest {
         CommandResult<CanvasViolation> result = tested.allow(canvasHandler);
         final List<Command<AbstractCanvasHandler, CanvasViolation>> commands = tested.getCommands();
         assertTrue(6 == commands.size());
+
         final RemoveChildCommand c1 = (RemoveChildCommand) commands.get(0);
         assertNotNull(c1);
         assertEquals(graphHolder.parentNode,
                      c1.getParent());
+
         assertEquals(graphHolder.endNode,
                      c1.getCandidate());
-        final RemoveChildCommand c2 = (RemoveChildCommand) commands.get(1);
+
+        final SetChildNodeCommand c2 = (SetChildNodeCommand) commands.get(1);
         assertNotNull(c2);
-        assertEquals(graphHolder.parentNode,
+        assertEquals(laneNode,
                      c2.getParent());
-        assertEquals(dockNode,
+        assertEquals(graphHolder.endNode,
                      c2.getCandidate());
-        final UnDockNodeCommand c3 = (UnDockNodeCommand) commands.get(2);
+
+        final RemoveChildCommand c4 = (RemoveChildCommand) commands.get(2);
+        assertNotNull(c4);
+        assertEquals(graphHolder.parentNode,
+                     c4.getParent());
+        assertEquals(dockNode,
+                     c4.getCandidate());
+
+        final UnDockNodeCommand c3 = (UnDockNodeCommand) commands.get(3);
         assertNotNull(c3);
         assertEquals(graphHolder.endNode,
                      c3.getParent());
         assertEquals(dockNode,
                      c3.getCandidate());
-        final SetChildNodeCommand c4 = (SetChildNodeCommand) commands.get(3);
-        assertNotNull(c4);
-        assertEquals(laneNode,
-                     c4.getParent());
-        assertEquals(graphHolder.endNode,
-                     c4.getCandidate());
+
         final SetChildNodeCommand c5 = (SetChildNodeCommand) commands.get(4);
         assertNotNull(c5);
         assertEquals(laneNode,

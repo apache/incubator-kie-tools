@@ -113,6 +113,8 @@ public class ContainmentAcceptorControlImpl extends AbstractAcceptorControl
             final boolean success = isCommandSuccess(result);
             if (highlights && !success) {
                 canvasHighlight.invalid(result.getViolations());
+            } else if(highlights){
+                    canvasHighlight.highLight(parent);
             } else {
                 canvasHighlight.unhighLight();
             }

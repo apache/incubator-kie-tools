@@ -61,25 +61,23 @@ public class UpdateChildNodeCommand extends AbstractCanvasCompositeCommand {
                         .filter(isDifferentParent())
                         .collect(Collectors.toSet());
 
-        // If candidate is docked, un-dock it.
-        currentDockEdge.ifPresent(e -> addCommand(new UnDockNodeCommand(e.getSourceNode(),
-                                                                        candidate)));
         // Remove current parent for candidate, if any.
-        currentParentEdge.ifPresent(e -> addCommand(new RemoveChildCommand(e.getSourceNode(),
-                                                                           candidate)));
-        // Remove current parent for nodes docked to the candidate candidate as well, if any.
-        dockedParentEdges.forEach(e -> addCommand(new RemoveChildCommand(e.getSourceNode(),
-                                                                         e.getTargetNode()))
-                .addCommand(new UnDockNodeCommand(candidate,
-                                                  e.getTargetNode())));
+        currentParentEdge.ifPresent(e -> addCommand(new RemoveChildCommand(e.getSourceNode(), candidate)));
+
+        // If candidate is docked, un-dock it.
+        currentDockEdge.ifPresent(e -> addCommand(new UnDockNodeCommand(e.getSourceNode(), candidate)));
+
         // Set new parent for the candidate, if necessary.
-        currentParentEdge.ifPresent(e -> addCommand(new SetChildNodeCommand(parent,
-                                                                            candidate)));
-        // Set new parent for the nodes docked, if necessary.
-        dockedParentEdges.forEach(e -> addCommand(new SetChildNodeCommand(parent,
-                                                                          e.getTargetNode()))
-                .addCommand(new DockNodeCommand(candidate,
-                                                e.getTargetNode())));
+        currentParentEdge.ifPresent(e -> addCommand(new SetChildNodeCommand(parent, candidate)));
+
+        // Remove current parent for nodes docked to the candidate and Undock them
+        // Set new parent for the nodes docked on candidate and Dock them
+        dockedParentEdges.forEach(e -> {
+            addCommand(new RemoveChildCommand(e.getSourceNode(), e.getTargetNode()));
+            addCommand(new UnDockNodeCommand(candidate, e.getTargetNode()));
+            addCommand(new SetChildNodeCommand(parent, e.getTargetNode()));
+            addCommand(new DockNodeCommand(candidate, e.getTargetNode()));
+        });
         return this;
     }
 

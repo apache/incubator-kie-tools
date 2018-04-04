@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.AbstractGraphDefinitionTypesTest;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.NodeContainmentContext;
@@ -54,6 +55,12 @@ public class ConnectorParentsMatchContainmentHandlerTest extends AbstractGraphDe
     @Mock
     private Object connectorDef;
 
+    @Mock
+    private Edge edge;
+
+    @Mock
+    private ViewConnector viewConnector;
+
     private ConnectorParentsMatchContainmentHandler tested;
     private Edge connector;
     private Graph graph;
@@ -70,7 +77,7 @@ public class ConnectorParentsMatchContainmentHandlerTest extends AbstractGraphDe
         when(ruleExtension.getId()).thenReturn(DEF_EDGE_ID);
         when(ruleExtension.getArguments()).thenReturn(new String[]{"violation1"});
         tested = new ConnectorParentsMatchContainmentHandler(graphHandler.definitionManager,
-                                                            new TreeWalkTraverseProcessorImpl());
+                                                             new TreeWalkTraverseProcessorImpl());
     }
 
     @Test
@@ -87,6 +94,10 @@ public class ConnectorParentsMatchContainmentHandlerTest extends AbstractGraphDe
         when(ruleExtension.getTypeArguments()).thenReturn(new Class[]{ParentDefinition.class});
         when(containmentContext.getCandidate()).thenReturn(nodeA);
         when(containmentContext.getParent()).thenReturn(parentNode);
+
+        nodeA.getInEdges().add(edge);
+        when(edge.getContent()).thenReturn(viewConnector);
+
         assertTrue(tested.accepts(ruleExtension,
                                   containmentContext));
     }
@@ -98,7 +109,7 @@ public class ConnectorParentsMatchContainmentHandlerTest extends AbstractGraphDe
         when(containmentContext.getCandidate()).thenReturn(nodeA);
         when(containmentContext.getParent()).thenReturn(parentNode);
         assertFalse(tested.accepts(ruleExtension,
-                                  containmentContext));
+                                   containmentContext));
     }
 
     @Test
@@ -111,10 +122,9 @@ public class ConnectorParentsMatchContainmentHandlerTest extends AbstractGraphDe
                              nodeA)
                 .connectTo(connector, nodeB);
         final RuleViolations violations = tested.evaluate(ruleExtension,
-                                         containmentContext);
+                                                          containmentContext);
         assertNotNull(violations);
         assertFalse(violations.violations(Violation.Type.ERROR).iterator().hasNext());
-
     }
 
     @Test
@@ -130,7 +140,5 @@ public class ConnectorParentsMatchContainmentHandlerTest extends AbstractGraphDe
                                                           containmentContext);
         assertNotNull(violations);
         assertTrue(violations.violations(Violation.Type.ERROR).iterator().hasNext());
-
     }
-
 }

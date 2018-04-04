@@ -16,10 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -31,6 +33,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Elem
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.ElementBuildRequest;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.exceptions.ElementOutOfBoundsException;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -44,7 +47,6 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
@@ -58,8 +60,16 @@ import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilde
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
+import static org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection.Builder.forElement;
+
 public abstract class AbstractElementBuilderControl extends AbstractCanvasHandlerControl<AbstractCanvasHandler>
         implements ElementBuilderControl<AbstractCanvasHandler> {
+
+    enum ParentAssignment {
+        DOCKING,
+        CONTAINMENT,
+        NONE
+    }
 
     private static Logger LOGGER = Logger.getLogger(AbstractElementBuilderControl.class.getName());
 
@@ -93,6 +103,31 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         this.commandManagerProvider = provider;
     }
 
+    protected ParentAssignment getParentAssignment(final Node<View<?>, Edge> parent, final Object definition) {
+
+        Objects.requireNonNull(definition);
+        final Set<String> labels = clientDefinitionManager.adapters().forDefinition().getLabels(definition);
+        final RuleSet ruleSet = canvasHandler.getRuleSet();
+
+        // Check containment rules.
+        if (null != parent) {
+            final Set<String> parentLabels = parent.getLabels();
+
+            final RuleViolations dockingViolations =
+                    ruleManager.evaluate(ruleSet, RuleContextBuilder.DomainContexts.docking(parentLabels, labels));
+            if (isValid(dockingViolations)) {
+                return ParentAssignment.DOCKING;
+            }
+
+            final RuleViolations containmentViolations =
+                    ruleManager.evaluate(ruleSet, RuleContextBuilder.DomainContexts.containment(parentLabels, labels));
+            if (isValid(containmentViolations)) {
+                return ParentAssignment.CONTAINMENT;
+            }
+        }
+        return ParentAssignment.NONE;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public boolean allows(final ElementBuildRequest<AbstractCanvasHandler> request) {
@@ -105,17 +140,10 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         final RuleSet ruleSet = canvasHandler.getRuleSet();
 
         // Check containment rules.
-        if (null != parent) {
-            final Object parentDef = parent.getContent().getDefinition();
-            final Set<String> parentLabels = clientDefinitionManager.adapters().forDefinition().getLabels(parentDef);
-            final RuleViolations containmentViolations =
-                    ruleManager.evaluate(ruleSet,
-                                         RuleContextBuilder.DomainContexts.containment(parentLabels,
-                                                                                       labels));
-            if (!isValid(containmentViolations)) {
-                return false;
-            }
+        if (Objects.nonNull(parent) && ParentAssignment.NONE.equals(getParentAssignment(parent, definition))) {
+            return false;
         }
+
         // Check cardinality rules.
         final Map<String, Integer> graphLabelCount = GraphUtils.getLabelsCount(canvasHandler.getDiagram().getGraph(),
                                                                                labels);
@@ -143,8 +171,9 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
             buildCallback.onSuccess(null);
             return;
         }
-        double x = request.getX();;
-        double y = request.getY();;
+
+        double x = request.getX();
+        double y = request.getY();
 
         if (checkOutOfBoundsCanvas(x, y)) {
             buildCallback.onError(new ClientRuntimeError(new ElementOutOfBoundsException("Element is placed outside canvas bounds")));
@@ -217,6 +246,7 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
                                              public void onSuccess(final Element element) {
                                                  getElementCommands(element,
                                                                     parent,
+                                                                    getParentAssignment(parent, definition),
                                                                     x,
                                                                     y,
                                                                     new CommandsCallback() {
@@ -244,35 +274,57 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
     @SuppressWarnings("unchecked")
     public void getElementCommands(final Element element,
                                    final Node<View<?>, Edge> parent,
+                                   final ParentAssignment parentAssignment,
                                    final double x,
                                    final double y,
                                    final CommandsCallback commandsCallback) {
-        Command<AbstractCanvasHandler, CanvasViolation> command = null;
+        //Command<AbstractCanvasHandler, CanvasViolation> command = null;
+        final List<Command<AbstractCanvasHandler, CanvasViolation>> commandList = new LinkedList<>();
         if (element instanceof Node) {
-            if (null != parent) {
-                command = canvasCommandFactory.addChildNode(parent,
-                                                            (Node) element,
-                                                            getShapeSetId());
-            } else {
-                command = canvasCommandFactory.addNode((Node) element,
-                                                       getShapeSetId());
-            }
+            final Node<View<?>, Edge> node = (Node<View<?>, Edge>) element;
+            commandList.addAll(getNodeBuildCommands(node, parent, parentAssignment, x, y));
         } else if (element instanceof Edge && null != parent) {
-            command = canvasCommandFactory.addConnector(parent,
-                                                        (Edge) element,
-                                                        MagnetConnection.Builder.forElement(parent),
-                                                        getShapeSetId());
+            commandList.add(canvasCommandFactory.addConnector(parent, (Edge) element, forElement(parent), getShapeSetId()));
         } else {
             throw new RuntimeException("Unrecognized element type for " + element);
         }
-        // Execute both add element and move commands in batch, so undo will be done in batch as well.
-        Command<AbstractCanvasHandler, CanvasViolation> moveCanvasElementCommand = canvasCommandFactory.updatePosition((Node<View<?>, Edge>) element,
-                                                                                                                       new Point2D(x, y));
-        final List<Command<AbstractCanvasHandler, CanvasViolation>> commandList = new LinkedList<Command<AbstractCanvasHandler, CanvasViolation>>();
-        commandList.add(command);
-        commandList.add(moveCanvasElementCommand);
-        commandsCallback.onComplete(element.getUUID(),
-                                    commandList);
+
+        commandsCallback.onComplete(element.getUUID(), commandList);
+    }
+
+    private CanvasCommand<AbstractCanvasHandler> getUpdatePositionCommand(double x, double y, Node<View<?>, Edge> node) {
+        return canvasCommandFactory.updatePosition(node, new Point2D(x, y));
+    }
+
+    private List<CanvasCommand<AbstractCanvasHandler>> getNodeBuildCommands(Node<View<?>, Edge> node, Node<View<?>, Edge> parent, ParentAssignment parentAssignment, double x, double y) {
+        final List<CanvasCommand<AbstractCanvasHandler>> commandList = new LinkedList<>();
+
+        if (Objects.isNull(parent)) {
+            return getNoParentCommands(node, x, y);
+        }
+
+        switch (parentAssignment) {
+            case DOCKING: {
+                Node<View<?>, Edge> grandParent = (Node<View<?>, Edge>) GraphUtils.getParent(parent);
+                commandList.add(canvasCommandFactory.addChildNode(grandParent, node, getShapeSetId()));
+                commandList.add(canvasCommandFactory.updatePosition(node, getChildCoordinates(grandParent, x, y)));
+                commandList.add(canvasCommandFactory.updateDockNode(parent, node, true));
+                return commandList;
+            }
+            case CONTAINMENT: {
+                commandList.add(canvasCommandFactory.addChildNode(parent, node, getShapeSetId()));
+                commandList.add(getUpdatePositionCommand(x, y, node));
+                return commandList;
+            }
+            case NONE:
+            default: {
+                return getNoParentCommands(node, x, y);
+            }
+        }
+    }
+
+    private List<CanvasCommand<AbstractCanvasHandler>> getNoParentCommands(Node<View<?>, Edge> node, double x, double y) {
+        return Arrays.asList(canvasCommandFactory.addNode(node, getShapeSetId()), getUpdatePositionCommand(x, y, node));
     }
 
     @SuppressWarnings("unchecked")

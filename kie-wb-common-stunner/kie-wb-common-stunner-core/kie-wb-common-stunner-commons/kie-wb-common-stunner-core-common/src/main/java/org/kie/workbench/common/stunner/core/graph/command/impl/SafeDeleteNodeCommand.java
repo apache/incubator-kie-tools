@@ -173,6 +173,7 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
                                                          candidate));
                         safeDeleteCallback.ifPresent(c -> c.removeDock(parent,
                                                                        candidate));
+                        addCommand(new SafeDeleteNodeCommand(candidate));
                     }
 
                     @Override

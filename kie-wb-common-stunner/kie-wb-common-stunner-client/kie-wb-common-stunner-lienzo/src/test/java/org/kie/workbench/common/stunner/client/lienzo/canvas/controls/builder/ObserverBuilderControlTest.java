@@ -131,6 +131,9 @@ public class ObserverBuilderControlTest {
     private ObserverBuilderControl tested;
     private double x, y;
 
+    private static final String DEF = "def";
+    private static final String DEF_ID = "def_id";
+
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
@@ -156,6 +159,7 @@ public class ObserverBuilderControlTest {
         when(rulesAdapter.getRuleSet(any())).thenReturn(mock(RuleSet.class));
         when(adapters.forDefinition()).thenReturn(definitionAdapter);
         when(adapters.forRules()).thenReturn(rulesAdapter);
+        when(definitionAdapter.getId(DEF)).thenReturn(DEF_ID);
 
         when(clientDefinitionManager.adapters()).thenReturn(adapters);
         when(clientDefinitionManager.definitionSets()).thenReturn(mock(TypeDefinitionSetRegistry.class));
@@ -234,6 +238,7 @@ public class ObserverBuilderControlTest {
         ElementBuildRequest<AbstractCanvasHandler> request = mock(ElementBuildRequest.class);
         when(request.getX()).thenReturn(5.0);
         when(request.getY()).thenReturn(5.0);
+        when(request.getDefinition()).thenReturn(DEF);
         tested.build(request, new BuilderControl.BuildCallback() {
 
             @Override
@@ -260,6 +265,7 @@ public class ObserverBuilderControlTest {
         reset(buildCallback);
         when(request.getX()).thenReturn(5.0);
         when(request.getY()).thenReturn(5.0);
+        when(request.getDefinition()).thenReturn(DEF);
         tested.build(request, buildCallback);
         verify(buildCallback, never()).onError(errorArgumentCaptor.capture());
         verify(buildCallback, times(1)).onSuccess(anyString());

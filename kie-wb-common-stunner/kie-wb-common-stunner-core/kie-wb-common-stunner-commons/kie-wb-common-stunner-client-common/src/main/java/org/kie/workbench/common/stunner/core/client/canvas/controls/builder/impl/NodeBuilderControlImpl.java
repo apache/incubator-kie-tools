@@ -126,6 +126,7 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
             final String ssid = canvasHandler.getDiagram().getMetadata().getShapeSetId();
             ebc.getElementCommands(node,
                                    parent,
+                                   ebc.getParentAssignment(parent, nodeDef),
                                    childCoordinates.getX(),
                                    childCoordinates.getY(),
                                    new AbstractElementBuilderControl.CommandsCallback() {

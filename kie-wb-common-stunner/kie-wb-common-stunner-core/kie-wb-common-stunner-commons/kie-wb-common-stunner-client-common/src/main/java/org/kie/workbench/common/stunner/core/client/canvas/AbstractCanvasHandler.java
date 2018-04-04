@@ -145,7 +145,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
      * @param parent The parent graph element.
      * @param child The graph element to set as a docked child.
      */
-    public abstract void dock(final Element parent,
+    public abstract boolean dock(final Element parent,
                               final Element child);
 
     /**

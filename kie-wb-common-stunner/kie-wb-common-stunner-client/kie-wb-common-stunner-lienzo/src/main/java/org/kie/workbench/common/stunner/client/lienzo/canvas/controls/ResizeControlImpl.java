@@ -26,6 +26,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShapeView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
@@ -270,15 +271,29 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
         final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder =
                 new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>();
         if (null != commands) {
+            Node<View<?>, Edge> node = (Node<View<?>, Edge>) element;
             if (null != x && null != y) {
-                commandBuilder
-                        .addCommand(canvasCommandFactory.updatePosition((Node<View<?>, Edge>) element,
-                                                                        new Point2D(x, y)));
+                commandBuilder.addCommand(canvasCommandFactory.updatePosition((Node<View<?>, Edge>) element, new Point2D(x, y)));
             }
+
             commands.forEach(commandBuilder::addCommand);
+
+            //Updating Docked nodes position
+            if (GraphUtils.hasDockedNodes(node)) {
+                GraphUtils.getDockedNodes(node)
+                        .stream()
+                        .forEach(docked -> {
+                            final Shape shape = canvasHandler.getCanvas().getShape(docked.getUUID());
+                            final double dockedX = shape.getShapeView().getShapeX();
+                            final double dockedY = shape.getShapeView().getShapeY();
+                            commandBuilder.addCommand(canvasCommandFactory.updatePosition(docked, new Point2D(dockedX, dockedY)));
+                        });
+            }
         }
+
         final CommandResult<CanvasViolation> resizeResults = getCommandManager().execute(canvasHandler,
                                                                                          commandBuilder.build());
+
         // Update the view bounds on the node content after successful resize.
         if (!CommandUtils.isError(resizeResults)) {
             element.getContent().setBounds(newBounds);

@@ -96,6 +96,10 @@ public class ConnectorParentsMatchContainmentHandler
     @Override
     public boolean accepts(final RuleExtension rule,
                            final NodeContainmentContext context) {
+        if (!GraphUtils.hasConnections(context.getCandidate())) {
+            //this is not necessary to check rules in case there is no connections
+            return false;
+        }
         return acceptsContainment(rule,
                                   context);
     }

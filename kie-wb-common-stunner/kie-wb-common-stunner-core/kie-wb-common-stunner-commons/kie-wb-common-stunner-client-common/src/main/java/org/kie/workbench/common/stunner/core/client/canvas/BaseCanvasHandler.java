@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -326,14 +327,21 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
     }
 
     @Override
-    public void dock(final Element parent,
-                     final Element child) {
+    public boolean dock(final Element parent,
+                        final Element child) {
         if (!isCanvasRoot(parent)) {
             final Shape parentShape = getCanvas().getShape(parent.getUUID());
             final Shape childShape = getCanvas().getShape(child.getUUID());
-            getCanvas().dock(parentShape,
-                             childShape);
+            try {
+                getCanvas().dock(parentShape,
+                                 childShape);
+                return true;
+            } catch (Exception e) {
+                LOGGER.fine("Error docking node " + child.getUUID());
+                return false;
+            }
         }
+        return false;
     }
 
     @Override
@@ -345,8 +353,10 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
         if (!isCanvasRoot(targetUUID)) {
             final Shape targetShape = getCanvas().getShape(targetUUID);
             final Shape childShape = getCanvas().getShape(childUUID);
-            getCanvas().undock(targetShape,
-                               childShape);
+            if(Objects.nonNull(targetShape) && Objects.nonNull(childShape)) {
+                getCanvas().undock(targetShape,
+                                   childShape);
+            }
         }
     }
 

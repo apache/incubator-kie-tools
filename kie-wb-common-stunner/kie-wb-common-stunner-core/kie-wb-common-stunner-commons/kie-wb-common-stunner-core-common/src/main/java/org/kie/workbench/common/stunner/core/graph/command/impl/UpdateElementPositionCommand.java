@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,6 +51,8 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     private final Point2D location;
     private final Point2D previousLocation;
     private transient Node<? extends View<?>, Edge> node;
+    private Element<? extends View<?>> parent;
+    private Boolean isDocked;
 
     public UpdateElementPositionCommand(final @MapsTo("uuid") String uuid,
                                         final @MapsTo("location") Point2D location,
@@ -107,7 +110,7 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
 
     @SuppressWarnings("unchecked")
     private CommandResult<RuleViolation> checkBounds(final GraphCommandExecutionContext context) {
-        final Element<? extends View<?>> element = getNodeNotNull(context);
+        final Node<? extends View<?>, Edge> element = getNodeNotNull(context);
         final Graph<DefinitionSet, Node> graph = (Graph<DefinitionSet, Node>) getGraph(context);
 
         final BoundsImpl newBounds = getTargetBounds(element);
@@ -116,14 +119,21 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
 
         final Bounds parentBounds = getParentBounds(element, graph);
 
-        if (GraphUtils.checkBoundsExceeded(parentBounds, newBounds)) {
-            ((View) element.getContent()).setBounds(newBounds);
+        if (GraphUtils.checkBoundsExceeded(parentBounds, newBounds) || isDockedNode(element)) {
+            //in case of docked node the location should not be considered, because it is relative to the dock parent
+            element.getContent().setBounds(newBounds);
         } else {
-            result.addViolation(new BoundsExceededViolation(parentBounds)
-                                        .setUUID(element.getUUID()));
+            result.addViolation(new BoundsExceededViolation(parentBounds).setUUID(element.getUUID()));
         }
 
         return result.build();
+    }
+
+    private boolean isDockedNode(Node<? extends View<?>, Edge> element) {
+        if(Objects.isNull(isDocked)){
+            isDocked = GraphUtils.isDockedNode(element);
+        }
+        return isDocked;
     }
 
     @SuppressWarnings("unchecked")
@@ -139,7 +149,10 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
 
     @SuppressWarnings("unchecked")
     private Bounds getParentBounds(Element element, final Graph<DefinitionSet, Node> graph) {
-        final Element<? extends View<?>> parent = (Element<? extends View<?>>) GraphUtils.getParent((Node) element);
+        if (Objects.isNull(parent)) {
+            //set the parent on the first execution, this avoid getting a wrong parent when undoing the command in case the parent has changed
+            parent = (Element<? extends View<?>>) GraphUtils.getParent((Node) element);
+        }
 
         if (parent != null && !GraphUtils.isRootNode(parent, graph)) {
             final double[] size = GraphUtils.getNodeSize(parent.getContent());

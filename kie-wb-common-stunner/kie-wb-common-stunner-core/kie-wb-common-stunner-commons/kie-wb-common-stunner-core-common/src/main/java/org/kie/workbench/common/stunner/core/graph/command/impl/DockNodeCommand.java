@@ -30,8 +30,10 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBui
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.violations.DockingRuleViolation;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
 /**
@@ -84,18 +86,26 @@ public final class DockNodeCommand extends AbstractGraphCommand {
     protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
         final Element<? extends Definition<?>> parent = (Element<? extends Definition<?>>) getParent(context);
         final Node<Definition<?>, Edge> candidate = (Node<Definition<?>, Edge>) getCandidate(context);
+
+        //check if the candidate has connections
+        if (GraphUtils.hasTargetConnections(candidate)) {
+            return new GraphCommandResultBuilder().addViolation(new DockingRuleViolation(parent.getUUID(), candidate.getUUID())).build();
+        }
+
+        //checking rules
         final Collection<RuleViolation> dockingRuleViolations =
                 doEvaluate(context,
                            RuleContextBuilder.GraphContexts.docking(getGraph(context),
                                                                     parent,
                                                                     candidate));
+
         return new GraphCommandResultBuilder(dockingRuleViolations).build();
     }
 
     @Override
     public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
-        final UnDockNodeCommand undoCommand = new UnDockNodeCommand(parent,
-                                                                    candidate);
+        final UnDockNodeCommand undoCommand = new UnDockNodeCommand(getParent(context),
+                                                                    getCandidate(context));
         return undoCommand.execute(context);
     }
 

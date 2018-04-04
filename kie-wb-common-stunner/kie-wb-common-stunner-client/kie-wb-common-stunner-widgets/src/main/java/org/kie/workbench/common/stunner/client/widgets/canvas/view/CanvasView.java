@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.client.widgets.canvas.view;
 
+import java.util.Objects;
+
 import javax.annotation.PostConstruct;
 
 import com.ait.lienzo.client.core.shape.GridLayer;
@@ -22,6 +24,8 @@ import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingControl;
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Composite;
@@ -151,8 +155,11 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
 
     AbstractCanvas.View dockShape(final WiresContainer parentShape,
                                   final WiresShape childShape) {
-        parentShape.add(childShape);
-        childShape.setDockedTo(parentShape);
+        WiresDockingControl dockingControl = childShape.getControl().getDockingControl();
+        Point2D dockLocation = (Objects.isNull(dockingControl.getCandidateLocation()) ?
+                childShape.getLocation() :
+                dockingControl.getCandidateLocation());
+        dockingControl.dock(childShape, parentShape, dockLocation);
         return this;
     }
 
@@ -167,8 +174,10 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
 
     AbstractCanvas.View undock(final WiresShape targetShape,
                                final WiresShape childShape) {
-        targetShape.remove(childShape);
-        childShape.setDockedTo(null);
+
+        childShape.getControl()
+                .getDockingControl()
+                .undock(childShape, targetShape);
         return this;
     }
 

@@ -175,9 +175,9 @@ public class SessionPreviewCanvasHandlerProxy<D extends Diagram, C extends Abstr
     }
 
     @Override
-    public void dock(final Element parent,
+    public boolean dock(final Element parent,
                      final Element child) {
-        wrapped.dock(parent,
+        return wrapped.dock(parent,
                      child);
     }
 

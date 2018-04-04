@@ -15,13 +15,18 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.exception.BadCommandArgumentsException;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
+import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
@@ -31,9 +36,11 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -42,15 +49,24 @@ import static org.mockito.Mockito.when;
 public class UpdateElementPositionCommandTest extends AbstractGraphCommandTest {
 
     private static final String UUID = "testUUID";
+    private static final String UUID2 = "testUUID2";
     private static final Point2D PREVIOUS_LOCATION = new Point2D(100d, 100d);
     private static final Point2D LOCATION = new Point2D(200d, 200d);
     private static final Double W = 50d;
     private static final Double H = 50d;
 
     @Mock
-    Node candidate;
+    private Node candidate;
+
     private View content;
+
     private UpdateElementPositionCommand tested;
+
+    @Mock
+    private Node dockedNode;
+
+    @Mock
+    private Edge dockEdge;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -64,8 +80,16 @@ public class UpdateElementPositionCommandTest extends AbstractGraphCommandTest {
         when(candidate.getUUID()).thenReturn(UUID);
         when(candidate.getContent()).thenReturn(content);
         when(graphIndex.getNode(eq(UUID))).thenReturn(candidate);
+
         this.tested = new UpdateElementPositionCommand(candidate,
                                                        LOCATION);
+
+        //docked node mock
+        when(dockedNode.getUUID()).thenReturn(UUID2);
+        when(dockedNode.getContent()).thenReturn(content);
+        when(graphIndex.getNode(eq(UUID2))).thenReturn(dockedNode);
+        when(dockedNode.getInEdges()).thenReturn(Arrays.asList(dockEdge));
+        when(dockEdge.getContent()).thenReturn(new Dock());
     }
 
     @Test
@@ -143,5 +167,17 @@ public class UpdateElementPositionCommandTest extends AbstractGraphCommandTest {
                never()).setBounds(any(Bounds.class));
         assertEquals(CommandResult.Type.ERROR,
                      result.getType());
+    }
+
+    @Test
+    public void testExecuteDockedNode(){
+        ArgumentCaptor<Bounds> boundsArgumentCaptor = ArgumentCaptor.forClass(Bounds.class);
+        this.tested = new UpdateElementPositionCommand(dockedNode, new Point2D(600d, 600d));
+        final CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
+        verify((View) dockedNode.getContent(), times(1)).setBounds(boundsArgumentCaptor.capture());
+        assertEquals(CommandResult.Type.INFO, result.getType());
+        Bounds bounds = boundsArgumentCaptor.getValue();
+        assertEquals(bounds.getUpperLeft(), new BoundImpl(600d, 600d));
+        assertEquals(bounds.getLowerRight(), new BoundImpl(650d, 650d));
     }
 }
