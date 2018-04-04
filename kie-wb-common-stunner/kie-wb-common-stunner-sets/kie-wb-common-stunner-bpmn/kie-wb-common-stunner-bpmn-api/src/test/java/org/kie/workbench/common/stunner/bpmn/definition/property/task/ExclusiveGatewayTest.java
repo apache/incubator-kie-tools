@@ -26,6 +26,7 @@ import javax.validation.ValidatorFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.property.gateway.GatewayExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 
 import static org.junit.Assert.assertTrue;
@@ -35,6 +36,7 @@ public class ExclusiveGatewayTest {
     private Validator validator;
 
     private static final String NAME_VALID = "Gateway";
+    private static final String DEFAULT_ROUTE_VALID = "Straight outta gateway";
 
     @Before
     public void init() {
@@ -54,6 +56,22 @@ public class ExclusiveGatewayTest {
     public void testExclusiveDatabasedGatewayNameEmpty() {
         ExclusiveGateway exclusiveGateway = new ExclusiveGateway.ExclusiveGatewayBuilder().build();
         exclusiveGateway.getGeneral().setName(new Name(""));
+        Set<ConstraintViolation<ExclusiveGateway>> violations = this.validator.validate(exclusiveGateway);
+        assertTrue(violations.isEmpty());
+    }
+
+    @Test
+    public void testExclusiveDatabasedGatewayExecutionSet() {
+        ExclusiveGateway exclusiveGateway = new ExclusiveGateway.ExclusiveGatewayBuilder().build();
+        exclusiveGateway.setExecutionSet(new GatewayExecutionSet());
+        Set<ConstraintViolation<ExclusiveGateway>> violations = this.validator.validate(exclusiveGateway);
+        assertTrue(violations.isEmpty());
+    }
+
+    @Test
+    public void testExclusiveDatabasedGatewayExecutionSetWithDefaultRoute() {
+        ExclusiveGateway exclusiveGateway = new ExclusiveGateway.ExclusiveGatewayBuilder().build();
+        exclusiveGateway.setExecutionSet(new GatewayExecutionSet(DEFAULT_ROUTE_VALID));
         Set<ConstraintViolation<ExclusiveGateway>> violations = this.validator.validate(exclusiveGateway);
         assertTrue(violations.isEmpty());
     }
