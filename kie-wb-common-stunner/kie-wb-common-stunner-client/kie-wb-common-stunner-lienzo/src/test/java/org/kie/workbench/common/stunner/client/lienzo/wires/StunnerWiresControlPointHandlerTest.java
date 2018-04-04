@@ -33,7 +33,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.controlpoint.Ca
 import org.kie.workbench.common.stunner.core.client.canvas.event.controlpoint.CanvasControlPointDragStartEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.mockito.Mockito.verify;

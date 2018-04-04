@@ -26,7 +26,6 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.common
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.common.StringFieldParser;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.HasControlPoints;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.DiscreteConnection;

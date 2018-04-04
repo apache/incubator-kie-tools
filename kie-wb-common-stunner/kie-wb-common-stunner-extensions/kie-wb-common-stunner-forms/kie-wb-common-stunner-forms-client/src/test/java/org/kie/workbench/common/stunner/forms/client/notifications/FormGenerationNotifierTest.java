@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.forms.client.notifications;
 
 import java.util.function.Consumer;
 
-import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

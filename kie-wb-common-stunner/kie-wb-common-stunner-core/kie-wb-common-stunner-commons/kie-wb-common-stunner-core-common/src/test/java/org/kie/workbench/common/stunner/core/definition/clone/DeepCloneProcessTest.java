@@ -20,11 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.util.ClassUtils;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import static org.junit.Assert.assertNotEquals;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DeepCloneProcessTest extends AbstractCloneProcessTest {

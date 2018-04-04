@@ -22,7 +22,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
 import org.kie.workbench.common.stunner.client.lienzo.Lienzo;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.widgets.canvas.view.LienzoPanel;

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.forms.dynamic.client.rendering;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;

@@ -31,8 +31,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchDropDown;
-import org.uberfire.mocks.EventSourceMock;
-import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

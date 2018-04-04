@@ -20,7 +20,6 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPngSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 

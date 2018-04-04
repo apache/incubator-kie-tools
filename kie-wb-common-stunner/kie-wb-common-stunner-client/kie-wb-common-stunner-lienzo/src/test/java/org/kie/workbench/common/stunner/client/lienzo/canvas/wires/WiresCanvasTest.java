@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.client.lienzo.canvas.wires;
 import java.util.Optional;
 
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.junit.Before;

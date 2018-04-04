@@ -18,9 +18,7 @@ package org.kie.workbench.common.forms.model.impl.meta;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.forms.model.MetaDataEntry;

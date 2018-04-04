@@ -24,7 +24,6 @@ import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.core.definition.AbstractDefinitionSetResourceType;
 import org.uberfire.workbench.annotations.VisibleAsset;
 import org.uberfire.workbench.category.Category;
-import org.uberfire.workbench.category.Others;
 
 @Default
 @VisibleAsset

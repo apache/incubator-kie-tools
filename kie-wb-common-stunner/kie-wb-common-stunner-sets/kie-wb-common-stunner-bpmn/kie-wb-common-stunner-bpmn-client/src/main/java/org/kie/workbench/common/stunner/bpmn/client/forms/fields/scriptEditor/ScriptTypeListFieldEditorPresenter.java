@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.scriptEditor;
 
 import javax.annotation.PostConstruct;
-
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.IsElement;

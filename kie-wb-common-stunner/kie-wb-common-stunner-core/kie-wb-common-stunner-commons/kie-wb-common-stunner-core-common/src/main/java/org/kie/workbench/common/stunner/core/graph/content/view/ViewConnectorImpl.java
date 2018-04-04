@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.core.graph.content.view;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 

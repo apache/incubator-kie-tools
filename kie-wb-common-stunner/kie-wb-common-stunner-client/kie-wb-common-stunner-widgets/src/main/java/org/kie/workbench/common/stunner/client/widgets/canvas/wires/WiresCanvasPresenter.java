@@ -21,7 +21,6 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.client.lienzo.Lienzo;

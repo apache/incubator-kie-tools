@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.forms.processing.engine.handling.impl;
 
-import java.util.Collection;
-
 import javax.validation.Validation;
 import javax.validation.Validator;
 
@@ -27,12 +25,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.forms.processing.engine.handling.FormField;
 import org.mockito.Mock;
 
 import static org.mockito.Mockito.anyObject;
 import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;

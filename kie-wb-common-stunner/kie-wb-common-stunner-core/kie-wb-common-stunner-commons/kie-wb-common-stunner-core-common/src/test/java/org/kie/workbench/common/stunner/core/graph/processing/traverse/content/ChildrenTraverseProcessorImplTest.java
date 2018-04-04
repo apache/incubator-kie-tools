@@ -17,9 +17,6 @@
 package org.kie.workbench.common.stunner.core.graph.processing.traverse.content;
 
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +29,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;

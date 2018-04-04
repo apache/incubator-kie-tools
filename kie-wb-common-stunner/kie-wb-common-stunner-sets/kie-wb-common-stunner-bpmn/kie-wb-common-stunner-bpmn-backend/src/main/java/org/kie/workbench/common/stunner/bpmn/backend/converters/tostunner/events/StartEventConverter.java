@@ -17,11 +17,9 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.events;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.eclipse.bpmn2.CompensateEventDefinition;
 import org.eclipse.bpmn2.ConditionalEventDefinition;
-import org.eclipse.bpmn2.Error;
 import org.eclipse.bpmn2.ErrorEventDefinition;
 import org.eclipse.bpmn2.EscalationEventDefinition;
 import org.eclipse.bpmn2.EventDefinition;

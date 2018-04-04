@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.graph.content.view;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.kie.workbench.common.stunner.core.graph.content.HasControlPoints;

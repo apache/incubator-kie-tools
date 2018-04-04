@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.DataInput;
-import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.Documentation;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.RootElement;

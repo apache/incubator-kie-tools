@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.forms.editor.client.editor.changes;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

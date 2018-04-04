@@ -19,7 +19,6 @@ package org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processi
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.FormGenerationContext;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.FormElementProcessor;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.util.PropertyValueExtractor;

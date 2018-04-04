@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.core.graph.content.view;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.util.HashUtil;

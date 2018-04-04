@@ -26,7 +26,6 @@ import org.kie.workbench.common.stunner.core.definition.adapter.binding.HasInher
 import org.kie.workbench.common.stunner.core.definition.clone.CloneManager;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphProperty;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 public abstract class BindableMorphAdapter<S> extends AbstractMorphAdapter<S> {

@@ -21,12 +21,10 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.project.categories.Model;
 import org.guvnor.common.services.project.categories.Process;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementImageResources;
 import org.kie.workbench.common.stunner.cm.resource.CaseManagementDefinitionSetResourceType;
 import org.kie.workbench.common.stunner.project.client.type.AbstractStunnerClientResourceType;
-import org.uberfire.workbench.category.Category;
 
 @ApplicationScoped
 public class CaseManagementDiagramResourceType extends AbstractStunnerClientResourceType<CaseManagementDefinitionSetResourceType> {

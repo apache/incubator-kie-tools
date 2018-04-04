@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
 import java.util.Collection;
-import java.util.logging.Logger;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
