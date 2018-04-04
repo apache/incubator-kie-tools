@@ -246,5 +246,4 @@ public class WiresMagnet extends AbstractControlHandle implements Iterable<Wires
         this.m_y = y;
         return this;
     }
-
 }
