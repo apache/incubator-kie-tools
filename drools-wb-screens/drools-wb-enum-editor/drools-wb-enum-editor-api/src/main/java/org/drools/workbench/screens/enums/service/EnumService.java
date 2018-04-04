@@ -18,7 +18,6 @@ package org.drools.workbench.screens.enums.service;
 
 import org.drools.workbench.screens.enums.model.EnumModelContent;
 import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
-import org.guvnor.common.services.shared.file.SupportsUpdate;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.ValidationService;
 import org.jboss.errai.bus.server.annotations.Remote;
