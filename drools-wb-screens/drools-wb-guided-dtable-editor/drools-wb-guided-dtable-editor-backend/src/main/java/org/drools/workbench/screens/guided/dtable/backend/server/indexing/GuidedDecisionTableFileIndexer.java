@@ -24,7 +24,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
 import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.IndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.drools.AbstractDrlFileIndexer;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.file.Path;
@@ -44,7 +44,7 @@ public class GuidedDecisionTableFileIndexer extends AbstractDrlFileIndexer {
     }
 
     @Override
-    public DefaultIndexBuilder fillIndexBuilder(final Path path) throws Exception {
+    public IndexBuilder fillIndexBuilder(final Path path) throws Exception {
         final String content = ioService.readAllString(path);
         final GuidedDecisionTable52 model = GuidedDTXMLPersistence.getInstance().unmarshal(content);
         final String drl = GuidedDTDRLPersistence.getInstance().marshal(model);

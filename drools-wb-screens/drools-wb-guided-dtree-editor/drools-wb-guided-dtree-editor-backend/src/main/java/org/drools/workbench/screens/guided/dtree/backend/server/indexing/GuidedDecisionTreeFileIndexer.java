@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import org.drools.workbench.screens.guided.dtree.type.GuidedDTreeResourceTypeDefinition;
 import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.IndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.drools.AbstractDrlFileIndexer;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.file.Path;
@@ -41,7 +41,7 @@ public class GuidedDecisionTreeFileIndexer extends AbstractDrlFileIndexer {
     }
 
     @Override
-    public DefaultIndexBuilder fillIndexBuilder(final Path path) throws Exception {
+    public IndexBuilder fillIndexBuilder(final Path path) throws Exception {
         final String drl = ioService.readAllString(path);
 
         return fillDrlIndexBuilder(path, drl);

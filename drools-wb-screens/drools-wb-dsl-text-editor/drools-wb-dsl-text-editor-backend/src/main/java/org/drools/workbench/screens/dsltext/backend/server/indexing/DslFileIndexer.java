@@ -34,6 +34,7 @@ import org.kie.workbench.common.services.datamodel.backend.server.service.DataMo
 import org.kie.workbench.common.services.refactoring.IndexElementsGenerator;
 import org.kie.workbench.common.services.refactoring.Resource;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.IndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.drools.AbstractDrlFileIndexer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +63,7 @@ public class DslFileIndexer extends AbstractDrlFileIndexer {
     }
 
     @Override
-    public DefaultIndexBuilder fillIndexBuilder(final Path path) throws Exception {
+    public IndexBuilder fillIndexBuilder(final Path path) throws Exception {
 
         final List<String> lhs = new ArrayList<String>();
         final List<String> rhs = new ArrayList<String>();

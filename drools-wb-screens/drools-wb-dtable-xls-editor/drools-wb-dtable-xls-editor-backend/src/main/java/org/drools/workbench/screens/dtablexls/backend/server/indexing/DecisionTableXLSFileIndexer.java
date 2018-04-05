@@ -25,7 +25,7 @@ import org.drools.compiler.compiler.DecisionTableFactory;
 import org.drools.workbench.screens.dtablexls.type.DecisionTableXLSResourceTypeDefinition;
 import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.IndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.drools.AbstractDrlFileIndexer;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.file.Path;
@@ -46,7 +46,7 @@ public class DecisionTableXLSFileIndexer extends AbstractDrlFileIndexer {
     }
 
     @Override
-    public DefaultIndexBuilder fillIndexBuilder(final Path path) throws Exception {
+    public IndexBuilder fillIndexBuilder(final Path path) throws Exception {
         InputStream inputStream = null;
         try {
             inputStream = ioService.newInputStream(path,
