@@ -33,6 +33,11 @@ public class ModuleServiceMock
     }
 
     @Override
+    public MockModule resolveModule(Path resource, boolean loadPOM) {
+        return null;
+    }
+
+    @Override
     public Module resolveParentModule(Path resource) {
         return null;
     }

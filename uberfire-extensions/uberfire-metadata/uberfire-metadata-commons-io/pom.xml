@@ -171,6 +171,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <includes>
+            <include>org.uberfire.ext.metadata.io.common.*</include>
             <include>org.uberfire.ext.metadata.io.elasticsearch.suite.*</include>
             <include>org.uberfire.ext.metadata.io.lucene.*</include>
           </includes>

@@ -30,6 +30,14 @@ public interface ModuleResourceResolver<T extends Module> {
      */
     T resolveModule(final Path resource);
 
+    /**
+     * Given a Resource path resolve it to the containing Module Path. A Module path is the folder containing pom.xml
+     * @param resource
+     * @param loadPOM true iff the POM file should be parsed and loaded.
+     * @return Path to the folder containing the Module's pom.xml file if loadPOM is true and it exists or else null.
+     */
+    T resolveModule(final Path resource, boolean loadPOM);
+
     Module resolveParentModule(final Path resource);
 
     Module resolveToParentModule(final Path resource);

@@ -19,26 +19,29 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.enterprise.inject.Alternative;
+
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.metadata.engine.Indexer;
 
 /**
  * Container for Indexers setup by CDI after IOServiceIndexedImpl has been created
  */
+@Alternative
 public class IndexersFactory {
 
-    private static final List<Indexer> indexers = new ArrayList<Indexer>();
+    private final List<Indexer> indexers = new ArrayList<>();
 
-    public static void addIndexer(final Indexer indexer) {
+    public void addIndexer(final Indexer indexer) {
         indexers.add(PortablePreconditions.checkNotNull("indexer",
                                                         indexer));
     }
 
-    public static List<Indexer> getIndexers() {
+    public List<Indexer> getIndexers() {
         return Collections.unmodifiableList(indexers);
     }
 
-    public static void clear() {
+    public void clear() {
         indexers.clear();
     }
 }

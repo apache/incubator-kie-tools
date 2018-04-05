@@ -65,7 +65,7 @@ public class ModuleFinderTest {
 
         return new ResourceResolver() {
             @Override
-            public Module resolveModule(org.uberfire.backend.vfs.Path resource) {
+            public Module resolveModule(org.uberfire.backend.vfs.Path resource, boolean loadPOM) {
 
                 final String uri = resource.toURI();
 

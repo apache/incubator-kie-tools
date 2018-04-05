@@ -18,6 +18,7 @@ package org.uberfire.ext.metadata.io.elasticsearch;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,16 +27,24 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Executors;
 
+import javax.enterprise.event.Event;
+import javax.enterprise.util.TypeLiteral;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
+import org.slf4j.LoggerFactory;
 import org.uberfire.commons.async.DescriptiveThreadFactory;
 import org.uberfire.ext.metadata.MetadataConfig;
 import org.uberfire.ext.metadata.backend.elastic.provider.ElasticSearchContext;
+import org.uberfire.ext.metadata.engine.IndexerScheduler.Factory;
+import org.uberfire.ext.metadata.engine.MetaIndexEngine;
+import org.uberfire.ext.metadata.io.ConstrainedIndexerScheduler.ConstraintBuilder;
 import org.uberfire.ext.metadata.io.IOServiceIndexedImpl;
+import org.uberfire.ext.metadata.io.IndexerDispatcher;
+import org.uberfire.ext.metadata.io.IndexerDispatcher.IndexerDispatcherFactory;
 import org.uberfire.ext.metadata.io.IndexersFactory;
 import org.uberfire.ext.metadata.io.MetadataConfigBuilder;
 import org.uberfire.ext.metadata.io.elasticsearch.suite.ElasticSearchTestSuite;
@@ -44,19 +53,18 @@ import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.Path;
-import pl.domzal.junit.docker.rule.DockerRule;
-import pl.domzal.junit.docker.rule.StopOption;
-import pl.domzal.junit.docker.rule.WaitFor;
 
 public abstract class BaseIndexTest {
 
-    protected static final Map<String, Path> basePaths = new HashMap<String, Path>();
-    protected static final List<File> tempFiles = new ArrayList<File>();
+    protected static final Map<String, Path> basePaths = new HashMap<>();
+    protected static final List<File> tempFiles = new ArrayList<>();
     private static boolean localTest = false;
     protected boolean created = false;
     protected MetadataConfig config;
     protected IOService ioService = null;
     private int seed = new Random(10L).nextInt();
+    private IndexersFactory indexersFactory;
+    private IndexerDispatcherFactory indexerDispatcherFactory;
 
     @BeforeClass
     public static void beforeClass() throws Throwable {
@@ -106,10 +114,53 @@ public abstract class BaseIndexTest {
 
             ioService = new IOServiceIndexedImpl(config.getIndexEngine(),
                                                  Executors.newCachedThreadPool(new DescriptiveThreadFactory()),
+                                                 indexersFactory(),
+                                                 indexerDispatcherFactory(config.getIndexEngine()),
                                                  DublinCoreView.class,
                                                  VersionAttributeView.class);
         }
         return ioService;
+    }
+
+    protected IndexersFactory indexersFactory() {
+        if (indexersFactory == null) {
+            indexersFactory = new IndexersFactory();
+        }
+
+        return indexersFactory;
+    }
+
+    protected IndexerDispatcherFactory indexerDispatcherFactory(MetaIndexEngine indexEngine) {
+        if (indexerDispatcherFactory == null) {
+            Factory schedulerFactory = new ConstraintBuilder().createFactory();
+            indexerDispatcherFactory = IndexerDispatcher.createFactory(indexEngine, schedulerFactory, testEvent(), LoggerFactory.getLogger(IndexerDispatcher.class));
+        }
+
+        return indexerDispatcherFactory;
+    }
+
+    private <T> Event<T> testEvent() {
+        return new Event<T>() {
+
+            @Override
+            public void fire(T event) {
+            }
+
+            @Override
+            public Event<T> select(Annotation... qualifiers) {
+                return this;
+            }
+
+            @Override
+            public <U extends T> Event<U> select(Class<U> subtype, Annotation... qualifiers) {
+                return (Event<U>) this;
+            }
+
+            @Override
+            public <U extends T> Event<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
+                return (Event<U>) this;
+            }
+        };
     }
 
     protected String getSimpleName() {
@@ -118,7 +169,7 @@ public abstract class BaseIndexTest {
 
     @Before
     public void setup() throws IOException {
-        IndexersFactory.clear();
+        indexersFactory().clear();
         if (!created) {
             final String path = createTempDirectory().getAbsolutePath();
             System.setProperty("org.uberfire.nio.git.dir",

@@ -16,18 +16,13 @@
 
 package org.uberfire.ext.metadata.io.index;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkCondition;
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,27 +30,32 @@ import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.ext.metadata.backend.lucene.model.KClusterImpl;
 import org.uberfire.ext.metadata.engine.MetaIndexEngine;
 import org.uberfire.ext.metadata.engine.MetaModelStore;
+import org.uberfire.ext.metadata.event.IndexEvent;
+import org.uberfire.ext.metadata.event.IndexEvent.DeletedEvent;
+import org.uberfire.ext.metadata.event.IndexEvent.NewlyIndexedEvent;
+import org.uberfire.ext.metadata.event.IndexEvent.RenamedEvent;
+import org.uberfire.ext.metadata.io.util.MultiIndexerLock;
 import org.uberfire.ext.metadata.metamodel.MetaModelBuilder;
 import org.uberfire.ext.metadata.model.KCluster;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.model.KObjectKey;
 import org.uberfire.ext.metadata.provider.IndexProvider;
 
+import static org.kie.soup.commons.validation.PortablePreconditions.checkCondition;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+
 public class MetadataIndexEngine implements MetaIndexEngine {
 
     private final MetaModelBuilder metaModelBuilder;
     private Logger logger = LoggerFactory.getLogger(MetadataIndexEngine.class);
     private final IndexProvider provider;
-    private final Map<KCluster, ReentrantLock> batchLocks = new ConcurrentHashMap<>();
-    private final ThreadLocal<Map<KCluster, List<KObject>>> batchSets = ThreadLocal.withInitial(() -> new HashMap<>());
+    private final Map<KCluster, MultiIndexerLock> batchLocks = new ConcurrentHashMap<>();
+    private final ThreadLocal<Map<KCluster, List<IndexEvent>>> batchSets = ThreadLocal.withInitial(() -> new HashMap<>());
     private final Collection<Runnable> beforeDispose = new ArrayList<>();
-    private final Consumer<List<KObject>> kObectBatchObserver;
 
     public MetadataIndexEngine(IndexProvider provider,
-                               MetaModelStore metaModelStore,
-                               Consumer<List<KObject>> kObectBatchObserver) {
+                               MetaModelStore metaModelStore) {
         this.provider = provider;
-        this.kObectBatchObserver = kObectBatchObserver;
         this.metaModelBuilder = new MetaModelBuilder(metaModelStore);
         PriorityDisposableRegistry.register(this);
     }
@@ -70,20 +70,20 @@ public class MetadataIndexEngine implements MetaIndexEngine {
     }
 
     @Override
-    public boolean isIndexReady(KCluster cluster) {
-        final ReentrantLock lock;
-        return !provider.isFreshIndex(cluster) && (lock = batchLocks.get(cluster)) != null && !lock.isLocked();
+    public boolean isIndexReady(KCluster cluster, String indexerId) {
+        final MultiIndexerLock lock;
+        return !provider.isFreshIndex(cluster) && (lock = batchLocks.get(cluster)) != null && !lock.isLockedBy(indexerId);
     }
 
     @Override
     public void prepareBatch(KCluster cluster) {
-        batchLocks.putIfAbsent(cluster, new ReentrantLock());
+        batchLocks.putIfAbsent(cluster, new MultiIndexerLock(new ReentrantLock()));
     }
 
     @Override
     public void startBatch(KCluster cluster) {
         prepareBatch(cluster);
-        Map<KCluster, List<KObject>> batchSet = batchSets.get();
+        Map<KCluster, List<IndexEvent>> batchSet = batchSets.get();
         if (batchSet.containsKey(cluster)) {
             throw new IllegalStateException(String.format("Cannot start a batch for cluster [id=%s] when there is already a batch started on this thread [%s]",
                                                           cluster.getClusterId(),
@@ -93,15 +93,40 @@ public class MetadataIndexEngine implements MetaIndexEngine {
         }
     }
 
+    private void doOrDeferAction(KCluster index, IndexEvent event) {
+        if (this.isBatch(index)) {
+            List<IndexEvent> store = this.batchSets.get().get(index);
+            store.add(event);
+        } else {
+            doAction(event);
+        }
+    }
+
     @Override
     public void index(KObject kObject) {
+        KCluster index = new KClusterImpl(kObject.getClusterId());
+        doOrDeferAction(index, new NewlyIndexedEvent(kObject));
+    }
 
-        if (this.isBatch(kObject)) {
-            KClusterImpl index = new KClusterImpl(kObject.getClusterId());
-            List<KObject> store = this.batchSets.get().get(index);
-            store.add(kObject);
-        } else {
-            doIndex(kObject);
+    private void doAction(IndexEvent event) {
+        switch (event.getKind()) {
+            case NewlyIndexed: {
+                NewlyIndexedEvent newlyIndexedEvent = (NewlyIndexedEvent) event;
+                doIndex(newlyIndexedEvent.getKObject());
+                break;
+            }
+            case Renamed: {
+                RenamedEvent renamedEvent = (RenamedEvent) event;
+                doRename(renamedEvent.getSource(), renamedEvent.getTarget());
+                break;
+            }
+            case Deleted: {
+                DeletedEvent deletedEvent = (DeletedEvent) event;
+                doDelete(deletedEvent.getDeleted());
+                break;
+            }
+            default:
+                throw new UnsupportedOperationException("Unrecognized index event kind: " + event.getKind());
         }
     }
 
@@ -110,9 +135,8 @@ public class MetadataIndexEngine implements MetaIndexEngine {
         this.provider.index(kObject);
     }
 
-    private boolean isBatch(KObject object) {
-        KClusterImpl cluster = new KClusterImpl(object.getClusterId());
-        Map<KCluster, List<KObject>> batchSet = batchSets.get();
+    private boolean isBatch(KCluster cluster) {
+        Map<KCluster, List<IndexEvent>> batchSet = batchSets.get();
         if (batchSet.isEmpty()) {
             // Don't hold reference to this map if there are no batches in the thread.
             batchSets.remove();
@@ -131,6 +155,11 @@ public class MetadataIndexEngine implements MetaIndexEngine {
         checkCondition("renames are allowed only from same cluster",
                        from.getClusterId().equals(to.getClusterId()));
 
+        KCluster index = new KClusterImpl(from.getClusterId());
+        doOrDeferAction(index, new RenamedEvent(from, to));
+    }
+
+    private void doRename(KObjectKey from, KObject to) {
         this.provider.rename(from.getClusterId(),
                              from.getId(),
                              to);
@@ -148,20 +177,20 @@ public class MetadataIndexEngine implements MetaIndexEngine {
 
     @Override
     public void delete(KObjectKey objectKey) {
+        KCluster index = new KClusterImpl(objectKey.getClusterId());
+        doOrDeferAction(index, new DeletedEvent(objectKey));
+    }
+
+    private void doDelete(KObjectKey objectKey) {
         this.provider.delete(objectKey.getClusterId(),
                              objectKey.getId());
     }
 
     @Override
-    public void delete(KObjectKey... objectsKey) {
-        Arrays.stream(objectsKey).forEach(kObjectKey -> this.delete(kObjectKey));
-    }
-
-    @Override
-    public void commit(KCluster cluster) {
+    public void commit(KCluster cluster, String indexerId) {
         prepareBatch(cluster);
-        ReentrantLock lock = batchLocks.get(cluster);
-        List<KObject> batchSet = batchSets.get().get(cluster);
+        MultiIndexerLock lock = batchLocks.get(cluster);
+        List<IndexEvent> batchSet = batchSets.get().get(cluster);
 
         try {
             if (batchSet == null) {
@@ -172,7 +201,7 @@ public class MetadataIndexEngine implements MetaIndexEngine {
             else if (batchSet.isEmpty()) {
                 removeThreadLocalBatchState(cluster);
             } else {
-                doCommit(cluster, batchSet, lock);
+                doCommit(cluster, batchSet, lock, indexerId);
             }
         } catch (Throwable t) {
             abort(cluster);
@@ -180,14 +209,13 @@ public class MetadataIndexEngine implements MetaIndexEngine {
         }
     }
 
-    private void doCommit(KCluster cluster, List<KObject> kobjects, ReentrantLock lock) {
+    private void doCommit(KCluster cluster, List<IndexEvent> batchSet, MultiIndexerLock lock, String indexerId) {
         try {
-            lock.lock();
-            kobjects.forEach(this::doIndex);
+            lock.lock(indexerId);
+            batchSet.forEach(this::doAction);
             removeThreadLocalBatchState(cluster);
-            kObectBatchObserver.accept(kobjects);
         } finally {
-            lock.unlock();
+            lock.unlock(indexerId);
         }
     }
 
@@ -197,7 +225,7 @@ public class MetadataIndexEngine implements MetaIndexEngine {
     }
 
     private void removeThreadLocalBatchState(KCluster cluster) {
-        Map<KCluster, List<KObject>> batchSet = batchSets.get();
+        Map<KCluster, List<IndexEvent>> batchSet = batchSets.get();
         batchSet.remove(cluster);
         if (batchSet.isEmpty()) {
             batchSets.remove();

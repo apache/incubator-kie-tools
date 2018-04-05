@@ -16,18 +16,18 @@
 
 package org.uberfire.ext.metadata.io;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.async.DescriptiveRunnable;
-import org.uberfire.ext.metadata.engine.Indexer;
 import org.uberfire.ext.metadata.engine.MetaIndexEngine;
 import org.uberfire.ext.metadata.engine.Observer;
+import org.uberfire.ext.metadata.io.IndexerDispatcher.IndexerDispatcherFactory;
 import org.uberfire.ext.metadata.model.KCluster;
-import org.uberfire.ext.metadata.model.KObject;
-import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.FileSystemId;
 import org.uberfire.java.nio.file.FileSystem;
@@ -35,7 +35,6 @@ import org.uberfire.java.nio.file.FileVisitResult;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.SimpleFileVisitor;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
-import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
@@ -46,22 +45,24 @@ public final class BatchIndex {
     private static final Logger LOG = LoggerFactory.getLogger(BatchIndex.class);
 
     private final MetaIndexEngine indexEngine;
-    private final IOService ioService;
     private final Class<? extends FileAttributeView>[] views;
     private final AtomicBoolean indexDisposed = new AtomicBoolean(false);
     private final Observer observer;
     private final ExecutorService executorService;
+    private final IndexersFactory indexersFactory;
+    private final IndexerDispatcherFactory dispatcherFactory;
 
     @SafeVarargs
     public BatchIndex(final MetaIndexEngine indexEngine,
-                      final IOService ioService,
                       final Observer observer,
                       final ExecutorService executorService,
+                      final IndexersFactory indexersFactory,
+                      final IndexerDispatcherFactory dispatcherFactory,
                       final Class<? extends FileAttributeView>... views) {
+        this.indexersFactory = indexersFactory;
+        this.dispatcherFactory = dispatcherFactory;
         this.indexEngine = checkNotNull("indexEngine",
                                         indexEngine);
-        this.ioService = checkNotNull("ioService",
-                                      ioService);
         this.observer = checkNotNull("observer",
                                      observer);
         this.views = views;
@@ -91,27 +92,12 @@ public final class BatchIndex {
                         }
                     });
 
-                    KCluster cluster = null;
                     try {
-                        cluster = KObjectUtil.toKCluster(fs);
-                        indexEngine.startBatch(cluster);
-                        for (final Path root : fs.getRootDirectories()) {
-                            BatchIndex.this.run(root);
-                        }
+                        BatchIndex.this.run(fs, null);
                         indexFinished.set(true);
                     } catch (Exception ex) {
                         if (!indexDisposed.get()) {
-                            logError("FileSystem Index fails. [@" + fs.toString() + "]",
-                                     ex);
-                        }
-                    }
-                    finally {
-                        if (cluster != null) {
-                            if (indexFinished.get()) {
-                                indexEngine.commit(cluster);
-                            } else {
-                                indexEngine.abort(cluster);
-                            }
+                            logError("FileSystem Index fails. [@" + fs.toString() + "]", ex);
                         }
                     }
                 }
@@ -119,121 +105,100 @@ public final class BatchIndex {
         }
     }
 
-    public void runAsync(final Path root) {
-        this.executorService.execute(new DescriptiveRunnable() {
-            @Override
-            public String getDescription() {
-                return "Path BatchIndex [" + root.toString() + "]";
-            }
+    public void run(final FileSystem fs, final Runnable callback) {
+        if (fs == null) {
+            return;
+        }
 
-            @Override
-            public void run() {
-                BatchIndex.this.run(root);
-            }
-        });
-    }
-
-    public void run(final Path root) {
-        run(root,
-            null);
-    }
-
-    public void run(final Path root,
-                    final Runnable callback) {
+        final Collection<Runnable> exceptionCleanup = new ArrayList<>(1);
         try {
-            if (root == null) {
-                return;
+            final KCluster cluster = KObjectUtil.toKCluster(fs);
+            final IndexerDispatcher dispatcher = dispatcherFactory.create(indexersFactory.getIndexers(), cluster);
+
+            for (Path root : fs.getRootDirectories()) {
+                if (indexDisposed.get()) {
+                    break;
+                }
+                exceptionCleanup.add(() -> dispatcher.dispose());
+
+                queueIndexingEvents(root, dispatcher);
+
             }
-
-            logInformation("Starting indexing of " + root.toUri() + " ...");
-
-            walkFileTree(checkNotNull("root",
-                                      root),
-                         new SimpleFileVisitor<Path>() {
-                             @Override
-                             public FileVisitResult visitFile(final Path file,
-                                                              final BasicFileAttributes attrs) throws IOException {
-                                 if (indexDisposed.get()) {
-                                     return FileVisitResult.TERMINATE;
-                                 }
-                                 try {
-                                     checkNotNull("file",
-                                                  file);
-                                     checkNotNull("attrs",
-                                                  attrs);
-
-                                     if (!file.getFileName().toString().startsWith(".")) {
-
-                                         LOG.debug("Indexing " + file.toUri());
-
-                                         //Default indexing
-                                         for (final Class<? extends FileAttributeView> view : views) {
-                                             ioService.getFileAttributeView(file,
-                                                                            view);
-                                         }
-                                         final FileAttribute<?>[] allAttrs = ioService.convert(ioService.readAttributes(file));
-                                         if (!indexDisposed.get()) {
-                                             indexEngine.index(KObjectUtil.toKObject(file,
-                                                                                     allAttrs));
-                                         } else {
-                                             return FileVisitResult.TERMINATE;
-                                         }
-
-                                         //Additional indexing
-                                         for (Indexer indexer : IndexersFactory.getIndexers()) {
-                                             if (file.getFileSystem().isOpen()) {
-                                                 if (indexer.supportsPath(file)) {
-                                                     final KObject kObject = indexer.toKObject(file);
-                                                     if (kObject != null) {
-                                                         if (!indexDisposed.get()) {
-                                                             indexEngine.index(kObject);
-                                                         } else {
-                                                             return FileVisitResult.TERMINATE;
-                                                         }
-                                                     }
-                                                 }
-                                             }
-                                         }
-                                     }
-                                 } catch (final Exception ex) {
-                                     if (indexDisposed.get()) {
-                                         logWarning("Batch index couldn't finish. [@" + root.toUri().toString() + "]");
-                                         return FileVisitResult.TERMINATE;
-                                     } else {
-                                         logError("Index fails. [@" + file.toString() + "]",
-                                                  ex);
-                                     }
-                                 }
-                                 if (indexDisposed.get()) {
-                                     return FileVisitResult.TERMINATE;
-                                 }
-                                 return FileVisitResult.CONTINUE;
-                             }
-                         });
 
             if (!indexDisposed.get()) {
-                logInformation("Completed indexing of " + root.toUri());
-                if (callback != null) {
-                    callback.run();
-                }
+                logInformation("Starting indexing of " + fs.getName() + " ...");
+                dispatcher.schedule(executorService)
+                .thenRun(() -> {
+                    logInformation("Completed indexing of " + fs.getName());
+                    if (callback != null) {
+                        callback.run();
+                    }
+                })
+                .exceptionally(ex -> {
+                    try {
+                        throw ex;
+                    } catch (DisposedException de) {
+                        logWarning("Batch index couldn't finish. [@" + fs.getName() + "]");
+                    } catch (IllegalStateException ise) {
+                        logError("Index fails - Index has an invalid state. [@" + fs.getName() + "]", ex);
+                    } catch (Throwable t) {
+                        logError("Index fails. [@" + fs.getName() + "]", ex);
+                    }
+                    return null;
+                });
             } else {
-                logWarning("Batch index couldn't finish. [@" + root.toUri().toString() + "]");
-            }
-        } catch (final IllegalStateException ex) {
-            if (indexDisposed.get()) {
-                logWarning("Batch index couldn't finish. [@" + root.toUri().toString() + "]");
-            } else {
-                logError("Index fails - Index has an invalid state. [@" + root.toUri().toString() + "]",
-                         ex);
+                logWarning("Batch index couldn't finish. [@" + fs.getName() + "]");
             }
         } catch (final Exception ex) {
             if (indexDisposed.get()) {
-                logWarning("Batch index couldn't finish. [@" + root.toUri().toString() + "]");
+                logWarning("Batch index couldn't finish. [@" + fs.getName() + "]");
             } else {
-                logError("Index fails. [@" + root.toUri().toString() + "]",
-                         ex);
+                logError("Index fails. [@" + fs.getName() + "]", ex);
+                exceptionCleanup.forEach(action -> action.run());
             }
         }
+    }
+
+    private void queueIndexingEvents(Path root, final IndexerDispatcher dispatcher) {
+        walkFileTree(checkNotNull("root",
+                                  root),
+                     new SimpleFileVisitor<Path>() {
+
+            @Override
+            public FileVisitResult visitFile(final Path file,
+                                             final BasicFileAttributes attrs) throws IOException {
+                if (indexDisposed.get()) {
+                    return FileVisitResult.TERMINATE;
+                }
+                try {
+                    checkNotNull("file",
+                                 file);
+                    checkNotNull("attrs",
+                                 attrs);
+
+                    if (!file.getFileName().toString().startsWith(".")) {
+
+                        if (!indexDisposed.get()) {
+                            dispatcher.offer(new IndexableIOEvent.NewFileEvent(file));
+                        } else {
+                            return FileVisitResult.TERMINATE;
+                        }
+                    }
+                } catch (final Exception ex) {
+                    if (indexDisposed.get()) {
+                        logWarning("Batch index couldn't finish. [@" + root.toUri().toString() + "]");
+                        return FileVisitResult.TERMINATE;
+                    } else {
+                        logError("Index fails. [@" + file.toString() + "]",
+                                 ex);
+                    }
+                }
+                if (indexDisposed.get()) {
+                    return FileVisitResult.TERMINATE;
+                }
+                return FileVisitResult.CONTINUE;
+            }
+        });
     }
 
     private void logInformation(final String message) {

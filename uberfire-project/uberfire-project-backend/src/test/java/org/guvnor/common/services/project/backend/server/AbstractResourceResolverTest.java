@@ -67,7 +67,7 @@ public class AbstractResourceResolverTest {
                                                     commentedOptionFactory,
                                                     resourcePathResolversInstance) {
             @Override
-            public Module resolveModule(Path resource) {
+            public Module resolveModule(Path resource, boolean loadPOM) {
                 return null;
             }
 

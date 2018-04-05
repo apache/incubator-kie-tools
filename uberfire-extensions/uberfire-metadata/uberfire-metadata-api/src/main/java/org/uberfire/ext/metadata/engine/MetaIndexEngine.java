@@ -27,7 +27,7 @@ public interface MetaIndexEngine extends PriorityDisposable {
 
     boolean freshIndex(final KCluster cluster);
 
-    boolean isIndexReady(final KCluster cluster);
+    boolean isIndexReady(final KCluster cluster, final String indexerId);
 
     void prepareBatch(final KCluster cluster);
 
@@ -42,9 +42,7 @@ public interface MetaIndexEngine extends PriorityDisposable {
 
     void delete(final KObjectKey objectKey);
 
-    void delete(final KObjectKey... objectsKey);
-
-    void commit(final KCluster cluster);
+    void commit(final KCluster cluster, final String indexerId);
 
     void abort(final KCluster cluster);
 

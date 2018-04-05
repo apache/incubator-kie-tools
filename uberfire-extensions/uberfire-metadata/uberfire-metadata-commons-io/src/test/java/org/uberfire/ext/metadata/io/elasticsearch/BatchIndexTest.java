@@ -194,7 +194,6 @@ public class BatchIndexTest extends BaseIndexTest {
         }
 
         new BatchIndex(config.getIndexEngine(),
-                       ioService(),
                        new Observer() {
                            @Override
                            public void information(final String message) {
@@ -212,7 +211,9 @@ public class BatchIndexTest extends BaseIndexTest {
                            }
                        },
                        Executors.newCachedThreadPool(new DescriptiveThreadFactory()),
-                       DublinCoreView.class).run(ioService().get("git://elastic-temp-repo-test/"),
+                       indexersFactory(),
+                       indexerDispatcherFactory(config.getIndexEngine()),
+                       DublinCoreView.class).run(ioService().get("git://elastic-temp-repo-test/").getFileSystem(),
                                                  () -> {
                                                      try {
 

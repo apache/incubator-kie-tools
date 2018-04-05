@@ -63,6 +63,8 @@ public class BatchIndexConcurrencyTest extends BaseIndexTest {
 
             ioService = new IOServiceIndexedImpl(metaIndexEngine,
                                                  Executors.newCachedThreadPool(new DescriptiveThreadFactory()),
+                                                 indexersFactory(),
+                                                 indexerDispatcherFactory(config.getIndexEngine()),
                                                  DublinCoreView.class,
                                                  VersionAttributeView.class) {
                 @Override

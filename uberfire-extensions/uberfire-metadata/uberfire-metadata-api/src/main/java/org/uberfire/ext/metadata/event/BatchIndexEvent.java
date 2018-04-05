@@ -21,21 +21,27 @@ import org.uberfire.ext.metadata.model.KObject;
 
 /**
  * <p>
- * An event fired when a batch of {@link KObject KObjects} has been indexed.
+ * An event fired when a batch of {@link KObject KObjects} has been indexed by an indexer.
  *
  * <p>
  * Items should be available for lookup when this item is observed.
  */
 public class BatchIndexEvent {
 
-    private final List<KObject> indexed;
+    private final List<IndexEvent> events;
+    private final String indexerId;
 
-    public BatchIndexEvent(List<KObject> indexed) {
-        this.indexed = indexed;
+    public BatchIndexEvent(String indexerId, List<IndexEvent> events) {
+        this.indexerId = indexerId;
+        this.events = events;
     }
 
-    public List<KObject> getIndexed() {
-        return indexed;
+    public List<IndexEvent> getIndexEvents() {
+        return events;
+    }
+
+    public String getIndexerId() {
+        return indexerId;
     }
 
 }

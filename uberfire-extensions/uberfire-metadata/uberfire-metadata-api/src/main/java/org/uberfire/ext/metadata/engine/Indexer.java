@@ -41,4 +41,11 @@ public interface Indexer {
      * @return
      */
     KObjectKey toKObjectKey(final Path path);
+
+    /**
+     * @return An unique identifier for this indexer. Must not be null.
+     */
+    default String getIndexerId() {
+        return this.getClass().getName();
+    }
 }

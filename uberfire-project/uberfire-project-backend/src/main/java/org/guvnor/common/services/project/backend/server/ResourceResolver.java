@@ -163,7 +163,9 @@ public abstract class ResourceResolver<T extends Module>
     }
 
     @Override
-    public abstract T resolveModule(final Path resource);
+    public T resolveModule(final Path resource) {
+        return resolveModule(resource, true);
+    }
 
     @Override
     public Module resolveParentModule(final Path resource) {
@@ -222,8 +224,8 @@ public abstract class ResourceResolver<T extends Module>
 
     @Override
     public Set<Package> resolvePackages(final Module module) {
-        final Set<Package> packages = new HashSet<Package>();
-        final Set<String> packageNames = new HashSet<String>();
+        final Set<Package> packages = new HashSet<>();
+        final Set<String> packageNames = new HashSet<>();
         if (module == null) {
             return packages;
         }
@@ -241,7 +243,7 @@ public abstract class ResourceResolver<T extends Module>
         }
 
         //Construct Package objects for each package name
-        final java.util.Set<String> resolvedPackages = new java.util.HashSet<String>();
+        final java.util.Set<String> resolvedPackages = new java.util.HashSet<>();
         for (String packagePathSuffix : packageNames) {
             for (String src : SOURCE_PATHS) {
                 final org.uberfire.java.nio.file.Path nioPackagePath = nioModuleRootPath.resolve(src).resolve(packagePathSuffix);
@@ -257,8 +259,8 @@ public abstract class ResourceResolver<T extends Module>
 
     @Override
     public Set<Package> resolvePackages(final Package pkg) {
-        final Set<Package> packages = new HashSet<Package>();
-        final Set<String> packageNames = new HashSet<String>();
+        final Set<Package> packages = new HashSet<>();
+        final Set<String> packageNames = new HashSet<>();
         if (pkg == null) {
             return packages;
         }
@@ -279,7 +281,7 @@ public abstract class ResourceResolver<T extends Module>
         }
 
         //Construct Package objects for each package name
-        final java.util.Set<String> resolvedPackages = new java.util.HashSet<String>();
+        final java.util.Set<String> resolvedPackages = new java.util.HashSet<>();
         for (String packagePathSuffix : packageNames) {
             for (String src : SOURCE_PATHS) {
                 final org.uberfire.java.nio.file.Path nioPackagePath = nioModuleRootPath.resolve(src).resolve(packagePathSuffix);
@@ -295,7 +297,7 @@ public abstract class ResourceResolver<T extends Module>
 
     @Override
     public org.guvnor.common.services.project.model.Package resolveDefaultPackage(final Module module) {
-        final Set<String> packageNames = new HashSet<String>();
+        final Set<String> packageNames = new HashSet<>();
         if (module == null) {
             return null;
         }
@@ -313,7 +315,7 @@ public abstract class ResourceResolver<T extends Module>
         }
 
         //Construct Package objects for each package name
-        final java.util.Set<String> resolvedPackages = new java.util.HashSet<String>();
+        final java.util.Set<String> resolvedPackages = new java.util.HashSet<>();
         for (String packagePathSuffix : packageNames) {
             for (String src : SOURCE_PATHS) {
                 final org.uberfire.java.nio.file.Path nioPackagePath = nioModuleRootPath.resolve(src).resolve(packagePathSuffix);
@@ -339,7 +341,7 @@ public abstract class ResourceResolver<T extends Module>
 
     @Override
     public Package resolveParentPackage(final Package pkg) {
-        final Set<String> packageNames = new HashSet<String>();
+        final Set<String> packageNames = new HashSet<>();
 
         //Build a set of all package names across /src/main/java, /src/main/resources, /src/test/java and /src/test/resources paths
         final org.uberfire.java.nio.file.Path nioModuleRootPath = Paths.convert(pkg.getModuleRootPath());
@@ -542,7 +544,7 @@ public abstract class ResourceResolver<T extends Module>
                                         final boolean includeDefault,
                                         final boolean includeChild,
                                         final boolean recursive) {
-        final Set<String> packageNames = new HashSet<String>();
+        final Set<String> packageNames = new HashSet<>();
         if (!Files.exists(nioPackageSrcPath)) {
             return packageNames;
         }

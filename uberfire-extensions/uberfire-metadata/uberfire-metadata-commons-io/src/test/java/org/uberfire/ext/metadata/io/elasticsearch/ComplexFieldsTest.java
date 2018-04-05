@@ -47,6 +47,7 @@ import static org.junit.Assert.*;
 @BMScript(dir = "byteman", value = "elastic.btm")
 public class ComplexFieldsTest extends BaseIndexTest {
 
+    @Override
     protected IOService ioService() {
 
         if (ioService == null) {
@@ -62,6 +63,8 @@ public class ComplexFieldsTest extends BaseIndexTest {
 
             ioService = new IOServiceIndexedImpl(config.getIndexEngine(),
                                                  Executors.newCachedThreadPool(new DescriptiveThreadFactory()),
+                                                 indexersFactory(),
+                                                 indexerDispatcherFactory(config.getIndexEngine()),
                                                  DublinCoreView.class,
                                                  VersionAttributeView.class);
         }

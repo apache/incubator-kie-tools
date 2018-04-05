@@ -29,7 +29,6 @@ import org.junit.runner.RunWith;
 import org.uberfire.commons.async.DescriptiveThreadFactory;
 import org.uberfire.ext.metadata.engine.Indexer;
 import org.uberfire.ext.metadata.io.IOServiceIndexedImpl;
-import org.uberfire.ext.metadata.io.IndexersFactory;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.ext.metadata.io.MetadataConfigBuilder;
 import org.uberfire.ext.metadata.model.KObject;
@@ -42,7 +41,7 @@ import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.file.Path;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.uberfire.ext.metadata.engine.MetaIndexEngine.FULL_TEXT_FIELD;
 import static org.uberfire.ext.metadata.io.KObjectUtil.toKCluster;
 
@@ -61,10 +60,12 @@ public class ElasticFullTextSearchIndexTest extends BaseIndexTest {
 
             ioService = new IOServiceIndexedImpl(config.getIndexEngine(),
                                                  Executors.newCachedThreadPool(new DescriptiveThreadFactory()),
+                                                 indexersFactory(),
+                                                 indexerDispatcherFactory(config.getIndexEngine()),
                                                  DublinCoreView.class,
                                                  VersionAttributeView.class);
 
-            IndexersFactory.addIndexer(new MockIndexer());
+            indexersFactory().addIndexer(new MockIndexer());
         }
         return ioService;
     }
