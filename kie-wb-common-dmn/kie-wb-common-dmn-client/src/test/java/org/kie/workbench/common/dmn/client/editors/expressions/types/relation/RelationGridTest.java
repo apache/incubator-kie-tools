@@ -312,6 +312,13 @@ public class RelationGridTest {
     }
 
     @Test
+    public void testCacheable() {
+        setupGrid(0);
+
+        assertTrue(grid.isCacheable());
+    }
+
+    @Test
     public void testGetItems() {
         setupGrid(0);
 

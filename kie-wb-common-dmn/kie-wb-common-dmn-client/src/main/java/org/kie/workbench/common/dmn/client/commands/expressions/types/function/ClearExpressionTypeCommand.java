@@ -16,54 +16,32 @@
 
 package org.kie.workbench.common.dmn.client.commands.expressions.types.function;
 
-import java.util.Optional;
-
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
-import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
-import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
+import org.kie.workbench.common.dmn.client.commands.general.BaseClearExpressionCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.FunctionUIModelMapper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.KindUtilities;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
-import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
-import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AbstractGraphCommand;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 
-import static org.kie.workbench.common.dmn.client.commands.util.CommandUtils.extractGridCellValue;
+public class ClearExpressionTypeCommand extends BaseClearExpressionCommand {
 
-public class ClearExpressionTypeCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
-                                                                                      VetoUndoCommand {
-
-    private final GridCellTuple cellTuple;
-    private final FunctionDefinition function;
-    private final FunctionUIModelMapper uiModelMapper;
-    private final org.uberfire.mvp.Command canvasOperation;
-
-    private final Expression oldExpression;
     private final FunctionDefinition.Kind oldKind;
-    private final Optional<GridCellValue<?>> oldCellValue;
 
     public ClearExpressionTypeCommand(final GridCellTuple cellTuple,
                                       final FunctionDefinition function,
                                       final FunctionUIModelMapper uiModelMapper,
                                       final org.uberfire.mvp.Command canvasOperation) {
-        this.cellTuple = cellTuple;
-        this.function = function;
-        this.uiModelMapper = uiModelMapper;
-        this.canvasOperation = canvasOperation;
-
-        this.oldExpression = function.getExpression();
+        super(cellTuple,
+              function,
+              uiModelMapper,
+              canvasOperation);
         this.oldKind = KindUtilities.getKind(function);
-        this.oldCellValue = extractGridCellValue(cellTuple);
     }
 
     @Override
@@ -76,47 +54,19 @@ public class ClearExpressionTypeCommand extends AbstractCanvasGraphCommand imple
 
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
-                function.setExpression(null);
+                hasExpression.setExpression(null);
                 //An undefined ExpressionType only makes sense for FEEL
-                KindUtilities.setKind(function, FunctionDefinition.Kind.FEEL);
+                KindUtilities.setKind((FunctionDefinition) hasExpression, FunctionDefinition.Kind.FEEL);
 
                 return GraphCommandResultBuilder.SUCCESS;
             }
 
             @Override
             public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
-                function.setExpression(oldExpression);
-                KindUtilities.setKind(function, oldKind);
+                hasExpression.setExpression(oldExpression);
+                KindUtilities.setKind((FunctionDefinition) hasExpression, oldKind);
 
                 return GraphCommandResultBuilder.SUCCESS;
-            }
-        };
-    }
-
-    @Override
-    protected Command<AbstractCanvasHandler, CanvasViolation> newCanvasCommand(final AbstractCanvasHandler context) {
-        return new AbstractCanvasCommand() {
-            @Override
-            public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
-                //Use UIModelMapper to get cell value for null Expressions
-                uiModelMapper.fromDMNModel(cellTuple.getRowIndex(),
-                                           cellTuple.getColumnIndex());
-
-                canvasOperation.execute();
-
-                return CanvasCommandResultBuilder.SUCCESS;
-            }
-
-            @Override
-            public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
-                //Simply write back the old value
-                oldCellValue.ifPresent(v -> cellTuple.getGridWidget().getModel().setCellValue(cellTuple.getRowIndex(),
-                                                                                              cellTuple.getColumnIndex(),
-                                                                                              v));
-
-                canvasOperation.execute();
-
-                return CanvasCommandResultBuilder.SUCCESS;
             }
         };
     }

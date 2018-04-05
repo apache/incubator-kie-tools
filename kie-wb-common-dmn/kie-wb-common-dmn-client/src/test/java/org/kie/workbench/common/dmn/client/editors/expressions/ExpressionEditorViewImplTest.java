@@ -38,6 +38,8 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
+import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCacheImpl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -135,6 +137,8 @@ public class ExpressionEditorViewImplTest {
     @Captor
     private ArgumentCaptor<TransformMediator> transformMediatorArgumentCaptor;
 
+    private ExpressionGridCache expressionGridCache;
+
     private ExpressionEditorViewImpl view;
 
     @Before
@@ -151,6 +155,7 @@ public class ExpressionEditorViewImplTest {
                                                                        anyInt());
         doReturn(new BaseGridData()).when(editor).getModel();
 
+        this.expressionGridCache = new ExpressionGridCacheImpl();
         this.view = spy(new ExpressionEditorViewImpl(returnToDRG,
                                                      gridPanel,
                                                      gridLayer,
@@ -160,7 +165,8 @@ public class ExpressionEditorViewImplTest {
                                                      listSelector,
                                                      sessionManager,
                                                      sessionCommandManager,
-                                                     expressionEditorDefinitionsSupplier));
+                                                     expressionEditorDefinitionsSupplier,
+                                                     expressionGridCache));
 
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add(undefinedExpressionEditorDefinition);

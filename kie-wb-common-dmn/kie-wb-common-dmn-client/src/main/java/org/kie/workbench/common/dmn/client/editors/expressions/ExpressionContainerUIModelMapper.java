@@ -27,11 +27,11 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextGridCell;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
-import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 public class ExpressionContainerUIModelMapper extends BaseUIModelMapper<Expression> {
@@ -41,7 +41,7 @@ public class ExpressionContainerUIModelMapper extends BaseUIModelMapper<Expressi
     private final Supplier<HasExpression> hasExpression;
     private final Supplier<Optional<HasName>> hasName;
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitions;
-
+    private final ExpressionGridCache expressionGridCache;
     private final ListSelectorView.Presenter listSelector;
 
     public ExpressionContainerUIModelMapper(final GridCellTuple parent,
@@ -51,6 +51,7 @@ public class ExpressionContainerUIModelMapper extends BaseUIModelMapper<Expressi
                                             final Supplier<HasExpression> hasExpression,
                                             final Supplier<Optional<HasName>> hasName,
                                             final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitions,
+                                            final ExpressionGridCache expressionGridCache,
                                             final ListSelectorView.Presenter listSelector) {
         super(uiModel,
               dmnModel);
@@ -59,12 +60,14 @@ public class ExpressionContainerUIModelMapper extends BaseUIModelMapper<Expressi
         this.hasExpression = hasExpression;
         this.hasName = hasName;
         this.expressionEditorDefinitions = expressionEditorDefinitions;
+        this.expressionGridCache = expressionGridCache;
         this.listSelector = listSelector;
     }
 
     @Override
     public void fromDMNModel(final int rowIndex,
                              final int columnIndex) {
+        final String uuid = nodeUUID.get();
         final GridData uiModel = this.uiModel.get();
         final Optional<Expression> expression = dmnModel.get();
         final Optional<HasName> hasName = this.hasName.get();
@@ -72,19 +75,22 @@ public class ExpressionContainerUIModelMapper extends BaseUIModelMapper<Expressi
 
         final Optional<ExpressionEditorDefinition<Expression>> expressionEditorDefinition = expressionEditorDefinitions.get().getExpressionEditorDefinition(expression);
         expressionEditorDefinition.ifPresent(definition -> {
-            final Optional<BaseExpressionGrid> oEditor = definition.getEditor(parent,
-                                                                              Optional.of(nodeUUID.get()),
-                                                                              hasExpression,
-                                                                              expression,
-                                                                              hasName,
-                                                                              0);
+            Optional<BaseExpressionGrid> editor = expressionGridCache.getExpressionGrid(uuid);
+            if (!editor.isPresent()) {
+                final Optional<BaseExpressionGrid> oEditor = definition.getEditor(parent,
+                                                                                  Optional.of(uuid),
+                                                                                  hasExpression,
+                                                                                  expression,
+                                                                                  hasName,
+                                                                                  0);
+                expressionGridCache.putExpressionGrid(uuid, oEditor);
+                editor = oEditor;
+            }
+            final Optional<BaseExpressionGrid> _editor = editor;
             uiModel.setCell(0,
                             0,
-                            () -> new ContextGridCell<>(new ExpressionCellValue(oEditor),
+                            () -> new ContextGridCell<>(new ExpressionCellValue(_editor),
                                                         listSelector));
-
-            final GridColumn<?> uiColumn = uiModel.getColumns().get(columnIndex);
-            uiColumn.setWidth(uiColumn.getMinimumWidth());
         });
     }
 

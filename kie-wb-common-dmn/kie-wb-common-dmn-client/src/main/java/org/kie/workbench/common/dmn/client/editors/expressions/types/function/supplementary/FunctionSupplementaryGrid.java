@@ -36,7 +36,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSel
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridDataCache;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -55,12 +54,12 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Funct
 
     public FunctionSupplementaryGrid(final GridCellTuple parent,
                                      final Optional<String> nodeUUID,
-                                     final GridDataCache<Context, FunctionSupplementaryGridData> cache,
                                      final HasExpression hasExpression,
                                      final Optional<Context> expression,
                                      final Optional<HasName> hasName,
                                      final DMNGridPanel gridPanel,
                                      final DMNGridLayer gridLayer,
+                                     final FunctionSupplementaryGridData gridData,
                                      final DefinitionUtils definitionUtils,
                                      final SessionManager sessionManager,
                                      final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
@@ -77,7 +76,7 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Funct
               hasName,
               gridPanel,
               gridLayer,
-              cache.getData(nodeUUID, expression),
+              gridData,
               new ContextGridRenderer(true),
               definitionUtils,
               sessionManager,

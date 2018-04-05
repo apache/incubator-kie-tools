@@ -34,6 +34,7 @@ import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BoundaryTransformMediator;
+import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -70,6 +71,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     private SessionManager sessionManager;
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+    private ExpressionGridCache expressionGridCache;
 
     public ExpressionEditorViewImpl() {
         //CDI proxy
@@ -85,7 +87,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                     final ListSelectorView.Presenter listSelector,
                                     final SessionManager sessionManager,
                                     final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                    final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
+                                    final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
+                                    final ExpressionGridCache expressionGridCache) {
         this.returnToDRG = returnToDRG;
 
         this.gridPanel = gridPanel;
@@ -99,6 +102,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
+        this.expressionGridCache = expressionGridCache;
 
         setupGridPanel();
         setupGridWidget();
@@ -120,14 +124,14 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     }
 
     protected void setupGridWidget() {
-        expressionContainerGrid = new ExpressionContainerGrid(gridPanel,
-                                                              gridLayer,
+        expressionContainerGrid = new ExpressionContainerGrid(gridLayer,
                                                               cellEditorControls,
                                                               translationService,
                                                               listSelector,
                                                               sessionManager,
                                                               sessionCommandManager,
                                                               expressionEditorDefinitionsSupplier,
+                                                              expressionGridCache,
                                                               this::setReturnToDRGText);
         gridLayer.removeAll();
         gridLayer.add(expressionContainerGrid);

@@ -29,8 +29,8 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.AddContextEntryCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.context.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.DeleteContextEntryCommand;
-import org.kie.workbench.common.dmn.client.commands.general.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
@@ -40,7 +40,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSel
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridDataCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.HasRowDragRestrictions;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -65,12 +64,12 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
 
     public ContextGrid(final GridCellTuple parent,
                        final Optional<String> nodeUUID,
-                       final GridDataCache<Context, ContextGridData> cache,
                        final HasExpression hasExpression,
                        final Optional<Context> expression,
                        final Optional<HasName> hasName,
                        final DMNGridPanel gridPanel,
                        final DMNGridLayer gridLayer,
+                       final ContextGridData gridData,
                        final DefinitionUtils definitionUtils,
                        final SessionManager sessionManager,
                        final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
@@ -87,7 +86,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
               hasName,
               gridPanel,
               gridLayer,
-              cache.getData(nodeUUID, expression),
+              gridData,
               new ContextGridRenderer(nesting > 0),
               definitionUtils,
               sessionManager,
@@ -242,7 +241,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
                                                                      new DMNGridRow(),
                                                                      index,
                                                                      uiModelMapper,
-                                                                     this::synchroniseView));
+                                                                     this::resize));
         });
     }
 
@@ -252,7 +251,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
                                           new DeleteContextEntryCommand(c,
                                                                         model,
                                                                         index,
-                                                                        this::synchroniseView));
+                                                                        this::resize));
         });
     }
 
@@ -265,6 +264,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
                                       new ClearExpressionTypeCommand(gc,
                                                                      hasExpression,
                                                                      uiModelMapper,
-                                                                     () -> synchroniseViewWhenExpressionEditorChanged(this)));
+                                                                     () -> resizeBasedOnCellExpressionEditor(uiRowIndex,
+                                                                                                             ContextUIModelMapperHelper.EXPRESSION_COLUMN_INDEX)));
     }
 }

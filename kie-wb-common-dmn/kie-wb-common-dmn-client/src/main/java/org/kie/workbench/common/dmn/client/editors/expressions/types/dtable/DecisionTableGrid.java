@@ -54,7 +54,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSel
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridDataCache;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -98,12 +97,12 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
 
     public DecisionTableGrid(final GridCellTuple parent,
                              final Optional<String> nodeUUID,
-                             final GridDataCache<DecisionTable, DecisionTableGridData> cache,
                              final HasExpression hasExpression,
                              final Optional<DecisionTable> expression,
                              final Optional<HasName> hasName,
                              final DMNGridPanel gridPanel,
                              final DMNGridLayer gridLayer,
+                             final DecisionTableGridData gridData,
                              final DefinitionUtils definitionUtils,
                              final SessionManager sessionManager,
                              final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
@@ -120,7 +119,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
               hasName,
               gridPanel,
               gridLayer,
-              cache.getData(nodeUUID, expression),
+              gridData,
               new DecisionTableGridRenderer(),
               definitionUtils,
               sessionManager,
@@ -347,7 +346,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                     makeInputClauseColumn(clause),
                                                                     index,
                                                                     uiModelMapper,
-                                                                    () -> synchroniseViewWhenExpressionEditorChanged(this)));
+                                                                    this::resize));
         });
     }
 
@@ -358,7 +357,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                        model,
                                                                        index,
                                                                        uiModelMapper,
-                                                                       () -> synchroniseViewWhenExpressionEditorChanged(this)));
+                                                                       this::resize));
         });
     }
 
@@ -374,7 +373,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                      makeOutputClauseColumn(clause),
                                                                      index,
                                                                      uiModelMapper,
-                                                                     () -> synchroniseViewWhenExpressionEditorChanged(this)));
+                                                                     this::resize));
         });
     }
 
@@ -385,7 +384,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                         model,
                                                                         index,
                                                                         uiModelMapper,
-                                                                        () -> synchroniseViewWhenExpressionEditorChanged(this)));
+                                                                        this::resize));
         });
     }
 
@@ -398,7 +397,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                      new DMNGridRow(),
                                                                      index,
                                                                      uiModelMapper,
-                                                                     this::synchroniseView));
+                                                                     this::resize));
         });
     }
 
@@ -408,7 +407,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                           new DeleteDecisionRuleCommand(dtable,
                                                                         model,
                                                                         index,
-                                                                        this::synchroniseView));
+                                                                        this::resize));
         });
     }
 

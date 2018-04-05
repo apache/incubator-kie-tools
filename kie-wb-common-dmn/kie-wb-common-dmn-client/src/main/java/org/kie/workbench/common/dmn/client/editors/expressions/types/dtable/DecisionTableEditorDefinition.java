@@ -148,12 +148,12 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
                                                   final int nesting) {
         return Optional.of(new DecisionTableGrid(parent,
                                                  nodeUUID,
-                                                 this,
                                                  hasExpression,
                                                  expression,
                                                  hasName,
                                                  gridPanel,
                                                  gridLayer,
+                                                 makeGridData(expression),
                                                  definitionUtils,
                                                  sessionManager,
                                                  sessionCommandManager,

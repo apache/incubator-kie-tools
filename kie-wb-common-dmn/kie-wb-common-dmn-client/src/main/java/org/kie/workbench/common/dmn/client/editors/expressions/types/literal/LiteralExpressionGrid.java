@@ -34,7 +34,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelect
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridDataCache;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -44,6 +43,7 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 
 public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression, DMNGridData, LiteralExpressionUIModelMapper> implements HasListSelectorControl {
@@ -52,12 +52,12 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
 
     public LiteralExpressionGrid(final GridCellTuple parent,
                                  final Optional<String> nodeUUID,
-                                 final GridDataCache<LiteralExpression, DMNGridData> cache,
                                  final HasExpression hasExpression,
                                  final Optional<LiteralExpression> expression,
                                  final Optional<HasName> hasName,
                                  final DMNGridPanel gridPanel,
                                  final DMNGridLayer gridLayer,
+                                 final DMNGridData gridData,
                                  final DefinitionUtils definitionUtils,
                                  final SessionManager sessionManager,
                                  final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
@@ -73,7 +73,7 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
               hasName,
               gridPanel,
               gridLayer,
-              cache.getData(nodeUUID, expression),
+              gridData,
               new LiteralExpressionGridRenderer(nesting > 0),
               definitionUtils,
               sessionManager,
@@ -96,8 +96,10 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
 
     @Override
     public void selectFirstCell() {
-        parent.getGridWidget().getModel().selectCell(parent.getRowIndex(),
-                                                     parent.getColumnIndex());
+        final GridData uiModel = parent.getGridWidget().getModel();
+        uiModel.clearSelections();
+        uiModel.selectCell(parent.getRowIndex(),
+                           parent.getColumnIndex());
     }
 
     @Override

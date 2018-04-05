@@ -104,12 +104,12 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
                                                   final int nesting) {
         return Optional.of(new RelationGrid(parent,
                                             nodeUUID,
-                                            this,
                                             hasExpression,
                                             expression,
                                             hasName,
                                             gridPanel,
                                             gridLayer,
+                                            makeGridData(expression),
                                             definitionUtils,
                                             sessionManager,
                                             sessionCommandManager,

@@ -113,12 +113,12 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
                                                   final int nesting) {
         return Optional.of(new FunctionGrid(parent,
                                             nodeUUID,
-                                            this,
                                             hasExpression,
                                             expression,
                                             hasName,
                                             gridPanel,
                                             gridLayer,
+                                            makeGridData(expression),
                                             definitionUtils,
                                             sessionManager,
                                             sessionCommandManager,

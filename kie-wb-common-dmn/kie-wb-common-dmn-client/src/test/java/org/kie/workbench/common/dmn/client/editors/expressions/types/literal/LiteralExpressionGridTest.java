@@ -227,6 +227,7 @@ public class LiteralExpressionGridTest {
 
         grid.selectFirstCell();
 
+        verify(parentGridUiModel).clearSelections();
         verify(parentGridUiModel).selectCell(eq(0), eq(1));
     }
 
@@ -257,6 +258,13 @@ public class LiteralExpressionGridTest {
         setupGrid(0);
 
         assertFalse(grid.isHeaderHidden());
+    }
+
+    @Test
+    public void testCacheable() {
+        setupGrid(0);
+
+        assertTrue(grid.isCacheable());
     }
 
     @Test

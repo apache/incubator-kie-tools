@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
@@ -49,6 +50,7 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Expression, DMNGridData> {
 
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+    private ExpressionGridCache expressionGridCache;
 
     public UndefinedExpressionEditorDefinition() {
         //CDI proxy
@@ -64,7 +66,8 @@ public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Ex
                                                final CellEditorControlsView.Presenter cellEditorControls,
                                                final ListSelectorView.Presenter listSelector,
                                                final TranslationService translationService,
-                                               final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
+                                               final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
+                                               final ExpressionGridCache expressionGridCache) {
         super(gridPanel,
               gridLayer,
               definitionUtils,
@@ -75,6 +78,7 @@ public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Ex
               listSelector,
               translationService);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
+        this.expressionGridCache = expressionGridCache;
     }
 
     @Override
@@ -101,12 +105,12 @@ public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Ex
                                                   final int nesting) {
         return Optional.of(new UndefinedExpressionGrid(parent,
                                                        nodeUUID,
-                                                       this,
                                                        hasExpression,
                                                        expression,
                                                        hasName,
                                                        gridPanel,
                                                        gridLayer,
+                                                       makeGridData(expression),
                                                        definitionUtils,
                                                        sessionManager,
                                                        sessionCommandManager,
@@ -115,7 +119,8 @@ public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Ex
                                                        listSelector,
                                                        translationService,
                                                        nesting,
-                                                       expressionEditorDefinitionsSupplier));
+                                                       expressionEditorDefinitionsSupplier,
+                                                       expressionGridCache));
     }
 
     @Override

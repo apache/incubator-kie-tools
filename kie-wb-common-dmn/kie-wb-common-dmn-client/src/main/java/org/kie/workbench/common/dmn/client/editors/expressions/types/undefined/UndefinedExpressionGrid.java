@@ -27,12 +27,13 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
-import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.undefined.SetCellValueCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
@@ -41,7 +42,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridDataCache;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -50,7 +50,9 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
+import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 
@@ -61,15 +63,16 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNG
     private static final String EXPRESSION_COLUMN_GROUP = "UndefinedExpressionGrid$ExpressionColumn";
 
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+    private final ExpressionGridCache expressionGridCache;
 
     public UndefinedExpressionGrid(final GridCellTuple parent,
                                    final Optional<String> nodeUUID,
-                                   final GridDataCache<Expression, DMNGridData> cache,
                                    final HasExpression hasExpression,
                                    final Optional<Expression> expression,
                                    final Optional<HasName> hasName,
                                    final DMNGridPanel gridPanel,
                                    final DMNGridLayer gridLayer,
+                                   final DMNGridData gridData,
                                    final DefinitionUtils definitionUtils,
                                    final SessionManager sessionManager,
                                    final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
@@ -78,7 +81,8 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNG
                                    final ListSelectorView.Presenter listSelector,
                                    final TranslationService translationService,
                                    final int nesting,
-                                   final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
+                                   final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
+                                   final ExpressionGridCache expressionGridCache) {
         super(parent,
               nodeUUID,
               hasExpression,
@@ -86,7 +90,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNG
               hasName,
               gridPanel,
               gridLayer,
-              cache.getData(nodeUUID, expression),
+              gridData,
               new UndefinedExpressionGridRenderer(),
               definitionUtils,
               sessionManager,
@@ -97,6 +101,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNG
               translationService,
               nesting);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
+        this.expressionGridCache = expressionGridCache;
 
         //Render the cell content to Lienzo's SelectionLayer so we can handle Events on child elements
         getRenderer().setColumnRenderConstraint((isSelectionLayer, gridColumn) -> true);
@@ -113,8 +118,23 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNG
 
     @Override
     public void selectFirstCell() {
-        parent.getGridWidget().getModel().selectCell(parent.getRowIndex(),
-                                                     parent.getColumnIndex());
+        final GridData uiModel = parent.getGridWidget().getModel();
+        uiModel.clearSelections();
+        uiModel.selectCell(parent.getRowIndex(),
+                           parent.getColumnIndex());
+    }
+
+    @Override
+    public void resizeBasedOnCellExpressionEditor(final int uiRowIndex,
+                                                  final int uiColumnIndex) {
+        final Optional<GridCell<?>> parentCell = Optional.ofNullable(parent.getGridWidget().getModel().getCell(uiRowIndex, uiColumnIndex));
+        parentCell.ifPresent(cell -> {
+            final GridCellValue<?> value = cell.getValue();
+            if (value instanceof ExpressionCellValue) {
+                final Optional<BaseExpressionGrid> grid = ((ExpressionCellValue) value).getValue();
+                grid.ifPresent(BaseExpressionGrid::resizeWhenExpressionEditorChanged);
+            }
+        });
     }
 
     @Override
@@ -163,6 +183,11 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNG
     }
 
     @Override
+    public boolean isCacheable() {
+        return false;
+    }
+
+    @Override
     @SuppressWarnings("unused")
     public List<ListSelectorItem> getItems(final int uiRowIndex,
                                            final int uiColumnIndex) {
@@ -206,24 +231,32 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNG
 
         final Optional<ExpressionEditorDefinition<Expression>> expressionEditorDefinition = expressionEditorDefinitionsSupplier.get().getExpressionEditorDefinition(expression);
         expressionEditorDefinition.ifPresent(ed -> {
-            final Optional<BaseExpressionGrid> editor = ed.getEditor(parent,
-                                                                     nodeUUID,
-                                                                     hasExpression,
-                                                                     expression,
-                                                                     hasName,
-                                                                     nesting);
-            final GridCellValueTuple gcv = new GridCellValueTuple<>(parent.getRowIndex(),
-                                                                    parent.getColumnIndex(),
-                                                                    parent.getGridWidget(),
-                                                                    new ExpressionCellValue(editor));
+            Optional<BaseExpressionGrid> editor = Optional.empty();
+            if (nodeUUID.isPresent()) {
+                final String uuid = nodeUUID.get();
+                editor = expressionGridCache.getExpressionGrid(uuid);
+            }
+            if (!editor.isPresent()) {
+                editor = ed.getEditor(parent,
+                                      nodeUUID,
+                                      hasExpression,
+                                      expression,
+                                      hasName,
+                                      nesting);
+            }
+
+            final GridCellValueTuple<ExpressionCellValue> gcv = new GridCellValueTuple<>(parent.getRowIndex(),
+                                                                                         parent.getColumnIndex(),
+                                                                                         parent.getGridWidget(),
+                                                                                         new ExpressionCellValue(editor));
 
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new SetCellValueCommand(gcv,
+                                                                  nodeUUID,
                                                                   () -> uiModelMapper,
-                                                                  () -> editor.ifPresent(e -> {
-                                                                      e.selectFirstCell();
-                                                                      synchroniseViewWhenExpressionEditorChanged(e);
-                                                                  })));
+                                                                  expressionGridCache,
+                                                                  () -> resizeBasedOnCellExpressionEditor(parent.getRowIndex(),
+                                                                                                          parent.getColumnIndex())));
         });
     }
 }

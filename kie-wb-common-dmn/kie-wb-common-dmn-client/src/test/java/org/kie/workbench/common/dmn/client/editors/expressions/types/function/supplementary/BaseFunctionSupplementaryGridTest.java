@@ -183,4 +183,11 @@ public abstract class BaseFunctionSupplementaryGridTest<D extends ExpressionEdit
 
         assertTrue(grid.isHeaderHidden());
     }
+
+    @Test
+    public void testCacheable() {
+        setupGrid(0);
+
+        assertTrue(grid.isCacheable());
+    }
 }

@@ -95,12 +95,12 @@ public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<Lite
                                                   final int nesting) {
         return Optional.of(new LiteralExpressionGrid(parent,
                                                      nodeUUID,
-                                                     this,
                                                      hasExpression,
                                                      expression,
                                                      hasName,
                                                      gridPanel,
                                                      gridLayer,
+                                                     makeGridData(expression),
                                                      definitionUtils,
                                                      sessionManager,
                                                      sessionCommandManager,

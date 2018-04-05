@@ -114,12 +114,12 @@ public class ContextEditorDefinition extends BaseEditorDefinition<Context, Conte
                                                   final int nesting) {
         return Optional.of(new ContextGrid(parent,
                                            nodeUUID,
-                                           this,
                                            hasExpression,
                                            expression,
                                            hasName,
                                            gridPanel,
                                            gridLayer,
+                                           makeGridData(expression),
                                            definitionUtils,
                                            sessionManager,
                                            sessionCommandManager,

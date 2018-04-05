@@ -32,8 +32,8 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.AddContextEntryCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.context.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.DeleteContextEntryCommand;
-import org.kie.workbench.common.dmn.client.commands.general.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteHeaderValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
@@ -322,6 +322,13 @@ public class ContextGridTest {
     }
 
     @Test
+    public void testCacheable() {
+        setupGrid(0);
+
+        assertTrue(grid.isCacheable());
+    }
+
+    @Test
     public void testRowDragPermittedNotPendingRowMove() {
         setupGrid(0);
 
@@ -553,15 +560,7 @@ public class ContextGridTest {
         final ClearExpressionTypeCommand clearExpressionTypeCommand = clearExpressionTypeCommandCaptor.getValue();
         clearExpressionTypeCommand.execute(canvasHandler);
 
-        verify(parent).onResize();
-        verify(gridPanel).refreshScrollPosition();
-        verify(gridPanel).updatePanelSize();
-        verify(gridLayer).batch(redrawCommandCaptor.capture());
-
-        final GridLayerRedrawManager.PrioritizedCommand redrawCommand = redrawCommandCaptor.getValue();
-        redrawCommand.execute();
-
-        verify(gridLayer).draw();
+        verify(undefinedExpressionEditor).resizeWhenExpressionEditorChanged();
     }
 
     @Test

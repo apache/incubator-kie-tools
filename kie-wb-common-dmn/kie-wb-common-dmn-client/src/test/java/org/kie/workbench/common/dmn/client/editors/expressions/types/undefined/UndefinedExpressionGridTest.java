@@ -32,13 +32,16 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.undefined.SetCellValueCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextGrid;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionCell;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
+import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCacheImpl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorDividerItem;
@@ -57,6 +60,7 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -65,9 +69,11 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedra
 import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -154,6 +160,8 @@ public class UndefinedExpressionGridTest {
 
     private Optional<HasName> hasName = Optional.empty();
 
+    private ExpressionGridCache expressionGridCache;
+
     private UndefinedExpressionEditorDefinition definition;
 
     private UndefinedExpressionGrid grid;
@@ -161,6 +169,7 @@ public class UndefinedExpressionGridTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
+        expressionGridCache = spy(new ExpressionGridCacheImpl());
         definition = new UndefinedExpressionEditorDefinition(gridPanel,
                                                              gridLayer,
                                                              definitionUtils,
@@ -170,7 +179,8 @@ public class UndefinedExpressionGridTest {
                                                              cellEditorControls,
                                                              listSelector,
                                                              translationService,
-                                                             expressionEditorDefinitionsSupplier);
+                                                             expressionEditorDefinitionsSupplier,
+                                                             expressionGridCache);
 
         expression = definition.getModelClass();
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
@@ -187,11 +197,6 @@ public class UndefinedExpressionGridTest {
                                                                                                          any(Optional.class),
                                                                                                          any(Optional.class),
                                                                                                          anyInt());
-
-        doReturn(0).when(parent).getRowIndex();
-        doReturn(0).when(parent).getColumnIndex();
-        doReturn(parentGridWidget).when(parent).getGridWidget();
-        doReturn(mock(GridData.class)).when(parentGridWidget).getModel();
 
         doReturn(session).when(sessionManager).getCurrentSession();
         doReturn(handler).when(session).getCanvasHandler();
@@ -228,7 +233,26 @@ public class UndefinedExpressionGridTest {
 
         grid.selectFirstCell();
 
+        verify(parentGridUiModel).clearSelections();
         verify(parentGridUiModel).selectCell(eq(0), eq(1));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testResizeBasedOnCellExpressionEditor() {
+        setupGrid(0);
+
+        final GridCell parentCell = mock(GridCell.class);
+        final ExpressionCellValue parentValue = mock(ExpressionCellValue.class);
+        final BaseExpressionGrid parentGrid = mock(BaseExpressionGrid.class);
+
+        when(parentGridUiModel.getCell(0, 1)).thenReturn(parentCell);
+        when(parentCell.getValue()).thenReturn(parentValue);
+        when(parentValue.getValue()).thenReturn(Optional.of(parentGrid));
+
+        grid.resizeBasedOnCellExpressionEditor(0, 1);
+
+        verify(parentGrid).resizeWhenExpressionEditorChanged();
     }
 
     @Test
@@ -260,6 +284,13 @@ public class UndefinedExpressionGridTest {
         setupGrid(0);
 
         assertTrue(grid.isHeaderHidden());
+    }
+
+    @Test
+    public void testCacheable() {
+        setupGrid(0);
+
+        assertFalse(grid.isCacheable());
     }
 
     @Test
@@ -391,17 +422,28 @@ public class UndefinedExpressionGridTest {
     @SuppressWarnings("unchecked")
     public void testOnExpressionTypeChangedWhenNested() {
         assertOnExpressionTypeChanged(1);
+
+        verify(expressionGridCache, never()).getExpressionGrid(anyString());
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testOnExpressionTypeChangedWhenNotNested() {
         assertOnExpressionTypeChanged(0);
+
+        verify(expressionGridCache).getExpressionGrid(eq(NODE_UUID));
     }
 
     @SuppressWarnings("unchecked")
     private void assertOnExpressionTypeChanged(final int nesting) {
         setupGrid(nesting);
+
+        final GridCell parentCell = mock(GridCell.class);
+        final ExpressionCellValue parentCellValue = mock(ExpressionCellValue.class);
+        final BaseExpressionGrid parentGridEditor = mock(BaseExpressionGrid.class);
+        when(parentGridUiModel.getCell(anyInt(), anyInt())).thenReturn(parentCell);
+        when(parentCell.getValue()).thenReturn(parentCellValue);
+        when(parentCellValue.getValue()).thenReturn(Optional.of(parentGridEditor));
 
         grid.onExpressionTypeChanged(ExpressionType.LITERAL_EXPRESSION);
 
@@ -418,17 +460,6 @@ public class UndefinedExpressionGridTest {
         final SetCellValueCommand setCellValueCommand = setCellValueCommandArgumentCaptor.getValue();
         setCellValueCommand.execute(handler);
 
-        verify(parent).onResize();
-        verify(gridPanel).refreshScrollPosition();
-        verify(gridPanel).updatePanelSize();
-        verify(literalExpressionEditor).selectFirstCell();
-
-        verify(gridLayer).batch(redrawCommandArgumentCaptor.capture());
-
-        final GridLayerRedrawManager.PrioritizedCommand redrawCommand = redrawCommandArgumentCaptor.getValue();
-        redrawCommand.execute();
-
-        verify(gridLayer).draw();
-        verify(gridLayer).select(eq(literalExpressionEditor));
+        verify(parentGridEditor).resizeWhenExpressionEditorChanged();
     }
 }

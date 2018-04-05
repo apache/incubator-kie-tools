@@ -52,7 +52,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridDataCache;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -73,12 +72,12 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
 
     public FunctionGrid(final GridCellTuple parent,
                         final Optional<String> nodeUUID,
-                        final GridDataCache<FunctionDefinition, DMNGridData> cache,
                         final HasExpression hasExpression,
                         final Optional<FunctionDefinition> expression,
                         final Optional<HasName> hasName,
                         final DMNGridPanel gridPanel,
                         final DMNGridLayer gridLayer,
+                        final DMNGridData gridData,
                         final DefinitionUtils definitionUtils,
                         final SessionManager sessionManager,
                         final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
@@ -97,7 +96,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
               hasName,
               gridPanel,
               gridLayer,
-              cache.getData(nodeUUID, expression),
+              gridData,
               new FunctionGridRenderer(nesting > 0),
               definitionUtils,
               sessionManager,
@@ -319,7 +318,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                                                          function,
                                                          kind,
                                                          expression,
-                                                         () -> synchroniseViewWhenExpressionEditorChanged(this)));
+                                                         this::resizeWhenExpressionEditorChanged));
     }
 
     void clearExpressionType() {
@@ -331,7 +330,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                                           new ClearExpressionTypeCommand(gc,
                                                                          function,
                                                                          uiModelMapper,
-                                                                         () -> synchroniseViewWhenExpressionEditorChanged(this)));
+                                                                         () -> resizeBasedOnCellExpressionEditor(0, 0)));
         });
     }
 }

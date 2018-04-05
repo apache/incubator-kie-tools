@@ -33,7 +33,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridDataCache;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -160,7 +159,7 @@ public class BaseExpressionGridRenderingTest extends BaseExpressionGridTest {
                                       hasName,
                                       gridPanel,
                                       gridLayer,
-                                      new GridDataCache.CacheResult(new DMNGridData(), false),
+                                      new DMNGridData(),
                                       renderer,
                                       definitionUtils,
                                       sessionManager,

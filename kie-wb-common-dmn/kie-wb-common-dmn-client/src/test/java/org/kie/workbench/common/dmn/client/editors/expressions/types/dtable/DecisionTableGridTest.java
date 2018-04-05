@@ -307,6 +307,13 @@ public class DecisionTableGridTest {
     }
 
     @Test
+    public void testCacheable() {
+        setupGrid(Optional.empty(), 0);
+
+        assertTrue(grid.isCacheable());
+    }
+
+    @Test
     public void testColumn0MetaData() {
         setupGrid(makeHasNameForDecision(), 0);
 

@@ -16,21 +16,20 @@
 
 package org.kie.workbench.common.dmn.client.commands.general;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -38,63 +37,71 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.eq;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ClearExpressionTypeCommandTest {
+public abstract class BaseClearExpressionCommandTest<C extends BaseClearExpressionCommand, E extends Expression, M extends BaseUIModelMapper> {
 
-    private static final int ROW_INDEX = 0;
+    protected static final int ROW_INDEX = 0;
 
-    private static final int COLUMN_INDEX = 1;
-
-    @Mock
-    private DMNGridLayer gridLayer;
+    protected static final int COLUMN_INDEX = 1;
 
     @Mock
-    private GridWidget gridWidget;
+    protected DMNGridLayer gridLayer;
 
     @Mock
-    private GridData gridData;
+    protected GridWidget gridWidget;
 
     @Mock
-    private GridCell gridCell;
+    protected GridData gridData;
 
     @Mock
-    private GridCellValue gridCellValue;
+    protected GridCell gridCell;
 
     @Mock
-    private AbstractCanvasHandler canvasHandler;
+    protected GridCellValue gridCellValue;
 
     @Mock
-    private GraphCommandExecutionContext graphCommandExecutionContext;
+    protected AbstractCanvasHandler canvasHandler;
 
     @Mock
-    private HasExpression hasExpression;
+    protected GraphCommandExecutionContext graphCommandExecutionContext;
 
     @Mock
-    private Expression expression;
+    protected RuleManager ruleManager;
 
     @Mock
-    private BaseUIModelMapper<?> uiModelMapper;
+    protected HasExpression hasExpression;
 
-    private ClearExpressionTypeCommand command;
+    protected E expression;
+
+    protected M uiModelMapper;
+
+    protected C command;
+
+    @Before
+    public void setup() {
+        this.expression = makeTestExpression();
+        this.uiModelMapper = makeTestUiModelMapper();
+    }
 
     @SuppressWarnings("unchecked")
-    private void makeCommand() {
+    protected void makeCommand() {
         when(gridWidget.getModel()).thenReturn(gridData);
         when(gridData.getCell(eq(ROW_INDEX), eq(COLUMN_INDEX))).thenReturn(gridCell);
         when(gridCell.getValue()).thenReturn(gridCellValue);
+        when(graphCommandExecutionContext.getRuleManager()).thenReturn(ruleManager);
 
-        this.command = new ClearExpressionTypeCommand(new GridCellTuple(ROW_INDEX,
-                                                                        COLUMN_INDEX,
-                                                                        gridWidget),
-                                                      hasExpression,
-                                                      uiModelMapper,
-                                                      gridLayer::batch);
+        this.command = makeTestCommand();
     }
+
+    protected abstract E makeTestExpression();
+
+    protected abstract C makeTestCommand();
+
+    protected abstract M makeTestUiModelMapper();
 
     @Test
     public void checkGraphCommand() {

@@ -40,7 +40,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSel
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridDataCache;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -58,12 +57,12 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
 
     public RelationGrid(final GridCellTuple parent,
                         final Optional<String> nodeUUID,
-                        final GridDataCache<Relation, RelationGridData> cache,
                         final HasExpression hasExpression,
                         final Optional<Relation> expression,
                         final Optional<HasName> hasName,
                         final DMNGridPanel gridPanel,
                         final DMNGridLayer gridLayer,
+                        final RelationGridData gridData,
                         final DefinitionUtils definitionUtils,
                         final SessionManager sessionManager,
                         final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
@@ -79,7 +78,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
               hasName,
               gridPanel,
               gridLayer,
-              cache.getData(nodeUUID, expression),
+              gridData,
               new RelationGridRenderer(),
               definitionUtils,
               sessionManager,
@@ -215,7 +214,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                                                                        relationColumn,
                                                                        index,
                                                                        uiModelMapper,
-                                                                       () -> synchroniseViewWhenExpressionEditorChanged(this)));
+                                                                       this::resize));
         });
     }
 
@@ -226,7 +225,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                                                                           model,
                                                                           index,
                                                                           uiModelMapper,
-                                                                          () -> synchroniseViewWhenExpressionEditorChanged(this)));
+                                                                          this::resize));
         });
     }
 
@@ -239,7 +238,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                                                                     new DMNGridRow(),
                                                                     index,
                                                                     uiModelMapper,
-                                                                    this::synchroniseView));
+                                                                    this::resize));
         });
     }
 
@@ -249,7 +248,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                                           new DeleteRelationRowCommand(relation,
                                                                        model,
                                                                        index,
-                                                                       this::synchroniseView));
+                                                                       this::resize));
         });
     }
 }

@@ -14,77 +14,42 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.commands.general;
+package org.kie.workbench.common.dmn.client.commands;
 
 import java.util.Optional;
 
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
-import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
-import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
+import org.kie.workbench.common.dmn.client.commands.general.BaseClearExpressionCommand;
+import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionContainerUIModelMapper;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.UIModelMapper;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
-import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
-import org.kie.workbench.common.stunner.core.graph.command.impl.AbstractGraphCommand;
-import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 
-import static org.kie.workbench.common.dmn.client.commands.util.CommandUtils.extractGridCellValue;
+public class ClearExpressionTypeCommand extends BaseClearExpressionCommand {
 
-public class ClearExpressionTypeCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
-                                                                                      VetoUndoCommand {
-
-    private final GridCellTuple cellTuple;
-    private final HasExpression hasExpression;
-    private final UIModelMapper uiModelMapper;
-    private final org.uberfire.mvp.Command canvasOperation;
-
-    private final Expression oldExpression;
-    private final Optional<GridCellValue<?>> oldCellValue;
+    private final String nodeUUID;
+    private final ExpressionGridCache expressionGridCache;
+    private final Optional<BaseExpressionGrid> oldExpressionGrid;
 
     public ClearExpressionTypeCommand(final GridCellTuple cellTuple,
+                                      final String nodeUUID,
                                       final HasExpression hasExpression,
-                                      final UIModelMapper uiModelMapper,
+                                      final ExpressionContainerUIModelMapper uiModelMapper,
+                                      final ExpressionGridCache expressionGridCache,
                                       final org.uberfire.mvp.Command canvasOperation) {
-        this.cellTuple = cellTuple;
-        this.hasExpression = hasExpression;
-        this.uiModelMapper = uiModelMapper;
-        this.canvasOperation = canvasOperation;
-
-        this.oldExpression = hasExpression.getExpression();
-        this.oldCellValue = extractGridCellValue(cellTuple);
-    }
-
-    @Override
-    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
-        return new AbstractGraphCommand() {
-            @Override
-            protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
-                return GraphCommandResultBuilder.SUCCESS;
-            }
-
-            @Override
-            public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
-                hasExpression.setExpression(null);
-
-                return GraphCommandResultBuilder.SUCCESS;
-            }
-
-            @Override
-            public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
-                hasExpression.setExpression(oldExpression);
-
-                return GraphCommandResultBuilder.SUCCESS;
-            }
-        };
+        super(cellTuple,
+              hasExpression,
+              uiModelMapper,
+              canvasOperation);
+        this.nodeUUID = nodeUUID;
+        this.expressionGridCache = expressionGridCache;
+        this.oldExpressionGrid = expressionGridCache.getExpressionGrid(nodeUUID);
     }
 
     @Override
@@ -92,6 +57,9 @@ public class ClearExpressionTypeCommand extends AbstractCanvasGraphCommand imple
         return new AbstractCanvasCommand() {
             @Override
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
+                //Clear cache first as its content is used by the UIModelMapper to retrieve existing BaseExpressionGrid
+                expressionGridCache.removeExpressionGrid(nodeUUID);
+
                 //Use UIModelMapper to get cell value for null Expressions
                 uiModelMapper.fromDMNModel(cellTuple.getRowIndex(),
                                            cellTuple.getColumnIndex());
@@ -103,6 +71,8 @@ public class ClearExpressionTypeCommand extends AbstractCanvasGraphCommand imple
 
             @Override
             public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
+                expressionGridCache.putExpressionGrid(nodeUUID, oldExpressionGrid);
+
                 //Simply write back the old value
                 oldCellValue.ifPresent(v -> cellTuple.getGridWidget().getModel().setCellValue(cellTuple.getRowIndex(),
                                                                                               cellTuple.getColumnIndex(),

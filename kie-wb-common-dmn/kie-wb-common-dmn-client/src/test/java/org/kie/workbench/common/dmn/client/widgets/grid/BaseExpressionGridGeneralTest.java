@@ -30,15 +30,17 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridDataCache;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
@@ -54,6 +56,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
@@ -75,7 +78,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
                                       hasName,
                                       gridPanel,
                                       gridLayer,
-                                      new GridDataCache.CacheResult(new DMNGridData(), false),
+                                      new DMNGridData(),
                                       renderer,
                                       definitionUtils,
                                       sessionManager,
@@ -285,10 +288,8 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     }
 
     @Test
-    public void synchroniseViewWhenExpressionEditorChangedWithEditor() {
-        final BaseExpressionGrid editor = mock(BaseExpressionGrid.class);
-
-        grid.synchroniseViewWhenExpressionEditorChanged(editor);
+    public void testResizeWhenExpressionEditorChanged() {
+        grid.resizeWhenExpressionEditorChanged();
 
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
@@ -299,12 +300,32 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         redrawCommand.execute();
 
         verify(gridLayer).draw();
-        verify(gridLayer).select(eq(editor));
+        verify(gridLayer).select(eq(grid));
     }
 
     @Test
-    public void synchroniseView() {
-        grid.synchroniseView();
+    @SuppressWarnings("unchecked")
+    public void testResizeBasedOnCellExpressionEditor() {
+        final GridCell cell = mock(GridCell.class);
+        final GridColumn column = mock(GridColumn.class);
+        final ExpressionCellValue value = mock(ExpressionCellValue.class);
+        final BaseExpressionGrid childGrid = mock(BaseExpressionGrid.class);
+
+        grid.getModel().appendColumn(column);
+        grid.getModel().appendRow(new BaseGridRow());
+        grid.getModel().setCell(0, 0, () -> cell);
+
+        when(cell.getValue()).thenReturn(value);
+        when(value.getValue()).thenReturn(Optional.of(childGrid));
+
+        grid.resizeBasedOnCellExpressionEditor(0, 0);
+
+        verify(childGrid).resizeWhenExpressionEditorChanged();
+    }
+
+    @Test
+    public void testResize() {
+        grid.resize();
 
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();

@@ -30,7 +30,7 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
-import org.kie.workbench.common.dmn.client.commands.general.ClearExpressionTypeCommand;
+import org.kie.workbench.common.dmn.client.commands.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
@@ -39,13 +39,14 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.U
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
+import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCacheImpl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
-import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
@@ -81,9 +82,6 @@ public class ExpressionContainerGridTest {
     private static final String NODE_UUID = "uuid";
 
     private static final String NAME = "name";
-
-    @Mock
-    private DMNGridPanel gridPanel;
 
     @Mock
     private DMNGridLayer gridLayer;
@@ -156,19 +154,22 @@ public class ExpressionContainerGridTest {
 
     private LiteralExpression literalExpression = new LiteralExpression();
 
+    private ExpressionGridCache expressionGridCache;
+
     private ExpressionContainerGrid grid;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        this.grid = new ExpressionContainerGrid(gridPanel,
-                                                gridLayer,
+        this.expressionGridCache = new ExpressionGridCacheImpl();
+        this.grid = new ExpressionContainerGrid(gridLayer,
                                                 cellEditorControls,
                                                 translationService,
                                                 listSelector,
                                                 sessionManager,
                                                 sessionCommandManager,
                                                 expressionEditorDefinitionsSupplier,
+                                                expressionGridCache,
                                                 onHasNameChanged);
 
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();

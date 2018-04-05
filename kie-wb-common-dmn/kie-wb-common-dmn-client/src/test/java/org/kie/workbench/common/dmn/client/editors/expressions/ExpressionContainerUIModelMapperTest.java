@@ -34,6 +34,8 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Exp
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
+import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCacheImpl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -100,6 +102,8 @@ public class ExpressionContainerUIModelMapperTest {
 
     private Expression expression;
 
+    private ExpressionGridCache expressionGridCache;
+
     private ExpressionContainerUIModelMapper mapper;
 
     @Before
@@ -119,6 +123,7 @@ public class ExpressionContainerUIModelMapperTest {
 
         doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
         doReturn(Optional.of(literalExpression)).when(literalExpressionEditorDefinition).getModelClass();
+        doReturn(true).when(literalExpressionEditor).isCacheable();
         doReturn(Optional.of(literalExpression)).when(literalExpressionEditor).getExpression();
         doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
                                                                                                          any(Optional.class),
@@ -135,6 +140,7 @@ public class ExpressionContainerUIModelMapperTest {
                                                                                                              any(Optional.class),
                                                                                                              anyInt());
 
+        expressionGridCache = new ExpressionGridCacheImpl();
         mapper = new ExpressionContainerUIModelMapper(parent,
                                                       () -> uiModel,
                                                       () -> Optional.ofNullable(expression),
@@ -142,6 +148,7 @@ public class ExpressionContainerUIModelMapperTest {
                                                       () -> hasExpression,
                                                       () -> Optional.of(hasName),
                                                       expressionEditorDefinitionsSupplier,
+                                                      expressionGridCache,
                                                       listSelector);
     }
 
@@ -174,7 +181,6 @@ public class ExpressionContainerUIModelMapperTest {
 
         assertUiModel();
         assertEditorType(literalExpressionEditor.getClass());
-        verify(uiExpressionColumn).setWidth(MINIMUM_COLUMN_WIDTH);
 
         verify(literalExpressionEditorDefinition).getEditor(eq(parent),
                                                             nodeUUIDCaptor.capture(),
@@ -185,6 +191,31 @@ public class ExpressionContainerUIModelMapperTest {
         final Optional<String> nodeUUID = nodeUUIDCaptor.getValue();
         assertThat(nodeUUID.isPresent()).isTrue();
         assertThat(nodeUUID.get()).isEqualTo(NODE_UUID);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testFromDMNModelExpressionGridCacheIsHit() {
+        expression = new LiteralExpression();
+
+        mapper.fromDMNModel(0, 0);
+
+        verify(literalExpressionEditorDefinition).getEditor(eq(parent),
+                                                            nodeUUIDCaptor.capture(),
+                                                            eq(hasExpression),
+                                                            eq(Optional.of(expression)),
+                                                            eq(Optional.of(hasName)),
+                                                            eq(0));
+
+        mapper.fromDMNModel(0, 0);
+
+        //There should only be one interaction with LiteralExpressionEditorDefinition
+        verify(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
+                                                            any(Optional.class),
+                                                            any(HasExpression.class),
+                                                            any(Optional.class),
+                                                            any(Optional.class),
+                                                            anyInt());
     }
 
     @Test(expected = UnsupportedOperationException.class)

@@ -32,8 +32,8 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.AddParameterBindingCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.DeleteParameterBindingCommand;
-import org.kie.workbench.common.dmn.client.commands.general.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
@@ -47,7 +47,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSel
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridDataCache;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -67,12 +66,12 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
 
     public InvocationGrid(final GridCellTuple parent,
                           final Optional<String> nodeUUID,
-                          final GridDataCache<Invocation, InvocationGridData> cache,
                           final HasExpression hasExpression,
                           final Optional<Invocation> expression,
                           final Optional<HasName> hasName,
                           final DMNGridPanel gridPanel,
                           final DMNGridLayer gridLayer,
+                          final InvocationGridData gridData,
                           final DefinitionUtils definitionUtils,
                           final SessionManager sessionManager,
                           final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
@@ -89,7 +88,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
               hasName,
               gridPanel,
               gridLayer,
-              cache.getData(nodeUUID, expression),
+              gridData,
               new InvocationGridRenderer(nesting > 0),
               definitionUtils,
               sessionManager,
@@ -245,7 +244,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
                                                                          new DMNGridRow(),
                                                                          index,
                                                                          uiModelMapper,
-                                                                         this::synchroniseView));
+                                                                         this::resize));
         });
     }
 
@@ -255,7 +254,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
                                           new DeleteParameterBindingCommand(invocation,
                                                                             model,
                                                                             index,
-                                                                            this::synchroniseView));
+                                                                            this::resize));
         });
     }
 
@@ -268,6 +267,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
                                       new ClearExpressionTypeCommand(gc,
                                                                      hasExpression,
                                                                      uiModelMapper,
-                                                                     () -> synchroniseViewWhenExpressionEditorChanged(this)));
+                                                                     () -> resizeBasedOnCellExpressionEditor(uiRowIndex,
+                                                                                                             InvocationUIModelMapper.BINDING_EXPRESSION_COLUMN_INDEX)));
     }
 }

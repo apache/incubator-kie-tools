@@ -18,93 +18,44 @@ package org.kie.workbench.common.dmn.client.commands.expressions.types.function;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
-import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
-import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
+import org.kie.workbench.common.dmn.client.commands.general.BaseClearExpressionCommandTest;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.FunctionUIModelMapper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.KindUtilities;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
-import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.ext.wires.core.grids.client.model.GridCell;
-import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
-import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ClearExpressionTypeCommandTest {
-
-    private static final int ROW_INDEX = 0;
-
-    private static final int COLUMN_INDEX = 1;
-
-    @Mock
-    private DMNGridLayer gridLayer;
-
-    @Mock
-    private GridWidget gridWidget;
-
-    @Mock
-    private GridData gridData;
-
-    @Mock
-    private GridCell gridCell;
-
-    @Mock
-    private GridCellValue gridCellValue;
-
-    @Mock
-    private AbstractCanvasHandler canvasHandler;
-
-    @Mock
-    private GraphCommandExecutionContext graphCommandExecutionContext;
-
-    @Mock
-    private Expression expression;
+public class ClearExpressionTypeCommandTest extends BaseClearExpressionCommandTest<ClearExpressionTypeCommand, FunctionDefinition, FunctionUIModelMapper> {
 
     @Mock
     private FunctionUIModelMapper uiModelMapper;
 
-    private FunctionDefinition function = new FunctionDefinition();
-
-    private ClearExpressionTypeCommand command;
-
-    @SuppressWarnings("unchecked")
-    private void makeCommand() {
-        when(gridWidget.getModel()).thenReturn(gridData);
-        when(gridData.getCell(eq(ROW_INDEX), eq(COLUMN_INDEX))).thenReturn(gridCell);
-        when(gridCell.getValue()).thenReturn(gridCellValue);
-
-        this.command = new ClearExpressionTypeCommand(new GridCellTuple(ROW_INDEX,
-                                                                        COLUMN_INDEX,
-                                                                        gridWidget),
-                                                      function,
-                                                      uiModelMapper,
-                                                      gridLayer::batch);
+    @Override
+    protected FunctionDefinition makeTestExpression() {
+        return new FunctionDefinition();
     }
 
-    @Test
-    public void checkGraphCommand() {
-        makeCommand();
+    @Override
+    protected ClearExpressionTypeCommand makeTestCommand() {
+        return new ClearExpressionTypeCommand(new GridCellTuple(ROW_INDEX,
+                                                                COLUMN_INDEX,
+                                                                gridWidget),
+                                              expression,
+                                              uiModelMapper,
+                                              gridLayer::batch);
+    }
 
-        assertEquals(GraphCommandResultBuilder.SUCCESS,
-                     command.getGraphCommand(canvasHandler).allow(graphCommandExecutionContext));
-
-        verifyZeroInteractions(uiModelMapper);
+    @Override
+    protected FunctionUIModelMapper makeTestUiModelMapper() {
+        return uiModelMapper;
     }
 
     @Test
@@ -114,17 +65,17 @@ public class ClearExpressionTypeCommandTest {
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.getGraphCommand(canvasHandler).execute(graphCommandExecutionContext));
 
-        assertNull(function.getExpression());
+        assertNull(expression.getExpression());
         assertEquals(FunctionDefinition.Kind.FEEL,
-                     KindUtilities.getKind(function));
+                     KindUtilities.getKind(expression));
 
         verifyZeroInteractions(uiModelMapper);
     }
 
     @Test
     public void undoGraphCommand() {
-        function.setExpression(expression);
-        KindUtilities.setKind(function,
+        expression.setExpression(expression);
+        KindUtilities.setKind(expression,
                               FunctionDefinition.Kind.JAVA);
 
         makeCommand();
@@ -132,16 +83,16 @@ public class ClearExpressionTypeCommandTest {
         //Execute then undo
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.getGraphCommand(canvasHandler).execute(graphCommandExecutionContext));
-        assertNull(function.getExpression());
+        assertNull(expression.getExpression());
         assertEquals(FunctionDefinition.Kind.FEEL,
-                     KindUtilities.getKind(function));
+                     KindUtilities.getKind(expression));
 
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.getGraphCommand(canvasHandler).undo(graphCommandExecutionContext));
         assertEquals(expression,
-                     function.getExpression());
+                     expression.getExpression());
         assertEquals(FunctionDefinition.Kind.JAVA,
-                     KindUtilities.getKind(function));
+                     KindUtilities.getKind(expression));
 
         verifyZeroInteractions(uiModelMapper);
     }
@@ -154,40 +105,5 @@ public class ClearExpressionTypeCommandTest {
                      command.getCanvasCommand(canvasHandler).allow(canvasHandler));
 
         verifyZeroInteractions(uiModelMapper);
-    }
-
-    @Test
-    public void executeCanvasCommand() {
-        makeCommand();
-
-        assertEquals(CanvasCommandResultBuilder.SUCCESS,
-                     command.getCanvasCommand(canvasHandler).execute(canvasHandler));
-
-        verify(uiModelMapper).fromDMNModel(eq(ROW_INDEX),
-                                           eq(COLUMN_INDEX));
-
-        verify(gridLayer).batch();
-    }
-
-    @Test
-    public void undoCanvasCommand() {
-        makeCommand();
-
-        assertEquals(CanvasCommandResultBuilder.SUCCESS,
-                     command.getCanvasCommand(canvasHandler).undo(canvasHandler));
-
-        verify(gridData).setCellValue(eq(ROW_INDEX),
-                                      eq(COLUMN_INDEX),
-                                      eq(gridCellValue));
-
-        verify(gridLayer).batch();
-    }
-
-    @Test
-    public void checkCommandDefinition() {
-        makeCommand();
-
-        assertTrue(command instanceof VetoExecutionCommand);
-        assertTrue(command instanceof VetoUndoCommand);
     }
 }
