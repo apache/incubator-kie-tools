@@ -69,7 +69,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Aether.class)
-@PowerMockIgnore({"javax.crypto.*", "javax.net.ssl.*", "javax.net.*"})
+@PowerMockIgnore({"javax.crypto.*", "javax.net.ssl.*", "javax.net.*", "javax.security.auth.x500.X500Principal"})
 public class GuvnorM2RepositoryTest {
 
     public static final String KIE_SETTINGS_CUSTOM_KEY = "kie.maven.settings.custom";
