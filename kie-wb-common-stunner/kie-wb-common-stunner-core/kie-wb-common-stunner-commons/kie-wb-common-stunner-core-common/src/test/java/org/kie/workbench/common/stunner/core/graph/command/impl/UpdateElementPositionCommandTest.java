@@ -36,11 +36,9 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -170,7 +168,7 @@ public class UpdateElementPositionCommandTest extends AbstractGraphCommandTest {
     }
 
     @Test
-    public void testExecuteDockedNode(){
+    public void testExecuteDockedNode() {
         ArgumentCaptor<Bounds> boundsArgumentCaptor = ArgumentCaptor.forClass(Bounds.class);
         this.tested = new UpdateElementPositionCommand(dockedNode, new Point2D(600d, 600d));
         final CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);

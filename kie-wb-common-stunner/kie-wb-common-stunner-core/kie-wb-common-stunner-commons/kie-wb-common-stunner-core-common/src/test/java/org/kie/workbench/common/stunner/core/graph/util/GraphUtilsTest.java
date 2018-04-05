@@ -23,7 +23,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
-import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
@@ -101,7 +100,7 @@ public class GraphUtilsTest {
     }
 
     @Test
-    public void isDockedNodeTest(){
+    public void isDockedNodeTest() {
         assertTrue(GraphUtils.isDockedNode(graphInstance.dockedNode));
         assertFalse(GraphUtils.isDockedNode(graphInstance.startNode));
         assertFalse(GraphUtils.isDockedNode(graphInstance.intermNode));
@@ -109,7 +108,7 @@ public class GraphUtilsTest {
     }
 
     @Test
-    public void getDockedNodesTest(){
+    public void getDockedNodesTest() {
         List<Node> dockedNodes = GraphUtils.getDockedNodes(graphInstance.intermNode);
         assertEquals(dockedNodes.size(), 1);
         assertEquals(dockedNodes.get(0), graphInstance.dockedNode);
