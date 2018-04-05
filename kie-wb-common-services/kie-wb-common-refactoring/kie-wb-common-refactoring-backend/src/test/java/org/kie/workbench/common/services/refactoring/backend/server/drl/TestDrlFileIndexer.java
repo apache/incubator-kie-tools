@@ -24,7 +24,7 @@ import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.IndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.drools.AbstractDrlFileIndexer;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.server.util.Paths;
@@ -59,7 +59,7 @@ public class TestDrlFileIndexer
     }
 
     @Override
-    protected DefaultIndexBuilder fillIndexBuilder(Path path) throws Exception {
+    protected IndexBuilder fillIndexBuilder(Path path) throws Exception {
         final String drl = ioService.readAllString(path);
 
         return fillDrlIndexBuilder(path, drl);

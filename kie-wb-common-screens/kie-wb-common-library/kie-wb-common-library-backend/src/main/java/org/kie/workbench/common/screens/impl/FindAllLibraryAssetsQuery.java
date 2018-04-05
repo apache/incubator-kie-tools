@@ -16,6 +16,7 @@
 package org.kie.workbench.common.screens.impl;
 
 import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -23,8 +24,9 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.kie.workbench.common.screens.library.api.index.LibraryFileExtensionIndexTerm;
+import org.kie.workbench.common.screens.library.api.index.LibraryRepositoryRootIndexTerm;
 import org.kie.workbench.common.screens.library.api.index.LibraryValueFileNameIndexTerm;
-import org.kie.workbench.common.screens.library.api.index.LibraryValueModuleRootPathIndexTerm;
+import org.kie.workbench.common.screens.library.api.index.LibraryValueRepositoryRootIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.FileDetailsResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
@@ -77,11 +79,11 @@ public class FindAllLibraryAssetsQuery
         checkInvalidAndRequiredTerms(queryTerms,
                                      NAME,
                                      new String[]{
-                                             LibraryValueModuleRootPathIndexTerm.TERM,
+                                             LibraryRepositoryRootIndexTerm.TERM,
                                              null, // not required
                                              null// not required
                                      },
-                                     (t) -> (t instanceof LibraryValueModuleRootPathIndexTerm),
+                                     (t) -> (t instanceof LibraryValueRepositoryRootIndexTerm),
                                      (t) -> (t instanceof LibraryValueFileNameIndexTerm),
                                      (t) -> (t instanceof LibraryFileExtensionIndexTerm)
         );

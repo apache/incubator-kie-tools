@@ -30,6 +30,7 @@ import org.kie.workbench.common.forms.services.backend.serialization.FormDefinit
 import org.kie.workbench.common.services.refactoring.Resource;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.IndexBuilder;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +59,7 @@ public class FormDefinitionIndexer extends AbstractFileIndexer {
     }
 
     @Override
-    protected DefaultIndexBuilder fillIndexBuilder(Path path) throws Exception {
+    protected IndexBuilder fillIndexBuilder(Path path) throws Exception {
 
         final DefaultIndexBuilder builder = getIndexBuilder(path);
         if (builder == null) {

@@ -19,35 +19,33 @@ package org.kie.workbench.screens.workbench.backend;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import javax.annotation.PostConstruct;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import javax.enterprise.inject.Produces;
 
-import org.uberfire.commons.services.cdi.Startup;
-import org.uberfire.commons.services.cdi.StartupType;
 import org.uberfire.ext.metadata.engine.Indexer;
 import org.uberfire.ext.metadata.io.IndexersFactory;
 
-@Startup(value = StartupType.BOOTSTRAP, priority = -1)
 @ApplicationScoped
-public class IndexersBootstrap {
+public class IndexersFactoryProducer {
 
-    @Inject
-    @Any
-    private Instance<Indexer> indexers;
+    @Produces
+    @ApplicationScoped
+    public IndexersFactory getIndexersFactory(@Any Instance<Indexer> indexers) {
+        IndexersFactory factory = new IndexersFactory();
+        getIndexers(indexers).forEach(factory::addIndexer);
 
-    @PostConstruct
-    public void setup() {
-        getIndexers().forEach( IndexersFactory::addIndexer );
+        return factory;
     }
 
-    private Set<Indexer> getIndexers() {
+
+    private Set<Indexer> getIndexers(Instance<Indexer> indexers) {
         if ( indexers == null ) {
             return Collections.emptySet();
         }
-        final Set<Indexer> result = new HashSet<Indexer>();
+        final Set<Indexer> result = new HashSet<>();
         for ( Indexer indexer : indexers ) {
             result.add( indexer );
         }

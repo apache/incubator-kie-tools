@@ -25,6 +25,7 @@ import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.ErrorMessageUtilities;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.IndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.PackageDescrIndexVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +50,7 @@ public abstract class AbstractDrlFileIndexer extends AbstractFileIndexer {
      * @return The {@link DefaultIndexBuilder}
      * @throws Exception
      */
-    public DefaultIndexBuilder fillDrlIndexBuilder(final Path path,
+    public IndexBuilder fillDrlIndexBuilder(final Path path,
                                                    final String drl) throws Exception {
 
         final DrlParser drlParser = new DrlParser();

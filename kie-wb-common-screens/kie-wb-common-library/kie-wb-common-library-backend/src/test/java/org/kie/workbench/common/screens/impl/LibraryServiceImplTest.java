@@ -313,11 +313,10 @@ public class LibraryServiceImplTest {
 
     @Test
     public void emptyFirstPage() throws Exception {
-        final WorkspaceProject project = spy(WorkspaceProject.class);
         final Branch branch = mock(Branch.class);
+        final WorkspaceProject project = spy(new WorkspaceProject(ou1, repo1, branch, null));
         final Path path = mock(Path.class);
 
-        when(project.getBranch()).thenReturn(branch);
         when(branch.getPath()).thenReturn(path);
         when(path.toURI()).thenReturn("file://a/b/c");
 
@@ -356,12 +355,14 @@ public class LibraryServiceImplTest {
     @Test
     public void queryWithAFilter() throws Exception {
 
-        final WorkspaceProject project = spy(WorkspaceProject.class);
         final Branch branch = mock(Branch.class);
         final Path path = mockPath("file://the_project");
+        final WorkspaceProject project =  spy(new WorkspaceProject(mock(OrganizationalUnit.class),
+                                                               repo1,
+                                                               branch,
+                                                               null));
 
         when(branch.getPath()).thenReturn(path);
-        when(project.getBranch()).thenReturn(branch);
 
         doReturn(true).when(ioService).exists(any());
 
@@ -403,11 +404,13 @@ public class LibraryServiceImplTest {
 
         final Path path = mockPath("file://the_project");
 
-        final WorkspaceProject project = spy(WorkspaceProject.class);
         final Branch branch = mock(Branch.class);
 
-        when(project.getBranch()).thenReturn(branch);
         when(branch.getPath()).thenReturn(path);
+        final WorkspaceProject project = spy(new WorkspaceProject(ou1,
+                                                                  repo1,
+                                                                  branch,
+                                                                  null));
 
         doReturn(true).when(ioService).exists(any());
 

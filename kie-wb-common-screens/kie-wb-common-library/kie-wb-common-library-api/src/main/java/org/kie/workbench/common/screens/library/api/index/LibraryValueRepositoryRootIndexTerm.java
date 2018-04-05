@@ -20,31 +20,27 @@ import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 
 @Portable
-public class LibraryValueModuleRootPathIndexTerm extends LibraryModuleRootPathIndexTerm implements ValueIndexTerm {
+public class LibraryValueRepositoryRootIndexTerm extends LibraryRepositoryRootIndexTerm implements ValueIndexTerm {
 
-    private String projectPath;
+    private String repoRootPath;
     private TermSearchType searchType;
 
-    public LibraryValueModuleRootPathIndexTerm() {
+    public LibraryValueRepositoryRootIndexTerm() {
         //Errai marshalling
     }
 
-    public LibraryValueModuleRootPathIndexTerm(final String projectPath) {
-        this(projectPath,
-             TermSearchType.NORMAL);
+    public LibraryValueRepositoryRootIndexTerm(final String repoRootPath) {
+        this(repoRootPath, TermSearchType.NORMAL);
     }
 
-    public LibraryValueModuleRootPathIndexTerm(final String projectPath,
-                                               final TermSearchType searchType) {
-        this.projectPath = PortablePreconditions.checkNotNull("projectPath",
-                                                              projectPath);
-        this.searchType = PortablePreconditions.checkNotNull("searchType",
-                                                             searchType);
+    public LibraryValueRepositoryRootIndexTerm(final String fileName, final TermSearchType searchType) {
+        this.repoRootPath = PortablePreconditions.checkNotNull("fileName", fileName);
+        this.searchType = PortablePreconditions.checkNotNull("searchType", searchType);
     }
 
     @Override
     public String getValue() {
-        return projectPath;
+        return repoRootPath;
     }
 
     @Override

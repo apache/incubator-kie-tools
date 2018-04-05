@@ -46,6 +46,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.IndexBuilder;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.stunner.bpmn.resource.BPMNDefinitionSetResourceType;
 import org.slf4j.Logger;
@@ -81,7 +82,7 @@ public class BpmnFileIndexer extends AbstractFileIndexer {
      * @see org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer#fillIndexBuilder(org.uberfire.java.nio.file.Path)
      */
     @Override
-    protected DefaultIndexBuilder fillIndexBuilder(Path path) throws Exception {
+    protected IndexBuilder fillIndexBuilder(Path path) throws Exception {
         final KieModule module = moduleService.resolveModule(Paths.convert(path));
         if (module == null) {
             logger.error("Unable to index " + path.toUri().toString() + ": module could not be resolved.");

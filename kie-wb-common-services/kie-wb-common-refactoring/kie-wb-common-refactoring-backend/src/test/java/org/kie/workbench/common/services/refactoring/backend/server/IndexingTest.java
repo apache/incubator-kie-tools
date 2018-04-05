@@ -22,12 +22,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import javax.enterprise.event.Event;
+import javax.enterprise.util.TypeLiteral;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.lucene.analysis.Analyzer;
@@ -43,7 +47,11 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.commons.async.DescriptiveThreadFactory;
 import org.uberfire.ext.metadata.MetadataConfig;
 import org.uberfire.ext.metadata.backend.lucene.index.CustomAnalyzerWrapperFactory;
+import org.uberfire.ext.metadata.engine.IndexerScheduler.Factory;
+import org.uberfire.ext.metadata.io.ConstrainedIndexerScheduler.ConstraintBuilder;
 import org.uberfire.ext.metadata.io.IOServiceIndexedImpl;
+import org.uberfire.ext.metadata.io.IndexerDispatcher;
+import org.uberfire.ext.metadata.io.IndexerDispatcher.IndexerDispatcherFactory;
 import org.uberfire.ext.metadata.io.IndexersFactory;
 import org.uberfire.ext.metadata.io.MetadataConfigBuilder;
 import org.uberfire.ext.metadata.model.KObject;
@@ -63,9 +71,11 @@ public abstract class IndexingTest<T extends ResourceTypeDefinition> {
     public static final String TEST_MODULE_NAME = "mock-module";
     public static final String TEST_PACKAGE_NAME = "org.kie.workbench.mock.package";
     protected static final Logger logger = LoggerFactory.getLogger(IndexingTest.class);
-    protected static final List<File> tempFiles = new ArrayList<File>();
+    protected static final List<File> tempFiles = new ArrayList<>();
     private static MetadataConfig config;
     private IOService ioService = null;
+    private IndexersFactory indexersFactory;
+    private IndexerDispatcherFactory indexerDispatcherFactory;
 
     @AfterClass
     @BeforeClass
@@ -166,11 +176,19 @@ public abstract class IndexingTest<T extends ResourceTypeDefinition> {
 
             ExecutorService executorService = Executors.newCachedThreadPool(new DescriptiveThreadFactory());
 
+            indexersFactory = new IndexersFactory();
+            Factory schedulerFactory = new ConstraintBuilder().createFactory();
+            indexerDispatcherFactory = IndexerDispatcher.createFactory(config.getIndexEngine(),
+                                                                       schedulerFactory,
+                                                                       testEvent(),
+                                                                       LoggerFactory.getLogger(IndexerDispatcher.class));
             ioService = new IOServiceIndexedImpl(config.getIndexEngine(),
-                                                 executorService);
+                                                 executorService,
+                                                 indexersFactory,
+                                                 indexerDispatcherFactory);
             final TestIndexer indexer = getIndexer();
-            IndexersFactory.clear();
-            IndexersFactory.addIndexer(indexer);
+            indexersFactory.clear();
+            indexersFactory.addIndexer(indexer);
 
             //Mock CDI injection and setup
             indexer.setIOService(ioService);
@@ -178,6 +196,30 @@ public abstract class IndexingTest<T extends ResourceTypeDefinition> {
             indexer.setResourceTypeDefinition(getResourceTypeDefinition());
         }
         return ioService;
+    }
+
+    private <T> Event<T> testEvent() {
+        return new Event<T>() {
+
+            @Override
+            public void fire(T event) {
+            }
+
+            @Override
+            public Event<T> select(Annotation... qualifiers) {
+                return this;
+            }
+
+            @Override
+            public <U extends T> Event<U> select(Class<U> subtype, Annotation... qualifiers) {
+                return testEvent();
+            }
+
+            @Override
+            public <U extends T> Event<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
+                return testEvent();
+            }
+        };
     }
 
     public void dispose() {

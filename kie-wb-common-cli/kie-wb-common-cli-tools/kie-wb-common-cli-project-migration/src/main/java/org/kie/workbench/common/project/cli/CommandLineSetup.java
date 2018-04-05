@@ -31,7 +31,7 @@ import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
 import org.kie.soup.project.datamodel.commons.util.RawMVELEvaluator;
 import org.kie.workbench.common.screens.library.api.index.LibraryFileNameIndexTerm;
-import org.kie.workbench.common.screens.library.api.index.LibraryModuleRootPathIndexTerm;
+import org.kie.workbench.common.screens.library.api.index.LibraryRepositoryRootIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.ImpactAnalysisAnalyzerWrapperFactory;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.LowerCaseOnlyAnalyzer;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ModuleRootPathIndexTerm;
@@ -98,7 +98,7 @@ public class CommandLineSetup extends UberFireGeneralFactory {
         return new HashMap<String, Analyzer>() {{
             put(LibraryFileNameIndexTerm.TERM,
                 new FilenameAnalyzer());
-            put(LibraryModuleRootPathIndexTerm.TERM,
+            put(LibraryRepositoryRootIndexTerm.TERM,
                 new FilenameAnalyzer());
             put(ModuleRootPathIndexTerm.TERM,
                 new FilenameAnalyzer());

@@ -61,7 +61,7 @@ public abstract class AbstractFileIndexer implements Indexer {
      * @return A {@link DefaultIndexBuilder} instance with the information to be indexed
      * @throws Exception if something goes wrong
      */
-    protected abstract DefaultIndexBuilder fillIndexBuilder(final Path path) throws Exception;
+    protected abstract IndexBuilder fillIndexBuilder(final Path path) throws Exception;
 
     /**
      * This method should not be overridden by implementation classes!
@@ -75,7 +75,7 @@ public abstract class AbstractFileIndexer implements Indexer {
 
         try {
             // create a builder with the default information
-            DefaultIndexBuilder builder = fillIndexBuilder(path);
+            IndexBuilder builder = fillIndexBuilder(path);
 
             Set<KProperty<?>> indexElements = null;
             if (builder != null) {

@@ -19,9 +19,9 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.services.refactoring.model.index.terms.IndexTerm;
 
 @Portable
-public class LibraryModuleRootPathIndexTerm implements IndexTerm {
+public class LibraryRepositoryRootIndexTerm implements IndexTerm {
 
-    public static final String TERM = "libraryProjectRoot";
+    public static final String TERM = "libraryRepositoryRoot";
 
     @Override
     public String getTerm() {

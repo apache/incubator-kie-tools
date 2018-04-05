@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.junit.Test;
-import org.kie.workbench.common.screens.library.api.index.LibraryValueModuleRootPathIndexTerm;
+import org.kie.workbench.common.screens.library.api.index.LibraryValueRepositoryRootIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.DefaultResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
@@ -29,26 +29,20 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.valueterm
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm.TermSearchType;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
-import org.kie.workbench.common.services.shared.project.KieModuleService;
-import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.paging.PageResponse;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class FindAllLibraryAssetsSortedQueryTest
         extends BaseLibraryIndexingTest {
 
     private static final String TEST_PROJECT_ROOT1 = "/find/all/library/assets/sorted/query/test/mock/project1/root";
-    private static final String TEST_PROJECT_NAME1 = "mock-project1";
-
-    private static final String TEST_PROJECT_ROOT2 = "/find/all/library/assets/sorted/query/test/mock/project2/root";
-    private static final String TEST_PROJECT_NAME2 = "mock-project2";
 
     private static final String[] FILE_NAMES = new String[]{"DRL4.drl", "RULE4.rule", "drl1.drl", "drl2.ext2", "drl3.ext3", "functions.functions", "rule3.rule"};
 
+    @Override
     protected Set<NamedQuery> getQueries() {
         return new HashSet<NamedQuery>() {{
             add(new FindAllLibraryAssetsQuery() {
@@ -72,36 +66,14 @@ public class FindAllLibraryAssetsSortedQueryTest
         Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
     }
 
-    @Override
-    protected KieModuleService getModuleService() {
-
-        final KieModuleService mock = super.getModuleService();
-
-        when(mock.resolveModule(any(Path.class)))
-                .thenAnswer((Answer) invocationOnMock -> {
-                    Path resource = (Path) invocationOnMock.getArguments()[0];
-                    if (resource.toURI().contains(TEST_PROJECT_ROOT1)) {
-                        return getKieModuleMock(TEST_PROJECT_ROOT1,
-                                                TEST_PROJECT_NAME1);
-                    } else if (resource.toURI().contains(TEST_PROJECT_ROOT2)) {
-                        return getKieModuleMock(TEST_PROJECT_ROOT2,
-                                                TEST_PROJECT_NAME2);
-                    } else {
-                        return null;
-                    }
-                });
-
-        return mock;
-    }
-
     @Test
     public void listAllInProjectSorted() throws IOException, InterruptedException {
         setUp(TEST_PROJECT_ROOT1);
 
         final RefactoringPageRequest request = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
                                                                           new HashSet<ValueIndexTerm>() {{
-                                                                              add(new LibraryValueModuleRootPathIndexTerm(TEST_PROJECT_ROOT1,
-                                                                                                                          TermSearchType.WILDCARD));
+                                                                              add(new LibraryValueRepositoryRootIndexTerm(getRepositoryRootPath(),
+                                                                                                                          TermSearchType.NORMAL));
                                                                           }},
                                                                           0,
                                                                           10);
@@ -118,18 +90,19 @@ public class FindAllLibraryAssetsSortedQueryTest
             resultSet.add(fileName);
         }
 
-        assertArrayEquals(FILE_NAMES,
+        assertArrayEquals("Observed: " + resultSet,
+                          FILE_NAMES,
                           resultSet.toArray());
     }
 
     @Test
     public void listAllInProjectSortedPaged() throws IOException, InterruptedException {
-        setUp(TEST_PROJECT_ROOT2);
+        setUp(TEST_PROJECT_ROOT1);
 
         final RefactoringPageRequest request1 = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
                                                                            new HashSet<ValueIndexTerm>() {{
-                                                                               add(new LibraryValueModuleRootPathIndexTerm(TEST_PROJECT_ROOT2,
-                                                                                                                           TermSearchType.WILDCARD));
+                                                                               add(new LibraryValueRepositoryRootIndexTerm(getRepositoryRootPath(),
+                                                                                                                           TermSearchType.NORMAL));
                                                                            }},
                                                                            0,
                                                                            4);
@@ -152,8 +125,8 @@ public class FindAllLibraryAssetsSortedQueryTest
 
         final RefactoringPageRequest request2 = new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
                                                                            new HashSet<ValueIndexTerm>() {{
-                                                                               add(new LibraryValueModuleRootPathIndexTerm(TEST_PROJECT_ROOT2,
-                                                                                                                           TermSearchType.WILDCARD));
+                                                                               add(new LibraryValueRepositoryRootIndexTerm(getRepositoryRootPath(),
+                                                                                                                           TermSearchType.NORMAL));
                                                                            }},
                                                                            4,
                                                                            4);

@@ -17,9 +17,11 @@
 package org.kie.workbench.screens.workbench.backend.impl;
 
 import java.util.concurrent.ExecutorService;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -29,14 +31,22 @@ import org.guvnor.messageconsole.backend.DefaultIndexEngineObserver;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.jboss.errai.security.shared.service.AuthenticationService;
+import org.kie.workbench.common.screens.library.api.index.Constants;
 import org.kie.workbench.screens.workbench.backend.ApplicationScopedProducer;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.IOWatchServiceNonDotImpl;
 import org.uberfire.commons.concurrent.Unmanaged;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
 import org.uberfire.ext.metadata.MetadataConfig;
+import org.uberfire.ext.metadata.engine.IndexerScheduler.Factory;
+import org.uberfire.ext.metadata.event.BatchIndexEvent;
+import org.uberfire.ext.metadata.io.ConstrainedIndexerScheduler.ConstraintBuilder;
 import org.uberfire.ext.metadata.io.IOSearchServiceImpl;
 import org.uberfire.ext.metadata.io.IOServiceIndexedImpl;
+import org.uberfire.ext.metadata.io.IndexerDispatcher;
+import org.uberfire.ext.metadata.io.IndexerDispatcher.IndexerDispatcherFactory;
+import org.uberfire.ext.metadata.io.IndexersFactory;
 import org.uberfire.ext.metadata.search.IOSearchService;
 import org.uberfire.io.IOService;
 import org.uberfire.io.attribute.DublinCoreView;
@@ -57,6 +67,9 @@ public class DefaultApplicationScopedProducer implements ApplicationScopedProduc
     private AuthenticationService authenticationService;
     private DefaultIndexEngineObserver defaultIndexEngineObserver;
     private ExecutorService executorService;
+    private IndexersFactory indexersFactory;
+    private IndexerDispatcherFactory dispatcherFactory;
+    private Event<BatchIndexEvent> batchIndexEvent;
 
     public DefaultApplicationScopedProducer() {
         if (System.getProperty("org.uberfire.watcher.autostart") == null) {
@@ -75,27 +88,45 @@ public class DefaultApplicationScopedProducer implements ApplicationScopedProduc
                                             IOWatchServiceNonDotImpl watchService,
                                             AuthenticationService authenticationService,
                                             DefaultIndexEngineObserver defaultIndexEngineObserver,
+                                            IndexersFactory indexersFactory,
+                                            Event<BatchIndexEvent> batchIndexEvent,
                                             @Unmanaged ExecutorService executorService) {
         this();
         this.config = config;
         this.watchService = watchService;
         this.authenticationService = authenticationService;
         this.defaultIndexEngineObserver = defaultIndexEngineObserver;
+        this.indexersFactory = indexersFactory;
+        this.batchIndexEvent = batchIndexEvent;
         this.executorService = executorService;
     }
 
     @PostConstruct
     public void setup() {
+        Factory schedulerFactory = createIndexerSchedulerFactory();
+        this.dispatcherFactory = IndexerDispatcher.createFactory(config.getIndexEngine(),
+                                                                 schedulerFactory,
+                                                                 batchIndexEvent,
+                                                                 LoggerFactory.getLogger(IndexerDispatcher.class));
         this.ioService = new IOServiceIndexedImpl(watchService,
-                                                           config.getIndexEngine(),
-                                                           defaultIndexEngineObserver,
-                                                           executorService,
-                                                           DublinCoreView.class,
-                                                           VersionAttributeView.class,
-                                                           OtherMetaView.class);
+                                                  config.getIndexEngine(),
+                                                  defaultIndexEngineObserver,
+                                                  executorService,
+                                                  indexersFactory,
+                                                  dispatcherFactory,
+                                                  DublinCoreView.class,
+                                                  VersionAttributeView.class,
+                                                  OtherMetaView.class);
 
         this.ioSearchService = new IOSearchServiceImpl(config.getSearchIndex(),
                                                        ioService);
+    }
+
+    private Factory createIndexerSchedulerFactory() {
+        ConstraintBuilder builder = new ConstraintBuilder();
+        // Always schedule library indexing first.
+        builder.addPriority(Constants.INDEXER_ID, Integer.MIN_VALUE);
+        return builder.createFactory();
     }
 
     @Produces

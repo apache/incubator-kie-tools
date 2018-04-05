@@ -64,7 +64,7 @@ import org.kie.workbench.common.screens.library.api.OrganizationalUnitRepository
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
 import org.kie.workbench.common.screens.library.api.index.LibraryValueFileExtensionIndexTerm;
 import org.kie.workbench.common.screens.library.api.index.LibraryValueFileNameIndexTerm;
-import org.kie.workbench.common.screens.library.api.index.LibraryValueModuleRootPathIndexTerm;
+import org.kie.workbench.common.screens.library.api.index.LibraryValueRepositoryRootIndexTerm;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
 import org.kie.workbench.common.screens.projecteditor.util.NewWorkspaceProjectUtils;
@@ -257,8 +257,10 @@ public class LibraryServiceImpl implements LibraryService {
 
         final boolean projectStillExists = ioService.exists(Paths.convert(query.getProject().getBranch().getPath()));
         if (!projectStillExists) {
+            log.info("Asset lookup result: project [{}] does not exist.", projectIdentifierFrom(query));
             return AssetQueryResult.nonexistent();
         } else if (!indexOracle.isIndexed(query.getProject())) {
+            log.info("Asset lookup result: project [{}] is not indexed.", projectIdentifierFrom(query));
             return AssetQueryResult.unindexed();
         }
 
@@ -284,6 +286,7 @@ public class LibraryServiceImpl implements LibraryService {
                 })
                 .collect(Collectors.toList());
 
+        log.info("Asset lookup result: project [{}] is indexed with {} index hits.", projectIdentifierFrom(query), assets.size());
         return AssetQueryResult.normal(assets.stream()
                                              .map(asset -> {
                                                  AssetInfo info = null;
@@ -309,10 +312,16 @@ public class LibraryServiceImpl implements LibraryService {
                                              .collect(Collectors.toList()));
     }
 
+    private static String projectIdentifierFrom(final ProjectAssetsQuery query) {
+        return Optional.ofNullable(query.getProject().getRepository())
+                       .map(repo -> repo.getIdentifier())
+                       .orElseGet(() -> query.getProject().getName());
+    }
+
     private HashSet<ValueIndexTerm> buildProjectAssetsQuery(ProjectAssetsQuery query) {
         final HashSet<ValueIndexTerm> queryTerms = new HashSet<>();
 
-        queryTerms.add(new LibraryValueModuleRootPathIndexTerm(query.getProject().getRootPath().toURI()));
+        queryTerms.add(new LibraryValueRepositoryRootIndexTerm(query.getProject().getRootPath().toURI()));
 
         if (query.hasFilter()) {
             queryTerms.add(new LibraryValueFileNameIndexTerm("*" + query.getFilter() + "*",
@@ -442,7 +451,7 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     public int getNumberOfAssets(final WorkspaceProject module) {
         final HashSet<ValueIndexTerm> queryTerms = new HashSet<>();
-        queryTerms.add(new LibraryValueModuleRootPathIndexTerm((module.getRootPath().toURI())));
+        queryTerms.add(new LibraryValueRepositoryRootIndexTerm(module.getRootPath().toURI()));
 
         return refactoringQueryService.queryHitCount(new RefactoringPageRequest(FindAllLibraryAssetsQuery.NAME,
                                                                                 queryTerms,

@@ -71,7 +71,7 @@ public class KModuleServiceImpl
             }
 
             //Check if path equals kmodule.xml
-            final KieModule module = moduleService.resolveModule(resource);
+            final KieModule module = moduleService.resolveModule(resource, false);
             //It's possible that the Incremental Build attempts to act on a Module file before the module has been fully created.
             //This should be a short-term issue that will be resolved when saving a module batches pom.xml, kmodule.xml and project.imports
             //etc into a single git-batch. At present they are saved individually leading to multiple Incremental Build requests.

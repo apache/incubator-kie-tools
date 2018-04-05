@@ -63,7 +63,7 @@ public class KieResourceResolver
     }
 
     @Override
-    public KieModule resolveModule(final Path resource) {
+    public KieModule resolveModule(Path resource, boolean loadPOM) {
         try {
             //Null resource paths cannot resolve to a Module
             if (resource == null) {
@@ -88,12 +88,17 @@ public class KieResourceResolver
                 return null;
             }
 
-            return makeModule(path);
+            if (loadPOM) {
+                return makeModule(path);
+            } else {
+                return simpleModuleInstance(path);
+            }
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);
         }
     }
 
+    @Override
     protected KieModule makeModule(final org.uberfire.java.nio.file.Path nioModuleRootPath) {
         final KieModule module = simpleModuleInstance(nioModuleRootPath);
         final POM pom = pomService.load(module.getPomXMLPath());
@@ -111,7 +116,7 @@ public class KieResourceResolver
             }
 
             //If Path is not within a Module we cannot resolve a package
-            final Module module = resolveModule(resource);
+            final Module module = resolveModule(resource, false);
             if (module == null) {
                 return null;
             }

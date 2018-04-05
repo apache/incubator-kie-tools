@@ -32,6 +32,7 @@ import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.ErrorMessageUtilities;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.IndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.PackageDescrIndexVisitor;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.drools.AbstractDrlFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
@@ -165,7 +166,7 @@ public class TestPackageNameDrlFileIndexer
      * @see org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer#fillIndexBuilder(org.uberfire.java.nio.file.Path)
      */
     @Override
-    protected DefaultIndexBuilder fillIndexBuilder(Path path) throws Exception {
+    protected IndexBuilder fillIndexBuilder(Path path) throws Exception {
         // not used here because we're also overriding toKObject(Path)
         return null;
     }

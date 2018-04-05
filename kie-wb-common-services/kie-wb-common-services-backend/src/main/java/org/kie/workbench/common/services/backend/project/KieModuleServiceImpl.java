@@ -134,6 +134,11 @@ public class KieModuleServiceImpl
     }
 
     @Override
+    public KieModule resolveModule(Path resource, boolean loadPOM) {
+        return (KieModule) resourceResolver.resolveModule(resource, loadPOM);
+    }
+
+    @Override
     public Module resolveParentModule(final Path resource) {
         return resourceResolver.resolveParentModule(resource);
     }

@@ -17,12 +17,12 @@
 package org.kie.workbench.common.screens.datamodeller.backend.server.indexing;
 
 import org.jboss.forge.roaster.model.JavaType;
-import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.IndexBuilder;
 
 /**
  * Extension allowing clients to modify index definition for JavaType objects.
  */
 public interface JavaFileIndexerExtension {
 
-    void process( DefaultIndexBuilder builder, JavaType javaType );
+    void process( IndexBuilder builder, JavaType javaType );
 }

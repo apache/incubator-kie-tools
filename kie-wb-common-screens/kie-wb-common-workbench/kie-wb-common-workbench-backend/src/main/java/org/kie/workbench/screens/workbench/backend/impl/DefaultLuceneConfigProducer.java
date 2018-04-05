@@ -21,14 +21,12 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.kie.workbench.common.screens.library.api.index.LibraryFileNameIndexTerm;
-import org.kie.workbench.common.screens.library.api.index.LibraryModuleRootPathIndexTerm;
+import org.kie.workbench.common.screens.library.api.index.LibraryRepositoryRootIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.ImpactAnalysisAnalyzerWrapperFactory;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.LowerCaseOnlyAnalyzer;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ModuleRootPathIndexTerm;
@@ -36,7 +34,6 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.PackageNa
 import org.uberfire.ext.metadata.MetadataConfig;
 import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
-import org.uberfire.ext.metadata.event.BatchIndexEvent;
 import org.uberfire.ext.metadata.io.MetadataConfigBuilder;
 
 /**
@@ -48,9 +45,6 @@ public class DefaultLuceneConfigProducer {
 
     private MetadataConfig config;
 
-    @Inject
-    private Event<BatchIndexEvent> batchIndexEvent;
-
     @PostConstruct
     public void setup() {
         final Map<String, Analyzer> analyzers = getAnalyzers();
@@ -59,7 +53,6 @@ public class DefaultLuceneConfigProducer {
                 .usingAnalyzerWrapperFactory(ImpactAnalysisAnalyzerWrapperFactory.getInstance())
                 .useDirectoryBasedIndex()
                 .useNIODirectory()
-                .useCDIBatchIndexObserver(batchIndexEvent)
                 .build();
     }
 
@@ -73,7 +66,7 @@ public class DefaultLuceneConfigProducer {
         return new HashMap<String, Analyzer>() {{
             put(LibraryFileNameIndexTerm.TERM,
                 new FilenameAnalyzer());
-            put(LibraryModuleRootPathIndexTerm.TERM,
+            put(LibraryRepositoryRootIndexTerm.TERM,
                 new FilenameAnalyzer());
             put(ModuleRootPathIndexTerm.TERM,
                 new FilenameAnalyzer());

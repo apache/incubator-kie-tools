@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +35,10 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.util.TypeLiteral;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.lucene.analysis.Analyzer;
@@ -46,7 +50,7 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.kie.workbench.common.screens.library.api.index.LibraryFileNameIndexTerm;
-import org.kie.workbench.common.screens.library.api.index.LibraryModuleRootPathIndexTerm;
+import org.kie.workbench.common.screens.library.api.index.LibraryRepositoryRootIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.ImpactAnalysisAnalyzerWrapperFactory;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.LowerCaseOnlyAnalyzer;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQueries;
@@ -58,18 +62,27 @@ import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.commons.async.DescriptiveThreadFactory;
 import org.uberfire.ext.metadata.MetadataConfig;
 import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
+import org.uberfire.ext.metadata.engine.IndexerScheduler.Factory;
+import org.uberfire.ext.metadata.engine.MetaIndexEngine;
+import org.uberfire.ext.metadata.io.ConstrainedIndexerScheduler.ConstraintBuilder;
 import org.uberfire.ext.metadata.io.IOServiceIndexedImpl;
+import org.uberfire.ext.metadata.io.IndexerDispatcher;
+import org.uberfire.ext.metadata.io.IndexerDispatcher.IndexerDispatcherFactory;
 import org.uberfire.ext.metadata.io.IndexersFactory;
 import org.uberfire.ext.metadata.io.MetadataConfigBuilder;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.workbench.type.AnyResourceTypeDefinition;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 public abstract class BaseLibraryIndexingTest {
 
@@ -87,6 +100,8 @@ public abstract class BaseLibraryIndexingTest {
 
     @Rule
     public TestName testName = new TestName();
+    private IndexerDispatcherFactory indexerDispatcherFactory;
+    private IndexersFactory indexersFactory;
 
     @AfterClass
     @BeforeClass
@@ -117,6 +132,15 @@ public abstract class BaseLibraryIndexingTest {
         return temp;
     }
 
+    protected String getRepositoryRootPath() {
+        Path root = basePath;
+        while (root.getParent() != null) {
+            root = root.getParent();
+        }
+
+        return Paths.convert(root).toURI();
+    }
+
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws IOException {
@@ -142,8 +166,9 @@ public abstract class BaseLibraryIndexingTest {
 
                 // Don't ask, but we need to write a single file first in order for indexing to work
                 basePath = getDirectoryPath().resolveSibling("someNewOtherPath");
-                ioService().write(basePath.resolve("dummy"),
-                                  "<none>");
+                Path dummyFile = basePath.resolve("dummy");
+                // Create directory instead of file so we don't add anything indexable.
+                ioService.createDirectory(dummyFile);
             } catch (final Exception e) {
                 e.printStackTrace();
                 logger.warn("Failed to initialize IOService instance: " + e.getClass().getSimpleName() + ": " + e.getMessage(),
@@ -235,12 +260,14 @@ public abstract class BaseLibraryIndexingTest {
             ExecutorService executorService = Executors.newCachedThreadPool(new DescriptiveThreadFactory());
 
             ioService = new IOServiceIndexedImpl(config.getIndexEngine(),
-                                                 executorService);
+                                                 executorService,
+                                                 indexersFactory(),
+                                                 indexerDispatcherFactory(config.getIndexEngine()));
 
             final LibraryIndexer indexer = spy(new LibraryIndexer());
             when(indexer.getVisibleResourceTypes()).thenReturn(new HashSet<>(Arrays.asList(new AnyResourceTypeDefinition())));
-            IndexersFactory.clear();
-            IndexersFactory.addIndexer(indexer);
+            indexersFactory().clear();
+            indexersFactory().addIndexer(indexer);
 
             //Mock CDI injection and setup
             indexer.setIOService(ioService);
@@ -249,11 +276,52 @@ public abstract class BaseLibraryIndexingTest {
         return ioService;
     }
 
+    protected IndexerDispatcherFactory indexerDispatcherFactory(MetaIndexEngine indexEngine) {
+        if (indexerDispatcherFactory == null) {
+            Factory schedulerFactory = new ConstraintBuilder().createFactory();
+            indexerDispatcherFactory = IndexerDispatcher.createFactory(indexEngine, schedulerFactory, testEvent(), LoggerFactory.getLogger(IndexerDispatcher.class));
+        }
+
+        return indexerDispatcherFactory;
+    }
+
+    protected <T> Event<T> testEvent() {
+        return new Event<T>() {
+
+            @Override
+            public void fire(T event) {
+            }
+
+            @Override
+            public Event<T> select(Annotation... qualifiers) {
+                return this;
+            }
+
+            @Override
+            public <U extends T> Event<U> select(Class<U> subtype, Annotation... qualifiers) {
+                return testEvent();
+            }
+
+            @Override
+            public <U extends T> Event<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
+                return testEvent();
+            }
+        };
+    }
+
+    protected IndexersFactory indexersFactory() {
+        if (indexersFactory == null) {
+            indexersFactory = new IndexersFactory();
+        }
+
+        return indexersFactory;
+    }
+
     private Map<String, Analyzer> getAnalyzers() {
         return new HashMap<String, Analyzer>() {{
             put(LibraryFileNameIndexTerm.TERM,
                 new FilenameAnalyzer());
-            put(LibraryModuleRootPathIndexTerm.TERM,
+            put(LibraryRepositoryRootIndexTerm.TERM,
                 new FilenameAnalyzer());
             put(ModuleRootPathIndexTerm.TERM,
                 new FilenameAnalyzer());

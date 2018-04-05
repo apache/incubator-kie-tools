@@ -22,6 +22,7 @@ import org.kie.workbench.common.services.refactoring.Resource;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.IndexBuilder;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.server.util.Paths;
@@ -58,7 +59,7 @@ public class TestJavaIndexer extends AbstractFileIndexer implements TestIndexer<
     }
 
     @Override
-    protected DefaultIndexBuilder fillIndexBuilder(Path path) throws Exception {
+    protected IndexBuilder fillIndexBuilder(Path path) throws Exception {
         final DefaultIndexBuilder builder = getIndexBuilder(path);
         if (builder == null) {
             return null;

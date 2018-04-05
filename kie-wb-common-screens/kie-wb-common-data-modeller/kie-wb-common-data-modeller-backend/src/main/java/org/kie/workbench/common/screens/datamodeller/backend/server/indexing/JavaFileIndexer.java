@@ -28,6 +28,7 @@ import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper
 import org.kie.workbench.common.services.refactoring.Resource;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.IndexBuilder;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.slf4j.Logger;
@@ -86,7 +87,7 @@ public class JavaFileIndexer extends AbstractFileIndexer {
     }
 
     @Override
-    public DefaultIndexBuilder fillIndexBuilder(final Path path) throws Exception {
+    public IndexBuilder fillIndexBuilder(final Path path) throws Exception {
         // create indexbuilder
         final KieModule module = getModule(path);
 

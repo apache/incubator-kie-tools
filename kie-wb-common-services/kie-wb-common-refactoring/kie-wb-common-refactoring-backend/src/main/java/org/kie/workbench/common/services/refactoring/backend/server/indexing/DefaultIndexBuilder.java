@@ -30,14 +30,14 @@ import org.uberfire.ext.metadata.model.KProperty;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
-public class DefaultIndexBuilder {
+public class DefaultIndexBuilder implements IndexBuilder {
 
     protected final String fileName;
     protected final Module module;
     protected final Package pkg;
     protected String pkgName;
 
-    private Set<IndexElementsGenerator> generators = new HashSet<IndexElementsGenerator>();
+    private Set<IndexElementsGenerator> generators = new HashSet<>();
 
     public DefaultIndexBuilder(final String fileName,
                                final Module module,
@@ -50,12 +50,14 @@ public class DefaultIndexBuilder {
                                 pkg);
     }
 
+    @Override
     public DefaultIndexBuilder addGenerator(final IndexElementsGenerator generator) {
         this.generators.add(checkNotNull("generator",
                                          generator));
         return this;
     }
 
+    @Override
     public Set<KProperty<?>> build() {
         final Set<KProperty<?>> indexElements = new HashSet<>();
         generators.forEach((generator) -> addIndexElements(indexElements,

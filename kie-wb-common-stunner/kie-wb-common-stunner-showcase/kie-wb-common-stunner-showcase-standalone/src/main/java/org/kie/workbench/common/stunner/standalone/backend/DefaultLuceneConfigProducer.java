@@ -21,9 +21,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -34,7 +32,6 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.ModuleRoo
 import org.kie.workbench.common.services.refactoring.model.index.terms.PackageNameIndexTerm;
 import org.uberfire.ext.metadata.MetadataConfig;
 import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
-import org.uberfire.ext.metadata.event.BatchIndexEvent;
 import org.uberfire.ext.metadata.io.MetadataConfigBuilder;
 
 /**
@@ -46,9 +43,6 @@ public class DefaultLuceneConfigProducer {
 
     private MetadataConfig config;
 
-    @Inject
-    private Event<BatchIndexEvent> batchIndexEvent;
-
     @PostConstruct
     public void setup() {
         final Map<String, Analyzer> analyzers = getAnalyzers();
@@ -57,7 +51,6 @@ public class DefaultLuceneConfigProducer {
                 .usingAnalyzerWrapperFactory(ImpactAnalysisAnalyzerWrapperFactory.getInstance())
                 .useDirectoryBasedIndex()
                 .useNIODirectory()
-                .useCDIBatchIndexObserver(batchIndexEvent)
                 .build();
     }
 

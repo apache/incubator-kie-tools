@@ -23,6 +23,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.kie.workbench.common.screens.library.api.index.Constants;
 import org.slf4j.Logger;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.ext.metadata.MetadataConfig;
@@ -52,7 +53,7 @@ public class IndexStatusOracle {
     public boolean isIndexed(WorkspaceProject project) {
         Optional<KCluster> clusterOf = kClusterOf(project);
 
-        return clusterOf.map(cluster -> indexEngine.isIndexReady(cluster))
+        return clusterOf.map(cluster -> indexEngine.isIndexReady(cluster, Constants.INDEXER_ID))
                         .orElse(false);
     }
 
