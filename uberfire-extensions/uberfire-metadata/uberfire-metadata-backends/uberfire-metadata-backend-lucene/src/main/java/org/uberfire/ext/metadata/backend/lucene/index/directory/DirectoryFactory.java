@@ -17,9 +17,11 @@
 package org.uberfire.ext.metadata.backend.lucene.index.directory;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.codecs.Codec;
@@ -38,25 +40,35 @@ public class DirectoryFactory implements LuceneIndexFactory {
 
     private static final String REPOSITORIES_ROOT_DIR = ".index";
 
-    private final Map<KCluster, LuceneIndex> clusters = new ConcurrentHashMap<KCluster, LuceneIndex>();
+    private final Map<KCluster, LuceneIndex> clusters = new ConcurrentHashMap<>();
     private final DirectoryType type;
     private final Analyzer analyzer;
 
     public DirectoryFactory(final DirectoryType type,
                             final Analyzer analyzer) {
+        this(type, analyzer, defaultHostingDir());
+    }
+
+    public DirectoryFactory(final DirectoryType type,
+                            final Analyzer analyzer,
+                            final File hostingDir) {
         this.analyzer = analyzer;
         this.type = type;
-        final File[] files = defaultHostingDir().listFiles();
-        if (files != null && files.length > 0) {
-            for (final File file : files) {
-                if (file.isDirectory()) {
-                    final KCluster cluster = new KClusterImpl(file.getName());
-                    clusters.put(cluster,
-                                 type.newIndex(cluster,
-                                               newConfig(analyzer)));
-                }
-            }
-        }
+        listFiles(hostingDir).filter(file -> file.isDirectory())
+                             .flatMap(file -> listFiles(file))
+                             .map(file -> new KClusterImpl(clusterIdOf(file)))
+                             .forEach(cluster -> {
+                                 clusters.put(cluster, type.newIndex(cluster, newConfig(analyzer)));
+                             });
+    }
+
+    private static String clusterIdOf(File file) {
+        return file.getParentFile().getName() + "/" + file.getName();
+    }
+
+    private Stream<File> listFiles(final File hostingDir) {
+        final File[] files = hostingDir.listFiles();
+        return (files == null) ? Stream.empty() : Arrays.stream(files);
     }
 
     public static File defaultHostingDir() {

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,17 +48,25 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 public class MetadataIndexEngine implements MetaIndexEngine {
 
     private final MetaModelBuilder metaModelBuilder;
-    private Logger logger = LoggerFactory.getLogger(MetadataIndexEngine.class);
+    private final Logger logger = LoggerFactory.getLogger(MetadataIndexEngine.class);
     private final IndexProvider provider;
     private final Map<KCluster, MultiIndexerLock> batchLocks = new ConcurrentHashMap<>();
     private final ThreadLocal<Map<KCluster, List<IndexEvent>>> batchSets = ThreadLocal.withInitial(() -> new HashMap<>());
     private final Collection<Runnable> beforeDispose = new ArrayList<>();
+    private final Supplier<MultiIndexerLock> lockSupplier;
+
+    public MetadataIndexEngine(IndexProvider provider,
+                               MetaModelStore metaModelStore,
+                               Supplier<MultiIndexerLock> lockSupplier) {
+        this.provider = provider;
+        this.metaModelBuilder = new MetaModelBuilder(metaModelStore);
+        this.lockSupplier = lockSupplier;
+        PriorityDisposableRegistry.register(this);
+    }
 
     public MetadataIndexEngine(IndexProvider provider,
                                MetaModelStore metaModelStore) {
-        this.provider = provider;
-        this.metaModelBuilder = new MetaModelBuilder(metaModelStore);
-        PriorityDisposableRegistry.register(this);
+        this(provider, metaModelStore, () -> new MultiIndexerLock(new ReentrantLock()));
     }
 
     @Override
@@ -72,12 +81,12 @@ public class MetadataIndexEngine implements MetaIndexEngine {
     @Override
     public boolean isIndexReady(KCluster cluster, String indexerId) {
         final MultiIndexerLock lock;
-        return !provider.isFreshIndex(cluster) && (lock = batchLocks.get(cluster)) != null && !lock.isLockedBy(indexerId);
+        return !provider.isFreshIndex(cluster) && ((lock = batchLocks.get(cluster)) == null || !lock.isLockedBy(indexerId));
     }
 
     @Override
     public void prepareBatch(KCluster cluster) {
-        batchLocks.putIfAbsent(cluster, new MultiIndexerLock(new ReentrantLock()));
+        batchLocks.computeIfAbsent(cluster, ignore -> lockSupplier.get());
     }
 
     @Override

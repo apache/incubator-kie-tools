@@ -25,6 +25,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.metadata.backend.lucene.model.KClusterImpl;
 import org.uberfire.ext.metadata.engine.MetaModelStore;
 import org.uberfire.ext.metadata.io.index.MetadataIndexEngine;
+import org.uberfire.ext.metadata.io.util.MultiIndexerLock;
 import org.uberfire.ext.metadata.model.KCluster;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.model.KObjectKey;
@@ -32,13 +33,18 @@ import org.uberfire.ext.metadata.model.impl.KObjectImpl;
 import org.uberfire.ext.metadata.model.impl.KObjectKeyImpl;
 import org.uberfire.ext.metadata.provider.IndexProvider;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MetadataIndexEngineBatchTest {
+
+    private static final String TEST_INDEXER = "test-indexer";
 
     private MetadataIndexEngine indexEngine;
 
@@ -47,6 +53,9 @@ public class MetadataIndexEngineBatchTest {
 
     @Mock
     private MetaModelStore metaModelStore;
+
+    @Mock
+    private MultiIndexerLock lock;
 
     private KCluster cluster;
 
@@ -69,7 +78,7 @@ public class MetadataIndexEngineBatchTest {
                                         "java",
                                         cluster.getClusterId(),
                                         "segment");
-        indexEngine = new MetadataIndexEngine(provider, metaModelStore);
+        indexEngine = new MetadataIndexEngine(provider, metaModelStore, () -> lock);
     }
 
 
@@ -85,7 +94,7 @@ public class MetadataIndexEngineBatchTest {
     public void indexCalledWhenBatchCommitted() throws Exception {
         indexDeferredInBatchMode();
 
-        indexEngine.commit(cluster, "test-indexer");
+        indexEngine.commit(cluster, TEST_INDEXER);
         verify(provider).index(same(kObject));
     }
 
@@ -109,7 +118,7 @@ public class MetadataIndexEngineBatchTest {
     public void renameCalledWhenBatchCommitted() throws Exception {
         renameDeferredInBatchMode();
 
-        indexEngine.commit(cluster, "test-indexer");
+        indexEngine.commit(cluster, TEST_INDEXER);
         verify(provider).rename(any(), any(), same(kObject));
     }
 
@@ -133,7 +142,7 @@ public class MetadataIndexEngineBatchTest {
     public void deleteCalledWhenBatchCommitted() throws Exception {
         deleteDeferredInBatchMode();
 
-        indexEngine.commit(cluster, "test-indexer");
+        indexEngine.commit(cluster, TEST_INDEXER);
         verify(provider).delete(kObjectKey.getClusterId(), kObjectKey.getId());
     }
 
@@ -143,6 +152,46 @@ public class MetadataIndexEngineBatchTest {
 
         indexEngine.abort(cluster);
         verify(provider, never()).delete(kObjectKey.getClusterId(), kObjectKey.getId());
+    }
+
+    @Test
+    public void indexIsReadyForClusterIndexedInPreviousServerExecution() throws Exception {
+        when(provider.isFreshIndex(cluster)).thenReturn(false);
+
+        assertTrue(indexEngine.isIndexReady(cluster, TEST_INDEXER));
+    }
+
+    @Test
+    public void indexIsReadyAfterCommit() throws Exception {
+        when(provider.isFreshIndex(cluster)).thenReturn(false);
+
+        indexEngine.startBatch(cluster);
+        indexEngine.index(kObject);
+        indexEngine.commit(cluster, TEST_INDEXER);
+
+        assertTrue(indexEngine.isIndexReady(cluster, TEST_INDEXER));
+    }
+
+    @Test
+    public void indexIsNotReadyForIndexerDuringCommit() throws Exception {
+        when(provider.isFreshIndex(cluster)).thenReturn(false);
+        // Simulate commit in progress by making lock appear held.
+        when(lock.isLockedBy(TEST_INDEXER)).thenReturn(true);
+
+        indexEngine.startBatch(cluster);
+
+        assertFalse(indexEngine.isIndexReady(cluster, TEST_INDEXER));
+    }
+
+    @Test
+    public void indexIsReadyForOtherIndexerDuringCommit() throws Exception {
+        when(provider.isFreshIndex(cluster)).thenReturn(false);
+        // Simulate commit in progress by making lock appear held.
+        when(lock.isLockedBy(any())).then(inv -> TEST_INDEXER.equals(inv.getArgumentAt(0, String.class)));
+
+        indexEngine.startBatch(cluster);
+
+        assertTrue(indexEngine.isIndexReady(cluster, "other-indexer"));
     }
 
 }
