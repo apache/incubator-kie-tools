@@ -29,6 +29,7 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.RenameInProgressEvent;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
@@ -37,10 +38,12 @@ import org.uberfire.ext.editor.commons.file.DefaultMetadata;
 import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.events.NotificationEvent;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
@@ -87,6 +90,9 @@ public class SaveAndRenameCommandBuilderTest {
     @Mock
     private NotificationEvent notificationEvent;
 
+    @Mock
+    private EventSourceMock<RenameInProgressEvent> renameInProgressEvent;
+
     private SaveAndRenameCommandBuilder<String, DefaultMetadata> builder;
 
     private Caller<SupportsSaveAndRename<String, DefaultMetadata>> renameCaller;
@@ -105,7 +111,7 @@ public class SaveAndRenameCommandBuilderTest {
 
     @Before
     public void setup() {
-        builder = spy(new SaveAndRenameCommandBuilder<>(renamePopUpPresenter, busyIndicatorView, notification));
+        builder = spy(new SaveAndRenameCommandBuilder<>(renamePopUpPresenter, busyIndicatorView, notification, renameInProgressEvent));
         renameCaller = new CallerMock<>(service);
 
         doReturn(renamePopUpPresenterView).when(renamePopUpPresenter).getView();
@@ -215,6 +221,10 @@ public class SaveAndRenameCommandBuilderTest {
     @Test
     public void testOnSuccess() throws Exception {
 
+        final RenameInProgressEvent renameInProgressEvent = mock(RenameInProgressEvent.class);
+
+        doReturn(renameInProgressEvent).when(builder).makeRenameInProgressEvent();
+
         builder
                 .addSuccessCallback(onSuccess)
                 .onSuccess()
@@ -222,10 +232,35 @@ public class SaveAndRenameCommandBuilderTest {
 
         final InOrder inOrder = inOrder(onSuccess, builder);
 
+        inOrder.verify(builder).notifyRenameInProgress();
         inOrder.verify(onSuccess).execute(path);
         inOrder.verify(builder).hideRenamePopup();
         inOrder.verify(builder).hideBusyIndicator();
         inOrder.verify(builder).notifyItemRenamedSuccessfully();
+    }
+
+    @Test
+    public void testNotifyRenameInProgress() {
+
+        final RenameInProgressEvent event = mock(RenameInProgressEvent.class);
+
+        doReturn(event).when(builder).makeRenameInProgressEvent();
+
+        builder.notifyRenameInProgress();
+
+        verify(renameInProgressEvent).fire(event);
+    }
+
+    @Test
+    public void testMakeRenameInProgressEvent() {
+
+        final Path path = mock(Path.class);
+
+        doReturn(path).when(builder).getPath();
+
+        final RenameInProgressEvent event = builder.makeRenameInProgressEvent();
+
+        assertEquals(path, event.getPath());
     }
 
     @Test

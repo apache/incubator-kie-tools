@@ -17,6 +17,9 @@
 package org.uberfire.client.mvp;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.user.client.Event;
@@ -35,6 +38,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
@@ -51,14 +55,25 @@ import org.uberfire.rpc.impl.SessionInfoImpl;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 @SuppressWarnings("unchecked")
 public class LockManagerTest {
 
+    @Spy
     @InjectMocks
     private LockManagerImpl lockManager;
 
@@ -130,6 +145,7 @@ public class LockManagerTest {
 
         lockManager.init(target);
 
+        when(path.toURI()).thenReturn("directory/file.drl");
         when(user.getIdentifier()).thenReturn("mockedUser");
         when(lockDemandDetector.isLockRequired(any(Event.class))).thenReturn(true);
     }
@@ -349,6 +365,115 @@ public class LockManagerTest {
 
         verify(changeTitleEvent,
                times(2)).fire(any(ChangeTitleWidgetEvent.class));
+    }
+
+    @Test
+    public void testUpdateLockInfoWhenLockInfoURIIsEqualToLockTargetURI() {
+
+        final LockInfo lockInfo = mock(LockInfo.class);
+        final Path path = mock(Path.class);
+        final Runnable runnable1 = mock(Runnable.class);
+        final Runnable runnable2 = mock(Runnable.class);
+        final List<Runnable> runnables = spy(new ArrayList<>(Arrays.asList(runnable1, runnable2)));
+
+        doReturn(runnables).when(lockManager).getSyncCompleteRunnables();
+        when(lockInfo.getFile()).thenReturn(path);
+        when(path.toURI()).thenReturn("directory/file.drl");
+        when(this.path.toURI()).thenReturn("directory/file.drl");
+
+        lockManager.updateLockInfo(lockInfo);
+
+        assertEquals(lockInfo, lockManager.getLockInfo());
+        assertTrue(lockManager.isLockSyncComplete());
+        verify(lockManager).fireChangeTitleEvent();
+        verify(lockManager).fireUpdatedLockStatusEvent();
+        verify(runnable1).run();
+        verify(runnable2).run();
+        verify(runnables).clear();
+    }
+
+    @Test
+    public void testUpdateLockInfoWhenLockInfoURIIsNotEqualToLockTargetURI() {
+
+        final LockInfo lockInfo = mock(LockInfo.class);
+        final Path path = mock(Path.class);
+        final Runnable runnable1 = mock(Runnable.class);
+        final Runnable runnable2 = mock(Runnable.class);
+        final List<Runnable> runnables = spy(new ArrayList<>(Arrays.asList(runnable1, runnable2)));
+
+        doReturn(runnables).when(lockManager).getSyncCompleteRunnables();
+        when(lockInfo.getFile()).thenReturn(path);
+        when(path.toURI()).thenReturn("directory/file1.drl");
+        when(this.path.toURI()).thenReturn("directory/file2.drl");
+
+        lockManager.updateLockInfo(lockInfo);
+
+        assertNotEquals(lockInfo, lockManager.getLockInfo());
+        assertFalse(lockManager.isLockSyncComplete());
+        verify(lockManager, never()).fireChangeTitleEvent();
+        verify(lockManager, never()).fireUpdatedLockStatusEvent();
+        verify(runnable1, never()).run();
+        verify(runnable2, never()).run();
+        verify(runnables, never()).clear();
+    }
+
+    @Test
+    public void testUpdateLockInfoWhenLockTargetIsNull() {
+
+        final LockInfo lockInfo = mock(LockInfo.class);
+        final Runnable runnable1 = mock(Runnable.class);
+        final Runnable runnable2 = mock(Runnable.class);
+        final List<Runnable> runnables = spy(new ArrayList<>(Arrays.asList(runnable1, runnable2)));
+
+        doReturn(runnables).when(lockManager).getSyncCompleteRunnables();
+        doReturn(null).when(lockManager).getLockTarget();
+
+        lockManager.updateLockInfo(lockInfo);
+
+        assertNotEquals(lockInfo, lockManager.getLockInfo());
+        assertFalse(lockManager.isLockSyncComplete());
+        verify(lockManager, never()).fireChangeTitleEvent();
+        verify(lockManager, never()).fireUpdatedLockStatusEvent();
+        verify(runnable1, never()).run();
+        verify(runnable2, never()).run();
+        verify(runnables, never()).clear();
+    }
+
+    @Test
+    public void testOnRenameInProgressWhenLockInfoPathIsEqualToLockTargetPath() {
+
+        final RenameInProgressEvent renameInProgressEvent = mock(RenameInProgressEvent.class);
+
+        when(renameInProgressEvent.getPath()).thenReturn(path);
+
+        lockManager.onRenameInProgress(renameInProgressEvent);
+
+        verify(lockManager).releaseLock();
+    }
+
+    @Test
+    public void testOnRenameInProgressWhenLockInfoPathIsNotEqualToLockTargetPath() {
+
+        final RenameInProgressEvent renameInProgressEvent = mock(RenameInProgressEvent.class);
+        final Path path = mock(Path.class);
+
+        when(renameInProgressEvent.getPath()).thenReturn(path);
+
+        lockManager.onRenameInProgress(renameInProgressEvent);
+
+        verify(lockManager, never()).releaseLock();
+    }
+
+    @Test
+    public void testOnRenameInProgressWhenLockTargetIsNull() {
+
+        final RenameInProgressEvent renameInProgressEvent = mock(RenameInProgressEvent.class);
+
+        doReturn(null).when(lockManager).getLockTarget();
+
+        lockManager.onRenameInProgress(renameInProgressEvent);
+
+        verify(lockManager, never()).releaseLock();
     }
 
     private void simulateLockDemand() {

@@ -273,19 +273,32 @@ public class LockManagerImpl implements LockManager {
         return lockInfo.isLocked() && lockInfo.lockedBy().equals(user.getIdentifier());
     }
 
-    private void updateLockInfo(@Observes LockInfo lockInfo) {
-        if (lockTarget != null && lockInfo.getFile().equals(lockTarget.getPath())) {
+    void updateLockInfo(final @Observes LockInfo lockInfo) {
+        /* Comparing URIs since lockInfo.getFile() can be an ObservablePath or a PathImpl. */
+        if (getLockTarget() != null && lockInfo.getFile().toURI().equals(lockTarget.getPath().toURI())) {
             this.lockInfo = lockInfo;
             this.lockSyncComplete = true;
 
             fireChangeTitleEvent();
             fireUpdatedLockStatusEvent();
 
-            for (Runnable runnable : syncCompleteRunnables) {
+            for (Runnable runnable : getSyncCompleteRunnables()) {
                 runnable.run();
             }
-            syncCompleteRunnables.clear();
+            getSyncCompleteRunnables().clear();
         }
+    }
+
+    public LockTarget getLockTarget() {
+        return lockTarget;
+    }
+
+    boolean isLockSyncComplete() {
+        return lockSyncComplete;
+    }
+
+    List<Runnable> getSyncCompleteRunnables() {
+        return syncCompleteRunnables;
     }
 
     void onResourceAdded(@Observes ResourceAddedEvent res) {
@@ -305,6 +318,12 @@ public class LockManagerImpl implements LockManager {
 
     void onSaveInProgress(@Observes SaveInProgressEvent evt) {
         if (lockTarget != null && evt.getPath().equals(lockTarget.getPath())) {
+            releaseLock();
+        }
+    }
+
+    void onRenameInProgress(@Observes RenameInProgressEvent event) {
+        if (getLockTarget() != null && event.getPath().equals(lockTarget.getPath())) {
             releaseLock();
         }
     }

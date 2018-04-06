@@ -86,7 +86,7 @@ public class BaseEditorRenameTest {
 
             @Override
             protected SaveAndRenameCommandBuilder getSaveAndRenameCommandBuilder() {
-                return new SaveAndRenameCommandBuilder<>(null, null, null);
+                return new SaveAndRenameCommandBuilder<>(null, null, null, null);
             }
 
             @Override

@@ -26,6 +26,7 @@ import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.RenameInProgressEvent;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
@@ -47,6 +48,7 @@ public class SaveAndRenameCommandBuilder<T, M> {
     private final RenamePopUpPresenter renamePopUpPresenter;
     private final BusyIndicatorView busyIndicatorView;
     private final Event<NotificationEvent> notification;
+    private final Event<RenameInProgressEvent> renameInProgressEvent;
 
     private Supplier<Path> pathSupplier;
     private Validator renameValidator;
@@ -64,11 +66,13 @@ public class SaveAndRenameCommandBuilder<T, M> {
     @Inject
     public SaveAndRenameCommandBuilder(final RenamePopUpPresenter renamePopUpPresenter,
                                        final BusyIndicatorView busyIndicatorView,
-                                       final Event<NotificationEvent> notification) {
+                                       final Event<NotificationEvent> notification,
+                                       final Event<RenameInProgressEvent> renameInProgressEvent) {
 
         this.renamePopUpPresenter = renamePopUpPresenter;
         this.busyIndicatorView = busyIndicatorView;
         this.notification = notification;
+        this.renameInProgressEvent = renameInProgressEvent;
     }
 
     public SaveAndRenameCommandBuilder<T, M> addValidator(final Validator validator) {
@@ -138,7 +142,6 @@ public class SaveAndRenameCommandBuilder<T, M> {
 
     CommandWithFileNameAndCommitMessage makeSaveAndRenameCommand() {
         return (details) -> {
-
             showBusyIndicator();
             callSaveAndRename(details);
         };
@@ -146,7 +149,6 @@ public class SaveAndRenameCommandBuilder<T, M> {
 
     CommandWithFileNameAndCommitMessage makeRenameCommand() {
         return (details) -> {
-
             showBusyIndicator();
             callRename(details);
         };
@@ -176,11 +178,20 @@ public class SaveAndRenameCommandBuilder<T, M> {
 
     RemoteCallback<Path> onSuccess() {
         return (Path path) -> {
+            notifyRenameInProgress();
             onSuccess.execute(path);
             hideRenamePopup();
             hideBusyIndicator();
             notifyItemRenamedSuccessfully();
         };
+    }
+
+    void notifyRenameInProgress() {
+        renameInProgressEvent.fire(makeRenameInProgressEvent());
+    }
+
+    RenameInProgressEvent makeRenameInProgressEvent() {
+        return new RenameInProgressEvent(getPath());
     }
 
     SaveAndRenameErrorCallback onError() {
@@ -219,7 +230,7 @@ public class SaveAndRenameCommandBuilder<T, M> {
         return throwable != null && throwable.getMessage() != null && throwable.getMessage().contains("FileAlreadyExistsException");
     }
 
-    private Path getPath() {
+    Path getPath() {
         return pathSupplier.get();
     }
 

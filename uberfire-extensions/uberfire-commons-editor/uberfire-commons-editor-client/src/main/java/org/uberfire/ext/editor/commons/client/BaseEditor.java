@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
+
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -33,6 +34,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
@@ -122,6 +124,7 @@ public abstract class BaseEditor<T, M> {
     protected Integer originalHash;
     protected Integer metadataOriginalHash;
     private boolean displayShowMoreVersions;
+    private ObservablePath path;
 
     //for test purposes only
     BaseEditor(VersionRecordManager versionRecordManager,
@@ -174,6 +177,7 @@ public abstract class BaseEditor<T, M> {
                         final boolean addFileChangeListeners,
                         final boolean displayShowMoreVersions,
                         final Collection<MenuItems> menuItems) {
+        this.path = path;
         this.place = place;
         this.type = type;
         this.menuItems.addAll(menuItems);
@@ -422,21 +426,8 @@ public abstract class BaseEditor<T, M> {
         });
     }
 
-    /**
-     * Effectively the same as reload() but don't reset concurrentUpdateSessionInfo
-     */
     protected void onRename() {
-        refreshTitle();
-        baseView.showBusyIndicator(CommonConstants.INSTANCE.Loading());
-        loadContent();
-        changeTitleNotification.fire(new ChangeTitleWidgetEvent(place,
-                                                                getTitleText(),
-                                                                getTitle()));
-        versionRecordManager.init(
-                this.place.getParameter("version",
-                                        null),
-                versionRecordManager.getCurrentPath(),
-                this::selectVersion);
+        reload(path);
     }
 
     /**
@@ -444,16 +435,24 @@ public abstract class BaseEditor<T, M> {
      * @return The widget for the title
      */
     protected IsWidget getTitle() {
-        refreshTitle();
+        refreshTitle(versionRecordManager.getCurrentPath());
+        return getTitleWidget();
+    }
+
+    EditorTitle getTitleWidget() {
         return baseView.getTitleWidget();
     }
 
     public String getTitleText() {
-        return versionRecordManager.getCurrentPath().getFileName() + " - " + type.getDescription();
+        return getTitleText(versionRecordManager.getCurrentPath());
     }
 
-    private void refreshTitle() {
-        baseView.refreshTitle(getTitleText());
+    String getTitleText(final ObservablePath observablePath) {
+        return observablePath.getFileName() + " - " + getType().getDescription();
+    }
+
+    ClientResourceType getType() {
+        return type;
     }
 
     protected void onSave() {
@@ -518,12 +517,55 @@ public abstract class BaseEditor<T, M> {
 
     public void reload() {
         concurrentUpdateSessionInfo = null;
-        refreshTitle();
-        baseView.showBusyIndicator(CommonConstants.INSTANCE.Loading());
+        reload(versionRecordManager.getCurrentPath());
+    }
+
+    void reload(final ObservablePath path) {
+        refreshTitle(path);
+        showBusyIndicator();
         loadContent();
-        changeTitleNotification.fire(new ChangeTitleWidgetEvent(place,
-                                                                getTitleText(),
-                                                                getTitle()));
+        notifyChangeTitle(path);
+        initVersionRecordManager();
+    }
+
+    void refreshTitle(final ObservablePath observablePath) {
+        baseView.refreshTitle(getTitleText(observablePath));
+    }
+
+    void showBusyIndicator() {
+        baseView.showBusyIndicator(makeLoading());
+    }
+
+    String makeLoading() {
+        return CommonConstants.INSTANCE.Loading();
+    }
+
+    void notifyChangeTitle(final ObservablePath path) {
+        changeTitleNotification.fire(makeChangeTitleWidgetEvent(path));
+    }
+
+    ChangeTitleWidgetEvent makeChangeTitleWidgetEvent(final ObservablePath path) {
+
+        final String titleText = getTitleText(path);
+        final EditorTitle titleWidget = getTitleWidget();
+
+        return new ChangeTitleWidgetEvent(getPlace(), titleText, titleWidget);
+    }
+
+    void initVersionRecordManager() {
+
+        final String version = getPlace().getParameter("version", null);
+        final Callback<VersionRecord> selectVersion = getSelectVersion();
+
+        versionRecordManager.init(version, versionRecordManager.getCurrentPath(), selectVersion);
+    }
+
+    Callback<VersionRecord> getSelectVersion() {
+        return this::selectVersion;
+    }
+
+    PlaceRequest getPlace() {
+        return place;
     }
 
     void disableMenus() {

@@ -198,7 +198,7 @@ public final class PathFactory {
 
             final Path path = (Path) o;
 
-            return uri.equals(path.toURI());
+            return this.toURI().equals(path.toURI());
         }
 
         @Override

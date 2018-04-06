@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.function.Supplier;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.common.client.api.Caller;
 import org.junit.Test;
@@ -28,13 +29,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.callbacks.Callback;
+import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.file.DefaultMetadata;
+import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.junit.Assert.assertEquals;
@@ -42,12 +49,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.uberfire.ext.editor.commons.client.menu.MenuItems.COPY;
 import static org.uberfire.ext.editor.commons.client.menu.MenuItems.DELETE;
 import static org.uberfire.ext.editor.commons.client.menu.MenuItems.HISTORY;
@@ -68,6 +77,9 @@ public class BaseEditorTest {
 
     @Mock
     private BasicFileMenuBuilder menuBuilder;
+
+    @Mock
+    private EventSourceMock<ChangeTitleWidgetEvent> changeTitleNotification;
 
     private SaveAndRenameCommandBuilder<String, DefaultMetadata> builder = spy(makeBuilder());
 
@@ -369,6 +381,134 @@ public class BaseEditorTest {
         verify(menuBuilder, never()).addNewTopLevelMenu(any());
     }
 
+    @Test
+    public void testReloadWithObservablePath() {
+
+        final ObservablePath path = mock(ObservablePath.class);
+
+        doNothing().when(editor).refreshTitle(path);
+        doNothing().when(editor).showBusyIndicator();
+        doNothing().when(editor).loadContent();
+        doNothing().when(editor).notifyChangeTitle(path);
+        doNothing().when(editor).initVersionRecordManager();
+
+        editor.reload(path);
+
+        verify(editor).refreshTitle(path);
+        verify(editor).showBusyIndicator();
+        verify(editor).loadContent();
+        verify(editor).notifyChangeTitle(path);
+        verify(editor).initVersionRecordManager();
+    }
+
+    @Test
+    public void testRefreshTitleWithObservablePath() {
+
+        final ObservablePath path = mock(ObservablePath.class);
+        final String title = "title";
+
+        doReturn(title).when(editor).getTitleText(path);
+
+        editor.refreshTitle(path);
+
+        verify(baseView).refreshTitle(title);
+    }
+
+    @Test
+    public void testShowBusyIndicator() {
+
+        final String loading = "Loading...";
+
+        doReturn(loading).when(editor).makeLoading();
+
+        editor.showBusyIndicator();
+
+        verify(baseView).showBusyIndicator(loading);
+    }
+
+    @Test
+    public void testNotifyChangeTitle() {
+
+        final ObservablePath path = mock(ObservablePath.class);
+        final ChangeTitleWidgetEvent widgetEvent = mock(ChangeTitleWidgetEvent.class);
+
+        doReturn(widgetEvent).when(editor).makeChangeTitleWidgetEvent(path);
+
+        editor.notifyChangeTitle(path);
+
+        verify(changeTitleNotification).fire(widgetEvent);
+    }
+
+    @Test
+    public void testMakeChangeTitleWidgetEvent() {
+
+        final ObservablePath path = mock(ObservablePath.class);
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
+        final String title = "title";
+        final EditorTitle editorTitle = mock(EditorTitle.class);
+
+        doReturn(placeRequest).when(editor).getPlace();
+        doReturn(title).when(editor).getTitleText(path);
+        doReturn(editorTitle).when(editor).getTitleWidget();
+
+        final ChangeTitleWidgetEvent event = editor.makeChangeTitleWidgetEvent(path);
+
+        assertEquals(placeRequest, event.getPlaceRequest());
+        assertEquals(title, event.getTitle());
+        assertEquals(editorTitle, event.getTitleDecoration());
+    }
+
+    @Test
+    public void testInitVersionRecordManager() {
+
+        final ObservablePath path = mock(ObservablePath.class);
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
+        final String version = "version";
+        final Callback<VersionRecord> selectionCallback = (v) -> {
+        };
+
+        when(versionRecordManager.getCurrentPath()).thenReturn(path);
+        when(placeRequest.getParameter(anyString(), any())).thenReturn(version);
+        doReturn(selectionCallback).when(editor).getSelectVersion();
+        doReturn(placeRequest).when(editor).getPlace();
+
+        editor.initVersionRecordManager();
+
+        verify(versionRecordManager).init(version, path, selectionCallback);
+    }
+
+    @Test
+    public void testGetTitleText() {
+
+        final String expectedTitle = "file.drl - DRL";
+        final ObservablePath path = mock(ObservablePath.class);
+        final ClientResourceType type = mock(ClientResourceType.class);
+
+        doReturn(type).when(editor).getType();
+        when(path.getFileName()).thenReturn("file.drl");
+        when(type.getDescription()).thenReturn("DRL");
+
+        final String actualTitle = editor.getTitleText(path);
+
+        assertEquals(expectedTitle, actualTitle);
+    }
+
+    @Test
+    public void testGetTitle() {
+
+        final ObservablePath path = mock(ObservablePath.class);
+        final EditorTitle expectedTitle = mock(EditorTitle.class);
+
+        doNothing().when(editor).refreshTitle(path);
+        doReturn(expectedTitle).when(editor).getTitleWidget();
+        when(versionRecordManager.getCurrentPath()).thenReturn(path);
+
+        final IsWidget actualWidget = editor.getTitle();
+
+        verify(editor).refreshTitle(path);
+        assertEquals(expectedTitle, actualWidget);
+    }
+
     private DefaultMetadata fakeMetadata(final int hashCode) {
         return new DefaultMetadata() {
             @Override
@@ -379,7 +519,7 @@ public class BaseEditorTest {
     }
 
     private SaveAndRenameCommandBuilder<String, DefaultMetadata> makeBuilder() {
-        return new SaveAndRenameCommandBuilder<>(null, null, null);
+        return new SaveAndRenameCommandBuilder<>(null, null, null, null);
     }
 
     private BaseEditor<String, DefaultMetadata> makeBaseEditor() {
