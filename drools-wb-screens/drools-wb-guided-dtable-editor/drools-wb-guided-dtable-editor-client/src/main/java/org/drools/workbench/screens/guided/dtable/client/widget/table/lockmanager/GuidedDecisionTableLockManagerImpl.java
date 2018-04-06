@@ -49,7 +49,7 @@ public class GuidedDecisionTableLockManagerImpl extends LockManagerImpl implemen
             if (dtPath == null) {
                 return;
             }
-            if (dtPath.equals(path)) {
+            if (path.equals(dtPath)) {
                 super.fireChangeTitleEvent();
             }
         });
