@@ -31,6 +31,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -81,6 +82,7 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.AbstractPlaceEvent;
@@ -297,19 +299,17 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     @SuppressWarnings("unchecked")
     protected void save(final String commitMessage) {
         super.save(commitMessage);
-        showLoadingViews();
-        // Update diagram's image data as thumbnail.
-        final CanvasHandler canvasHandler = getSession().getCanvasHandler();
-        final Diagram diagram = canvasHandler.getDiagram();
+        showSavingViews();
         // Perform update operation remote call.
-        projectDiagramServices.saveOrUpdate(versionRecordManager.getCurrentPath(),
+        final ObservablePath diagramPath = versionRecordManager.getCurrentPath();
+        projectDiagramServices.saveOrUpdate(diagramPath,
                                             getDiagram(),
                                             metadata,
                                             commitMessage,
                                             new ServiceCallback<ProjectDiagram>() {
                                                 @Override
                                                 public void onSuccess(final ProjectDiagram item) {
-                                                    getSaveSuccessCallback(item.hashCode());
+                                                    getSaveSuccessCallback(item.hashCode()).callback(diagramPath);
                                                     onSaveSuccess();
                                                     hideLoadingViews();
                                                 }
@@ -319,6 +319,14 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                                     onSaveError(error);
                                                 }
                                             });
+    }
+
+    @Override
+    public RemoteCallback<Path> getSaveSuccessCallback(final int newHash) {
+        return (path) -> {
+            versionRecordManager.reloadVersions(path);
+            setOriginalHash(newHash);
+        };
     }
 
     public void hideDiagramEditorDocks(@Observes PlaceHiddenEvent event) {
@@ -348,7 +356,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         final MenuItem redoItem = menuItemsBuilder.newRedoItem(this::menu_redo);
         getCommand(RedoSessionCommand.class).listen(() -> redoItem.setEnabled(getCommand(RedoSessionCommand.class).isEnabled()));
 
-        final MenuItem validateItem = menuItemsBuilder.newValidateItem(() -> validate(() -> hideLoadingViews()));
+        final MenuItem validateItem = menuItemsBuilder.newValidateItem(() -> validate(this::hideLoadingViews));
         getCommand(ValidateSessionCommand.class).listen(() -> validateItem.setEnabled(getCommand(ValidateSessionCommand.class).isEnabled()));
 
         final MenuItem exportsItem = menuItemsBuilder.newExportsItem(this::export_imagePNG,
@@ -399,7 +407,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
         if (canUpdateProject()) {
             fileMenuBuilder
-                    .addSave(versionRecordManager.newSaveMenuItem(() -> saveAction()))
+                    .addSave(versionRecordManager.newSaveMenuItem(this::saveAction))
                     .addCopy(versionRecordManager.getCurrentPath(),
                              assetUpdateValidator)
                     .addRename(versionRecordManager.getPathToLatest(),
@@ -413,6 +421,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                 .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
     }
 
+    @SuppressWarnings("unchecked")
     protected <T> T getCommand(Class<T> key) {
         return (T) commands.get(key);
     }
@@ -494,6 +503,10 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         getView().showLoading();
     }
 
+    protected void showSavingViews() {
+        getView().showSaving();
+    }
+
     protected void hideLoadingViews() {
         getView().hideBusyIndicator();
     }
@@ -541,10 +554,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         return menus;
     }
 
-    protected boolean _onMayClose() {
-        return super.mayClose(getCurrentDiagramHash());
-    }
-
     @Override
     protected void onSave() {
         if (hasUnsavedChanges()) {
@@ -557,16 +566,13 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         }
     }
 
+    @SuppressWarnings("unchecked")
     void bindCommands() {
         commands.values().stream().forEach(command -> command.bind(getSession()));
     }
 
     void unbindCommands() {
         commands.values().stream().forEach(ClientSessionCommand::unbind);
-    }
-
-    private void pauseSession() {
-        sessionManager.pause();
     }
 
     private void destroySession() {
@@ -606,6 +612,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         return null != presenter ? presenter.getInstance() : null;
     }
 
+    @SuppressWarnings("unchecked")
     protected int getCurrentDiagramHash() {
         if (null == getDiagram()) {
             return 0;
@@ -688,7 +695,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     }
 
     protected void showError(final ClientRuntimeError error) {
-        diagramClientErrorHandler.handleError(error, message -> showError(message));
+        diagramClientErrorHandler.handleError(error, this::showError);
         log(Level.SEVERE, error.toString());
     }
 
