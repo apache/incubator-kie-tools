@@ -146,9 +146,11 @@ public class DataSetDefWizardScreen {
     public boolean mayClose() {
         try {
             // Flush the current workflow state
-            currentWorkflow.flush();
+            if (currentWorkflow != null) {
+                currentWorkflow.flush();
+            }
         } catch (Exception e) {
-            // Ignore. The provider type selection workflow stage thorws an error
+            // Ignore. The provider type selection workflow stage throws an error
             // due to the dataset def being in partial creation state.
         }
         Integer currentHash = getCurrentModelHash();
@@ -276,6 +278,7 @@ public class DataSetDefWizardScreen {
         public void callback(Path path) {
             disposeCurrentWorkflow();
             BusyPopup.close();
+            setOriginalHash(0);
             notification.fire(new NotificationEvent(DataSetAuthoringConstants.INSTANCE.savedOk()));
             placeManager.closePlace(placeRequest);
         }

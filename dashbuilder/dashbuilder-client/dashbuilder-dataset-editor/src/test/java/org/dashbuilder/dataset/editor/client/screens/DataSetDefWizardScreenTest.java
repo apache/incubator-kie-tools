@@ -21,6 +21,7 @@ import org.dashbuilder.dataset.client.DataSetClientServices;
 import org.dashbuilder.dataset.client.editor.SQLDataSetDefEditor;
 import org.dashbuilder.dataset.def.DataColumnDef;
 import org.dashbuilder.dataset.def.DataSetDef;
+import org.dashbuilder.dataset.def.DataSetDefFactory;
 import org.dashbuilder.dataset.def.SQLDataSetDef;
 import org.dashbuilder.dataset.service.DataSetDefVfsServices;
 import org.jboss.errai.common.client.api.Caller;
@@ -46,6 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.jgroups.util.Util.*;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
@@ -73,8 +75,8 @@ public class DataSetDefWizardScreenTest {
 
     @Before
     public void setup() throws Exception {
-        services = new CallerMock<DataSetDefVfsServices>( dataSetDefVfsServices );
-        
+        services = new CallerMock<>( dataSetDefVfsServices );
+
         when(dataSetDef.getUUID()).thenReturn("uuid1");
         when(dataSetDef.getName()).thenReturn("name1");
         when(dataSetDef.getProvider()).thenReturn(DataSetProviderType.SQL);
@@ -88,7 +90,7 @@ public class DataSetDefWizardScreenTest {
             callback.callback(dataSetDef);
             return null;
         }).when(clientServices).newDataSet(any(DataSetProviderType.class), any(RemoteCallback.class));
-        
+
         doAnswer(invocationOnMock -> {
             presenter.onClose();
             return null;
@@ -225,17 +227,22 @@ public class DataSetDefWizardScreenTest {
     @Test
     public void testOnSave() {
         final Path path = mock(Path.class);
+        DataSetDef dataSetDef = DataSetDefFactory.newBeanDataSetDef().buildDef();
+        PlaceRequest placeRequest = mock(PlaceRequest.class);
         when(dataSetDefVfsServices.save(any(DataSetDef.class), anyString())).thenReturn(path);
-        presenter.currentWorkflow = editWorkflow;
+        when(dataSetProviderTypeWorkflow.getDataSetDef()).thenReturn(dataSetDef);
+
+        presenter.init(placeRequest);
         presenter.onSave(dataSetDef, "saveMessage");
         verify(placeManager, times(1)).goTo("DataSetAuthoringHome");
         verify(notification, times(1)).fire(any(NotificationEvent.class));
         verify(placeManager, times(1)).closePlace(any(PlaceRequest.class));
-        verify(workflowFactory).dispose(editWorkflow);
-        verify(workflowFactory, times(0)).providerType();
+        verify(workflowFactory).dispose(dataSetProviderTypeWorkflow);
         verify(workflowFactory, times(0)).edit(any(DataSetProviderType.class));
-        verify(workflowFactory, times(0)).basicAttributes(any(DataSetProviderType.class));
+
         assertNull("current workflow null", presenter.currentWorkflow);
+        assertFalse(presenter.isDirty(presenter.getCurrentModelHash()));
+        assertTrue(presenter.mayClose());
     }
 
     @Test
