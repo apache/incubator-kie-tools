@@ -62,21 +62,21 @@ public class ConstrainedIndexerScheduler implements IndexerScheduler {
 
     @Override
     public Stream<CompletableFuture<Pair<String, List<IndexEvent>>>> schedule(ExecutorService executor) {
-        Map<String, CompletableFuture<Pair<String, List<IndexEvent>>>> memoizedJobs = new HashMap<>();
+        Map<String, CompletableFuture<Pair<String, List<IndexEvent>>>> createdJobs = new HashMap<>();
 
         return graph.nodesById.values()
                               .stream()
                               .sorted(comparingInt(node -> node.priority))
                               .map(node -> node.id)
-                              .map(id -> schedule(executor, memoizedJobs, id));
+                              .map(id -> schedule(executor, createdJobs, id));
     }
 
     private CompletableFuture<Pair<String, List<IndexEvent>>> schedule(ExecutorService executor,
-                                                                       Map<String, CompletableFuture<Pair<String, List<IndexEvent>>>> memoizedJobs,
+                                                                       Map<String, CompletableFuture<Pair<String, List<IndexEvent>>>> createdJobs,
                                                                        String id) {
-        if (memoizedJobs.containsKey(id)) {
+        if (createdJobs.containsKey(id)) {
             logger.debug("Job [{}] already scheduled. Returning future.", id);
-            return memoizedJobs.get(id);
+            return createdJobs.get(id);
         } else {
             logger.debug("Job [{}] not yet scheduled.", id);
             final JobNode jobNode = graph.nodesById.get(id);
@@ -85,12 +85,12 @@ public class ConstrainedIndexerScheduler implements IndexerScheduler {
                                    .stream()
                                    .filter(constraint -> constraint.isFrom(id))
                                    .map(constraint -> constraint.to)
-                                   .map(dependencyId -> schedule(executor, memoizedJobs, dependencyId))
+                                   .map(dependencyId -> schedule(executor, createdJobs, dependencyId))
                                    .toArray(n -> new CompletableFuture[n]);
             logger.debug("Dependencies scheduled. Scheduling job for [{}].", id);
             final CompletableFuture<Pair<String, List<IndexEvent>>> jobFuture =
                     allOf(dependencies).thenCompose(ignore -> supplyAsync(jobNode.job, executor).thenApply(events -> newPair(jobNode.id, events)));
-            memoizedJobs.put(id, jobFuture);
+            createdJobs.put(id, jobFuture);
 
             return jobFuture;
         }

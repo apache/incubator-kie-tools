@@ -181,6 +181,7 @@ public class MetadataIndexEngine implements MetaIndexEngine {
 
     @Override
     public void delete(KCluster cluster) {
+        this.batchLocks.remove(cluster);
         this.provider.delete(cluster.getClusterId());
     }
 
@@ -197,9 +198,15 @@ public class MetadataIndexEngine implements MetaIndexEngine {
 
     @Override
     public void commit(KCluster cluster, String indexerId) {
-        prepareBatch(cluster);
-        MultiIndexerLock lock = batchLocks.get(cluster);
-        List<IndexEvent> batchSet = batchSets.get().get(cluster);
+        final MultiIndexerLock lock = batchLocks.get(cluster);
+        final List<IndexEvent> batchSet = batchSets.get().get(cluster);
+        final boolean clusterDeleted = lock == null && batchSet != null;
+
+        if (clusterDeleted) {
+            logger.info("Cluster [{}] was deleted. Aborting commit for indexer [{}].", cluster.getClusterId(), indexerId);
+            abort(cluster);
+            return;
+        }
 
         try {
             if (batchSet == null) {

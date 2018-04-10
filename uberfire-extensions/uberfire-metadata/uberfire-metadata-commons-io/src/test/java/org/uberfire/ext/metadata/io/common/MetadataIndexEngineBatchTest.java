@@ -194,4 +194,14 @@ public class MetadataIndexEngineBatchTest {
         assertTrue(indexEngine.isIndexReady(cluster, "other-indexer"));
     }
 
+    @Test
+    public void commitAbortedWhenClusterIsDeleted() throws Exception {
+        indexEngine.startBatch(cluster);
+        indexEngine.index(kObject);
+        indexEngine.delete(cluster);
+        indexEngine.commit(cluster, "test-indexer");
+
+        verify(provider, never()).index(any(KObject.class));
+    }
+
 }

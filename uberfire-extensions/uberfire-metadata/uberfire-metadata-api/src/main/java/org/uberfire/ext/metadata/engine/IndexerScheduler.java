@@ -39,7 +39,7 @@ public interface IndexerScheduler {
 
     /**
      * @param executor An {@link ExecutorService} used for scheduling any asynchronous jobs. Must not be null.
-     * @return A stream of {@link CompletableFuture CompleteableFutures} for all jobs scheduled. Never null.
+     * @return A stream of {@link CompletableFuture CompletableFutures} for all jobs scheduled. Never null.
      *          Note that just because a {@link CompletableFuture} is returned for a job, that does not mean
      *          the job has been scheduled yet. The scheduler is free to start jobs or terminate them with exceptions
      *          as it deems appropriate.

@@ -98,7 +98,7 @@ public class LuceneIndexProvider implements IndexProvider {
 
     @Override
     public void delete(String index) {
-        indexManager.delete(() -> index);
+        indexManager.delete(new KClusterImpl(index));
     }
 
     @Override

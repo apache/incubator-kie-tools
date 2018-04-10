@@ -17,9 +17,9 @@
 package org.uberfire.ext.metadata.io;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -70,8 +70,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     private final MetaIndexEngine indexEngine;
 
     private final Class<? extends FileAttributeView>[] views;
-    private final List<String> watchedList = new ArrayList<>();
-    private final List<WatchService> watchServices = new ArrayList<>();
+    private final Map<String, WatchService> watchServicesByFS = new HashMap<>();
     private final BatchIndex batchIndex;
     private final IndexersFactory indexersFactory;
     private final Collection<IndexerDispatcher> activeIndexerDispatchers = Collections.newSetFromMap(new ConcurrentHashMap<>());
@@ -285,7 +284,8 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
 
     @Override
     public void dispose() {
-        watchServices.forEach(ws -> ws.close());
+        watchServicesByFS.values()
+                         .forEach(ws -> ws.close());
         activeIndexerDispatchers.forEach(d -> d.dispose());
 
         super.dispose();
@@ -297,12 +297,11 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     }
 
     protected void setupWatchService(final FileSystem fs) {
-        if (watchedList.contains(fs.getName())) {
+        if (watchServicesByFS.containsKey(fs.getName())) {
             return;
         }
         final WatchService ws = fs.newWatchService();
-        watchedList.add(fs.getName());
-        watchServices.add(ws);
+        watchServicesByFS.put(fs.getName(), ws);
 
         final ExecutorService defaultInstance = this.executorService;
 
@@ -444,22 +443,30 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     @Override
     public void delete(final Path path,
                        final DeleteOption... options) throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException, SecurityException {
-        final KCluster cluster = KObjectUtil.toKCluster(path.getFileSystem());
         super.delete(path,
                      options);
         if (path instanceof FSPath) {
-            indexEngine.delete(cluster);
+            FileSystem fileSystem = path.getFileSystem();
+            cleanupDeletedFS(fileSystem);
         }
+    }
+
+    private void cleanupDeletedFS(FileSystem fs) {
+        WatchService ws = watchServicesByFS.remove(fs.getName());
+        if (ws != null && !ws.isClose()) {
+            ws.close();
+        }
+        indexEngine.delete(KObjectUtil.toKCluster(fs));
     }
 
     @Override
     public boolean deleteIfExists(Path path,
                                   DeleteOption... options) throws IllegalArgumentException, DirectoryNotEmptyException, IOException, SecurityException {
-        final KCluster cluster = KObjectUtil.toKCluster(path.getFileSystem());
         final boolean result = super.deleteIfExists(path,
                                                     options);
         if (result && path instanceof FSPath) {
-            indexEngine.delete(cluster);
+            FileSystem fileSystem = path.getFileSystem();
+            cleanupDeletedFS(fileSystem);
         }
         return result;
     }
