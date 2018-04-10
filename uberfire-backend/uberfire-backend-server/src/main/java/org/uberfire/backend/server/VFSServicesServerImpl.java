@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -49,9 +50,17 @@ import org.uberfire.java.nio.file.attribute.FileTime;
 @ApplicationScoped
 public class VFSServicesServerImpl implements VFSService {
 
+    private final IOService ioService;
+
+    // CDI Proxy.
+    protected VFSServicesServerImpl() {
+        this(null);
+    }
+
     @Inject
-    @Named("ioStrategy")
-    private IOService ioService;
+    public VFSServicesServerImpl(final @Named("ioStrategy") IOService ioService) {
+        this.ioService = ioService;
+    }
 
     @Override
     public Path get(final String uri) {
@@ -72,7 +81,7 @@ public class VFSServicesServerImpl implements VFSService {
                                                     final DirectoryStream.Filter<Path> filter)
             throws IllegalArgumentException, NotDirectoryException, IOException {
         final Iterator<org.uberfire.java.nio.file.Path> content = ioService.newDirectoryStream(Paths.convert(dir),
-                                                                                               null).iterator();
+                                                                                               path -> filter.accept(Paths.convert(path))).iterator();
 
         return newDirectoryStream(content);
     }
