@@ -1116,6 +1116,7 @@ public class BPMNDiagramMarshallerTest {
                      assignmentsInfo.getValue());
     }
 
+    @Test
     public void testUnmarshallEndErrorEvent() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ENDERROR_EVENT);
         assertDiagram(diagram,
@@ -2693,6 +2694,7 @@ public class BPMNDiagramMarshallerTest {
         assertTrue(result.contains("<bpmn2:subProcess id=\"_DF031493-5F1C-4D2B-9916-2FEABB1FADFF\""));
     }
 
+    @Test
     public void testMarshallAdHocSubprocess() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ADHOC_SUBPROCESS);
         assertDiagram(diagram,
