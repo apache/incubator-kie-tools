@@ -55,6 +55,7 @@ import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesLi
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -69,6 +70,7 @@ import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 
@@ -201,6 +203,9 @@ public class ProjectDiagramEditorTest {
 
     @Captor
     private ArgumentCaptor<Consumer<String>> consumerCaptor;
+
+    @Captor
+    private ArgumentCaptor<ParameterizedCommand<String>> savePopupCommandCaptor;
 
     private ProjectDiagramEditorStub tested;
 
@@ -394,6 +399,59 @@ public class ProjectDiagramEditorTest {
 
         verify(onDiagramFocusEvent,
                never()).fire(any(OnDiagramFocusEvent.class));
+    }
+
+    @Test
+    public void testOnSaveWithoutChanges() {
+        tested.open(diagram);
+        when(versionRecordManager.isCurrentLatest()).thenReturn(true);
+
+        tested.onSave();
+
+        verify(presenterView).showMessage(CommonConstants.INSTANCE.NoChangesSinceLastSave());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testOnSaveWithChanges() {
+        tested.open(diagram);
+        tested.setOriginalHash(diagram.hashCode() + 1);
+        doAnswer(i -> {
+            ((ClientSessionCommand.Callback) i.getArguments()[0]).onSuccess();
+            return null;
+        }).when(sessionValidateCommand).execute(any(ClientSessionCommand.Callback.class));
+
+        tested.onSave();
+
+        assertOnSaveSavedDiagram();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testOnSaveRestore() {
+        tested.open(diagram);
+        doAnswer(i -> {
+            ((ClientSessionCommand.Callback) i.getArguments()[0]).onSuccess();
+            return null;
+        }).when(sessionValidateCommand).execute(any(ClientSessionCommand.Callback.class));
+
+        tested.onSave();
+
+        assertOnSaveSavedDiagram();
+    }
+
+    private void assertOnSaveSavedDiagram() {
+        verify(savePopUpPresenter).show(eq(path),
+                                        savePopupCommandCaptor.capture());
+
+        final ParameterizedCommand<String> savePopupCommand = savePopupCommandCaptor.getValue();
+        savePopupCommand.execute(SAVE_MESSAGE);
+
+        verify(projectDiagramServices).saveOrUpdate(eq(path),
+                                                    eq(diagram),
+                                                    any(Metadata.class),
+                                                    eq(SAVE_MESSAGE),
+                                                    serviceCallbackCaptor.capture());
     }
 
     @Test

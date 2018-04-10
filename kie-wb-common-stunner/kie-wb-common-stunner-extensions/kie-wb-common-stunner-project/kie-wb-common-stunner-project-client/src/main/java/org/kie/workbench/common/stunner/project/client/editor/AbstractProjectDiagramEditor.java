@@ -563,6 +563,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     protected void onSave() {
         if (hasUnsavedChanges()) {
             super.onSave();
+        } else if (!versionRecordManager.isCurrentLatest()) {
+            //If VersionRecordManager is not showing the latest the save represents a "Restore" operation.
+            super.onSave();
         } else {
             final String message = CommonConstants.INSTANCE.NoChangesSinceLastSave();
             log(Level.INFO,
