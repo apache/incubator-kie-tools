@@ -20,42 +20,45 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPngSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ExportToPngToolbarCommandTest extends AbstractToolbarCommandTest {
+public class ClearToolbarCommandTest extends AbstractToolbarCommandTest {
 
-    private static final String TEXT = "Export PNG";
+    private static final String TEXT = "Clear toolbar";
+    private static final String ARE_YOU_SURE = "Are you sure?";
+    private static final String OPERATION_CANNOT_BE_REVERTED = "This operation cannot be reverted.";
 
     @Mock
-    private ExportToPngSessionCommand sessionCommand;
+    private ClearSessionCommand sessionCommand;
 
-    private ExportToPngToolbarCommand command;
+    private ClearToolbarCommand command;
 
     @Before
     public void setUp() throws Exception {
-        when(sessionCommandFactory.newExportToPngSessionCommand()).thenReturn(sessionCommand);
+        when(sessionCommandFactory.newClearCommand()).thenReturn(sessionCommand);
 
-        when(translationService.getValue(CoreTranslationMessages.EXPORT_PNG)).thenReturn(TEXT);
-        command = new ExportToPngToolbarCommand(sessionCommandFactory, translationService);
+        when(translationService.getValue(CoreTranslationMessages.CLEAR_DIAGRAM)).thenReturn(TEXT);
+        command = new ClearToolbarCommand(sessionCommandFactory, translationService);
     }
 
     @Test
     public void testInstance() {
-        verify(sessionCommandFactory,
-               times(1)).newExportToPngSessionCommand();
-        assertEquals(IconType.FILE_IMAGE_O, command.getIcon());
-        assertFalse(command.requiresConfirm());
+        verify(sessionCommandFactory, times(1)).newClearCommand();
+        assertEquals(IconType.ERASER, command.getIcon());
+        assertTrue(command.requiresConfirm());
         assertEquals(TEXT, command.getCaption());
         assertEquals(TEXT, command.getTooltip());
+        assertTrue(command.getConfirmMessage().contains(ARE_YOU_SURE));
+        assertTrue(command.getConfirmMessage().contains(OPERATION_CANNOT_BE_REVERTED));
     }
 }

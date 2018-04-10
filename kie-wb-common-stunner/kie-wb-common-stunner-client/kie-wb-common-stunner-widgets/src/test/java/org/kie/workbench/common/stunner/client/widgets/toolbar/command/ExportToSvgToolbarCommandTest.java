@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ExportToSvgToolbarCommandTest extends AbstractToolbarCommandTest {
 
-    private static final String TEXT = "text";
+    private static final String TEXT = "Export SVG";
 
     private ExportToSvgToolbarCommand command;
 

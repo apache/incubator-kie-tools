@@ -20,40 +20,34 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPngSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.PasteSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ExportToPngToolbarCommandTest extends AbstractToolbarCommandTest {
+public class PasteToolbarCommandTest extends AbstractToolbarCommandTest {
 
     private static final String TEXT = "Export PNG";
 
     @Mock
-    private ExportToPngSessionCommand sessionCommand;
+    private PasteSelectionSessionCommand sessionCommand;
 
-    private ExportToPngToolbarCommand command;
+    private PasteToolbarCommand command;
 
     @Before
     public void setUp() throws Exception {
-        when(sessionCommandFactory.newExportToPngSessionCommand()).thenReturn(sessionCommand);
-
-        when(translationService.getValue(CoreTranslationMessages.EXPORT_PNG)).thenReturn(TEXT);
-        command = new ExportToPngToolbarCommand(sessionCommandFactory, translationService);
+        when(translationService.getValue(CoreTranslationMessages.PASTE_SELECTION)).thenReturn(TEXT);
+        command = new PasteToolbarCommand(sessionCommand, translationService);
     }
 
     @Test
     public void testInstance() {
-        verify(sessionCommandFactory,
-               times(1)).newExportToPngSessionCommand();
-        assertEquals(IconType.FILE_IMAGE_O, command.getIcon());
+        assertEquals(IconType.PASTE, command.getIcon());
         assertFalse(command.requiresConfirm());
         assertEquals(TEXT, command.getCaption());
         assertEquals(TEXT, command.getTooltip());

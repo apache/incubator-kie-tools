@@ -20,7 +20,7 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPngSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearStatesSessionCommand;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -32,28 +32,27 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ExportToPngToolbarCommandTest extends AbstractToolbarCommandTest {
+public class ClearStatesToolbarCommandTest extends AbstractToolbarCommandTest {
 
-    private static final String TEXT = "Export PNG";
+    private static final String TEXT = "Clear States";
 
     @Mock
-    private ExportToPngSessionCommand sessionCommand;
+    private ClearStatesSessionCommand sessionCommand;
 
-    private ExportToPngToolbarCommand command;
+    private ClearStatesToolbarCommand command;
 
     @Before
     public void setUp() throws Exception {
-        when(sessionCommandFactory.newExportToPngSessionCommand()).thenReturn(sessionCommand);
+        when(sessionCommandFactory.newClearStatesCommand()).thenReturn(sessionCommand);
 
-        when(translationService.getValue(CoreTranslationMessages.EXPORT_PNG)).thenReturn(TEXT);
-        command = new ExportToPngToolbarCommand(sessionCommandFactory, translationService);
+        when(translationService.getValue(CoreTranslationMessages.CLEAR_SHAPES)).thenReturn(TEXT);
+        command = new ClearStatesToolbarCommand(sessionCommandFactory, translationService);
     }
 
     @Test
     public void testInstance() {
-        verify(sessionCommandFactory,
-               times(1)).newExportToPngSessionCommand();
-        assertEquals(IconType.FILE_IMAGE_O, command.getIcon());
+        verify(sessionCommandFactory, times(1)).newClearStatesCommand();
+        assertEquals(IconType.BAN, command.getIcon());
         assertFalse(command.requiresConfirm());
         assertEquals(TEXT, command.getCaption());
         assertEquals(TEXT, command.getTooltip());

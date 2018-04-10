@@ -16,11 +16,12 @@
 
 package org.kie.workbench.common.stunner.client.widgets.toolbar.command;
 
+import org.gwtbootstrap3.client.ui.constants.IconRotate;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPngSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -32,28 +33,28 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ExportToPngToolbarCommandTest extends AbstractToolbarCommandTest {
+public class RedoToolbarCommandTest extends AbstractToolbarCommandTest {
 
-    private static final String TEXT = "Export PNG";
+    private static final String TEXT = "Redo Toolbar";
 
     @Mock
-    private ExportToPngSessionCommand sessionCommand;
+    private RedoSessionCommand sessionCommand;
 
-    private ExportToPngToolbarCommand command;
+    private RedoToolbarCommand command;
 
     @Before
     public void setUp() throws Exception {
-        when(sessionCommandFactory.newExportToPngSessionCommand()).thenReturn(sessionCommand);
+        when(sessionCommandFactory.newRedoCommand()).thenReturn(sessionCommand);
 
-        when(translationService.getValue(CoreTranslationMessages.EXPORT_PNG)).thenReturn(TEXT);
-        command = new ExportToPngToolbarCommand(sessionCommandFactory, translationService);
+        when(translationService.getValue(CoreTranslationMessages.REDO)).thenReturn(TEXT);
+        command = new RedoToolbarCommand(sessionCommandFactory, translationService);
     }
 
     @Test
     public void testInstance() {
-        verify(sessionCommandFactory,
-               times(1)).newExportToPngSessionCommand();
-        assertEquals(IconType.FILE_IMAGE_O, command.getIcon());
+        verify(sessionCommandFactory, times(1)).newRedoCommand();
+        assertEquals(IconType.UNDO, command.getIcon());
+        assertEquals(IconRotate.ROTATE_180, command.getIconRotate());
         assertFalse(command.requiresConfirm());
         assertEquals(TEXT, command.getCaption());
         assertEquals(TEXT, command.getTooltip());

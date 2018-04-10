@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,36 +17,45 @@
 package org.kie.workbench.common.stunner.client.widgets.toolbar.command;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToJpgSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
+import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ExportToJpgToolbarCommandTest extends AbstractToolbarCommandTest{
+public class ExportToJpgToolbarCommandTest extends AbstractToolbarCommandTest {
 
-    @Mock
-    private SessionCommandFactory sessionCommandFactory;
+    private static final String TEXT = "Export JPEG";
 
     @Mock
     private ExportToJpgSessionCommand sessionCommand;
 
-    @Test
-    public void testExport() {
+    private ExportToJpgToolbarCommand command;
+
+    @Before
+    public void setUp() throws Exception {
         when(sessionCommandFactory.newExportToJpgSessionCommand()).thenReturn(sessionCommand);
-        final ExportToJpgToolbarCommand tested = new ExportToJpgToolbarCommand(sessionCommandFactory, translationService);
+
+        when(translationService.getValue(CoreTranslationMessages.EXPORT_JPG)).thenReturn(TEXT);
+        command = new ExportToJpgToolbarCommand(sessionCommandFactory, translationService);
+    }
+
+    @Test
+    public void testInstance() {
         verify(sessionCommandFactory,
                times(1)).newExportToJpgSessionCommand();
-        assertEquals(IconType.FILE_IMAGE_O,
-                     tested.getIcon());
-        assertNull(tested.getCaption());
+        assertEquals(IconType.FILE_IMAGE_O, command.getIcon());
+        assertFalse(command.requiresConfirm());
+        assertEquals(TEXT, command.getCaption());
+        assertEquals(TEXT, command.getTooltip());
     }
 }

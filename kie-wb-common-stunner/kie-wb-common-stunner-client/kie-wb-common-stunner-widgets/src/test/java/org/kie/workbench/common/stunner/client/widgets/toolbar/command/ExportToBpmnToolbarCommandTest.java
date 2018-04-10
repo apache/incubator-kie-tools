@@ -17,15 +17,16 @@
 package org.kie.workbench.common.stunner.client.widgets.toolbar.command;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToBpmnSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,27 +35,28 @@ import static org.mockito.Mockito.when;
 public class ExportToBpmnToolbarCommandTest
         extends AbstractToolbarCommandTest {
 
-    private static final String CAPTION = "CAPTION";
-
-    @Mock
-    private SessionCommandFactory sessionCommandFactory;
+    private static final String TEXT = "Export BPMN";
 
     @Mock
     private ExportToBpmnSessionCommand sessionCommand;
 
-    @Test
-    public void testExport() {
+    private ExportToBpmnToolbarCommand command;
+
+    @Before
+    public void setUp() throws Exception {
         when(sessionCommandFactory.newExportToBpmnSessionCommand()).thenReturn(sessionCommand);
-        when(translationService.getValue(CoreTranslationMessages.EXPORT_BPMN)).thenReturn(CAPTION);
-        final ExportToBpmnToolbarCommand tested = new ExportToBpmnToolbarCommand(sessionCommandFactory,
-                                                                                 translationService);
+
+        when(translationService.getValue(CoreTranslationMessages.EXPORT_BPMN)).thenReturn(TEXT);
+        command = new ExportToBpmnToolbarCommand(sessionCommandFactory, translationService);
+    }
+
+    @Test
+    public void testInstance() {
         verify(sessionCommandFactory,
                times(1)).newExportToBpmnSessionCommand();
-        assertEquals(IconType.FILE_TEXT_O,
-                     tested.getIcon());
-        assertEquals(CAPTION,
-                     tested.getCaption());
-        assertEquals(CAPTION,
-                     tested.getTooltip());
+        assertEquals(IconType.FILE_TEXT_O, command.getIcon());
+        assertFalse(command.requiresConfirm());
+        assertEquals(TEXT, command.getCaption());
+        assertEquals(TEXT, command.getTooltip());
     }
 }

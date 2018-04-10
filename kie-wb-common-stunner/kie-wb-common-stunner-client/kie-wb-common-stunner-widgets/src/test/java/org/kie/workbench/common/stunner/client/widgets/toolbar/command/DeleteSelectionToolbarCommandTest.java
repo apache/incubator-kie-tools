@@ -20,7 +20,7 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPngSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.DeleteSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -32,28 +32,28 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ExportToPngToolbarCommandTest extends AbstractToolbarCommandTest {
+public class DeleteSelectionToolbarCommandTest extends AbstractToolbarCommandTest {
 
-    private static final String TEXT = "Export PNG";
+    private static final String TEXT = "Delete Toolbar";
 
     @Mock
-    private ExportToPngSessionCommand sessionCommand;
+    private DeleteSelectionSessionCommand sessionCommand;
 
-    private ExportToPngToolbarCommand command;
+    private DeleteSelectionToolbarCommand command;
 
     @Before
     public void setUp() throws Exception {
-        when(sessionCommandFactory.newExportToPngSessionCommand()).thenReturn(sessionCommand);
+        when(sessionCommandFactory.newDeleteSelectedElementsCommand()).thenReturn(sessionCommand);
 
-        when(translationService.getValue(CoreTranslationMessages.EXPORT_PNG)).thenReturn(TEXT);
-        command = new ExportToPngToolbarCommand(sessionCommandFactory, translationService);
+        when(translationService.getValue(CoreTranslationMessages.DELETE_SELECTION)).thenReturn(TEXT);
+        command = new DeleteSelectionToolbarCommand(sessionCommandFactory, translationService);
     }
 
     @Test
     public void testInstance() {
         verify(sessionCommandFactory,
-               times(1)).newExportToPngSessionCommand();
-        assertEquals(IconType.FILE_IMAGE_O, command.getIcon());
+               times(1)).newDeleteSelectedElementsCommand();
+        assertEquals(IconType.TRASH_O, command.getIcon());
         assertFalse(command.requiresConfirm());
         assertEquals(TEXT, command.getCaption());
         assertEquals(TEXT, command.getTooltip());
