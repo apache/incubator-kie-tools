@@ -348,7 +348,7 @@ public class BaseEditorTest {
 
         doReturn(path).when(versionRecordManager).getCurrentPath();
         doReturn(menuItem).when(versionRecordManager).buildMenu();
-        doReturn(onValidate).when(editor).onValidate();
+        doReturn(onValidate).when(editor).getValidateCommand();
         doReturn(onSave).when(editor).getOnSave();
         doReturn(saveAndRename).when(editor).getSaveAndRename();
         doReturn(validator).when(editor).getCopyValidator();

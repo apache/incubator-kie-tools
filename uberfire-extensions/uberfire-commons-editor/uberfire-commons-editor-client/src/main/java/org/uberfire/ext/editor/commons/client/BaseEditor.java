@@ -242,7 +242,7 @@ public abstract class BaseEditor<T, M> {
                                   getDeleteServiceCaller());
         }
         if (menuItems.contains(VALIDATE)) {
-            menuBuilder.addValidate(onValidate());
+            menuBuilder.addValidate(getValidateCommand());
         }
         if (menuItems.contains(HISTORY)) {
             menuBuilder.addNewTopLevelMenu(versionRecordManager.buildMenu());
@@ -581,17 +581,44 @@ public abstract class BaseEditor<T, M> {
         }
     }
 
-    /**
-     * If your editor has validation, overwrite this.
-     * @return The validation command
-     */
-    protected Command onValidate() {
+    protected boolean isValidationRunning = false;
+
+    public Command getValidateCommand() {
+
         return new Command() {
             @Override
             public void execute() {
-                // Default is that nothing happens.
+                if (!isValidationRunning) {
+
+                    onBeforeValidate();
+
+                    onValidate(new Command() {
+                        @Override
+                        public void execute() {
+                            onAfterValidate();
+                        }
+                    });
+                }
             }
         };
+    }
+
+    protected void onBeforeValidate() {
+        baseView.showBusyIndicator(CommonConstants.INSTANCE.Validating());
+        isValidationRunning = true;
+    }
+
+    protected void onAfterValidate() {
+        baseView.hideBusyIndicator();
+        isValidationRunning = false;
+    }
+
+    /**
+     * If your editor has validation, overwrite this.
+     * @param finished Called when validation is finished.
+     */
+    protected void onValidate(final Command finished) {
+
     }
 
     protected abstract void loadContent();

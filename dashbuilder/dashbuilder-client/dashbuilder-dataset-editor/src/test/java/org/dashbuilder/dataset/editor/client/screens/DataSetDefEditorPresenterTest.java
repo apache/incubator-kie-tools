@@ -1,5 +1,7 @@
 package org.dashbuilder.dataset.editor.client.screens;
 
+import java.util.List;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.client.widgets.dataset.editor.DataSetEditor;
@@ -25,8 +27,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
@@ -37,44 +37,69 @@ import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @since 0.4.0
  */
 @RunWith(GwtMockitoTestRunner.class)
-public class DataSetDefEditorPresenterTest  {
+public class DataSetDefEditorPresenterTest {
 
-    @Mock EventSourceMock<ChangeTitleWidgetEvent> changeTitleNotification;
-    @Mock EventSourceMock<NotificationEvent> notification;
-    @Mock VersionRecordManager versionRecordManager;
-    @Mock BasicFileMenuBuilder menuBuilder;
-    @Mock DefaultFileNameValidator fileNameValidator;
-    @Mock PlaceManager placeManager;
-    @Mock PlaceRequest placeRequest;
-    @Mock ObservablePath observablePath;
-    @Mock SyncBeanManager beanManager;
-    @Mock DataSetEditorWorkflowFactory workflowFactory;
-    @Mock DataSetDefType resourceType;
-    @Mock ErrorPopupPresenter errorPopupPresenter;
-    @Mock DataSetDefVfsServices dataSetDefVfsServices;
-    @Mock DataSetDef dataSetDef;
-    @Mock DataSetDefEditor dataSetDefEditor;
-    @Mock DataSetDefScreenView view;
+    @Mock
+    EventSourceMock<ChangeTitleWidgetEvent> changeTitleNotification;
+    @Mock
+    EventSourceMock<NotificationEvent> notification;
+    @Mock
+    VersionRecordManager versionRecordManager;
+    @Mock
+    BasicFileMenuBuilder menuBuilder;
+    @Mock
+    DefaultFileNameValidator fileNameValidator;
+    @Mock
+    PlaceManager placeManager;
+    @Mock
+    PlaceRequest placeRequest;
+    @Mock
+    ObservablePath observablePath;
+    @Mock
+    SyncBeanManager beanManager;
+    @Mock
+    DataSetEditorWorkflowFactory workflowFactory;
+    @Mock
+    DataSetDefType resourceType;
+    @Mock
+    ErrorPopupPresenter errorPopupPresenter;
+    @Mock
+    DataSetDefVfsServices dataSetDefVfsServices;
+    @Mock
+    DataSetDef dataSetDef;
+    @Mock
+    DataSetDefEditor dataSetDefEditor;
+    @Mock
+    DataSetDefScreenView view;
     Caller<DataSetDefVfsServices> services;
 
     @InjectMocks
     private DataSetDefEditorPresenter presenter;
-    
+
     final List<DataColumnDef> columns = mock(List.class);
     final DataSetEditWorkflow editWorkflow = mock(DataSetEditWorkflow.class);
-    
+
     @Before
     public void setup() throws Exception {
         when(dataSetDef.getUUID()).thenReturn("uuid1");
@@ -132,7 +157,6 @@ public class DataSetDefEditorPresenterTest  {
         verify(errorPopupPresenter, times(1)).showMessage(anyString());
         verify(view, times(1)).hideBusyIndicator();
         verify(view, times(0)).setWidget(any(IsWidget.class));
-
     }
 
     @Test
@@ -181,9 +205,9 @@ public class DataSetDefEditorPresenterTest  {
     @Test
     public void testOnValidateSuccess() {
         when(editWorkflow.hasErrors()).thenReturn(false);
-        presenter.onValidate().execute();
+        presenter.getValidateCommand().execute();
         verify(editWorkflow, times(1)).flush();
-        final ArgumentCaptor<NotificationEvent> dataCaptor =  ArgumentCaptor.forClass(NotificationEvent.class);
+        final ArgumentCaptor<NotificationEvent> dataCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
         verify(notification, times(1)).fire(dataCaptor.capture());
         NotificationEvent ne = dataCaptor.getValue();
         assertNotNull(ne);
@@ -191,11 +215,18 @@ public class DataSetDefEditorPresenterTest  {
     }
 
     @Test
+    public void validateCallbackIsCalled() throws Exception {
+        final Command command = mock(Command.class);
+        presenter.onValidate(command);
+        verify(command).execute();
+    }
+
+    @Test
     public void testOnValidateFailed() {
         when(editWorkflow.hasErrors()).thenReturn(true);
-        presenter.onValidate().execute();
+        presenter.getValidateCommand().execute();
         verify(editWorkflow, times(1)).flush();
-        final ArgumentCaptor<NotificationEvent> dataCaptor =  ArgumentCaptor.forClass(NotificationEvent.class);
+        final ArgumentCaptor<NotificationEvent> dataCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
         verify(notification, times(1)).fire(dataCaptor.capture());
         NotificationEvent ne = dataCaptor.getValue();
         assertNotNull(ne);
