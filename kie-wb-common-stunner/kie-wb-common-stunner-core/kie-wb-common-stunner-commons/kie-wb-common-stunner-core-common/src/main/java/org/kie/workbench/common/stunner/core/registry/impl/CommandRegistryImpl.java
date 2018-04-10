@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
-import org.kie.workbench.common.stunner.core.registry.exception.RegistrySizeExceededException;
 
 /**
  * The default generic implementation for the CommandRegistry type.
@@ -84,13 +83,9 @@ public class CommandRegistryImpl<C extends Command> implements CommandRegistry<C
     private void addIntoStack(final C command) {
         if (null != command) {
             if ((commands.size() + 1) > maxStackSize) {
-                stackSizeExceeded();
+                commands.removeLast();
             }
             commands.push(command);
         }
-    }
-
-    private void stackSizeExceeded() {
-        throw new RegistrySizeExceededException(maxStackSize);
     }
 }
