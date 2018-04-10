@@ -132,4 +132,10 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String DecisionTableEditor_NullBuiltinAggregator = "DecisionTableEditor.NullBuiltinAggregator";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DecisionNavigatorPresenter_DecisionNavigator = "DecisionNavigatorPresenter.DecisionNavigator";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DecisionNavigatorBaseItemFactory_NoName = "DecisionNavigatorBaseItemFactory.NoName";
 }

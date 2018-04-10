@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.dmn.project.client.editor;
 
+import java.util.Optional;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -23,10 +25,12 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.dmn.api.factory.DMNGraphFactory;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.project.client.type.DMNDiagramResourceType;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
@@ -39,6 +43,7 @@ import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFoc
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
 import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesListener;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
+import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -65,6 +70,8 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
 
     public static final String EDITOR_ID = "DMNDiagramEditor";
 
+    private final DecisionNavigatorDock decisionNavigatorDock;
+
     @Inject
     public DMNDiagramEditor(final View view,
                             final PlaceManager placeManager,
@@ -81,7 +88,8 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
                             final Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent,
                             final ProjectMessagesListener projectMessagesListener,
                             final DiagramClientErrorHandler diagramClientErrorHandler,
-                            final ClientTranslationService translationService) {
+                            final ClientTranslationService translationService,
+                            final DecisionNavigatorDock decisionNavigatorDock) {
         super(view,
               placeManager,
               errorPopupPresenter,
@@ -98,13 +106,15 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
               projectMessagesListener,
               diagramClientErrorHandler,
               translationService);
+
+        this.decisionNavigatorDock = decisionNavigatorDock;
     }
 
     @OnStartup
     public void onStartup(final ObservablePath path,
                           final PlaceRequest place) {
-        super.doStartUp(path,
-                        place);
+        superDoStartUp(path, place);
+        decisionNavigatorDock.init(PerspectiveIds.LIBRARY);
     }
 
     @Override
@@ -124,12 +134,26 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
 
     @OnClose
     public void onClose() {
-        super.doClose();
+        superOnClose();
+        decisionNavigatorDock.close();
+        decisionNavigatorDock.resetContent();
+    }
+
+    @Override
+    protected void onDiagramLoad() {
+
+        final Optional<CanvasHandler> canvasHandler = Optional.ofNullable(getCanvasHandler());
+
+        canvasHandler.ifPresent(c -> {
+            decisionNavigatorDock.setupContent(c);
+            decisionNavigatorDock.open();
+        });
     }
 
     @OnFocus
     public void onFocus() {
-        super.doFocus();
+        superDoFocus();
+        onDiagramLoad();
     }
 
     @OnLostFocus
@@ -169,5 +193,18 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
     @Override
     protected String getEditorIdentifier() {
         return EDITOR_ID;
+    }
+
+    void superDoFocus() {
+        super.doFocus();
+    }
+
+    void superOnClose() {
+        super.doClose();
+    }
+
+    void superDoStartUp(final ObservablePath path,
+                        final PlaceRequest place) {
+        super.doStartUp(path, place);
     }
 }

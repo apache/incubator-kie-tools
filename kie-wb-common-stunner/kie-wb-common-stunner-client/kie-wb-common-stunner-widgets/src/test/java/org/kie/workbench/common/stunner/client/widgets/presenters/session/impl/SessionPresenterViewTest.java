@@ -25,6 +25,7 @@ import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.dom.client.ContextMenuHandler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import com.google.gwtmockito.WithClassesToStub;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.gwtbootstrap3.extras.notify.client.ui.NotifySettings;
 import org.junit.Before;
@@ -32,18 +33,22 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.widgets.presenters.AbstractCanvasHandlerViewerTest;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasFocusedShapeEvent;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
+@WithClassesToStub(NotifySettings.class)
 public class SessionPresenterViewTest extends AbstractCanvasHandlerViewerTest {
 
     @Mock
@@ -181,5 +186,25 @@ public class SessionPresenterViewTest extends AbstractCanvasHandlerViewerTest {
         tested.setContentScrollType(SessionPresenter.View.ScrollType.CUSTOM);
 
         verify(sessionContainerElementStyle).setOverflow(Style.Overflow.HIDDEN);
+    }
+
+    @Test
+    public void testOnCanvasFocusedSelectionEvent() {
+
+        final SessionPresenterView view = spy(new SessionPresenterView());
+        final CanvasFocusedShapeEvent event = mock(CanvasFocusedShapeEvent.class);
+        final com.google.gwt.user.client.Element element = mock(com.google.gwt.user.client.Element.class);
+        final int eventX = 101;
+        final int eventY = 110;
+
+        when(event.getX()).thenReturn(eventX);
+        when(event.getY()).thenReturn(eventY);
+        when(sessionContainer.getElement()).thenReturn(element);
+        doReturn(sessionContainer).when(view).getSessionContainer();
+
+        view.onCanvasFocusedSelectionEvent(event);
+
+        verify(element).setScrollLeft(eventX);
+        verify(element).setScrollTop(eventY);
     }
 }

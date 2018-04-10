@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -35,6 +36,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -59,6 +61,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
                                     final SessionManager sessionManager,
                                     final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                     final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                                    final Event<ExpressionEditorChanged> editorSelectedEvent,
                                     final CellEditorControlsView.Presenter cellEditorControls,
                                     final ListSelectorView.Presenter listSelector,
                                     final TranslationService translationService) {
@@ -68,6 +71,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
               sessionManager,
               sessionCommandManager,
               canvasCommandFactory,
+              editorSelectedEvent,
               cellEditorControls,
               listSelector,
               translationService);
@@ -114,6 +118,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
                                             sessionManager,
                                             sessionCommandManager,
                                             canvasCommandFactory,
+                                            editorSelectedEvent,
                                             cellEditorControls,
                                             listSelector,
                                             translationService,

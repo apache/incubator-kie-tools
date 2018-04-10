@@ -736,6 +736,11 @@
       <artifactId>uberfire-commons-editor-backend</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>com.google.elemental2</groupId>
+      <artifactId>elemental2-dom</artifactId>
+    </dependency>
+
     <!-- Layout Editor API -->
     <dependency>
       <groupId>org.uberfire</groupId>

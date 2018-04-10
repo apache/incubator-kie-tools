@@ -31,6 +31,7 @@ import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -41,6 +42,7 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.mocks.EventSourceMock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
@@ -82,6 +84,9 @@ public class LiteralExpressionEditorDefinitionTest {
     @Mock
     private HasExpression hasExpression;
 
+    @Mock
+    private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
+
     private Optional<HasName> hasName = Optional.of(HasName.NOP);
 
     private LiteralExpressionEditorDefinition definition;
@@ -95,6 +100,7 @@ public class LiteralExpressionEditorDefinitionTest {
                                                                 sessionManager,
                                                                 sessionCommandManager,
                                                                 canvasCommandFactory,
+                                                                editorSelectedEvent,
                                                                 cellEditorControls,
                                                                 listSelector,
                                                                 translationService);

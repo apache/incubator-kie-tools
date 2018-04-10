@@ -18,14 +18,17 @@ package org.kie.workbench.common.dmn.client.editors.expressions;
 import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.EditorToolbar;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.uberfire.mvp.Command;
@@ -35,9 +38,11 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
 
     private ExpressionEditorView view;
 
-    private Optional<Command> exitCommand;
+    private Optional<Command> exitCommand = Optional.empty();
 
     private ToolbarCommandStateHandler toolbarCommandStateHandler;
+
+    private DecisionNavigatorPresenter decisionNavigator;
 
     public ExpressionEditor() {
         //CDI proxy
@@ -45,8 +50,10 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
 
     @Inject
     @SuppressWarnings("unchecked")
-    public ExpressionEditor(final ExpressionEditorView view) {
+    public ExpressionEditor(final ExpressionEditorView view,
+                            final DecisionNavigatorPresenter decisionNavigator) {
         this.view = view;
+        this.decisionNavigator = decisionNavigator;
         this.view.init(this);
     }
 
@@ -83,10 +90,20 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
 
     @Override
     public void exit() {
-        exitCommand.ifPresent(c -> {
+        exitCommand.ifPresent(command -> {
+            decisionNavigator.clearSelections();
             toolbarCommandStateHandler.exit();
-            c.execute();
+            command.execute();
+            exitCommand = Optional.empty();
         });
+    }
+
+    public void onCanvasFocusedSelectionEvent(@Observes CanvasSelectionEvent event) {
+        exit();
+    }
+
+    Optional<Command> getExitCommand() {
+        return exitCommand;
     }
 
     //Package-protected for Unit Tests

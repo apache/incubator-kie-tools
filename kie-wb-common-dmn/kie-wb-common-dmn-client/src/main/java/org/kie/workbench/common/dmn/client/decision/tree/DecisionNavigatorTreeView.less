@@ -1,0 +1,143 @@
+/*
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+[data-i18n-prefix="DecisionNavigatorTreeView."] {
+
+  /* ~ Tree ~ */
+
+  [data-field="items"] {
+    padding: 1.5em 3em;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0 0 0 1.5em;
+    line-height: 2em;
+
+    li {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: default;
+      user-select: none;
+      padding-right: 1em;
+
+      div {
+        padding: 0 0.4em;
+        line-height: 1.6em;
+        border-radius: 0.25em;
+        display: inline-block;
+
+        &:hover {
+          background: #EFEFEF;
+        }
+
+        &.selected,
+        &.selected:hover {
+          background: #DDF0F8
+        }
+      }
+    }
+
+    .parent-node {
+      ul {
+        display: block;
+      }
+
+      &.closed {
+        ul {
+          display: none;
+        }
+      }
+    }
+
+    /* ~ Icons ~ */
+
+    li:before,
+    span:before {
+      font-family: FontAwesome;
+      -webkit-font-smoothing: antialiased;
+      padding-right: 0.5em;
+      position: absolute;
+    }
+
+    li:before {
+      margin: 0.1em 0 0 -2.25em;
+      cursor: default;
+    }
+
+    span:before {
+      margin: 0.1em 0 0 -1.5em;
+      cursor: pointer;
+    }
+
+    li.parent-node:before {
+      content: "\f0d7";
+    }
+
+    li.parent-node.closed:before {
+      content: "\f0da";
+    }
+
+    li.kie-root div > span:before {
+      content: "\f1e0";
+    }
+
+    li.kie-item div > span:before {
+      content: "\f111";
+    }
+
+    li.kie-context div > span:before {
+      content: "\f192";
+    }
+
+    li.kie-decision-table div > span:before {
+      content: "\f0ce";
+    }
+
+    li.kie-invocation div > span:before {
+      content: "\f0a1";
+    }
+
+    li.kie-list div > span:before {
+      content: "\f0ca";
+    }
+
+    li.kie-function-definition div > span:before {
+      content: "f ( )";
+      font-family: serif;
+      font-style: italic;
+      font-weight: bold;
+      font-size: 1.2em;
+      margin: -0.1em 0 0 -1.8em;
+    }
+
+    li.kie-literal-expression div > span:before {
+      content: "Σ";
+      font-family: sans-serif;
+      font-weight: bold;
+      font-size: 1.2em;
+      margin: 0 0 0 -1.15em;
+    }
+
+    li.kie-relation div > span:before {
+      content: "\f0c1";
+      font-size: 1.2em;
+      transform: rotate(-45deg);
+      margin: -0.15em 0 0 -1.45em;
+    }
+  }
+}

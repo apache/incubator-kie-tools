@@ -241,6 +241,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                                       updateTitle(diagram.getMetadata().getTitle());
                                                       hideLoadingViews();
                                                       setOriginalHash(getCurrentDiagramHash());
+                                                      onDiagramLoad();
                                                   }
 
                                                   @Override
@@ -249,6 +250,10 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                                   }
                                               });
                             });
+    }
+
+    protected void onDiagramLoad() {
+        /* Override this method to trigger some action after a Diagram is loaded. */
     }
 
     @Override
