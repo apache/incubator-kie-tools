@@ -86,8 +86,8 @@ public class PermissionTreeSetupTest {
                                                            eq("ProjectAuthoring"));
         verify(perspectiveTreeProvider).setPerspectiveName(eq(CONTENT_MANAGEMENT),
                                                            eq("Content_Management"));
-        verify(perspectiveTreeProvider).setPerspectiveName(eq(DEPLOYMENTS),
-                                                           eq("Process_Deployments"));
+        verify(perspectiveTreeProvider).setPerspectiveName(eq(PROVISIONING),
+                                                           eq("Provisioning"));
         verify(perspectiveTreeProvider).setPerspectiveName(eq(SERVER_MANAGEMENT),
                                                            eq("Rule_Deployments"));
         verify(perspectiveTreeProvider).setPerspectiveName(eq(PROCESS_DEFINITIONS),

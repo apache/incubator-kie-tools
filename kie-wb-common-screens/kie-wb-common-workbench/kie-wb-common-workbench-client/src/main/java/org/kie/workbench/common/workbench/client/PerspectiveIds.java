@@ -33,7 +33,7 @@ public interface PerspectiveIds {
     String PLUGIN_AUTHORING = "PlugInAuthoringPerspective";
     String APPS = "AppsPerspective";
     String DATASET_AUTHORING = "DataSetAuthoringPerspective";
-    String DEPLOYMENTS = "ProvisioningManagementPerspective";
+    String PROVISIONING = "ProvisioningManagementPerspective";
     String SERVER_MANAGEMENT = "ServerManagementPerspective";
     String JOBS = "Requests";
     String EXECUTION_ERRORS = "ExecutionErrors";

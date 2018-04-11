@@ -80,8 +80,8 @@ public class PermissionTreeSetup {
                                                    i18n.ProjectAuthoring());
         perspectiveTreeProvider.setPerspectiveName(CONTENT_MANAGEMENT,
                                                    i18n.Content_Management());
-        perspectiveTreeProvider.setPerspectiveName(DEPLOYMENTS,
-                                                   i18n.Process_Deployments());
+        perspectiveTreeProvider.setPerspectiveName(PROVISIONING,
+                                                   i18n.Provisioning());
         perspectiveTreeProvider.setPerspectiveName(SERVER_MANAGEMENT,
                                                    i18n.Rule_Deployments());
         perspectiveTreeProvider.setPerspectiveName(PROCESS_DEFINITIONS,

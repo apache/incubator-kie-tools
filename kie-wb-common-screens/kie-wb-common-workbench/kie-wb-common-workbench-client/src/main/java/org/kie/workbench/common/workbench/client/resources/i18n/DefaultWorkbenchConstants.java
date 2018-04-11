@@ -59,7 +59,7 @@ public interface DefaultWorkbenchConstants
 
     String ProcessInstances();
 
-    String Process_Deployments();
+    String Provisioning();
 
     String Rule_Deployments();
 
