@@ -64,6 +64,7 @@ public class SimpleRefUpdateCommand {
             case NEW:
             case FORCED:
             case FAST_FORWARD:
+            case NO_CHANGE:
                 break;
             case REJECTED:
             case LOCK_FAILURE:
