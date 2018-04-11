@@ -16,7 +16,6 @@
 
 package org.drools.workbench.screens.guided.scorecard.client.editor;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
@@ -30,7 +29,6 @@ import org.drools.workbench.screens.guided.scorecard.client.type.GuidedScoreCard
 import org.drools.workbench.screens.guided.scorecard.model.ScoreCardModelContent;
 import org.drools.workbench.screens.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
@@ -39,7 +37,6 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -49,6 +46,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
+import org.uberfire.ext.widgets.common.client.callbacks.CommandErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
@@ -64,7 +62,7 @@ public class GuidedScoreCardEditorPresenter
         extends KieEditor<ScoreCardModel> {
 
     @Inject
-    private Caller<GuidedScoreCardEditorService> scoreCardEditorService;
+    protected Caller<GuidedScoreCardEditorService> scoreCardEditorService;
 
     private GuidedScoreCardEditorView view;
 
@@ -72,7 +70,7 @@ public class GuidedScoreCardEditorPresenter
     private Event<NotificationEvent> notification;
 
     @Inject
-    private ValidationPopup validationPopup;
+    protected ValidationPopup validationPopup;
 
     @Inject
     private GuidedScoreCardResourceType type;
@@ -163,24 +161,12 @@ public class GuidedScoreCardEditorPresenter
         view.refreshFactTypes();
     }
 
-    protected Command onValidate() {
-        return new Command() {
-            @Override
-            public void execute() {
-                scoreCardEditorService.call(new RemoteCallback<List<ValidationMessage>>() {
-                    @Override
-                    public void callback(final List<ValidationMessage> results) {
-                        if (results == null || results.isEmpty()) {
-                            notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
-                                                                    NotificationEvent.NotificationType.SUCCESS));
-                        } else {
-                            validationPopup.showMessages(results);
-                        }
-                    }
-                }).validate(versionRecordManager.getCurrentPath(),
-                            view.getModel());
-            }
-        };
+    @Override
+    protected void onValidate(final Command finished) {
+        scoreCardEditorService.call(
+                validationPopup.getValidationCallback(finished),
+                new CommandErrorCallback(finished)).validate(versionRecordManager.getCurrentPath(),
+                                                             view.getModel());
     }
 
     @Override

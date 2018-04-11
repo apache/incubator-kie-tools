@@ -57,9 +57,7 @@ import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup;
-import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.junit.Assert.assertNull;
@@ -106,9 +104,6 @@ public class DecisionTableXLSEditorPresenterTest {
     KieEditorWrapperView kieView;
 
     @Mock
-    EventSourceMock<NotificationEvent> notification;
-
-    @Mock
     ValidationPopup validationPopup;
 
     @Mock
@@ -152,7 +147,6 @@ public class DecisionTableXLSEditorPresenterTest {
                                                             decisionTableXLSResourceType,
                                                             decisionTableXLSXResourceType,
                                                             busyIndicatorView,
-                                                            notification,
                                                             validationPopup,
                                                             new ServiceMock()
         ) {
@@ -218,7 +212,6 @@ public class DecisionTableXLSEditorPresenterTest {
                                                             null,
                                                             null,
                                                             busyIndicatorView,
-                                                            null,
                                                             null,
                                                             null) {
             {

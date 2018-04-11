@@ -52,7 +52,6 @@ import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultE
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -105,11 +104,6 @@ public class ScenarioEditorPresenter
         super.init(path,
                    place,
                    type);
-    }
-
-    @Override
-    protected Command onValidate() {
-        return null;
     }
 
     protected void loadContent() {

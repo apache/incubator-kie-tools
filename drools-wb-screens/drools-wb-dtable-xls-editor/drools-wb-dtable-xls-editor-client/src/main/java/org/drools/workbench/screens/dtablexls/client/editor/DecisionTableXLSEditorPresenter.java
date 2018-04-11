@@ -16,10 +16,7 @@
 
 package org.drools.workbench.screens.dtablexls.client.editor;
 
-import java.util.List;
-
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -34,13 +31,11 @@ import org.drools.workbench.screens.dtablexls.client.widgets.ConversionMessageWi
 import org.drools.workbench.screens.dtablexls.client.widgets.PopupListWidget;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSContent;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
-import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -49,12 +44,12 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.ext.widgets.common.client.callbacks.CommandErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
@@ -69,8 +64,6 @@ public class DecisionTableXLSEditorPresenter
         implements DecisionTableXLSEditorView.Presenter {
 
     private Caller<DecisionTableXLSService> decisionTableXLSService;
-
-    private Event<NotificationEvent> notification;
 
     private ValidationPopup validationPopup;
 
@@ -87,7 +80,6 @@ public class DecisionTableXLSEditorPresenter
                                            final DecisionTableXLSResourceType decisionTableXLSResourceType,
                                            final DecisionTableXLSXResourceType decisionTableXLSXResourceType,
                                            final BusyIndicatorView busyIndicatorView,
-                                           final Event<NotificationEvent> notification,
                                            final ValidationPopup validationPopup,
                                            final Caller<DecisionTableXLSService> decisionTableXLSService) {
         super(baseView);
@@ -96,7 +88,6 @@ public class DecisionTableXLSEditorPresenter
         this.decisionTableXLSXResourceType = decisionTableXLSXResourceType;
         this.decisionTableXLSService = decisionTableXLSService;
         this.busyIndicatorView = busyIndicatorView;
-        this.notification = notification;
         this.validationPopup = validationPopup;
     }
 
@@ -201,24 +192,11 @@ public class DecisionTableXLSEditorPresenter
     }
 
     @Override
-    protected Command onValidate() {
-        return new Command() {
-            @Override
-            public void execute() {
-                decisionTableXLSService.call(new RemoteCallback<List<ValidationMessage>>() {
-                    @Override
-                    public void callback(final List<ValidationMessage> results) {
-                        if (results == null || results.isEmpty()) {
-                            notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
-                                                                    NotificationEvent.NotificationType.SUCCESS));
-                        } else {
-                            validationPopup.showMessages(results);
-                        }
-                    }
-                }).validate(versionRecordManager.getCurrentPath(),
-                            versionRecordManager.getCurrentPath());
-            }
-        };
+    protected void onValidate(final Command finished) {
+        decisionTableXLSService.call(
+                validationPopup.getValidationCallback(finished),
+                new CommandErrorCallback(finished)).validate(versionRecordManager.getCurrentPath(),
+                                                             versionRecordManager.getCurrentPath());
     }
 
     @Override
@@ -234,7 +212,7 @@ public class DecisionTableXLSEditorPresenter
         }
 
         fileMenuBuilder
-                .addValidate(onValidate())
+                .addValidate(getValidateCommand())
                 .addNewTopLevelMenu(getConvertMenu())
                 .addNewTopLevelMenu(versionRecordManager.buildMenu())
                 .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());

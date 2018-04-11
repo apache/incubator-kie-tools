@@ -15,7 +15,6 @@
  */
 package org.drools.workbench.screens.guided.dtree.client.editor;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
@@ -41,7 +40,6 @@ import org.drools.workbench.screens.guided.dtree.client.widget.popups.ParserMess
 import org.drools.workbench.screens.guided.dtree.model.GuidedDecisionTreeEditorContent;
 import org.drools.workbench.screens.guided.dtree.service.GuidedDecisionTreeEditorService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
@@ -50,7 +48,6 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -60,6 +57,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
+import org.uberfire.ext.widgets.common.client.callbacks.CommandErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
@@ -72,7 +70,7 @@ import org.uberfire.workbench.model.menu.Menus;
 /**
  * Guided Decision Tree Editor Presenter
  */
-@WorkbenchEditor(identifier = "GuidedDecisionTreeEditorPresenter", supportedTypes = { GuidedDTreeResourceType.class }, priority = 101)
+@WorkbenchEditor(identifier = "GuidedDecisionTreeEditorPresenter", supportedTypes = {GuidedDTreeResourceType.class}, priority = 101)
 public class GuidedDecisionTreeEditorPresenter
         extends KieEditor<GuidedDecisionTree> {
 
@@ -80,13 +78,13 @@ public class GuidedDecisionTreeEditorPresenter
     private ImportsWidgetPresenter importsWidget;
 
     @Inject
-    private Caller<GuidedDecisionTreeEditorService> service;
+    protected Caller<GuidedDecisionTreeEditorService> service;
 
     @Inject
     private Event<NotificationEvent> notification;
 
     @Inject
-    private ValidationPopup validationPopup;
+    protected ValidationPopup validationPopup;
 
     @Inject
     private GuidedDTreeResourceType type;
@@ -105,8 +103,8 @@ public class GuidedDecisionTreeEditorPresenter
     }
 
     @Inject
-    public GuidedDecisionTreeEditorPresenter( final GuidedDecisionTreeEditorView baseView ) {
-        super( baseView );
+    public GuidedDecisionTreeEditorPresenter(final GuidedDecisionTreeEditorView baseView) {
+        super(baseView);
         view = baseView;
     }
 
@@ -114,21 +112,21 @@ public class GuidedDecisionTreeEditorPresenter
     public void init() {
         //KieEditorView (the base view of all KieEditors and extended here) does not implement UberView.
         //We therefore need to manually set-up the Presenter for our  widgets nested in KieEditorView
-        view.init( this );
+        view.init(this);
     }
 
     @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
-        super.init( path,
-                    place,
-                    type );
+    public void onStartup(final ObservablePath path,
+                          final PlaceRequest place) {
+        super.init(path,
+                   place,
+                   type);
     }
 
     protected void loadContent() {
         view.showLoading();
-        service.call( getModelSuccessCallback(),
-                      getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
+        service.call(getModelSuccessCallback(),
+                     getNoSuchFileExceptionErrorCallback()).loadContent(versionRecordManager.getCurrentPath());
     }
 
     @Override
@@ -145,9 +143,9 @@ public class GuidedDecisionTreeEditorPresenter
         return new RemoteCallback<GuidedDecisionTreeEditorContent>() {
 
             @Override
-            public void callback( final GuidedDecisionTreeEditorContent content ) {
+            public void callback(final GuidedDecisionTreeEditorContent content) {
                 //Path is set to null when the Editor is closed (which can happen before async calls complete).
-                if ( versionRecordManager.getCurrentPath() == null ) {
+                if (versionRecordManager.getCurrentPath() == null) {
                     return;
                 }
 
@@ -156,28 +154,28 @@ public class GuidedDecisionTreeEditorPresenter
                 model = content.getModel();
                 metadata = content.getOverview().getMetadata();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
-                oracle = oracleFactory.makeAsyncPackageDataModelOracle( versionRecordManager.getCurrentPath(),
-                                                                        model,
-                                                                        dataModel );
+                oracle = oracleFactory.makeAsyncPackageDataModelOracle(versionRecordManager.getCurrentPath(),
+                                                                       model,
+                                                                       dataModel);
 
-                resetEditorPages( content.getOverview() );
+                resetEditorPages(content.getOverview());
 
                 addSourcePage();
-                addImportsTab( importsWidget );
-                importsWidget.setContent( oracle,
-                                          model.getImports(),
-                                          isReadOnly );
+                addImportsTab(importsWidget);
+                importsWidget.setContent(oracle,
+                                         model.getImports(),
+                                         isReadOnly);
 
-                view.setModel( model,
-                               isReadOnly );
-                view.setDataModel( oracle,
-                                   isReadOnly );
+                view.setModel(model,
+                              isReadOnly);
+                view.setDataModel(oracle,
+                                  isReadOnly);
 
                 view.hideBusyIndicator();
 
                 //If there were any parsing errors give the User the option to remove the broken DRL or ignore it
-                if ( !model.getParserErrors().isEmpty() ) {
-                    final ParserMessagesPopup popup = new ParserMessagesPopup( model );
+                if (!model.getParserErrors().isEmpty()) {
+                    final ParserMessagesPopup popup = new ParserMessagesPopup(model);
                     popup.show();
                 }
 
@@ -188,33 +186,21 @@ public class GuidedDecisionTreeEditorPresenter
 
     @Override
     public void onSourceTabSelected() {
-        service.call( new RemoteCallback<String>() {
+        service.call(new RemoteCallback<String>() {
             @Override
-            public void callback( final String source ) {
-                updateSource( source );
+            public void callback(final String source) {
+                updateSource(source);
             }
-        } ).toSource( versionRecordManager.getCurrentPath(),
-                      model );
+        }).toSource(versionRecordManager.getCurrentPath(),
+                    model);
     }
 
-    protected Command onValidate() {
-        return new Command() {
-            @Override
-            public void execute() {
-                service.call( new RemoteCallback<List<ValidationMessage>>() {
-                    @Override
-                    public void callback( final List<ValidationMessage> results ) {
-                        if ( results == null || results.isEmpty() ) {
-                            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
-                                                                      NotificationEvent.NotificationType.SUCCESS ) );
-                        } else {
-                            validationPopup.showMessages( results );
-                        }
-                    }
-                } ).validate( versionRecordManager.getCurrentPath(),
-                              model );
-            }
-        };
+    @Override
+    protected void onValidate(final Command finished) {
+        service.call(
+                validationPopup.getValidationCallback(finished),
+                new CommandErrorCallback(finished)).validate(versionRecordManager.getCurrentPath(),
+                                                             model);
     }
 
     @Override
@@ -256,78 +242,72 @@ public class GuidedDecisionTreeEditorPresenter
         return menus;
     }
 
-    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
-        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
+    public void handleImportAddedEvent(@Observes ImportAddedEvent event) {
+        if (!event.getDataModelOracle().equals(this.oracle)) {
             return;
         }
-        view.setDataModel( oracle,
-                           isReadOnly );
+        view.setDataModel(oracle,
+                          isReadOnly);
     }
 
-    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
-        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
+    public void handleImportRemovedEvent(@Observes ImportRemovedEvent event) {
+        if (!event.getDataModelOracle().equals(this.oracle)) {
             return;
         }
-        view.setDataModel( oracle,
-                           isReadOnly );
+        view.setDataModel(oracle,
+                          isReadOnly);
     }
 
-    public void editModelNode( final Node node,
-                               final Command callback ) {
-        if ( node instanceof TypeNode ) {
-            final EditTypePopup popup = new EditTypePopup( (TypeNode) node,
-                                                           new com.google.gwt.user.client.Command() {
-                                                               @Override
-                                                               public void execute() {
-                                                                   callback.execute();
-                                                               }
-                                                           } );
+    public void editModelNode(final Node node,
+                              final Command callback) {
+        if (node instanceof TypeNode) {
+            final EditTypePopup popup = new EditTypePopup((TypeNode) node,
+                                                          new com.google.gwt.user.client.Command() {
+                                                              @Override
+                                                              public void execute() {
+                                                                  callback.execute();
+                                                              }
+                                                          });
             popup.show();
-
-        } else if ( node instanceof ConstraintNode ) {
-            final EditConstraintPopup popup = new EditConstraintPopup( (ConstraintNode) node,
-                                                                       oracle,
-                                                                       new com.google.gwt.user.client.Command() {
-                                                                           @Override
-                                                                           public void execute() {
-                                                                               callback.execute();
-                                                                           }
-                                                                       } );
+        } else if (node instanceof ConstraintNode) {
+            final EditConstraintPopup popup = new EditConstraintPopup((ConstraintNode) node,
+                                                                      oracle,
+                                                                      new com.google.gwt.user.client.Command() {
+                                                                          @Override
+                                                                          public void execute() {
+                                                                              callback.execute();
+                                                                          }
+                                                                      });
             popup.show();
-
-        } else if ( node instanceof ActionInsertNode ) {
-            final EditActionInsertPopup popup = new EditActionInsertPopup( (ActionInsertNode) node,
-                                                                           oracle,
-                                                                           new com.google.gwt.user.client.Command() {
-                                                                               @Override
-                                                                               public void execute() {
-                                                                                   callback.execute();
-                                                                               }
-                                                                           } );
+        } else if (node instanceof ActionInsertNode) {
+            final EditActionInsertPopup popup = new EditActionInsertPopup((ActionInsertNode) node,
+                                                                          oracle,
+                                                                          new com.google.gwt.user.client.Command() {
+                                                                              @Override
+                                                                              public void execute() {
+                                                                                  callback.execute();
+                                                                              }
+                                                                          });
             popup.show();
-
-        } else if ( node instanceof ActionUpdateNode ) {
-            final EditActionUpdatePopup popup = new EditActionUpdatePopup( (ActionUpdateNode) node,
-                                                                           oracle,
-                                                                           new com.google.gwt.user.client.Command() {
-                                                                               @Override
-                                                                               public void execute() {
-                                                                                   callback.execute();
-                                                                               }
-                                                                           } );
+        } else if (node instanceof ActionUpdateNode) {
+            final EditActionUpdatePopup popup = new EditActionUpdatePopup((ActionUpdateNode) node,
+                                                                          oracle,
+                                                                          new com.google.gwt.user.client.Command() {
+                                                                              @Override
+                                                                              public void execute() {
+                                                                                  callback.execute();
+                                                                              }
+                                                                          });
             popup.show();
-
-        } else if ( node instanceof ActionRetractNode ) {
-            final EditActionRetractPopup popup = new EditActionRetractPopup( (ActionRetractNode) node,
-                                                                             new com.google.gwt.user.client.Command() {
-                                                                                 @Override
-                                                                                 public void execute() {
-                                                                                     callback.execute();
-                                                                                 }
-                                                                             } );
+        } else if (node instanceof ActionRetractNode) {
+            final EditActionRetractPopup popup = new EditActionRetractPopup((ActionRetractNode) node,
+                                                                            new com.google.gwt.user.client.Command() {
+                                                                                @Override
+                                                                                public void execute() {
+                                                                                    callback.execute();
+                                                                                }
+                                                                            });
             popup.show();
         }
-
     }
-
 }
