@@ -78,6 +78,38 @@ public class DeleteCanvasConnectorCommandTest extends AbstractCanvasCommandTest 
     }
 
     @Test
+    @SuppressWarnings("unchecked")
+    public void testExecuteNullSourceNode() {
+        when(candidate.getSourceNode()).thenReturn(null);
+
+        final CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
+        assertNotEquals(CommandResult.Type.ERROR,
+                        result.getType());
+        verify(canvasHandler,
+               times(1)).deregister(eq(candidate));
+        verify(canvasHandler,
+               never()).notifyCanvasElementUpdated(eq(source));
+        verify(canvasHandler,
+               times(1)).notifyCanvasElementUpdated(eq(target));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testExecuteNullTargetNode() {
+        when(candidate.getTargetNode()).thenReturn(null);
+
+        final CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
+        assertNotEquals(CommandResult.Type.ERROR,
+                        result.getType());
+        verify(canvasHandler,
+               times(1)).deregister(eq(candidate));
+        verify(canvasHandler,
+               times(1)).notifyCanvasElementUpdated(eq(source));
+        verify(canvasHandler,
+               never()).notifyCanvasElementUpdated(eq(target));
+    }
+
+    @Test
     public void testExecuteNullShape() {
         when(canvas.getShape(EDGE_ID)).thenReturn(null);
         assertFalse(CommandUtils.isError(tested.execute(canvasHandler)));

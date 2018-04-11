@@ -27,13 +27,9 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 public class DeleteCanvasConnectorCommand extends AbstractCanvasCommand {
 
     private final Edge candidate;
-    private final Node source;
-    private final Node target;
 
     public DeleteCanvasConnectorCommand(final Edge candidate) {
         this.candidate = candidate;
-        this.source = candidate.getSourceNode();
-        this.target = candidate.getTargetNode();
     }
 
     @Override
@@ -44,9 +40,15 @@ public class DeleteCanvasConnectorCommand extends AbstractCanvasCommand {
         }
 
         context.deregister(candidate);
+
+        //SafeDeleteNodeCommand deletes Connectors when a Node is deleted. Once a Node is deleted
+        //either the Source or Target Nodes will be null on a Connector therefore delay getting
+        //the Source and Target properties until the event is executed vs constructed.
+        final Node source = candidate.getSourceNode();
         if (null != source) {
             context.notifyCanvasElementUpdated(source);
         }
+        final Node target = candidate.getTargetNode();
         if (null != target) {
             context.notifyCanvasElementUpdated(target);
         }
@@ -68,7 +70,7 @@ public class DeleteCanvasConnectorCommand extends AbstractCanvasCommand {
     public String toString() {
         return getClass().getName() +
                 " [candidate=" + getUUID(candidate) + "," +
-                " sourceNode=" + getUUID(source) + "," +
-                " targetNode=" + getUUID(target) + "]";
+                " sourceNode=" + getUUID(candidate.getSourceNode()) + "," +
+                " targetNode=" + getUUID(candidate.getTargetNode()) + "]";
     }
 }
