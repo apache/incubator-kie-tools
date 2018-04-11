@@ -21,9 +21,6 @@ import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 public class PreferencesConstants {
 
     @TranslationKey(defaultValue = "")
-    public static final String ProjectPreferences_Label = "ProjectPreferences.Label";
-
-    @TranslationKey(defaultValue = "")
     public static final String LibraryPreferences_Title = "LibraryPreferences.Title";
 
     @TranslationKey(defaultValue = "")

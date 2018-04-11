@@ -16,16 +16,6 @@
 
 package org.kie.workbench.common.workbench.client.admin;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.RETURNS_DEFAULTS;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.shared.preferences.GuvnorPreferenceScopes;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -45,6 +35,16 @@ import org.uberfire.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.ResourceRef;
 import org.uberfire.security.authz.AuthorizationManager;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.RETURNS_DEFAULTS;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DefaultAdminPageHelperTest {
@@ -80,7 +80,7 @@ public class DefaultAdminPageHelperTest {
         verify(adminPage).addTool(eq("root"),
                                   eq(languages),
                                   any(),
-                                  eq("general"),
+                                  eq("preferences"),
                                   any());
     }
 
@@ -223,7 +223,7 @@ public class DefaultAdminPageHelperTest {
         defaultAdminPageHelper.setup();
 
         verify(adminPage,
-               times(3)).addPreference(anyString(),
+               times(2)).addPreference(anyString(),
                                        anyString(),
                                        anyString(),
                                        anyString(),
@@ -232,7 +232,7 @@ public class DefaultAdminPageHelperTest {
                                        eq(AdminPageOptions.WITH_BREADCRUMBS));
 
         verify(adminPage,
-               times(3)).addPreference(anyString(),
+               times(2)).addPreference(anyString(),
                                        anyString(),
                                        anyString(),
                                        anyString(),
@@ -250,11 +250,10 @@ public class DefaultAdminPageHelperTest {
                                                             any());
 
         defaultAdminPageHelper.setup(true,
-                                     true,
                                      true);
 
         verify(adminPage,
-               times(3)).addPreference(anyString(),
+               times(2)).addPreference(anyString(),
                                        anyString(),
                                        anyString(),
                                        anyString(),
@@ -263,7 +262,7 @@ public class DefaultAdminPageHelperTest {
                                        eq(AdminPageOptions.WITH_BREADCRUMBS));
 
         verify(adminPage,
-               times(3)).addPreference(anyString(),
+               times(2)).addPreference(anyString(),
                                        anyString(),
                                        anyString(),
                                        anyString(),
@@ -275,10 +274,9 @@ public class DefaultAdminPageHelperTest {
     @Test
     public void preferencesShouldNotBeAddedWhenUserHasPermissionAndDisabledTest() {
         doReturn(true).when(authorizationManager).authorize(eq(WorkbenchFeatures.EDIT_GLOBAL_PREFERENCES),
-                                                             any());
+                                                            any());
 
         defaultAdminPageHelper.setup(false,
-                                     false,
                                      false);
 
         verify(adminPage,
@@ -314,7 +312,6 @@ public class DefaultAdminPageHelperTest {
                                                              any());
 
         defaultAdminPageHelper.setup(false,
-                                     false,
                                      false);
 
         verify(adminPage,

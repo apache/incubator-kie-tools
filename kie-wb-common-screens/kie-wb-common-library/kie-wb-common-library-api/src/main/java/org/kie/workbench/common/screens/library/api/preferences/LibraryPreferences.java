@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.library.api.preferences;
 
+import org.guvnor.common.services.project.preferences.GAVPreferences;
 import org.uberfire.preferences.shared.annotations.Property;
 import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.preferences.shared.bean.BasePreference;
@@ -29,6 +30,9 @@ public class LibraryPreferences implements BasePreference<LibraryPreferences> {
 
     @Property(bundleKey = "LibraryPreferences.ProjectPreferences")
     LibraryProjectPreferences projectPreferences;
+
+    @Property(bundleKey = "LibraryPreferences.AdvancedGavPreferences", shared = true)
+    GAVPreferences gavPreferences;
 
     @Override
     public LibraryPreferences defaultValue(final LibraryPreferences defaultValue) {
@@ -51,5 +55,13 @@ public class LibraryPreferences implements BasePreference<LibraryPreferences> {
 
     public LibraryProjectPreferences getProjectPreferences() {
         return projectPreferences;
+    }
+
+    public GAVPreferences getGavPreferences() {
+        return gavPreferences;
+    }
+
+    public void setGavPreferences(GAVPreferences gavPreferences) {
+        this.gavPreferences = gavPreferences;
     }
 }

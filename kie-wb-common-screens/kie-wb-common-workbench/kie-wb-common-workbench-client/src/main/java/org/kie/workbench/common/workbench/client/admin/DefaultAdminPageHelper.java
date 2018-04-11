@@ -16,10 +16,6 @@
 
 package org.kie.workbench.common.workbench.client.admin;
 
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.ADMIN;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.GUVNOR_M2REPO;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.SECURITY_MANAGEMENT;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,6 +46,10 @@ import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.ResourceRef;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.ActivityResourceType;
+
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.ADMIN;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.GUVNOR_M2REPO;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.SECURITY_MANAGEMENT;
 
 public class DefaultAdminPageHelper {
 
@@ -87,12 +87,10 @@ public class DefaultAdminPageHelper {
 
     public void setup() {
         setup(true,
-              true,
               true);
     }
 
-    public void setup(boolean projectPreferencesEnabled,
-                      boolean libraryPreferencesEnabled,
+    public void setup(boolean libraryPreferencesEnabled,
                       boolean artifactRepositoryPreferencesEnabled) {
         adminPage.addScreen("root",
                             constants.Settings());
@@ -102,17 +100,16 @@ public class DefaultAdminPageHelper {
         addArtifactsPerspective();
         addDataSourcePerspective();
         addDataSetPerspective();
-        addGlobalPreferences(projectPreferencesEnabled,
-                             libraryPreferencesEnabled,
+        addGlobalPreferences(libraryPreferencesEnabled,
                              artifactRepositoryPreferencesEnabled);
-        addGeneralSettings();
+        addGeneralPreferences();
     }
 
-    private void addGeneralSettings() {
+    private void addGeneralPreferences() {
         adminPage.addTool("root",
                           constants.Languages(),
                           "fa-language",
-                          "general",
+                          "preferences",
                           () -> workbenchConfigurationPresenter.show(languageConfigurationHandler));
     }
 
@@ -252,24 +249,13 @@ public class DefaultAdminPageHelper {
         }
     }
 
-    private void addGlobalPreferences(boolean projectPreferencesEnabled,
-                                      boolean libraryPreferencesEnabled,
+    private void addGlobalPreferences(boolean libraryPreferencesEnabled,
                                       boolean artifactRepositoryPreferencesEnabled) {
         final boolean canEditGlobalPreferences = authorizationManager.authorize(WorkbenchFeatures.EDIT_GLOBAL_PREFERENCES,
                                                                                 sessionInfo.getIdentity());
 
         if (canEditGlobalPreferences == false) {
             return;
-        }
-
-        if (projectPreferencesEnabled) {
-            adminPage.addPreference("root",
-                                    "ProjectPreferences",
-                                    translationService.format(PreferencesConstants.ProjectPreferences_Label),
-                                    "fa-pencil-square-o",
-                                    "preferences",
-                                    scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL),
-                                    AdminPageOptions.WITH_BREADCRUMBS);
         }
 
         if (libraryPreferencesEnabled) {
@@ -282,7 +268,7 @@ public class DefaultAdminPageHelper {
                                     AdminPageOptions.WITH_BREADCRUMBS);
         }
 
-        if (artifactRepositoryPreferencesEnabled){
+        if (artifactRepositoryPreferencesEnabled) {
             adminPage.addPreference("root",
                                     "ArtifactRepositoryPreference",
                                     translationService.format(PreferencesConstants.ArtifactRepositoryPreferences_Title),
