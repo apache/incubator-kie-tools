@@ -19,10 +19,12 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.SkipFormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.Container;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.HasNestedForm;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.type.SubFormFieldType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
@@ -50,6 +52,9 @@ public class SubFormFieldDefinition extends AbstractFieldDefinition implements H
             className = "org.kie.workbench.common.forms.editor.backend.dataProviders.VFSSelectorFormProvider")
     protected String nestedForm = null;
 
+    @SkipFormField
+    protected Container container = Container.FIELD_SET;
+
     public SubFormFieldDefinition() {
         super(Object.class.getName());
     }
@@ -70,10 +75,21 @@ public class SubFormFieldDefinition extends AbstractFieldDefinition implements H
     }
 
     @Override
+    public Container getContainer() {
+        return container;
+    }
+
+    @Override
+    public void setContainer(Container container) {
+        this.container = container;
+    }
+
+    @Override
     protected void doCopyFrom(FieldDefinition other) {
         if (other instanceof SubFormFieldDefinition) {
             SubFormFieldDefinition otherForm = (SubFormFieldDefinition) other;
             setNestedForm(otherForm.getNestedForm());
+            setContainer(otherForm.getContainer());
         }
         setStandaloneClassName(other.getStandaloneClassName());
     }
@@ -99,13 +115,19 @@ public class SubFormFieldDefinition extends AbstractFieldDefinition implements H
 
         SubFormFieldDefinition that = (SubFormFieldDefinition) o;
 
-        return nestedForm != null ? nestedForm.equals(that.nestedForm) : that.nestedForm == null;
+        if (nestedForm != null ? !nestedForm.equals(that.nestedForm) : that.nestedForm != null) {
+            return false;
+        }
+        return container == that.container;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
+        result = ~~result;
         result = 31 * result + (nestedForm != null ? nestedForm.hashCode() : 0);
+        result = ~~result;
+        result = 31 * result + (container != null ? container.hashCode() : 0);
         result = ~~result;
         return result;
     }

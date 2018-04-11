@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.fieldSet;
+package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.nestedForm.collapse;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.AbstractFormGroupTest;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class FieldSetFormGroupTest extends AbstractFormGroupTest<FieldSetFormGroup, FieldSetFormGroupView> {
+public class CollapsibleFormGroupTest extends AbstractFormGroupTest<CollapsibleFormGroup, CollapsibleFormGroupView> {
 
     @Override
-    protected Class<FieldSetFormGroupView> getViewClass() {
-        return FieldSetFormGroupView.class;
+    protected Class<CollapsibleFormGroupView> getViewClass() {
+        return CollapsibleFormGroupView.class;
     }
 
     @Override
-    protected FieldSetFormGroup getFormGroupInstance(FieldSetFormGroupView view) {
-        return new FieldSetFormGroup(view);
+    protected CollapsibleFormGroup getFormGroupInstance(CollapsibleFormGroupView view) {
+        return new CollapsibleFormGroup(view);
     }
 }

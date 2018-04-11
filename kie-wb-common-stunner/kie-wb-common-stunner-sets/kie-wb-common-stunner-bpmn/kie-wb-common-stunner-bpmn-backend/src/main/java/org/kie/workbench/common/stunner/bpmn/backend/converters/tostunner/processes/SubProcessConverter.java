@@ -31,9 +31,12 @@ import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.execution.EmbeddedSubprocessExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.execution.EventSubprocessExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocCompletionCondition;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocOrdering;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
@@ -121,9 +124,11 @@ public class SubProcessConverter extends AbstractProcessConverter {
                 new Documentation(p.getDocumentation())
         ));
 
-        definition.getOnEntryAction().setValue(p.getOnEntryAction());
-        definition.getOnExitAction().setValue(p.getOnExitAction());
-        definition.getIsAsync().setValue(p.isAsync());
+        definition.setExecutionSet(new EmbeddedSubprocessExecutionSet(
+                new OnEntryAction(p.getOnEntryAction()),
+                new OnExitAction(p.getOnExitAction()),
+                new IsAsync(p.isAsync())
+        ));
 
         definition.setProcessData(new ProcessData(
                 new ProcessVariables(p.getProcessVariables())));
@@ -151,7 +156,9 @@ public class SubProcessConverter extends AbstractProcessConverter {
                 new Documentation(p.getDocumentation())
         ));
 
-        definition.getIsAsync().setValue(p.isAsync());
+        definition.setExecutionSet(new EventSubprocessExecutionSet(
+                new IsAsync(p.isAsync())
+        ));
 
         definition.setProcessData(new ProcessData(
                 new ProcessVariables(p.getProcessVariables())));

@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.execution.EmbeddedSubprocessExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -137,9 +138,11 @@ public class SubProcessConverter extends AbstractProcessConverter {
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
 
-        p.setOnEntryAction(definition.getOnEntryAction());
-        p.setOnExitAction(definition.getOnExitAction());
-        p.setAsync(definition.getIsAsync().getValue());
+        EmbeddedSubprocessExecutionSet executinoSet = definition.getExecutionSet();
+
+        p.setOnEntryAction(executinoSet.getOnEntryAction());
+        p.setOnExitAction(executinoSet.getOnExitAction());
+        p.setAsync(executinoSet.getIsAsync().getValue());
 
         ProcessData processData = definition.getProcessData();
         p.setProcessVariables(processData.getProcessVariables());

@@ -63,4 +63,9 @@ public @interface FormDefinition {
      * Determines what's the element name of first form element
      */
     String startElement() default "";
+
+    /**
+     * List of default settings to configure the fields
+     */
+    FieldParam[] defaultFieldSettings() default {};
 }

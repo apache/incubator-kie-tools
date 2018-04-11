@@ -20,9 +20,9 @@ import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processin
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.HasMaxLengthFieldInitializer;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.HasPlaceHolderFieldInitializer;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.HasRowsFieldInitializer;
-import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.MultipleSubFormFieldInitializer;
-import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.SubFormFieldInitializer;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.TextAreaFieldInitializer;
+import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.MultipleSubFormFieldInitializer;
+import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.SubFormFieldInitializer;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.selectors.SelectorFieldInitilizer;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.slider.DoubleSliderFieldInitializer;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.slider.IntegerSliderFieldInitializer;

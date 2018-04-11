@@ -72,7 +72,6 @@ public class FieldChangeHandlerManagerImplTest extends AbstractFormEngineTest {
         fieldChangeHandlerManager.clear();
     }
 
-
     @Test
     public void testAnonymousFieldChangeProcessing() {
         registerFields(false);

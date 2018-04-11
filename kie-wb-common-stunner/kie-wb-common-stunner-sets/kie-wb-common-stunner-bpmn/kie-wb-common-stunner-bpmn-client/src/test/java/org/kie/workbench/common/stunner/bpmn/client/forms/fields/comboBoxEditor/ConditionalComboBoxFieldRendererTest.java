@@ -93,8 +93,8 @@ public class ConditionalComboBoxFieldRendererTest {
     resetMocks();
 
     EmbeddedSubprocess embeddedSubprocess = new EmbeddedSubprocess.EmbeddedSubprocessBuilder().build();
-    OnEntryAction onEntryAction = embeddedSubprocess.getOnEntryAction();
-    OnExitAction onExitAction = embeddedSubprocess.getOnExitAction();
+    OnEntryAction onEntryAction = embeddedSubprocess.getExecutionSet().getOnEntryAction();
+    OnExitAction onExitAction = embeddedSubprocess.getExecutionSet().getOnExitAction();
 
     //static mock
     PowerMockito.mockStatic(ClientBindingUtils.class);

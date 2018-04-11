@@ -35,6 +35,7 @@ import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
+import org.kie.workbench.common.forms.processing.engine.handling.Form;
 import org.kie.workbench.common.forms.processing.engine.handling.FormHandler;
 import org.uberfire.mvp.Command;
 
@@ -236,6 +237,14 @@ public class DynamicFormRenderer implements IsWidget,
     @Override
     public Widget asWidget() {
         return view.asWidget();
+    }
+
+    public Form getCurrentForm() {
+        if (isInitialized()) {
+            return formHandler.getForm();
+        }
+
+        return null;
     }
 
     public boolean isInitialized() {

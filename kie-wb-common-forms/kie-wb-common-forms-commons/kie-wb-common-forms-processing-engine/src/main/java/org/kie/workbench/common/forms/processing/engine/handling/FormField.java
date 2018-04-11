@@ -22,9 +22,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 public interface FormField {
 
-    public static final String FORM_GROUP_SUFFIX = "_form_group";
-    public static final String HELP_BLOCK_SUFFIX = "_help_block";
-
     String getFieldName();
 
     String getFieldBinding();
@@ -42,6 +39,8 @@ public interface FormField {
     void clearError();
 
     void showError(String error);
+
+    FieldContainer getContainer();
 
     IsWidget getWidget();
 

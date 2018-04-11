@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.fieldSet;
+package org.kie.workbench.common.forms.processing.engine.handling;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
+import org.jboss.errai.common.client.api.IsElement;
 
-import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.AbstractFormGroup;
+/**
+ * Container for {@link FormField}
+ */
+public interface FieldContainer extends IsElement {
 
-@Dependent
-public class FieldSetFormGroup extends AbstractFormGroup<FieldSetFormGroupView> {
+    void setVisible(boolean visible);
 
-    @Inject
-    public FieldSetFormGroup(FieldSetFormGroupView view) {
-        super(view);
-    }
+    void clearError();
+
+    void showError(String error);
 }

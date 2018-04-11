@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.fieldSet;
+package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.nestedForm.fieldSet;
 
 import javax.inject.Inject;
 import javax.inject.Named;

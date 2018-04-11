@@ -206,6 +206,11 @@ public class FormHandlerImpl<T> implements FormHandler<T> {
         form.getFields().forEach(field -> field.setReadOnly(readOnly));
     }
 
+    @Override
+    public Form getForm() {
+        return form;
+    }
+
     public void disableNestedForms() {
         form.getFields().stream()
                 .filter(formField -> formField.getWidget() instanceof IsNestedModel)

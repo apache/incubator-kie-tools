@@ -2036,7 +2036,7 @@ public class BPMNDiagramMarshallerTest {
                      diagram.getMetadata().getTitle());
         Node<? extends Definition, ?> eventSubprocessNode = diagram.getGraph().getNode("_DF031493-5F1C-4D2B-9916-2FEABB1FADFF");
         EventSubprocess eventSubprocess = (EventSubprocess) eventSubprocessNode.getContent().getDefinition();
-        assertTrue(eventSubprocess.getIsAsync().getValue());
+        assertTrue(eventSubprocess.getExecutionSet().getIsAsync().getValue());
         assertEquals("Var1:String", eventSubprocess.getProcessData().getProcessVariables().getValue());
     }
 

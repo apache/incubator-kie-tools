@@ -305,7 +305,7 @@ public class FormEditorHelperTest {
 
     @Test
     public void testRemoveUnbindedFields() {
-       testRemoveUnboundField(false);
+        testRemoveUnboundField(false);
     }
 
     protected void testRemoveUnboundField(boolean addToAvailables) {

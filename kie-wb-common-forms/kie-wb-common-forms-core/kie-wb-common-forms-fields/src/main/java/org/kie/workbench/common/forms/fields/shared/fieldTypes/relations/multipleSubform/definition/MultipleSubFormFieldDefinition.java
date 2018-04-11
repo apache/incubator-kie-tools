@@ -22,10 +22,12 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.SkipFormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.Container;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.IsCRUDDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.TableColumnMeta;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.type.MultipleSubFormFieldType;
@@ -70,6 +72,9 @@ public class MultipleSubFormFieldDefinition extends AbstractFieldDefinition impl
     )
     private List<TableColumnMeta> columnMetas = new ArrayList<TableColumnMeta>();
 
+    @SkipFormField
+    protected Container container = Container.FIELD_SET;
+
     @Override
     public MultipleSubFormFieldType getFieldType() {
         return FIELD_TYPE;
@@ -110,6 +115,16 @@ public class MultipleSubFormFieldDefinition extends AbstractFieldDefinition impl
     }
 
     @Override
+    public Container getContainer() {
+        return container;
+    }
+
+    @Override
+    public void setContainer(Container container) {
+        this.container = container;
+    }
+
+    @Override
     public TypeInfo getFieldTypeInfo() {
         return new TypeInfoImpl(TypeKind.OBJECT,
                                 standaloneClassName,
@@ -123,6 +138,7 @@ public class MultipleSubFormFieldDefinition extends AbstractFieldDefinition impl
             setCreationForm(otherForm.getCreationForm());
             setEditionForm(otherForm.getEditionForm());
             setColumnMetas(otherForm.getColumnMetas());
+            setContainer(otherForm.getContainer());
         }
         setStandaloneClassName(other.getStandaloneClassName());
     }
@@ -147,17 +163,23 @@ public class MultipleSubFormFieldDefinition extends AbstractFieldDefinition impl
         if (editionForm != null ? !editionForm.equals(that.editionForm) : that.editionForm != null) {
             return false;
         }
-        return columnMetas != null ? columnMetas.equals(that.columnMetas) : that.columnMetas == null;
+        if (columnMetas != null ? !columnMetas.equals(that.columnMetas) : that.columnMetas != null) {
+            return false;
+        }
+        return container == that.container;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
+        result = ~~result;
         result = 31 * result + (creationForm != null ? creationForm.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (editionForm != null ? editionForm.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (columnMetas != null ? columnMetas.hashCode() : 0);
+        result = ~~result;
+        result = 31 * result + (container != null ? container.hashCode() : 0);
         result = ~~result;
         return result;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers;
+package org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms;
 
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.FormGenerationContext;
-import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.FieldInitializer;
 import org.kie.workbench.common.forms.adf.service.definitions.elements.FieldElement;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 @Dependent
-public class MultipleSubFormFieldInitializer implements FieldInitializer<MultipleSubFormFieldDefinition> {
+public class MultipleSubFormFieldInitializer extends AbstractEmbeddedFormsInitializer<MultipleSubFormFieldDefinition> {
 
     @Override
     public boolean supports(FieldDefinition fieldDefinition) {
@@ -38,5 +37,7 @@ public class MultipleSubFormFieldInitializer implements FieldInitializer<Multipl
                            FormGenerationContext context) {
         field.setCreationForm(field.getStandaloneClassName());
         field.setEditionForm(field.getStandaloneClassName());
+
+        initializeContainer(field, fieldElement);
     }
 }

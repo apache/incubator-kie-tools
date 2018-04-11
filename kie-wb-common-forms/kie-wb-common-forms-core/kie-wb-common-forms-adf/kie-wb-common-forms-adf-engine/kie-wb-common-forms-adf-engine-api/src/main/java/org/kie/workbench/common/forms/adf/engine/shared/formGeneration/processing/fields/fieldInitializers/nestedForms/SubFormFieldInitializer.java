@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers;
+package org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms;
 
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.FormGenerationContext;
-import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.FieldInitializer;
 import org.kie.workbench.common.forms.adf.service.definitions.elements.FieldElement;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 @Dependent
-public class SubFormFieldInitializer implements FieldInitializer<SubFormFieldDefinition> {
+public class SubFormFieldInitializer extends AbstractEmbeddedFormsInitializer<SubFormFieldDefinition> {
 
     @Override
     public boolean supports(FieldDefinition fieldDefinition) {
@@ -37,5 +36,7 @@ public class SubFormFieldInitializer implements FieldInitializer<SubFormFieldDef
                            FieldElement fieldElement,
                            FormGenerationContext context) {
         field.setNestedForm(field.getStandaloneClassName());
+
+        initializeContainer(field, fieldElement);
     }
 }

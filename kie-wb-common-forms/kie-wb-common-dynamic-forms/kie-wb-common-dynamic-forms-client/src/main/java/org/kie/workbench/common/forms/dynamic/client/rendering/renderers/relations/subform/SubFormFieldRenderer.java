@@ -24,15 +24,18 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
-import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.fieldSet.FieldSetFormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.nestedForm.AbstractNestedFormFormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.nestedForm.collapse.CollapsibleFormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.nestedForm.fieldSet.FieldSetFormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.subform.widget.SubFormWidget;
 import org.kie.workbench.common.forms.dynamic.client.resources.i18n.FormRenderingConstants;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.Container;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 
 @Dependent
-public class SubFormFieldRenderer extends FieldRenderer<SubFormFieldDefinition, FieldSetFormGroup> {
+public class SubFormFieldRenderer extends FieldRenderer<SubFormFieldDefinition, AbstractNestedFormFormGroup> {
 
     @Inject
     private SubFormWidget subFormWidget;
@@ -48,9 +51,15 @@ public class SubFormFieldRenderer extends FieldRenderer<SubFormFieldDefinition, 
         }
         subFormWidget.render(nestedContext);
 
-        FieldSetFormGroup formGroup = formGroupsInstance.get();
-        formGroup.render(subFormWidget,
-                         field);
+        AbstractNestedFormFormGroup formGroup;
+
+        if (Container.COLLAPSIBLE.equals(field.getContainer())) {
+            formGroup = formGroupsInstance.select(CollapsibleFormGroup.class).get();
+        } else {
+            formGroup = formGroupsInstance.select(FieldSetFormGroup.class).get();
+        }
+
+        formGroup.render(subFormWidget, field);
 
         return formGroup;
     }

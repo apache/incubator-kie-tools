@@ -24,6 +24,7 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
@@ -32,10 +33,9 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Rect
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
+import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.execution.EventSubprocessExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
@@ -43,6 +43,9 @@ import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
+
+import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.SubFormFieldInitializer.COLLAPSIBLE_CONTAINER;
+import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.SubFormFieldInitializer.FIELD_CONTAINER_PARAM;
 
 @Portable
 @Bindable
@@ -52,22 +55,19 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @CanDock(roles = {"IntermediateEventOnSubprocessBoundary"})
 @FormDefinition(
         startElement = "general",
-        policy = FieldPolicy.ONLY_MARKED
+        policy = FieldPolicy.ONLY_MARKED,
+        defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)}
 )
 
 public class EventSubprocess extends BaseSubprocess {
 
-    @Property
-    @FormField(
-            afterElement = "general"
-    )
-
-    @Valid
-    private IsAsync isAsync;
     @PropertySet
-    @FormField(
-            afterElement = "isAsync"
-    )
+    @FormField(afterElement = "general")
+    @Valid
+    private EventSubprocessExecutionSet executionSet;
+
+    @PropertySet
+    @FormField(afterElement = "executionSet")
     @Valid
     private ProcessData processData;
 
@@ -80,7 +80,7 @@ public class EventSubprocess extends BaseSubprocess {
                            final @MapsTo("fontSet") FontSet fontSet,
                            final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
                            final @MapsTo("simulationSet") SimulationSet simulationSet,
-                           final @MapsTo("isAsync") IsAsync isAsync,
+                           final @MapsTo("executionSet") EventSubprocessExecutionSet executionSet,
                            final @MapsTo("processData") ProcessData processData) {
         super(general,
               backgroundSet,
@@ -88,7 +88,7 @@ public class EventSubprocess extends BaseSubprocess {
               dimensionsSet,
               simulationSet);
 
-        this.isAsync = isAsync;
+        this.executionSet = executionSet;
         this.processData = processData;
     }
 
@@ -106,18 +106,18 @@ public class EventSubprocess extends BaseSubprocess {
         this.processData = processData;
     }
 
-    public IsAsync getIsAsync() {
-        return isAsync;
+    public EventSubprocessExecutionSet getExecutionSet() {
+        return executionSet;
     }
 
-    public void setIsAsync(final IsAsync isAsync) {
-        this.isAsync = isAsync;
+    public void setExecutionSet(EventSubprocessExecutionSet executionSet) {
+        this.executionSet = executionSet;
     }
 
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
-                                         isAsync.hashCode(),
+                                         executionSet.hashCode(),
                                          processData.hashCode(),
                                          labels.hashCode());
     }
@@ -127,7 +127,7 @@ public class EventSubprocess extends BaseSubprocess {
         if (o instanceof EventSubprocess) {
             EventSubprocess other = (EventSubprocess) o;
             return super.equals(other) &&
-                    Objects.equals(isAsync, other.isAsync) &&
+                    Objects.equals(executionSet, other.executionSet) &&
                     Objects.equals(processData, other.processData) &&
                     Objects.equals(labels, other.labels);
         }
@@ -145,7 +145,7 @@ public class EventSubprocess extends BaseSubprocess {
                     new FontSet(),
                     new RectangleDimensionsSet(),
                     new SimulationSet(),
-                    new IsAsync(),
+                    new EventSubprocessExecutionSet(),
                     new ProcessData());
         }
     }

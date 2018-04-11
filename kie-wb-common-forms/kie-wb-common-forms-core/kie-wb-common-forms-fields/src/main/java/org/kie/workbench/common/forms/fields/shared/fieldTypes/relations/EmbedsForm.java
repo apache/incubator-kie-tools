@@ -21,4 +21,7 @@ package org.kie.workbench.common.forms.fields.shared.fieldTypes.relations;
  */
 public interface EmbedsForm extends EntityRelationField {
 
+    Container getContainer();
+
+    void setContainer(Container containerType);
 }
