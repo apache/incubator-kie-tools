@@ -58,7 +58,6 @@ public abstract class BaseIndexTest {
 
     protected static final Map<String, Path> basePaths = new HashMap<>();
     protected static final List<File> tempFiles = new ArrayList<>();
-    private static boolean localTest = false;
     protected boolean created = false;
     protected MetadataConfig config;
     protected IOService ioService = null;
@@ -69,18 +68,12 @@ public abstract class BaseIndexTest {
     @BeforeClass
     public static void beforeClass() throws Throwable {
         cleanup();
-        String id = ElasticSearchTestSuite.elasticsearchRule.getContainerId();
-        if (id == null) {
-            ElasticSearchTestSuite.elasticsearchRule.before();
-            localTest = true;
-        }
+        ElasticSearchTestSuite.before();
     }
 
     @AfterClass
     public static void afterClass() {
-        if (localTest) {
-            ElasticSearchTestSuite.elasticsearchRule.after();
-        }
+        ElasticSearchTestSuite.after();
         cleanup();
     }
 
@@ -133,7 +126,10 @@ public abstract class BaseIndexTest {
     protected IndexerDispatcherFactory indexerDispatcherFactory(MetaIndexEngine indexEngine) {
         if (indexerDispatcherFactory == null) {
             Factory schedulerFactory = new ConstraintBuilder().createFactory();
-            indexerDispatcherFactory = IndexerDispatcher.createFactory(indexEngine, schedulerFactory, testEvent(), LoggerFactory.getLogger(IndexerDispatcher.class));
+            indexerDispatcherFactory = IndexerDispatcher.createFactory(indexEngine,
+                                                                       schedulerFactory,
+                                                                       testEvent(),
+                                                                       LoggerFactory.getLogger(IndexerDispatcher.class));
         }
 
         return indexerDispatcherFactory;
@@ -152,12 +148,14 @@ public abstract class BaseIndexTest {
             }
 
             @Override
-            public <U extends T> Event<U> select(Class<U> subtype, Annotation... qualifiers) {
+            public <U extends T> Event<U> select(Class<U> subtype,
+                                                 Annotation... qualifiers) {
                 return (Event<U>) this;
             }
 
             @Override
-            public <U extends T> Event<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
+            public <U extends T> Event<U> select(TypeLiteral<U> subtype,
+                                                 Annotation... qualifiers) {
                 return (Event<U>) this;
             }
         };

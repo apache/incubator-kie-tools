@@ -18,9 +18,13 @@ package org.uberfire.ext.metadata.io.elasticsearch.suite;
 
 import java.io.File;
 
+import com.spotify.docker.client.DockerClient;
+import com.spotify.docker.client.exceptions.DockerException;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.ext.metadata.io.elasticsearch.BatchIndexConcurrencyTest;
 import org.uberfire.ext.metadata.io.elasticsearch.BatchIndexSingleThreadTest;
 import org.uberfire.ext.metadata.io.elasticsearch.BatchIndexTest;
@@ -54,12 +58,14 @@ import pl.domzal.junit.docker.rule.WaitFor;
         ReplaceIndexedObjectTest.class})
 public class ElasticSearchTestSuite {
 
+    private static Logger logger = LoggerFactory.getLogger(ElasticSearchTestSuite.class);
+
     private static String image = "docker.elastic.co/elasticsearch/elasticsearch:5.6.1";
 
-    @ClassRule
+    public static final String CONTAINER_NAME = "kie-elasticsearch";
     public static DockerRule elasticsearchRule = DockerRule.builder()
             .imageName(image)
-            .name("kie-elasticsearch")
+            .name(CONTAINER_NAME)
             .env("cluster.name",
                  "kie-cluster")
             .env("discovery.type",
@@ -81,4 +87,30 @@ public class ElasticSearchTestSuite {
                     "9300")
             .waitFor(WaitFor.logMessage("mode [trial] - valid"))
             .build();
+
+    private static boolean existContainer() throws DockerException, InterruptedException {
+        return elasticsearchRule.getDockerClient().listContainers(DockerClient.ListContainersParam.allContainers(true))
+                .stream()
+                .anyMatch(container -> container.names()
+                        .contains("/" + CONTAINER_NAME));
+    }
+
+    public static void before() throws Throwable {
+        if (existContainer()) {
+            logger.info("Container exists, removing");
+            if (elasticsearchRule.getDockerClient().inspectContainer(CONTAINER_NAME).state().running()) {
+                elasticsearchRule.getDockerClient().killContainer(CONTAINER_NAME);
+            }
+            elasticsearchRule.getDockerClient().removeContainer(CONTAINER_NAME);
+        } else {
+            logger.info("Container does not exist");
+        }
+
+        logger.info("Creating container");
+        elasticsearchRule.before();
+    }
+
+    public static void after() {
+        elasticsearchRule.after();
+    }
 }
