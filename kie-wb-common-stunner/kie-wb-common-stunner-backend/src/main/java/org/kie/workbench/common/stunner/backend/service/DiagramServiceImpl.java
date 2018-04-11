@@ -55,7 +55,7 @@ public class DiagramServiceImpl
     private static final String METADATA_EXTENSION = "meta";
     private static final String DIAGRAMS_PATH = "diagrams";
 
-    private final BackendFileSystemManagerImpl backendFileSystemManager;
+    private final BackendFileSystemBootstrap backendFileSystemManager;
 
     // CDI proxy.
     protected DiagramServiceImpl() {
@@ -71,7 +71,7 @@ public class DiagramServiceImpl
                               final FactoryManager factoryManager,
                               final Instance<DefinitionSetService> definitionSetServiceInstances,
                               final BackendRegistryFactory registryFactory,
-                              final BackendFileSystemManagerImpl backendFileSystemManager) {
+                              final BackendFileSystemBootstrap backendFileSystemManager) {
         super(definitionManager,
               factoryManager,
               definitionSetServiceInstances,

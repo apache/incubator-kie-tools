@@ -17,12 +17,10 @@
 package org.kie.workbench.common.stunner.bpmn.client.workitem;
 
 import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.HashMap;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -31,86 +29,73 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
+import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionCacheRegistry;
-import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionMetadataRegistry;
+import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistries;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
-import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionService;
+import org.kie.workbench.common.stunner.bpmn.workitem.service.WorkItemDefinitionLookupService;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionDestroyedEvent;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.mvp.Command;
 
 /**
- * The default Work Item Definition Registry for client side.
- * <p>
- * - It manages the registries relying on the client session lifecycle.
+ * - It manages the registries relying on the client session lifecycle
  * - It produces the @Default WorkItemDefinitionRegistry based on current session
- * - It performs calls to server side to populate the current session's registry
+ * - It performs calls to server side to populate the current registry
  * - It destroy the registry, if any, when a session is being destroyed
  */
 @ApplicationScoped
 @Typed(WorkItemDefinitionClientRegistry.class)
-public class WorkItemDefinitionClientRegistry
-        implements WorkItemDefinitionRegistry {
+public class WorkItemDefinitionClientRegistry implements WorkItemDefinitionRegistry {
 
-    public static String DEFAULT_ICON_DATA = BPMNImageResources.INSTANCE.serviceNodeIcon().getSafeUri().asString();
-
+    private final Caller<WorkItemDefinitionLookupService> service;
+    private final WorkItemDefinitionRegistries<Metadata> index;
     private final SessionManager sessionManager;
-    private final Caller<WorkItemDefinitionService> service;
     private final Supplier<WorkItemDefinitionCacheRegistry> registryInstanceSupplier;
-    private final Consumer<WorkItemDefinitionCacheRegistry> registryInstanceDestroyer;
-    private final WorkItemDefinitionMetadataRegistry metadataRegistry;
-    private final Map<String, WorkItemDefinitionCacheRegistry> sessionRegistries;
+    private final Consumer<Throwable> errorPresenter;
 
     @Inject
-    public WorkItemDefinitionClientRegistry(final SessionManager sessionManager,
-                                            final Caller<WorkItemDefinitionService> service,
+    public WorkItemDefinitionClientRegistry(final Caller<WorkItemDefinitionLookupService> service,
+                                            final SessionManager sessionManager,
                                             final ManagedInstance<WorkItemDefinitionCacheRegistry> registryInstances,
-                                            final WorkItemDefinitionMetadataRegistry metadataRegistry) {
-        this(sessionManager,
-             service,
+                                            final ErrorPopupPresenter errorPopupPresenter) {
+        this(service,
+             sessionManager,
              registryInstances::get,
-             registryInstances::destroy,
-             metadataRegistry);
+             exception -> errorPopupPresenter.showMessage(getExceptionMessage(exception)),
+             new WorkItemDefinitionRegistries<>(metadata -> metadata.getRoot().toURI(),
+                                                new HashMap<>(),
+                                                registryInstances::destroy));
     }
 
-    WorkItemDefinitionClientRegistry(final SessionManager sessionManager,
-                                     final Caller<WorkItemDefinitionService> service,
-                                     final Supplier<WorkItemDefinitionCacheRegistry> registryInstanceSupplier,
-                                     final Consumer<WorkItemDefinitionCacheRegistry> registryInstanceDestroyer,
-                                     final WorkItemDefinitionMetadataRegistry metadataRegistry) {
-        this.sessionManager = sessionManager;
+    WorkItemDefinitionClientRegistry(final Caller<WorkItemDefinitionLookupService> service,
+                                     final SessionManager sessionManager,
+                                     final Supplier<WorkItemDefinitionCacheRegistry> registryInstances,
+                                     final Consumer<Throwable> errorPresenter,
+                                     final WorkItemDefinitionRegistries<Metadata> index) {
         this.service = service;
-        this.registryInstanceSupplier = registryInstanceSupplier;
-        this.registryInstanceDestroyer = registryInstanceDestroyer;
-        this.metadataRegistry = metadataRegistry;
-        this.sessionRegistries = new LinkedHashMap<>();
+        this.sessionManager = sessionManager;
+        this.registryInstanceSupplier = registryInstances;
+        this.errorPresenter = errorPresenter;
+        this.index = index;
     }
 
-    @PostConstruct
-    public void init() {
-        metadataRegistry
-                .setRegistrySupplier(this::getCurrentSessionRegistry)
-                .setWorkItemsByPathSupplier((path, collectionConsumer) ->
-                                                    service.call((RemoteCallback<Collection<WorkItemDefinition>>) collectionConsumer::accept).search(path));
+    @Override
+    public Collection<WorkItemDefinition> items() {
+        return getCurrentSessionRegistry().items();
     }
 
-    public void load(final ClientSession session,
-                     final Metadata metadata,
-                     final Command callback) {
-        metadataRegistry
-                .setRegistrySupplier(() -> getRegistry(session))
-                .load(metadata,
-                      () -> {
-                          metadataRegistry.setRegistrySupplier(this::getCurrentSessionRegistry);
-                          callback.execute();
-                      });
+    @Override
+    public WorkItemDefinition get(final String name) {
+        return getCurrentSessionRegistry().get(name);
     }
 
     @Produces
@@ -119,49 +104,62 @@ public class WorkItemDefinitionClientRegistry
         return getCurrentSessionRegistry();
     }
 
-    @Override
-    public Collection<WorkItemDefinition> items() {
-        return metadataRegistry.items();
-    }
-
-    @Override
-    public WorkItemDefinition get(final String name) {
-        return metadataRegistry.get(name);
+    public void load(final Metadata metadata,
+                     final Command callback) {
+        service.call((RemoteCallback<Collection<WorkItemDefinition>>) workItemDefinitions -> {
+            final WorkItemDefinitionCacheRegistry registry = getRegistryForModule(metadata);
+            workItemDefinitions.forEach(registry::register);
+            callback.execute();
+        }, (ErrorCallback<Message>) (message, throwable) -> {
+            errorPresenter.accept(throwable);
+            callback.execute();
+            return false;
+        }).execute(metadata);
     }
 
     @PreDestroy
     public void destroy() {
-        sessionRegistries.keySet().stream()
-                .forEach(this::removeRegistry);
+        index.clear();
     }
 
     void onSessionDestroyed(final @Observes SessionDestroyedEvent sessionDestroyedEvent) {
-        removeRegistry(sessionDestroyedEvent.getSessionUUID());
+        removeRegistry(sessionDestroyedEvent.getMetadata());
     }
 
-    private WorkItemDefinitionCacheRegistry getCurrentSessionRegistry() {
-        return getRegistry(sessionManager.getCurrentSession());
+    WorkItemDefinitionCacheRegistry getCurrentSessionRegistry() {
+        return getRegistryForSession(sessionManager.getCurrentSession());
     }
 
-    private WorkItemDefinitionCacheRegistry getRegistry(final ClientSession session) {
-        return obtainRegistry(session.getSessionUUID());
+    WorkItemDefinitionCacheRegistry getRegistryForSession(final ClientSession session) {
+        return getRegistryForModule(session.getCanvasHandler().getDiagram().getMetadata());
     }
 
-    private WorkItemDefinitionCacheRegistry obtainRegistry(final String sessionUUID) {
-        WorkItemDefinitionCacheRegistry registry = sessionRegistries.get(sessionUUID);
-        if (null == registry) {
-            registry = registryInstanceSupplier.get();
-            sessionRegistries.put(sessionUUID,
-                                  registry);
+    WorkItemDefinitionCacheRegistry getRegistryForModule(final Metadata metadata) {
+        return obtainRegistry(metadata);
+    }
+
+    private WorkItemDefinitionCacheRegistry obtainRegistry(final Metadata metadata) {
+        if (!index.contains(metadata)) {
+            index.put(metadata,
+                      registryInstanceSupplier.get());
         }
-        return registry;
+        return index.registries().apply(metadata);
     }
 
-    private void removeRegistry(final String sessionUUID) {
-        final WorkItemDefinitionCacheRegistry registry = sessionRegistries.remove(sessionUUID);
-        if (null != registry) {
-            registry.clear();
-            registryInstanceDestroyer.accept(registry);
+    private void removeRegistry(final Metadata metadata) {
+        index.remove(metadata);
+    }
+
+    @SuppressWarnings("all")
+    private static String getExceptionMessage(final Throwable throwable) {
+        Throwable root = throwable;
+        while (null != root) {
+            if (null != root.getCause()) {
+                root = root.getCause();
+            } else {
+                break;
+            }
         }
+        return root.getMessage();
     }
 }

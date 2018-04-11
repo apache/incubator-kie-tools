@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.view.handler;
 import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.shape.Picture;
-import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientRegistry;
+import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientUtils;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.client.lienzo.shape.util.LienzoPictureUtils;
@@ -47,8 +47,9 @@ public class ServiceTaskShapeViewHandler
         final String itemIconData = workItemDefinitionRegistry
                 .get()
                 .get(bean.getName())
+                .getIconDefinition()
                 .getIconData();
-        final String iconData = null != itemIconData ? itemIconData : WorkItemDefinitionClientRegistry.DEFAULT_ICON_DATA;
+        final String iconData = null != itemIconData ? itemIconData : WorkItemDefinitionClientUtils.getDefaultIconData();
         // Obtain the image element from the svg shape view.
         final SVGPrimitive svgPrimitive = SVGViewUtils.getPrimitive(view, WID_ICON_ID).get();
         // Load the image data.

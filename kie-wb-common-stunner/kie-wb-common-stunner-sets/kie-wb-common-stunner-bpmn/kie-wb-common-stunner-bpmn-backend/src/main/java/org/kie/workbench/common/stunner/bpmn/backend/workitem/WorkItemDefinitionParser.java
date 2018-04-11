@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.backend.workitem;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,17 +29,20 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.guvnor.common.services.project.model.Dependencies;
+import org.guvnor.common.services.project.model.Dependency;
 import org.jbpm.process.core.ParameterDefinition;
 import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.core.datatype.impl.type.EnumDataType;
 import org.jbpm.process.core.impl.ParameterDefinitionImpl;
 import org.jbpm.process.workitem.WorkDefinitionImpl;
-import org.jbpm.process.workitem.WorkItemRepository;
 import org.jbpm.util.WidMVELEvaluator;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNCategories;
+import org.kie.workbench.common.stunner.bpmn.workitem.IconDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
-import org.kie.workbench.common.stunner.core.backend.util.ImageDataUriGenerator;
+import org.kie.workbench.common.stunner.core.backend.util.URLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +50,6 @@ public class WorkItemDefinitionParser {
 
     private static final Logger LOG = LoggerFactory.getLogger(WorkItemDefinitionParser.class.getName());
 
-    // TODO: Implement other data type serializers (ENUM).
     public static final Map<Class<?>, Function<Object, String>> DATA_TYPE_FORMATTERS =
             new HashMap<Class<?>, Function<Object, String>>(2) {{
                 put(String.class, value -> value.toString().trim().length() > 0 ? value.toString() : null);
@@ -59,37 +60,24 @@ public class WorkItemDefinitionParser {
     private static final Pattern UNICODE_WORDS_PATTERN = Pattern.compile("\\p{L}+",
                                                                          Pattern.UNICODE_CHARACTER_CLASS);
 
-    public static Collection<WorkItemDefinition> parse(final String serviceRepoUrl,
-                                                       final String[] taskNames) {
-        final String defaultServiceRepo = null != serviceRepoUrl && serviceRepoUrl.trim().length() > 0 ? serviceRepoUrl : null;
-        if (defaultServiceRepo != null && taskNames.length > 0) {
-            final Map<String, WorkDefinitionImpl> workItemsMap = WorkItemRepository.getWorkDefinitions(defaultServiceRepo);
-            if (!workItemsMap.isEmpty()) {
-                return Arrays.stream(taskNames)
-                        .filter(workItemsMap::containsKey)
-                        .map(workItemsMap::get)
-                        .map(wid -> parse(wid,
-                                          WorkItemDefinitionParser::buildDataURIFromURL))
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList());
-            }
-        }
-        return Collections.emptySet();
-    }
-
     public static Collection<WorkItemDefinition> parse(final String content,
+                                                       final Function<WorkDefinitionImpl, String> uriProvider,
                                                        final Function<String, String> dataUriProvider) throws Exception {
         final Map<String, WorkDefinitionImpl> definitionMap = parseJBPMWorkItemDefinitions(content,
                                                                                            dataUriProvider);
         return definitionMap.values().stream()
-                .map(wid -> parse(wid, dataUriProvider))
+                .map(wid -> parse(wid,
+                                  uriProvider,
+                                  dataUriProvider))
                 .collect(Collectors.toList());
     }
 
     public static WorkItemDefinition parse(final WorkDefinitionImpl workDefinition,
+                                           final Function<WorkDefinitionImpl, String> uriProvider,
                                            final Function<String, String> dataUriProvider) {
         final WorkItemDefinition workItem = new WorkItemDefinition();
         // Attributes..
+        workItem.setUri(uriProvider.apply(workDefinition));
         workItem.setName(workDefinition.getName());
         workItem.setCategory(workDefinition.getCategory());
         workItem.setDocumentation(workDefinition.getDocumentation());
@@ -97,6 +85,7 @@ public class WorkItemDefinitionParser {
         workItem.setDefaultHandler(workDefinition.getDefaultHandler());
         workItem.setDisplayName(workDefinition.getDisplayName());
         // Icon.
+        final IconDefinition iconDefinition = new IconDefinition();
         final String iconEncoded = workDefinition.getIconEncoded();
         final String icon = workDefinition.getIcon();
         String iconData = null;
@@ -106,12 +95,38 @@ public class WorkItemDefinitionParser {
             final String iconUrl = workDefinition.getPath() + "/" + icon;
             iconData = dataUriProvider.apply(iconUrl);
         }
-        workItem.setIconData(iconData);
+        iconDefinition.setUri(icon);
+        iconDefinition.setIconData(iconData);
+        workItem.setIconDefinition(iconDefinition);
         // Parameters.
         workItem.setParameters(parseParameters(workDefinition.getParameters()));
-        // Results..
+        // Results.
         workItem.setResults(parseParameters(workDefinition.getResults()));
+        // Dependencies.
+        final String[] dependencies = workDefinition.getMavenDependencies();
+        final List<Dependency> dependencyList = null == dependencies ?
+                Collections.emptyList() :
+                Stream.of(dependencies)
+                        .map(WorkItemDefinitionParser::parseDependency)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
+        workItem.setDependencies(new Dependencies(dependencyList));
         return workItem;
+    }
+
+    private static Dependency parseDependency(final String raw) {
+        final String[] gav = raw.split("\\s*:\\s*");
+        Dependency result = null;
+        if (gav.length >= 3) {
+            result = new Dependency();
+            result.setGroupId(gav[0]);
+            result.setArtifactId(gav[1]);
+            result.setVersion(gav[2]);
+        }
+        if (gav.length >= 4) {
+            result.setScope(gav[3]);
+        }
+        return result;
     }
 
     private static String parseParameters(final Collection<ParameterDefinition> parameters) {
@@ -172,8 +187,10 @@ public class WorkItemDefinitionParser {
             workDefinition::setIcon);
 
         // Icon data-uri.
-        if (!isEmpty(workDefinition.getIcon())) {
-            final String iconData = dataUriProvider.apply(workDefinition.getIcon());
+        final String icon = workDefinition.getIcon();
+        if (!isEmpty(icon)) {
+            final String iconData = dataUriProvider.apply(icon);
+            workDefinition.setIcon(icon);
             workDefinition.setIconEncoded(iconData);
         }
 
@@ -205,7 +222,8 @@ public class WorkItemDefinitionParser {
                 } else {
                     LOG.error("The work item's parameter type [" +
                                       value.getClass() +
-                                      "] is not supported. Skipping this parameter.");
+                                      "] is not supported. " +
+                                      "Skipping this parameter.");
                 }
             });
             workDefinition.setParameterValues(parameterValues);
@@ -295,9 +313,9 @@ public class WorkItemDefinitionParser {
         }
     }
 
-    private static String buildDataURIFromURL(final String url) {
+    public static String buildDataURIFromURL(final String url) {
         try {
-            return ImageDataUriGenerator.buildDataURIFromURL(url);
+            return URLUtils.buildDataURIFromURL(url);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -45,7 +45,7 @@ public class BPMNClientSessionFactoryTest {
     private Metadata metadata;
 
     @Mock
-    private WorkItemDefinitionClientRegistry registry;
+    private WorkItemDefinitionClientRegistry service;
 
     private AbstractBPMNClientSessionFactory tested;
 
@@ -53,12 +53,11 @@ public class BPMNClientSessionFactoryTest {
     @SuppressWarnings("unchecked")
     public void init() {
         doAnswer(invocationOnMock -> {
-            Command callback = (Command) invocationOnMock.getArguments()[2];
+            Command callback = (Command) invocationOnMock.getArguments()[1];
             callback.execute();
             return null;
-        }).when(registry).load(eq(session),
-                               eq(metadata),
-                               any(Command.class));
+        }).when(service).load(eq(metadata),
+                              any(Command.class));
         tested = new TestBPMNClientSession();
     }
 
@@ -68,17 +67,16 @@ public class BPMNClientSessionFactoryTest {
         Consumer<ClientSession> sessionConsumer = mock(Consumer.class);
         tested.newSession(metadata,
                           sessionConsumer);
-        verify(registry, times(1)).load(eq(session),
-                                        eq(metadata),
-                                        any(Command.class));
+        verify(service, times(1)).load(eq(metadata),
+                                       any(Command.class));
         verify(sessionConsumer, times(1)).accept(eq(session));
     }
 
     private class TestBPMNClientSession extends AbstractBPMNClientSessionFactory {
 
         @Override
-        protected WorkItemDefinitionClientRegistry getWorkItemDefinitionRegistry() {
-            return registry;
+        protected WorkItemDefinitionClientRegistry getWorkItemDefinitionService() {
+            return service;
         }
 
         @Override

@@ -21,9 +21,9 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.stunner.core.backend.lookup.impl.VFSLookupManager;
 import org.kie.workbench.common.stunner.core.backend.service.AbstractDiagramLookupService;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequest;
 import org.kie.workbench.common.stunner.core.service.BaseDiagramService;
@@ -31,8 +31,6 @@ import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramLookupService;
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramService;
-import org.uberfire.backend.server.util.Paths;
-import org.uberfire.io.IOService;
 
 @ApplicationScoped
 @Service
@@ -40,7 +38,7 @@ public class ProjectDiagramLookupServiceImpl
         extends AbstractDiagramLookupService<ProjectMetadata, ProjectDiagram>
         implements ProjectDiagramLookupService {
 
-    private final IOService ioService;
+    private final VFSLookupManager<ProjectDiagram> vfsLookupManager;
     private final ProjectDiagramService diagramService;
 
     protected ProjectDiagramLookupServiceImpl() {
@@ -49,15 +47,15 @@ public class ProjectDiagramLookupServiceImpl
     }
 
     @Inject
-    public ProjectDiagramLookupServiceImpl(final @Named("ioStrategy") IOService ioService,
+    public ProjectDiagramLookupServiceImpl(final VFSLookupManager<ProjectDiagram> vfsLookupManager,
                                            final ProjectDiagramService diagramService) {
-        this.ioService = ioService;
+        this.vfsLookupManager = vfsLookupManager;
         this.diagramService = diagramService;
     }
 
     @PostConstruct
     public void init() {
-        initialize(ioService);
+        initialize(vfsLookupManager);
     }
 
     @Override
@@ -66,8 +64,9 @@ public class ProjectDiagramLookupServiceImpl
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected List<ProjectDiagram> getItems(final DiagramLookupRequest request) {
-        return getVFSLookupManager().getItemsByPath(Paths.convert(request.getPath()));
+        return vfsLookupManager.getItemsByPath(request.getPath());
     }
 
     @Override

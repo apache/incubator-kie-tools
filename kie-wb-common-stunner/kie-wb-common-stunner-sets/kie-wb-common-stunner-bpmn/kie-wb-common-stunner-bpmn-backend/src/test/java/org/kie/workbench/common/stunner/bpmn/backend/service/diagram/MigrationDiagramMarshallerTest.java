@@ -53,7 +53,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.TaskTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.TimerSettingsTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.VariablesTypeSerializer;
-import org.kie.workbench.common.stunner.bpmn.backend.workitem.WorkItemDefinitionBackendRegistry;
+import org.kie.workbench.common.stunner.bpmn.backend.workitem.service.WorkItemDefinitionBackendService;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
@@ -322,14 +322,9 @@ public class MigrationDiagramMarshallerTest {
         GraphIndexBuilder<?> indexBuilder = new MapIndexBuilder();
         when(rulesManager.evaluate(any(RuleSet.class),
                                    any(RuleEvaluationContext.class))).thenReturn(new DefaultRuleViolations());
-        // The work item definition registry.
-        WorkItemDefinitionBackendRegistry widRegistry = mock(WorkItemDefinitionBackendRegistry.class);
-        when(widRegistry.getRegistry()).thenReturn(workItemDefinitionMockRegistry);
-        when(widRegistry.items()).thenReturn(workItemDefinitionMockRegistry.items());
-        when(widRegistry.load(any(Metadata.class))).thenReturn(widRegistry);
-        doAnswer(invocationOnMock -> workItemDefinitionMockRegistry.get((String) invocationOnMock.getArguments()[0]))
-                .when(widRegistry).get(anyString());
-
+        // The work item definition service.
+        WorkItemDefinitionBackendService widService = mock(WorkItemDefinitionBackendService.class);
+        when(widService.execute(any(Metadata.class))).thenReturn(workItemDefinitionMockRegistry.items());
         // The tested BPMN marshaller.
         oldMarshaller = new BPMNDiagramMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
                                                   objectBuilderFactory,
@@ -340,7 +335,7 @@ public class MigrationDiagramMarshallerTest {
                                                   rulesManager,
                                                   commandManager1,
                                                   commandFactory1,
-                                                  widRegistry);
+                                                  widService);
 
         // Graph utils.
         when(definitionManager.adapters()).thenReturn(adapterManager);

@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 public abstract class AbstractBPMNClientSessionFactory<S extends ClientSession>
         implements ClientSessionFactory<S> {
 
-    protected abstract WorkItemDefinitionClientRegistry getWorkItemDefinitionRegistry();
+    protected abstract WorkItemDefinitionClientRegistry getWorkItemDefinitionService();
 
     protected abstract S buildSessionInstance();
 
@@ -34,9 +34,8 @@ public abstract class AbstractBPMNClientSessionFactory<S extends ClientSession>
     public void newSession(final Metadata metadata,
                            final Consumer<S> newSessionConsumer) {
         final S session = buildSessionInstance();
-        getWorkItemDefinitionRegistry().load(session,
-                                             metadata,
-                                             () -> newSessionConsumer
-                                                     .accept(session));
+        getWorkItemDefinitionService().load(metadata,
+                                            () -> newSessionConsumer
+                                                    .accept(session));
     }
 }

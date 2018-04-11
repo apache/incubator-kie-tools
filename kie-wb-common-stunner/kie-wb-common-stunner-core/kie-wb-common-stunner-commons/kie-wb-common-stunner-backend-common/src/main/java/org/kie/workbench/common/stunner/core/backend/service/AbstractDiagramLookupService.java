@@ -26,27 +26,19 @@ import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequest
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramRepresentation;
 import org.kie.workbench.common.stunner.core.service.BaseDiagramService;
 import org.kie.workbench.common.stunner.core.service.DiagramLookupService;
-import org.uberfire.io.IOService;
 
 public abstract class AbstractDiagramLookupService<M extends Metadata, D extends Diagram<Graph, M>>
         extends AbstractLookupManager<D, DiagramRepresentation, DiagramLookupRequest>
         implements DiagramLookupManager,
                    DiagramLookupService {
 
-    private VFSLookupManager<D> vfsLookupManager;
-
-    public void initialize(final IOService ioService) {
-        this.vfsLookupManager =
-                new VFSLookupManager<D>(ioService)
-                        .setPathAcceptor(getDiagramService()::accepts)
-                        .setItemSupplier(getDiagramService()::getDiagramByPath);
+    public void initialize(final VFSLookupManager<D> vfsLookupManager) {
+        vfsLookupManager
+                .setPathAcceptor(getDiagramService()::accepts)
+                .setItemSupplier(getDiagramService()::getDiagramByPath);
     }
 
     protected abstract BaseDiagramService<M, D> getDiagramService();
-
-    protected VFSLookupManager<D> getVFSLookupManager() {
-        return vfsLookupManager;
-    }
 
     protected DiagramRepresentation buildResult(final D item) {
         return new DiagramRepresentation.DiagramRepresentationBuilder(item).build();

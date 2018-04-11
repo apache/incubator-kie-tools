@@ -16,117 +16,89 @@
 
 package org.kie.workbench.common.stunner.core.backend.lookup.impl;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Typed;
+import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.lookup.AbstractLookupManager;
 import org.kie.workbench.common.stunner.core.lookup.VFSLookupRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.backend.server.util.Paths;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.IOException;
-import org.uberfire.java.nio.file.FileVisitResult;
-import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.file.SimpleFileVisitor;
-import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
+import org.uberfire.backend.vfs.DirectoryStream;
+import org.uberfire.backend.vfs.VFSService;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.java.nio.file.Files.walkFileTree;
-
-public class VFSLookupManager<I>
-        extends AbstractLookupManager<I, I, VFSLookupRequest> {
+@Dependent
+@Typed(VFSLookupManager.class)
+public class VFSLookupManager<T>
+        extends AbstractLookupManager<T, T, VFSLookupRequest> {
 
     private static final Logger LOG =
             LoggerFactory.getLogger(VFSLookupManager.class.getName());
 
-    private final IOService ioService;
+    private final VFSService vfsService;
     private Predicate<org.uberfire.backend.vfs.Path> pathAcceptor;
-    private Function<org.uberfire.backend.vfs.Path, I> itemSupplier;
+    private Function<org.uberfire.backend.vfs.Path, T> itemSupplier;
 
-    public VFSLookupManager(final IOService ioService) {
-        this.ioService = ioService;
+    // CDI proxy.
+    protected VFSLookupManager() {
+        this.vfsService = null;
         this.pathAcceptor = null;
         this.itemSupplier = null;
     }
 
-    public VFSLookupManager(final IOService ioService,
+    @Inject
+    public VFSLookupManager(final VFSService vfsService) {
+        this.vfsService = vfsService;
+        this.pathAcceptor = null;
+        this.itemSupplier = null;
+    }
+
+    public VFSLookupManager(final VFSService vfsService,
                             final Predicate<org.uberfire.backend.vfs.Path> pathAcceptor,
-                            final Function<org.uberfire.backend.vfs.Path, I> itemSupplier) {
-        this.ioService = ioService;
+                            final Function<org.uberfire.backend.vfs.Path, T> itemSupplier) {
+        this.vfsService = vfsService;
         this.pathAcceptor = pathAcceptor;
         this.itemSupplier = itemSupplier;
     }
 
-    public VFSLookupManager<I> setPathAcceptor(final Predicate<org.uberfire.backend.vfs.Path> pathAcceptor) {
+    public VFSLookupManager<T> setPathAcceptor(final Predicate<org.uberfire.backend.vfs.Path> pathAcceptor) {
         this.pathAcceptor = pathAcceptor;
         return this;
     }
 
-    public VFSLookupManager<I> setItemSupplier(final Function<org.uberfire.backend.vfs.Path, I> itemSupplier) {
+    public VFSLookupManager<T> setItemSupplier(final Function<org.uberfire.backend.vfs.Path, T> itemSupplier) {
         this.itemSupplier = itemSupplier;
         return this;
     }
 
-    protected List<I> getItems(final VFSLookupRequest request) {
-        Path root = parseCriteriaPath(request);
-        return getItemsByPath(root);
+    protected List<T> getItems(final VFSLookupRequest request) {
+        return getItemsByPath(request.getPath());
     }
 
-    public List<I> getItemsByPath(final Path root) {
-        final List<I> result = new LinkedList<I>();
-        try {
-            if (ioService.exists(root)) {
-                walkFileTree(checkNotNull("root",
-                                          root),
-                             new SimpleFileVisitor<Path>() {
-                                 @Override
-                                 public FileVisitResult visitFile(final Path _file,
-                                                                  final BasicFileAttributes attrs) throws IOException {
-                                     checkNotNull("file",
-                                                  _file);
-                                     checkNotNull("attrs",
-                                                  attrs);
-                                     final org.uberfire.backend.vfs.Path file = Paths.convert(_file);
-                                     if (pathAcceptor.test(file)) {
-                                         I item = null;
-                                         try {
-                                             // portable diagram representation.
-                                             item = itemSupplier.apply(file);
-                                         } catch (final Exception e) {
-                                             LOG.error("Cannot load item from path [" + file + "]",
-                                                       e);
-                                         }
-                                         if (null != item) {
-                                             result.add(item);
-                                         }
-                                     }
-                                     return FileVisitResult.CONTINUE;
-                                 }
-                             });
-            }
-        } catch (Exception e) {
-            LOG.error("Error while loading from VFS the item with path [" + root + "].",
-                      e);
-        }
-        return result;
+    public List<T> getItemsByPath(final org.uberfire.backend.vfs.Path root) {
+        final DirectoryStream<org.uberfire.backend.vfs.Path> files =
+                vfsService.newDirectoryStream(root,
+                                              path -> pathAcceptor.test(path));
+        return StreamSupport.stream(files.spliterator(),
+                                    false)
+                .map(itemSupplier)
+                .collect(Collectors.toList());
     }
 
     @Override
     protected boolean matches(final String criteria,
-                              final I item) {
+                              final T item) {
         return true;
     }
 
     @Override
-    protected I buildResult(final I item) {
+    protected T buildResult(final T item) {
         return item;
-    }
-
-    private Path parseCriteriaPath(final VFSLookupRequest request) {
-        org.uberfire.backend.vfs.Path path = request.getPath();
-        return Paths.convert(path);
     }
 }

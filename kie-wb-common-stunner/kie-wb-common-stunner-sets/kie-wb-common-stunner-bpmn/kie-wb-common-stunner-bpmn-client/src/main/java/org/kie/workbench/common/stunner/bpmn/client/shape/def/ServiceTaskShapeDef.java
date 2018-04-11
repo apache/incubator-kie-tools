@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.ServiceTaskShapeViewHandler;
-import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientRegistry;
+import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientUtils;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
@@ -85,8 +85,9 @@ public class ServiceTaskShapeDef extends BaseDimensionedShapeDef
                 workItemDefinitionRegistry
                         .get()
                         .get(name)
+                        .getIconDefinition()
                         .getIconData();
-        final String iconData = null != itemIconData ? itemIconData : WorkItemDefinitionClientRegistry.DEFAULT_ICON_DATA;
+        final String iconData = null != itemIconData ? itemIconData : WorkItemDefinitionClientUtils.getDefaultIconData();
         return iconDataGlyphGenerator.apply(iconData);
     }
 }

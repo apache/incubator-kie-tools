@@ -22,9 +22,9 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.stunner.core.backend.lookup.impl.VFSLookupManager;
 import org.kie.workbench.common.stunner.core.backend.service.AbstractDiagramLookupService;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -32,37 +32,33 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.lookup.criteria.AbstractCriteriaLookupManager;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequest;
 import org.kie.workbench.common.stunner.core.service.BaseDiagramService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.Path;
+import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped
 @Service
 public class DiagramLookupServiceImpl
         extends AbstractDiagramLookupService<Metadata, Diagram<Graph, Metadata>> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DiagramLookupServiceImpl.class.getName());
-
-    private final IOService ioService;
+    private final VFSLookupManager<Diagram<Graph, Metadata>> vfsLookupManager;
     private final DiagramServiceImpl diagramService;
 
+    // CDI proxy.
     protected DiagramLookupServiceImpl() {
         this(null,
              null);
     }
 
     @Inject
-    public DiagramLookupServiceImpl(final @Named("ioStrategy") IOService ioService,
+    public DiagramLookupServiceImpl(final VFSLookupManager<Diagram<Graph, Metadata>> vfsLookupManager,
                                     final DiagramServiceImpl diagramService) {
-        this.ioService = ioService;
+        this.vfsLookupManager = vfsLookupManager;
         this.diagramService = diagramService;
     }
 
     @PostConstruct
     public void init() {
-        initialize(ioService);
+        initialize(vfsLookupManager);
     }
 
     @Override
@@ -71,11 +67,12 @@ public class DiagramLookupServiceImpl
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected List<Diagram<Graph, Metadata>> getItems(final DiagramLookupRequest request) {
         final Path path = null != request.getPath() ?
-                Paths.convert(request.getPath()) :
-                getServiceImpl().getDiagramsPath();
-        return getVFSLookupManager().getItemsByPath(path);
+                request.getPath() :
+                Paths.convert(getServiceImpl().getDiagramsPath());
+        return vfsLookupManager.getItemsByPath(path);
     }
 
     @Override

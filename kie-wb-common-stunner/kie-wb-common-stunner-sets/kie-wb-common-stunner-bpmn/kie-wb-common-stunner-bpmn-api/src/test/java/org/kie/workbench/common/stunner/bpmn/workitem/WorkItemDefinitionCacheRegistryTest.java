@@ -78,4 +78,24 @@ public class WorkItemDefinitionCacheRegistryTest {
         assertTrue(tested.items().isEmpty());
         assertNull(tested.get("def1"));
     }
+
+    @Test
+    public void testClear() {
+        testTheClear();
+    }
+
+    @Test
+    public void testDestroy() {
+        testTheClear();
+    }
+
+    private void testTheClear() {
+        tested.register(DEF1);
+        tested.register(DEF2);
+        assertFalse(tested.isEmpty());
+        assertFalse(tested.items().isEmpty());
+        assertEquals(2, tested.items().size());
+        tested.clear();
+        assertTrue(tested.isEmpty());
+    }
 }

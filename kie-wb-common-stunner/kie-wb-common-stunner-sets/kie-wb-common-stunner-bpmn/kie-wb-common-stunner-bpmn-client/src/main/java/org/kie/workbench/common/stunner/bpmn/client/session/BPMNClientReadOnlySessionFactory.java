@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.core.client.session.impl.ClientReadOnlyS
 @BPMN
 public class BPMNClientReadOnlySessionFactory extends AbstractBPMNClientSessionFactory<ClientReadOnlySession> {
 
-    private final WorkItemDefinitionClientRegistry workItemDefinitionRegistry;
+    private final WorkItemDefinitionClientRegistry workItemDefinitionClientService;
     private final ManagedInstance<ClientReadOnlySessionImpl> readOnlySessions;
 
     protected BPMNClientReadOnlySessionFactory() {
@@ -37,15 +37,15 @@ public class BPMNClientReadOnlySessionFactory extends AbstractBPMNClientSessionF
     }
 
     @Inject
-    public BPMNClientReadOnlySessionFactory(final WorkItemDefinitionClientRegistry workItemDefinitionRegistry,
+    public BPMNClientReadOnlySessionFactory(final WorkItemDefinitionClientRegistry workItemDefinitionClientService,
                                             final ManagedInstance<ClientReadOnlySessionImpl> readOnlySessions) {
-        this.workItemDefinitionRegistry = workItemDefinitionRegistry;
+        this.workItemDefinitionClientService = workItemDefinitionClientService;
         this.readOnlySessions = readOnlySessions;
     }
 
     @Override
-    protected WorkItemDefinitionClientRegistry getWorkItemDefinitionRegistry() {
-        return workItemDefinitionRegistry;
+    protected WorkItemDefinitionClientRegistry getWorkItemDefinitionService() {
+        return workItemDefinitionClientService;
     }
 
     @Override

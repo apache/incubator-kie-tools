@@ -19,13 +19,13 @@ package org.kie.workbench.common.stunner.backend.service;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.backend.lookup.impl.VFSLookupManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequest;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.io.IOService;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -37,7 +37,7 @@ public class DiagramLookupServiceImplTest {
     private static final String NAME = "name1";
 
     @Mock
-    private IOService ioService;
+    private VFSLookupManager<Diagram<Graph, Metadata>> vfsLookupManager;
 
     @Mock
     private DiagramServiceImpl diagramService;
@@ -50,7 +50,7 @@ public class DiagramLookupServiceImplTest {
     @Before
     public void setup() {
         when(diagram.getName()).thenReturn(NAME);
-        tested = new DiagramLookupServiceImpl(ioService,
+        tested = new DiagramLookupServiceImpl(vfsLookupManager,
                                               diagramService);
     }
 

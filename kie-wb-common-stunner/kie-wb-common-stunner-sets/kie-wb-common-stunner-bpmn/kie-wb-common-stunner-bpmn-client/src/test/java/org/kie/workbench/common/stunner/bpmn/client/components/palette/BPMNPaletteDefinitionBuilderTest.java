@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.IconDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
@@ -75,7 +76,7 @@ public class BPMNPaletteDefinitionBuilderTest {
             .setDefaultHandler("widHandler1")
             .setDisplayName(WID_DISPLAY_NAME)
             .setDescription(WID_DESC)
-            .setIconData("widIconData");
+            .setIconDefinition(new IconDefinition().setIconData("widIconData"));
 
     @Mock
     private DefinitionManager definitionManager;

@@ -24,6 +24,7 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.workitem.IconDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
@@ -43,7 +44,7 @@ public class ServiceTaskShapeViewHandlerTest {
     private static final String WID_ICON_DATA = "iconData1";
     private static final WorkItemDefinition DEF = new WorkItemDefinition()
             .setName(WID_ID)
-            .setIconData(WID_ICON_DATA);
+            .setIconDefinition(new IconDefinition().setIconData(WID_ICON_DATA));
 
     @Mock
     private WorkItemDefinitionRegistry registry;

@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Typed;
 
@@ -58,5 +59,10 @@ public class WorkItemDefinitionCacheRegistry implements WorkItemDefinitionRegist
 
     public void clear() {
         definitions.clear();
+    }
+
+    @PreDestroy
+    public void destroy() {
+        clear();
     }
 }

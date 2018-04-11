@@ -21,29 +21,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.kie.workbench.common.stunner.bpmn.workitem.IconDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
-
-/*
-        TODO: Remove
-        assignments raw examples:
-        -------------------------
-        |inputs||outputs|
-        |inputs|||
-        |input1:String,input2:Float||output1:String,output2:Float|[din]pv1->input1,[din]pv2->input2,[dout]output1->pv1,[dout]output2->pv2
-        ||errorOutput_:String||[dout]errorOutput_->var1
-        _input1:String||||[din]var1->_input1
-        IntermediateMessageEventThrowingInputVar1:String||||[din]var1->IntermediateMessageEventThrowingInputVar1
-        EMAIL
-        *****
-        |From:String,Subject:String,To:String,Body:String|||
-        |From:String,Subject:String,To:String,Body:String|||[din]From=vfrom,[din]Subject=vsubject,[din]To=vto,[din]Body=vbody
- */
 
 public class WorkItemDefinitionMockRegistry implements WorkItemDefinitionRegistry {
 
     public static final String WID_EMAIL = "Email";
     public static final String WID_LOG = "Log";
+    private static final String EMAIL_ICON_URI = "email.png";
+    private static final String LOG_ICON_URI = "log.png";
     private static final String EMAIL_ICON_DATA = "data:image/png;base64,R0lGODlhEAAQANUAAChilmd9qW2DrXeMtJiYkZuajqGeiqZrEKehh6m30qyjhK1yErCmgbOpfrZ8FLmter2EFr+wd8HG2ca0ceDq9+Ps+Ojv+Ovx+fL1+vb4+/j5/Pvll/vusPvyufz62/797wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAkAACAALAAAAAAQABAAAAaAQJBwSCwaJ8ikclLUOJ9QJtEpqVolGekQAsl4v16tEPKBYKpnCSYC4ro/ZYx8/oB47vi7GcDHPBwdgYKBHA4DAgEXDQsbjY6NCxd8ABcMIAeYmI0HFp2eCkUHGwcVCQmlpwihpBUVFK2vBkWtprWmFbJEFK+7rrsUBUUEw8TFBUEAOw==";
     private static final String LOG_ICON_DATA = "data:image/png;base64,R0lGODlhEAAQAMQAAG+Fr3CFr3yRuIOSsYaUroidwIuWrI+ZqJGlx5WdpZugoKGknaeomK6slLKvkL21idSyaNq9fN3o+ODIj+Ps+evx+vP2+/f4+/n6/AAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAkAABkALAAAAAAQABAAAAVlYCaOZEk+aIqa4oO9MPSwLvxGsvlcwYUglwluRnJYjkiko9SwBCy/guDZKDEq2GyWUVpUApXotLIoKSjodFpRSlACFDGAkigdJHg8Gn8oGSQBEnISBiUEeYh4BCUDjY6PAyySIyEAOw==";
     public static final WorkItemDefinition EMAIL =
@@ -53,7 +40,9 @@ public class WorkItemDefinitionMockRegistry implements WorkItemDefinitionRegistr
                     .setDescription("Email task")
                     .setDisplayName("Email")
                     .setDocumentation("index.html")
-                    .setIconData(EMAIL_ICON_DATA)
+                    .setIconDefinition(new IconDefinition()
+                                               .setUri(EMAIL_ICON_URI)
+                                               .setIconData(EMAIL_ICON_DATA))
                     .setDefaultHandler("org.jbpm.process.workitem.email.EmailWorkItemHandler")
                     .setParameters("|From:String,Subject:String,To:String,Body:String|||");
     public static final WorkItemDefinition LOG =
@@ -63,7 +52,9 @@ public class WorkItemDefinitionMockRegistry implements WorkItemDefinitionRegistr
                     .setDescription("Log task")
                     .setDisplayName("Log")
                     .setDocumentation("index.html")
-                    .setIconData(LOG_ICON_DATA)
+                    .setIconDefinition(new IconDefinition()
+                                               .setUri(LOG_ICON_URI)
+                                               .setIconData(LOG_ICON_DATA))
                     .setDefaultHandler("org.jbpm.process.workitem.log.LogWorkItemHandler")
                     .setParameters("|Message:String|||");
 

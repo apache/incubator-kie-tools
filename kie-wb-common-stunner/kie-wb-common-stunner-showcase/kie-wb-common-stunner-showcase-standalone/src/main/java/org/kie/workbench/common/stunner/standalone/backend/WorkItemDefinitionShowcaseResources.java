@@ -16,32 +16,28 @@
 
 package org.kie.workbench.common.stunner.standalone.backend;
 
-import java.io.File;
-
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Specializes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.kie.workbench.common.stunner.backend.service.BackendFileSystemManagerImpl;
+import org.kie.workbench.common.stunner.backend.service.BackendFileSystemBootstrap;
 import org.kie.workbench.common.stunner.bpmn.backend.workitem.WorkItemDefinitionResources;
-import org.uberfire.backend.server.util.Paths;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 
+import static org.uberfire.backend.server.util.Paths.convert;
+
 /**
  * Work Item Definition resources specialization class for the standalone showcase.
- * It provides a different global root for work item defintions rather than the defaults.
- * It also deploys (on demand) the work item definitions found at WEB-INF/wid, if any.
+ * It provides different global roots for work item defintions rather than the defaults.
  */
 @ApplicationScoped
 @Specializes
 public class WorkItemDefinitionShowcaseResources extends WorkItemDefinitionResources {
 
-    private static final String WID_PATH = "wid";
-
-    private final BackendFileSystemManagerImpl backendFileSystemManager;
+    private final BackendFileSystemBootstrap backendFileSystemManager;
 
     // CDI proxy.
     protected WorkItemDefinitionShowcaseResources() {
@@ -50,30 +46,29 @@ public class WorkItemDefinitionShowcaseResources extends WorkItemDefinitionResou
 
     @Inject
     public WorkItemDefinitionShowcaseResources(final @Named("ioStrategy") IOService ioService,
-                                               final BackendFileSystemManagerImpl backendFileSystemManager) {
-        super(ioService,
-              () -> WID_PATH);
+                                               final BackendFileSystemBootstrap backendFileSystemManager) {
+        super(ioService);
         this.backendFileSystemManager = backendFileSystemManager;
     }
 
-    @PostConstruct
-    public void init() {
-        // Register the work item definitions found in the webapp directory.
-        registerAppDefinitions();
+    @Override
+    public Path resolveResourcePath(final Metadata metadata) {
+        if (null != metadata.getPath()) {
+            return super.resolveResourcePath(metadata);
+        }
+        return backendFileSystemManager.getRootPath();
     }
 
     @Override
-    public Path resolveSearchPath(org.uberfire.backend.vfs.Path path) {
-        return super.resolveSearchPath(null != path ? path : Paths.convert(getWorkItemDefinitionsRootPath()));
+    public Path resolveGlobalPath(final Metadata metadata) {
+        if (null != metadata.getRoot()) {
+            return super.resolveGlobalPath(metadata);
+        }
+        return resolveGlobalPathByRoot(convert(backendFileSystemManager.getRootPath()));
     }
 
-    private void registerAppDefinitions() {
-        final String widAppPath = backendFileSystemManager.getPathRelativeToApp(WID_PATH);
-        backendFileSystemManager.findAndDeployFiles(new File(widAppPath),
-                                                    getWorkItemDefinitionsRootPath());
-    }
-
-    private Path getWorkItemDefinitionsRootPath() {
-        return backendFileSystemManager.getRootPath().resolve(WID_PATH);
+    @Override
+    public Path resolveResourcesPath(final Metadata metadata) {
+        return resolveGlobalPath(metadata);
     }
 }

@@ -31,6 +31,7 @@ import org.jbpm.process.workitem.WorkDefinitionImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.backend.workitem.service.WorkItemDefinitionRemoteService;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -95,6 +96,7 @@ public class WorkItemDefinitionParserTest {
     public void testParseJBPMWorkDefinition() {
         WorkItemDefinition workItemDefinition =
                 WorkItemDefinitionParser.parse(jbpmWorkDefinition,
+                                               w -> "uri",
                                                dataUriProvider);
         assertNotNull(workItemDefinition);
         assertEquals(NAME, workItemDefinition.getName());
@@ -103,7 +105,7 @@ public class WorkItemDefinitionParserTest {
         assertEquals(DISPLAY_NAME, workItemDefinition.getDisplayName());
         assertEquals(DOC, workItemDefinition.getDocumentation());
         assertEquals(HANDLER, workItemDefinition.getDefaultHandler());
-        assertEquals(ICON_DATA, workItemDefinition.getIconData());
+        assertEquals(ICON_DATA, workItemDefinition.getIconDefinition().getIconData());
         assertEquals("|param1:String,param2:String|", workItemDefinition.getParameters());
         assertEquals("||", workItemDefinition.getResults());
     }
@@ -114,6 +116,7 @@ public class WorkItemDefinitionParserTest {
         String raw = loadStream(WID_EMAIL);
         Collection<WorkItemDefinition> workItemDefinitions =
                 WorkItemDefinitionParser.parse(raw,
+                                               w -> "uri",
                                                dataUriProvider);
         assertNotNull(workItemDefinitions);
         assertEquals(1, workItemDefinitions.size());
@@ -125,7 +128,7 @@ public class WorkItemDefinitionParserTest {
         assertEquals("Email", workItemDefinition.getDisplayName());
         assertEquals("index.html", workItemDefinition.getDocumentation());
         assertEquals("org.jbpm.process.workitem.email.EmailWorkItemHandler", workItemDefinition.getDefaultHandler());
-        assertEquals(ICON_DATA, workItemDefinition.getIconData());
+        assertEquals(ICON_DATA, workItemDefinition.getIconDefinition().getIconData());
         assertEquals("|Body:String,From:String,Subject:String,To:String|", workItemDefinition.getParameters());
         assertEquals("||", workItemDefinition.getResults());
     }
@@ -136,6 +139,7 @@ public class WorkItemDefinitionParserTest {
         String raw = loadStream(WID_FTP);
         Collection<WorkItemDefinition> workItemDefinitions =
                 WorkItemDefinitionParser.parse(raw,
+                                               w -> "uri",
                                                dataUriProvider);
         assertNotNull(workItemDefinitions);
         assertEquals(1, workItemDefinitions.size());
@@ -147,12 +151,12 @@ public class WorkItemDefinitionParserTest {
         assertEquals("FTP", workItemDefinition.getDisplayName());
         assertEquals("", workItemDefinition.getDocumentation());
         assertEquals("org.jbpm.process.workitem.ftp.FTPUploadWorkItemHandler", workItemDefinition.getDefaultHandler());
-        assertEquals(ICON_DATA, workItemDefinition.getIconData());
+        assertEquals(ICON_DATA, workItemDefinition.getIconDefinition().getIconData());
         assertEquals("|Body:String,FilePath:String,Password:String,User:String|", workItemDefinition.getParameters());
         assertEquals("||", workItemDefinition.getResults());
     }
 
-    private static String loadStream(String path) throws IOException {
+    public static String loadStream(String path) throws IOException {
         final StringWriter writer = new StringWriter();
         IOUtils.copy(Thread.currentThread()
                              .getContextClassLoader()
@@ -171,8 +175,9 @@ public class WorkItemDefinitionParserTest {
     private static void testServiceRepository() {
         System.out.println("Starting...");
         Collection<WorkItemDefinition> workItems =
-                WorkItemDefinitionParser.parse(JBOSS_REPO,
-                                               new String[]{"Email"});
+                WorkItemDefinitionRemoteService.fetch(WorkItemDefinitionRemoteService.DEFAULT_LOOKUP_SERVICE,
+                                                      JBOSS_REPO,
+                                                      new String[]{"Email"});
 
         System.out.println("Completed!");
         WorkItemDefinition workItemDefinition = workItems.iterator().next();
@@ -185,6 +190,6 @@ public class WorkItemDefinitionParserTest {
         assertEquals("org.jbpm.process.workitem.email.EmailWorkItemHandler", workItemDefinition.getDefaultHandler());
         assertEquals("|Body:String,From:String,Subject:String,To:String|", workItemDefinition.getParameters());
         assertEquals("||", workItemDefinition.getResults());
-        assertNotNull(workItemDefinition.getIconData());
+        assertNotNull(workItemDefinition.getIconDefinition().getIconData());
     }
 }

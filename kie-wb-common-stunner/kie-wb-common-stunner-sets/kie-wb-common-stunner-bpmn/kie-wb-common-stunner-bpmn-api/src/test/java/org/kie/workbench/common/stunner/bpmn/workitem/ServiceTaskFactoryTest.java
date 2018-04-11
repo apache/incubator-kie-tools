@@ -57,7 +57,7 @@ public class ServiceTaskFactoryTest {
                     .setDisplayName(WID_DISP_NAME)
                     .setDescription(WID_DESC)
                     .setDocumentation(WID_DOC)
-                    .setIconData(WID_ICON_DATA)
+                    .setIconDefinition(new IconDefinition().setIconData(WID_ICON_DATA))
                     .setParameters(WID_PARAMS)
                     .setResults(WID_RESULTS);
 

@@ -106,6 +106,9 @@ public final class MetadataImpl extends AbstractMetadata {
                         result.setShapeSetId(s);
                     }
                 }
+            } else {
+                result.setTitle(title);
+                result.setShapeSetId(ssid);
             }
             return result;
         }

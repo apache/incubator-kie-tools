@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.ServiceTaskShapeViewHandler;
+import org.kie.workbench.common.stunner.bpmn.workitem.IconDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
@@ -53,7 +54,7 @@ public class ServiceTaskShapeDefTest {
                                                                                      WID_ID);
     private static final WorkItemDefinition DEF = new WorkItemDefinition()
             .setName(WID_ID)
-            .setIconData(WID_ICON_DATA);
+            .setIconDefinition(new IconDefinition().setIconData(WID_ICON_DATA));
 
     private static final double WIDTH = 111d;
     private static final double HEIGHT = 121d;
