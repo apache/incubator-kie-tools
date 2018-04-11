@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.project.cli;
+package org.kie.workbench.common.migration.cli;
 
 import java.nio.file.Path;
 
-import org.kie.workbench.common.migration.cli.SystemAccess;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration;
 
 public class MigrationSetup {

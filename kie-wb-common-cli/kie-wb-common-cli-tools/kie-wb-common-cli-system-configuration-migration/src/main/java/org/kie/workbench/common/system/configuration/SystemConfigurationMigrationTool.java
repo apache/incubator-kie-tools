@@ -19,12 +19,12 @@ package org.kie.workbench.common.system.configuration;
 import java.nio.file.Path;
 
 import org.jboss.weld.environment.se.Weld;
-import org.jboss.weld.environment.se.WeldContainer;
+import org.kie.workbench.common.migration.cli.ContainerHandler;
 import org.kie.workbench.common.migration.cli.MigrationConstants;
+import org.kie.workbench.common.migration.cli.MigrationSetup;
 import org.kie.workbench.common.migration.cli.MigrationTool;
 import org.kie.workbench.common.migration.cli.SystemAccess;
 import org.kie.workbench.common.migration.cli.ToolConfig;
-import org.kie.workbench.common.project.cli.MigrationSetup;
 import org.kie.workbench.common.project.cli.PromptService;
 
 public class SystemConfigurationMigrationTool implements MigrationTool {
@@ -50,8 +50,13 @@ public class SystemConfigurationMigrationTool implements MigrationTool {
     }
 
     @Override
+    public boolean isSystemMigration() {
+        return true;
+    }
+
+    @Override
     public void run(final ToolConfig config,
-                    final SystemAccess system) {
+                     final SystemAccess system) {
         this.config = config;
         this.system = system;
 
@@ -69,27 +74,13 @@ public class SystemConfigurationMigrationTool implements MigrationTool {
     }
 
     private void migrate() {
-        WeldContainer container = null;
-        try {
-            container = new Weld().initialize();
-            final ConfigGroupsMigrationService configGroupsMigrationService = loadMigrationService(container);
-            configGroupsMigrationService.groupSystemConfigGroups();
-        } catch (Throwable t) {
-            system.err().println("Error during migration: ");
-            t.printStackTrace(system.err());
-        } finally {
-            if (container != null && container.isRunning()) {
-                quietShutdown(container);
-            }
-        }
-    }
-
-    private void quietShutdown(WeldContainer container) {
-        try {
-            container.shutdown();
-        } catch (Throwable ignore) {
-            // Suppress exceptions from bad shutdown
-        }
+        ContainerHandler container = new ContainerHandler(() -> new Weld().initialize());
+        container.run(ConfigGroupsMigrationService.class,
+                      service -> service.groupSystemConfigGroups(),
+                      error -> {
+                          system.err().println("Error during migration: ");
+                          error.printStackTrace(system.err());
+                      });
     }
 
     private boolean validateTarget() {
@@ -99,9 +90,5 @@ public class SystemConfigurationMigrationTool implements MigrationTool {
         }
 
         return true;
-    }
-
-    private static ConfigGroupsMigrationService loadMigrationService(final WeldContainer container) {
-        return container.instance().select(ConfigGroupsMigrationService.class).get();
     }
 }

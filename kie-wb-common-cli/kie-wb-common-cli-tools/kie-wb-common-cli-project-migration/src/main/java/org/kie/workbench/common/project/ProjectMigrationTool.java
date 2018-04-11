@@ -3,14 +3,14 @@ package org.kie.workbench.common.project;
 import java.nio.file.Path;
 
 import org.jboss.weld.environment.se.Weld;
-import org.jboss.weld.environment.se.WeldContainer;
-import org.kie.workbench.common.migration.cli.MigrationConstants;
+import org.kie.workbench.common.migration.cli.ContainerHandler;
+import org.kie.workbench.common.migration.cli.MigrationSetup;
 import org.kie.workbench.common.migration.cli.MigrationTool;
+import org.kie.workbench.common.migration.cli.NiogitDirUtil;
 import org.kie.workbench.common.migration.cli.SystemAccess;
 import org.kie.workbench.common.migration.cli.ToolConfig;
 import org.kie.workbench.common.project.cli.ExternalMigrationService;
 import org.kie.workbench.common.project.cli.InternalMigrationService;
-import org.kie.workbench.common.project.cli.MigrationSetup;
 import org.kie.workbench.common.project.cli.PromptService;
 
 public class ProjectMigrationTool implements MigrationTool {
@@ -37,6 +37,11 @@ public class ProjectMigrationTool implements MigrationTool {
     }
 
     @Override
+    public boolean isSystemMigration() {
+        return true;
+    }
+
+    @Override
     public void run(ToolConfig config, SystemAccess system) {
 
         this.config = config;
@@ -59,40 +64,22 @@ public class ProjectMigrationTool implements MigrationTool {
     }
 
     private boolean validateTarget() {
-
-        if (config.getTarget().resolve("system").resolve(MigrationConstants.SYSTEM_GIT).toFile().exists()) {
+        if (NiogitDirUtil.isLegacyNiogitDir(config.getTarget())) {
+            return true;
+        } else {
             system.err().println(String.format("The target path looks like it already contains an updated filesystem: %s", niogitDir));
             return false;
         }
-
-        return true;
     }
 
     private void migrate() {
-        WeldContainer container = null;
-        try {
-            container = new Weld().initialize();
-            InternalMigrationService internalService = loadInternalService(container);
-            internalService.migrateAllProjects(niogitDir);
-        } catch (Throwable t) {
-            system.err().println("Error during migration: ");
-            t.printStackTrace(system.err());
-        } finally {
-            if (container != null && container.isRunning()) {
-                quietShutdown(container);
-            }
-        }
-    }
-
-    private void quietShutdown(WeldContainer container) {
-        try {
-            container.shutdown();
-        } catch (Throwable ignore) {
-            // Suppress exceptions from bad shutdown
-        }
-    }
-
-    private static InternalMigrationService loadInternalService(WeldContainer container) {
-        return container.instance().select(InternalMigrationService.class).get();
+        final ContainerHandler container = new ContainerHandler(() -> new Weld().initialize());
+        container.run(InternalMigrationService.class,
+                      service -> service.migrateAllProjects(niogitDir),
+                      error -> {
+                          system.err().println("Error during migration: ");
+                          error.printStackTrace(system.err());
+                      });
+        container.close();
     }
 }

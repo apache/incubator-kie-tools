@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -51,7 +52,6 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryCopier;
-import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigurationFactory;
@@ -72,10 +72,9 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
-import org.uberfire.spaces.SpacesAPI;
 
-import static org.guvnor.structure.repositories.EnvironmentParameters.SCHEME;
 import static org.guvnor.structure.repositories.EnvironmentParameters.MIRROR;
+import static org.guvnor.structure.repositories.EnvironmentParameters.SCHEME;
 import static org.guvnor.structure.server.config.ConfigType.REPOSITORY;
 
 @Service
@@ -93,12 +92,10 @@ public class ExamplesServiceImpl implements ExamplesService {
     private ConfigurationFactory configurationFactory;
     private RepositoryFactory repositoryFactory;
     private KieModuleService moduleService;
-    private RepositoryService repositoryService;
     private RepositoryCopier repositoryCopier;
     private OrganizationalUnitService ouService;
     private Event<NewProjectEvent> newProjectEvent;
     private MetadataService metadataService;
-    private SpacesAPI spaces;
     private ExampleRepository playgroundRepository;
     private ProjectScreenService projectScreenService;
 
@@ -111,24 +108,20 @@ public class ExamplesServiceImpl implements ExamplesService {
                                final ConfigurationFactory configurationFactory,
                                final RepositoryFactory repositoryFactory,
                                final KieModuleService moduleService,
-                               final RepositoryService repositoryService,
                                final RepositoryCopier repositoryCopier,
                                final OrganizationalUnitService ouService,
                                final WorkspaceProjectService projectService,
                                final MetadataService metadataService,
-                               final SpacesAPI spaces,
                                final Event<NewProjectEvent> newProjectEvent,
                                final ProjectScreenService projectScreenService) {
         this.ioService = ioService;
         this.configurationFactory = configurationFactory;
         this.repositoryFactory = repositoryFactory;
         this.moduleService = moduleService;
-        this.repositoryService = repositoryService;
         this.repositoryCopier = repositoryCopier;
         this.ouService = ouService;
         this.projectService = projectService;
         this.metadataService = metadataService;
-        this.spaces = spaces;
         this.newProjectEvent = newProjectEvent;
         this.projectScreenService = projectScreenService;
     }

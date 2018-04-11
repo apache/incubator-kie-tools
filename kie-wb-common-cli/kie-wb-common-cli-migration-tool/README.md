@@ -39,11 +39,11 @@ This should create a directory (`kie-wb-common-cli-migration-tool-$VERSION`) in 
 Using the Tool
 --------------
 
-The tool is meant to operate on the `.niogit` directory of a workbench distribution. *IMPORTANT*: there should not be a running workbench using this directory when using the tool.
+The tool has two use cases. Either it can migrate a repository containing one or more workbench projects, or it can migrate the `.niogit` directory of a workbench distribution from the last version. *IMPORTANT*: there should not be a running workbench using this directory when using the tool.
 
 For the instructions below, these variables are assumed:
 
-* `$NIOGIT` is the path of your `.niogit` directory being migrated.
+* `$TARGET` is the path of your of your directory being migrated (either an `.niogit` or the root folder of a git repository).
 * `$TOOL_DIR` is the path to the directory installed in the previous section (i.e. `$INSTALL_DIR/kie-wb-common-cli-migration-tool-$VERSION/`).
 
 Simple Usage
@@ -52,11 +52,11 @@ Simple Usage
 The simplest way to invoke the tool is
 
 Linux -
-    $TOOL_DIR/bin/migration-tool.sh -t $NIOGIT
+    $TOOL_DIR/bin/migration-tool.sh -t $TARGET
 
 
 Windows -
-    $TOOL_DIR\bin\migration-tool.bat -t $NIOGIT
+    $TOOL_DIR\bin\migration-tool.bat -t $TARGET
 
 
 The tool will show a Wizard to choose between:
@@ -65,23 +65,11 @@ The tool will show a Wizard to choose between:
 * Run all the available migration tools sequentially.
 * Exit the migration tool. 
 
-The tool will do the migration in-place: when the tool finishes a successful run, the `$NIOGIT` directory will be ready for use with the new workbench.
+Note that the "Project" and "System Configuration" migration options will only be available if you are migrating an niogit directory. They are not necessary when migrating a repository.
 
-*VERY IMPORTANT*: Because the tool migrates in-place, it's important to make backups before use.
+When migrating an niogit directory, the tool will do the migration in-place: when the tool finishes a successful run, the `$TARGET` directory will be ready for use with the new workbench.
 
-Batch Mode
-----------
+*VERY IMPORTANT*: Because the tool migrates niogit directories in-place, it's important to make backups before use.
 
-The simple invocation will prompt the user to confirm before migration is attempted. This is done to warn users about making backups, in case an error occurs while migrating project data.
+When migrating a repository directory, the migration does not occur in-place. The tool will prompt the user for an output location to export migrated projects. The tool will produce one or more bare git repository folders: one for each migrated project in the target repository.
 
-If you wish to run the tool without this prompt, you can add the `-b` flag like so:
-
-Linux -
-    ```
-    $TOOL_DIR/bin/migration-tool.sh -b -t $NIOGIT
-    ```
-
-Windows -
-    ```
-    $TOOL_DIR\bin\migration-tool.bat -b -t $NIOGIT
-    ```

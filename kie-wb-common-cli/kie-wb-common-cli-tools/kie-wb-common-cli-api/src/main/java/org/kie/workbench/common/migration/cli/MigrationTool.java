@@ -8,5 +8,7 @@ public interface MigrationTool {
 
     Integer getPriority();
 
+    boolean isSystemMigration();
+
     void run(ToolConfig config, SystemAccess system);
 }

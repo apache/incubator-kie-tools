@@ -37,11 +37,10 @@ import org.kie.workbench.common.forms.migration.tool.pipelines.MigrationPipeline
 import org.kie.workbench.common.forms.migration.tool.util.FormsMigrationConstants;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.migration.cli.MigrationConstants;
+import org.kie.workbench.common.migration.cli.MigrationSetup;
 import org.kie.workbench.common.migration.cli.MigrationTool;
 import org.kie.workbench.common.migration.cli.SystemAccess;
 import org.kie.workbench.common.migration.cli.ToolConfig;
-import org.kie.workbench.common.project.ProjectMigrationTool;
-import org.kie.workbench.common.project.cli.MigrationSetup;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
@@ -49,7 +48,6 @@ import org.uberfire.java.nio.file.FileVisitResult;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.SimpleFileVisitor;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration;
 
 public class FormsMigrationTool implements MigrationTool {
 
@@ -74,6 +72,11 @@ public class FormsMigrationTool implements MigrationTool {
     @Override
     public Integer getPriority() {
         return 2;
+    }
+
+    @Override
+    public boolean isSystemMigration() {
+        return false;
     }
 
     @Override
@@ -194,12 +197,5 @@ public class FormsMigrationTool implements MigrationTool {
         }
 
         return true;
-    }
-
-    private void configureProperties() {
-        system.setProperty(JGitFileSystemProviderConfiguration.GIT_NIO_DIR, niogitDir.getParent().toString());
-        system.setProperty(JGitFileSystemProviderConfiguration.GIT_NIO_DIR_NAME, niogitDir.getFileName().toString());
-        system.setProperty(JGitFileSystemProviderConfiguration.GIT_DAEMON_ENABLED, "false");
-        system.setProperty(JGitFileSystemProviderConfiguration.GIT_SSH_ENABLED, "false");
     }
 }

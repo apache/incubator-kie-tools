@@ -56,21 +56,27 @@ public class ToolConfig {
                                                                          .desc(BATCH_DESCRIPTION)
                                                                          .build());
 
-    private CommandLine cli;
+    private final Path target;
+    private final boolean batch;
 
     public ToolConfig(CommandLine cli) {
-        this.cli = cli;
+        this(Optional.ofNullable(cli.getOptionValue(TARGET_SHORT))
+                     .map(str -> Paths.get(str).toAbsolutePath().normalize())
+                     .orElseThrow(() -> new IllegalArgumentException("A target must be specified.")),
+             cli.hasOption(BATCH_SHORT));
+    }
+
+    public ToolConfig(Path target, boolean batch) {
+        this.target = target;
+        this.batch = batch;
     }
 
     public Path getTarget() {
-        return Optional
-                       .ofNullable(cli.getOptionValue(TARGET_SHORT))
-                       .map(str -> Paths.get(str).toAbsolutePath().normalize())
-                       .orElseThrow(() -> new IllegalArgumentException("A target must be specified."));
+        return target;
     }
 
     public boolean isBatch() {
-        return cli.hasOption(BATCH_SHORT);
+        return batch;
     }
 
     public static ToolConfig parse(String[] args) throws ParseException {

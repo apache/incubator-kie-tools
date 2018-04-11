@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.events.NewProjectEvent;
@@ -32,9 +33,7 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
 import org.guvnor.structure.repositories.Branch;
-import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryCopier;
-import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigType;
@@ -62,14 +61,17 @@ import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.spaces.Space;
-import org.uberfire.spaces.SpacesAPI;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ExamplesServiceImplRepositoryNamesTest {
@@ -85,9 +87,6 @@ public class ExamplesServiceImplRepositoryNamesTest {
 
     @Mock
     private KieModuleService moduleService;
-
-    @Mock
-    private RepositoryService repositoryService;
 
     @Mock
     private RepositoryCopier repositoryCopier;
@@ -116,9 +115,6 @@ public class ExamplesServiceImplRepositoryNamesTest {
     private WorkspaceProjectService projectService;
 
     @Mock
-    private SpacesAPI spaces;
-
-    @Mock
     private ProjectScreenService projectScreenService;
 
     private ExamplesServiceImpl service;
@@ -136,12 +132,10 @@ public class ExamplesServiceImplRepositoryNamesTest {
                                               configurationFactory,
                                               repositoryFactory,
                                               moduleService,
-                                              repositoryService,
                                               repositoryCopier,
                                               ouService,
                                               projectService,
                                               metadataService,
-                                              spaces,
                                               newProjectEvent,
                                               projectScreenService));
         when(ouService.getOrganizationalUnits()).thenReturn(new HashSet<OrganizationalUnit>() {{
@@ -232,8 +226,6 @@ public class ExamplesServiceImplRepositoryNamesTest {
     public void nameIsTaken() {
         String module1 = "module1";
         String module1_1 = "module1 [1]";
-        doReturn(mock(Repository.class)).when(repositoryService).getRepositoryFromSpace(any(Space.class),
-                                                                                        eq(module1));
 
         WorkspaceProject project1 = mock(WorkspaceProject.class);
         doReturn(module1).when(project1).getName();
@@ -262,11 +254,6 @@ public class ExamplesServiceImplRepositoryNamesTest {
         String module = "module1";
         String module_1 = "module1 [1]";
         String module_2 = "module1 [2]";
-
-        doReturn(mock(Repository.class)).when(repositoryService).getRepositoryFromSpace(any(Space.class),
-                                                                                        eq(module));
-        doReturn(mock(Repository.class)).when(repositoryService).getRepositoryFromSpace(any(Space.class),
-                                                                                        eq(module_1));
 
         doReturn(module_2).when(projectService).createFreshProjectName(any(),
                                                                        eq(module));

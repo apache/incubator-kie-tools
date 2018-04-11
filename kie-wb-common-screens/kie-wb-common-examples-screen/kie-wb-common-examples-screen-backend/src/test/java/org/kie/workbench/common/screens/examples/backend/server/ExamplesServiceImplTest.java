@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
@@ -42,11 +43,9 @@ import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryCopier;
-import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigType;
-import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
@@ -70,10 +69,23 @@ import org.uberfire.io.IOService;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.Space;
-import org.uberfire.spaces.SpacesAPI;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ExamplesServiceImplTest {
@@ -89,9 +101,6 @@ public class ExamplesServiceImplTest {
 
     @Mock
     private KieModuleService moduleService;
-
-    @Mock
-    private RepositoryService repositoryService;
 
     @Mock
     private RepositoryCopier repositoryCopier;
@@ -120,9 +129,6 @@ public class ExamplesServiceImplTest {
     private WorkspaceProjectService projectService;
 
     @Mock
-    private SpacesAPI spaces;
-
-    @Mock
     private ProjectScreenService projectScreenService;
 
     private ExamplesServiceImpl service;
@@ -133,12 +139,10 @@ public class ExamplesServiceImplTest {
                                               configurationFactory,
                                               repositoryFactory,
                                               moduleService,
-                                              repositoryService,
                                               repositoryCopier,
                                               ouService,
                                               projectService,
                                               metadataService,
-                                              spaces,
                                               newProjectEvent,
                                               projectScreenService));
         when(ouService.getOrganizationalUnits()).thenReturn(new HashSet<OrganizationalUnit>() {{

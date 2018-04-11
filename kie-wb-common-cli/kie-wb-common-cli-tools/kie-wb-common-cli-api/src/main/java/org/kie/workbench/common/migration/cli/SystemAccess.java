@@ -23,15 +23,21 @@ import java.nio.file.attribute.FileAttribute;
 
 public interface SystemAccess {
     /**
+     * @return This method never returns normally. Either the JVM exits, or an exception is thrown. This return value,
+     *         is just a convenience.
      * @throws HaltingException Thrown for implementations that do not acutally exit the JVM so that execution is interrupted.
      */
-    void exit(int status) throws HaltingException;
+    <T> T exit(int status) throws HaltingException;
     Console console();
     PrintStream err();
     PrintStream out();
     void setProperty(String name, String value);
     Path move(Path source, Path target, CopyOption... options) throws IOException;
     Path createDirectory(Path dir, FileAttribute<?>... attrs) throws IOException;
+    Path createTemporaryDirectory(String prefix, FileAttribute<?>... attrs) throws IOException;
+    Path currentWorkingDirectory();
+    void recursiveDelete(Path tmpNiogit) throws IOException;
+    void copyDirectory(Path source, Path target) throws IOException;
 
     interface Console {
         void format(String fmt, Object... args);

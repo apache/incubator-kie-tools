@@ -25,7 +25,6 @@ import org.guvnor.structure.backend.config.ConfigurationFactoryImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.RepositoryCopier;
-import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.ConfigType;
@@ -43,10 +42,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.io.IOService;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.spaces.SpacesAPI;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ExamplesServiceImplCheckNoIndexConfigTest {
@@ -63,9 +65,6 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
     private KieModuleService moduleService;
 
     @Mock
-    private RepositoryService repositoryService;
-
-    @Mock
     private OrganizationalUnitService ouService;
 
     @Mock
@@ -76,9 +75,6 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
 
     @Mock
     private WorkspaceProjectService projectService;
-
-    @Mock
-    private SpacesAPI spaces;
 
     @Mock
     private ProjectScreenService projectScreenService;
@@ -102,12 +98,10 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
                                               configurationFactory,
                                               repositoryFactory,
                                               moduleService,
-                                              repositoryService,
                                               repositoryCopier,
                                               ouService,
                                               projectService,
                                               metadataService,
-                                              spaces,
                                               newProjectEvent,
                                               projectScreenService));
     }
