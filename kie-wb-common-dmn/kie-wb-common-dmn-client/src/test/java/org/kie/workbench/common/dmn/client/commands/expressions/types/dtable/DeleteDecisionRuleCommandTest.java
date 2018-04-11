@@ -35,6 +35,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -109,6 +110,31 @@ public class DeleteDecisionRuleCommandTest {
                      graphCommand.execute(graphCommandExecutionContext));
         assertEquals(0,
                      dtable.getRule().size());
+    }
+
+    @Test
+    public void testGraphCommandExecuteRemoveFromMiddle() throws Exception {
+        final DecisionRule firstRule = mock(DecisionRule.class);
+        final DecisionRule lastRule = mock(DecisionRule.class);
+
+        dtable.getRule().add(0, firstRule);
+        dtable.getRule().add(lastRule);
+
+        uiModel.appendRow(new DMNGridRow());
+        uiModel.appendRow(new DMNGridRow());
+
+        makeCommand(1);
+
+        assertEquals(3, dtable.getRule().size());
+
+        final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
+
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.execute(graphCommandExecutionContext));
+
+        assertEquals(2, dtable.getRule().size());
+        assertEquals(firstRule, dtable.getRule().get(0));
+        assertEquals(lastRule, dtable.getRule().get(1));
     }
 
     @Test

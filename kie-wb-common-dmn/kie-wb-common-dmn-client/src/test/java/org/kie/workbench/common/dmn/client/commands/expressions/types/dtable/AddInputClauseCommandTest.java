@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.commands.expressions.types.dtable;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -170,6 +171,36 @@ public class AddInputClauseCommandTest {
         assertEquals(2, dtable.getRule().get(1).getInputEntry().size());
         assertEquals(ruleTwoOldInput, dtable.getRule().get(1).getInputEntry().get(1).getText());
         assertEquals(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE, dtable.getRule().get(1).getInputEntry().get(0).getText());
+    }
+
+    @Test
+    public void testGraphCommandExecuteInsertMiddle() throws Exception {
+        makeCommand(DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT + 1);
+
+        final String ruleInputOne = "rule in 1";
+        final String ruleInputTwo = "rule in 2";
+
+        dtable.getInput().add(new InputClause());
+        dtable.getInput().add(new InputClause());
+        addRuleWithInputClauseValues(ruleInputOne, ruleInputTwo);
+
+        assertEquals(2, dtable.getInput().size());
+
+        //Graph command will insert new InputClause at index 1 of the InputEntries
+        final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
+
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.execute(graphCommandExecutionContext));
+
+        assertEquals(3, dtable.getInput().size());
+
+        final List<UnaryTests> ruleInputs = dtable.getRule().get(0).getInputEntry();
+
+        // first rule
+        assertEquals(3, dtable.getRule().get(0).getInputEntry().size());
+        assertEquals(ruleInputOne, ruleInputs.get(0).getText());
+        assertEquals(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE, ruleInputs.get(1).getText());
+        assertEquals(ruleInputTwo, ruleInputs.get(2).getText());
     }
 
     @Test(expected = ArrayIndexOutOfBoundsException.class)

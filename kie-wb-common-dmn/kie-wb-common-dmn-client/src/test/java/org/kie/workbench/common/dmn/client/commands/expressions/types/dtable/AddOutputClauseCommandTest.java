@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.commands.expressions.types.dtable;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -154,6 +155,36 @@ public class AddOutputClauseCommandTest {
         // second rule
         assertEquals(1, dtable.getRule().get(1).getOutputEntry().size());
         assertEquals(AddOutputClauseCommand.OUTPUT_CLAUSE_DEFAULT_VALUE, dtable.getRule().get(1).getOutputEntry().get(0).getText());
+    }
+
+    @Test
+    public void testGraphCommandExecuteInsertMiddle() throws Exception {
+        makeCommand(DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT + 1);
+
+        final String ruleOutputOne = "rule out 1";
+        final String ruleOutputTwo = "rule out 2";
+
+        dtable.getOutput().add(new OutputClause());
+        dtable.getOutput().add(new OutputClause());
+        addRuleWithOutputClauseValues(ruleOutputOne, ruleOutputTwo);
+
+        assertEquals(2, dtable.getOutput().size());
+
+        //Graph command will insert new OutputClause at index 1 of the OutputEntries
+        final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
+
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.execute(graphCommandExecutionContext));
+
+        assertEquals(3, dtable.getOutput().size());
+
+        final List<LiteralExpression> ruleOutputs = dtable.getRule().get(0).getOutputEntry();
+
+        // first rule
+        assertEquals(3, dtable.getRule().get(0).getOutputEntry().size());
+        assertEquals(ruleOutputOne, ruleOutputs.get(0).getText());
+        assertEquals(AddOutputClauseCommand.OUTPUT_CLAUSE_DEFAULT_VALUE, ruleOutputs.get(1).getText());
+        assertEquals(ruleOutputTwo, ruleOutputs.get(2).getText());
     }
 
     @Test

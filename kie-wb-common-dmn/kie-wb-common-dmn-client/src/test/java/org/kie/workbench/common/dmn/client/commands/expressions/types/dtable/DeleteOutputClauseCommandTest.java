@@ -21,7 +21,9 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapperHelper;
@@ -44,6 +46,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberCol
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -97,15 +100,19 @@ public class DeleteOutputClauseCommandTest {
                                                             () -> Optional.of(dtable),
                                                             listSelector);
 
-        this.command = spy(new DeleteOutputClauseCommand(dtable,
-                                                         uiModel,
-                                                         DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT + dtable.getInput().size(),
-                                                         uiModelMapper,
-                                                         canvasOperation));
+        makeCommand(DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT + dtable.getInput().size());
 
         doReturn(0).when(uiRowNumberColumn).getIndex();
         doReturn(1).when(uiOutputClauseColumn).getIndex();
         doReturn(2).when(uiDescriptionColumn).getIndex();
+    }
+
+    private void makeCommand(final int uiColumnIndex) {
+        this.command = spy(new DeleteOutputClauseCommand(dtable,
+                                                         uiModel,
+                                                         uiColumnIndex,
+                                                         uiModelMapper,
+                                                         canvasOperation));
     }
 
     @Test
@@ -132,6 +139,44 @@ public class DeleteOutputClauseCommandTest {
                      graphCommand.execute(graphCommandExecutionContext));
         assertEquals(0,
                      dtable.getOutput().size());
+    }
+
+    @Test
+    public void testGraphCommandExecuteRemoveMiddle() {
+        final OutputClause firstOutput = mock(OutputClause.class);
+        final OutputClause lastOutput = mock(OutputClause.class);
+
+        dtable.getOutput().add(0, firstOutput);
+        dtable.getOutput().add(lastOutput);
+
+        final LiteralExpression outputOneValue = mock(LiteralExpression.class);
+        final LiteralExpression outputTwoValue = mock(LiteralExpression.class);
+        final LiteralExpression outputThreeValue = mock(LiteralExpression.class);
+        final DecisionRule rule = new DecisionRule();
+        rule.getOutputEntry().add(outputOneValue);
+        rule.getOutputEntry().add(outputTwoValue);
+        rule.getOutputEntry().add(outputThreeValue);
+
+        dtable.getRule().add(rule);
+
+        makeCommand(DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT + dtable.getInput().size() + 1);
+
+        final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
+
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.execute(graphCommandExecutionContext));
+        assertEquals(2,
+                     dtable.getOutput().size());
+        assertEquals(firstOutput,
+                     dtable.getOutput().get(0));
+        assertEquals(lastOutput,
+                     dtable.getOutput().get(1));
+        assertEquals(2,
+                     dtable.getRule().get(0).getOutputEntry().size());
+        assertEquals(outputOneValue,
+                     dtable.getRule().get(0).getOutputEntry().get(0));
+        assertEquals(outputThreeValue,
+                     dtable.getRule().get(0).getOutputEntry().get(1));
     }
 
     @Test
