@@ -27,8 +27,8 @@ import org.kie.workbench.common.screens.home.model.ModelUtils;
 import org.uberfire.client.mvp.PlaceManager;
 
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.CONTENT_MANAGEMENT;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.DEPLOYMENTS;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.LIBRARY;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.PROVISIONING;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.SERVER_MANAGEMENT;
 import static org.uberfire.workbench.model.ActivityResourceType.PERSPECTIVE;
 
@@ -60,8 +60,8 @@ public class HomeProducer implements HomeModelProvider {
                                                             () -> placeManager.goTo(SERVER_MANAGEMENT),
                                                             SERVER_MANAGEMENT,
                                                             PERSPECTIVE);
-        devOps.addLink(new HomeShortcutLink("deployments",
-                                            DEPLOYMENTS));
+        devOps.addLink(new HomeShortcutLink("provisioning",
+                                            PROVISIONING));
         devOps.addLink(new HomeShortcutLink("servers",
                                             SERVER_MANAGEMENT));
 
