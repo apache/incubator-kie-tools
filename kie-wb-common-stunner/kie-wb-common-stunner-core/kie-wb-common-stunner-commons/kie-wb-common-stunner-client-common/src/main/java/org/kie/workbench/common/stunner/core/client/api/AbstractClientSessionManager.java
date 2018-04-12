@@ -62,25 +62,21 @@ public abstract class AbstractClientSessionManager implements SessionManager {
             this.pause();
         }
         if (!session.equals(this.current)) {
-            log(Level.FINE,
-                "Opening session [" + session.toString() + "] ...");
+            log("Opening session [" + session.toString() + "] ...");
             this.current = session;
             getCurrentAbstractSession().open();
             postOpen();
-            log(Level.FINE,
-                "Session [" + current.toString() + "] opened");
+            log("Session [" + current.toString() + "] opened");
         }
     }
 
     @Override
     public void pause() {
         if (null != current) {
-            log(Level.FINE,
-                "Pausing session [" + current.toString() + "] ...");
+            log("Pausing session [" + current.toString() + "] ...");
             getCurrentAbstractSession().pause();
             postPause();
-            log(Level.FINE,
-                "Session [" + current.toString() + "] paused");
+            log("Session [" + current.toString() + "] paused");
         }
     }
 
@@ -92,38 +88,32 @@ public abstract class AbstractClientSessionManager implements SessionManager {
             pause();
         }
         if (!session.equals(current)) {
-            log(Level.FINE,
-                "Resuming session [" + session.toString() + "] ...");
+            log("Resuming session [" + session.toString() + "] ...");
             this.current = session;
             getCurrentAbstractSession().resume();
             postResume();
-            log(Level.FINE,
-                "Session [" + current.toString() + "] resumed");
+            log("Session [" + current.toString() + "] resumed");
         }
     }
 
     @Override
     public void destroy() {
         if (null != current) {
-            log(Level.FINE,
-                "Disposing session [" + current.toString() + "] ...");
+            log("Disposing session [" + current.toString() + "] ...");
             getCurrentAbstractSession().destroy();
             postDestroy();
-            log(Level.FINE,
-                "Session [" + current.toString() + "] destroyed");
+            log("Session [" + current.toString() + "] destroyed");
             this.current = null;
         }
     }
 
     public void handleCommandError(final CommandException ce) {
-        log(Level.SEVERE,
-            "Command execution failed",
+        log("Command execution failed",
             ce);
     }
 
     public void handleClientError(final ClientRuntimeError error) {
-        log(Level.SEVERE,
-            "An error on client side happened",
+        log("An error on client side happened",
             error.getThrowable());
     }
 
@@ -155,19 +145,16 @@ public abstract class AbstractClientSessionManager implements SessionManager {
         return (AbstractClientSession) current;
     }
 
-    private void log(final Level level,
-                     final String message) {
+    private void log(final String message) {
         if (LogConfiguration.loggingIsEnabled()) {
-            LOGGER.log(level,
-                       message);
+            LOGGER.log(Level.FINE, message);
         }
     }
 
-    private void log(final Level level,
-                     final String message,
+    private void log(final String message,
                      final Throwable t) {
         if (LogConfiguration.loggingIsEnabled()) {
-            LOGGER.log(level,
+            LOGGER.log(Level.SEVERE,
                        message,
                        t);
         }

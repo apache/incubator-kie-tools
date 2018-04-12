@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client;
 
+import java.util.Objects;
+
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 
 public abstract class BindableShapeSetThumbProvider implements ShapeSetThumbProvider {
@@ -41,6 +43,6 @@ public abstract class BindableShapeSetThumbProvider implements ShapeSetThumbProv
 
     protected boolean isSameClass(final Class<?> c1,
                                   final Class<?> c2) {
-        return null != c1 && c1.getName().equals(c2.getName());
+        return Objects.equals(c1, c2);
     }
 }

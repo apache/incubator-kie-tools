@@ -98,7 +98,7 @@ public class CanvasInPlaceTextEditorControlImpl
                                                                                         idToSelect));
                                  });
 
-        // TODO: move folatingView to support IsElement instead of IsWidget
+        // TODO: move floatingView to support IsElement instead of IsWidget
         floatingView
                 .hide()
                 .setHideCallback(floatingHideCallback)

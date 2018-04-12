@@ -103,6 +103,30 @@ public class AbstractClientSessionManagerTest {
     }
 
     @Test
+    public void testSessionAlreadyOpened() {
+        tested.current = session;
+        tested.open(session);
+        assertEquals(session,
+                     tested.getCurrentSession());
+        verify(session,
+               times(0)).open();
+        verify(session,
+               times(0)).pause();
+        verify(session,
+               times(0)).resume();
+        verify(session,
+               times(0)).destroy();
+        verify(tested,
+               times(0)).postOpen();
+        verify(tested,
+               times(0)).postPause();
+        verify(tested,
+               times(0)).postResume();
+        verify(tested,
+               times(0)).postDestroy();
+    }
+
+    @Test
     public void testOpenAnotherSession() {
         tested.current = session;
         tested.open(session1);
@@ -136,6 +160,24 @@ public class AbstractClientSessionManagerTest {
 
     @Test
     public void testPause() {
+        tested.pause();
+        verify(session,
+               times(0)).open();
+        verify(session,
+               times(0)).pause();
+        verify(session,
+               times(0)).resume();
+        verify(session,
+               times(0)).destroy();
+        verify(tested,
+               times(0)).postOpen();
+        verify(tested,
+               times(0)).postPause();
+        verify(tested,
+               times(0)).postResume();
+        verify(tested,
+               times(0)).postDestroy();
+
         tested.current = session;
         tested.pause();
         assertEquals(session,
@@ -154,6 +196,27 @@ public class AbstractClientSessionManagerTest {
                times(1)).postPause();
         verify(tested,
                times(0)).postResume();
+        verify(tested,
+               times(0)).postDestroy();
+    }
+
+    @Test
+    public void testResumeIfCurrentlyNoActiveSessions() {
+        tested.resume(session);
+        verify(session,
+               times(0)).open();
+        verify(session,
+               times(0)).pause();
+        verify(session,
+               times(1)).resume();
+        verify(session,
+               times(0)).destroy();
+        verify(tested,
+               times(0)).postOpen();
+        verify(tested,
+               times(0)).postPause();
+        verify(tested,
+               times(1)).postResume();
         verify(tested,
                times(0)).postDestroy();
     }
@@ -211,5 +274,19 @@ public class AbstractClientSessionManagerTest {
                times(0)).postResume();
         verify(tested,
                times(1)).postDestroy();
+    }
+
+    @Test
+    public void testDestroyWhenNoActiveSessions() {
+        tested.destroy();
+        assertNull(tested.getCurrentSession());
+        verify(tested,
+               times(0)).postOpen();
+        verify(tested,
+               times(0)).postPause();
+        verify(tested,
+               times(0)).postResume();
+        verify(tested,
+               times(0)).postDestroy();
     }
 }

@@ -87,7 +87,7 @@ public class ClientSessionManagerImpl extends AbstractClientSessionManager {
         final Annotation qualifier = definitionUtils.getQualifier(defSetId);
         final List<ClientSessionFactory> result = new LinkedList<>();
         sessionFactoriesInstances.select(qualifier).forEach(result::add);
-        // If no custem session factories for this diagram, look for the default ones.
+        // If no custom session factories for this diagram, look for the default ones.
         if (result.isEmpty()) {
             sessionFactoriesInstances.select(DefinitionManager.DEFAULT_QUALIFIER).forEach(result::add);
         }

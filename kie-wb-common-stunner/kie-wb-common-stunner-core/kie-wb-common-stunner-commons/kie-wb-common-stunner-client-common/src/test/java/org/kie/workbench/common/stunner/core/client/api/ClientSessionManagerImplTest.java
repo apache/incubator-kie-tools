@@ -40,9 +40,11 @@ import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -171,10 +173,12 @@ public class ClientSessionManagerImplTest {
 
     @Test
     public void testPostDestroy() {
+        tested = spy(tested);
         when(session.getSessionUUID()).thenReturn("sessionUUID");
         when(diagram.getName()).thenReturn("diagramName");
         when(graph.getUUID()).thenReturn("graphUUID");
         tested.current = session;
+        assertNotNull(tested.getCurrentSession());
         tested.destroy();
         verify(sessionOpenedEventMock,
                times(0)).fire(any(SessionOpenedEvent.class));
@@ -193,6 +197,19 @@ public class ClientSessionManagerImplTest {
         assertEquals("diagramName", event.getDiagramName());
         assertEquals("graphUUID", event.getGraphUuid());
         assertEquals(metadata, event.getMetadata());
+        assertNull(tested.getCurrentSession());
+        verify(tested).postDestroy();
+    }
+
+    @Test
+    public void testDestroyWithNullSession() {
+        tested = spy(tested);
+        tested.destroy();
+        ArgumentCaptor<SessionDestroyedEvent> destroyedEventArgumentCaptor =
+                ArgumentCaptor.forClass(SessionDestroyedEvent.class);
+        verify(sessionDestroyedEventMock,
+               times(0)).fire(destroyedEventArgumentCaptor.capture());
+        verify(tested, times(0)).postDestroy();
     }
 
     @Test
