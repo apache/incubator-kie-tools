@@ -1079,13 +1079,23 @@ public final class Geometry
 
         if (a0.getY() < a1.getY())
         {
-            withinY = p.getY() >= a0.getY() && p.getY() <= a1.getY();
+            withinY = greaterOrCloseEnough(p.getY() , a0.getY()) && lesserOrCloseEnough(p.getY(), a1.getY());
         }
         else
         {
-            withinY = p.getY() >= a1.getY() && p.getY() <= a0.getY();
+            withinY = greaterOrCloseEnough(p.getY() , a1.getY()) && lesserOrCloseEnough(p.getY(), a0.getY());
         }
         return withinX && withinY;
+    }
+    
+    private static boolean greaterOrCloseEnough(double a, double b)
+    {
+    	return closeEnough(a, b) || a > b;
+    }
+    
+    private static boolean lesserOrCloseEnough(double a, double b)
+    {
+    	return closeEnough(a, b) || a < b;
     }
 
     /**
