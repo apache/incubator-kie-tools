@@ -17,7 +17,7 @@
 package org.kie.workbench.common.screens.server.management.backend.service;
 
 import org.junit.Test;
-import org.kie.server.controller.api.KieServerControllerNotFoundException;
+import org.kie.server.controller.api.KieServerControllerIllegalArgumentException;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 
@@ -67,7 +67,7 @@ public class SpecManagementServiceCDITest {
 
         final ServerTemplate serverTemplate = mock(ServerTemplate.class);
         when(serverTemplate.getContainerSpec(any())).thenReturn(null);
-        doThrow(KieServerControllerNotFoundException.class).when(specManagementService).getServerTemplate("noDoraId");
+        doThrow(KieServerControllerIllegalArgumentException.class).when(specManagementService).getServerTemplate("noDoraId");
         doReturn(serverTemplate).when(specManagementService).getServerTemplate("doraId");
 
         assertTrue(specManagementService.isNewServerTemplateIdValid("noDoraId"));

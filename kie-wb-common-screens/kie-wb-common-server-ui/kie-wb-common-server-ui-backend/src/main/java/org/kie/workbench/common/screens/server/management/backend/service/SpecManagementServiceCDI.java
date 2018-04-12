@@ -21,7 +21,7 @@ import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.server.controller.api.KieServerControllerNotFoundException;
+import org.kie.server.controller.api.KieServerControllerIllegalArgumentException;
 import org.kie.server.controller.api.model.runtime.ServerInstanceKey;
 import org.kie.server.controller.api.model.spec.Capability;
 import org.kie.server.controller.api.model.spec.ContainerConfig;
@@ -77,7 +77,7 @@ public class SpecManagementServiceCDI implements SpecManagementService {
         try {
             ServerTemplate serverTemplate = getServerTemplate(serverTemplateId);
             return serverTemplate == null;
-        } catch (KieServerControllerNotFoundException notFoundException) {
+        } catch (KieServerControllerIllegalArgumentException notFoundException) {
             return true;
         }
     }
