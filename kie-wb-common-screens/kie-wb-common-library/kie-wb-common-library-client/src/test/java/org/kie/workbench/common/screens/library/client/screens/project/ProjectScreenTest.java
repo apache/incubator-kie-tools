@@ -34,7 +34,6 @@ import org.kie.workbench.common.screens.defaulteditor.client.editor.NewFileUploa
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.client.screens.ProjectScreenTestBase;
 import org.kie.workbench.common.screens.library.client.screens.assets.AssetsScreen;
-import org.kie.workbench.common.screens.library.client.screens.assets.EmptyAssetsScreen;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.edit.EditContributorsPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.ContributorsListPresenter;
 import org.kie.workbench.common.screens.library.client.screens.project.delete.DeleteProjectPopUpScreen;
@@ -56,7 +55,18 @@ import org.uberfire.mocks.CallerMock;
 import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectScreenTest extends ProjectScreenTestBase {
@@ -68,9 +78,6 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
 
     @Mock
     private LibraryPlaces libraryPlaces;
-
-    @Mock
-    private EmptyAssetsScreen emptyAssetsScree;
 
     @Mock
     private AssetsScreen assetsScreen;
@@ -142,6 +149,9 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
     @Mock
     private ViewHideAlertsButtonPresenter.View viewHideAlertsButtonView;
 
+    @Mock
+    private WorkspaceProject workspaceProject;
+
     private SyncPromises promises;
 
     @Before
@@ -156,15 +166,13 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
         when(deleteProjectPopUpScreenInstance.get()).thenReturn(deleteProjectPopUpScreen);
         when(renameProjectPopUpScreenInstance.get()).thenReturn(renameProjectPopUpScreen);
 
-        final WorkspaceProject workspaceProject = mock(WorkspaceProject.class);
         final Module module = mock(Module.class);
-        when(module.getModuleName()).thenReturn("module-name");
+        when(workspaceProject.getName()).thenReturn("module-name");
         when(workspaceProject.getMainModule()).thenReturn(module);
         when(libraryPlaces.getActiveWorkspaceContext()).thenReturn(workspaceProject);
 
         this.presenter = spy(new ProjectScreen(this.view,
                                                this.libraryPlaces,
-                                               this.emptyAssetsScree,
                                                this.assetsScreen,
                                                this.contributorsListScreen,
                                                this.projectMetrictsScreen,
@@ -377,5 +385,26 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
             verify(notificationEvent).fire(any());
             verify(promises).resolve();
         }
+    }
+
+    @Test
+    public void canBuild() throws Exception {
+        doReturn(true).when(projectController).canBuildProject(any(WorkspaceProject.class));
+        assertTrue(presenter.userCanBuildProject());
+    }
+
+    @Test
+    public void notAllowedToBuild() throws Exception {
+        doReturn(false).when(projectController).canBuildProject(any(WorkspaceProject.class));
+        assertFalse(presenter.userCanBuildProject());
+    }
+
+    @Test
+    public void allowedToBuildButNoModule() throws Exception {
+        doReturn(null).when(workspaceProject).getMainModule();
+        presenter.initialize();
+        doReturn(true).when(projectController).canBuildProject(workspaceProject);
+
+        assertFalse(presenter.userCanBuildProject());
     }
 }

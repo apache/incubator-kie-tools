@@ -24,6 +24,7 @@ import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
@@ -39,6 +40,7 @@ import org.kie.workbench.common.screens.library.client.screens.assets.events.Upd
 import org.kie.workbench.common.screens.library.client.util.CategoryUtils;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.project.AssetItemWidget;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.mockito.Answers;
 import org.mockito.Mock;
@@ -46,9 +48,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.CategoriesManagerCache;
 import org.uberfire.client.mvp.ResourceTypeManagerCache;
+import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.category.Others;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -198,6 +202,60 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
         populatedAssetsScreen.onAssetsUpdated(mockedEvent);
 
         verify(assetQueryService).getNumberOfAssets(mockedQuery);
+    }
+
+    @Test
+    public void updateNoWorkspaceProject() throws Exception {
+        doReturn(null).when(libraryPlaces).getActiveWorkspaceContext();
+
+        populatedAssetsScreen.init();
+        populatedAssetsScreen.refreshOnFocus(mock(SelectPlaceEvent.class));
+
+        verify(populatedAssetsScreen, never()).update();
+    }
+
+    @Test
+    public void updateNoMainModule() throws Exception {
+        doReturn(mock(WorkspaceProject.class)).when(libraryPlaces).getActiveWorkspaceContext();
+
+        populatedAssetsScreen.init();
+        populatedAssetsScreen.refreshOnFocus(mock(SelectPlaceEvent.class));
+
+        verify(populatedAssetsScreen, never()).update();
+    }
+
+    @Test
+    public void updateNotTheCorrectPlace() throws Exception {
+        final WorkspaceProject workspaceProject = mock(WorkspaceProject.class);
+        doReturn(workspaceProject).when(libraryPlaces).getActiveWorkspaceContext();
+
+        doReturn(mock(KieModule.class)).when(workspaceProject).getMainModule();
+
+        populatedAssetsScreen.init();
+        final SelectPlaceEvent selectPlaceEvent = mock(SelectPlaceEvent.class);
+        doReturn(PlaceRequest.NOWHERE).when(selectPlaceEvent).getPlace();
+        populatedAssetsScreen.refreshOnFocus(selectPlaceEvent);
+
+        verify(populatedAssetsScreen, never()).update();
+    }
+
+    @Test
+    public void updateDoUpdate() throws Exception {
+
+        doNothing().when(populatedAssetsScreen).update();
+        final WorkspaceProject workspaceProject = mock(WorkspaceProject.class);
+        doReturn(workspaceProject).when(libraryPlaces).getActiveWorkspaceContext();
+
+        doReturn(mock(KieModule.class)).when(workspaceProject).getMainModule();
+
+        populatedAssetsScreen.init();
+        final SelectPlaceEvent selectPlaceEvent = mock(SelectPlaceEvent.class);
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
+        doReturn(LibraryPlaces.PROJECT_SCREEN).when(placeRequest).getIdentifier();
+        doReturn(placeRequest).when(selectPlaceEvent).getPlace();
+        populatedAssetsScreen.refreshOnFocus(selectPlaceEvent);
+
+        verify(populatedAssetsScreen).update();
     }
 
     @Test

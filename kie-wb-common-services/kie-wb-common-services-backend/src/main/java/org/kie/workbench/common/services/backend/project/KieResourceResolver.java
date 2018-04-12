@@ -100,11 +100,17 @@ public class KieResourceResolver
 
     @Override
     protected KieModule makeModule(final org.uberfire.java.nio.file.Path nioModuleRootPath) {
-        final KieModule module = simpleModuleInstance(nioModuleRootPath);
-        final POM pom = pomService.load(module.getPomXMLPath());
-        module.setPom(pom);
+        try {
 
-        return module;
+            final KieModule module = simpleModuleInstance(nioModuleRootPath);
+            final POM pom = pomService.load(module.getPomXMLPath());
+            module.setPom(pom);
+
+            return module;
+
+        } catch (final Exception e) {
+            return null;
+        }
     }
 
     @Override

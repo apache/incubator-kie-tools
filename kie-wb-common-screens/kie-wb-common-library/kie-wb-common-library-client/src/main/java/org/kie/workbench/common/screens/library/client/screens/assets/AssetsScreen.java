@@ -41,9 +41,10 @@ public class AssetsScreen {
     private final EmptyAssetsScreen emptyAssetsScreen;
     private final PopulatedAssetsScreen populatedAssetsScreen;
     private final BusyIndicatorView busyIndicatorView;
+    private InvalidProjectScreen invalidProjectScreen;
     private final TranslationService ts;
     private final Caller<LibraryService> libraryService;
-    private WorkspaceProject projectInfo;
+    private WorkspaceProject workspaceProject;
 
     public interface View extends UberElemental<AssetsScreen> {
 
@@ -55,6 +56,7 @@ public class AssetsScreen {
                         final LibraryPlaces libraryPlaces,
                         final EmptyAssetsScreen emptyAssetsScreen,
                         final PopulatedAssetsScreen populatedAssetsScreen,
+                        final InvalidProjectScreen invalidProjectScreen,
                         final TranslationService ts,
                         final BusyIndicatorView busyIndicatorView,
                         final Caller<LibraryService> libraryService) {
@@ -62,6 +64,7 @@ public class AssetsScreen {
         this.libraryPlaces = libraryPlaces;
         this.emptyAssetsScreen = emptyAssetsScreen;
         this.populatedAssetsScreen = populatedAssetsScreen;
+        this.invalidProjectScreen = invalidProjectScreen;
         this.ts = ts;
         this.busyIndicatorView = busyIndicatorView;
         this.libraryService = libraryService;
@@ -70,7 +73,7 @@ public class AssetsScreen {
     @PostConstruct
     public void init() {
         this.view.init(this);
-        this.projectInfo = libraryPlaces.getActiveWorkspaceContext();
+        this.workspaceProject = libraryPlaces.getActiveWorkspaceContext();
         this.showAssets();
     }
 
@@ -79,19 +82,26 @@ public class AssetsScreen {
     }
 
     public void onAssetListUpdated(@Observes @Routed ProjectAssetListUpdated event) {
-        if (event.getProject().getRepository().getIdentifier().equals(projectInfo.getRepository().getIdentifier())) {
+        if (event.getProject().getRepository().getIdentifier().equals(workspaceProject.getRepository().getIdentifier())) {
             this.showAssets();
         }
     }
 
     protected void showAssets() {
-        busyIndicatorView.showBusyIndicator(ts.getTranslation(LibraryConstants.LoadingAssets));
-        libraryService.call((Boolean hasAssets) -> {
-            final HTMLElement element =
-                    (hasAssets) ? populatedAssetsScreen.getView().getElement() : emptyAssetsScreen.getView().getElement();
-            ensureContentSet(element);
-            busyIndicatorView.hideBusyIndicator();
-        }, new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).hasAssets(this.projectInfo);
+
+        if (workspaceProject.getMainModule() == null) {
+            ensureContentSet(invalidProjectScreen.getView().getElement());
+        } else {
+
+            busyIndicatorView.showBusyIndicator(ts.getTranslation(LibraryConstants.LoadingAssets));
+
+            libraryService.call((Boolean hasAssets) -> {
+                final HTMLElement element =
+                        (hasAssets) ? populatedAssetsScreen.getView().getElement() : emptyAssetsScreen.getView().getElement();
+                ensureContentSet(element);
+                busyIndicatorView.hideBusyIndicator();
+            }, new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).hasAssets(this.workspaceProject);
+        }
     }
 
     private void ensureContentSet(final HTMLElement element) {

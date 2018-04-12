@@ -73,16 +73,7 @@ public class ProjectScreenTestBase {
     @Captor
     protected ArgumentCaptor<ProjectAssetsQuery> queryArgumentCaptor;
 
-    protected WorkspaceProject project;
-
     protected List<AssetInfo> assets = new ArrayList<>();
-
-    protected void mockClientResourceType() {
-        final ClientResourceType clientResourceType = mock(ClientResourceType.class);
-        doReturn(".txt").when(clientResourceType).getSuffix();
-        doReturn("Text file").when(clientResourceType).getDescription();
-        doReturn(clientResourceType).when(assetClassifier).findResourceType(any(FolderItem.class));
-    }
 
     protected WorkspaceProject createProject() {
         final Path rootPath = mock(Path.class);
@@ -122,20 +113,5 @@ public class ProjectScreenTestBase {
         return new AssetInfo(asset,
                              new Date(),
                              new Date());
-    }
-
-    protected void mockAssets() {
-
-        assets.add(getAssetInfo("git://modulePath/folder1",
-                                FolderItemType.FOLDER,
-                                "folder1"));
-        assets.add(getAssetInfo("git://modulePath/file2.txt",
-                                FolderItemType.FILE,
-                                "file2.txt"));
-        assets.add(getAssetInfo("git://modulePath/file3.txt",
-                                FolderItemType.FILE,
-                                "file3.txt"));
-
-        when(libraryService.getProjectAssets(any(ProjectAssetsQuery.class))).thenReturn(AssetQueryResult.normal(assets));
     }
 }

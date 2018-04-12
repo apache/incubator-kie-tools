@@ -288,6 +288,7 @@ public class PopulatedAssetsScreen {
     protected void update() {
         this.view.clear();
         this.hideEmptyState();
+
         busyIndicatorView.showBusyIndicator(ts.getTranslation(LibraryConstants.LoadingAssets));
         this.resolveAssetsCount();
         this.getAssets(this.filter,
@@ -368,7 +369,7 @@ public class PopulatedAssetsScreen {
                                                                amount);
 
             assetQueryService.getAssets(query)
-                             .call(callback, new DefaultErrorCallback());
+                    .call(callback, new DefaultErrorCallback());
         }
     }
 
@@ -400,7 +401,7 @@ public class PopulatedAssetsScreen {
 
     protected void refreshOnFocus(@Observes final SelectPlaceEvent selectPlaceEvent) {
         final PlaceRequest place = selectPlaceEvent.getPlace();
-        if (workspaceProject != null && place.getIdentifier().equals(LibraryPlaces.PROJECT_SCREEN)) {
+        if (workspaceProject != null && workspaceProject.getMainModule() != null && place.getIdentifier().equals(LibraryPlaces.PROJECT_SCREEN)) {
             this.update();
         }
     }
@@ -447,19 +448,19 @@ public class PopulatedAssetsScreen {
                                                                0);
 
             assetQueryService.getNumberOfAssets(query)
-                             .call((Integer numberOfAssets) -> {
-                                         int offset = getOffset();
-                                         this.view.setPageIndicator(offset + 1,
-                                                                    this.getAssetsCount(numberOfAssets,
-                                                                                        offset + this.pageSize),
-                                                                    this.getAssetsCount(numberOfAssets,
-                                                                                        0));
-                                         this.setTotalPages(numberOfAssets,
-                                                            this.pageSize);
-                                         this.view.setTotalPages(this.getTotalPages());
-                                         this.checkPaginationButtons();
-                                     },
-                                   new DefaultErrorCallback());
+                    .call((Integer numberOfAssets) -> {
+                              int offset = getOffset();
+                              this.view.setPageIndicator(offset + 1,
+                                                         this.getAssetsCount(numberOfAssets,
+                                                                             offset + this.pageSize),
+                                                         this.getAssetsCount(numberOfAssets,
+                                                                             0));
+                              this.setTotalPages(numberOfAssets,
+                                                 this.pageSize);
+                              this.view.setTotalPages(this.getTotalPages());
+                              this.checkPaginationButtons();
+                          },
+                          new DefaultErrorCallback());
         }
     }
 

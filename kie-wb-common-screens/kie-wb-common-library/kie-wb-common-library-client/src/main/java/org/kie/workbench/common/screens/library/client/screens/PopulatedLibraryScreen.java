@@ -179,7 +179,6 @@ public class PopulatedLibraryScreen {
 
     Command selectCommand(final WorkspaceProject project) {
         return () -> {
-            view.showBusyIndicator(view.getLoadingAssetsMessage());
             libraryPlaces.goToProject(project);
         };
     }
