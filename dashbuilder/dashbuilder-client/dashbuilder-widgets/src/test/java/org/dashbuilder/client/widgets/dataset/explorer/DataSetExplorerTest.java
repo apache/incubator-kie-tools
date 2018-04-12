@@ -1,7 +1,11 @@
 package org.dashbuilder.client.widgets.dataset.explorer;
 
+import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+
+import org.dashbuilder.client.widgets.common.CustomDataSetProviderType;
+import org.dashbuilder.client.widgets.common.DataSetEditorPlugin;
 import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.dataset.client.DataSetClientServices;
 import org.dashbuilder.dataset.def.DataSetDef;
@@ -9,16 +13,19 @@ import org.dashbuilder.dataset.events.DataSetDefModifiedEvent;
 import org.dashbuilder.dataset.events.DataSetDefRegisteredEvent;
 import org.dashbuilder.dataset.events.DataSetDefRemovedEvent;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import javax.enterprise.inject.Instance;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,6 +45,9 @@ public class DataSetExplorerTest {
     
     private DataSetExplorer presenter;
     final List<DataSetDef> dataSetDefList = new ArrayList<DataSetDef>();
+    
+    @Mock ManagedInstance<DataSetEditorPlugin> dataSetEditorPlugin;
+    @Mock DataSetEditorPlugin pluginEditor;
 
     @Before
     public void setup() throws Exception {
@@ -69,8 +79,10 @@ public class DataSetExplorerTest {
             }
         }).when(dataSetClientServices).getPublicDataSetDefs(any(RemoteCallback.class));
         
+        when(dataSetEditorPlugin.isUnsatisfied()).thenReturn(true);
+        
         // The presenter instance to test.
-        presenter = new DataSetExplorer(panelInstances, dataSetClientServices, view);
+        presenter = new DataSetExplorer(panelInstances, dataSetClientServices, view, dataSetEditorPlugin);
     }
 
     @Test
@@ -148,6 +160,24 @@ public class DataSetExplorerTest {
         verify(view, times(1)).clear();
         verify(view, times(1)).addPanel(any(DataSetPanel.View.class));
         verify(dataSetPanel, times(1)).show(dataSetDef, "dataSetsExplorerPanelGroup");
+    }
+    
+    @Test
+    public void testInitWithEditorPlugin() throws Exception {
+        when(pluginEditor.getProviderType()).thenReturn(new CustomDataSetProviderType());
+        when(pluginEditor.getTypeSelectorTitle()).thenReturn("Custom");
+        when(pluginEditor.getTypeSelectorImageUri()).thenReturn(Mockito.mock(SafeUri.class));
+        
+        when(dataSetEditorPlugin.isUnsatisfied()).thenReturn(false);
+        when(dataSetEditorPlugin.iterator()).thenReturn(Arrays.asList(pluginEditor).iterator(), Arrays.asList(pluginEditor).iterator());
+        
+        when(dataSetDef.getProvider()).thenReturn(new CustomDataSetProviderType());
+        
+        presenter.init();
+        verify(view, times(1)).init(presenter);
+        verify(dataSetEditorPlugin, times(1)).isUnsatisfied();
+        verify(dataSetEditorPlugin, times(1)).iterator();
+        assertEquals(5, presenter.SUPPORTED_TYPES.size());
     }
 
     // Mockito complains when mocking Instance<U>, so let's create an empty implementation for it. It returns a single mocked DataSetPanel instance.

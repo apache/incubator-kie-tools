@@ -17,12 +17,15 @@ package org.dashbuilder.client.widgets.dataset.explorer;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+
+import org.dashbuilder.client.widgets.common.DataSetEditorPlugin;
 import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.dataset.client.DataSetClientServices;
 import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.dataset.events.DataSetDefModifiedEvent;
 import org.dashbuilder.dataset.events.DataSetDefRegisteredEvent;
 import org.dashbuilder.dataset.events.DataSetDefRemovedEvent;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.client.mvp.UberView;
 
 import javax.annotation.PostConstruct;
@@ -31,6 +34,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,18 +66,32 @@ public class DataSetExplorer implements IsWidget {
     DataSetClientServices clientServices;
     View view;
     List<DataSetPanel> panels = new LinkedList<DataSetPanel>();
+    
+    ManagedInstance<DataSetEditorPlugin> dataSetEditorPlugin;
 
     @Inject
     public DataSetExplorer(final Instance<DataSetPanel> panelInstances,
                            final DataSetClientServices clientServices,
-                           final View view) {
+                           final View view,
+                           final ManagedInstance<DataSetEditorPlugin> dataSetEditorPlugin) {
         this.panelInstances = panelInstances;
         this.clientServices = clientServices;
         this.view = view;
+        this.dataSetEditorPlugin = dataSetEditorPlugin;
     }
 
     @PostConstruct
     public void init() {
+                
+        if (!dataSetEditorPlugin.isUnsatisfied()) {
+            List<DataSetProviderType> allTypes = new ArrayList<DataSetProviderType>(SUPPORTED_TYPES);
+            
+            for (DataSetEditorPlugin plugin : dataSetEditorPlugin) {
+                allTypes.add(plugin.getProviderType());
+            }
+            
+            SUPPORTED_TYPES = allTypes;
+        }
         view.init(this);
     }
 

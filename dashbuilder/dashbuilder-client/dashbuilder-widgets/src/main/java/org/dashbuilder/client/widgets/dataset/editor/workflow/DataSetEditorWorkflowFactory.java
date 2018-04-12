@@ -1,12 +1,23 @@
 package org.dashbuilder.client.widgets.dataset.editor.workflow;
 
-import org.dashbuilder.client.widgets.dataset.editor.workflow.create.*;
-import org.dashbuilder.client.widgets.dataset.editor.workflow.edit.*;
-import org.dashbuilder.dataprovider.DataSetProviderType;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+
+import org.dashbuilder.client.widgets.common.DataSetEditorPlugin;
+import org.dashbuilder.client.widgets.dataset.editor.workflow.create.BeanDataSetBasicAttributesWorkflow;
+import org.dashbuilder.client.widgets.dataset.editor.workflow.create.CSVDataSetBasicAttributesWorkflow;
+import org.dashbuilder.client.widgets.dataset.editor.workflow.create.DataSetBasicAttributesWorkflow;
+import org.dashbuilder.client.widgets.dataset.editor.workflow.create.DataSetProviderTypeWorkflow;
+import org.dashbuilder.client.widgets.dataset.editor.workflow.create.ElasticSearchDataSetBasicAttributesWorkflow;
+import org.dashbuilder.client.widgets.dataset.editor.workflow.create.SQLDataSetBasicAttributesWorkflow;
+import org.dashbuilder.client.widgets.dataset.editor.workflow.edit.BeanDataSetEditWorkflow;
+import org.dashbuilder.client.widgets.dataset.editor.workflow.edit.CSVDataSetEditWorkflow;
+import org.dashbuilder.client.widgets.dataset.editor.workflow.edit.DataSetEditWorkflow;
+import org.dashbuilder.client.widgets.dataset.editor.workflow.edit.ElasticSearchDataSetEditWorkflow;
+import org.dashbuilder.client.widgets.dataset.editor.workflow.edit.SQLDataSetEditWorkflow;
+import org.dashbuilder.dataprovider.DataSetProviderType;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 
 /**
  * <p>Main entry point for editing or creating a data set definition instance.</p>
@@ -19,12 +30,15 @@ public class DataSetEditorWorkflowFactory {
     
     SyncBeanManager beanManager;
     DataSetProviderTypeWorkflow providerTypeWorkflow;
+    ManagedInstance<DataSetEditorPlugin> dataSetEditorPlugin;
 
     @Inject
     public DataSetEditorWorkflowFactory(final SyncBeanManager beanManager,
-                                        final DataSetProviderTypeWorkflow providerTypeWorkflow) {
+                                        final DataSetProviderTypeWorkflow providerTypeWorkflow,
+                                        final ManagedInstance<DataSetEditorPlugin> dataSetEditorPlugin) {
         this.beanManager = beanManager;
         this.providerTypeWorkflow = providerTypeWorkflow;
+        this.dataSetEditorPlugin = dataSetEditorPlugin;
     }
 
     /**
@@ -37,6 +51,7 @@ public class DataSetEditorWorkflowFactory {
         final boolean isBean = type != null && DataSetProviderType.BEAN.equals(type);
         final boolean isCSV = type != null && DataSetProviderType.CSV.equals(type);
         final boolean isEL = type != null && DataSetProviderType.ELASTICSEARCH.equals(type);
+        
         Class workflowClass = null;
         if (isSQL) {
             workflowClass = SQLDataSetEditWorkflow.class;
@@ -46,6 +61,13 @@ public class DataSetEditorWorkflowFactory {
             workflowClass = BeanDataSetEditWorkflow.class;
         } else if (isEL) {
             workflowClass = ElasticSearchDataSetEditWorkflow.class;
+        } else if (!dataSetEditorPlugin.isUnsatisfied()) {
+            for (DataSetEditorPlugin plugin : dataSetEditorPlugin) {
+                if (plugin.getProviderType().equals(type)) {
+                    workflowClass = plugin.getWorkflowClass();
+                    break;
+                }
+            }
         }
         return  (DataSetEditWorkflow) beanManager.lookupBean( workflowClass ).newInstance();
     }
@@ -76,6 +98,7 @@ public class DataSetEditorWorkflowFactory {
         final boolean isBean = type != null && DataSetProviderType.BEAN.equals(type);
         final boolean isCSV = type != null && DataSetProviderType.CSV.equals(type);
         final boolean isEL = type != null && DataSetProviderType.ELASTICSEARCH.equals(type);
+        
         Class workflowClass = null;
         if (isSQL) {
             workflowClass = SQLDataSetBasicAttributesWorkflow.class;
@@ -85,6 +108,13 @@ public class DataSetEditorWorkflowFactory {
             workflowClass = BeanDataSetBasicAttributesWorkflow.class;
         } else if (isEL) {
             workflowClass = ElasticSearchDataSetBasicAttributesWorkflow.class;
+        } else if (!dataSetEditorPlugin.isUnsatisfied()) {
+            for (DataSetEditorPlugin plugin : dataSetEditorPlugin) {
+                if (plugin.getProviderType().equals(type)) {
+                    workflowClass = plugin.getBasicAttributesWorkflowClass();
+                    break;
+                }
+            }
         }
         return  (DataSetBasicAttributesWorkflow) beanManager.lookupBean( workflowClass ).newInstance();
     }

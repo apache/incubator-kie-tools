@@ -15,20 +15,14 @@
  */
 package org.dashbuilder.client.widgets.dataset.editor;
 
-import com.google.gwt.editor.client.EditorError;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.safehtml.shared.SafeUri;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
-import org.dashbuilder.client.widgets.dataset.event.DataSetDefCreationRequestEvent;
-import org.dashbuilder.client.widgets.resources.i18n.DataSetEditorConstants;
-import org.dashbuilder.common.client.editor.list.HorizImageListEditor;
-import org.dashbuilder.common.client.editor.list.ImageListEditor;
-import org.dashbuilder.common.client.event.ValueChangeEvent;
-import org.dashbuilder.dataprovider.DataSetProviderType;
-import org.dashbuilder.dataset.client.resources.bundles.DataSetClientResources;
-import org.kie.soup.commons.validation.PortablePreconditions;
-import org.uberfire.client.mvp.UberView;
+import static org.dashbuilder.dataprovider.DataSetProviderType.BEAN;
+import static org.dashbuilder.dataprovider.DataSetProviderType.CSV;
+import static org.dashbuilder.dataprovider.DataSetProviderType.ELASTICSEARCH;
+import static org.dashbuilder.dataprovider.DataSetProviderType.SQL;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -36,11 +30,23 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import org.dashbuilder.client.widgets.common.DataSetEditorPlugin;
+import org.dashbuilder.client.widgets.dataset.event.DataSetDefCreationRequestEvent;
+import org.dashbuilder.client.widgets.resources.i18n.DataSetEditorConstants;
+import org.dashbuilder.common.client.editor.list.HorizImageListEditor;
+import org.dashbuilder.common.client.editor.list.ImageListEditor;
+import org.dashbuilder.common.client.event.ValueChangeEvent;
+import org.dashbuilder.dataprovider.DataSetProviderType;
+import org.dashbuilder.dataset.client.resources.bundles.DataSetClientResources;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.soup.commons.validation.PortablePreconditions;
+import org.uberfire.client.mvp.UberView;
 
-import static org.dashbuilder.dataprovider.DataSetProviderType.*;
+import com.google.gwt.editor.client.EditorError;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeUri;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * <p>Data Set provider type editor presenter.</p>
@@ -62,14 +68,17 @@ public class DataSetDefProviderTypeEditor implements IsWidget,
     HorizImageListEditor<DataSetProviderType> provider;
     Event<DataSetDefCreationRequestEvent> createEvent;
     public View view;
+    ManagedInstance<DataSetEditorPlugin> dataSetEditorPlugin;
 
     @Inject
     public DataSetDefProviderTypeEditor(final HorizImageListEditor<DataSetProviderType> provider,
                                         final Event<DataSetDefCreationRequestEvent> createEvent,
-                                        final View view) {
+                                        final View view,
+                                        final ManagedInstance<DataSetEditorPlugin> dataSetEditorPlugin) {
         this.provider = provider;
         this.createEvent = createEvent;
         this.view = view;
+        this.dataSetEditorPlugin = dataSetEditorPlugin;
     }
 
     @PostConstruct
@@ -127,7 +136,22 @@ public class DataSetDefProviderTypeEditor implements IsWidget,
                                                                                        new SafeHtmlBuilder().appendEscaped(title).toSafeHtml(),
                                                                                        new SafeHtmlBuilder().appendEscaped(text).toSafeHtml());
             entries.add(entry);
+        }  
+        
+        if (!dataSetEditorPlugin.isUnsatisfied()) {
+            
+            for (DataSetEditorPlugin pluginEditor : dataSetEditorPlugin) {
+                final String title = pluginEditor.getTypeSelectorTitle();
+                final String text = pluginEditor.getTypeSelectorText();
+                final SafeUri uri = pluginEditor.getTypeSelectorImageUri();
+                final ImageListEditor<DataSetProviderType>.Entry entry = provider.newEntry(pluginEditor.getProviderType(),
+                                                                                           uri,
+                                                                                           new SafeHtmlBuilder().appendEscaped(title).toSafeHtml(),
+                                                                                           new SafeHtmlBuilder().appendEscaped(text).toSafeHtml());
+                entries.add(entry);
+            }
         }
+        
         return entries;
     }
 
@@ -176,6 +200,7 @@ public class DataSetDefProviderTypeEditor implements IsWidget,
         if (ELASTICSEARCH.equals(type)) {
             return DataSetClientResources.INSTANCE.images().elIcon160().getSafeUri();
         }
+
         return null;
     }
 }

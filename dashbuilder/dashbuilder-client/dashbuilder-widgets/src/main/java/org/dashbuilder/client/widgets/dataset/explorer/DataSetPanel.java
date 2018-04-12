@@ -20,10 +20,13 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+
+import org.dashbuilder.client.widgets.common.DataSetEditorPlugin;
 import org.dashbuilder.client.widgets.dataset.event.EditDataSetEvent;
 import org.dashbuilder.client.widgets.resources.i18n.DataSetExplorerConstants;
 import org.dashbuilder.dataset.client.resources.bundles.DataSetClientResources;
 import org.dashbuilder.dataset.def.DataSetDef;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.client.mvp.UberView;
 
 import javax.annotation.PostConstruct;
@@ -73,16 +76,19 @@ public class DataSetPanel implements IsWidget {
     DataSetSummary dataSetSummary;
     Event<EditDataSetEvent> editDataSetEvent;
     View view;
+    ManagedInstance<DataSetEditorPlugin> dataSetEditorPlugin;
     
     DataSetDef def;
 
     @Inject
     public DataSetPanel(final DataSetSummary dataSetSummary, 
                         final Event<EditDataSetEvent> editDataSetEvent, 
-                        final View view) {
+                        final View view,
+                        final ManagedInstance<DataSetEditorPlugin> dataSetEditorPlugin) {
         this.dataSetSummary = dataSetSummary;
         this.editDataSetEvent = editDataSetEvent;
         this.view = view;
+        this.dataSetEditorPlugin = dataSetEditorPlugin;
     }
 
     @PostConstruct
@@ -143,6 +149,14 @@ public class DataSetPanel implements IsWidget {
         if (ELASTICSEARCH.equals(dataSetDef.getProvider())) {
             return DataSetClientResources.INSTANCE.images().elIcon32().getSafeUri();
         }
+        
+        if (!dataSetEditorPlugin.isUnsatisfied()) {
+            for (DataSetEditorPlugin plugin : dataSetEditorPlugin) {
+                if (plugin.getProviderType().equals(dataSetDef.getProvider())) {
+                   return plugin.getTypeSelectorImageUri();
+                }
+            }
+        }
         return null;
     }
 
@@ -158,6 +172,13 @@ public class DataSetPanel implements IsWidget {
         }
         if (ELASTICSEARCH.equals(dataSetDef.getProvider())) {
             return DataSetExplorerConstants.INSTANCE.el();
+        }
+        if (!dataSetEditorPlugin.isUnsatisfied()) {
+            for (DataSetEditorPlugin plugin : dataSetEditorPlugin) {
+                if (plugin.getProviderType().equals(dataSetDef.getProvider())) {
+                   return plugin.getTypeSelectorTitle();
+                }
+            }
         }
         return null;
     }

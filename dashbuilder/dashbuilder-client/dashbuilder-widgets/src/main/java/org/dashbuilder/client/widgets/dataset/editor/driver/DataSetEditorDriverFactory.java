@@ -16,7 +16,7 @@ public class DataSetEditorDriverFactory {
     final SQLDataSetDefAttributesDriver sqlDataSetDefAttributesDriver = GWT.create(SQLDataSetDefAttributesDriver.class);
     final BeanDataSetDefAttributesDriver beanDataSetDefAttributesDriver = GWT.create(BeanDataSetDefAttributesDriver.class);
     final ElasticSearchDataSetDefAttributesDriver elasticSearchDataSetDefAttributesDriver = GWT.create(ElasticSearchDataSetDefAttributesDriver.class);
-    final CSVDataSetDefAttributesDriver csvDataSetDefAttributesDriver = GWT.create(CSVDataSetDefAttributesDriver.class);
+    final CSVDataSetDefAttributesDriver csvDataSetDefAttributesDriver = GWT.create(CSVDataSetDefAttributesDriver.class);    
     final SQLDataSetDefDriver sqlDataSetDefDriver = GWT.create(SQLDataSetDefDriver.class);
     final BeanDataSetDefDriver beanDataSetDefDriver = GWT.create(BeanDataSetDefDriver.class);
     final CSVDataSetDefDriver csvDataSetDefDriver = GWT.create(CSVDataSetDefDriver.class);
@@ -41,6 +41,7 @@ public class DataSetEditorDriverFactory {
     @Produces
     public SQLDataSetDefAttributesDriver sqlDataSetDefAttributesDriver() { return sqlDataSetDefAttributesDriver; }
 
+    
     @Produces
     public DataSetDefBasicAttributesDriver dataSetDefBasicAttributesDriver() {
         return dataSetDefBasicAttributesDriver;
