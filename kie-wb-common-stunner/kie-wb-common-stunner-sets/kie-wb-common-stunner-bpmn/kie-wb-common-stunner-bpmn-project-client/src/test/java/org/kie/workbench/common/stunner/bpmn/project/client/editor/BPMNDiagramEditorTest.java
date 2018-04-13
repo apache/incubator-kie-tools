@@ -28,20 +28,17 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.project.client.resources.BPMNClientConstants;
 import org.kie.workbench.common.stunner.bpmn.project.client.type.BPMNDiagramResourceType;
 import org.kie.workbench.common.stunner.client.widgets.popups.PopupUtil;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ValidateSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.forms.client.session.command.GenerateDiagramFormsSessionCommand;
 import org.kie.workbench.common.stunner.forms.client.session.command.GenerateProcessFormsSessionCommand;
 import org.kie.workbench.common.stunner.forms.client.session.command.GenerateSelectedFormsSessionCommand;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditorTest;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
-import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -73,38 +70,39 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
     @Mock
     private ManagedInstance<GenerateProcessFormsSessionCommand> generateProcessFormSessionCommands;
+
     @Mock
     private GenerateProcessFormsSessionCommand generateProcessFormsSessionCommand;
+
     @Mock
     private ManagedInstance<GenerateDiagramFormsSessionCommand> generateDiagramFormsSessionCommands;
+
     @Mock
     private GenerateDiagramFormsSessionCommand generateDiagramFormsSessionCommand;
+
     @Mock
     private ManagedInstance<GenerateSelectedFormsSessionCommand> generateSelectedFormsSessionCommands;
+
     @Mock
     private GenerateSelectedFormsSessionCommand generateSelectedFormsSessionCommand;
+
     @Mock
     private BPMNDiagramEditorMenuItemsBuilder bpmnDiagramEditorMenuItemsBuilder;
+
     @Mock
     private ClientTranslationService translationService;
+
     @Mock
     private EventSourceMock<BPMNMigrateDiagramEvent> migrateDiagramEvent;
+
     @Mock
     private PopupUtil popupUtil;
+
     @Mock
     private PlaceRequest currentPlace;
-    @Mock
-    private SessionPresenter sessionPresenter;
-    @Mock
-    private SessionPresenter.View sessionPresenterView;
-    @Mock
-    private AbstractClientFullSession clientFullSession;
+
     @Mock
     private AbstractCanvasHandler canvasHandler;
-    @Mock
-    private ProjectDiagram diagram;
-    @Mock
-    private OverviewWidgetPresenter overviewWidget;
 
     private ArgumentCaptor<Command> commandCaptor;
 
@@ -127,9 +125,6 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         parameterizedCommandCaptor = ArgumentCaptor.forClass(ParameterizedCommand.class);
         serviceCallbackCaptor = ArgumentCaptor.forClass(ServiceCallback.class);
 
-        when(sessionPresenterFactory.newPresenterEditor()).thenReturn(sessionPresenter);
-        when(sessionPresenter.getInstance()).thenReturn(clientFullSession);
-        when(sessionPresenter.getView()).thenReturn(sessionPresenterView);
         when(clientFullSession.getCanvasHandler()).thenReturn(canvasHandler);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
 
@@ -148,7 +143,10 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
     @Override
     protected BPMNDiagramResourceType mockResourceType() {
-        return mock(BPMNDiagramResourceType.class);
+        final BPMNDiagramResourceType resourceType = mock(BPMNDiagramResourceType.class);
+        when(resourceType.getSuffix()).thenReturn("bpmn");
+        when(resourceType.getShortName()).thenReturn("Business Process");
+        return resourceType;
     }
 
     @SuppressWarnings("unchecked")
@@ -177,13 +175,14 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                                                   migrateDiagramEvent,
                                                   popupUtil) {
             {
-                super.fileMenuBuilder = BPMNDiagramEditorTest.this.fileMenuBuilder;
+                fileMenuBuilder = BPMNDiagramEditorTest.this.fileMenuBuilder;
                 workbenchContext = BPMNDiagramEditorTest.this.workbenchContext;
                 projectController = BPMNDiagramEditorTest.this.projectController;
                 versionRecordManager = BPMNDiagramEditorTest.this.versionRecordManager;
                 alertsButtonMenuItemBuilder = BPMNDiagramEditorTest.this.alertsButtonMenuItemBuilder;
                 place = BPMNDiagramEditorTest.this.currentPlace;
                 presenter = BPMNDiagramEditorTest.this.sessionPresenter;
+                kieView = BPMNDiagramEditorTest.this.kieView;
                 overviewWidget = BPMNDiagramEditorTest.this.overviewWidget;
             }
 

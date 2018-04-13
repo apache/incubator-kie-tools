@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.project.diagram;
 
 import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 
 public interface ProjectMetadata extends Metadata {
@@ -23,4 +24,6 @@ public interface ProjectMetadata extends Metadata {
     String getModuleName();
 
     Package getProjectPackage();
+
+    Overview getOverview();
 }

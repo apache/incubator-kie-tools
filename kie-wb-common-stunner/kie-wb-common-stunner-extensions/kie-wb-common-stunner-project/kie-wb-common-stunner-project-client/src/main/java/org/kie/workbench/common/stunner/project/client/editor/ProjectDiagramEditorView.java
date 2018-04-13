@@ -20,6 +20,8 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -31,15 +33,40 @@ public class ProjectDiagramEditorView
         extends KieEditorViewImpl
         implements AbstractProjectDiagramEditor.View {
 
-    @Inject
     @DataField
     private FlowPanel editorPanel;
 
     private AbstractProjectDiagramEditor presenter;
 
+    public ProjectDiagramEditorView() {
+        //CDI proxy
+    }
+
+    @Inject
+    public ProjectDiagramEditorView(final FlowPanel editorPanel) {
+        this.editorPanel = editorPanel;
+    }
+
     @Override
     public void init(final AbstractProjectDiagramEditor presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void onResize() {
+        final Widget parent = getParent();
+        if (parent != null) {
+            final double w = parent.getOffsetWidth();
+            final double h = parent.getOffsetHeight();
+            setPixelSize((int) w, (int) h);
+        }
+
+        if (editorPanel.getWidgetCount() > 0) {
+            final IsWidget widget = editorPanel.getWidget(0);
+            if (widget instanceof RequiresResize) {
+                ((RequiresResize) widget).onResize();
+            }
+        }
     }
 
     @Override

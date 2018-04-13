@@ -21,6 +21,8 @@ import java.util.Map;
 import javax.enterprise.inject.Instance;
 
 import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.kie.workbench.common.services.backend.service.KieServiceOverviewLoader;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -42,24 +44,26 @@ import org.uberfire.java.nio.file.StandardDeleteOption;
 
 class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectMetadata, ProjectDiagram> {
 
-    private static final Logger LOG =
-            LoggerFactory.getLogger(ProjectDiagramServiceController.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectDiagramServiceController.class.getName());
 
     private final IOService ioService;
     private final KieModuleService moduleService;
+    private final KieServiceOverviewLoader overviewLoader;
 
     ProjectDiagramServiceController(final DefinitionManager definitionManager,
                                     final FactoryManager factoryManager,
                                     final Instance<DefinitionSetService> definitionSetServiceInstances,
                                     final IOService ioService,
                                     final BackendRegistryFactory registryFactory,
-                                    final KieModuleService moduleService) {
+                                    final KieModuleService moduleService,
+                                    final KieServiceOverviewLoader overviewLoader) {
         super(definitionManager,
               factoryManager,
               definitionSetServiceInstances,
               registryFactory);
         this.ioService = ioService;
         this.moduleService = moduleService;
+        this.overviewLoader = overviewLoader;
     }
 
     @Override
@@ -93,7 +97,8 @@ class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectM
                                                                       name,
                                                                       defSetId,
                                                                       moduleName,
-                                                                      projPkg);
+                                                                      projPkg,
+                                                                      overviewLoader.loadOverview(path));
         return this.create(path,
                            name,
                            defSetId,
@@ -110,7 +115,8 @@ class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectM
                                             title,
                                             defSetId,
                                             kieModule.getModuleName(),
-                                            modulePackage);
+                                            modulePackage,
+                                            overviewLoader.loadOverview(path));
     }
 
     private KieModule getCurrentModule(final Path path) {
@@ -121,11 +127,13 @@ class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectM
                                                          final String name,
                                                          final String defSetId,
                                                          final String moduleName,
-                                                         final Package projPkg) {
+                                                         final Package projPkg,
+                                                         final Overview overview) {
         return new ProjectMetadataImpl.ProjectMetadataBuilder()
                 .forDefinitionSetId(defSetId)
                 .forModuleName(moduleName)
                 .forProjectPackage(projPkg)
+                .forOverview(overview)
                 .forTitle(name)
                 .forPath(path)
                 .build();

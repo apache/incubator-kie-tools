@@ -25,11 +25,13 @@ import javax.inject.Named;
 import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.services.backend.service.KieServiceOverviewLoader;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -86,10 +88,13 @@ public class ProjectDiagramServiceImplTest {
     private SessionInfo sessionInfo;
 
     @Mock
+    private KieModuleService moduleService;
+
+    @Mock
     private MetadataServerSideService metadataService;
 
     @Mock
-    private KieModuleService moduleService;
+    private WorkspaceProjectService projectService;
 
     @Mock
     private EventSourceMock<ResourceOpenedEvent> resourceOpenedEvent;
@@ -124,19 +129,23 @@ public class ProjectDiagramServiceImplTest {
                                                        sessionInfo,
                                                        resourceOpenedEvent,
                                                        commentedOptionFactory,
-                                                       moduleService) {
+                                                       moduleService,
+                                                       new KieServiceOverviewLoader(metadataService,
+                                                                                    moduleService,
+                                                                                    projectService)) {
 
             {
                 metadataService = ProjectDiagramServiceImplTest.this.metadataService;
             }
 
             @Override
-            protected ProjectDiagramServiceController buildController(DefinitionManager definitionManager,
-                                                                      FactoryManager factoryManager,
-                                                                      Instance<DefinitionSetService> definitionSetServiceInstances,
-                                                                      BackendRegistryFactory registryFactory,
-                                                                      @Named("ioStrategy") IOService ioService,
-                                                                      KieModuleService moduleService) {
+            protected ProjectDiagramServiceController buildController(final DefinitionManager definitionManager,
+                                                                      final FactoryManager factoryManager,
+                                                                      final Instance<DefinitionSetService> definitionSetServiceInstances,
+                                                                      final BackendRegistryFactory registryFactory,
+                                                                      final @Named("ioStrategy") IOService ioService,
+                                                                      final KieModuleService moduleService,
+                                                                      final KieServiceOverviewLoader overviewLoader) {
                 return diagramServiceController;
             }
         };

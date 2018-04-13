@@ -22,7 +22,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.dmn.api.factory.DMNGraphFactory;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
@@ -181,8 +180,8 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
 
     @Override
     @WorkbenchPartView
-    public Widget getWidget() {
-        return getView().asWidget();
+    public IsWidget getWidget() {
+        return super.getWidget();
     }
 
     @OnMayClose

@@ -23,7 +23,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ContextUtils;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
@@ -217,8 +216,8 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
     }
 
     @WorkbenchPartView
-    public Widget getWidget() {
-        return getView().asWidget();
+    public IsWidget getWidget() {
+        return super.getWidget();
     }
 
     @OnMayClose

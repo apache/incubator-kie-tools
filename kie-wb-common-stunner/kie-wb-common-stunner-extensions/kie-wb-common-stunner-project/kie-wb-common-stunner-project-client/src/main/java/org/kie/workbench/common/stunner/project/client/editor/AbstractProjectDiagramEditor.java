@@ -31,6 +31,8 @@ import javax.inject.Inject;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.ProvidesResize;
+import com.google.gwt.user.client.ui.RequiresResize;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
@@ -108,6 +110,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     public interface View extends UberView<AbstractProjectDiagramEditor>,
                                   KieEditorView,
+                                  RequiresResize,
+                                  ProvidesResize,
                                   IsWidget {
 
         void setWidget(IsWidget widget);
@@ -241,6 +245,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                                       updateTitle(diagram.getMetadata().getTitle());
                                                       hideLoadingViews();
                                                       setOriginalHash(getCurrentDiagramHash());
+                                                      resetEditorPages(diagram.getMetadata().getOverview());
                                                       onDiagramLoad();
                                                   }
 

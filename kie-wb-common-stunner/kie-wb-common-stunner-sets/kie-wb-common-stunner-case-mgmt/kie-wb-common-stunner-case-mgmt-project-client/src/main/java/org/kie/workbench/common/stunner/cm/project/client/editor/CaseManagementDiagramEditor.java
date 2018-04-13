@@ -21,7 +21,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
 import org.kie.workbench.common.stunner.cm.project.client.type.CaseManagementDiagramResourceType;
@@ -166,8 +165,8 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
     }
 
     @WorkbenchPartView
-    public Widget getWidget() {
-        return getView().asWidget();
+    public IsWidget getWidget() {
+        return super.getWidget();
     }
 
     @OnMayClose

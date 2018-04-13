@@ -29,6 +29,7 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.service.KieService;
+import org.kie.workbench.common.services.backend.service.KieServiceOverviewLoader;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -49,8 +50,7 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
         implements ProjectDiagramService {
 
-    private static final Logger LOG =
-            LoggerFactory.getLogger(ProjectDiagramServiceImpl.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectDiagramServiceImpl.class.getName());
 
     private final SessionInfo sessionInfo;
     private final Event<ResourceOpenedEvent> resourceOpenedEvent;
@@ -59,6 +59,7 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
 
     protected ProjectDiagramServiceImpl() {
         this(null,
+             null,
              null,
              null,
              null,
@@ -78,7 +79,8 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
                                      final SessionInfo sessionInfo,
                                      final Event<ResourceOpenedEvent> resourceOpenedEvent,
                                      final CommentedOptionFactory commentedOptionFactory,
-                                     final KieModuleService moduleService) {
+                                     final KieModuleService moduleService,
+                                     final KieServiceOverviewLoader overviewLoader) {
         this.ioService = ioService;
         this.sessionInfo = sessionInfo;
         this.resourceOpenedEvent = resourceOpenedEvent;
@@ -88,7 +90,8 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
                                           definitionSetServiceInstances,
                                           registryFactory,
                                           ioService,
-                                          moduleService);
+                                          moduleService,
+                                          overviewLoader);
     }
 
     @PostConstruct
@@ -181,12 +184,14 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
                                                               final Instance<DefinitionSetService> definitionSetServiceInstances,
                                                               final BackendRegistryFactory registryFactory,
                                                               final IOService ioService,
-                                                              final KieModuleService moduleService) {
+                                                              final KieModuleService moduleService,
+                                                              final KieServiceOverviewLoader overviewLoader) {
         return new ProjectDiagramServiceController(definitionManager,
                                                    factoryManager,
                                                    definitionSetServiceInstances,
                                                    ioService,
                                                    registryFactory,
-                                                   moduleService);
+                                                   moduleService,
+                                                   overviewLoader);
     }
 }

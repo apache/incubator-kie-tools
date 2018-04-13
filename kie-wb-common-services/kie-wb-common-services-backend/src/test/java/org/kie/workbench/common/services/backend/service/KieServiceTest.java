@@ -37,8 +37,14 @@ import org.uberfire.ext.editor.commons.backend.version.PathResolver;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class KieServiceTest {
@@ -49,8 +55,16 @@ public class KieServiceTest {
 
     @Mock
     private PathResolver pathResolver;
+
     @Mock
     private MetadataServerSideService metadataService;
+
+    @Mock
+    private KieModuleService moduleService;
+
+    @Mock
+    private WorkspaceProjectService projectService;
+
     private org.uberfire.java.nio.file.Path mainFilePath;
     private org.uberfire.java.nio.file.Path dotFilePath;
     private org.uberfire.java.nio.file.Path orphanDotFilePath;
@@ -77,9 +91,12 @@ public class KieServiceTest {
                 this.logger = mock(Logger.class);
                 this.pathResolver = new PathResolverMock();
                 this.ioService = mockIOService;
-                this.moduleService = mock(KieModuleService.class);
-                this.projectService = mock(WorkspaceProjectService.class);
                 this.metadataService = KieServiceTest.this.metadataService;
+                this.moduleService = KieServiceTest.this.moduleService;
+                this.projectService = KieServiceTest.this.projectService;
+                this.overviewLoader = new KieServiceOverviewLoader(metadataService,
+                                                                   moduleService,
+                                                                   projectService);
             }
 
             @Override
@@ -107,11 +124,11 @@ public class KieServiceTest {
     @Test
     public void testProjectName() throws Exception {
         final KieModule module = mock(KieModule.class);
-        doReturn(module).when(kieService.moduleService).resolveModule(any(Path.class));
+        doReturn(module).when(moduleService).resolveModule(any(Path.class));
 
         final WorkspaceProject project = mock(WorkspaceProject.class);
         doReturn("test name").when(project).getName();
-        doReturn(project).when(kieService.projectService).resolveProject(any(Path.class));
+        doReturn(project).when(projectService).resolveProject(any(Path.class));
 
         final TestModel testModel = kieService.loadContent(Paths.convert(mainFilePath));
 

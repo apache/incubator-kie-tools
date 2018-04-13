@@ -17,6 +17,7 @@
 package org.kie.workbench.common.services.backend.service;
 
 import java.util.List;
+
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -29,7 +30,6 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.shared.discussion.CommentAddedEvent;
-import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.source.SourceGenerationFailedException;
 import org.slf4j.Logger;
@@ -44,13 +44,7 @@ public abstract class KieService<T> {
     protected static Logger logger = LoggerFactory.getLogger(KieService.class);
 
     @Inject
-    protected MetadataServerSideService metadataService;
-
-    @Inject
     protected SourceServices sourceServices;
-
-    @Inject
-    protected KieModuleService moduleService;
 
     @Inject
     protected Event<CommentAddedEvent> commentAddedEvent;
@@ -59,7 +53,16 @@ public abstract class KieService<T> {
     protected PathResolver pathResolver;
 
     @Inject
+    protected MetadataServerSideService metadataService;
+
+    @Inject
+    protected KieModuleService moduleService;
+
+    @Inject
     protected WorkspaceProjectService projectService;
+
+    @Inject
+    protected KieServiceOverviewLoader overviewLoader;
 
     @Inject
     @Named("ioStrategy")
@@ -81,10 +84,10 @@ public abstract class KieService<T> {
 
                 final Path principleFilePath = Paths.convert(ioPrincipleFilePath);
                 return constructContent(principleFilePath,
-                                        loadOverview(principleFilePath));
+                                        overviewLoader.loadOverview(principleFilePath));
             } else {
                 return constructContent(path,
-                                        loadOverview(path));
+                                        overviewLoader.loadOverview(path));
             }
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);
@@ -93,31 +96,6 @@ public abstract class KieService<T> {
 
     protected abstract T constructContent(Path path,
                                           Overview overview);
-
-    private Overview loadOverview(final Path path) {
-        final Overview overview = new Overview();
-
-        try {
-            // Some older versions in our example do not have metadata. This should be impossible in any kie-wb version
-            overview.setMetadata(metadataService.getMetadata(path));
-        } catch (Exception e) {
-            logger.warn("No metadata found for file: " + path.getFileName() + ", full path [" + path.toString() + "]");
-        }
-
-        //Some resources are not within a Module (e.g. categories.xml) so don't assume we can set the module name
-        final KieModule module = moduleService.resolveModule(path);
-        if (module == null) {
-            logger.info("File: " + path.getFileName() + ", full path [" + path.toString() + "] was not within a Module. Module Name cannot be set.");
-        } else {
-            try {
-                overview.setProjectName(projectService.resolveProject(module.getRootPath()).getName());
-            } catch (Throwable t) {
-                logger.debug("File: " + path.getFileName() + ", full path [" + path.toString() + "] was not within a Project. Project name cannot be set.", t);
-            }
-        }
-
-        return overview;
-    }
 
     public String getSource(final Path path)
             throws SourceGenerationFailedException {
