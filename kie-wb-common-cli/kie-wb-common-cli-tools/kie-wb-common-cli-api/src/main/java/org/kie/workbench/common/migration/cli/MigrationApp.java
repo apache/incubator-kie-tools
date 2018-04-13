@@ -151,7 +151,9 @@ public class MigrationApp {
             execute(effectiveConfig, exitAction, tools);
             exitAction.run();
         } else {
-            printWizard(effectiveConfig, tools, exitAction);
+            while (true) {
+                printWizard(effectiveConfig, tools, exitAction);
+            }
         }
     }
 
@@ -194,10 +196,6 @@ public class MigrationApp {
     private void execute(ToolConfig config, Runnable exitAction, MigrationTool... tools) {
         for (MigrationTool tool : tools) {
             tool.run(config, system);
-        }
-
-        if(!config.isBatch()) {
-            printWizard(config, tools, exitAction);
         }
     }
 
