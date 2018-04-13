@@ -1097,25 +1097,21 @@ public final class Geometry
 
         final double discrimant = r * r * dSq - det * det;
 
-        if (discrimant < 0)
+        if (lesserOrCloseEnough(discrimant, 0))
         {
             // line does not intersect
             return new Point2DArray();
         }
-        if (discrimant == 0)
+        if (closeEnough(discrimant, 0))
         {
             // line only intersects once, so the start or end is inside of the circle
             return new Point2DArray(det * d.getY() / dSq + pc.getX(), -det * d.getX() / dSq + pc.getY());
         }
         final double discSqrt = Math.sqrt(discrimant);
 
-        double sgn = 1;
-
-        if (d.getY() < 0)
-        {
-            sgn = -1;
-        }
-        final Point2DArray intr = new Point2DArray((det * d.getY() + sgn * d.getX() * discSqrt) / dSq + pc.getX(), (-det * d.getX() + Math.abs(d.getY()) * discSqrt) / dSq + pc.getY());
+        double sgn = (d.getY() < 0) ? -1 : 1;
+        
+        final Point2DArray intr = new Point2DArray((((det * d.getY()) + (sgn * d.getX() * discSqrt)) / dSq) + pc.getX(), (((-det * d.getX()) + (Math.abs(d.getY()) * discSqrt)) / dSq) + pc.getY());
 
         return intr.push((det * d.getY() - sgn * d.getX() * discSqrt) / dSq + pc.getX(), (-det * d.getX() - Math.abs(d.getY()) * discSqrt) / dSq + pc.getY());
     }
