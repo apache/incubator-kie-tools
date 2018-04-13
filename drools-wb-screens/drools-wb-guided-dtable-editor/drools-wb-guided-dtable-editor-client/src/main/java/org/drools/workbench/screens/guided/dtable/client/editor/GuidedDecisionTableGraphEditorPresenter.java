@@ -335,20 +335,14 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
 
     private boolean doMayCloseGraph(final Integer originalHashCode,
                                     final Integer currentHashCode) {
-        if (this.isDirty(originalHashCode,
-                         currentHashCode) || overviewWidget.isDirty()) {
-            return this.editorView.confirmClose();
-        }
-        return true;
+        return !this.isDirty(originalHashCode,
+                             currentHashCode) && !overviewWidget.isDirty();
     }
 
     private boolean doMayCloseDocument(final Integer originalHashCode,
                                        final Integer currentHashCode) {
-        if (this.isDirty(originalHashCode,
-                         currentHashCode)) {
-            return this.editorView.confirmClose();
-        }
-        return true;
+        return !this.isDirty(originalHashCode,
+                             currentHashCode);
     }
 
     GuidedDecisionTableEditorGraphModel buildModelFromEditor() {
