@@ -109,15 +109,9 @@ public abstract class AbstractOffsetMultiPointShape<T extends AbstractOffsetMult
     {
         if (getPathPartList().size() < 1)
         {
-            if (false == parse(attr))
-            {
-                return false;
-            }
+            return parse(attr);
         }
-        if (getPathPartList().size() < 1)
-        {
-            return false;
-        }
+
         return true;
     }
 
