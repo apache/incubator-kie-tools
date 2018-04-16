@@ -18,16 +18,21 @@ package org.uberfire.ext.layout.editor.client.infra;
 
 public class RowResizeEvent {
 
-    private String rowID;
+    private int containerHash;
+    private int rowHash;
     private Direction direction = Direction.UP;
 
-    public RowResizeEvent(String rowID) {
-
-        this.rowID = rowID;
+    public RowResizeEvent(int containerHash, int rowHash) {
+        this.containerHash = containerHash;
+        this.rowHash = rowHash;
     }
 
-    public String getRowID() {
-        return rowID;
+    public int getContainerHash() {
+        return containerHash;
+    }
+
+    public int getRowHash() {
+        return rowHash;
     }
 
     public RowResizeEvent up() {

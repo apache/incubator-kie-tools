@@ -18,23 +18,23 @@ package org.uberfire.ext.layout.editor.client.infra;
 
 public class ColumnResizeEvent {
 
-    private String columnID;
-    private String rowID;
+    private int columnHash;
+    private int rowHash;
     private Direction direction = Direction.LEFT;
 
-    public ColumnResizeEvent(String columnID,
-                             String rowID) {
+    public ColumnResizeEvent(int columnHash,
+                             int rowHash) {
 
-        this.columnID = columnID;
-        this.rowID = rowID;
+        this.columnHash = columnHash;
+        this.rowHash = rowHash;
     }
 
-    public String getRowID() {
-        return rowID;
+    public int getRowHash() {
+        return rowHash;
     }
 
-    public String getColumnID() {
-        return columnID;
+    public int getColumnHash() {
+        return columnHash;
     }
 
     public ColumnResizeEvent left() {

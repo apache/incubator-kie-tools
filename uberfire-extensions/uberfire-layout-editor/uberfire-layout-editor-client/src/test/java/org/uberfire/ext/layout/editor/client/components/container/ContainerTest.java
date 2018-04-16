@@ -103,7 +103,8 @@ public class ContainerTest extends AbstractLayoutEditorTest {
         assertEquals(Row.ROW_DEFAULT_HEIGHT / 2,
                      getRowByIndex(1).getHeight());
 
-        container.resizeRows(new RowResizeEvent(row0.getId()).down());
+        container.resizeRows(new RowResizeEvent(container.hashCode(),
+                row0.hashCode()).down());
 
         assertEquals(Row.ROW_DEFAULT_HEIGHT / 2 + 1,
                      getRowByIndex(0).getHeight());

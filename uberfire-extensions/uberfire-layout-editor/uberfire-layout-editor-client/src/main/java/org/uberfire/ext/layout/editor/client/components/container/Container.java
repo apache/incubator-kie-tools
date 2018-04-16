@@ -32,7 +32,6 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.ext.layout.editor.api.css.CssProperty;
 import org.uberfire.ext.layout.editor.api.css.CssValue;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
@@ -615,20 +614,27 @@ public class Container implements LayoutEditorElement {
     }
 
     public void resizeRows(@Observes RowResizeEvent resize) {
-        Row resizedRow = getRow(resize);
-        if (resizedRow != null) {
-            Row affectedRow = null;
-            if (resize.isUP()) {
-                affectedRow = lookUpForUpperNeighbor(resizedRow);
-            } else {
-                affectedRow = lookUpForBottomNeighbor(resizedRow);
+        if (resizeEventIsinThisContainer(resize)) {
+
+            Row resizedRow = getRow(resize);
+            if (resizedRow != null) {
+                Row affectedRow = null;
+                if (resize.isUP()) {
+                    affectedRow = lookUpForUpperNeighbor(resizedRow);
+                } else {
+                    affectedRow = lookUpForBottomNeighbor(resizedRow);
+                }
+                if (affectedRow != null) {
+                    resizedRow.incrementHeight();
+                    affectedRow.reduceHeight();
+                }
             }
-            if (affectedRow != null) {
-                resizedRow.incrementHeight();
-                affectedRow.reduceHeight();
-            }
+            setupResizeRows();
         }
-        setupResizeRows();
+    }
+
+    private boolean resizeEventIsinThisContainer(@Observes RowResizeEvent resize) {
+        return resize.getContainerHash() == hashCode();
     }
 
     private Row lookUpForUpperNeighbor(Row resizedRow) {
@@ -647,7 +653,7 @@ public class Container implements LayoutEditorElement {
 
     private Row getRow(RowResizeEvent resize) {
         for (Row row : getRows()) {
-            if (resize.getRowID() == row.getId()) {
+            if (resize.getRowHash() == row.hashCode()) {
                 return row;
             }
         }

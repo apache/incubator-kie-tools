@@ -28,7 +28,6 @@ import javax.inject.Inject;
 
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.ext.layout.editor.api.css.CssProperty;
 import org.uberfire.ext.layout.editor.api.css.CssValue;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
@@ -827,22 +826,22 @@ public class Row implements LayoutEditorElement {
     }
 
     private Column lookUpForLeftNeighbor(Column resizedColumn) {
-        return columns
-                .get(getColumnIndex(resizedColumn) - 1);
+        int idx = getColumnIndex(resizedColumn) - 1;
+        return idx < 0 ? null : columns.get(idx);
     }
 
     private Column lookUpForRightNeighbor(Column resizedColumn) {
-        return columns
-                .get(getColumnIndex(resizedColumn) + 1);
+        int idx = getColumnIndex(resizedColumn) + 1;
+        return idx < columns.size() ? columns.get(idx) : null;
     }
 
     private boolean resizeEventIsinThisRow(@Observes ColumnResizeEvent resize) {
-        return resize.getRowID() == id;
+        return resize.getRowHash() == hashCode();
     }
 
     private Column getColumn(ColumnResizeEvent resize) {
         for (Column column : columns) {
-            if (resize.getColumnID() == column.getId()) {
+            if (resize.getColumnHash() == column.hashCode()) {
                 return column;
             }
         }
@@ -1038,11 +1037,13 @@ public class Row implements LayoutEditorElement {
     }
 
     public void resizeUp() {
-        rowResizeEvent.fire(new RowResizeEvent(id).up());
+        rowResizeEvent.fire(new RowResizeEvent(parentElement.hashCode(),
+                hashCode()).up());
     }
 
     public void resizeDown() {
-        rowResizeEvent.fire(new RowResizeEvent(id).down());
+        rowResizeEvent.fire(new RowResizeEvent(parentElement.hashCode(),
+                hashCode()).down());
     }
 
     public void incrementHeight() {

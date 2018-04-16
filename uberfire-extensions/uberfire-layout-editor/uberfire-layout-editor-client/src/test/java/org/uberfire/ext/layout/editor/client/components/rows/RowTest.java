@@ -180,24 +180,24 @@ public class RowTest extends AbstractLayoutEditorTest {
         Integer originalFirstSize = first.getColumnWidth();
         Integer originalSecondSize = second.getColumnWidth();
 
-        row.resizeColumns(new ColumnResizeEvent(second.getId(),
-                                                row.getId()).left());
+        row.resizeColumns(new ColumnResizeEvent(second.hashCode(),
+                                                row.hashCode()).left());
 
         assertEquals(originalFirstSize - 1,
                      first.getColumnWidth());
         assertEquals(originalSecondSize + 1,
                      second.getColumnWidth());
 
-        row.resizeColumns(new ColumnResizeEvent(second.getId(),
-                                                row.getId()).left());
+        row.resizeColumns(new ColumnResizeEvent(second.hashCode(),
+                                                row.hashCode()).left());
 
         assertEquals(originalFirstSize - 2,
                      first.getColumnWidth());
         assertEquals(originalSecondSize + 2,
                      second.getColumnWidth());
 
-        row.resizeColumns(new ColumnResizeEvent(first.getId(),
-                                                row.getId()).right());
+        row.resizeColumns(new ColumnResizeEvent(first.hashCode(),
+                                                row.hashCode()).right());
 
         assertEquals(originalFirstSize - 1,
                      first.getColumnWidth());

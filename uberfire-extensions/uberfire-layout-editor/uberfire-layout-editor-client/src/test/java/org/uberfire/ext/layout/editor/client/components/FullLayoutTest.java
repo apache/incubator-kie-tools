@@ -75,7 +75,8 @@ public class FullLayoutTest extends AbstractLayoutEditorTest {
     private void resizeSecondRow() {
         Row firstRow = getRowByIndex(0);
 
-        RowResizeEvent resize = new RowResizeEvent(firstRow.getId()).down();
+        RowResizeEvent resize = new RowResizeEvent(container.hashCode(),
+                firstRow.hashCode()).down();
         container.resizeRows(resize);
     }
 
@@ -122,11 +123,11 @@ public class FullLayoutTest extends AbstractLayoutEditorTest {
         Row row = getRowByIndex(FIRST_ROW);
 
         row.resizeColumns(new ColumnResizeEvent(getColumnByIndex(row,
-                                                                 0).getId(),
-                                                row.getId()).right());
+                                                                 0).hashCode(),
+                                                row.hashCode()).right());
         row.resizeColumns(new ColumnResizeEvent(getColumnByIndex(row,
-                                                                 0).getId(),
-                                                row.getId()).right());
+                                                                 0).hashCode(),
+                                                row.hashCode()).right());
     }
 
     private void createFirstRowSecondColumn(Column firstRowFirstColumn) {

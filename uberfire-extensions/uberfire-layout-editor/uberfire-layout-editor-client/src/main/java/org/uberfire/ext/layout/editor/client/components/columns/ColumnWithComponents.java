@@ -211,8 +211,8 @@ public class ColumnWithComponents implements Column {
     }
 
     public void resizeLeft() {
-        columnResizeEvent.fire(new ColumnResizeEvent(id,
-                                                     parentElement.getId()).left());
+        columnResizeEvent.fire(new ColumnResizeEvent(hashCode(),
+                                                     parentElement.hashCode()).left());
     }
 
     public boolean canResizeRight() {
@@ -220,8 +220,8 @@ public class ColumnWithComponents implements Column {
     }
 
     public void resizeRight() {
-        columnResizeEvent.fire(new ColumnResizeEvent(id,
-                                                     parentElement.getId()).right());
+        columnResizeEvent.fire(new ColumnResizeEvent(hashCode(),
+                                                     parentElement.hashCode()).right());
     }
 
     protected Row createInstanceRow() {
