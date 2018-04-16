@@ -34,8 +34,9 @@ public class FormModelHandlerManagerImpl implements FormModelHandlerManager {
 
     @Inject
     public FormModelHandlerManagerImpl(Instance<FormModelHandler<? extends FormModel>> instances) {
-        instances.forEach(handler -> handlers.put(handler.getModelType(),
-                                                  handler));
+        for(FormModelHandler handler : instances) {
+            handlers.put(handler.getModelType(), handler);
+        }
     }
 
     @Override

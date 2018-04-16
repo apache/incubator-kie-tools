@@ -57,10 +57,10 @@ public class ConflictElement implements IsElement,
     public void onShowMoreClick() {
         if (isShowMorePressed) {
             view.setMessage(firstMessagePart);
-            view.setShowMoreText(translationService.getTranslation(FormEditorConstants.ConflictElementViewImplShowMore));
+            view.setShowMoreText(translationService.getTranslation(FormEditorConstants.ShowMoreLabel));
         } else {
             view.setMessage(fullMessage);
-            view.setShowMoreText(translationService.getTranslation(FormEditorConstants.ConflictElementViewImplShowLess));
+            view.setShowMoreText(translationService.getTranslation(FormEditorConstants.ShowLessLabel));
         }
         isShowMorePressed = !isShowMorePressed;
     }

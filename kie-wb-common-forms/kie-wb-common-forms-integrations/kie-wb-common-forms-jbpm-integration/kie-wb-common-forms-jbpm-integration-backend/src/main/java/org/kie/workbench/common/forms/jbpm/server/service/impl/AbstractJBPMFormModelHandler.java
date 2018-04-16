@@ -16,14 +16,22 @@
 
 package org.kie.workbench.common.forms.jbpm.server.service.impl;
 
+import java.util.List;
+
 import org.kie.workbench.common.forms.editor.backend.service.impl.AbstractFormModelHandler;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMFormModel;
 import org.kie.workbench.common.forms.jbpm.service.shared.BPMFinderService;
+import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 
-public abstract class AbstractJBPMFormModelHandler<M extends JBPMFormModel> extends AbstractFormModelHandler<M> {
+public abstract class AbstractJBPMFormModelHandler<MODEL extends JBPMFormModel> extends AbstractFormModelHandler<MODEL> {
+
+    protected static final String BUNDLE = "org.kie.workbench.common.forms.jbpm.server.service.BackendConstants";
+    protected static final String MISSING_PROCESS_SHORT_KEY = "MissingProcess.shortMessage";
+    protected static final String MISSING_PROCESS_FULL_KEY = "MissingProcess.fullMessage";
+    protected static final String PROCESS_KEY = "process";
 
     protected FieldManager fieldManager;
 
@@ -42,5 +50,18 @@ public abstract class AbstractJBPMFormModelHandler<M extends JBPMFormModel> exte
     @Override
     protected void initialize() {
         super.checkInitialized();
+    }
+
+    protected abstract MODEL getSourceModel();
+
+    @Override
+    protected List<ModelProperty> getCurrentModelProperties() {
+        MODEL sourceModel = getSourceModel();
+
+        if (sourceModel != null) {
+            return sourceModel.getProperties();
+        }
+
+        return null;
     }
 }

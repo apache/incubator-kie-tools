@@ -36,8 +36,8 @@ public class TaskFormModel extends AbstractJBPMFormModel {
     public TaskFormModel(@MapsTo("processId") String processId,
                          @MapsTo("taskName") String taskName,
                          @MapsTo("properties") List<ModelProperty> properties) {
-        super(processId,
-              properties);
+        super(processId, properties);
+
         this.taskName = taskName;
     }
 

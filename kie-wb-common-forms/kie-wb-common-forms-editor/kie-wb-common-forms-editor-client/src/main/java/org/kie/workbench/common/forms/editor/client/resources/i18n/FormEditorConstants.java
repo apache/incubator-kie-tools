@@ -132,8 +132,17 @@ public interface FormEditorConstants {
     String NestedFormsConflictHandlerFix = "NestedFormsConflictHandler.fix";
 
     @TranslationKey(defaultValue = "Show more")
-    String ConflictElementViewImplShowMore= "ConflictElementViewImpl.showMore";
+    String ShowMoreLabel = "showMore";
 
     @TranslationKey(defaultValue = "Show less")
-    String ConflictElementViewImplShowLess= "ConflictElementViewImpl.showLess";
+    String ShowLessLabel = "showLess";
+
+    @TranslationKey(defaultValue = "")
+    String ErrorMessageDisplayerViewImplTitle = "ErrorMessageDisplayerViewImpl.title";
+
+    @TranslationKey(defaultValue = "")
+    String ErrorMessageDisplayerViewImplClose = "ErrorMessageDisplayerViewImpl.close";
+
+    @TranslationKey(defaultValue = "")
+    String ErrorMessageDisplayerViewImplCloseAndReview = "ErrorMessageDisplayerViewImpl.closeAndReview";
 }

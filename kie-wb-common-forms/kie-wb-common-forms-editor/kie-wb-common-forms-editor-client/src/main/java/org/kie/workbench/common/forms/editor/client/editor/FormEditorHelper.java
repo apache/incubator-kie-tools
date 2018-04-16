@@ -117,14 +117,16 @@ public class FormEditorHelper {
     }
 
     public void addAvailableFields() {
-        FormModel model = getFormModel();
-        FormDefinition formDefinition = getFormDefinition();
+        if(content.getDefinition() != null) {
+            FormModel model = getFormModel();
+            FormDefinition formDefinition = getFormDefinition();
 
-        model.getProperties().forEach(modelProperty -> {
-            if (formDefinition.getFieldByBinding(modelProperty.getName()) == null) {
-                addAvailableField(fieldManager.getDefinitionByModelProperty(modelProperty));
-            }
-        });
+            model.getProperties().forEach(modelProperty -> {
+                if (formDefinition.getFieldByBinding(modelProperty.getName()) == null) {
+                    addAvailableField(fieldManager.getDefinitionByModelProperty(modelProperty));
+                }
+            });
+        }
     }
 
     public void addAvailableField(FieldDefinition field) {

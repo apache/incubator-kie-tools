@@ -37,8 +37,7 @@ public interface FormModelHandler<F extends FormModel> {
     /**
      * Initializes the FormModelHandler with the {@link FormModel} and a {@link Path} to get {@link FieldDefinition}.
      */
-    void init(F formModel,
-              Path path);
+    void init(F formModel, Path path);
 
     /**
      * Synchronizes the current {@link FormModel} properties and returns the result of the syncronization
@@ -48,8 +47,13 @@ public interface FormModelHandler<F extends FormModel> {
     /**
      * Synchronizes the given {@link FormModel} with the given List of {@link ModelProperty} and returns the result of the syncronization
      */
-    FormModelSynchronizationResult synchronizeFormModelProperties(F formModel,
-                                                                  List<ModelProperty> newProperties);
+    FormModelSynchronizationResult synchronizeFormModelProperties(F formModel, List<ModelProperty> newProperties);
+
+    /**
+     * Checks if the source for the {@link FormModel} exists.
+     * @throws SourceFormModelNotFoundException if the source cannot be found.
+     */
+    void checkSourceModel() throws SourceFormModelNotFoundException;
 
     /**
      * Creates a new {@link FormModelHandler} instance.

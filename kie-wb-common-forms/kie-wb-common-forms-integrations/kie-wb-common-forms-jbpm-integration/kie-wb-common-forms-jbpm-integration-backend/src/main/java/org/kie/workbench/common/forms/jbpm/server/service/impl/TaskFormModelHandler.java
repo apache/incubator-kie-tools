@@ -16,16 +16,16 @@
 
 package org.kie.workbench.common.forms.jbpm.server.service.impl;
 
-import java.util.List;
+import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
+import org.kie.workbench.common.forms.editor.service.backend.SourceFormModelNotFoundException;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMProcessModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 import org.kie.workbench.common.forms.jbpm.service.shared.BPMFinderService;
-import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
@@ -34,6 +34,9 @@ import org.slf4j.LoggerFactory;
 
 @Dependent
 public class TaskFormModelHandler extends AbstractJBPMFormModelHandler<TaskFormModel> {
+
+    protected static final String MISSING_TASK_SHORT_KEY = "MissingTask.shortMessage";
+    protected static final String MISSING_TASK_FULL_KEY = "MissingTask.fullMessage";
 
     private static final Logger logger = LoggerFactory.getLogger(BusinessProcessFormModelHandler.class);
 
@@ -54,6 +57,25 @@ public class TaskFormModelHandler extends AbstractJBPMFormModelHandler<TaskFormM
     }
 
     @Override
+    public void checkSourceModel() throws SourceFormModelNotFoundException {
+        JBPMProcessModel processModel = bpmFinderService.getModelForProcess(formModel.getProcessId(), path);
+
+        if (processModel != null) {
+            Optional<TaskFormModel> optional = processModel.getTaskFormModels().stream()
+                    .filter(taskFormModel -> taskFormModel.getFormName().equals(formModel.getFormName()))
+                    .findAny();
+
+            if (!optional.isPresent()) {
+                String[] params = new String[]{formModel.getTaskName(), formModel.getProcessId()};
+                throwException(BUNDLE, MISSING_TASK_SHORT_KEY, params, MISSING_TASK_FULL_KEY, params, PROCESS_KEY);
+            }
+        } else {
+            String[] params = new String[]{formModel.getProcessId()};
+            throwException(BUNDLE, MISSING_PROCESS_SHORT_KEY, params, MISSING_PROCESS_FULL_KEY, params, PROCESS_KEY);
+        }
+    }
+
+    @Override
     public FormModelHandler<TaskFormModel> newInstance() {
         return new TaskFormModelHandler(moduleService,
                                         classLoaderHelper,
@@ -61,23 +83,25 @@ public class TaskFormModelHandler extends AbstractJBPMFormModelHandler<TaskFormM
                                         bpmFinderService);
     }
 
-    @Override
-    protected List<ModelProperty> getCurrentModelProperties() {
+    protected TaskFormModel getSourceModel() {
+        JBPMProcessModel processModel = bpmFinderService.getModelForProcess(formModel.getProcessId(), path);
 
-        JBPMProcessModel processModel = bpmFinderService.getModelForProcess(formModel.getProcessId(),
-                                                                            path);
-        for (TaskFormModel model : processModel.getTaskFormModels()) {
-            if (model.getFormName().equals(formModel.getFormName())) {
-                return model.getProperties();
+        if (processModel != null) {
+            Optional<TaskFormModel> optional = processModel.getTaskFormModels().stream()
+                    .filter(taskFormModel -> taskFormModel.getFormName().equals(formModel.getFormName()))
+                    .findAny();
+
+            if (optional.isPresent()) {
+                return optional.get();
             }
         }
+
         return null;
     }
 
     @Override
     protected void log(String message,
                        Exception e) {
-        logger.warn(message,
-                    e);
+        logger.warn(message, e);
     }
 }

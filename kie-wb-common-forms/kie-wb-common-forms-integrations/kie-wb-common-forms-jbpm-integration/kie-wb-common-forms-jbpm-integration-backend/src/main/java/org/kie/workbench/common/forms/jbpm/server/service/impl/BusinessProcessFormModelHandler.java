@@ -16,16 +16,14 @@
 
 package org.kie.workbench.common.forms.jbpm.server.service.impl;
 
-import java.util.List;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
+import org.kie.workbench.common.forms.editor.service.backend.SourceFormModelNotFoundException;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMProcessModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProcessFormModel;
 import org.kie.workbench.common.forms.jbpm.service.shared.BPMFinderService;
-import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
@@ -62,10 +60,21 @@ public class BusinessProcessFormModelHandler extends AbstractJBPMFormModelHandle
     }
 
     @Override
-    protected List<ModelProperty> getCurrentModelProperties() {
-        JBPMProcessModel processModel = bpmFinderService.getModelForProcess(formModel.getProcessId(),
-                                                                            path);
-        return processModel.getProcessFormModel().getProperties();
+    protected BusinessProcessFormModel getSourceModel() {
+        JBPMProcessModel processModel = bpmFinderService.getModelForProcess(formModel.getProcessId(), path);
+
+        if (processModel != null) {
+            return processModel.getProcessFormModel();
+        }
+        return null;
+    }
+
+    @Override
+    public void checkSourceModel() throws SourceFormModelNotFoundException {
+        if (getSourceModel() == null) {
+            String[] params = new String[]{formModel.getProcessId()};
+            throwException(BUNDLE, MISSING_PROCESS_SHORT_KEY, params, MISSING_PROCESS_FULL_KEY, params, PROCESS_KEY);
+        }
     }
 
     @Override

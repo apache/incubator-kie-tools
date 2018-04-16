@@ -23,17 +23,17 @@ import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 public interface Constants {
 
     @TranslationKey(defaultValue = "Business Process")
-    public static final String Process = BusinessProcessFormModel.class.getName();
+    String Process = BusinessProcessFormModel.class.getName();
 
     @TranslationKey(defaultValue = "")
-    public static final String Task = TaskFormModel.class.getName();
+    String Task = TaskFormModel.class.getName();
 
     @TranslationKey(defaultValue = "Start Process Form")
-    public static final String JBPMFormModelCreationViewImplStartProcessForm = "JBPMFormModelCreationViewImpl.StartProcessForm";
+    String JBPMFormModelCreationViewImplStartProcessForm = "JBPMFormModelCreationViewImpl.StartProcessForm";
 
     @TranslationKey(defaultValue = "Form for Task {0} ({1})")
-    public static final String JBPMFormModelCreationViewImplTaskName = "JBPMFormModelCreationViewImpl.TaskName";
+    String JBPMFormModelCreationViewImplTaskName = "JBPMFormModelCreationViewImpl.TaskName";
 
     @TranslationKey(defaultValue = "There's no process or task selected")
-    public static final String InvalidFormModel = "JBPMFormModelCreationPresenter.InvalidFormModel";
+    String InvalidFormModel = "JBPMFormModelCreationPresenter.InvalidFormModel";
 }

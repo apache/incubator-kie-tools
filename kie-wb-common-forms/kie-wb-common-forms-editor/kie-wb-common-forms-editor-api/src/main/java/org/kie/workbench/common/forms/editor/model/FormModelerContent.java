@@ -27,6 +27,7 @@ public class FormModelerContent {
     private Path path;
     private Overview overview;
     private FormDefinition definition;
+    private FormModelerContentError error = null;
     private FormModelSynchronizationResult synchronizationResult;
     private FormEditorRenderingContext renderingContext;
 
@@ -52,6 +53,14 @@ public class FormModelerContent {
 
     public void setDefinition(FormDefinition definition) {
         this.definition = definition;
+    }
+
+    public FormModelerContentError getError() {
+        return error;
+    }
+
+    public void setError(FormModelerContentError error) {
+        this.error = error;
     }
 
     public FormEditorRenderingContext getRenderingContext() {

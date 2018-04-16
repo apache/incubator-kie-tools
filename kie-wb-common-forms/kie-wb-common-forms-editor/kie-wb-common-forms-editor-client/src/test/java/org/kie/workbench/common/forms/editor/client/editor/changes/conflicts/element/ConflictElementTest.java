@@ -69,13 +69,13 @@ public class ConflictElementTest {
 
         verify(view).setShowMoreText(any());
         verify(view).setMessage(MESSAGE + " " + MESSAGE);
-        verify(translationService).getTranslation(FormEditorConstants.ConflictElementViewImplShowLess);
+        verify(translationService).getTranslation(FormEditorConstants.ShowLessLabel);
 
         // Pressing showMore link for second thime -> show short message
         element.onShowMoreClick();
 
         verify(view, times(2)).setShowMoreText(any());
         verify(view).setMessage(MESSAGE);
-        verify(translationService).getTranslation(FormEditorConstants.ConflictElementViewImplShowMore);
+        verify(translationService).getTranslation(FormEditorConstants.ShowMoreLabel);
     }
 }

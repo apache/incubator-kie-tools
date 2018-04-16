@@ -31,6 +31,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.kie.workbench.common.forms.editor.client.editor.changes.ChangesNotificationDisplayer;
+import org.kie.workbench.common.forms.editor.client.editor.errorMessage.ErrorMessageDisplayer;
 import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorFieldLayoutComponent;
 import org.kie.workbench.common.forms.editor.client.editor.test.TestFormEditorHelper;
 import org.kie.workbench.common.forms.editor.client.resources.images.FormEditorImageResources;
@@ -166,6 +167,9 @@ public class FormEditorPresenterAbstractTest {
     @Mock
     protected MenuItem alertsButtonMenuItem;
 
+    @Mock
+    protected ErrorMessageDisplayer errorMessageDisplayer;
+
     protected TestFieldManager fieldManager;
 
     protected List<Path> assetUsages = new ArrayList<>();
@@ -261,7 +265,8 @@ public class FormEditorPresenterAbstractTest {
                                             editorServiceCallerMock,
                                             translationService,
                                             editorFieldLayoutComponents,
-                                            showAssetUsagesDisplayer) {
+                                            showAssetUsagesDisplayer,
+                                            errorMessageDisplayer) {
             {
                 kieView = mock(KieEditorWrapperView.class);
                 versionRecordManager = FormEditorPresenterAbstractTest.this.versionRecordManager;

@@ -27,14 +27,17 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
 import org.kie.workbench.common.forms.data.modeller.service.DataObjectFinderService;
+import org.kie.workbench.common.forms.editor.service.backend.SourceFormModelNotFoundException;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasMaxLength;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.definition.CheckBoxFieldDefinition;
@@ -122,10 +125,16 @@ public class DataObjectFormModelHandlerTest extends AbstractDataObjectTest {
 
         finderService = new DataObjectFinderServiceImpl(moduleService,
                                                         dataModelerService);
+
         handler = new DataObjectFormModelHandler(moduleService,
                                                  moduleClassLoaderHelper,
                                                  finderService,
-                                                 new TestFieldManager());
+                                                 new TestFieldManager()) {
+            @Override
+            protected Locale getLocale() {
+                return Locale.ENGLISH;
+            }
+        };
         when(dataModelerService.loadModel(any())).thenReturn(dataModel);
         List<DataObjectFormModel> formModels = finderService.getAvailableDataObjects(path);
         formModel = formModels.get(0);
@@ -322,6 +331,17 @@ public class DataObjectFormModelHandlerTest extends AbstractDataObjectTest {
             assertTrue(formField instanceof CharacterBoxFieldDefinition ? maxLength == 1 : maxLength == 100);
         }
         return formField;
+    }
+
+    @Test
+    public void testCheckModelSource() {
+        Assertions.assertThatCode(() -> handler.checkSourceModel())
+                .doesNotThrowAnyException();
+
+        handler.dataObject = null;
+
+        Assertions.assertThatThrownBy(() -> handler.checkSourceModel())
+                .isInstanceOf(SourceFormModelNotFoundException.class);
     }
 
     private void createModel() {

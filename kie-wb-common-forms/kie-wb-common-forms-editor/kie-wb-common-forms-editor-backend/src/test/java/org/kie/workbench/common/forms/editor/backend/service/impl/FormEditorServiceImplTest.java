@@ -16,23 +16,37 @@
 
 package org.kie.workbench.common.forms.editor.backend.service.impl;
 
-import javax.enterprise.event.Event;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.List;
 
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
+
+import org.apache.commons.io.IOUtils;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
+import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandlerManager;
+import org.kie.workbench.common.forms.editor.service.backend.SourceFormModelNotFoundException;
 import org.kie.workbench.common.forms.editor.service.shared.VFSFormFinderService;
 import org.kie.workbench.common.forms.editor.type.FormResourceTypeDefinition;
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
+import org.kie.workbench.common.forms.fields.test.TestMetaDataEntryManager;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.kie.workbench.common.forms.services.backend.serialization.FormDefinitionSerializer;
+import org.kie.workbench.common.forms.services.backend.serialization.impl.FieldSerializer;
+import org.kie.workbench.common.forms.services.backend.serialization.impl.FormDefinitionSerializerImpl;
+import org.kie.workbench.common.forms.services.backend.serialization.impl.FormModelSerializer;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
@@ -49,12 +63,14 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -77,6 +93,9 @@ public class FormEditorServiceImplTest {
     private static final String COMMIT_COMMENT = "a comment";
 
     @Mock
+    private Overview overview;
+
+    @Mock
     private Path path;
 
     @Mock
@@ -91,15 +110,16 @@ public class FormEditorServiceImplTest {
     private FieldManager fieldManager = new TestFieldManager();
 
     @Mock
+    private FormModelHandler dataObjectFormModelHandler;
+
     private FormModelHandlerManager modelHandlerManager;
 
     @Mock
-    KieModuleService moduleService;
+    private KieModuleService moduleService;
 
     @Mock
     private KieModule module;
 
-    @Mock
     private FormDefinitionSerializer formDefinitionSerializer;
 
     @Mock
@@ -118,6 +138,22 @@ public class FormEditorServiceImplTest {
 
     @Before
     public void init() {
+
+        Instance<FormModelHandler<? extends FormModel>> instances = mock(Instance.class);
+
+        when(dataObjectFormModelHandler.getModelType()).thenReturn(DataObjectFormModel.class);
+        when(dataObjectFormModelHandler.newInstance()).thenReturn(dataObjectFormModelHandler);
+
+        List<FormModelHandler> handlers = Arrays.asList(dataObjectFormModelHandler);
+
+        when(instances.iterator()).then(invocationOnMock -> handlers.iterator());
+
+        modelHandlerManager = spy(new FormModelHandlerManagerImpl(instances));
+
+        formDefinitionSerializer = spy(new FormDefinitionSerializerImpl(new FieldSerializer(),
+                                                                    new FormModelSerializer(),
+                                                                    new TestMetaDataEntryManager()));
+
         formEditorService = spy(new FormEditorServiceImpl(ioService,
                                                           sessionInfo,
                                                           resourceOpenedEvent,
@@ -222,5 +258,64 @@ public class FormEditorServiceImplTest {
         verify(formEditorService, constructContentCalls).constructContent(eq(path), any(Overview.class));
         verify(formEditorService).save(eq(path), eq(content), eq(metadata), eq(COMMIT_COMMENT));
         verify(renameService).rename(eq(path), eq(NEW_FORM_NAME), eq(COMMIT_COMMENT));
+    }
+
+    @Test
+    public void testConstructContent() throws IOException, SourceFormModelNotFoundException {
+        String formContent = IOUtils.toString(new InputStreamReader(this.getClass().getResourceAsStream("test.frm")));
+
+        when(ioService.readAllString(any())).thenReturn(formContent);
+
+        FormModelerContent content = formEditorService.constructContent(path, overview);
+
+        verify(modelHandlerManager).getFormModelHandler(any());
+
+        verify(dataObjectFormModelHandler).init(any(), any());
+        verify(dataObjectFormModelHandler).checkSourceModel();
+        verify(dataObjectFormModelHandler).synchronizeFormModel();
+
+        verify(resourceOpenedEvent).fire(any());
+
+        assertNotNull(content);
+        assertNull(content.getError());
+    }
+
+    @Test
+    public void testConstructContentWithCheckModelFailure() throws IOException, SourceFormModelNotFoundException {
+        SourceFormModelNotFoundException exception = new SourceFormModelNotFoundException("exception", "exception", "model", null);
+
+        doThrow(exception)
+                .when(dataObjectFormModelHandler).checkSourceModel();
+
+        String formContent = IOUtils.toString(new InputStreamReader(this.getClass().getResourceAsStream("test.frm")));
+
+        when(ioService.readAllString(any())).thenReturn(formContent);
+
+        FormModelerContent content = formEditorService.constructContent(path, overview);
+
+        verify(modelHandlerManager).getFormModelHandler(any());
+
+        verify(dataObjectFormModelHandler).init(any(), any());
+        verify(dataObjectFormModelHandler).checkSourceModel();
+        verify(dataObjectFormModelHandler, never()).synchronizeFormModel();
+
+        verify(resourceOpenedEvent).fire(any());
+
+        assertNotNull(content);
+        assertNotNull(content.getError());
+        assertEquals(exception.getShortMessage(), content.getError().getShortMessage());
+        assertEquals(exception.getFullMessage(), content.getError().getFullMessage());
+    }
+
+    @Test
+    public void testConstructContentWithUnexpectedFailure() {
+
+        FormModelerContent content = formEditorService.constructContent(path, overview);
+
+        verify(modelHandlerManager, never()).getFormModelHandler(any());
+        verify(resourceOpenedEvent).fire(any());
+
+        assertNotNull(content);
+        assertNotNull(content.getError());
     }
 }

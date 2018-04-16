@@ -84,10 +84,10 @@ public class TaskFormVariables {
                 message.append("(").append(variable.getType()).append(").");
                 errors.add(message.toString());
             } else {
-                if(variable.isInput()) {
+                if (variable.isInput()) {
                     existingVariable.setInput(variable.isInput());
                 }
-                if(variable.isOutput()) {
+                if (variable.isOutput()) {
                     existingVariable.setOutput(variable.isOutput());
                 }
             }
@@ -120,15 +120,15 @@ public class TaskFormVariables {
         boolean variable1OnlyInput = variable1.isInput() && !variable1.isOutput();
         boolean variable2OnlyInput = variable2.isInput() && !variable2.isOutput();
 
-        if(variable1OnlyInput) {
-            if(variable2OnlyInput) {
+        if (variable1OnlyInput) {
+            if (variable2OnlyInput) {
                 return variable1.getName().compareToIgnoreCase(variable2.getName());
             } else {
                 return -1;
             }
         }
 
-        if(variable2OnlyInput) {
+        if (variable2OnlyInput) {
             return 1;
         }
 

@@ -28,6 +28,7 @@ import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
 import org.kie.workbench.common.forms.data.modeller.service.DataObjectFinderService;
 import org.kie.workbench.common.forms.editor.backend.service.impl.AbstractFormModelHandler;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
+import org.kie.workbench.common.forms.editor.service.backend.SourceFormModelNotFoundException;
 import org.kie.workbench.common.forms.fields.shared.model.meta.entries.FieldPlaceHolderEntry;
 import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.model.impl.meta.entries.FieldLabelEntry;
@@ -44,6 +45,11 @@ import org.uberfire.backend.vfs.Path;
 
 @Dependent
 public class DataObjectFormModelHandler extends AbstractFormModelHandler<DataObjectFormModel> {
+
+    private static final String BUNDLE = "org.kie.workbench.common.forms.data.modeller.service.BackendConstants";
+    private static final String SHORT_KEY = "DataObjectFormModelHandler.shortMessage";
+    private static final String FULL_KEY = "DataObjectFormModelHandler.fullMessage";
+    private static final String DATA_OBJECT_KEY = "DataObjectFormModelHandler.dataObject";
 
     public static final String SERIAL_VERSION_UID = "serialVersionUID";
     public static final String[] RESTRICTED_PROPERTY_NAMES = new String[]{SERIAL_VERSION_UID};
@@ -92,17 +98,26 @@ public class DataObjectFormModelHandler extends AbstractFormModelHandler<DataObj
 
     @Override
     protected void initialize() {
-        super.checkInitialized();
+        checkInitialized();
 
-        dataObject = finderService.getDataObject(formModel.getClassName(),
-                                                 path);
+        dataObject = finderService.getDataObject(formModel.getClassName(), path);
+    }
+
+    @Override
+    public void checkSourceModel() throws SourceFormModelNotFoundException {
+        checkInitialized();
+
+        if (dataObject == null) {
+            String[] params = new String[]{formModel.getClassName()};
+
+            throwException(BUNDLE, SHORT_KEY, params, FULL_KEY, params, DATA_OBJECT_KEY);
+        }
     }
 
     @Override
     protected void log(String message,
                        Exception e) {
-        logger.warn(message,
-                    e);
+        logger.warn(message, e);
     }
 
     @Override
@@ -110,8 +125,7 @@ public class DataObjectFormModelHandler extends AbstractFormModelHandler<DataObj
         return getDataObjectProperties(dataObject);
     }
 
-    public DataObjectFormModel createFormModel(DataObject dataObject,
-                                               Path path) {
+    public DataObjectFormModel createFormModel(DataObject dataObject, Path path) {
         this.path = path;
 
         initClassLoader();

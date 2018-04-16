@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.forms.editor.backend.service.impl;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,8 +32,10 @@ import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.forms.editor.model.FormModelSynchronizationResult;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
+import org.kie.workbench.common.forms.editor.model.FormModelerContentError;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandlerManager;
+import org.kie.workbench.common.forms.editor.service.backend.SourceFormModelNotFoundException;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorService;
 import org.kie.workbench.common.forms.editor.service.shared.VFSFormFinderService;
@@ -60,12 +64,12 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 @ApplicationScoped
 public class FormEditorServiceImpl extends KieService<FormModelerContent> implements FormEditorService {
 
-    protected FieldManager fieldManager;
-    protected FormModelHandlerManager modelHandlerManager;
-    protected FormDefinitionSerializer formDefinitionSerializer;
-    protected VFSFormFinderService vfsFormFinderService;
-    protected DeleteService deleteService;
-    protected RenameService renameService;
+    private FieldManager fieldManager;
+    private FormModelHandlerManager modelHandlerManager;
+    private FormDefinitionSerializer formDefinitionSerializer;
+    private VFSFormFinderService vfsFormFinderService;
+    private DeleteService deleteService;
+    private RenameService renameService;
     private Logger log = LoggerFactory.getLogger(FormEditorServiceImpl.class);
     private IOService ioService;
     private SessionInfo sessionInfo;
@@ -191,20 +195,20 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
     }
 
     @Override
-    protected FormModelerContent constructContent(Path path,
-                                                  Overview overview) {
+    protected FormModelerContent constructContent(Path path, Overview overview) {
+
+        FormModelerContent formModelConent = new FormModelerContent();
+
         try {
             org.uberfire.java.nio.file.Path kiePath = Paths.convert(path);
 
             FormDefinition form = findForm(kiePath);
 
-            FormModelerContent formModelConent = new FormModelerContent();
             formModelConent.setDefinition(form);
             formModelConent.setPath(path);
             formModelConent.setOverview(overview);
 
-            FormEditorRenderingContext context = createRenderingContext(form,
-                                                                        path);
+            FormEditorRenderingContext context = createRenderingContext(form, path);
 
             formModelConent.setRenderingContext(context);
 
@@ -212,34 +216,46 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
 
                 FormModel formModel = form.getModel();
 
-                Optional<FormModelHandler> modelHandlerOptional = getHandlerForForm(form,
-                                                                                    path);
+                Optional<FormModelHandler> modelHandlerOptional = getHandlerForForm(form);
+
                 if (modelHandlerOptional.isPresent()) {
 
-                    FormModelHandler formModelHandler = modelHandlerOptional.get();
+                    try {
+                        FormModelHandler formModelHandler = modelHandlerOptional.get();
 
-                    FormModelSynchronizationResult synchronizationResult = formModelHandler.synchronizeFormModel();
+                        formModelHandler.init(form.getModel(), path);
 
-                    formModel.getProperties().forEach(property -> {
-                        Optional<FieldDefinition> fieldOptional = Optional.ofNullable(form.getFieldByBinding(property.getName()));
-                        if (!fieldOptional.isPresent()) {
-                            synchronizationResult.resolveConflict(property.getName());
-                        }
-                    });
+                        formModelHandler.checkSourceModel();
 
-                    formModelConent.setSynchronizationResult(synchronizationResult);
+                        FormModelSynchronizationResult synchronizationResult = formModelHandler.synchronizeFormModel();
+
+                        formModel.getProperties().forEach(property -> {
+                            Optional<FieldDefinition> fieldOptional = Optional.ofNullable(form.getFieldByBinding(property.getName()));
+                            if (!fieldOptional.isPresent()) {
+                                synchronizationResult.resolveConflict(property.getName());
+                            }
+                        });
+
+                        formModelConent.setSynchronizationResult(synchronizationResult);
+                    } catch (SourceFormModelNotFoundException ex) {
+                        formModelConent.setError(new FormModelerContentError(ex.getShortMessage(), ex.getFullMessage(), ex.getModelSource()));
+                    }
                 }
             }
 
-            resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
-                                                             sessionInfo));
-
-            return formModelConent;
         } catch (Exception e) {
-            log.warn("Error loading form " + path.toURI(),
-                     e);
+            String shortMessage = "Impossible to load the form due to an error on server. Try closing the form and reopen it again and if the problem persists check with your administrator.";
+            StringWriter writer = new StringWriter();
+            writer.write(shortMessage);
+            writer.write("\nFull error message:\n");
+            e.printStackTrace(new PrintWriter(writer));
+            formModelConent.setError(new FormModelerContentError(shortMessage, writer.toString(), null));
+            log.warn("Error loading form " + path.toURI(), e);
         }
-        return null;
+
+        resourceOpenedEvent.fire(new ResourceOpenedEvent(path, sessionInfo));
+
+        return formModelConent;
     }
 
     protected FormEditorRenderingContext createRenderingContext(FormDefinition form,
@@ -270,15 +286,8 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
         return form;
     }
 
-    protected Optional<FormModelHandler> getHandlerForForm(FormDefinition form,
-                                                           Path path) {
+    protected Optional<FormModelHandler> getHandlerForForm(FormDefinition form) {
 
-        Optional<FormModelHandler> optional = Optional.ofNullable(modelHandlerManager.getFormModelHandler(form.getModel().getClass()));
-
-        if (optional.isPresent()) {
-            optional.get().init(form.getModel(),
-                                path);
-        }
-        return optional;
+        return Optional.ofNullable(modelHandlerManager.getFormModelHandler(form.getModel().getClass()));
     }
 }

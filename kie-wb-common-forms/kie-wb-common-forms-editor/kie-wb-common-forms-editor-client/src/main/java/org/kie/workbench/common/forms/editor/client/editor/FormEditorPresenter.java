@@ -34,11 +34,13 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
 import org.kie.workbench.common.forms.editor.client.editor.changes.ChangesNotificationDisplayer;
+import org.kie.workbench.common.forms.editor.client.editor.errorMessage.ErrorMessageDisplayer;
 import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorSyncPaletteEvent;
 import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorFieldLayoutComponent;
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
 import org.kie.workbench.common.forms.editor.client.type.FormDefinitionResourceType;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
+import org.kie.workbench.common.forms.editor.model.FormModelerContentError;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorService;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
@@ -96,12 +98,15 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
     protected LayoutDragComponentPalette layoutDragComponentPalette;
     @Inject
     protected Event<LayoutEditorFocusEvent> layoutFocusEvent;
+
     private ShowAssetUsagesDisplayer showAssetUsagesDisplayer;
     private FormEditorView view;
     private ChangesNotificationDisplayer changesNotificationDisplayer;
     private FormDefinitionResourceType resourceType;
     private Caller<FormEditorService> editorService;
     private TranslationService translationService;
+    private ErrorMessageDisplayer errorMessageDisplayer;
+
     protected boolean setActiveOnLoad = false;
 
     @Inject
@@ -111,7 +116,8 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
                                Caller<FormEditorService> editorService,
                                TranslationService translationService,
                                ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents,
-                               ShowAssetUsagesDisplayer showAssetUsagesDisplayer) {
+                               ShowAssetUsagesDisplayer showAssetUsagesDisplayer,
+                               ErrorMessageDisplayer errorMessageDisplayer) {
         super(view);
         this.view = view;
         this.changesNotificationDisplayer = changesNotificationDisplayer;
@@ -120,6 +126,7 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
         this.translationService = translationService;
         this.editorFieldLayoutComponents = editorFieldLayoutComponents;
         this.showAssetUsagesDisplayer = showAssetUsagesDisplayer;
+        this.errorMessageDisplayer = errorMessageDisplayer;
     }
 
     @OnStartup
@@ -150,12 +157,7 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
 
     @Override
     protected void loadContent() {
-        editorService.call(new RemoteCallback<FormModelerContent>() {
-                               @Override
-                               public void callback(FormModelerContent content) {
-                                   doLoadContent(content);
-                               }
-                           },
+        editorService.call((RemoteCallback<FormModelerContent>) content -> doLoadContent(content),
                            getNoSuchFileExceptionErrorCallback()).loadContent(versionRecordManager.getCurrentPath());
     }
 
@@ -173,7 +175,7 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
         editorHelper.getFormDefinition().setLayoutTemplate(layoutEditor.getLayout());
     }
 
-    public void doLoadContent(FormModelerContent content) {
+    public void doLoadContent(final FormModelerContent content) {
         busyIndicatorView.hideBusyIndicator();
 
         // Clear LayoutEditor before loading new content.
@@ -183,22 +185,38 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
 
         editorHelper.initHelper(content);
 
-        if (content.getDefinition().getLayoutTemplate() == null) {
-            content.getDefinition().setLayoutTemplate(new LayoutTemplate());
-        }
-
         resetEditorPages(content.getOverview());
-
-        setOriginalHash(content.getDefinition().hashCode());
 
         view.init(this);
 
-        loadLayoutEditor();
+        if (content.getError() != null) {
+            FormModelerContentError error = content.getError();
 
-        view.setupLayoutEditor(layoutEditor);
+            errorMessageDisplayer.show(error.getShortMessage(), error.getFullMessage(), error.getSourceType(), () -> placeManager.forceClosePlace(place));
 
-        changesNotificationDisplayer.show(content,
-                                          this::synchronizeLayoutEditor);
+            errorMessageDisplayer.enableContinue(content.getDefinition() != null);
+        }
+
+        if (content.getDefinition() != null){
+            loadEditor(content);
+        }
+    }
+
+    private void loadEditor(FormModelerContent content) {
+        if(content.getDefinition() != null) {
+            if (content.getDefinition().getLayoutTemplate() == null) {
+                content.getDefinition().setLayoutTemplate(new LayoutTemplate());
+            }
+
+            setOriginalHash(content.getDefinition().hashCode());
+
+            loadLayoutEditor();
+
+            view.setupLayoutEditor(layoutEditor);
+
+            changesNotificationDisplayer.show(content,
+                                              this::synchronizeLayoutEditor);
+        }
 
         if (setActiveOnLoad) {
             setActiveInstance();
@@ -471,9 +489,9 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
 
     public interface FormEditorView extends KieEditorView {
 
-        public void init(FormEditorPresenter presenter);
+        void init(FormEditorPresenter presenter);
 
-        public void setupLayoutEditor(LayoutEditor layoutEditor);
+        void setupLayoutEditor(LayoutEditor layoutEditor);
 
         void showSavePopup(Path path,
                            Command saveCommand,
