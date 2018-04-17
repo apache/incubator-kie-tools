@@ -35,6 +35,10 @@ import org.guvnor.structure.repositories.impl.git.GitRepository;
 @Dependent
 public class TemporaryNiogitService {
 
+    static final String OU_OWNER = "admin";
+    static final String OU_NAME = "migrationSpace";
+    static final String TMP_REPO_ALIAS = "migrationRepo";
+
     private final RepositoryService repoService;
     private final WorkspaceProjectMigrationService migrationService;
     private final WorkspaceProjectService projectService;
@@ -52,16 +56,17 @@ public class TemporaryNiogitService {
     }
 
     public void importProjects(Path actualTarget) {
-        OrganizationalUnit ou = ouService.createOrganizationalUnit("migrationSpace", "admin", "org.migration");
+        OrganizationalUnit ou = ouService.createOrganizationalUnit(OU_NAME, OU_OWNER, "org.migration");
         String repositoryURL = actualTarget.toUri().toString();
         RepositoryEnvironmentConfigurations configurations = new RepositoryEnvironmentConfigurations();
         Map<String, Object> configMap = configurations.getConfigurationMap();
         configMap.put(EnvironmentParameters.AVOID_INDEX, "true");
         configMap.put("origin", repositoryURL);
 
-        Repository repo = repoService.createRepository(ou, GitRepository.SCHEME.toString(), "migrationRepo", configurations);
+        Repository repo = repoService.createRepository(ou, GitRepository.SCHEME.toString(), TMP_REPO_ALIAS, configurations);
         WorkspaceProject project = projectService.resolveProject(repo);
         migrationService.migrate(project);
+        repoService.removeRepository(ou.getSpace(), TMP_REPO_ALIAS);
     }
 
 }
