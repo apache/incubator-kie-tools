@@ -18,12 +18,17 @@ package org.kie.workbench.common.dmn.backend;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.math.BigDecimal;
+import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Scanner;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
@@ -31,6 +36,11 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import javax.enterprise.inject.spi.BeanManager;
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.tools.ant.filters.StringInputStream;
 import org.jboss.errai.marshalling.server.MappingContextSingleton;
@@ -105,6 +115,7 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.commons.uuid.UUID;
+import org.xml.sax.InputSource;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -1004,5 +1015,102 @@ public class DMNMarshallerTest {
         assertEquals("a literalexpression with null text is threated as a missing expression altogether.",
                      null,
                      expression.getContextEntry().get(0).getExpression());
+    }
+
+    @Test
+    public void testOtherElements() throws IOException, XPathExpressionException {
+        String original = new Scanner(this.getClass().getResourceAsStream("/dummy.dmn")).useDelimiter("\\A").next();
+        DMNMarshaller marshaller = new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(), applicationFactoryManager);
+        DiagramImpl diagram = new DiagramImpl("", null);
+        diagram.setGraph(marshaller.unmarshall(null, getClass().getResourceAsStream("/dummy.dmn")));
+        String roundtripped = marshaller.marshall(diagram);
+        XPath xpath = namespaceAwareXPath(
+            new AbstractMap.SimpleEntry<>("semantic", "http://www.omg.org/spec/DMN/20151101/dmn.xsd"),
+            new AbstractMap.SimpleEntry<>("drools", "http://www.drools.org/kie/dmn/1.1")
+        );
+        assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:extensionElements)"), original, roundtripped);
+
+        assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:import)"), original, roundtripped);
+        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:import/@namespace"), original, roundtripped);
+        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:import/@importType"), original, roundtripped);
+        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:import/@locationURI"), original, roundtripped);
+        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:import/@drools:name"), original, roundtripped);
+        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:import/@drools:modelName"), original, roundtripped);
+
+        //assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:elementCollection)"), original, roundtripped);
+        //assertXPathEquals(xpath.compile("/semantic:definitions/semantic:elementCollection/@name"), original, roundtripped);
+        //assertXPathEquals(xpath.compile("/semantic:definitions/semantic:elementCollection/@id"), original, roundtripped);
+        //assertXPathEquals(xpath.compile("/semantic:definitions/semantic:elementCollection/@label"), original, roundtripped);
+        //assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:elementCollection/drgElement)"), original, roundtripped);
+        //assertXPathEquals(xpath.compile("/semantic:definitions/semantic:elementCollection/semantic:drgElement/@href"), original, roundtripped);
+
+        //assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:performanceIndicator)"), original, roundtripped);
+        //assertXPathEquals(xpath.compile("/semantic:definitions/semantic:performanceIndicator/@name"), original, roundtripped);
+        //assertXPathEquals(xpath.compile("/semantic:definitions/semantic:performanceIndicator/@id"), original, roundtripped);
+        //assertXPathEquals(xpath.compile("/semantic:definitions/semantic:performanceIndicator/@label"), original, roundtripped);
+        //assertXPathEquals(xpath.compile("/semantic:definitions/semantic:performanceIndicator/@URI"), original, roundtripped);
+        //assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:performanceIndicator/semantic:impactingDecision)"), original, roundtripped);
+        //assertXPathEquals(xpath.compile("/semantic:definitions/semantic:performanceIndicator/semantic:impactingDecision/@href"), original, roundtripped);
+
+        //assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:organizationUnit)"), original, roundtripped);
+        //assertXPathEquals(xpath.compile("/semantic:definitions/semantic:organizationUnit/@name"), original, roundtripped);
+        //assertXPathEquals(xpath.compile("/semantic:definitions/semantic:organizationUnit/@id"), original, roundtripped);
+        //assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:organizationUnit/semantic:decisionMade)"), original, roundtripped);
+        //assertXPathEquals(xpath.compile("/semantic:definitions/semantic:organizationUnit/semantic:decisionMade/@href"), original, roundtripped);
+        //assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:organizationUnit/semantic:decisionOwned)"), original, roundtripped);
+        //assertXPathEquals(xpath.compile("/semantic:definitions/semantic:organizationUnit/semantic:decisionOwned/@href"), original, roundtripped);
+
+        assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:knowledgeSource)"), original, roundtripped);
+        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:knowledgeSource/@name"), original, roundtripped);
+        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:knowledgeSource/@id"), original, roundtripped);
+        assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:knowledgeSource/semantic:authorityRequirement)"), original, roundtripped);
+        assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:knowledgeSource/semantic:requiredInput)"), original, roundtripped);
+        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:knowledgeSource/semantic:requiredInput/@href"), original, roundtripped);
+
+        assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:inputData)"), original, roundtripped);
+        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:inputData/@id"), original, roundtripped);
+        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:inputData/@name"), original, roundtripped);
+        assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:inputData/semantic:variable)"), original, roundtripped);
+        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:inputData/semantic:variable/@id"), original, roundtripped);
+        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:inputData/semantic:variable/@name"), original, roundtripped);
+        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:inputData/semantic:variable/@typeRef"), original, roundtripped);
+    }
+
+    private XPath namespaceAwareXPath(Map.Entry<String, String>... pfxAndURI) {
+        XPath result = XPathFactory.newInstance().newXPath();
+        result.setNamespaceContext(new NamespaceContext() {
+            final Map<String, String> pfxToURI = new HashMap<String, String>() {{
+                for (Map.Entry<String, String> pair : pfxAndURI) {
+                    put(pair.getKey(), pair.getValue());
+                }
+            }};
+            final Map<String, String> URItoPfx = new HashMap<String, String>() {{
+                for (Map.Entry<String, String> pair : pfxAndURI) {
+                    put(pair.getValue(), pair.getKey());
+                }
+            }};
+
+            @Override
+            public String getNamespaceURI(String prefix) {
+                return pfxToURI.get(prefix);
+            }
+
+            @Override
+            public String getPrefix(String namespaceURI) {
+                return URItoPfx.get(namespaceURI);
+            }
+
+            @Override
+            public Iterator getPrefixes(String namespaceURI) {
+                return pfxToURI.keySet().iterator();
+            }
+        });
+        return result;
+    }
+
+    private void assertXPathEquals(XPathExpression expression, String expectedXml, String actualXml) throws XPathExpressionException {
+        InputSource expected = new InputSource(new StringReader(expectedXml));
+        InputSource actual = new InputSource(new StringReader(actualXml));
+        assertEquals(expression.evaluate(expected), expression.evaluate(actual));
     }
 }

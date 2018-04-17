@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -44,6 +45,10 @@ public class DefinitionsConverter {
         for (org.kie.dmn.model.v1_1.ItemDefinition itemDef : dmn.getItemDefinition()) {
             ItemDefinition itemDefConvered = ItemDefinitionPropertyConverter.wbFromDMN(itemDef);
             result.getItemDefinition().add(itemDefConvered);
+        }
+
+        for (org.kie.dmn.model.v1_1.Import i : dmn.getImport()) {
+            result.getImport().add(ImportConverter.nodeFromDMN(i));
         }
 
         return result;
@@ -80,6 +85,10 @@ public class DefinitionsConverter {
         }
         if (!result.getPrefixForNamespaceURI(DMNDiagram.DMNV11_DI).isPresent()) {
             result.getNsContext().put("di", DMNDiagram.DMNV11_DI);
+        }
+
+        for (Import i : wb.getImport()) {
+            result.getImport().add(ImportConverter.dmnFromNode(i));
         }
 
         return result;
