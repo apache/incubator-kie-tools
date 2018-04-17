@@ -34,4 +34,13 @@ public interface StunnerWidgetsConstants {
 
     @TranslationKey(defaultValue = "")
     public static String NameEditBoxWidgetViewImp_name = "NameEditBoxWidgetViewImpl.name";
+
+    @TranslationKey(defaultValue = "")
+    public static String SessionPresenterView_Error = "SessionPresenterView.Error";
+
+    @TranslationKey(defaultValue = "")
+    public static String SessionPresenterView_Warning = "SessionPresenterView.Warning";
+
+    @TranslationKey(defaultValue = "")
+    public static String SessionPresenterView_Info = "SessionPresenterView.Info";
 }
