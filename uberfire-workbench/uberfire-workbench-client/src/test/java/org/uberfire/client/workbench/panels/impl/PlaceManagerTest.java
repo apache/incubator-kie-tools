@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 
@@ -536,6 +537,98 @@ public class PlaceManagerTest {
         inOrder.verify(kansasPerspectiveActivity).onClose();
         inOrder.verify(activityManager).destroyActivity(kansasPerspectiveActivity);
         inOrder.verify(workbenchLayout).onResize();
+    }
+
+    @Test
+    public void testSwitchingPerspectivesWithProperChain() throws Exception {
+        PerspectiveActivity ozPerspectiveActivity = mock(PerspectiveActivity.class);
+        PlaceRequest ozPerspectivePlace = new DefaultPlaceRequest("oz_perspective");
+        PerspectiveDefinition ozPerspectiveDef = new PerspectiveDefinitionImpl();
+
+        when(activityManager.getActivities(ozPerspectivePlace))
+                .thenReturn(singleton((Activity) ozPerspectiveActivity));
+        when(ozPerspectiveActivity.getDefaultPerspectiveLayout()).thenReturn(ozPerspectiveDef);
+        when(ozPerspectiveActivity.getPlace()).thenReturn(ozPerspectivePlace);
+        when(ozPerspectiveActivity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
+        when(kansasActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
+
+        // we'll pretend we started in kansas
+        PerspectiveActivity kansasPerspectiveActivity = mock(PerspectiveActivity.class);
+        when(kansasPerspectiveActivity.getIdentifier()).thenReturn("kansas");
+        when(perspectiveManager.getCurrentPerspective()).thenReturn(kansasPerspectiveActivity);
+
+        final AtomicBoolean chainExecuted = new AtomicBoolean(false);
+        placeManager.registerPerspectiveCloseChain("kansas",
+                                                   (chain, place) -> {
+                                                       chainExecuted.set(true);
+                                                       chain.execute();
+                                                   });
+
+        placeManager.goTo(ozPerspectivePlace);
+
+        // verify close chain was ran
+        assertTrue(chainExecuted.get());
+
+        // verify proper shutdown of kansasPerspective and its contents
+        InOrder inOrder = inOrder(activityManager,
+                                  kansasPerspectiveActivity,
+                                  kansasActivity,
+                                  workbenchLayout);
+
+        // shut down the screens first
+        inOrder.verify(kansasActivity).onClose();
+        inOrder.verify(activityManager).destroyActivity(kansasActivity);
+
+        // then the perspective
+        inOrder.verify(kansasPerspectiveActivity).onClose();
+        inOrder.verify(activityManager).destroyActivity(kansasPerspectiveActivity);
+        inOrder.verify(workbenchLayout).onResize();
+    }
+
+    @Test
+    public void testSwitchingPerspectivesWithChainCancelingTheOperation() throws Exception {
+        PerspectiveActivity ozPerspectiveActivity = mock(PerspectiveActivity.class);
+        PlaceRequest ozPerspectivePlace = new DefaultPlaceRequest("oz_perspective");
+        PerspectiveDefinition ozPerspectiveDef = new PerspectiveDefinitionImpl();
+
+        when(activityManager.getActivities(ozPerspectivePlace))
+                .thenReturn(singleton((Activity) ozPerspectiveActivity));
+        when(ozPerspectiveActivity.getDefaultPerspectiveLayout()).thenReturn(ozPerspectiveDef);
+        when(ozPerspectiveActivity.getPlace()).thenReturn(ozPerspectivePlace);
+        when(ozPerspectiveActivity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
+        when(kansasActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
+
+        // we'll pretend we started in kansas
+        PerspectiveActivity kansasPerspectiveActivity = mock(PerspectiveActivity.class);
+        when(kansasPerspectiveActivity.getIdentifier()).thenReturn("kansas");
+        when(perspectiveManager.getCurrentPerspective()).thenReturn(kansasPerspectiveActivity);
+
+        final AtomicBoolean chainExecuted = new AtomicBoolean(false);
+        placeManager.registerPerspectiveCloseChain("kansas",
+                                                   (chain, place) -> {
+                                                       chainExecuted.set(true);
+                                                       // chain was not executed.
+                                                   });
+
+        placeManager.goTo(ozPerspectivePlace);
+
+        // verify close chain was ran
+        assertTrue(chainExecuted.get());
+
+        // verify kansasPerspective and its contents were not closed
+        InOrder inOrder = inOrder(activityManager,
+                                  kansasPerspectiveActivity,
+                                  kansasActivity,
+                                  workbenchLayout);
+
+        // does not shut down the screens
+        inOrder.verify(kansasActivity, never()).onClose();
+        inOrder.verify(activityManager, never()).destroyActivity(kansasActivity);
+
+        // the perspective was not closed
+        inOrder.verify(kansasPerspectiveActivity, never()).onClose();
+        inOrder.verify(activityManager, never()).destroyActivity(kansasPerspectiveActivity);
+        inOrder.verify(workbenchLayout, never()).onResize();
     }
 
     @Test

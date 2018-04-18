@@ -27,6 +27,7 @@ public class BreadcrumbsPresenter {
 
     private final View view;
     private PlaceRequest placeRequest;
+    private boolean removeDeepLevelBreadcrumbsAfterActivation = true;
 
     @Inject
     public BreadcrumbsPresenter(final View view) {
@@ -45,9 +46,24 @@ public class BreadcrumbsPresenter {
     public void setup(final String label,
                       final PlaceRequest placeRequest,
                       final Command selectCommand) {
+        setup(label,
+              placeRequest,
+              selectCommand,
+              true);
+    }
+
+    public void setup(final String label,
+                      final PlaceRequest placeRequest,
+                      final Command selectCommand,
+                      final boolean removeDeepLevelBreadcrumbsAfterActivation) {
         this.placeRequest = placeRequest;
+        this.removeDeepLevelBreadcrumbsAfterActivation = removeDeepLevelBreadcrumbsAfterActivation;
         view.setup(label,
                    selectCommand);
+    }
+
+    public boolean hasToRemoveDeepLevelBreadcrumbsAfterActivation() {
+        return removeDeepLevelBreadcrumbsAfterActivation;
     }
 
     public PlaceRequest getPlaceRequest() {

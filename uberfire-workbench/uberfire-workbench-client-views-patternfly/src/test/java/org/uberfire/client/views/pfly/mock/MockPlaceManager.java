@@ -27,6 +27,7 @@ import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.mvp.SplashScreenActivity;
+import org.uberfire.mvp.BiParameterizedCommand;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
@@ -127,6 +128,12 @@ public class MockPlaceManager implements PlaceManager {
     }
 
     @Override
+    public void closePlace(PlaceRequest placeToClose,
+                           Command doAfterClose) {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
+
+    @Override
     public void tryClosePlace(PlaceRequest placeToClose,
                               Command onAfterClose) {
         throw new UnsupportedOperationException("Not implemented.");
@@ -158,6 +165,16 @@ public class MockPlaceManager implements PlaceManager {
     }
 
     @Override
+    public boolean canClosePlace(final PlaceRequest place) {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
+
+    @Override
+    public List<PlaceRequest> getUncloseablePlaces() {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
+
+    @Override
     public void registerOnOpenCallback(final PlaceRequest place,
                                        final Command callback) {
         throw new UnsupportedOperationException("Not implemented.");
@@ -176,6 +193,12 @@ public class MockPlaceManager implements PlaceManager {
 
     @Override
     public void unregisterOnCloseCallbacks(final PlaceRequest place) {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
+
+    @Override
+    public void registerPerspectiveCloseChain(final String perspectiveIdentifier,
+                                              final BiParameterizedCommand<Command, PlaceRequest> closeChain) {
         throw new UnsupportedOperationException("Not implemented.");
     }
 

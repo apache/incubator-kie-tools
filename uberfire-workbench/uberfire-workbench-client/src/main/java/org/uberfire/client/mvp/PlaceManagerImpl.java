@@ -15,10 +15,16 @@
  */
 package org.uberfire.client.mvp;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -50,6 +56,7 @@ import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.panels.impl.UnanchoredStaticWorkbenchPanelPresenter;
+import org.uberfire.mvp.BiParameterizedCommand;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.Commands;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -94,6 +101,7 @@ public class PlaceManagerImpl
 
     private final Map<PlaceRequest, List<Command>> onOpenCallbacks = new HashMap<>();
     private final Map<PlaceRequest, List<Command>> onCloseCallbacks = new HashMap<>();
+    private final Map<String, BiParameterizedCommand<Command, PlaceRequest>> perspectiveCloseChain = new HashMap<>();
     /**
      * Splash screens that have intercepted some other activity which is currently part of the workbench. Each of these
      * splash screens may or may not be visible (they manage their own "show next time" preferences).
@@ -284,15 +292,40 @@ public class PlaceManagerImpl
                                     (PopupActivity) activity);
                 doWhenFinished.execute();
             } else if (activity.isType(ActivityResourceType.PERSPECTIVE.name())) {
-                placeHistoryHandler.flush();
                 launchPerspectiveActivity(place,
-                                          (PerspectiveActivity) activity,
-                                          doWhenFinished);
+                                          doWhenFinished,
+                                          (PerspectiveActivity) activity);
             }
         } else {
             goTo(resolved.getPlaceRequest(),
                  panel,
                  doWhenFinished);
+        }
+    }
+
+    private void launchPerspectiveActivity(final PlaceRequest place,
+                                           final Command doWhenFinished,
+                                           final PerspectiveActivity activity) {
+        final Command launchPerspectiveCommand = () -> {
+            placeHistoryHandler.flush();
+            launchPerspectiveActivity(place,
+                                      activity,
+                                      doWhenFinished);
+        };
+
+        final PerspectiveActivity currentPerspective = perspectiveManager.getCurrentPerspective();
+
+        // Before launching the perspective, checks if there is some close chain to be executed for the current perspective
+        if (currentPerspective != null) {
+            final BiParameterizedCommand<Command, PlaceRequest> closeChain = this.perspectiveCloseChain.get(currentPerspective.getIdentifier());
+            if (closeChain != null) {
+                closeChain.execute(launchPerspectiveCommand,
+                                   currentPerspective.getPlace());
+            } else {
+                launchPerspectiveCommand.execute();
+            }
+        } else {
+            launchPerspectiveCommand.execute();
         }
     }
 
@@ -325,12 +358,11 @@ public class PlaceManagerImpl
     /**
      * Resolves the given place request into an Activity instance, if one can be found. If not, this method substitutes
      * special "not found" or "too many" place requests when the resolution doesn't work.
-     * <p>
+     * <p/>
      * The behaviour of this method is affected by the boolean-valued
      * {@code org.uberfire.client.mvp.PlaceManagerImpl.ignoreUnkownPlaces} property in {@link UberfirePreferences}.
-     *
      * @param place A non-null place request that could have originated from within application code, from within the
-     *              framework, or by parsing a hash fragment from a browser history event.
+     * framework, or by parsing a hash fragment from a browser history event.
      * @return a non-null ResolvedRequest, where:
      * <ul>
      * <li>the Activity value is either the unambiguous resolved Activity instance, or null if the activity was
@@ -504,6 +536,17 @@ public class PlaceManagerImpl
     }
 
     @Override
+    public void closePlace(final PlaceRequest placeToClose,
+                           final Command doAfterClose) {
+        if (placeToClose == null) {
+            return;
+        }
+        closePlace(placeToClose,
+                   false,
+                   doAfterClose);
+    }
+
+    @Override
     public void tryClosePlace(final PlaceRequest placeToClose,
                               final Command onAfterClose) {
         boolean execute = false;
@@ -563,6 +606,20 @@ public class PlaceManagerImpl
         return true;
     }
 
+    @Override
+    public List<PlaceRequest> getUncloseablePlaces() {
+        final Set<PlaceRequest> placesToClose = visibleWorkbenchParts.keySet();
+        final List<PlaceRequest> uncloseablePlaces = new ArrayList<>();
+
+        for (PlaceRequest place : placesToClose) {
+            if (!canClosePlace(place)) {
+                uncloseablePlaces.add(place);
+            }
+        }
+
+        return uncloseablePlaces;
+    }
+
     private boolean closeAllCurrentPanels() {
         return closePlaces(new ArrayList<PlaceRequest>(visibleWorkbenchParts.keySet()));
     }
@@ -604,7 +661,7 @@ public class PlaceManagerImpl
         if (callbacks == null) {
             callbacks = new ArrayList<>();
             this.onCloseCallbacks.put(place,
-                                     callbacks);
+                                      callbacks);
         }
 
         callbacks.add(callback);
@@ -617,16 +674,27 @@ public class PlaceManagerImpl
         this.onCloseCallbacks.remove(place);
     }
 
+    @Override
+    public void registerPerspectiveCloseChain(final String perspectiveIdentifier,
+                                              final BiParameterizedCommand<Command, PlaceRequest> closeChain) {
+        checkNotNull("perspectiveIdentifier",
+                     perspectiveIdentifier);
+        checkNotNull("closeChain",
+                     closeChain);
+
+        perspectiveCloseChain.put(perspectiveIdentifier,
+                                  closeChain);
+    }
+
     /**
      * Finds and opens the splash screen for the given place, if such a splash screen exists. The splash screen might
      * not actually display; each splash screen keeps track of its own preference setting for whether or not the user
      * wants to see it.
-     * <p>
+     * <p/>
      * Whether or not it chooses to display itself, the splash screen will be recorded in
      * {@link #availableSplashScreens} for lookup (for example, see {@link SplashScreenMenuPresenter}) and later disposal.
      * Internally, this method should be called every time any part or perspective is added to the workbench, and called
      * again when that part or perspective is removed.
-     *
      * @param place the place that has just been added to the workbench. Must not be null.
      */
     private void addSplashScreenFor(final PlaceRequest place) {
@@ -652,7 +720,6 @@ public class PlaceManagerImpl
      * Closes the splash screen associated with the given place request, if any. Internally, this method should be
      * invoked every time a part or perspective is removed from the workbench (cleaning up after the corresponding
      * earlier call to {@link #addSplashScreenFor(PlaceRequest)}.
-     *
      * @param place the place whose opening may have triggered a splash screen to launch. Must not be null.
      */
     private void closeSplashScreen(final PlaceRequest place) {
@@ -701,7 +768,6 @@ public class PlaceManagerImpl
     /**
      * Returns all the PlaceRequests that map to activies that are currently in the open state and accessible
      * somewhere in the current perspective.
-     *
      * @return an unmodifiable view of the current active place requests. This view may or may not update after
      * further calls into PlaceManager that modify the workbench state. It's best not to hold on to the returned
      * set; instead, call this method again for current information.
@@ -713,7 +779,6 @@ public class PlaceManagerImpl
     /**
      * Returns all the PathPlaceRequests that map to activies that are currently in the open state and accessible
      * somewhere in the current perspective.
-     *
      * @return an unmodifiable view of the current active place requests. This view may or may not update after
      * further calls into PlaceManager that modify the workbench state. It's best not to hold on to the returned
      * set; instead, call this method again for current information.
@@ -840,7 +905,6 @@ public class PlaceManagerImpl
     /**
      * Before launching the perspective we check that it isn't already open by asking the
      * placeHistory service to extract the perspective encoded in the URL
-     *
      * @param place
      * @param activity
      * @param doWhenFinished
@@ -959,70 +1023,109 @@ public class PlaceManagerImpl
 
     private void closePlace(final PlaceRequest place,
                             final boolean force) {
+        closePlace(place,
+                   force,
+                   null);
+    }
 
-        final Activity activity = existingWorkbenchActivities.get(place);
-        if (activity == null) {
+    private void closePlace(final PlaceRequest place,
+                            final boolean force,
+                            final Command onAfterClose) {
+
+        final Activity existingActivity = existingWorkbenchActivities.get(place);
+        if (existingActivity == null) {
             return;
         }
 
-        workbenchPartBeforeCloseEvent.fire(new BeforeClosePlaceEvent(place,
-                                                                     force,
-                                                                     true));
+        final Command closeCommand = getCloseCommand(place,
+                                                     force,
+                                                     onAfterClose);
 
-        closeSplashScreen(place);
-        activePopups.remove(place.getIdentifier());
-
-        if (activity.isType(ActivityResourceType.SCREEN.name()) || activity.isType(ActivityResourceType.EDITOR.name())) {
-            WorkbenchActivity activity1 = (WorkbenchActivity) activity;
-            if (force || onMayCloseList.containsKey(place) || activity1.onMayClose()) {
-                onMayCloseList.remove(place);
-                try {
-                    activity1.onClose();
-                } catch (Exception ex) {
-                    lifecycleErrorHandler.handle(activity1,
-                                                 LifecyclePhase.CLOSE,
-                                                 ex);
-                }
-            } else {
-                return;
-            }
-        } else if (activity.isType(ActivityResourceType.POPUP.name())) {
-            PopupActivity activity1 = (PopupActivity) activity;
-            if (force || activity1.onMayClose()) {
-                try {
-                    activity1.onClose();
-                } catch (Exception ex) {
-                    lifecycleErrorHandler.handle(activity1,
-                                                 LifecyclePhase.CLOSE,
-                                                 ex);
-                }
-            } else {
-                return;
-            }
-        }
-
-        getPlaceHistoryHandler().registerClose(activity,
-                                               place);
-        workbenchPartCloseEvent.fire(new ClosePlaceEvent(place));
-
-        panelManager.removePartForPlace(place);
-        existingWorkbenchActivities.remove(place);
-        visibleWorkbenchParts.remove(place);
-        activityManager.destroyActivity(activity);
-
-        // currently, we force all custom panels as Static panels, so they can only ever contain the one part we put in them.
-        // we are responsible for cleaning them up when their place closes.
-        PanelDefinition customPanelDef = customPanels.remove(place);
-        if (customPanelDef != null) {
-            panelManager.removeWorkbenchPanel(customPanelDef);
-        }
-
-        if (place instanceof PathPlaceRequest) {
-            ((PathPlaceRequest) place).getPath().dispose();
+        if (force) {
+            closeCommand.execute();
+        } else {
+            final PerspectiveActivity currentPerspective = perspectiveManager.getCurrentPerspective();
+            final BiParameterizedCommand<Command, PlaceRequest> closeChain = this.perspectiveCloseChain.getOrDefault(currentPerspective.getIdentifier(),
+                                                                                                                     (chain, placeRequest) -> chain.execute());
+            closeChain.execute(closeCommand,
+                               place);
         }
     }
 
-    private boolean canClosePlace(final PlaceRequest place) {
+    private Command getCloseCommand(final PlaceRequest place,
+                                    final boolean force,
+                                    final Command onAfterClose) {
+        return () -> {
+
+            final Activity activity = existingWorkbenchActivities.get(place);
+            if (activity == null) {
+                return;
+            }
+
+            workbenchPartBeforeCloseEvent.fire(new BeforeClosePlaceEvent(place,
+                                                                         force,
+                                                                         true));
+
+            closeSplashScreen(place);
+            activePopups.remove(place.getIdentifier());
+
+            if (activity.isType(ActivityResourceType.SCREEN.name()) || activity.isType(ActivityResourceType.EDITOR.name())) {
+                WorkbenchActivity activity1 = (WorkbenchActivity) activity;
+                if (force || onMayCloseList.containsKey(place) || activity1.onMayClose()) {
+                    onMayCloseList.remove(place);
+                    try {
+                        activity1.onClose();
+                    } catch (Exception ex) {
+                        lifecycleErrorHandler.handle(activity1,
+                                                     LifecyclePhase.CLOSE,
+                                                     ex);
+                    }
+                } else {
+                    return;
+                }
+            } else if (activity.isType(ActivityResourceType.POPUP.name())) {
+                PopupActivity activity1 = (PopupActivity) activity;
+                if (force || activity1.onMayClose()) {
+                    try {
+                        activity1.onClose();
+                    } catch (Exception ex) {
+                        lifecycleErrorHandler.handle(activity1,
+                                                     LifecyclePhase.CLOSE,
+                                                     ex);
+                    }
+                } else {
+                    return;
+                }
+            }
+
+            getPlaceHistoryHandler().registerClose(activity,
+                                                   place);
+            workbenchPartCloseEvent.fire(new ClosePlaceEvent(place));
+
+            panelManager.removePartForPlace(place);
+            existingWorkbenchActivities.remove(place);
+            visibleWorkbenchParts.remove(place);
+            activityManager.destroyActivity(activity);
+
+            // currently, we force all custom panels as Static panels, so they can only ever contain the one part we put in them.
+            // we are responsible for cleaning them up when their place closes.
+            PanelDefinition customPanelDef = customPanels.remove(place);
+            if (customPanelDef != null) {
+                panelManager.removeWorkbenchPanel(customPanelDef);
+            }
+
+            if (place instanceof PathPlaceRequest) {
+                ((PathPlaceRequest) place).getPath().dispose();
+            }
+
+            if (onAfterClose != null) {
+                onAfterClose.execute();
+            }
+        };
+    }
+
+    @Override
+    public boolean canClosePlace(final PlaceRequest place) {
 
         final Activity activity = existingWorkbenchActivities.get(place);
         if (activity == null) {

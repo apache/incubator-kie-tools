@@ -61,6 +61,8 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
 
     private PerspectiveDefinition livePerspectiveDef;
 
+    private PlaceRequest currentPerspectivePlaceRequest;
+
     @Override
     public void switchToPerspective(final PlaceRequest placeRequest,
                                     final PerspectiveActivity activity,
@@ -75,7 +77,8 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
         BuildPerspectiveFromDefinitionCommand thirdOperation = new BuildPerspectiveFromDefinitionCommand(activity,
                                                                                                          fourthOperation);
 
-        FetchPerspectiveCommand secondOperation = new FetchPerspectiveCommand(activity,
+        FetchPerspectiveCommand secondOperation = new FetchPerspectiveCommand(placeRequest,
+                                                                              activity,
                                                                               thirdOperation);
 
         secondOperation.execute();
@@ -142,6 +145,11 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
         return null;
     }
 
+    @Override
+    public PlaceRequest getCurrentPerspectivePlaceRequest() {
+        return currentPerspectivePlaceRequest;
+    }
+
     Iterator<SyncBeanDef<AbstractWorkbenchPerspectiveActivity>> getPerspectivesIterator() {
         final Collection<SyncBeanDef<AbstractWorkbenchPerspectiveActivity>> perspectives = iocManager.lookupBeans(AbstractWorkbenchPerspectiveActivity.class);
         return perspectives.iterator();
@@ -153,11 +161,15 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
      */
     class FetchPerspectiveCommand implements Command {
 
+        private final PlaceRequest placeRequest;
         private final PerspectiveActivity perspective;
         private final ParameterizedCommand<PerspectiveDefinition> doAfterFetch;
 
-        public FetchPerspectiveCommand(PerspectiveActivity perspective,
+        public FetchPerspectiveCommand(PlaceRequest placeRequest,
+                                       PerspectiveActivity perspective,
                                        ParameterizedCommand<PerspectiveDefinition> doAfterFetch) {
+            this.placeRequest = checkNotNull("placeRequest",
+                                             placeRequest);
             this.perspective = checkNotNull("perspective",
                                             perspective);
             this.doAfterFetch = checkNotNull("doAfterFetch",
@@ -166,6 +178,7 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
 
         @Override
         public void execute() {
+            currentPerspectivePlaceRequest = placeRequest;
             currentPerspective = perspective;
             if (perspective.isTransient()) {
                 //Transient Perspectives are not saved and hence cannot be loaded

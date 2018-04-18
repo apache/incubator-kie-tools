@@ -28,6 +28,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.widgets.common.client.breadcrumbs.header.UberfireBreadcrumbsContainer;
@@ -49,6 +51,9 @@ public class UberfireBreadcrumbsTest {
     private ManagedInstance<BreadcrumbsPresenter> breadcrumbsPresenters;
 
     @Mock
+    private BreadcrumbsPresenter.View breadcrumbsPresenterView;
+
+    @Mock
     private PlaceManager placeManager;
 
     private UberfireBreadcrumbs uberfireBreadcrumbs;
@@ -56,9 +61,7 @@ public class UberfireBreadcrumbsTest {
 
     @Before
     public void setup() {
-
-        when(breadcrumbsPresenters.get()).thenReturn(mock(BreadcrumbsPresenter.class))
-                .thenReturn(mock(BreadcrumbsPresenter.class)).thenReturn(mock(BreadcrumbsPresenter.class));
+        doAnswer(invocationOnMock -> new BreadcrumbsPresenter(breadcrumbsPresenterView)).when(breadcrumbsPresenters).get();
 
         view = mock(UberfireBreadcrumbs.View.class);
         uberfireBreadcrumbs = spy(new UberfireBreadcrumbs(uberfireBreadcrumbsContainer,
@@ -159,10 +162,34 @@ public class UberfireBreadcrumbsTest {
 
         List<BreadcrumbsPresenter> breadcrumbs = uberfireBreadcrumbs.breadcrumbsPerPerspective.get("myperspective");
 
-        uberfireBreadcrumbs.removeDeepLevelBreadcrumbs("myperspective",
-                                                       breadcrumbs.get(0));
+        uberfireBreadcrumbs.removeDeepLevelBreadcrumbsIfNecessary("myperspective",
+                                                                  breadcrumbs.get(0));
 
         assertEquals(1,
+                     uberfireBreadcrumbs.breadcrumbsPerPerspective.get("myperspective").size());
+    }
+
+    @Test
+    public void doesNotRemoveDeepLevelBreadcrumbsTest() {
+        uberfireBreadcrumbs.addBreadCrumb("myperspective",
+                                          "label",
+                                          () -> {},
+                                          false);
+        uberfireBreadcrumbs.addBreadCrumb("myperspective",
+                                          "label2",
+                                          () -> {},
+                                          false);
+        uberfireBreadcrumbs.addBreadCrumb("myperspective",
+                                          "label3",
+                                          () -> {},
+                                          false);
+
+        List<BreadcrumbsPresenter> breadcrumbs = uberfireBreadcrumbs.breadcrumbsPerPerspective.get("myperspective");
+
+        uberfireBreadcrumbs.removeDeepLevelBreadcrumbsIfNecessary("myperspective",
+                                                                  breadcrumbs.get(0));
+
+        assertEquals(3,
                      uberfireBreadcrumbs.breadcrumbsPerPerspective.get("myperspective").size());
     }
 
@@ -253,7 +280,8 @@ public class UberfireBreadcrumbsTest {
                                                   "label",
                                                   null,
                                                   null,
-                                                  command);
+                                                  command,
+                                                  true);
     }
 
     @Test
@@ -265,7 +293,8 @@ public class UberfireBreadcrumbsTest {
                                                   "label",
                                                   new DefaultPlaceRequest("screen"),
                                                   null,
-                                                  null);
+                                                  null,
+                                                  true);
     }
 
     @Test
@@ -279,7 +308,8 @@ public class UberfireBreadcrumbsTest {
                                                   "label",
                                                   new DefaultPlaceRequest("screen"),
                                                   targetPanel,
-                                                  null);
+                                                  null,
+                                                  true);
     }
 
     @Test
@@ -293,7 +323,8 @@ public class UberfireBreadcrumbsTest {
                                                   "label",
                                                   new DefaultPlaceRequest("screen"),
                                                   null,
-                                                  command);
+                                                  command,
+                                                  true);
     }
 
     @Test

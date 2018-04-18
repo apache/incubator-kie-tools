@@ -106,4 +106,6 @@ public interface PerspectiveManager {
      * @return The default perspective identifier of the workbench, if one exists.
      */
     String getDefaultPerspectiveIdentifier();
+
+    PlaceRequest getCurrentPerspectivePlaceRequest();
 }

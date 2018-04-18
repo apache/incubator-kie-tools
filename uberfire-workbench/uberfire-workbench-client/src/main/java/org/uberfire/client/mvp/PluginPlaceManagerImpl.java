@@ -29,6 +29,7 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
+import org.uberfire.mvp.BiParameterizedCommand;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
@@ -174,6 +175,12 @@ public class PluginPlaceManagerImpl implements PlaceManager {
     }
 
     @Override
+    public void closePlace(final PlaceRequest placeToClose,
+                           final Command doAfterClose) {
+        fail();
+    }
+
+    @Override
     public void tryClosePlace(final PlaceRequest placeToClose,
                               final Command onAfterClose) {
         fail();
@@ -206,6 +213,18 @@ public class PluginPlaceManagerImpl implements PlaceManager {
     }
 
     @Override
+    public boolean canClosePlace(final PlaceRequest place) {
+        fail();
+        return false;
+    }
+
+    @Override
+    public List<PlaceRequest> getUncloseablePlaces() {
+        fail();
+        return null;
+    }
+
+    @Override
     public void registerOnOpenCallback(final PlaceRequest place,
                                        final Command callback) {
         fail();
@@ -224,6 +243,12 @@ public class PluginPlaceManagerImpl implements PlaceManager {
 
     @Override
     public void unregisterOnCloseCallbacks(final PlaceRequest place) {
+        fail();
+    }
+
+    @Override
+    public void registerPerspectiveCloseChain(final String perspectiveIdentifier,
+                                              final BiParameterizedCommand<Command, PlaceRequest> closeChain) {
         fail();
     }
 
