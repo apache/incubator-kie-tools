@@ -67,11 +67,19 @@ public class WorkspaceProjectContext {
     }
 
     public void onOrganizationalUnitUpdated(@Observes final UpdatedOrganizationalUnitEvent event) {
-        contextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(event.getOrganizationalUnit()));
+        WorkspaceProject updatedWorkspaceProject = new WorkspaceProject(event.getOrganizationalUnit(),
+                                                                        activeWorkspaceProject.getRepository(),
+                                                                        activeWorkspaceProject.getBranch(),
+                                                                        activeWorkspaceProject.getMainModule());
+        contextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(updatedWorkspaceProject,
+                                                                       activeModule,
+                                                                       activePackage));
     }
 
     public void onProjectContextChanged(@Observes final WorkspaceProjectContextChangeEvent event) {
-        WorkspaceProjectContextChangeEvent previous = new WorkspaceProjectContextChangeEvent(activeWorkspaceProject, activeModule, activePackage);
+        WorkspaceProjectContextChangeEvent previous = new WorkspaceProjectContextChangeEvent(activeWorkspaceProject,
+                                                                                             activeModule,
+                                                                                             activePackage);
 
         this.setActiveOrganizationalUnit(event.getOrganizationalUnit());
         this.setActiveWorkspaceProject(event.getWorkspaceProject());
@@ -79,7 +87,8 @@ public class WorkspaceProjectContext {
         this.setActivePackage(event.getPackage());
 
         for (WorkspaceProjectContextChangeHandler handler : changeHandlers.values()) {
-            handler.onChange(previous, event);
+            handler.onChange(previous,
+                             event);
         }
     }
 

@@ -17,6 +17,7 @@
 package org.guvnor.common.services.project.client.context;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Matchers.eq;
@@ -34,11 +35,14 @@ import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.organizationalunit.UpdatedOrganizationalUnitEvent;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -51,6 +55,12 @@ public class WorkspaceWorkspaceProjectContextTest {
 
     @Spy
     private EventSourceMock<WorkspaceProjectContextChangeEvent> changeEvent = new EventSourceMock<>();
+
+    @Captor
+    private ArgumentCaptor<WorkspaceProjectContextChangeEvent> previous;
+
+    @Captor
+    private ArgumentCaptor<WorkspaceProjectContextChangeEvent> next;
 
     private WorkspaceProjectContext context;
 
@@ -112,8 +122,8 @@ public class WorkspaceWorkspaceProjectContextTest {
                                                                           newBranch,
                                                                           mock(Module.class));
         WorkspaceProjectContextChangeEvent event = new WorkspaceProjectContextChangeEvent(newWorkspaceProject,
-                                                                               newModule,
-                                                                               newPackage);
+                                                                                          newModule,
+                                                                                          newPackage);
         context.onProjectContextChanged(event);
 
         assertEquals(Optional.of(newOrganizationalUnit),
@@ -124,7 +134,50 @@ public class WorkspaceWorkspaceProjectContextTest {
                      context.getActiveModule());
         assertEquals(Optional.of(newPackage),
                      context.getActivePackage());
-        verify(changeHandler).onChange(eq(new WorkspaceProjectContextChangeEvent(oldProject, oldModule, oldPackage)), eq(event));
+        verify(changeHandler).onChange(eq(new WorkspaceProjectContextChangeEvent(oldProject,
+                                                                                 oldModule,
+                                                                                 oldPackage)),
+                                       eq(event));
+    }
+
+    @Test
+    public void testOnOrganizationalUnitUpdate() {
+
+        WorkspaceProjectContextChangeHandler changeHandler = mock(WorkspaceProjectContextChangeHandler.class);
+        context.addChangeHandler(changeHandler);
+
+        final OrganizationalUnit oldOrganizationalUnit = mock(OrganizationalUnit.class);
+        final Repository oldRepository = mock(Repository.class);
+        final Package oldPackage = new Package();
+        final Module oldModule = new Module();
+
+        WorkspaceProject oldProject = new WorkspaceProject(oldOrganizationalUnit,
+                                                           oldRepository,
+                                                           mock(Branch.class),
+                                                           mock(Module.class));
+
+        final OrganizationalUnit newOrganizationalUnit = mock(OrganizationalUnit.class);
+
+        context.setActiveModule(oldModule);
+        context.setActiveOrganizationalUnit(oldOrganizationalUnit);
+        context.setActivePackage(oldPackage);
+        context.setActiveWorkspaceProject(oldProject);
+
+        UpdatedOrganizationalUnitEvent event = new UpdatedOrganizationalUnitEvent(newOrganizationalUnit,
+                                                                                  "name");
+        this.context.onOrganizationalUnitUpdated(event);
+
+        verify(changeHandler).onChange(previous.capture(),
+                                       next.capture());
+
+        assertEquals(previous.getValue().getModule(),
+                     next.getValue().getModule());
+        assertEquals(previous.getValue().getPackage(),
+                     next.getValue().getPackage());
+        assertNotEquals(previous.getValue().getWorkspaceProject(),
+                        next.getValue().getWorkspaceProject());
+        assertNotEquals(previous.getValue().getOrganizationalUnit(),
+                        next.getValue().getOrganizationalUnit());
     }
 
     @Test
@@ -134,7 +187,8 @@ public class WorkspaceWorkspaceProjectContextTest {
 
         context.onProjectContextChanged(new WorkspaceProjectContextChangeEvent());
 
-        verify(changeHandler).onChange(any(), eq(new WorkspaceProjectContextChangeEvent()));
+        verify(changeHandler).onChange(any(),
+                                       eq(new WorkspaceProjectContextChangeEvent()));
 
         context.removeChangeHandler(handle);
 
@@ -143,6 +197,7 @@ public class WorkspaceWorkspaceProjectContextTest {
         context.onProjectContextChanged(new WorkspaceProjectContextChangeEvent());
 
         verify(changeHandler,
-               never()).onChange(any(), any());
+               never()).onChange(any(),
+                                 any());
     }
 }
