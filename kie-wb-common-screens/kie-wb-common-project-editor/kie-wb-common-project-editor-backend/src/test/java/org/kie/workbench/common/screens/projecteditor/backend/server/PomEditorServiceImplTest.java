@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.projecteditor.backend.server;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.backend.server.utils.POMContentHandler;
@@ -36,12 +38,14 @@ import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.ModuleRepositoriesService;
 import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorContent;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorService;
+import org.kie.workbench.common.screens.projecteditor.model.InvalidPomException;
 import org.kie.workbench.common.screens.projecteditor.service.PomEditorService;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
@@ -60,6 +64,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -121,7 +126,7 @@ public class PomEditorServiceImplTest {
 
     private DefaultEditorContent content = new DefaultEditorContent();
 
-    private POMContentHandler pomContentHandler = new POMContentHandler();
+    private POMContentHandler pomContentHandler = spy(new POMContentHandler());
 
     private String pomXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
@@ -150,16 +155,15 @@ public class PomEditorServiceImplTest {
     public void setup() {
 
         service = spy(new PomEditorServiceImpl(ioService,
-                                           defaultEditorService,
-                                           metadataService,
-                                           commentedOptionFactory,
-                                           moduleService,
-                                           pomContentHandler,
-                                           repositoryResolver,
-                                           moduleRepositoriesService,
-                                           renameService,
-                                           saveAndRenameService));
-
+                                               defaultEditorService,
+                                               metadataService,
+                                               commentedOptionFactory,
+                                               moduleService,
+                                               pomContentHandler,
+                                               repositoryResolver,
+                                               moduleRepositoriesService,
+                                               renameService,
+                                               saveAndRenameService));
 
         when(pomPath.toURI()).thenReturn(pomPathUri);
         when(defaultEditorService.loadContent(pomPath)).thenReturn(content);
@@ -398,6 +402,44 @@ public class PomEditorServiceImplTest {
                               eq(pomXml),
                               eq(attributes),
                               any(CommentedOption.class));
+        verify(ioService,
+               never()).endBatch();
+    }
+
+    @Test
+    public void testSaveInvalidPom() throws IOException, XmlPullParserException {
+
+        final InvalidPomException invalidPomException = new InvalidPomException(10, 10);
+
+        try {
+            doThrow(invalidPomException).when(pomContentHandler).toModel(pomXml);
+
+            service.save(pomPath,
+                         pomXml,
+                         metaData,
+                         comment,
+                         DeploymentMode.VALIDATED);
+
+            Assert.fail("Exception should've been thrown");
+        } catch (final InvalidPomException e) {
+            Assert.assertEquals(invalidPomException, e);
+        }
+
+        verify(moduleService,
+               times(1)).resolveModule(pomPath);
+        verify(moduleRepositoriesService,
+               never()).load(moduleRepositoriesPath);
+        verify(repositoryResolver,
+               never()).getRepositoriesResolvingArtifact(eq(pomXml),
+                                                         any(MavenRepositoryMetadata.class));
+
+        verify(ioService,
+               never()).startBatch(any());
+        verify(ioService,
+               never()).write(any(org.uberfire.java.nio.file.Path.class),
+                               eq(pomXml),
+                               eq(attributes),
+                               any(CommentedOption.class));
         verify(ioService,
                never()).endBatch();
     }

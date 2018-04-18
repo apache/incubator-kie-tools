@@ -41,6 +41,7 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorContent;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorService;
+import org.kie.workbench.common.screens.projecteditor.model.InvalidPomException;
 import org.kie.workbench.common.screens.projecteditor.service.PomEditorService;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
@@ -152,12 +153,10 @@ public class PomEditorServiceImpl implements PomEditorService {
             if (pom.getGav().equals(module.getPom().getGav())) {
                 return;
             }
-        } catch (IOException ioe) {
-            logger.warn("Unable to load pom.xml. It is therefore impossible to ascertain GAV.",
-                        ioe);
-        } catch (XmlPullParserException pe) {
-            logger.warn("Unable to load pom.xml. It is therefore impossible to ascertain GAV.",
-                        pe);
+        } catch (final XmlPullParserException e) {
+            throw new InvalidPomException(e.getLineNumber(), e.getColumnNumber());
+        } catch (final IOException e) {
+            logger.warn("Unable to load pom.xml. It is therefore impossible to ascertain GAV.",e);
         }
 
         // Check is the POM's GAV resolves to any pre-existing artifacts.

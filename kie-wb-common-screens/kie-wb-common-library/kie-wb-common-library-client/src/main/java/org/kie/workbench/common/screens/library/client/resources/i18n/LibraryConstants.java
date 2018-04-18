@@ -424,4 +424,7 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String GitUrlFailedToBeCopiedToClipboard = "GitUrlFailedToBeCopiedToClipboard";
+
+    @TranslationKey(defaultValue = "")
+    public static final String InvalidPom = "InvalidPom";
 }

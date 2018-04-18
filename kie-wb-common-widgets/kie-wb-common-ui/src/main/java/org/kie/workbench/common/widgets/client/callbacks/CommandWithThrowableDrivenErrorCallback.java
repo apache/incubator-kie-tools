@@ -30,6 +30,7 @@ import org.uberfire.mvp.ParameterizedCommand;
  */
 public class CommandWithThrowableDrivenErrorCallback extends HasBusyIndicatorDefaultErrorCallback {
 
+    @FunctionalInterface
     public interface CommandWithThrowable extends ParameterizedCommand<Throwable> {
 
     }
