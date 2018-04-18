@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-.breadcrumb {
+.breadcrumb-link {
     cursor: pointer;
 }
 
 .breadcrumb-last{
     color: inherit;
-    cursor: default;
     text-decoration-line: none;
     pointer-events: none;
 }

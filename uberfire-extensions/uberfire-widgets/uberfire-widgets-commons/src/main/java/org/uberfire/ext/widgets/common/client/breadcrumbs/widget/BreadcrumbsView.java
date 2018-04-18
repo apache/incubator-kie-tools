@@ -62,6 +62,6 @@ public class BreadcrumbsView implements UberElement<BreadcrumbsPresenter>,
     @Override
     public void deactivate() {
         breadcrumb.setClassName("");
-        breadcrumbLink.setClassName("");
+        breadcrumbLink.setClassName("breadcrumb-link");
     }
 }
