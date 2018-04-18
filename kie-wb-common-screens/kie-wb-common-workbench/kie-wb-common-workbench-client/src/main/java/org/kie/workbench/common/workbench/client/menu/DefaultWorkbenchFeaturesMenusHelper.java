@@ -46,6 +46,7 @@ import org.uberfire.client.menu.WorkbenchViewModeSwitcherMenuBuilder;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.views.pfly.menu.UserMenu;
 import org.uberfire.client.workbench.widgets.menu.UtilityMenuBar;
 import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPresenter;
@@ -93,6 +94,7 @@ public class DefaultWorkbenchFeaturesMenusHelper {
     protected AboutCommand aboutCommand;
     private AuthorizationManager authorizationManager;
     private SessionInfo sessionInfo;
+    private PlaceManager placeManager;
 
     public DefaultWorkbenchFeaturesMenusHelper() {
     }
@@ -108,7 +110,8 @@ public class DefaultWorkbenchFeaturesMenusHelper {
                                                WorkbenchMegaMenuPresenter menuBar,
                                                AboutCommand aboutCommand,
                                                AuthorizationManager authorizationManager,
-                                               SessionInfo sessionInfo) {
+                                               SessionInfo sessionInfo,
+                                               PlaceManager placeManager) {
         this.iocManager = iocManager;
         this.activityManager = activityManager;
         this.perspectiveManager = perspectiveManager;
@@ -120,6 +123,7 @@ public class DefaultWorkbenchFeaturesMenusHelper {
         this.aboutCommand = aboutCommand;
         this.authorizationManager = authorizationManager;
         this.sessionInfo = sessionInfo;
+        this.placeManager = placeManager;
     }
 
     public List<? extends MenuItem> getHomeViews(final boolean socialEnabled) {
@@ -363,7 +367,10 @@ public class DefaultWorkbenchFeaturesMenusHelper {
 
         @Override
         public void execute() {
-            perspectiveManager.savePerspectiveState(() -> doRedirect(getRedirectURL()));
+            perspectiveManager.savePerspectiveState(() -> {
+                placeManager.closePlace(perspectiveManager.getCurrentPerspectivePlaceRequest(),
+                                        () -> doRedirect(getRedirectURL()));
+            });
             // request.logout() happens as part of the redirected logout.jsp
         }
 

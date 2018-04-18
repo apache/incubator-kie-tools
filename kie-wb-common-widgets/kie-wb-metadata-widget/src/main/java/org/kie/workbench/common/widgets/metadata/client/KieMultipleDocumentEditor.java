@@ -450,12 +450,8 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
 
     protected boolean doMayClose(final Integer originalHashCode,
                                  final Integer currentHashCode) {
-        if (this.isDirty(originalHashCode,
-                         currentHashCode) || overviewWidget.isDirty()) {
-            return this.editorView.confirmClose();
-        } else {
-            return true;
-        }
+        return !this.isDirty(originalHashCode,
+                             currentHashCode) && !overviewWidget.isDirty();
     }
 
     protected boolean isDirty(final Integer originalHashCode,

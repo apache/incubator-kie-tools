@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.library.client.widgets.library;
 
+import java.util.Optional;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
@@ -105,14 +106,20 @@ public class AddProjectButtonPresenter {
 
         final MenuResourceHandlerWidget menuResourceHandlerWidget = menuResourceHandlerWidgets.get();
         menuResourceHandlerWidget.init(newWorkspaceProjectHandler.getDescription(),
-                                       newWorkspaceProjectHandler.getCommand(newResourcePresenter));
+                                       () -> libraryPlaces.closeAllPlacesOrNothing(() -> {
+                                                                                       libraryPlaces.goToLibrary();
+                                                                                       newWorkspaceProjectHandler.getCommand(newResourcePresenter);
+                                                                                   }));
         view.addOtherProject(menuResourceHandlerWidget);
     }
 
     public void addProject() {
         if (userCanCreateProjects()) {
-            final AddProjectPopUpPresenter addProjectPopUpPresenter = addProjectPopUpPresenters.get();
-            addProjectPopUpPresenter.show();
+            libraryPlaces.closeAllPlacesOrNothing(() -> {
+                libraryPlaces.goToLibrary();
+                final AddProjectPopUpPresenter addProjectPopUpPresenter = addProjectPopUpPresenters.get();
+                addProjectPopUpPresenter.show();
+            });
         }
     }
 

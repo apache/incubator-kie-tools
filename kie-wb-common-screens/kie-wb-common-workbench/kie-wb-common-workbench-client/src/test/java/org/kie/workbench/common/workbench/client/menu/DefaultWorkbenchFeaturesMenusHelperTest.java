@@ -45,10 +45,12 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveManager;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.views.pfly.menu.UserMenu;
 import org.uberfire.client.workbench.widgets.menu.UtilityMenuBar;
 import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPresenter;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.MenuGroup;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
@@ -85,6 +87,9 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
 
     @Mock
     protected AboutCommand aboutCommand;
+
+    @Mock
+    protected PlaceManager placeManager;
 
     @Spy
     @InjectMocks
@@ -333,6 +338,9 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
     @Test
     @SuppressWarnings("unchecked")
     public void logoutCommandRedirectIncludesLocaleTest() throws Throwable {
+        final PlaceRequest currentPerspective = mock(PlaceRequest.class);
+        doReturn(currentPerspective).when(perspectiveManager).getCurrentPerspectivePlaceRequest();
+
         final DefaultWorkbenchFeaturesMenusHelper.LogoutCommand logoutCommand = spy(menusHelper.new LogoutCommand() {
 
             @Override
@@ -365,6 +373,14 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
 
         final Command postSaveStateCommand = postSaveStateCommandCaptor.getValue();
         postSaveStateCommand.execute();
+
+        final ArgumentCaptor<Command> doAfterCloseCommandCaptor = ArgumentCaptor.forClass(Command.class);
+
+        verify(placeManager).closePlace(eq(currentPerspective),
+                                        doAfterCloseCommandCaptor.capture());
+
+        final Command doAfterCloseCommand = doAfterCloseCommandCaptor.getValue();
+        doAfterCloseCommand.execute();
 
         verify(logoutCommand).getRedirectURL();
         verify(logoutCommand).doRedirect(redirectURLCaptor.capture());

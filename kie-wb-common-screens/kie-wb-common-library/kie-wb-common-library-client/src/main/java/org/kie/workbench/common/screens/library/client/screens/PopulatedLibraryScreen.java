@@ -178,9 +178,7 @@ public class PopulatedLibraryScreen {
     }
 
     Command selectCommand(final WorkspaceProject project) {
-        return () -> {
-            libraryPlaces.goToProject(project);
-        };
+        return () -> libraryPlaces.goToProject(project);
     }
 
     public View getView() {

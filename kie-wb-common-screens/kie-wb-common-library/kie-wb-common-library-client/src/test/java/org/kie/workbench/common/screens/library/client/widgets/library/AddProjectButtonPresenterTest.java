@@ -32,6 +32,7 @@ import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.mvp.Command;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -76,6 +77,11 @@ public class AddProjectButtonPresenterTest {
         doReturn(true).when(projectController).canCreateProjects();
         doReturn(addProjectPopUpPresenter).when(addProjectPopUpPresenters).get();
         doReturn(menuResourceHandlerWidget).when(menuResourceHandlerWidgets).get();
+
+        doAnswer(invocationOnMock -> {
+            ((Command) invocationOnMock.getArguments()[0]).execute();
+            return null;
+        }).when(libraryPlaces).closeAllPlacesOrNothing(any());
 
         presenter = spy(new AddProjectButtonPresenter(view,
                                                       addProjectPopUpPresenters,

@@ -415,11 +415,7 @@ public abstract class KieEditor<T>
 
     @Override
     public boolean mayClose(Integer currentHash) {
-        if (this.isDirty(currentHash) || overviewWidget.isDirty()) {
-            return this.baseView.confirmClose();
-        } else {
-            return true;
-        }
+        return !this.isDirty(currentHash) && !overviewWidget.isDirty();
     }
 
     @Override

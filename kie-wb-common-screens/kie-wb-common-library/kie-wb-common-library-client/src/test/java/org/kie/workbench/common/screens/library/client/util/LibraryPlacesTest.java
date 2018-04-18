@@ -16,8 +16,9 @@
 
 package org.kie.workbench.common.screens.library.client.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-
 import javax.enterprise.event.Event;
 
 import org.ext.uberfire.social.activities.model.ExtendedTypes;
@@ -47,6 +48,7 @@ import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
 import org.kie.workbench.common.screens.library.client.events.WorkbenchProjectMetricsEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
 import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportRepositoryPopUpPresenter;
+import org.kie.workbench.common.screens.library.client.screens.project.close.CloseUnsavedProjectAssetsPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.widgets.library.LibraryToolbarPresenter;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
@@ -67,28 +69,19 @@ import org.uberfire.ext.preferences.client.event.PreferencesCentralSaveEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralUndoChangesEvent;
 import org.uberfire.ext.widgets.common.client.breadcrumbs.UberfireBreadcrumbs;
 import org.uberfire.mocks.CallerMock;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
-import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LibraryPlacesTest {
@@ -164,6 +157,9 @@ public class LibraryPlacesTest {
     @Mock
     private Event<ProjectAssetListUpdated> assetListUpdateEvent;
 
+    @Mock
+    private CloseUnsavedProjectAssetsPopUpPresenter closeUnsavedProjectAssetsPopUpPresenter;
+
     @Captor
     private ArgumentCaptor<WorkspaceProjectContextChangeEvent> projectContextChangeEventArgumentCaptor;
 
@@ -202,7 +198,8 @@ public class LibraryPlacesTest {
                                               projectScopedResolutionStrategySupplier,
                                               preferencesCentralInitializationEvent,
                                               importRepositoryPopUpPresenters,
-                                              assetListUpdateEvent));
+                                              assetListUpdateEvent,
+                                              closeUnsavedProjectAssetsPopUpPresenter));
         libraryPlaces.setup();
 
         verify(libraryToolBarView).getElement();
@@ -240,8 +237,6 @@ public class LibraryPlacesTest {
         final PathPlaceRequest pathPlaceRequest = mock(PathPlaceRequest.class);
         doReturn(mock(ObservablePath.class)).when(pathPlaceRequest).getPath();
         doReturn(pathPlaceRequest).when(libraryPlaces).createPathPlaceRequest(any());
-
-        doReturn(true).when(placeManager).closeAllPlacesOrNothing();
 
         doReturn(importRepositoryPopUpPresenter).when(importRepositoryPopUpPresenters).get();
     }
@@ -296,7 +291,7 @@ public class LibraryPlacesTest {
         verify(libraryPlaces,
                never()).goToProject();
         verify(libraryPlaces,
-               never()).closeAllPlacesOrNothing();
+               never()).closeAllPlacesOrNothing(any());
     }
 
     @Test
@@ -461,7 +456,7 @@ public class LibraryPlacesTest {
         final WorkspaceProjectContextChangeEvent event = eventArgumentCaptor.getValue();
         assertNull(event.getOrganizationalUnit());
         assertNull(event.getWorkspaceProject());
-        verify(placeManager).closeAllPlacesOrNothing();
+        verify(placeManager).closeAllPlaces();
         verify(placeManager).goTo(eq(part),
                                   any(PanelDefinition.class));
         verify(libraryPlaces).setupLibraryBreadCrumbs();
@@ -641,15 +636,13 @@ public class LibraryPlacesTest {
 
     @Test
     public void goToTrySamplesTest() {
-        doReturn(true).when(libraryPlaces).closeAllPlacesOrNothing();
-
         final PlaceRequest trySamplesScreen = new DefaultPlaceRequest(LibraryPlaces.IMPORT_SAMPLE_PROJECTS_SCREEN);
         final PartDefinitionImpl part = new PartDefinitionImpl(trySamplesScreen);
         part.setSelectable(false);
 
         libraryPlaces.goToTrySamples();
 
-        verify(libraryPlaces).closeAllPlacesOrNothing();
+        verify(libraryPlaces).closeAllPlacesOrNothing(any());
         verify(placeManager).goTo(eq(part),
                                   any(PanelDefinition.class));
         verify(libraryPlaces).setupLibraryBreadCrumbsForTrySamples();
@@ -683,8 +676,7 @@ public class LibraryPlacesTest {
         libraryPlaces.goToProject(project);
 
         verify(projectContextChangeEvent).fire(any(WorkspaceProjectContextChangeEvent.class));
-
-        verify(placeManager).closeAllPlacesOrNothing();
+        verify(placeManager).closeAllPlaces();
     }
 
     @Test
@@ -698,28 +690,8 @@ public class LibraryPlacesTest {
 
         verify(projectContextChangeEvent,
                never()).fire(any(WorkspaceProjectContextChangeEvent.class));
-
         verify(placeManager,
-               never()).closeAllPlacesOrNothing();
-    }
-
-    @Test
-    public void goToPreferencesTest() {
-        final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo = mock(PreferenceScopeResolutionStrategyInfo.class);
-        doReturn(scopeResolutionStrategyInfo).when(projectScopedResolutionStrategySupplier).get();
-
-        final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(PreferencesRootScreen.IDENTIFIER);
-        final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
-        part.setSelectable(false);
-
-        libraryPlaces.goToPreferences();
-
-        verify(placeManager).goTo(eq(part),
-                                  any(PanelDefinition.class));
-        verify(preferencesCentralInitializationEvent).fire(new PreferencesCentralInitializationEvent("ProjectPreferences",
-                                                                                                     scopeResolutionStrategyInfo,
-                                                                                                     null));
-        verify(libraryPlaces).setupLibraryBreadCrumbsForPreferences();
+               never()).forceCloseAllPlaces();
     }
 
     @Test
@@ -803,5 +775,40 @@ public class LibraryPlacesTest {
 
         verify(placeManager).goTo(libraryPerspective);
         verify(libraryPlaces).goToAsset(any(Path.class));
+    }
+
+    @Test
+    public void closeAllPlacesOrNothingWithUncloseablePlacesTest() {
+        final Command successCallback = mock(Command.class);
+
+        final List<PlaceRequest> uncloseablePlaces = new ArrayList<>();
+        uncloseablePlaces.add(mock(PlaceRequest.class));
+        doReturn(uncloseablePlaces).when(placeManager).getUncloseablePlaces();
+
+        libraryPlaces.closeAllPlacesOrNothing(successCallback);
+
+        verify(placeManager,
+               never()).forceCloseAllPlaces();
+        verify(successCallback,
+               never()).execute();
+        verify(closeUnsavedProjectAssetsPopUpPresenter).show(eq(activeProject),
+                                                             eq(uncloseablePlaces),
+                                                             any(),
+                                                             any());
+    }
+
+    @Test
+    public void closeAllPlacesOrNothingWithoutUncloseablePlacesTest() {
+        final Command successCallback = mock(Command.class);
+
+        final List<PlaceRequest> uncloseablePlaces = new ArrayList<>();
+        uncloseablePlaces.add(mock(PlaceRequest.class));
+
+        libraryPlaces.closeAllPlacesOrNothing(successCallback);
+
+        verify(placeManager).closeAllPlaces();
+        verify(successCallback).execute();
+        verify(closeUnsavedProjectAssetsPopUpPresenter,
+               never()).show(any(), any(), any(), any());
     }
 }

@@ -52,7 +52,6 @@ public class EmptyLibraryScreenTest {
     public void setup() {
         doReturn(mock(AddProjectButtonPresenter.View.class)).when(addProjectButtonPresenter).getView();
         doReturn(true).when(projectController).canCreateProjects();
-        doReturn(true).when(libraryPlaces).closeAllPlacesOrNothing();
 
         emptyLibraryScreen = new EmptyLibraryScreen(view,
                                                     addProjectButtonPresenter,

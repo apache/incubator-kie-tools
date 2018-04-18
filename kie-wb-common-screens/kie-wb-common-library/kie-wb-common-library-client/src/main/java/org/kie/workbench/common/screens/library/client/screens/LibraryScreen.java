@@ -122,13 +122,19 @@ public class LibraryScreen {
 
     public void trySamples() {
         if (userCanCreateProjects()) {
-            libraryPlaces.goToTrySamples();
+            libraryPlaces.closeAllPlacesOrNothing(() -> {
+                                                      libraryPlaces.goToLibrary();
+                                                      libraryPlaces.goToTrySamples();
+                                                  });
         }
     }
 
     public void importProject() {
         if (userCanCreateProjects()) {
-            libraryPlaces.goToImportRepositoryPopUp();
+            libraryPlaces.closeAllPlacesOrNothing(() -> {
+                                                      libraryPlaces.goToLibrary();
+                                                      libraryPlaces.goToImportRepositoryPopUp();
+                                                  });
         }
     }
 

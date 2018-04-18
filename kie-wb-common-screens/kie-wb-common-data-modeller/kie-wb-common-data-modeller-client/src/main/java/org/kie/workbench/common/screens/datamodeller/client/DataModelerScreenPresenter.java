@@ -283,10 +283,7 @@ public class DataModelerScreenPresenter
 
     @OnMayClose
     public boolean onMayClose() {
-        if (isDirty()) {
-            return view.confirmClose();
-        }
-        return true;
+        return !isDirty();
     }
 
     @OnClose

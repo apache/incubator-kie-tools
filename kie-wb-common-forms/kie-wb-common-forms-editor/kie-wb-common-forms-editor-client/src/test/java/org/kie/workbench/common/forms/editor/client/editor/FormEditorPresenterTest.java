@@ -111,7 +111,6 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
         testOnRemoveComponentWithContext();
 
         assertFalse(presenter.onMayClose());
-        verify(view).confirmClose();
     }
 
     @Test

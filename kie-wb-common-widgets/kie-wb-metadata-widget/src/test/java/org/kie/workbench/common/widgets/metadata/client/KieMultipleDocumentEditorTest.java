@@ -595,19 +595,6 @@ public class KieMultipleDocumentEditorTest
     }
 
     @Test
-    public void testMayCloseChange() {
-        final TestDocument document = createTestDocument();
-
-        registerDocument(document);
-        activateDocument(document);
-
-        editor.mayClose(0,
-                        null);
-        verify(editorView,
-               times(1)).confirmClose();
-    }
-
-    @Test
     public void testMayCloseNoChange() {
         final TestDocument document = createTestDocument();
 
