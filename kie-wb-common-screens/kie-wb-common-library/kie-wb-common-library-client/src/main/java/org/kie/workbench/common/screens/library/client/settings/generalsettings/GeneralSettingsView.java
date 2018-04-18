@@ -61,8 +61,8 @@ public class GeneralSettingsView implements GeneralSettingsPresenter.View {
     private HTMLTextAreaElement description;
 
     @Inject
-    @DataField("url")
-    private HTMLInputElement url;
+    @DataField("git-urls-view")
+    private HTMLDivElement gitUrlsView;
 
     @Inject
     @DataField("disable-gav-conflict-check")
@@ -173,6 +173,11 @@ public class GeneralSettingsView implements GeneralSettingsPresenter.View {
     }
 
     @Override
+    public void setGitUrlsView(final GitUrlsPresenter.View gitUrlsView) {
+        this.gitUrlsView.appendChild(gitUrlsView.getElement());
+    }
+
+    @Override
     public void setName(final String name) {
         this.name.value = name;
     }
@@ -180,11 +185,6 @@ public class GeneralSettingsView implements GeneralSettingsPresenter.View {
     @Override
     public void setDescription(final String description) {
         this.description.value = description;
-    }
-
-    @Override
-    public void setURL(final String url) {
-        this.url.value = url;
     }
 
     @Override

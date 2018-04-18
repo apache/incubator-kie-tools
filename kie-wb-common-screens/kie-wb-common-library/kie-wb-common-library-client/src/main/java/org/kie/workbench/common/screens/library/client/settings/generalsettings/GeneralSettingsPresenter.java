@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.library.client.settings.generalsettings
 
 import java.util.function.Function;
 import java.util.function.Supplier;
+
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -44,6 +45,8 @@ public class GeneralSettingsPresenter extends SettingsPresenter.Section {
 
         String getArtifactId();
 
+        void setGitUrlsView(GitUrlsPresenter.View gitUrlsView);
+
         String getVersion();
 
         Boolean getConflictingGAVCheckDisabled();
@@ -53,8 +56,6 @@ public class GeneralSettingsPresenter extends SettingsPresenter.Section {
         void setName(String name);
 
         void setDescription(String description);
-
-        void setURL(String url);
 
         void setGroupId(String groupId);
 
@@ -87,10 +88,13 @@ public class GeneralSettingsPresenter extends SettingsPresenter.Section {
         String getInvalidVersionMessage();
     }
 
+
+
     private final View view;
     private final Caller<ValidationService> validationService;
     private final GAVPreferences gavPreferences;
     private final ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier;
+    private final GitUrlsPresenter gitUrlsPresenter;
 
     POM pom;
 
@@ -101,13 +105,15 @@ public class GeneralSettingsPresenter extends SettingsPresenter.Section {
                                     final Caller<ValidationService> validationService,
                                     final Event<SettingsSectionChange> settingsSectionChangeEvent,
                                     final GAVPreferences gavPreferences,
-                                    final ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier) {
+                                    final ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier,
+                                    final GitUrlsPresenter gitUrlsPresenter) {
 
         super(settingsSectionChangeEvent, menuItem, promises);
         this.view = view;
         this.validationService = validationService;
         this.gavPreferences = gavPreferences;
         this.projectScopedResolutionStrategySupplier = projectScopedResolutionStrategySupplier;
+        this.gitUrlsPresenter = gitUrlsPresenter;
     }
 
     // Save
@@ -123,7 +129,9 @@ public class GeneralSettingsPresenter extends SettingsPresenter.Section {
         view.setGroupId(pom.getGav().getGroupId());
         view.setArtifactId(pom.getGav().getArtifactId());
         view.setVersion(pom.getGav().getVersion());
-        view.setURL(model.getGitUrl());
+
+        gitUrlsPresenter.setup(model.getGitUrls());
+        view.setGitUrlsView(gitUrlsPresenter.getView());
 
         return promises.create((resolve, reject) -> {
             gavPreferences.load(projectScopedResolutionStrategySupplier.get(),
@@ -242,6 +250,10 @@ public class GeneralSettingsPresenter extends SettingsPresenter.Section {
         return pom.hashCode() +
                 (gavPreferences.isChildGAVEditEnabled() ? 1 : 2) +
                 (gavPreferences.isConflictingGAVCheckDisabled() ? 4 : 8);
+    }
+
+    public GitUrlsPresenter getGitUrlsPresenter() {
+        return gitUrlsPresenter;
     }
 
     @Override

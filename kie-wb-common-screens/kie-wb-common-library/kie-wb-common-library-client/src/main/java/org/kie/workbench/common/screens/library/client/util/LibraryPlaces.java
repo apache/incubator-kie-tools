@@ -693,16 +693,6 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         importRepositoryPopUpPresenter.show();
     }
 
-    public void goToSettings() {
-        final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(PROJECT_SETTINGS);
-        final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
-        part.setSelectable(false);
-
-        closeLibraryPlaces();
-        placeManager.goTo(part,
-                          libraryPerspective.getRootPanel());
-    }
-
     public void goToPreferences() {
 
         final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy = projectScopedResolutionStrategySupplier.get();

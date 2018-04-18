@@ -15,6 +15,8 @@
 
 package org.kie.workbench.common.screens.projecteditor.model;
 
+import java.util.List;
+
 import org.guvnor.common.services.project.model.ModuleRepositories;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
@@ -29,7 +31,7 @@ public class ProjectScreenModel {
 
     private POM pom;
     private KModuleModel KModule;
-    private String gitUrl;
+    private List<GitUrl> gitUrls;
     private ProjectImports projectImports;
     private ModuleRepositories repositories;
     private WhiteList whiteList;
@@ -60,12 +62,12 @@ public class ProjectScreenModel {
         this.KModule = KModule;
     }
 
-    public String getGitUrl() {
-        return gitUrl;
+    public List<GitUrl> getGitUrls() {
+        return gitUrls;
     }
 
-    public void setGitUrl(String gitUrl) {
-        this.gitUrl = gitUrl;
+    public void setGitUrls(final List<GitUrl> gitUrls) {
+        this.gitUrls = gitUrls;
     }
 
     public ProjectImports getProjectImports() {
@@ -195,7 +197,7 @@ public class ProjectScreenModel {
         if (KModule != null ? !KModule.equals(that.KModule) : that.KModule != null) {
             return false;
         }
-        if (gitUrl != null ? !gitUrl.equals(that.gitUrl) : that.gitUrl != null) {
+        if (gitUrls != null ? !gitUrls.equals(that.gitUrls) : that.gitUrls != null) {
             return false;
         }
         if (pathToKModule != null ? !pathToKModule.equals(that.pathToKModule) : that.pathToKModule != null) {
@@ -244,7 +246,7 @@ public class ProjectScreenModel {
         result = ~~result;
         result = 31 * result + (KModule != null ? KModule.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + (gitUrl != null ? gitUrl.hashCode() : 0);
+        result = 31 * result + (gitUrls != null ? gitUrls.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (pathToKModule != null ? pathToKModule.hashCode() : 0);
         result = ~~result;

@@ -21,10 +21,14 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.model.ModuleRepositories;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.ModuleRepositoriesService;
 import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.structure.repositories.impl.DefaultPublicURI;
+import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.test.TestTempFileSystem;
 import org.guvnor.test.WeldJUnitRunner;
 import org.junit.After;
@@ -43,9 +47,15 @@ import org.kie.workbench.common.services.shared.whitelist.WhiteList;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.spaces.Space;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static java.util.Collections.singletonList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 @RunWith(WeldJUnitRunner.class)
 public class ProjectScreenModelLoaderTest {
@@ -83,8 +93,12 @@ public class ProjectScreenModelLoaderTest {
     @Mock
     private PackageNameWhiteListService whiteListService;
 
+    @Mock
+    private WorkspaceProjectService workspaceProjectService;
+
     private ProjectScreenModelLoader loader;
     private KieModule kieModule;
+    private WorkspaceProject workspaceProject;
 
     @Inject
     private TestTempFileSystem testFileSystem;
@@ -111,7 +125,9 @@ public class ProjectScreenModelLoaderTest {
         packageNamesWhiteListPath = testFileSystem.createTempFile("myModule/package-name-white-list");
 
         makeKieModule();
+        makeWorkspaceProject();
 
+        when(workspaceProjectService.resolveProject(pathToPom)).thenReturn(workspaceProject);
         when(moduleService.resolveModule(pathToPom)).thenReturn(kieModule);
 
         loader = new ProjectScreenModelLoader(moduleService,
@@ -120,7 +136,8 @@ public class ProjectScreenModelLoaderTest {
                                               kModuleService,
                                               projectImportsService,
                                               moduleRepositoriesService,
-                                              whiteListService);
+                                              whiteListService,
+                                              workspaceProjectService);
     }
 
     @After
@@ -139,6 +156,19 @@ public class ProjectScreenModelLoaderTest {
                                   repositoriesPath,
                                   packageNamesWhiteListPath,
                                   pom);
+    }
+
+    private void makeWorkspaceProject() {
+        final DefaultPublicURI uri = new DefaultPublicURI("git",
+                                                          "git://uri:9999/space/project");
+
+        final GitRepository repository = new GitRepository("alias",
+                                                           mock(Space.class),
+                                                           singletonList(uri));
+
+        workspaceProject = spy(new WorkspaceProject());
+
+        when(workspaceProject.getRepository()).thenReturn(repository);
     }
 
     @Test
@@ -237,5 +267,18 @@ public class ProjectScreenModelLoaderTest {
         assertEquals(whiteList,
                      model.getWhiteList());
         assertNotNull(model.getWhiteListMetaData());
+    }
+
+    @Test
+    public void testGitUrls() throws Exception {
+
+        final ProjectScreenModel model = loader.load(pathToPom);
+
+        assertEquals(1,
+                     model.getGitUrls().size());
+        assertEquals("git",
+                     model.getGitUrls().get(0).getProtocol());
+        assertEquals("git://uri:9999/space/project",
+                     model.getGitUrls().get(0).getUrl());
     }
 }

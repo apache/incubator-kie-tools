@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.service.ModuleRepositoriesService;
 import org.guvnor.common.services.project.service.POMService;
+import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
@@ -31,6 +32,10 @@ import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListSe
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
+import static java.util.stream.Collectors.toList;
+
+import org.kie.workbench.common.screens.projecteditor.model.GitUrl;
+
 public class ProjectScreenModelLoader {
 
     private KieModuleService moduleService;
@@ -40,6 +45,7 @@ public class ProjectScreenModelLoader {
     private ProjectImportsService importsService;
     private ModuleRepositoriesService repositoriesService;
     private PackageNameWhiteListService whiteListService;
+    private WorkspaceProjectService workspaceProjectService;
 
     public ProjectScreenModelLoader() {
     }
@@ -51,7 +57,9 @@ public class ProjectScreenModelLoader {
                                     final KModuleService kModuleService,
                                     final ProjectImportsService importsService,
                                     final ModuleRepositoriesService repositoriesService,
-                                    final PackageNameWhiteListService whiteListService) {
+                                    final PackageNameWhiteListService whiteListService,
+                                    final WorkspaceProjectService workspaceProjectService) {
+
         this.moduleService = moduleService;
         this.pomService = pomService;
         this.metadataService = metadataService;
@@ -59,6 +67,7 @@ public class ProjectScreenModelLoader {
         this.importsService = importsService;
         this.repositoriesService = repositoriesService;
         this.whiteListService = whiteListService;
+        this.workspaceProjectService = workspaceProjectService;
     }
 
     public ProjectScreenModel load(final Path pathToPom) {
@@ -84,7 +93,7 @@ public class ProjectScreenModelLoader {
 
             loadPOM();
             loadKModule();
-            loadGitURL();
+            loadGitURLs();
             loadImports();
             loadWhiteList();
             loadRepositories();
@@ -104,15 +113,11 @@ public class ProjectScreenModelLoader {
             model.setPathToKModule(project.getKModuleXMLPath());
         }
 
-        private void loadGitURL() {
-            String value = "";
-            try {
-                value = Paths.convert(project.getRootPath()).getFileSystem().toString();
-            } catch (final Exception ignore) {
-                //this is basically for tests that don't use git file system
-            }
-
-            model.setGitUrl(value.replace("\n", " | "));
+        private void loadGitURLs() {
+            model.setGitUrls(workspaceProjectService.resolveProject(project.getPomXMLPath())
+                                     .getRepository().getPublicURIs().stream()
+                                     .map(uri -> new GitUrl(uri.getProtocol(), uri.getURI()))
+                                     .collect(toList()));
         }
 
         private void loadImports() {

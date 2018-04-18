@@ -418,4 +418,10 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String CloseUnsavedProjectAssetsWarningMessage = "CloseUnsavedProjectAssetsWarningMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String GitUrlSuccessfullyCopiedToClipboard = "GitUrlSuccessfullyCopiedToClipboard";
+
+    @TranslationKey(defaultValue = "")
+    public static final String GitUrlFailedToBeCopiedToClipboard = "GitUrlFailedToBeCopiedToClipboard";
 }

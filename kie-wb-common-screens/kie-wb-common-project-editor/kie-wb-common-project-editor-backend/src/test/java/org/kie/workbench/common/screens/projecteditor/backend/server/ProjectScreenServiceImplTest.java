@@ -24,6 +24,7 @@ import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.MavenRepositorySource;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.ModuleRepositories;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
@@ -41,6 +42,7 @@ import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryCopier;
 import org.guvnor.structure.repositories.RepositoryService;
+import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -67,8 +69,20 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.Space;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static java.util.Collections.emptyList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectScreenServiceImplTest {
@@ -186,7 +200,8 @@ public class ProjectScreenServiceImplTest {
                                               kModuleService,
                                               importsService,
                                               repositoriesService,
-                                              whiteListService) {
+                                              whiteListService,
+                                              projectService) {
             @Override
             protected boolean fileExists(final Path path) {
                 return true;
@@ -228,6 +243,12 @@ public class ProjectScreenServiceImplTest {
         when(metadataService.getMetadata(eq(pathToPom))).thenReturn(pomMetaData);
         when(metadataService.getMetadata(eq(pathToKieModule))).thenReturn(kmoduleMetaData);
         when(metadataService.getMetadata(eq(pathToModuleImports))).thenReturn(projectImportsMetaData);
+
+        when(projectService.resolveProject((Path) any()))
+                .thenReturn(spy(new WorkspaceProject(mock(OrganizationalUnit.class),
+                                                     new GitRepository("alias", mock(Space.class), emptyList()),
+                                                     mock(Branch.class),
+                                                     mock(Module.class))));
     }
 
     @Test
@@ -259,6 +280,9 @@ public class ProjectScreenServiceImplTest {
                      model.getRepositories());
         assertEquals(pathToModuleRepositories,
                      model.getPathToRepositories());
+
+        assertEquals(emptyList(),
+                     model.getGitUrls());
 
         verify(pomService,
                times(1)).load(eq(pathToPom));

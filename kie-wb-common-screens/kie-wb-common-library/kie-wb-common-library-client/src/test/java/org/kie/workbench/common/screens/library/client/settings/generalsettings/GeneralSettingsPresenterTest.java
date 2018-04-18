@@ -52,6 +52,9 @@ public class GeneralSettingsPresenterTest {
     @Mock
     private ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier;
 
+    @Mock
+    private GitUrlsPresenter gitUrlsPresenter;
+
     private Promises promises = new SyncPromises();
 
     @Before
@@ -62,7 +65,8 @@ public class GeneralSettingsPresenterTest {
                                                                     new CallerMock<>(validationService),
                                                                     settingsSectionChangeEvent,
                                                                     gavPreferences,
-                                                                    projectScopedResolutionStrategySupplier));
+                                                                    projectScopedResolutionStrategySupplier,
+                                                                    gitUrlsPresenter));
     }
 
     @Test
@@ -85,6 +89,9 @@ public class GeneralSettingsPresenterTest {
         verify(view).setGroupId(any());
         verify(view).setArtifactId(any());
         verify(view).setVersion(any());
+        verify(view).setGitUrlsView(any());
+
+        verify(gitUrlsPresenter).setup(any());
 
         verify(gavPreferences).load(any(),
                                     any(),
