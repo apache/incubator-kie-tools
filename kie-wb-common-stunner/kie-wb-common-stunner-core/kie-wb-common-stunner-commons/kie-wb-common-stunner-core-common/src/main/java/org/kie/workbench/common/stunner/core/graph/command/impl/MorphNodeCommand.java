@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -79,11 +80,12 @@ public final class MorphNodeCommand extends AbstractGraphCommand {
             // Morph the node definition to the new one.
             candidate.getContent().setDefinition(newDef);
             // Update candidate roles.
-            final Set<String> newLabels = definitionManager.adapters().forDefinition().getLabels(newDef);
+            final Set<String> newLabels = new HashSet<>();
+            newLabels.add(definitionManager.adapters().forDefinition().getId(newDef));
+            newLabels.addAll(definitionManager.adapters().forDefinition().getLabels(newDef));
+
             candidate.getLabels().clear();
-            if (null != newLabels) {
-                candidate.getLabels().addAll(newLabels);
-            }
+            candidate.getLabels().addAll(newLabels);
         }
         return results;
     }
