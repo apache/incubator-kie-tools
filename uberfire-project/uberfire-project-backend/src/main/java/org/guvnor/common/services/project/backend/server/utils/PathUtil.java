@@ -16,8 +16,11 @@
 package org.guvnor.common.services.project.backend.server.utils;
 
 import java.io.File;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import javax.enterprise.context.Dependent;
+import javax.inject.Singleton;
 
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
@@ -26,8 +29,12 @@ import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
  * Contains methods that directly invoke {@link Paths} or involve implementation specific details
  * on paths that are difficult to mock in unit tests.
  */
-@Dependent
+@Singleton
 public class PathUtil {
+
+    private final Pattern repoAndSpace = Pattern.compile("^[^/]+/[^/]+/");
+    private final Pattern protocolAndBranch = Pattern.compile("^[A-Za-z]+://([^@]+@)?");
+    private final Pattern branchNameExtractor = Pattern.compile("^[A-Za-z]+://([^@]+)@.*");
 
     public org.uberfire.backend.vfs.Path normalizePath(org.uberfire.backend.vfs.Path path) {
         return Paths.normalizePath(path);
@@ -35,6 +42,21 @@ public class PathUtil {
 
     public org.uberfire.java.nio.file.Path convert(org.uberfire.backend.vfs.Path path) {
         return Paths.convert(path);
+    }
+
+    public org.uberfire.backend.vfs.Path convert(org.uberfire.java.nio.file.Path path) {
+        return Paths.convert(path);
+    }
+
+    public String stripProtocolAndBranch(String uri) {
+        return protocolAndBranch.matcher(uri).replaceFirst("");
+    }
+
+    /**
+     * @param strippedPath Assumed to be a return value of {@link #stripProtocolAndBranch(String)}
+     */
+    public String stripRepoNameAndSpace(String strippedPath) {
+        return repoAndSpace.matcher(strippedPath).replaceFirst("");
     }
 
     /**
@@ -48,6 +70,15 @@ public class PathUtil {
             return directory.toURI().toString();
         } catch (ClassCastException cce) {
             throw new IllegalArgumentException("Cannot get .niogit directory for non-jgit path.", cce);
+        }
+    }
+
+    public Optional<String> extractBranch(String uri) {
+        final Matcher matcher = branchNameExtractor.matcher(uri);
+        if (matcher.matches()) {
+            return Optional.of(matcher.group(1));
+        } else {
+            return Optional.empty();
         }
     }
 

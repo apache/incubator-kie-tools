@@ -24,6 +24,7 @@ import java.util.Set;
 import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
+import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Ref;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.java.nio.fs.jgit.util.GitImpl;
@@ -55,8 +56,16 @@ public class SyncRemote {
                 }
             }
 
+            /*
+             * We filter out HEAD below because otherwise it appears
+             * as a branch in the UI importing repositories.
+             *
+             * We may need to revisit this in the future when we support
+             * mirror repositories.
+             */
+
             for (final String localBranch : localBranches) {
-                if (localBranch.equals("HEAD")) {
+                if (localBranch.equals(Constants.HEAD)) {
                     continue;
                 }
                 if (remoteBranches.contains(localBranch)) {
@@ -76,6 +85,9 @@ public class SyncRemote {
             remoteBranches.removeAll(localBranches);
 
             for (final String branch : remoteBranches) {
+                if (branch.equals(Constants.HEAD)) {
+                    continue;
+                }
                 try {
                     git._branchCreate()
                     .setName(branch)
