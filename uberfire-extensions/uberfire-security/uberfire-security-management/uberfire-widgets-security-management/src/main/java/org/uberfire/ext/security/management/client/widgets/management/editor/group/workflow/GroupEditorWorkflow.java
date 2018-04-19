@@ -230,13 +230,9 @@ public class GroupEditorWorkflow implements IsWidget {
 
             // Update the current active policy
             AuthorizationPolicy authzPolicy = permissionManager.getAuthorizationPolicy();
-            authzPolicy.setHomePerspective(group,
-                                           homePerspective.getIdentifier());
-            authzPolicy.setPriority(group,
-                                    groupPriority);
-            Collection<Permission> pc = authzPolicy.getPermissions(group).collection();
-            pc.clear();
-            pc.addAll(groupPermissions.collection());
+            authzPolicy.setHomePerspective(group, homePerspective.getIdentifier());
+            authzPolicy.setPriority(group, groupPriority);
+            authzPolicy.setPermissions(group, groupPermissions);
 
             // Save the policy in the backend
             authorizationService.call(r -> {

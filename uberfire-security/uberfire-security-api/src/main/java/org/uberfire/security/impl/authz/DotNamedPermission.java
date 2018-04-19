@@ -172,6 +172,7 @@ public class DotNamedPermission implements Permission,
                                       result);
     }
 
+    @Override
     public String toString() {
         StringBuilder out = new StringBuilder();
         out.append(name).append(" ").append(result);

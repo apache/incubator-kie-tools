@@ -215,13 +215,9 @@ public abstract class BaseRoleEditorWorkflow implements IsWidget {
 
             // Update the current active policy
             AuthorizationPolicy authzPolicy = permissionManager.getAuthorizationPolicy();
-            authzPolicy.setHomePerspective(role,
-                                           homePerspective.getIdentifier());
-            authzPolicy.setPriority(role,
-                                    rolePriority);
-            Collection<Permission> pc = authzPolicy.getPermissions(role).collection();
-            pc.clear();
-            pc.addAll(rolePermissions.collection());
+            authzPolicy.setHomePerspective(role, homePerspective.getIdentifier());
+            authzPolicy.setPriority(role, rolePriority);
+            authzPolicy.setPermissions(role, rolePermissions);
 
             // Save the policy in the backend
             authorizationService.call(r -> {

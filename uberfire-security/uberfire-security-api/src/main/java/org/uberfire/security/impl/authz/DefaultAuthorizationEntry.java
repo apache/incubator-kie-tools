@@ -27,7 +27,7 @@ public class DefaultAuthorizationEntry {
     private String description = null;
     private Role role = null;
     private Group group = null;
-    private int priority = DEFAULT_PRIORITY;
+    private Integer priority = DEFAULT_PRIORITY;
     private String homePerspective = null;
     private PermissionCollection permissions = new DefaultPermissionCollection();
 
@@ -66,7 +66,7 @@ public class DefaultAuthorizationEntry {
         this.description = description;
     }
 
-    public int getPriority() {
+    public Integer getPriority() {
         return priority;
     }
 
@@ -101,6 +101,7 @@ public class DefaultAuthorizationEntry {
         return clone;
     }
 
+    @Override
     public String toString() {
         StringBuilder out = new StringBuilder();
         if (role != null) {
@@ -115,6 +116,7 @@ public class DefaultAuthorizationEntry {
         if (homePerspective != null) {
             out.append(homePerspective).append(" ");
         }
+        out.append("\n");
         out.append(permissions);
         return out.toString();
     }

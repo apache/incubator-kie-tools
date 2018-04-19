@@ -27,18 +27,19 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Column;
-import org.gwtbootstrap3.client.ui.ListGroup;
-import org.gwtbootstrap3.client.ui.ListGroupItem;
-import org.gwtbootstrap3.client.ui.constants.ListGroupItemType;
+import org.gwtbootstrap3.client.ui.Icon;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.html.Span;
 
 @Dependent
 public class EntityWorkflowViewImpl extends Composite implements EntityWorkflowView {
 
     private static UserEditorWorkflowViewBinder uiBinder = GWT.create(UserEditorWorkflowViewBinder.class);
     @UiField
-    ListGroup notificationsList;
+    Alert notification;
     @UiField
     Column content;
     @UiField
@@ -93,18 +94,19 @@ public class EntityWorkflowViewImpl extends Composite implements EntityWorkflowV
 
     @Override
     public EntityWorkflowView showNotification(final String text) {
-        final ListGroupItem item = new ListGroupItem();
-        item.setText(text);
-        item.setType(ListGroupItemType.WARNING);
-        notificationsList.add(item);
-        notificationsList.setVisible(true);
+        Icon icon = new Icon(IconType.WARNING);
+        icon.setStyleName("pficon pficon-warning-triangle-o");
+        notification.clear();
+        notification.add(icon);
+        notification.add(new Span(text));
+        notification.setVisible(true);
         return this;
     }
 
     @Override
     public EntityWorkflowView clearNotifications() {
-        notificationsList.clear();
-        notificationsList.setVisible(false);
+        notification.clear();
+        notification.setVisible(false);
         return this;
     }
 

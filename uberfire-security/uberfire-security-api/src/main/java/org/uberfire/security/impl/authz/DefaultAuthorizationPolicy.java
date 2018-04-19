@@ -46,8 +46,7 @@ public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
                 return entry;
             }
         }
-        // If no entry is registered then register a brand new one based on the default
-        DefaultAuthorizationEntry entry = defaultEntry.cloneInstance();
+        DefaultAuthorizationEntry entry = new DefaultAuthorizationEntry(role);
         entry.setRole(role);
         return registerAuthzEntry(entry);
     }
@@ -58,8 +57,7 @@ public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
                 return entry;
             }
         }
-        // If no entry is registered then register a brand new one based on the default
-        DefaultAuthorizationEntry entry = defaultEntry.cloneInstance();
+        DefaultAuthorizationEntry entry = new DefaultAuthorizationEntry(group);
         entry.setGroup(group);
         return registerAuthzEntry(entry);
     }
@@ -115,13 +113,15 @@ public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
     @Override
     public int getPriority(Role role) {
         DefaultAuthorizationEntry entry = getAuthzEntry(role);
-        return entry != null ? entry.getPriority() : 0;
+        Integer priority = entry.getPriority();
+        return priority != null ?  priority : defaultEntry.getPriority();
     }
 
     @Override
     public int getPriority(Group group) {
         DefaultAuthorizationEntry entry = getAuthzEntry(group);
-        return entry != null ? entry.getPriority() : 0;
+        Integer priority = entry.getPriority();
+        return priority != null ?  priority : defaultEntry.getPriority();
     }
 
     @Override
@@ -141,13 +141,13 @@ public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
     @Override
     public PermissionCollection getPermissions(Role role) {
         DefaultAuthorizationEntry entry = getAuthzEntry(role);
-        return entry.getPermissions();
+        return entry.getPermissions().merge(defaultEntry.getPermissions(), -1);
     }
 
     @Override
     public PermissionCollection getPermissions(Group group) {
         DefaultAuthorizationEntry entry = getAuthzEntry(group);
-        return entry.getPermissions();
+        return entry.getPermissions().merge(defaultEntry.getPermissions(), -1);
     }
 
     public void addPermission(Permission permission) {
@@ -195,13 +195,15 @@ public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
     @Override
     public String getHomePerspective(Role role) {
         DefaultAuthorizationEntry entry = getAuthzEntry(role);
-        return entry.getHomePerspective();
+        String home = entry.getHomePerspective();
+        return home != null ?  home : defaultEntry.getHomePerspective();
     }
 
     @Override
     public String getHomePerspective(Group group) {
         DefaultAuthorizationEntry entry = getAuthzEntry(group);
-        return entry.getHomePerspective();
+        String home = entry.getHomePerspective();
+        return home != null ?  home : defaultEntry.getHomePerspective();
     }
 
     @Override
@@ -249,5 +251,12 @@ public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
     @Override
     public PermissionCollection getPermissions() {
         return defaultEntry.getPermissions();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder out = new StringBuilder();
+        entrySet.forEach(e -> out.append(e.toString()).append("\n"));
+        return out.toString();
     }
 }

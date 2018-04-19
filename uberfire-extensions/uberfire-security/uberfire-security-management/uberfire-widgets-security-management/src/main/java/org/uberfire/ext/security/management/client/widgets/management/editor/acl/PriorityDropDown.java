@@ -73,6 +73,7 @@ public class PriorityDropDown implements IsWidget {
 
         liveSearchDropDown.setSelectorHint(UsersManagementWidgetsConstants.INSTANCE.selectPriorityHint());
         liveSearchDropDown.setSearchEnabled(false);
+        liveSearchDropDown.setClearSelectionEnabled(false);
         liveSearchDropDown.init(searchService, selectionHandler);
     }
 

@@ -117,6 +117,25 @@ public class AuthzPolicyMarshallerTest {
     }
 
     @Test
+    public void testDefaultPermissionsNotOverwrite() {
+        Map<String, String> input = new HashMap<>();
+        input.put("default.permission.perspective.read.p1", "false");
+        input.put("default.permission.perspective.read.p2", "false");
+        input.put("role.user.permission.perspective.read", "true");
+        input.put("role.user.permission.perspective.read.p2", "false");
+
+        marshaller.read(builder, input);
+        permissionManager.setAuthorizationPolicy(builder.build());
+
+        User user = createUserMock("user");
+        PermissionCollection pc = permissionManager.resolvePermissions(user, VotingStrategy.PRIORITY);
+        assertEquals(pc.collection().size(), 2);
+        assertEquals(pc.get("perspective.read").getResult(), AuthorizationResult.ACCESS_GRANTED);
+        assertNull(pc.get("perspective.read.p1"));
+        assertEquals(pc.get("perspective.read.p2").getResult(), AuthorizationResult.ACCESS_DENIED);
+    }
+
+    @Test
     public void testHomeEntry() {
         AuthorizationPolicyMarshaller.Key key = marshaller.parse("role.admin.home");
         assertTrue(key.isRole());

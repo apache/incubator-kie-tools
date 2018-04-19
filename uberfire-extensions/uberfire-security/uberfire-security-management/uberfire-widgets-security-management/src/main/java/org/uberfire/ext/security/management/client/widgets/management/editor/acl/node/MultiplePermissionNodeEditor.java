@@ -160,6 +160,7 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
             liveSearchDropDown.setNotFoundMessage(view.getChildrenNotFoundMsg(resourceName));
             liveSearchDropDown.setMaxItems(50);
             liveSearchDropDown.setWidth(220);
+            liveSearchDropDown.setClearSelectionEnabled(false);
             liveSearchDropDown.init(childrenSearchService, selectionHandler);
             liveSearchDropDown.setOnChange(() -> onChildSelected(selectionHandler.getSelectedKey()));
 

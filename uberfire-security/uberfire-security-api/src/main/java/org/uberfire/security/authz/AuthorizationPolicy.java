@@ -101,16 +101,30 @@ public interface AuthorizationPolicy {
     /**
      * Get the permissions assigned to a given role.
      * @param role The role instance
-     * @return The permission collection
+     * @return The permission collection. Notice, the default permission collection is also included in the results.
      */
     PermissionCollection getPermissions(Role role);
 
     /**
+     * Set the role's permissions
+     * @param role The role instance
+     * @param permissions A permission collection
+     */
+    void setPermissions(Role role, PermissionCollection permissions);
+
+    /**
      * Get the permissions assigned to a given group.
      * @param group The group instance
-     * @return The permission collection
+     * @return The permission collection. Notice, the default permission collection is also included in the results.
      */
     PermissionCollection getPermissions(Group group);
+
+    /**
+     * Set the group's permissions
+     * @param group The group instance
+     * @param permissions A permission collection
+     */
+    void setPermissions(Group group, PermissionCollection permissions);
 
     /**
      * Get the identifier of the home perspective assigned to the given group.

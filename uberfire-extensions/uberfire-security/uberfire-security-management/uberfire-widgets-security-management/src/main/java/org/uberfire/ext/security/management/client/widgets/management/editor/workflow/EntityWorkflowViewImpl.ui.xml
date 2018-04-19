@@ -31,7 +31,7 @@
 
     <b:Row>
       <b:Column size="MD_12">
-        <b:ListGroup ui:field="notificationsList"/>
+        <b:Alert ui:field="notification"/>
       </b:Column>
     </b:Row>
     
