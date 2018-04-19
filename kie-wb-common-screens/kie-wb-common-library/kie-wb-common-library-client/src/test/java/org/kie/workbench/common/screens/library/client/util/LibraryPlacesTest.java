@@ -17,8 +17,12 @@
 package org.kie.workbench.common.screens.library.client.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Optional;
+import java.util.Set;
+
 import javax.enterprise.event.Event;
 
 import org.ext.uberfire.social.activities.model.ExtendedTypes;
@@ -41,12 +45,14 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.screens.explorer.model.URIStructureExplorerModel;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetListUpdated;
 import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
 import org.kie.workbench.common.screens.library.client.events.WorkbenchProjectMetricsEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
+import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportProjectsSetupEvent;
 import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportRepositoryPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.screens.project.close.CloseUnsavedProjectAssetsPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.widgets.library.LibraryToolbarPresenter;
@@ -58,6 +64,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
@@ -78,6 +85,8 @@ import org.uberfire.workbench.events.ResourceCopiedEvent;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singleton;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -161,6 +170,9 @@ public class LibraryPlacesTest {
     @Mock
     private CloseUnsavedProjectAssetsPopUpPresenter closeUnsavedProjectAssetsPopUpPresenter;
 
+    @Mock
+    private Event<ImportProjectsSetupEvent> projectsSetupEvent;
+
     @Captor
     private ArgumentCaptor<WorkspaceProjectContextChangeEvent> projectContextChangeEventArgumentCaptor;
 
@@ -200,7 +212,8 @@ public class LibraryPlacesTest {
                                               preferencesCentralInitializationEvent,
                                               importRepositoryPopUpPresenters,
                                               assetListUpdateEvent,
-                                              closeUnsavedProjectAssetsPopUpPresenter));
+                                              closeUnsavedProjectAssetsPopUpPresenter,
+                                              projectsSetupEvent));
         libraryPlaces.setup();
 
         verify(libraryToolBarView).getElement();
@@ -647,6 +660,30 @@ public class LibraryPlacesTest {
         verify(placeManager).goTo(eq(part),
                                   any(PanelDefinition.class));
         verify(libraryPlaces).setupLibraryBreadCrumbsForTrySamples();
+    }
+
+    @Test
+    public void goToExternalImportProjectsTest() {
+        doAnswer(inv -> {
+            final Command command = inv.getArgumentAt(0, Command.class);
+            command.execute();
+            return null;
+        }).when(libraryPlaces).closeAllPlacesOrNothing(any());
+
+        final PlaceRequest trySamplesScreen = new DefaultPlaceRequest(LibraryPlaces.IMPORT_PROJECTS_SCREEN);
+        final PartDefinitionImpl part = new PartDefinitionImpl(trySamplesScreen);
+        part.setSelectable(false);
+
+        final Set<ExampleProject> projects = singleton(new ExampleProject(PathFactory.newPath("example",
+                                                                                              "default://master@system/repo/example"),
+                                                                          "example",
+                                                                          "description",
+                                                                          emptyList()));
+        libraryPlaces.goToExternalImportPresenter(projects);
+
+        verify(placeManager).goTo(eq(part),
+                                  any(PanelDefinition.class));
+        verify(libraryPlaces).setupExternalImportBreadCrumbs();
     }
 
     @Test

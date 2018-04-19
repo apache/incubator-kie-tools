@@ -16,11 +16,12 @@
 package org.kie.workbench.common.screens.library.client.util;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -49,6 +50,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetListUpdated;
 import org.kie.workbench.common.screens.library.api.Remote;
@@ -57,7 +59,9 @@ import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
 import org.kie.workbench.common.screens.library.client.events.WorkbenchProjectMetricsEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
+import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportProjectsSetupEvent;
 import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportRepositoryPopUpPresenter;
+import org.kie.workbench.common.screens.library.client.screens.importrepository.Source;
 import org.kie.workbench.common.screens.library.client.screens.project.close.CloseUnsavedProjectAssetsPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.widgets.library.LibraryToolbarPresenter;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
@@ -84,12 +88,15 @@ import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.events.ResourceCopiedEvent;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
+import static org.kie.workbench.common.screens.library.client.screens.importrepository.Source.Kind.EXTERNAL;
+
 @ApplicationScoped
 public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
     public static final String LIBRARY_PERSPECTIVE = "LibraryPerspective";
     public static final String LIBRARY_SCREEN = "LibraryScreen";
     public static final String PROJECT_SCREEN = "ProjectScreen";
+    public static final String IMPORT_PROJECTS_SCREEN = "ImportProjectsScreen";
     public static final String IMPORT_SAMPLE_PROJECTS_SCREEN = "TrySamplesScreen";
     public static final String PROJECT_DETAIL_SCREEN = "ProjectsDetailScreen";
     public static final String ORG_UNITS_METRICS_SCREEN = "OrgUnitsMetricsScreen";
@@ -101,18 +108,19 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     public static final String REPOSITORY_STRUCTURE_SCREEN = "repositoryStructureScreen";
     public static final String ADD_ASSET_SCREEN = "AddAssetsScreen";
 
-    public static final List<String> LIBRARY_PLACES = Collections.unmodifiableList(new ArrayList<String>(7) {{
-        add(LIBRARY_SCREEN);
-        add(ORG_UNITS_METRICS_SCREEN);
-        add(PROJECT_SCREEN);
-        add(PROJECT_METRICS_SCREEN);
-        add(PROJECT_DETAIL_SCREEN);
-        add(ORGANIZATIONAL_UNITS_SCREEN);
-        add(PROJECT_SETTINGS);
-        add(ADD_ASSET_SCREEN);
-        add(IMPORT_SAMPLE_PROJECTS_SCREEN);
-        add(PreferencesRootScreen.IDENTIFIER);
-    }});
+    public static final List<String> LIBRARY_PLACES = Arrays.asList(
+        LIBRARY_SCREEN,
+        ORG_UNITS_METRICS_SCREEN,
+        PROJECT_SCREEN,
+        PROJECT_METRICS_SCREEN,
+        PROJECT_DETAIL_SCREEN,
+        ORGANIZATIONAL_UNITS_SCREEN,
+        PROJECT_SETTINGS,
+        ADD_ASSET_SCREEN,
+        IMPORT_PROJECTS_SCREEN,
+        IMPORT_SAMPLE_PROJECTS_SCREEN,
+        PreferencesRootScreen.IDENTIFIER
+    );
 
     private UberfireBreadcrumbs breadcrumbs;
 
@@ -158,6 +166,8 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
     private CloseUnsavedProjectAssetsPopUpPresenter closeUnsavedProjectAssetsPopUpPresenter;
 
+    private Event<ImportProjectsSetupEvent> importProjectsSetupEvent;
+
     private boolean docksReady = false;
 
     private boolean docksHidden = true;
@@ -188,7 +198,8 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
                          final Event<PreferencesCentralInitializationEvent> preferencesCentralInitializationEvent,
                          final ManagedInstance<ImportRepositoryPopUpPresenter> importRepositoryPopUpPresenters,
                          final @Routed Event<ProjectAssetListUpdated> assetListUpdatedEvent,
-                         final CloseUnsavedProjectAssetsPopUpPresenter closeUnsavedProjectAssetsPopUpPresenter) {
+                         final CloseUnsavedProjectAssetsPopUpPresenter closeUnsavedProjectAssetsPopUpPresenter,
+                         final @Source(EXTERNAL) Event<ImportProjectsSetupEvent> importProjectsSetupEvent) {
         this.breadcrumbs = breadcrumbs;
         this.ts = ts;
         this.projectMetricsEvent = projectMetricsEvent;
@@ -210,6 +221,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         this.importRepositoryPopUpPresenters = importRepositoryPopUpPresenters;
         this.assetListUpdatedEvent = assetListUpdatedEvent;
         this.closeUnsavedProjectAssetsPopUpPresenter = closeUnsavedProjectAssetsPopUpPresenter;
+        this.importProjectsSetupEvent = importProjectsSetupEvent;
     }
 
     @PostConstruct
@@ -690,6 +702,36 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     public void goToImportRepositoryPopUp() {
         final ImportRepositoryPopUpPresenter importRepositoryPopUpPresenter = importRepositoryPopUpPresenters.get();
         importRepositoryPopUpPresenter.show();
+    }
+
+    public void goToExternalImportPresenter(final Set<ExampleProject> projects) {
+        closeAllPlacesOrNothing(() -> {
+            // TODO add title
+            final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(LibraryPlaces.IMPORT_PROJECTS_SCREEN);
+            final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
+            part.setSelectable(false);
+
+            placeManager.goTo(part,
+                              libraryPerspective.getRootPanel());
+
+            setupExternalImportBreadCrumbs();
+            importProjectsSetupEvent.fire(new ImportProjectsSetupEvent(projects));
+        });
+    }
+
+    public void setupExternalImportBreadCrumbs() {
+        breadcrumbs.clearBreadcrumbs(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
+                                  translationUtils.getOrganizationalUnitAliasInPlural(),
+                                  () -> goToOrganizationalUnits());
+        breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
+                                  projectContext.getActiveOrganizationalUnit()
+                                          .orElseThrow(() -> new IllegalStateException("Cannot create library breadcrumb without active space."))
+                                          .getName(),
+                                  () -> goToLibrary());
+        breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
+                                  ts.getTranslation(LibraryConstants.ImportProjects),
+                                  () -> goToImportRepositoryPopUp());
     }
 
     public void goToPreferences() {

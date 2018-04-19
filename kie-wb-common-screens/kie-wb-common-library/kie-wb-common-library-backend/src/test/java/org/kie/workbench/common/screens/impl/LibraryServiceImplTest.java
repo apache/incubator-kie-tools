@@ -21,10 +21,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
+
+import javax.enterprise.event.Event;
 
 import org.ext.uberfire.social.activities.model.SocialUser;
 import org.ext.uberfire.social.activities.service.SocialUserRepositoryAPI;
-import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
+import org.guvnor.common.services.project.backend.server.utils.PathUtil;
+import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
@@ -34,6 +38,7 @@ import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
@@ -42,7 +47,6 @@ import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
 import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
@@ -67,20 +71,24 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.NoSuchFileException;
+import org.uberfire.java.nio.file.spi.FileSystemProvider;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
+import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 import org.uberfire.paging.PageResponse;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.spaces.Space;
 
-import static java.util.Collections.singletonList;
+import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.doReturn;
@@ -128,6 +136,14 @@ public class LibraryServiceImplTest {
 
     @Mock
     private RepositoryService repositoryService;
+
+    @Mock
+    private Event<NewProjectEvent> newProjectEvent;
+
+    @Mock
+    private PathUtil pathUtil;
+
+    private final PathUtil realPathUtil = new PathUtil();
 
     @Mock
     private OrganizationalUnit ou1;
@@ -194,7 +210,9 @@ public class LibraryServiceImplTest {
                                                     ioService,
                                                     internalPreferences,
                                                     socialUserRepositoryAPI,
-                                                    indexOracle
+                                                    indexOracle,
+                                                    newProjectEvent,
+                                                    pathUtil
         ));
     }
 
@@ -547,27 +565,6 @@ public class LibraryServiceImplTest {
     }
 
     @Test
-    public void importProjectFromExampleTest() {
-        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-        final ExampleProject exampleProject = mock(ExampleProject.class);
-
-        final WorkspaceProject project = mock(WorkspaceProject.class);
-        final Module module = mock(Module.class);
-        doReturn(module).when(project).getMainModule();
-
-        final WorkspaceProjectContextChangeEvent projectContextChangeEvent = mock(WorkspaceProjectContextChangeEvent.class);
-        doReturn(project).when(projectContextChangeEvent).getWorkspaceProject();
-        doReturn(projectContextChangeEvent).when(examplesService).setupExamples(any(ExampleOrganizationalUnit.class),
-                                                                                anyList());
-
-        final WorkspaceProject importedProject = libraryService.importProject(organizationalUnit,
-                                                                              exampleProject);
-
-        assertEquals(module,
-                     importedProject.getMainModule());
-    }
-
-    @Test
     public void importProjectWithCredentialsTest() {
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
         final Repository repo = mock(Repository.class);
@@ -625,32 +622,80 @@ public class LibraryServiceImplTest {
 
     @Test
     public void importDefaultProjectTest() {
-        final Repository repository = mock(Repository.class);
-        when(repository.getAlias()).thenReturn("example");
-        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-        when(organizationalUnit.getName()).thenReturn("ou");
-        when(organizationalUnit.getIdentifier()).thenReturn("ou");
-        when(organizationalUnit.getRepositories()).thenReturn(singletonList(repository));
-        when(ouService.getOrganizationalUnits()).thenReturn(singletonList(organizationalUnit));
+        final OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl("myteam", "admin", "org.whatever");
+        organizationalUnit.getRepositories();
 
-        final ExampleProject exampleProject = mock(ExampleProject.class);
-        doReturn("example").when(exampleProject).getName();
+        final Path exampleRoot = mock(Path.class);
+        final org.uberfire.java.nio.file.Path exampleRootNioPath = mock(org.uberfire.java.nio.file.Path.class);
+        when(pathUtil.convert(exampleRoot)).thenReturn(exampleRootNioPath);
+        final ExampleProject exampleProject = new ExampleProject(exampleRoot, "example", "description", emptyList());
 
-        final WorkspaceProject project = mock(WorkspaceProject.class);
-        final Module module = mock(Module.class);
-        doReturn(module).when(project).getMainModule();
-        final WorkspaceProjectContextChangeEvent projectContextChangeEvent = mock(WorkspaceProjectContextChangeEvent.class);
-        doReturn(project).when(projectContextChangeEvent).getWorkspaceProject();
-        doReturn(projectContextChangeEvent).when(examplesService).setupExamples(any(ExampleOrganizationalUnit.class),
-                                                                                anyList());
+        String repoURL = "file:///some/repo/url";
+        when(pathUtil.getNiogitRepoPath(any())).thenReturn(repoURL);
+
+        final Repository repository = new GitRepository("example", new Space("myteam"));
+        final WorkspaceProject project = new WorkspaceProject(organizationalUnit,
+                                                              repository,
+                                                              new Branch("master", mock(Path.class)),
+                                                              new Module());
+        when(projectService.resolveProject(repository)).thenReturn(project);
+        when(repositoryService.createRepository(same(organizationalUnit), eq(GitRepository.SCHEME.toString()), any(), any())).thenReturn(repository);
 
         final WorkspaceProject importedProject = libraryService.importProject(organizationalUnit,
                                                                               exampleProject);
 
-        assertEquals(module,
-                     importedProject.getMainModule());
-        verify(examplesService).setupExamples(new ExampleOrganizationalUnit(organizationalUnit.getName()),
-                                              singletonList(exampleProject));
+        assertSame(project, importedProject);
+        final ArgumentCaptor<RepositoryEnvironmentConfigurations> configsCaptor = ArgumentCaptor.forClass(RepositoryEnvironmentConfigurations.class);
+        verify(repositoryService).createRepository(same(organizationalUnit), eq(GitRepository.SCHEME.toString()), any(), configsCaptor.capture());
+        final RepositoryEnvironmentConfigurations configs = configsCaptor.getValue();
+        assertEquals(repoURL, configs.getOrigin());
+        assertNull(configs.getSubdirectory());
+        verify(projectService).resolveProject(repository);
+    }
+
+    @Test
+    public void importProjectInSubdirectory() {
+        final OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl("myteam", "admin", "org.whatever");
+        organizationalUnit.getRepositories();
+
+
+        final String exampleURI = "default://master@system/repo/example";
+        final Path exampleRoot = PathFactory.newPath("example", exampleURI);
+        final JGitFileSystem fs = mock(JGitFileSystem.class);
+        final FileSystemProvider provider = mock(FileSystemProvider.class);
+        when(fs.provider()).thenReturn(provider);
+        final org.uberfire.java.nio.file.Path exampleRootNioPath = JGitPathImpl.create(fs, "/example", "master@system/repo", true);
+        final org.uberfire.java.nio.file.Path repoRoot = exampleRootNioPath.getParent();
+        when(fs.getRootDirectories()).thenReturn(() -> Stream.of(repoRoot).iterator());
+        when(pathUtil.convert(exampleRoot)).thenReturn(exampleRootNioPath);
+        when(pathUtil.stripProtocolAndBranch(any())).then(inv -> realPathUtil.stripProtocolAndBranch(inv.getArgumentAt(0, String.class)));
+        when(pathUtil.stripRepoNameAndSpace(any())).then(inv -> realPathUtil.stripRepoNameAndSpace(inv.getArgumentAt(0, String.class)));
+        when(pathUtil.convert(any(org.uberfire.java.nio.file.Path.class))).then(inv -> realPathUtil.convert(inv.getArgumentAt(0, org.uberfire.java.nio.file.Path.class)));
+        when(pathUtil.extractBranch(any())).then(inv -> realPathUtil.extractBranch(inv.getArgumentAt(0, String.class)));
+
+        final ExampleProject exampleProject = new ExampleProject(exampleRoot, "example", "description", emptyList());
+
+        String repoURL = "file:///some/repo/url";
+        when(pathUtil.getNiogitRepoPath(any())).thenReturn(repoURL);
+
+        final Repository repository = new GitRepository("example", new Space("myteam"));
+        final WorkspaceProject project = new WorkspaceProject(organizationalUnit,
+                                                              repository,
+                                                              new Branch("master", mock(Path.class)),
+                                                              new Module());
+        when(projectService.resolveProject(repository)).thenReturn(project);
+        when(repositoryService.createRepository(same(organizationalUnit), eq(GitRepository.SCHEME.toString()), any(), any())).thenReturn(repository);
+
+        final WorkspaceProject importedProject = libraryService.importProject(organizationalUnit,
+                                                                              exampleProject);
+
+        assertSame(project, importedProject);
+        final ArgumentCaptor<RepositoryEnvironmentConfigurations> configsCaptor = ArgumentCaptor.forClass(RepositoryEnvironmentConfigurations.class);
+        verify(repositoryService).createRepository(same(organizationalUnit), eq(GitRepository.SCHEME.toString()), any(), configsCaptor.capture());
+        final RepositoryEnvironmentConfigurations configs = configsCaptor.getValue();
+        assertEquals(repoURL, configs.getOrigin());
+        assertEquals("example", configs.getSubdirectory());
+        verify(projectService).resolveProject(repository);
     }
 
     @Test

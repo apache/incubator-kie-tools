@@ -30,6 +30,7 @@ import javax.enterprise.inject.Produces;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
@@ -52,15 +53,9 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.kie.workbench.common.screens.library.client.screens.importrepository.Source.Kind.EXAMPLE;
+import static org.kie.workbench.common.screens.library.client.screens.importrepository.Source.Kind.EXTERNAL;
 
 public abstract class ImportPresenter {
-
-    /*
-     * IMPORTANT:
-     *
-     * The reason this type is abstract is that we will soon be adding a second sub-type for importing
-     * modules of an arbitrary git repo, while preserving history.
-     */
 
     private static final class ExamplesImportPresenter extends ImportPresenter {
 
@@ -97,11 +92,46 @@ public abstract class ImportPresenter {
             examplesService.call(callback, errorCallback).setupExamples(new ExampleOrganizationalUnit(activeOrganizationalUnit().getName()),
                                                                         projects);
         }
+    }
 
-        private OrganizationalUnit activeOrganizationalUnit() {
-            return projectContext.getActiveOrganizationalUnit()
-                                 .orElseThrow(() -> new IllegalStateException("Cannot setup examples without an active organizational unit."));
+    private static final class ExternalImportPresenter extends ImportPresenter {
+
+        private ExternalImportPresenter(View view,
+                                       LibraryPlaces libraryPlaces,
+                                       Caller<LibraryService> libraryService,
+                                       ManagedInstance<TileWidget> tileWidgets,
+                                       WorkspaceProjectContext projectContext,
+                                       Event<NotificationEvent> notificationEvent,
+                                       Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent) {
+            super(view,
+                  libraryPlaces,
+                  libraryService,
+                  tileWidgets,
+                  projectContext,
+                  notificationEvent,
+                  projectContextChangeEvent);
         }
+
+        @Override
+        protected void loadProjects(PlaceRequest placeRequest, RemoteCallback<Set<ExampleProject>> callback) {
+            // Projects are loaded by CDI event that calls setupEvents. Nothing to do here.
+        }
+
+        @Override
+        protected void importProjects(List<ExampleProject> projects,
+                                      RemoteCallback<WorkspaceProjectContextChangeEvent> callback,
+                                      ErrorCallback<Message> errorCallback) {
+            final OrganizationalUnit activeOU = activeOrganizationalUnit();
+            libraryService.call((List<WorkspaceProject> importedProjects) -> {
+                if (importedProjects.size() == 1) {
+                    final WorkspaceProject importedProject = importedProjects.get(0);
+                    callback.callback(new WorkspaceProjectContextChangeEvent(importedProject, importedProject.getMainModule()));
+                } else {
+                    callback.callback(new WorkspaceProjectContextChangeEvent(activeOU));
+                }
+            }, errorCallback).importProjects(activeOU, projects);
+        }
+
     }
 
     public interface View extends UberElement<ImportPresenter>,
@@ -142,6 +172,23 @@ public abstract class ImportPresenter {
                                            libraryService,
                                            tileWidgets,
                                            examplesService,
+                                           projectContext,
+                                           notificationEvent,
+                                           projectContextChangeEvent);
+    }
+
+    @Produces @Source(EXTERNAL)
+    public static ImportPresenter externalImportPresenter(final View view,
+                                                          final LibraryPlaces libraryPlaces,
+                                                          final Caller<LibraryService> libraryService,
+                                                          final ManagedInstance<TileWidget> tileWidgets,
+                                                          final WorkspaceProjectContext projectContext,
+                                                          final Event<NotificationEvent> notificationEvent,
+                                                          final Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent) {
+        return new ExternalImportPresenter(view,
+                                           libraryPlaces,
+                                           libraryService,
+                                           tileWidgets,
                                            projectContext,
                                            notificationEvent,
                                            projectContextChangeEvent);
@@ -294,6 +341,10 @@ public abstract class ImportPresenter {
             notificationEvent.fire(new NotificationEvent(view.getImportProjectsSuccessMessage(),
                                                          NotificationEvent.NotificationType.SUCCESS));
             projectContextChangeEvent.fire(event);
+            // In this case we've imported multiple projects, so just go to the space screen.
+            if (event.getWorkspaceProject() == null) {
+                libraryPlaces.goToLibrary();
+            }
         }, new HasBusyIndicatorDefaultErrorCallback(view));
     }
 
@@ -303,5 +354,10 @@ public abstract class ImportPresenter {
 
     public View getView() {
         return view;
+    }
+
+    protected OrganizationalUnit activeOrganizationalUnit() {
+        return projectContext.getActiveOrganizationalUnit()
+                             .orElseThrow(() -> new IllegalStateException("Cannot setup examples without an active organizational unit."));
     }
 }

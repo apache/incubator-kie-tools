@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.library.client.screens.samples;
+package org.kie.workbench.common.screens.library.client.screens.importrepository;
 
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
-import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportPresenter;
-import org.kie.workbench.common.screens.library.client.screens.importrepository.Source;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -28,22 +27,26 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 
-import static org.kie.workbench.common.screens.library.client.screens.importrepository.Source.Kind.EXAMPLE;
+import static org.kie.workbench.common.screens.library.client.screens.importrepository.Source.Kind.EXTERNAL;
 
-@WorkbenchScreen(identifier = LibraryPlaces.IMPORT_SAMPLE_PROJECTS_SCREEN,
+@WorkbenchScreen(identifier = LibraryPlaces.IMPORT_PROJECTS_SCREEN,
         owningPerspective = LibraryPerspective.class)
-public class ImportExamplesProjectsScreen {
+public class ImportProjectsScreen {
 
     private ImportPresenter presenter;
 
     @Inject
-    public ImportExamplesProjectsScreen(final @Source(EXAMPLE) ImportPresenter presenter) {
+    public ImportProjectsScreen(final @Source(EXTERNAL) ImportPresenter presenter) {
         this.presenter = presenter;
     }
 
     @OnStartup
     public void onStartup(final PlaceRequest placeRequest) {
         presenter.onStartup(placeRequest);
+    }
+
+    public void setupEvent(@Observes @Source(EXTERNAL) ImportProjectsSetupEvent event) {
+        presenter.setupEvent(event);
     }
 
     @WorkbenchPartTitle

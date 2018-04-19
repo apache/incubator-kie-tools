@@ -67,7 +67,12 @@ public interface LibraryService {
     WorkspaceProject importProject(OrganizationalUnit targetOU, String repositoryURL, String username, String password);
 
     /**
-     * Imports a project by copying the files (without history) from the given {@link ExampleProject}.
+     * @see #importProject(OrganizationalUnit, ExampleProject)
+     */
+    List<WorkspaceProject> importProjects(OrganizationalUnit targetOU, List<ExampleProject> projects);
+
+    /**
+     * Imports a project (preserving history) from the given {@link ExampleProject}.
      */
     WorkspaceProject importProject(OrganizationalUnit targetOU, ExampleProject example);
 

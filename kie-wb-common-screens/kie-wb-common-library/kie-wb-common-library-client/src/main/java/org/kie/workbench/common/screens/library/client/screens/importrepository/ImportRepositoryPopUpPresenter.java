@@ -16,14 +16,14 @@
 
 package org.kie.workbench.common.screens.library.client.screens.importrepository;
 
+import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
-import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
+import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.mvp.UberElement;
@@ -60,16 +60,12 @@ public class ImportRepositoryPopUpPresenter {
 
     private LibraryPlaces libraryPlaces;
 
-    private WorkspaceProjectContext context;
-
     @Inject
     public ImportRepositoryPopUpPresenter(final View view,
                                           final LibraryPlaces libraryPlaces,
-                                          final WorkspaceProjectContext context,
                                           final Caller<LibraryService> libraryService) {
         this.view = view;
         this.libraryPlaces = libraryPlaces;
-        this.context = context;
         this.libraryService = libraryService;
     }
 
@@ -89,14 +85,16 @@ public class ImportRepositoryPopUpPresenter {
             return;
         }
 
-        OrganizationalUnit ou = context.getActiveOrganizationalUnit()
-                                       .orElseThrow(() -> new IllegalStateException("Cannot import project without an active organizational unit."));
-
         view.showBusyIndicator(view.getLoadingMessage());
-        libraryService.call((WorkspaceProject project) -> {
+        libraryService.call((Set<ExampleProject> projects) -> {
                                 view.hideBusyIndicator();
-                                view.hide();
-                                libraryPlaces.goToProject(project);
+                                if (projects.isEmpty()) {
+                                    view.showError(view.getNoProjectsToImportMessage());
+                                } else {
+                                    view.hide();
+                                    libraryPlaces.goToExternalImportPresenter(projects);
+                                }
+
         }, new DefaultErrorCallback() {
             @Override
             public boolean error(Message message, Throwable throwable) {
@@ -104,7 +102,7 @@ public class ImportRepositoryPopUpPresenter {
                 view.showError(view.getNoProjectsToImportMessage());
                 return false;
             }
-        }).importProject(ou, repositoryUrl, view.getUserName(), view.getPassword());
+        }).getProjects(repositoryUrl, view.getUserName(), view.getPassword());
     }
 
     public void cancel() {
