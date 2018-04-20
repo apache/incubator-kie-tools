@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.drools.workbench.services.verifier.webworker.client.testutil.ExtendedGuidedDecisionTableBuilder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.soup.project.datamodel.imports.Import;
@@ -30,6 +31,8 @@ import org.slf4j.LoggerFactory;
 
 import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.assertContains;
 
+@Ignore("https://issues.jboss.org/browse/DROOLS-2485 - randomly failing test. " +
+        "Also it's performance test (runs 110-180s on jenkins) - shouldn't run as part of daily builds")
 @RunWith(GwtMockitoTestRunner.class)
 public class SpeedTest extends AnalyzerUpdateTestBase {
 
