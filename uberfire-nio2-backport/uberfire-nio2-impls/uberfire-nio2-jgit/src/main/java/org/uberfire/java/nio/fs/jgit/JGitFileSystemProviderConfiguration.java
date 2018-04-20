@@ -17,7 +17,6 @@ package org.uberfire.java.nio.fs.jgit;
 
 import java.io.File;
 
-import org.eclipse.jgit.api.ListBranchCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.config.ConfigProperties;
@@ -29,6 +28,8 @@ public class JGitFileSystemProviderConfiguration {
     private static final Logger LOG = LoggerFactory.getLogger(JGitFileSystemProviderConfiguration.class);
 
     public static final String GIT_ENV_KEY_DEFAULT_REMOTE_NAME = DEFAULT_REMOTE_NAME;
+    public static final String GIT_ENV_KEY_BRANCH_LIST = "branches";
+    public static final String GIT_ENV_KEY_SUBDIRECTORY = "subdirectory";
 
     public static final String GIT_DAEMON_ENABLED = "org.uberfire.nio.git.daemon.enabled";
     public static final String GIT_SSH_ENABLED = "org.uberfire.nio.git.ssh.enabled";

@@ -140,7 +140,7 @@ public class Clone {
         }
     }
 
-    public class CloneException extends RuntimeException {
+    public static class CloneException extends RuntimeException {
 
         public CloneException(final String message) {
             super(message);

@@ -80,7 +80,7 @@ public class GitRepositoryBuilder {
 
     private void setPublicURIs(final FileSystem fileSystem) {
         final String[] uris = fileSystem.toString().split("\\r?\\n");
-        final List<PublicURI> publicURIs = new ArrayList<PublicURI>(uris.length);
+        final List<PublicURI> publicURIs = new ArrayList<>(uris.length);
 
         for (final String s : uris) {
             final int protocolStart = s.indexOf("://");
@@ -134,8 +134,7 @@ public class GitRepositoryBuilder {
                 fs = newFileSystem(uri);
             }
         } catch (final Throwable ex) {
-            throw new RuntimeException(ex.getCause().getMessage(),
-                                       ex);
+            throw new RuntimeException(ex);
         }
         return fs;
     }

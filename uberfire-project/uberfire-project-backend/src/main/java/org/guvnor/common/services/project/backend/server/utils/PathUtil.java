@@ -1,0 +1,54 @@
+/*
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.guvnor.common.services.project.backend.server.utils;
+
+import java.io.File;
+
+import javax.enterprise.context.Dependent;
+
+import org.uberfire.backend.server.util.Paths;
+import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
+
+/**
+ * Contains methods that directly invoke {@link Paths} or involve implementation specific details
+ * on paths that are difficult to mock in unit tests.
+ */
+@Dependent
+public class PathUtil {
+
+    public org.uberfire.backend.vfs.Path normalizePath(org.uberfire.backend.vfs.Path path) {
+        return Paths.normalizePath(path);
+    }
+
+    public org.uberfire.java.nio.file.Path convert(org.uberfire.backend.vfs.Path path) {
+        return Paths.convert(path);
+    }
+
+    /**
+     * @param path A path for a JGit file system. Must not be null.
+     * @return The file path for an niogit directory that contains the given path's filesystem.
+     */
+    public String getNiogitRepoPath(org.uberfire.java.nio.file.Path path) {
+        try {
+            final JGitPathImpl gPath = (JGitPathImpl) path;
+            final File directory = gPath.getFileSystem().getGit().getRepository().getDirectory();
+            return directory.toURI().toString();
+        } catch (ClassCastException cce) {
+            throw new IllegalArgumentException("Cannot get .niogit directory for non-jgit path.", cce);
+        }
+    }
+
+}

@@ -272,7 +272,7 @@ public class GitImpl implements Git {
 
     @Override
     public void cherryPick(final String targetBranch,
-                           final String[] commitsIDs) {
+                           final String... commitsIDs) {
         new CherryPick(this,
                        targetBranch,
                        commitsIDs).execute();

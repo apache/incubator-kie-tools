@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -30,6 +30,10 @@ public class EnvironmentParameters {
     public static final String MANAGED = "managed";
 
     public static final String ORIGIN = "origin";
+
+    public static final String BRANCHES = "branches";
+
+    public static final String SUBDIRECTORY = "subdirectory";
 
     public static final String USER_NAME = "username";
 

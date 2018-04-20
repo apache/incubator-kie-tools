@@ -41,6 +41,7 @@ import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 import org.uberfire.java.nio.fs.jgit.util.commands.Clone;
 import org.uberfire.java.nio.fs.jgit.util.commands.CreateRepository;
 import org.uberfire.java.nio.fs.jgit.util.commands.Fork;
+import org.uberfire.java.nio.fs.jgit.util.commands.SubdirectoryClone;
 import org.uberfire.java.nio.fs.jgit.util.model.CommitContent;
 import org.uberfire.java.nio.fs.jgit.util.model.CommitInfo;
 import org.uberfire.java.nio.fs.jgit.util.model.PathInfo;
@@ -89,6 +90,15 @@ public interface Git {
                          isMirror,
                          credential,
                          leaders).execute().get();
+    }
+
+    static Git cloneSubdirectory(File repoDest, String origin, String subdirectory, List<String> branches, CredentialsProvider credential, KetchLeaderCache leaders) {
+        return new SubdirectoryClone(repoDest,
+                                     origin,
+                                     subdirectory,
+                                     branches,
+                                     credential,
+                                     leaders).execute();
     }
 
     void convertRefTree();

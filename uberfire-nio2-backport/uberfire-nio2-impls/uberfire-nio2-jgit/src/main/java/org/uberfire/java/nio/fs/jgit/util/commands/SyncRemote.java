@@ -56,29 +56,42 @@ public class SyncRemote {
             }
 
             for (final String localBranch : localBranches) {
+                if (localBranch.equals("HEAD")) {
+                    continue;
+                }
                 if (remoteBranches.contains(localBranch)) {
-                    git._branchCreate()
-                            .setName(localBranch)
-                            .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.SET_UPSTREAM)
-                            .setStartPoint(remote.getK1() + "/" + localBranch)
-                            .setForce(true)
-                            .call();
+                    try {
+                        git._branchCreate()
+                        .setName(localBranch)
+                        .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.SET_UPSTREAM)
+                        .setStartPoint(remote.getK1() + "/" + localBranch)
+                        .setForce(true)
+                        .call();
+                    } catch (Throwable t) {
+                        throw new RuntimeException("Error creating branch [" + localBranch + "].");
+                    }
                 }
             }
 
             remoteBranches.removeAll(localBranches);
 
             for (final String branch : remoteBranches) {
-                git._branchCreate()
-                        .setName(branch)
-                        .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.SET_UPSTREAM)
-                        .setStartPoint(remote.getK1() + "/" + branch)
-                        .setForce(true)
-                        .call();
+                try {
+                    git._branchCreate()
+                    .setName(branch)
+                    .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.SET_UPSTREAM)
+                    .setStartPoint(remote.getK1() + "/" + branch)
+                    .setForce(true)
+                    .call();
+                } catch (Throwable t) {
+                    throw new RuntimeException("Error creating branch [" + branch + "].");
+                }
             }
             return null;
         } catch (final InvalidRemoteException e) {
             throw e;
+        } catch (final RuntimeException re) {
+            throw re;
         } catch (final Exception ex) {
             throw new RuntimeException(ex);
         }

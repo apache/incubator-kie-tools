@@ -14,125 +14,207 @@
 */
 package org.guvnor.common.services.project.backend.server;
 
-import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.inject.Named;
 
+import org.guvnor.common.services.project.backend.server.utils.PathUtil;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.project.WorkspaceProjectMigrationService;
 import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryCopier;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
-import org.uberfire.backend.server.util.Paths;
-import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 
+import static java.util.stream.Collectors.toList;
+
 public class WorkspaceProjectMigrationServiceImpl
-        implements WorkspaceProjectMigrationService {
+                                                  implements WorkspaceProjectMigrationService {
 
     private WorkspaceProjectService workspaceProjectService;
     private RepositoryService repositoryService;
     private Event<NewProjectEvent> newProjectEvent;
-    private RepositoryCopier repositoryCopier;
     private ModuleService<? extends Module> moduleService;
-    private IOService ioService;
+    private PathUtil pathUtil;
 
-    public WorkspaceProjectMigrationServiceImpl() {
-    }
+    public WorkspaceProjectMigrationServiceImpl() {}
 
     @Inject
     public WorkspaceProjectMigrationServiceImpl(final WorkspaceProjectService workspaceProjectService,
                                                 final RepositoryService repositoryService,
-                                                final OrganizationalUnitService organizationalUnitService, // TODO remove unused
+                                                final OrganizationalUnitService organizationalUnitService,
+                                                final PathUtil pathUtil,
                                                 final Event<NewProjectEvent> newProjectEvent,
-                                                final RepositoryCopier repositoryCopier,
-                                                final ModuleService<? extends Module> moduleService,
-                                                final @Named("ioStrategy") IOService ioService) {
+                                                final ModuleService<? extends Module> moduleService) {
         this.workspaceProjectService = workspaceProjectService;
         this.repositoryService = repositoryService;
+        this.pathUtil = pathUtil;
         this.newProjectEvent = newProjectEvent;
-        this.repositoryCopier = repositoryCopier;
         this.moduleService = moduleService;
-        this.ioService = ioService;
     }
 
     @Override
     public void migrate(final WorkspaceProject legacyWorkspaceProject) {
-        new Migrator(legacyWorkspaceProject).migrate();
+        Collection<Repository> newRepositories = copyModulesToRepositories(legacyWorkspaceProject);
+        fireNewProjectEvents(newRepositories);
     }
 
-    private class Migrator {
+    private void fireNewProjectEvents(Collection<Repository> newRepositories) {
+        for (final Repository repository : newRepositories) {
+            final WorkspaceProject newWorkspaceProject = workspaceProjectService.resolveProject(repository);
+            newProjectEvent.fire(new NewProjectEvent(newWorkspaceProject));
+        }
+    }
 
-        private final WorkspaceProject legacyWorkspaceProject;
-        private final Map<String, Repository> newRepositories = new HashMap<>();
+    private Collection<Repository> copyModulesToRepositories(WorkspaceProject legacyWorkspaceProject) {
 
-        public Migrator(final WorkspaceProject legacyWorkspaceProject) {
-            this.legacyWorkspaceProject = legacyWorkspaceProject;
+        final OrganizationalUnit ou = legacyWorkspaceProject.getOrganizationalUnit();
+        final Repository legacyRepository = legacyWorkspaceProject.getRepository();
+        // Partition modules by root path (ignoring branch) and space.
+        final Map<Partition, List<Module>> modulesByDirectory = getModulesByRootDirAndSpace(ou, legacyRepository);
+
+        return modulesByDirectory.entrySet()
+                                 .stream()
+                                 .map(entry -> createSubdirectoryCloneRepository(ou, legacyRepository, entry))
+                                 .collect(toList());
+    }
+
+    private Repository createSubdirectoryCloneRepository(final OrganizationalUnit ou, final Repository legacyRepository, Entry<Partition, List<Module>> entry) {
+        final Partition partition = entry.getKey();
+         final List<Module> modules = entry.getValue();
+         final String alias = modules.stream()
+                                     .map(module -> module.getModuleName())
+                                     .findFirst()
+                                     .orElse("migratedproject");
+         final RepositoryEnvironmentConfigurations configurations = subdirectoryCloneConfiguration(legacyRepository,
+                                                                                                   partition,
+                                                                                                   modules);
+
+         return repositoryService.createRepository(ou, GitRepository.SCHEME.toString(), alias, configurations);
+    }
+
+    private RepositoryEnvironmentConfigurations subdirectoryCloneConfiguration(final Repository legacyRepository, final Partition root, final List<Module> modules) {
+        final RepositoryEnvironmentConfigurations configurations = new RepositoryEnvironmentConfigurations();
+         configurations.setInit(false);
+         configurations.setOrigin(getNiogitRepoPath(legacyRepository));
+         final String rootWithoutRepoAndSpace = root.branchlessPath.replaceFirst("^[^/]+/[^/]+/", "");
+         configurations.setSubdirectory(rootWithoutRepoAndSpace);
+         configurations.setMirror(false);
+         final List<String> branches = existingBranchesOf(modules);
+        configurations.setBranches(branches);
+
+        return configurations;
+    }
+
+    /**
+     * @return Branches where all given modules exist.
+     */
+    private List<String> existingBranchesOf(final List<Module> modules) {
+        final List<String> branches =
+                 modules.stream()
+                        .flatMap(module -> {
+                            Optional<String> oBranch = getBranchName(pathUtil.convert(module.getRootPath()));
+                            if (oBranch.isPresent()) {
+                                return Stream.of(oBranch.get());
+                            } else {
+                                return Stream.empty();
+                            }
+                        })
+                        .collect(toList());
+        return branches;
+    }
+
+    private Map<Partition, List<Module>> getModulesByRootDirAndSpace(final OrganizationalUnit ou, final Repository legacyRepository) {
+        final Map<Partition, List<Module>> modulesByDirectory = new HashMap<>();
+        legacyRepository.getBranches()
+                        .stream()
+                        .flatMap(branch -> moduleService.getAllModules(branch).stream())
+                        .forEach(module -> {
+                            final String fullURI = pathUtil.normalizePath(module.getRootPath()).toURI();
+                            final String branchlessPath = fullURI.replaceFirst("^[A-Za-z]+://([^@]+@)?", "");
+                            final Partition partition = new Partition(branchlessPath, ou);
+                            final List<Module> modules = modulesByDirectory.computeIfAbsent(partition,
+                                                                                            ignore -> new ArrayList<>());
+                            modules.add(module);
+                        });
+        return modulesByDirectory;
+    }
+
+    private static Optional<String> getBranchName(Path path) {
+        final String uri = path.toUri().toString();
+        final Matcher matcher = Pattern.compile("^[A-Za-z]+://([^@]+)@.*").matcher(uri);
+
+        if (matcher.matches()) {
+            return Optional.ofNullable(matcher.group(1));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    private String getNiogitRepoPath(Repository repository) {
+        final Branch branch = repository.getDefaultBranch().get();
+        final Path path = pathUtil.convert(branch.getPath());
+        return pathUtil.getNiogitRepoPath(path);
+    }
+
+    private static class Partition {
+
+        final String branchlessPath;
+        final OrganizationalUnit ou;
+
+        Partition(String branchlessPath, OrganizationalUnit ou) {
+            this.branchlessPath = branchlessPath;
+            this.ou = ou;
         }
 
-        public void migrate() {
-
-            copyModulesToRepositories();
-            fireNewProjectEvents();
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((branchlessPath == null) ? 0 : branchlessPath.hashCode());
+            result = prime * result + ((ou == null) ? 0 : ou.hashCode());
+            return result;
         }
 
-        private void fireNewProjectEvents() {
-            for (final Repository repository : newRepositories.values()) {
-                final WorkspaceProject newWorkspaceProject = workspaceProjectService.resolveProject(repository);
-                newProjectEvent.fire(new NewProjectEvent(newWorkspaceProject));
-            }
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Partition other = (Partition) obj;
+            if (branchlessPath == null) {
+                if (other.branchlessPath != null)
+                    return false;
+            } else if (!branchlessPath.equals(other.branchlessPath))
+                return false;
+            if (ou == null) {
+                if (other.ou != null)
+                    return false;
+            } else if (!ou.equals(other.ou))
+                return false;
+            return true;
         }
 
-        private void copyModulesToRepositories() {
-
-            for (final Branch branch : legacyWorkspaceProject.getRepository().getBranches()) {
-
-                for (final Module module : moduleService.getAllModules(branch)) {
-
-                    if (!newRepositories.containsKey(module.getModuleName())) {
-                        createRepository(module);
-                    }
-
-                    copyFromLegacyRepositoryToTheNew(branch,
-                                                     module);
-                }
-            }
-        }
-
-        private void copyFromLegacyRepositoryToTheNew(final Branch branch,
-                                                      final Module module) {
-            final Repository targetRepository = newRepositories.get(module.getModuleName());
-
-            final URI uri = URI.create( targetRepository.getScheme().toString() +"://" + branch.getName() + "@" + targetRepository.getSpace() + "/" + targetRepository.getAlias());
-            final Path targetBranchRoot = ioService.get(uri);
-
-            repositoryCopier.copy(targetRepository.getSpace(),
-                                  module.getRootPath(),
-                                  Paths.convert(targetBranchRoot));
-        }
-
-        private void createRepository(final Module module) {
-            final RepositoryEnvironmentConfigurations configurations = new RepositoryEnvironmentConfigurations();
-            configurations.setSpace(legacyWorkspaceProject.getOrganizationalUnit().getSpace().getName());
-            final Repository repository = repositoryService.createRepository(legacyWorkspaceProject.getOrganizationalUnit(),
-                                                                             GitRepository.SCHEME.toString(),
-                                                                             repositoryCopier.makeSafeRepositoryName(module.getModuleName()),
-                                                                             configurations);
-
-            newRepositories.put(module.getModuleName(),
-                                repository);
-        }
     }
 }

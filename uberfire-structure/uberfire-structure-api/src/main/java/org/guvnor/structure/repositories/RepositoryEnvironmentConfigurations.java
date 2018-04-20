@@ -23,11 +23,14 @@ import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
+import static org.guvnor.structure.repositories.EnvironmentParameters.BRANCHES;
 import static org.guvnor.structure.repositories.EnvironmentParameters.INIT;
 import static org.guvnor.structure.repositories.EnvironmentParameters.MANAGED;
+import static org.guvnor.structure.repositories.EnvironmentParameters.MIRROR;
 import static org.guvnor.structure.repositories.EnvironmentParameters.ORIGIN;
 import static org.guvnor.structure.repositories.EnvironmentParameters.PASSWORD;
 import static org.guvnor.structure.repositories.EnvironmentParameters.SPACE;
+import static org.guvnor.structure.repositories.EnvironmentParameters.SUBDIRECTORY;
 import static org.guvnor.structure.repositories.EnvironmentParameters.USER_NAME;
 
 @Portable
@@ -85,6 +88,10 @@ public class RepositoryEnvironmentConfigurations {
                              init);
     }
 
+    public Object getInit() {
+        return configurationMap.get(INIT);
+    }
+
     public Object getUserName() {
         return configurationMap.get(USER_NAME);
     }
@@ -95,5 +102,29 @@ public class RepositoryEnvironmentConfigurations {
 
     public Object getOrigin() {
         return configurationMap.get(ORIGIN);
+    }
+
+    public void setSubdirectory(String rootWithoutSpace) {
+        configurationMap.put(SUBDIRECTORY, rootWithoutSpace);
+    }
+
+    public Object getSubdirectory() {
+        return configurationMap.get(SUBDIRECTORY);
+    }
+
+    public void setBranches(List<String> branches) {
+        configurationMap.put(BRANCHES, branches);
+    }
+
+    public Object getBranches() {
+        return configurationMap.get(BRANCHES);
+    }
+
+    public void setMirror(boolean mirror) {
+        configurationMap.put(MIRROR, mirror);
+    }
+
+    public Object getMirror() {
+        return configurationMap.get(MIRROR);
     }
 }

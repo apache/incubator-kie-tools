@@ -16,9 +16,13 @@ package org.guvnor.common.services.project.backend.server;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
+import org.guvnor.common.services.project.backend.server.utils.PathUtil;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.WorkspaceProject;
@@ -28,7 +32,6 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryCopier;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
@@ -49,16 +52,33 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.spaces.Space;
 import org.uberfire.spaces.SpacesAPI;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorkspaceProjectMigrationServiceImplTest {
 
+    private static final String NIOGIT_PATH = "/home/someone/somehwere/.niogit";
+
+    private static final String SPACE = "testspace";
+
+    private static final String REPO = "testrepo";
+
     private WorkspaceProjectMigrationServiceImpl service;
 
     @Mock
-    private ModuleService moduleService;
+    private ModuleService<?> moduleService;
 
     @Mock
     private RepositoryService repositoryService;
@@ -68,9 +88,6 @@ public class WorkspaceProjectMigrationServiceImplTest {
 
     @Mock
     private IOService ioService;
-
-    @Mock
-    private RepositoryCopier repositoryCopier;
 
     @Mock
     private Path legacyMasterBranchProject1RootPath;
@@ -88,6 +105,9 @@ public class WorkspaceProjectMigrationServiceImplTest {
     private OrganizationalUnit organizationalUnit;
 
     @Mock
+    private PathUtil pathUtil;
+
+    @Mock
     private WorkspaceProjectService workspaceProjectService;
 
     @Mock
@@ -98,6 +118,9 @@ public class WorkspaceProjectMigrationServiceImplTest {
 
     @Captor
     private ArgumentCaptor<NewProjectEvent> newProjectEventArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<RepositoryEnvironmentConfigurations> configsCaptor;
 
     private Branch legacyMasterBranch;
     private Branch legacyDevBranch;
@@ -115,23 +138,30 @@ public class WorkspaceProjectMigrationServiceImplTest {
             }
         }).when(ioService).get(any(URI.class));
 
+        when(pathUtil.normalizePath(any())).then(inv -> inv.getArgumentAt(0, Path.class));
+        when(pathUtil.convert(any())).then(inv -> {
+            final Path path = inv.getArgumentAt(0, Path.class);
+
+            final org.uberfire.java.nio.file.Path retVal = mock(org.uberfire.java.nio.file.Path.class);
+            when(retVal.toUri()).then(inv1 -> URI.create(path.toURI()));
+
+            return retVal;
+        });
+        when(pathUtil.getNiogitRepoPath(any())).thenReturn(NIOGIT_PATH);
+
         service = new WorkspaceProjectMigrationServiceImpl(workspaceProjectService,
                                                            repositoryService,
                                                            organizationalUnitService,
+                                                           pathUtil,
                                                            newProjectEvent,
-                                                           repositoryCopier,
-                                                           moduleService,
-                                                           ioService);
-
-        when(repositoryCopier.makeSafeRepositoryName(anyString())).thenAnswer(new Answer<String>() {
-            @Override
-            public String answer(InvocationOnMock invocationOnMock) throws Throwable {
-                return (String) invocationOnMock.getArguments()[0];
-            }
-        });
+                                                           moduleService);
 
         legacyMasterBranch = mockBranch("legacyMasterBranch");
         legacyDevBranch = mockBranch("legacyDevBranch");
+
+        when(legacyDevBranchProject1RootPath.toURI()).thenReturn(uri("legacyDevBranch", "legacyProject1"));
+        when(legacyDevBranchProject2RootPath.toURI()).thenReturn(uri("legacyDevBranch", "legacyProject2"));
+        when(legacyMasterBranchProject1RootPath.toURI()).thenReturn(uri("legacyMasterBranch", "legacyProject1"));
 
         final Repository legacyRepository = mockLegacyRepository();
 
@@ -149,35 +179,44 @@ public class WorkspaceProjectMigrationServiceImplTest {
         service.migrate(legacyWorkspaceProject);
     }
 
+    private String uri(final String branch, final String repo) {
+        return "git://" + branch + "@" + SPACE + "/" + REPO + "/" + repo;
+    }
+
     @Test
     public void createOnlyTwoRepositories() throws Exception {
 
         verify(repositoryService,
                times(2)).createRepository(any(OrganizationalUnit.class),
+                                          eq(GitRepository.SCHEME.toString()),
                                           anyString(),
-                                          anyString(),
-                                          any(RepositoryEnvironmentConfigurations.class));
-    }
+                                          configsCaptor.capture());
+        final List<RepositoryEnvironmentConfigurations> allValues = configsCaptor.getAllValues();
+        final Set<String> observedSubdirectories = new HashSet<>();
+        allValues.forEach(configs -> {
+            assertEquals(NIOGIT_PATH, assertInstanceOf(configs.getOrigin(), String.class));
+            assertFalse(assertInstanceOf(configs.getInit(), Boolean.class));
+            assertFalse(assertInstanceOf(configs.getMirror(), Boolean.class));
 
-    @Test
-    public void copy() throws Exception {
+            final String subdirectory = assertInstanceOf(configs.getSubdirectory(), String.class);
+            observedSubdirectories.add(subdirectory);
 
-        verify(repositoryCopier).copy(eq(space),
-                                      eq(legacyMasterBranchProject1RootPath),
-                                      pathArgumentCaptor.capture());
-        verify(repositoryCopier).copy(eq(space),
-                                      eq(legacyDevBranchProject1RootPath),
-                                      pathArgumentCaptor.capture());
-        verify(repositoryCopier).copy(eq(space),
-                                      eq(legacyDevBranchProject2RootPath),
-                                      pathArgumentCaptor.capture());
+            @SuppressWarnings("unchecked")
+            final List<String> branches = assertInstanceOf(configs.getBranches(), List.class);
+            final List<String> expectedBranches;
+            if (subdirectory.equals("legacyProject1")) {
+                expectedBranches = Arrays.asList("legacyMasterBranch", "legacyDevBranch");
+            } else if (subdirectory.equals("legacyProject2")) {
+                expectedBranches = Arrays.asList("legacyDevBranch");
+            } else {
+                throw new AssertionError("Unrecognized subdirectory: " + subdirectory);
+            }
 
-        final List<Path> allValues = pathArgumentCaptor.getAllValues();
+            assertEquals("Unexpected branches for subdirectory " + subdirectory, new HashSet<>(expectedBranches), new HashSet<>(branches));
+        });
 
-        assertEquals(3, allValues.size());
-        assertNotNull(allValues.get(0));
-        assertNotNull(allValues.get(1));
-        assertNotNull(allValues.get(2));
+        assertEquals(new HashSet<>(Arrays.asList("legacyProject1", "legacyProject2")), observedSubdirectories);
+
     }
 
     @Test
@@ -191,13 +230,21 @@ public class WorkspaceProjectMigrationServiceImplTest {
         assertNotNull(allValues.get(1).getWorkspaceProject());
     }
 
+    private <T> T assertInstanceOf(Object value, Class<T> clazz) {
+        assertTrue(clazz.isInstance(value));
+
+        return clazz.cast(value);
+    }
+
     private void setUpDevBranch() {
         final HashSet<Module> devBranchModules = new HashSet<>();
 
-        devBranchModules.add(mockModule("legacyProject1",
-                                        legacyDevBranchProject1RootPath));
-        devBranchModules.add(mockModule("legacyProject2",
-                                        legacyDevBranchProject2RootPath));
+        final Module mockModule = mockModule("legacyProject1",
+                                             legacyDevBranchProject1RootPath);
+        devBranchModules.add(mockModule);
+        final Module mockModule2 = mockModule("legacyProject2",
+                                              legacyDevBranchProject2RootPath);
+        devBranchModules.add(mockModule2);
 
         doReturn(devBranchModules).when(moduleService).getAllModules(legacyDevBranch);
     }
@@ -205,10 +252,13 @@ public class WorkspaceProjectMigrationServiceImplTest {
     private void setUpMasterBranch() {
         final HashSet<Module> masterBranchModules = new HashSet<>();
 
-        masterBranchModules.add(mockModule("legacyProject1",
-                                           legacyMasterBranchProject1RootPath));
+        final Module mockModule = mockModule("legacyProject1",
+                                             legacyMasterBranchProject1RootPath);
+        masterBranchModules.add(mockModule);
 
         doReturn(masterBranchModules).when(moduleService).getAllModules(legacyMasterBranch);
+        final Path masterRoot = mock(Path.class);
+        when(legacyMasterBranch.getPath()).thenReturn(masterRoot);
     }
 
     private Branch mockBranch(final String branchName) {
@@ -227,6 +277,8 @@ public class WorkspaceProjectMigrationServiceImplTest {
         final ArrayList<OrganizationalUnit> ous = new ArrayList<>();
         ous.add(organizationalUnit);
         doReturn(ous).when(organizationalUnitService).getOrganizationalUnits(legacyRepository);
+
+        when(legacyRepository.getDefaultBranch()).thenReturn(Optional.of(legacyMasterBranch));
 
         return legacyRepository;
     }
@@ -250,8 +302,8 @@ public class WorkspaceProjectMigrationServiceImplTest {
     private Module mockModule(final String myOldProject,
                               final Path myOldProjectRootPath) {
         final Module module = mock(Module.class);
-        doReturn(myOldProject).when(module).getModuleName();
-        doReturn(myOldProjectRootPath).when(module).getRootPath();
+        when(module.getModuleName()).thenReturn(myOldProject);
+        when(module.getRootPath()).thenReturn(myOldProjectRootPath);
         return module;
     }
 }

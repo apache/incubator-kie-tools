@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -29,18 +29,14 @@ import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
-import org.guvnor.structure.server.config.PasswordService;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.guvnor.structure.server.repositories.RepositoryFactoryHelper;
 
 import static org.guvnor.structure.backend.repositories.SystemRepository.SYSTEM_REPO;
-import static org.kie.soup.commons.validation.Preconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @ApplicationScoped
 public class RepositoryFactoryImpl implements RepositoryFactory {
-
-    @Inject
-    private PasswordService secureService;
 
     @Inject
     @Any

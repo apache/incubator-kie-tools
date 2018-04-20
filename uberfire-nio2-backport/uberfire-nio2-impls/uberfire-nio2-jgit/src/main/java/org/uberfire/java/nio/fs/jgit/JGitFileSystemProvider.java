@@ -162,11 +162,13 @@ import static org.uberfire.java.nio.base.dotfiles.DotFileUtils.dot;
 import static org.uberfire.java.nio.file.StandardOpenOption.READ;
 import static org.uberfire.java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.DEFAULT_SCHEME_SIZE;
+import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_BRANCH_LIST;
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_DEFAULT_REMOTE_NAME;
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_DEST_PATH;
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_INIT;
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_MIRROR;
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_PASSWORD;
+import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_SUBDIRECTORY;
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_USER_NAME;
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.SCHEME;
 import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.SCHEME_SIZE;
@@ -657,6 +659,8 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         if (syncWithRemote(env,
                            repoDest)) {
             final String origin = env.get(GIT_ENV_KEY_DEFAULT_REMOTE_NAME).toString();
+            final List<String> branches = (List<String>) env.get(GIT_ENV_KEY_BRANCH_LIST);
+            final String subdirectory = (String) env.get(GIT_ENV_KEY_SUBDIRECTORY);
             try {
                 if (this.isForkOrigin(origin)) {
                     git = Git.fork(this.getGitRepoContainerDir(),
@@ -664,6 +668,16 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                                    fsName,
                                    credential,
                                    config.isEnableKetch() ? leaders : null);
+                } else if (subdirectory != null) {
+                    if (isMirror) {
+                        throw new UnsupportedOperationException("Cannot make mirror repository when cloning subdirectory.");
+                    }
+                    git = Git.cloneSubdirectory(repoDest,
+                                                origin,
+                                                subdirectory,
+                                                branches,
+                                                credential,
+                                                leaders);
                 } else {
                     git = Git.clone(repoDest,
                                     origin,
@@ -1594,7 +1608,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
     private void copyDirectory(final JGitPathImpl source,
                                final JGitPathImpl target,
                                final CopyOption... options) {
-        final List<JGitPathImpl> directories = new ArrayList<JGitPathImpl>();
+        final List<JGitPathImpl> directories = new ArrayList<>();
         for (final Path path : newDirectoryStream(source,
                                                   null)) {
             final JGitPathImpl gPath = toPathImpl(path);
@@ -1682,7 +1696,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         if (options == null || options.length == 0) {
             return new OpenOption[0];
         }
-        final List<OpenOption> newOptions = new ArrayList<OpenOption>(options.length);
+        final List<OpenOption> newOptions = new ArrayList<>(options.length);
         for (final CopyOption option : options) {
             if (option instanceof OpenOption) {
                 newOptions.add((OpenOption) option);
@@ -1801,7 +1815,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                  options);
             delete(source);
         } else {
-            final Map<JGitPathImpl, JGitPathImpl> fromTo = new HashMap<JGitPathImpl, JGitPathImpl>();
+            final Map<JGitPathImpl, JGitPathImpl> fromTo = new HashMap<>();
             if (sourceResult.getPathType() == DIRECTORY) {
                 fromTo.putAll(mapDirectoryContent(source,
                                                   target,
@@ -1821,7 +1835,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
     private Map<JGitPathImpl, JGitPathImpl> mapDirectoryContent(final JGitPathImpl source,
                                                                 final JGitPathImpl target,
                                                                 final CopyOption... options) {
-        final Map<JGitPathImpl, JGitPathImpl> fromTo = new HashMap<JGitPathImpl, JGitPathImpl>();
+        final Map<JGitPathImpl, JGitPathImpl> fromTo = new HashMap<>();
         for (final Path path : newDirectoryStream(source,
                                                   null)) {
             final JGitPathImpl gPath = toPathImpl(path);
@@ -1846,7 +1860,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                            final JGitPathImpl target,
                            final Map<JGitPathImpl, JGitPathImpl> fromTo,
                            final CopyOption... options) {
-        final Map<String, String> result = new HashMap<String, String>(fromTo.size());
+        final Map<String, String> result = new HashMap<>(fromTo.size());
         for (final Map.Entry<JGitPathImpl, JGitPathImpl> fromToEntry : fromTo.entrySet()) {
             result.put(PathUtil.normalize(fromToEntry.getKey().getPath()),
                        PathUtil.normalize(fromToEntry.getValue().getPath()));
@@ -1861,7 +1875,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                            final JGitPathImpl target,
                            final Map<JGitPathImpl, JGitPathImpl> sourceDest,
                            final CopyOption... options) {
-        final Map<String, String> result = new HashMap<String, String>(sourceDest.size());
+        final Map<String, String> result = new HashMap<>(sourceDest.size());
         for (final Map.Entry<JGitPathImpl, JGitPathImpl> sourceDestEntry : sourceDest.entrySet()) {
             result.put(PathUtil.normalize(sourceDestEntry.getKey().getPath()),
                        PathUtil.normalize(sourceDestEntry.getValue().getPath()));
