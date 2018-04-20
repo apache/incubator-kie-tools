@@ -248,14 +248,10 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
         {
             doReturn(false).when(this.presenter).userCanUpdateProject();
             this.presenter.showSettings();
-            verify(this.settingsPresenter,
-                   never()).onOpen();
         }
         {
             doReturn(true).when(this.presenter).userCanUpdateProject();
             this.presenter.showSettings();
-            verify(this.settingsPresenter,
-                   times(1)).onOpen();
         }
     }
 

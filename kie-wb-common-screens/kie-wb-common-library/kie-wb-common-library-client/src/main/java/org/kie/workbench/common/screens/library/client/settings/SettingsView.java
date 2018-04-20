@@ -17,10 +17,8 @@
 package org.kie.workbench.common.screens.library.client.settings;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import com.google.gwt.event.dom.client.ClickEvent;
-import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
@@ -78,12 +76,6 @@ public class SettingsView implements SettingsPresenter.View,
     }
 
     @Override
-    public void setSection(final Section section) {
-        elemental2DomUtil.removeAllElementChildren(content);
-        content.appendChild(section.getElement());
-    }
-
-    @Override
     public HTMLElement getMenuItemsContainer() {
         return menuItemsContainer;
     }
@@ -109,6 +101,11 @@ public class SettingsView implements SettingsPresenter.View,
     }
 
     @Override
+    public HTMLElement getContentContainer() {
+        return content;
+    }
+
+    @Override
     public void show() {
         getElement().classList.remove("settings-hidden");
     }
@@ -126,49 +123,5 @@ public class SettingsView implements SettingsPresenter.View,
     @Override
     public void hideBusyIndicator() {
         BusyPopup.close();
-    }
-
-    @Templated("SettingsView.html#section-menu-item")
-    public static class MenuItem implements SettingsPresenter.MenuItem.View {
-
-        @Inject
-        @Named("sup")
-        private HTMLElement dirtyIndicator;
-
-        @Inject
-        @DataField("section-menu-item-link")
-        private HTMLAnchorElement sectionMenuItemLink;
-
-        private SettingsPresenter.MenuItem presenter;
-
-        @Override
-        public void init(final SettingsPresenter.MenuItem presenter) {
-            this.presenter = presenter;
-        }
-
-        @EventHandler("section-menu-item-link")
-        public void onSectionMenuItemLinkClicked(final ClickEvent ignore) {
-            presenter.showSection();
-        }
-
-        @Override
-        public void setLabel(final String label) {
-            sectionMenuItemLink.textContent = label;
-        }
-
-        @Override
-        public void markAsDirty(final boolean dirty) {
-            if (dirty && sectionMenuItemLink.childElementCount == 0) {
-                sectionMenuItemLink.appendChild(newDirtyIndicator());
-            } else if (!dirty && sectionMenuItemLink.childElementCount > 0) {
-                sectionMenuItemLink.removeChild(sectionMenuItemLink.lastElementChild);
-            }
-        }
-
-        private HTMLElement newDirtyIndicator() {
-            final HTMLElement dirtyIndicator = (HTMLElement) this.dirtyIndicator.cloneNode(false);
-            dirtyIndicator.textContent = " *";
-            return dirtyIndicator;
-        }
     }
 }

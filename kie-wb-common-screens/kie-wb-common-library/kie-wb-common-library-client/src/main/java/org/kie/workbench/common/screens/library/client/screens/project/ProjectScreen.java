@@ -265,7 +265,6 @@ public class ProjectScreen {
 
     public void showSettings() {
         if (userCanUpdateProject()) {
-            this.settingsPresenter.onOpen();
             SettingsPresenter.View settingsView = this.settingsPresenter.getView();
             this.view.setContent(settingsView.getElement());
         }
