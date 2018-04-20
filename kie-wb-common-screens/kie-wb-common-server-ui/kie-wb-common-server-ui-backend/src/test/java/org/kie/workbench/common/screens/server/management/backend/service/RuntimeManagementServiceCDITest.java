@@ -179,7 +179,7 @@ public class RuntimeManagementServiceCDITest {
         KieServerTemplateStorage templateStorageMock = createMockStorageWithOneTemplate(serverTemplate);
 
         KieServerInstanceManager instanceMangerMock = mock(KieServerInstanceManager.class);
-        when(instanceMangerMock.getContainers(serverInstanceKey))
+        when(instanceMangerMock.getContainers(serverTemplate, containerSpec))
                 .thenReturn(containersInServerInstance);
 
         // Setup tested object

@@ -45,4 +45,12 @@ public class ContainerSpecData {
     public Collection<Container> getContainers() {
         return containers;
     }
+
+    @Override
+    public String toString() {
+        return "ContainerSpecData{" +
+                "containerSpec=" + containerSpec +
+                ", containers=" + containers +
+                '}';
+    }
 }

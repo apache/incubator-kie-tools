@@ -20,15 +20,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.server.controller.api.model.runtime.Container;
-import org.kie.server.controller.api.model.runtime.ServerInstanceKeyList;
+import org.kie.server.controller.api.model.runtime.ContainerList;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.workbench.common.screens.server.management.model.ContainerSpecData;
@@ -38,15 +36,21 @@ import org.kie.workbench.common.screens.server.management.service.RuntimeManagem
 @ApplicationScoped
 public class RuntimeManagementServiceCDI implements RuntimeManagementService {
 
-    @Inject @Any
+    @Inject
+    @Any
     private org.kie.server.controller.api.service.SpecManagementService specManagementService;
 
-    @Inject @Any
+    @Inject
+    @Any
     private org.kie.server.controller.api.service.RuntimeManagementService service;
 
     @Override
-    public Collection<Container> getContainersByServerInstance(final String serverTemplateId, final String serverInstanceId) {
+    public Collection<Container> getContainersByServerInstance(final String serverTemplateId,
+                                                               final String serverInstanceId) {
         final ServerTemplate serverTemplate = specManagementService.getServerTemplate(serverTemplateId);
+        if (serverTemplate == null) {
+            throw new RuntimeException("Server template with id " + serverTemplateId + " not found");
+        }
         return serverTemplate.getServerInstanceKeys().stream()
                 .filter(serverInstanceKey -> serverInstanceKey.getServerInstanceId().equalsIgnoreCase(serverInstanceId))
                 .findFirst()
@@ -55,22 +59,20 @@ public class RuntimeManagementServiceCDI implements RuntimeManagementService {
     }
 
     @Override
-    public ContainerSpecData getContainersByContainerSpec(final String serverTemplateId, final String containerSpecId) {
+    public ContainerSpecData getContainersByContainerSpec(final String serverTemplateId,
+                                                          final String containerSpecId) {
         final ServerTemplate serverTemplate = specManagementService.getServerTemplate(serverTemplateId);
-
-        final ContainerSpec containerSpec = serverTemplate.getContainerSpec(containerSpecId);
-
-        final ServerInstanceKeyList instances = service.getServerInstances(serverTemplateId);
-        if(instances.getServerInstanceKeys() == null){
-            return null;
+        if (serverTemplate == null) {
+            throw new RuntimeException("Server template with id " + serverTemplateId + " not found");
         }
-
-        final List<Container> containers =  Arrays.stream(instances.getServerInstanceKeys())
-                    .flatMap(serverInstanceKey -> Arrays.asList(service.getContainers(serverInstanceKey).getContainers()).stream())
-                    .filter(container -> containerSpecId.equals(container.getContainerSpecId()))
-                    .collect(Collectors.toList());
-
-        return new ContainerSpecData(containerSpec, containers);
+        final ContainerSpec containerSpec = serverTemplate.getContainerSpec(containerSpecId);
+        if (containerSpec == null) {
+            throw new RuntimeException("Container with id " + containerSpecId + " not found");
+        }
+        final ContainerList containerList = service.getContainers(serverTemplate,
+                                                                  containerSpec);
+        final List<Container> containers = Arrays.asList(containerList.getContainers());
+        return new ContainerSpecData(containerSpec,
+                                     containers);
     }
-
 }
