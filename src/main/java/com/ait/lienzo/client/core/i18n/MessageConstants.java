@@ -87,17 +87,35 @@ public interface MessageConstants extends Constants
     @DefaultStringValue("Height value in pixels.")
     public String heightDescription();
 
+    @DefaultStringValue("Min Width")
+    public String minWidthLabel();
+
+    @DefaultStringValue("Minimum Width value in pixels.")
+    public String minWidthDescription();
+
+    @DefaultStringValue("Max Width")
+    public String maxWidthLabel();
+
+    @DefaultStringValue("Maximum Width value in pixels.")
+    public String maxWidthDescription();
+
+    @DefaultStringValue("Min Height")
+    public String minHeightLabel();
+
+    @DefaultStringValue("Minimum Height value in pixels.")
+    public String minHeightDescription();
+
+    @DefaultStringValue("Max Height")
+    public String maxHeightLabel();
+
+    @DefaultStringValue("Maximum Height value in pixels.")
+    public String maxHeightDescription();
+
     @DefaultStringValue("Corner Radius")
     public String cornerRadiusLabel();
 
     @DefaultStringValue("The radius of a 90 degree arc, which is used as a rounded corner.")
     public String cornerRadiusDescription();
-
-    @DefaultStringValue("Size constraints")
-    public String sizeConstraintsLabel();
-
-    @DefaultStringValue("Min/Max width and Min/Max height constraint values in pixels.")
-    public String sizeConstraintsDescription();
 
     @DefaultStringValue("Fill")
     public String fillLabel();

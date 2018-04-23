@@ -24,7 +24,6 @@ import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
 import com.ait.lienzo.client.core.event.ImmediateAttributesChangedBatcher;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilter.FilterConvolveMatrix;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
-import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.DragBounds.DragBoundsJSO;
@@ -646,19 +645,6 @@ public class Attributes
         put(Attribute.CORNER_RADIUS.getProperty(), cornerRadius);
     }
 
-    public final void setSizeConstraints(final BoundingBox boundingBox)
-    {
-        if (null != boundingBox)
-        {
-            put(Attribute.SIZE_CONSTRAINTS.getProperty(), boundingBox.getJSO());
-        }
-        else
-        {
-            remove(Attribute.SIZE_CONSTRAINTS.getProperty());
-        }
-    }
-
-
     public final void setAlpha(double alpha)
     {
         if (alpha < 0)
@@ -800,6 +786,54 @@ public class Attributes
     public final void setHeight(final double height)
     {
         put(Attribute.HEIGHT.getProperty(), height);
+    }
+
+    public final void setMinWidth(final Double minWidth)
+    {
+        if (null != minWidth)
+        {
+            put(Attribute.MIN_WIDTH.getProperty(), minWidth);
+        }
+        else
+        {
+            remove(Attribute.MIN_WIDTH.getProperty());
+        }
+    }
+
+    public final void setMaxWidth(final Double maxWidth)
+    {
+        if (null != maxWidth)
+        {
+            put(Attribute.MAX_WIDTH.getProperty(), maxWidth);
+        }
+        else
+        {
+            remove(Attribute.MAX_WIDTH.getProperty());
+        }
+    }
+
+    public final void setMinHeight(final Double minHeight)
+    {
+        if (null != minHeight)
+        {
+            put(Attribute.MIN_HEIGHT.getProperty(), minHeight);
+        }
+        else
+        {
+            remove(Attribute.MIN_HEIGHT.getProperty());
+        }
+    }
+
+    public final void setMaxHeight(final Double maxHeight)
+    {
+        if (null != maxHeight)
+        {
+            put(Attribute.MAX_HEIGHT.getProperty(), maxHeight);
+        }
+        else
+        {
+            remove(Attribute.MAX_HEIGHT.getProperty());
+        }
     }
 
     public final void setPoints(final Point2DArray points)
@@ -1069,19 +1103,6 @@ public class Attributes
         return getDouble(Attribute.CORNER_RADIUS.getProperty());
     }
 
-    public final BoundingBox getSizeConstraints()
-    {
-        final JavaScriptObject sizeConstraints = getObject(Attribute.SIZE_CONSTRAINTS.getProperty());
-
-        if (null != sizeConstraints)
-        {
-            final BoundingBox.BoundingBoxJSO bbjso = sizeConstraints.cast();
-
-            return new BoundingBox(bbjso);
-        }
-        return null;
-    }
-
     public final double getWidth()
     {
         return getDouble(Attribute.WIDTH.getProperty());
@@ -1090,6 +1111,26 @@ public class Attributes
     public final double getHeight()
     {
         return getDouble(Attribute.HEIGHT.getProperty());
+    }
+
+    public final Double getMinWidth() {
+        double minWidth = getDouble(Attribute.MIN_WIDTH.getProperty());
+        return minWidth == 0 ? null : minWidth;
+    }
+
+    public final Double getMaxWidth() {
+        double maxWidth = getDouble(Attribute.MAX_WIDTH.getProperty());
+        return maxWidth == 0 ? null : maxWidth;
+    }
+
+    public final Double getMinHeight() {
+        double minHeight = getDouble(Attribute.MIN_HEIGHT.getProperty());
+        return minHeight == 0 ? null : minHeight;
+    }
+
+    public final Double getMaxHeight() {
+        double maxHeight = getDouble(Attribute.MAX_HEIGHT.getProperty());
+        return maxHeight == 0 ? null : maxHeight;
     }
 
     public final int getStarPoints()

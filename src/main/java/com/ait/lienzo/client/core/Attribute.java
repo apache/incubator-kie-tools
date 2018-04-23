@@ -31,9 +31,15 @@ public class Attribute
 
     public static final Attribute           HEIGHT                           = new Attribute("height", MESSAGES.heightLabel(), MESSAGES.heightDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           CORNER_RADIUS                    = new Attribute("cornerRadius", MESSAGES.cornerRadiusLabel(), MESSAGES.cornerRadiusDescription(), AttributeType.NUMBER_TYPE, true);
+    public static final Attribute           MIN_WIDTH                        = new Attribute("minWidth", MESSAGES.minWidthLabel(), MESSAGES.minWidthDescription(), AttributeType.NUMBER_TYPE, true);
 
-    public static final Attribute           SIZE_CONSTRAINTS                 = new Attribute("sizeConstraints", MESSAGES.sizeConstraintsLabel(), MESSAGES.sizeConstraintsDescription(), AttributeType.NUMBER_TYPE, true);
+    public static final Attribute           MAX_WIDTH                        = new Attribute("maxWidth", MESSAGES.maxWidthLabel(), MESSAGES.maxWidthDescription(), AttributeType.NUMBER_TYPE, true);
+
+    public static final Attribute           MIN_HEIGHT                       = new Attribute("minHeight", MESSAGES.minHeightLabel(), MESSAGES.minHeightDescription(), AttributeType.NUMBER_TYPE, true);
+
+    public static final Attribute           MAX_HEIGHT                       = new Attribute("maxHeight", MESSAGES.maxHeightLabel(), MESSAGES.maxHeightDescription(), AttributeType.NUMBER_TYPE, true);
+
+    public static final Attribute           CORNER_RADIUS                    = new Attribute("cornerRadius", MESSAGES.cornerRadiusLabel(), MESSAGES.cornerRadiusDescription(), AttributeType.NUMBER_TYPE, true);
 
     public static final Attribute           FILL                             = new Attribute("fill", MESSAGES.fillLabel(), MESSAGES.fillDescription(), AttributeType.FILL_TYPE, true);
 
