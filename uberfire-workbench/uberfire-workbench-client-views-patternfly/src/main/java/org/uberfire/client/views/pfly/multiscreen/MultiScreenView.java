@@ -117,6 +117,6 @@ public class MultiScreenView implements IsElement {
     }
 
     public void disableClose() {
-        closeGroup.remove();
+        actions.removeChild(closeGroup);
     }
 }
