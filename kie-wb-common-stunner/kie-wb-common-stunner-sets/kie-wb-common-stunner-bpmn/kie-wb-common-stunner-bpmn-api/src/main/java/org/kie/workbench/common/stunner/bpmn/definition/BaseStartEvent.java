@@ -82,6 +82,7 @@ public abstract class BaseStartEvent implements BPMNViewDefinition,
 
     protected void initLabels() {
         labels.add("all");
+        labels.add("lane_child");
         labels.add("Startevents_all");
         labels.add("Startevents_outgoing_all");
         labels.add("sequence_start");

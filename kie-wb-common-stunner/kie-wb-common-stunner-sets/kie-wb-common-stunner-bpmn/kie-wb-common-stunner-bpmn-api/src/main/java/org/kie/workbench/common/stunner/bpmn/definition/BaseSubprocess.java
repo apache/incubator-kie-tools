@@ -80,6 +80,7 @@ public abstract class BaseSubprocess implements BPMNViewDefinition {
 
     protected void initLabels() {
         labels.add("all");
+        labels.add("lane_child");
         labels.add("sequence_start");
         labels.add("sequence_end");
         labels.add("messageflow_start");

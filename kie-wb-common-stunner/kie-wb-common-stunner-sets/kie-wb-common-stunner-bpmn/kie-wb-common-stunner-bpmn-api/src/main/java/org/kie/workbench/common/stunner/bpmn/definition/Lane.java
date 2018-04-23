@@ -48,7 +48,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @Portable
 @Bindable
 @Definition(graphFactory = NodeFactory.class, builder = Lane.LaneBuilder.class)
-@CanContain(roles = {"all"})
+@CanContain(roles = {"lane_child"})
 @FormDefinition(
         startElement = "general",
         policy = FieldPolicy.ONLY_MARKED,

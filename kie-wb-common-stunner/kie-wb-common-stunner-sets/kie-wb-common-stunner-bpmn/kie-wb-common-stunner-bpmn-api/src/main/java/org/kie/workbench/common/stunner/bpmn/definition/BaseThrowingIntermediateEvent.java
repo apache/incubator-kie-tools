@@ -68,6 +68,7 @@ public abstract class BaseThrowingIntermediateEvent
 
     protected void initLabels() {
         labels.add("all");
+        labels.add("lane_child");
         labels.add("sequence_start");
         labels.add("sequence_end");
         labels.add("to_task_event");

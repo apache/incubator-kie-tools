@@ -46,6 +46,7 @@ public abstract class BaseTask implements BPMNViewDefinition {
 
     public static final Set<String> TASK_LABELS = new HashSet<String>() {{
         add("all");
+        add("lane_child");
         add("sequence_start");
         add("sequence_end");
         add("from_task_event");
