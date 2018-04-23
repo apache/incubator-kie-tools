@@ -1,12 +1,20 @@
 .nameEditBoxTable {
-    z-index: 10;
     min-height: 20px;
     min-width: 80px;
     display: table;
+    border: 2px solid #5f9ea0;
+    padding: 3px;
+    background-color: white;
 }
 
 .nameEditBoxRow {
     display: table-row;
+}
+
+.nameEditButtonsRow{
+    display: table-row;
+    float: right;
+    margin-top: 3px;
 }
 
 .nameEditBoxCell {
@@ -18,9 +26,14 @@
 }
 
 .nameEditBoxButton {
-    background-color: black;
+    background-color: white;
     padding: 2px;
-    color: white;
+    color: black;
     margin-left: 5px;
     cursor: pointer;
+}
+
+textarea.nameEditBoxNameBox{
+    min-height:50px;
+    min-width:180px;
 }

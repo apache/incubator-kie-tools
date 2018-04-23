@@ -16,10 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.actions;
 
-import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
@@ -30,7 +28,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanv
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasFocusedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.components.actions.TextEditorBox;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
@@ -52,30 +49,22 @@ import org.uberfire.mvp.Command;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
-@Dependent
-public class CanvasInPlaceTextEditorControlImpl
+public abstract class AbstractCanvasInPlaceTextEditorControl
         extends AbstractCanvasHandlerRegistrationControl<AbstractCanvasHandler>
         implements CanvasInPlaceTextEditorControl<AbstractCanvasHandler, AbstractClientFullSession, Element> {
 
     private static final int FLOATING_VIEW_TIMEOUT = 3000;
     private static final double SHAPE_EDIT_ALPHA = 0.2d;
 
-    private final FloatingView<IsWidget> floatingView;
-    private final TextEditorBox<AbstractCanvasHandler, Element> textEditorBox;
-    private final Event<CanvasSelectionEvent> canvasSelectionEvent;
     private String uuid;
 
-    private final Command floatingHideCallback = CanvasInPlaceTextEditorControlImpl.this::hide;
+    private final Command floatingHideCallback = AbstractCanvasInPlaceTextEditorControl.this::hide;
 
-    @Inject
-    public CanvasInPlaceTextEditorControlImpl(final FloatingView<IsWidget> floatingView,
-                                              final TextEditorBox<AbstractCanvasHandler, Element> textEditorBox,
-                                              final Event<CanvasSelectionEvent> canvasSelectionEvent) {
-        this.floatingView = floatingView;
-        this.textEditorBox = textEditorBox;
-        this.canvasSelectionEvent = canvasSelectionEvent;
-        this.uuid = null;
-    }
+    protected abstract FloatingView<IsWidget> getFloatingView();
+
+    protected abstract TextEditorBox<AbstractCanvasHandler, Element> getTextEditorBox();
+
+    protected abstract Event<CanvasSelectionEvent> getCanvasSelectionEvent();
 
     @Override
     public void bind(final AbstractClientFullSession session) {
@@ -90,20 +79,19 @@ public class CanvasInPlaceTextEditorControlImpl
     @Override
     public void enable(final AbstractCanvasHandler canvasHandler) {
         super.enable(canvasHandler);
-        textEditorBox.initialize(canvasHandler,
-                                 () -> {
-                                     final String idToSelect = CanvasInPlaceTextEditorControlImpl.this.uuid;
-                                     CanvasInPlaceTextEditorControlImpl.this.hide();
-                                     canvasSelectionEvent.fire(new CanvasSelectionEvent(canvasHandler,
-                                                                                        idToSelect));
-                                 });
+        getTextEditorBox().initialize(canvasHandler,
+                                      () -> {
+                                          final String idToSelect = AbstractCanvasInPlaceTextEditorControl.this.uuid;
+                                          AbstractCanvasInPlaceTextEditorControl.this.hide();
+                                          getCanvasSelectionEvent().fire(new CanvasSelectionEvent(canvasHandler,
+                                                                                                  idToSelect));
+                                      });
 
-        // TODO: move floatingView to support IsElement instead of IsWidget
-        floatingView
+        getFloatingView()
                 .hide()
                 .setHideCallback(floatingHideCallback)
                 .setTimeOut(FLOATING_VIEW_TIMEOUT)
-                .add(ElementWrapperWidget.getWidget(textEditorBox.getElement()));
+                .add(ElementWrapperWidget.getWidget(getTextEditorBox().getElement()));
     }
 
     @Override
@@ -118,9 +106,9 @@ public class CanvasInPlaceTextEditorControlImpl
                         final TextDoubleClickHandler clickHandler = new TextDoubleClickHandler() {
                             @Override
                             public void handle(final TextDoubleClickEvent event) {
-                                CanvasInPlaceTextEditorControlImpl.this.show(element,
-                                                                             event.getClientX(),
-                                                                             event.getClientY());
+                                AbstractCanvasInPlaceTextEditorControl.this.show(element,
+                                                                                 event.getClientX(),
+                                                                                 event.getClientY());
                             }
                         };
                         hasEventHandlers.addHandler(ViewEventType.TEXT_DBL_CLICK,
@@ -161,9 +149,12 @@ public class CanvasInPlaceTextEditorControlImpl
     public CanvasInPlaceTextEditorControl<AbstractCanvasHandler, AbstractClientFullSession, Element> show(final Element item,
                                                                                                           final double x,
                                                                                                           final double y) {
+        if (getTextEditorBox().isVisible()) {
+            this.hide();
+        }
         this.uuid = item.getUUID();
         enableShapeEdit();
-        textEditorBox.show(item);
+        getTextEditorBox().show(item);
         double[] size;
         try {
             size = GraphUtils.getNodeSize((View) item.getContent());
@@ -171,7 +162,7 @@ public class CanvasInPlaceTextEditorControlImpl
             size = null;
         }
         final double rx = null != size ? size[0] / 2 : 0d;
-        floatingView
+        getFloatingView()
                 .setX(x - rx)
                 .setY(y)
                 .show();
@@ -183,15 +174,15 @@ public class CanvasInPlaceTextEditorControlImpl
         if (isVisible()) {
             disableShapeEdit();
             this.uuid = null;
-            textEditorBox.hide();
-            floatingView.hide();
+            getTextEditorBox().hide();
+            getFloatingView().hide();
         }
         return this;
     }
 
     @Override
     public void setCommandManagerProvider(final CommandManagerProvider<AbstractCanvasHandler> provider) {
-        textEditorBox.setCommandManagerProvider(provider);
+        getTextEditorBox().setCommandManagerProvider(provider);
     }
 
     @Override
@@ -199,13 +190,13 @@ public class CanvasInPlaceTextEditorControlImpl
         super.doDisable();
         disableShapeEdit();
         this.uuid = null;
-        textEditorBox.hide();
+        getTextEditorBox().hide();
     }
 
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
-        floatingView.destroy();
+        getFloatingView().destroy();
     }
 
     private boolean enableShapeEdit() {
@@ -244,6 +235,7 @@ public class CanvasInPlaceTextEditorControlImpl
     void onKeyDownEvent(final KeyboardEvent.Key... keys) {
         if (KeysMatcher.doKeysMatch(keys,
                                     KeyboardEvent.Key.ESC)) {
+
             hide();
         }
     }

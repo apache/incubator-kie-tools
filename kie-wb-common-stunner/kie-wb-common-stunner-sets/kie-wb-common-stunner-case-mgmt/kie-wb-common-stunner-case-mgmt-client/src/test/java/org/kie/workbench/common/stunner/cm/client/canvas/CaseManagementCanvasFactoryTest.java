@@ -35,7 +35,7 @@ import org.kie.workbench.common.stunner.cm.client.canvas.controls.containment.Ca
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControlImpl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControlSingleLine;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.EdgeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
@@ -76,7 +76,6 @@ public class CaseManagementCanvasFactoryTest {
     private ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances;
     private ManagedInstance<ControlPointControl> controlPointControls;
 
-
     @Mock
     private Layer layer;
 
@@ -92,7 +91,7 @@ public class CaseManagementCanvasFactoryTest {
         this.connectionAcceptorControls = mockManagedInstance(ConnectionAcceptorControlImpl.class);
         this.containmentAcceptorControls = mockManagedInstance(CaseManagementContainmentAcceptorControlImpl.class);
         this.dockingAcceptorControls = mockManagedInstance(DockingAcceptorControlImpl.class);
-        this.nameEditionControls = mockManagedInstance(CanvasInPlaceTextEditorControlImpl.class);
+        this.nameEditionControls = mockManagedInstance(CanvasInPlaceTextEditorControlSingleLine.class);
         this.selectionControls = mockManagedInstance(SelectionControl.class);
         this.elementBuilderControls = mockManagedInstance(CaseManagementElementBuilderControl.class);
         this.nodeBuilderControls = mockManagedInstance(CaseManagementNodeBuilderControl.class);

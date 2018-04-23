@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.client.components.actions;
+package org.kie.workbench.common.stunner.core.client.canvas.controls.actions;
 
 import org.jboss.errai.common.client.api.IsElement;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -22,13 +22,18 @@ import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManag
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.uberfire.mvp.Command;
 
-public interface TextEditorBox<C extends CanvasHandler, E extends Element> extends IsElement,
-                                                                                   RequiresCommandManager<C> {
+public interface TextEditorBox<C extends CanvasHandler, E extends Element>
+        extends IsElement,
+                RequiresCommandManager<C> {
 
     void initialize(final C canvasHandler,
                     final Command closeCallback);
 
     void show(final E element);
 
+    boolean isVisible();
+
     void hide();
 }
+
+

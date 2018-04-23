@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.SingleLineTextEditorBox;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.EdgeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
@@ -96,7 +97,7 @@ public class DMNCanvasFactory
                             final ManagedInstance<ConnectionAcceptorControl> connectionAcceptorControls,
                             final ManagedInstance<ContainmentAcceptorControl> containmentAcceptorControls,
                             final ManagedInstance<DockingAcceptorControl> dockingAcceptorControls,
-                            final ManagedInstance<CanvasInPlaceTextEditorControl> inPlaceTextEditorControls,
+                            final @SingleLineTextEditorBox ManagedInstance<CanvasInPlaceTextEditorControl> inPlaceTextEditorControls,
                             final @MultipleSelection ManagedInstance<SelectionControl> selectionControls,
                             final ManagedInstance<LocationControl> locationControls,
                             final @DMNEditor ManagedInstance<ToolboxControl> toolboxControls,

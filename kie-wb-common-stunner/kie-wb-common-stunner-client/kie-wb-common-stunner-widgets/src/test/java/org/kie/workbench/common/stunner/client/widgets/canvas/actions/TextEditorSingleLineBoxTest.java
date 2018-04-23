@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.canvas.actions;
 
+import com.google.gwt.event.dom.client.KeyCodes;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,48 +41,37 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TextEditorBoxImplTest {
+public class TextEditorSingleLineBoxTest {
 
     public static final String NAME = "name";
     public static final String MODIFIED_NAME = "modified_name";
     public static final String ID = "id";
 
+    protected TextEditorSingleLineBox presenter;
+
     @Mock
     private DefinitionUtils definitionUtils;
-
     @Mock
     private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
-
     @Mock
-    private TextEditorBoxView view;
-
+    private TextEditorMultiLineBoxView view;
     @Mock
     private AbstractCanvasHandler canvasHandler;
-
     @Mock
     private Command closeCallback;
-
     @Mock
     private RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> commandProvider;
-
     @Mock
     private TextPropertyProviderFactory textPropertyProviderFactory;
-
     @Mock
     private CanvasCommandManager canvasCommandManager;
-
     @Mock
     private Element element;
-
     @Mock
     private Definition definition;
-
     @Mock
     private TextPropertyProvider textPropertyProvider;
-
     private Object objectDefinition = new Object();
-
-    private TextEditorBoxImpl presenter;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -97,7 +87,7 @@ public class TextEditorBoxImplTest {
         when(canvasHandler.getTextPropertyProviderFactory()).thenReturn(textPropertyProviderFactory);
         when(textPropertyProviderFactory.getProvider(any(Element.class))).thenReturn(textPropertyProvider);
 
-        presenter = new TextEditorBoxImpl(view);
+        presenter = new TextEditorSingleLineBox(view);
 
         presenter.setup();
 
@@ -120,11 +110,13 @@ public class TextEditorBoxImplTest {
     @Test
     public void testSaveByPressingEnter() {
         presenter.onKeyPress(12,
+                             false,
                              MODIFIED_NAME);
 
         verifyNameNotSaved();
 
-        presenter.onKeyPress(13,
+        presenter.onKeyPress(KeyCodes.KEY_ENTER,
+                             false,
                              MODIFIED_NAME);
 
         verifyNameSaved();

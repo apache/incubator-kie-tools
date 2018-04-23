@@ -41,6 +41,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickE
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseDoubleClickEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseEnterEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseExitEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.TextDoubleClickEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.TouchEventImpl;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.TouchHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEvent;
@@ -144,6 +145,10 @@ public class ViewEventHandlerManager {
     @SuppressWarnings("unchecked")
     protected HandlerRegistration[] doAddHandler(final ViewEventType type,
                                                  final ViewHandler<? extends ViewEvent> eventHandler) {
+
+        if ((ViewEventType.TEXT_DBL_CLICK.equals(type))) {
+            return registerTextDoubleClickHandler((ViewHandler<ViewEvent>) eventHandler);
+        }
         if (ViewEventType.MOUSE_CLICK.equals(type)) {
             return registerClickHandler((ViewHandler<ViewEvent>) eventHandler);
         }
@@ -314,6 +319,25 @@ public class ViewEventHandlerManager {
                         event.setButtonLeft(nodeMouseDoubleClickEvent.isButtonLeft());
                         event.setButtonMiddle(nodeMouseDoubleClickEvent.isButtonMiddle());
                         event.setButtonRight(nodeMouseDoubleClickEvent.isButtonRight());
+                        eventHandler.handle(event);
+                        restoreClickHandler();
+                    }
+                })
+        };
+    }
+
+    protected HandlerRegistration[] registerTextDoubleClickHandler(final ViewHandler<ViewEvent> eventHandler) {
+        return new HandlerRegistration[]{
+                node.addNodeMouseDoubleClickHandler(nodeMouseDoubleClickEvent -> {
+                    if (isEnabled()) {
+                        skipClickHandler();
+                        final TextDoubleClickEvent event = new TextDoubleClickEvent(nodeMouseDoubleClickEvent.getX(),
+                                                                                    nodeMouseDoubleClickEvent.getY(),
+                                                                                    nodeMouseDoubleClickEvent.getMouseEvent().getClientX(),
+                                                                                    nodeMouseDoubleClickEvent.getMouseEvent().getClientY());
+                        event.setShiftKeyDown(nodeMouseDoubleClickEvent.isShiftKeyDown());
+                        event.setAltKeyDown(nodeMouseDoubleClickEvent.isAltKeyDown());
+                        event.setMetaKeyDown(nodeMouseDoubleClickEvent.isMetaKeyDown());
                         eventHandler.handle(event);
                         restoreClickHandler();
                     }

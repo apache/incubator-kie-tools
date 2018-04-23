@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,31 +15,34 @@
  */
 package org.kie.workbench.common.stunner.client.widgets.canvas.actions;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Event;
+import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.TextInput;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.SinkNative;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants;
+import org.uberfire.mvp.Command;
 
-@Templated
-public class TextEditorBoxViewImpl implements TextEditorBoxView,
-                                              IsElement {
+public abstract class AbstractTextEditorBoxView<T extends TextEditorBoxView.Presenter> implements IsElement {
 
-    private TranslationService translationService;
+    protected final Command showCommand;
+    protected final Command hideCommand;
+
+    public T presenter;
+
+    protected TranslationService translationService;
 
     @Inject
     @DataField
-    private TextInput nameBox;
+    protected Div editNameBox;
 
     @Inject
     @Named("i")
@@ -51,49 +54,50 @@ public class TextEditorBoxViewImpl implements TextEditorBoxView,
     @DataField
     private HTMLElement saveButton;
 
-    private Presenter presenter;
-
-    @Inject
-    public TextEditorBoxViewImpl(TranslationService translationService) {
-        this.translationService = translationService;
+    protected AbstractTextEditorBoxView(Command showCommand, Command hideCommand, HTMLElement closeButton, HTMLElement saveButton) {
+        this.showCommand = showCommand;
+        this.hideCommand = hideCommand;
+        this.closeButton = closeButton;
+        this.saveButton = saveButton;
     }
 
-    @PostConstruct
+    protected AbstractTextEditorBoxView() {
+        this.showCommand = () -> this.getElement().getStyle().setProperty("display",
+                                                                          "block");
+        this.hideCommand = () -> this.getElement().getStyle().setProperty("display",
+                                                                          "none");
+    }
+
     public void initialize() {
-        nameBox.setAttribute("placeHolder",
-                             translationService.getTranslation(StunnerWidgetsConstants.NameEditBoxWidgetViewImp_name));
         closeButton.setTitle(translationService.getTranslation(StunnerWidgetsConstants.NameEditBoxWidgetViewImpl_close));
         saveButton.setTitle(translationService.getTranslation(StunnerWidgetsConstants.NameEditBoxWidgetViewImpl_save));
     }
 
-    @Override
-    public void init(Presenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public void show(final String name) {
-        nameBox.setValue(name);
-        nameBox.setTextContent(name);
-        this.getElement().getStyle().setProperty("display",
-                                                 "block");
-    }
-
-    @Override
-    public void hide() {
-        this.getElement().getStyle().setProperty("display",
-                                                 "none");
-    }
-
-    @EventHandler("nameBox")
-    @SinkNative(Event.ONCHANGE | Event.ONKEYPRESS)
-    public void onChangeName(Event event) {
-        if (event.getTypeInt() == Event.ONCHANGE) {
-            presenter.onChangeName(nameBox.getValue());
-        } else if (event.getTypeInt() == Event.ONKEYPRESS) {
-            presenter.onKeyPress(event.getKeyCode(),
-                                 nameBox.getValue());
+    @EventHandler("editNameBox")
+    @SinkNative(Event.ONKEYDOWN | Event.ONMOUSEOVER)
+    public void editNameBoxEsc(Event event) {
+        switch (event.getTypeInt()) {
+            case Event.ONKEYDOWN:
+                if (event.getKeyCode() == KeyCodes.KEY_ESCAPE) {
+                    presenter.onClose();
+                }
+                break;
+            case Event.ONMOUSEOVER:
+                editNameBox.focus();
+                break;
         }
+    }
+
+    public void setVisible() {
+        showCommand.execute();
+    }
+
+    public void hide() {
+        hideCommand.execute();
+    }
+
+    public boolean isVisible() {
+        return !(getElement().getStyle().getPropertyValue("display")).equals("none");
     }
 
     @EventHandler("saveButton")

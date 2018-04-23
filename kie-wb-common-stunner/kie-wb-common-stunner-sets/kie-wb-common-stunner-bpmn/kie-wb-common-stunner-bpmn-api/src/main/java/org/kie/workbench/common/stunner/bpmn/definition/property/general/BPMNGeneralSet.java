@@ -40,7 +40,7 @@ public class BPMNGeneralSet implements BPMNPropertySet,
                                        BPMNBaseInfo {
 
     @Property
-    @FormField
+    @FormField(type = TextAreaFieldType.class)
     private Name name;
 
     @Property
@@ -77,13 +77,13 @@ public class BPMNGeneralSet implements BPMNPropertySet,
         return name;
     }
 
+    public void setName(final Name name) {
+        this.name = name;
+    }
+
     @Override
     public Documentation getDocumentation() {
         return documentation;
-    }
-
-    public void setName(final Name name) {
-        this.name = name;
     }
 
     public void setDocumentation(final Documentation documentation) {

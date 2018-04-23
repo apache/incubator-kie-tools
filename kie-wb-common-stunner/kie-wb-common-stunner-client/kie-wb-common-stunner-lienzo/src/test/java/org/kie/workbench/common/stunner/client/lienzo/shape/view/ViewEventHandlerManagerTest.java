@@ -39,6 +39,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseDouble
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseEnterEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseExitEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.TextDoubleClickEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
@@ -114,11 +115,12 @@ public class ViewEventHandlerManagerTest {
         this.tested = new ViewEventHandlerManager(node,
                                                   shape,
                                                   ViewEventType.MOUSE_CLICK,
-                                                  ViewEventType.MOUSE_DBL_CLICK);
+                                                  ViewEventType.MOUSE_DBL_CLICK,
+                                                  ViewEventType.TEXT_DBL_CLICK);
         assertTrue(tested.supports(ViewEventType.MOUSE_CLICK));
         assertTrue(tested.supports(ViewEventType.MOUSE_DBL_CLICK));
+        assertTrue(tested.supports(ViewEventType.TEXT_DBL_CLICK));
         assertFalse(tested.supports(ViewEventType.TEXT_CLICK));
-        assertFalse(tested.supports(ViewEventType.TEXT_DBL_CLICK));
         assertFalse(tested.supports(ViewEventType.TEXT_ENTER));
         assertFalse(tested.supports(ViewEventType.TEXT_EXIT));
         assertFalse(tested.supports(ViewEventType.MOUSE_ENTER));
@@ -238,6 +240,58 @@ public class ViewEventHandlerManagerTest {
         assertTrue(viewEvent.isMetaKeyDown());
         assertTrue(viewEvent.isShiftKeyDown());
         assertNotNull(tested.getRegistrationMap().get(ViewEventType.MOUSE_DBL_CLICK));
+    }
+
+
+
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testTextDoubleClickHandler() {
+        final ViewHandler<ViewEvent> clickHandler = mock(ViewHandler.class);
+        final HandlerRegistration handlerRegistration = mock(HandlerRegistration.class);
+        when(node.addNodeMouseDoubleClickHandler(any(NodeMouseDoubleClickHandler.class))).thenReturn(handlerRegistration);
+        tested.addHandler(ViewEventType.TEXT_DBL_CLICK,
+                          clickHandler);
+        final ArgumentCaptor<NodeMouseDoubleClickHandler> clickHandlerArgumentCaptor =
+                ArgumentCaptor.forClass(NodeMouseDoubleClickHandler.class);
+        verify(node,
+               times(1)).addNodeMouseDoubleClickHandler(clickHandlerArgumentCaptor.capture());
+        final NodeMouseDoubleClickHandler nodeCLickHandler = clickHandlerArgumentCaptor.getValue();
+        final NodeMouseDoubleClickEvent clickEvent = mock(NodeMouseDoubleClickEvent.class);
+        final MouseEvent mouseEvent = mock(MouseEvent.class);
+        final int x = 102;
+        final int y = 410;
+        when(clickEvent.getX()).thenReturn(x);
+        when(clickEvent.getY()).thenReturn(y);
+        when(clickEvent.isShiftKeyDown()).thenReturn(true);
+        when(clickEvent.isAltKeyDown()).thenReturn(true);
+        when(clickEvent.isMetaKeyDown()).thenReturn(true);
+        when(clickEvent.getMouseEvent()).thenReturn(mouseEvent);
+        when(mouseEvent.getClientX()).thenReturn(x);
+        when(mouseEvent.getClientY()).thenReturn(y);
+        nodeCLickHandler.onNodeMouseDoubleClick(clickEvent);
+        final ArgumentCaptor<ViewEvent> eventArgumentCaptor =
+                ArgumentCaptor.forClass(ViewEvent.class);
+        verify(clickHandler,
+               times(1)).handle(eventArgumentCaptor.capture());
+        final TextDoubleClickEvent viewEvent = (TextDoubleClickEvent) eventArgumentCaptor.getValue();
+        assertEquals(x,
+                     viewEvent.getX(),
+                     0d);
+        assertEquals(y,
+                     viewEvent.getY(),
+                     0d);
+        assertEquals(x,
+                     viewEvent.getClientX(),
+                     0d);
+        assertEquals(y,
+                     viewEvent.getClientY(),
+                     0d);
+        assertTrue(viewEvent.isAltKeyDown());
+        assertTrue(viewEvent.isMetaKeyDown());
+        assertTrue(viewEvent.isShiftKeyDown());
+        assertNotNull(tested.getRegistrationMap().get(ViewEventType.TEXT_DBL_CLICK));
     }
 
     @Test

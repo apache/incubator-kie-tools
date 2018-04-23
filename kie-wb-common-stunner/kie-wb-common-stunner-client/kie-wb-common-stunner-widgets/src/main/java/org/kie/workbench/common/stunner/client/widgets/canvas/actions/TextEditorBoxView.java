@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,25 +17,30 @@
 package org.kie.workbench.common.stunner.client.widgets.canvas.actions;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.components.actions.TextEditorBox;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextEditorBox;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.uberfire.client.mvp.UberElement;
 
 public interface TextEditorBoxView extends UberElement<TextEditorBoxView.Presenter> {
 
+    void show(final String name);
+
+    void hide();
+
+    boolean isVisible();
+
     interface Presenter extends TextEditorBox<AbstractCanvasHandler, Element> {
 
         void onSave();
 
-        void onKeyPress(int keyCode,
-                        String value);
-
         void onClose();
 
-        void onChangeName(String name);
+        void onChangeName(final String name);
+
+        void onKeyPress(final int keyCode,
+                        final boolean shiftKeyPressed,
+                        final String value);
+
+        String getNameValue();
     }
-
-    void show(final String name);
-
-    void hide();
 }

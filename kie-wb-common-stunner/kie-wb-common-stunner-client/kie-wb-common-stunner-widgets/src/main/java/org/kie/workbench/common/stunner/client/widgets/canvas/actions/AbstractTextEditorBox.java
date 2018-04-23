@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,8 @@
 package org.kie.workbench.common.stunner.client.widgets.canvas.actions;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
+import com.google.gwt.event.dom.client.KeyCodes;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProvider;
@@ -28,10 +27,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.uberfire.mvp.Command;
 
-@Dependent
-public class TextEditorBoxImpl implements TextEditorBoxView.Presenter {
-
-    private final TextEditorBoxView view;
+public abstract class AbstractTextEditorBox implements TextEditorBoxView.Presenter {
 
     private AbstractCanvasHandler canvasHandler;
     private TextPropertyProviderFactory textPropertyProviderFactory;
@@ -40,16 +36,11 @@ public class TextEditorBoxImpl implements TextEditorBoxView.Presenter {
     private Element<? extends Definition> element;
     private String value;
 
-    @Inject
-    public TextEditorBoxImpl(final TextEditorBoxView view) {
-        this.view = view;
-        this.element = null;
-        this.value = null;
-    }
+    protected abstract TextEditorBoxView getView();
 
     @PostConstruct
     public void setup() {
-        view.init(this);
+        getView().init(this);
     }
 
     @Override
@@ -66,17 +57,22 @@ public class TextEditorBoxImpl implements TextEditorBoxView.Presenter {
     }
 
     @Override
+    public boolean isVisible() {
+        return getView().isVisible();
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public void show(final Element element) {
         this.element = element;
         final TextPropertyProvider textPropertyProvider = textPropertyProviderFactory.getProvider(element);
         final String name = textPropertyProvider.getText(element);
-        view.show(name);
+        getView().show(name);
     }
 
     @Override
     public void hide() {
-        view.hide();
+        getView().hide();
         this.value = null;
     }
 
@@ -94,30 +90,14 @@ public class TextEditorBoxImpl implements TextEditorBoxView.Presenter {
                                          element,
                                          value);
         }
-        view.hide();
+        getView().hide();
         fireCloseCallback();
-    }
-
-    @Override
-    public void onKeyPress(final int keyCode,
-                           final String value) {
-        processKey(keyCode,
-                   value);
     }
 
     @Override
     public void onClose() {
         this.hide();
         fireCloseCallback();
-    }
-
-    private void processKey(final int keyCode,
-                            final String value) {
-        this.value = value;
-        // Enter key produces save.
-        if (13 == keyCode) {
-            onSave();
-        }
     }
 
     private void fireCloseCallback() {
@@ -132,6 +112,25 @@ public class TextEditorBoxImpl implements TextEditorBoxView.Presenter {
 
     @Override
     public HTMLElement getElement() {
-        return view.getElement();
+        return getView().getElement();
+    }
+
+    @Override
+    public void onKeyPress(final int keyCode,
+                           final boolean shiftKeyPressed,
+                           final String value) {
+        processKey(keyCode,
+                   shiftKeyPressed,
+                   value);
+    }
+
+    private void processKey(final int keyCode,
+                            boolean shiftKeyPressed,
+                            final String value) {
+        this.value = value;
+        // Enter key produces save.
+        if ((KeyCodes.KEY_ENTER == keyCode) && (!shiftKeyPressed)) {
+            onSave();
+        }
     }
 }
