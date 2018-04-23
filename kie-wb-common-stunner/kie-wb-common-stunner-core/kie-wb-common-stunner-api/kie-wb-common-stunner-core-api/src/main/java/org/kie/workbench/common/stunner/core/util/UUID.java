@@ -61,8 +61,9 @@ public class UUID {
     }
 
     /**
-     * Generate a RFC4122, version 4 ID. Example:
-     * "92329D39-6F5C-4520-ABFC-AAB64544E172"
+     * Generate a RFC4122, version 4 ID prefixed with an '_' character to make it compatible with the
+     * https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName expected by the bpmn2 xsd, and dmn xsd.
+     * Example: "_92329D39-6F5C-4520-ABFC-AAB64544E172"
      */
     public static String uuid() {
         char[] uuid = new char[36];
@@ -78,6 +79,19 @@ public class UUID {
                 uuid[i] = CHARS[(i == 19) ? (r & 0x3) | 0x8 : r & 0xf];
             }
         }
-        return new String(uuid);
+        return new String(prefixWith(uuid,
+                                     '_'));
+    }
+
+    private static char[] prefixWith(char[] original,
+                                     char prefix) {
+        final char[] prefixed = new char[original.length + 1];
+        prefixed[0] = prefix;
+        System.arraycopy(original,
+                         0,
+                         prefixed,
+                         1,
+                         original.length);
+        return prefixed;
     }
 }
