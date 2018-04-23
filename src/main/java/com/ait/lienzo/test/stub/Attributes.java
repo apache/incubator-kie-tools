@@ -787,6 +787,54 @@ public class Attributes
         put(Attribute.HEIGHT.getProperty(), height);
     }
 
+    public final void setMinWidth(final Double minWidth)
+    {
+        if (null != minWidth)
+        {
+            put(Attribute.MIN_WIDTH.getProperty(), minWidth);
+        }
+        else
+        {
+            remove(Attribute.MIN_WIDTH.getProperty());
+        }
+    }
+
+    public final void setMaxWidth(final Double maxWidth)
+    {
+        if (null != maxWidth)
+        {
+            put(Attribute.MAX_WIDTH.getProperty(), maxWidth);
+        }
+        else
+        {
+            remove(Attribute.MAX_WIDTH.getProperty());
+        }
+    }
+
+    public final void setMinHeight(final Double minHeight)
+    {
+        if (null != minHeight)
+        {
+            put(Attribute.MIN_HEIGHT.getProperty(), minHeight);
+        }
+        else
+        {
+            remove(Attribute.MIN_HEIGHT.getProperty());
+        }
+    }
+
+    public final void setMaxHeight(final Double maxHeight)
+    {
+        if (null != maxHeight)
+        {
+            put(Attribute.MAX_HEIGHT.getProperty(), maxHeight);
+        }
+        else
+        {
+            remove(Attribute.MAX_HEIGHT.getProperty());
+        }
+    }
+
     public final void setPoints(final Point2DArray points)
     {
         if (null != points)
@@ -1063,6 +1111,26 @@ public class Attributes
     public final double getHeight()
     {
         return getDouble(Attribute.HEIGHT.getProperty());
+    }
+
+    public final Double getMinWidth() {
+        double minWidth = getDouble(Attribute.MIN_WIDTH.getProperty());
+        return minWidth == 0 ? null : minWidth;
+    }
+
+    public final Double getMaxWidth() {
+        double maxWidth = getDouble(Attribute.MAX_WIDTH.getProperty());
+        return maxWidth == 0 ? null : maxWidth;
+    }
+
+    public final Double getMinHeight() {
+        double minHeight = getDouble(Attribute.MIN_HEIGHT.getProperty());
+        return minHeight == 0 ? null : minHeight;
+    }
+
+    public final Double getMaxHeight() {
+        double maxHeight = getDouble(Attribute.MAX_HEIGHT.getProperty());
+        return maxHeight == 0 ? null : maxHeight;
     }
 
     public final int getStarPoints()
