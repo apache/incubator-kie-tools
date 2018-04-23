@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.shapes.client.view;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.types.BoundingBox;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresContainerShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
@@ -31,11 +30,26 @@ public abstract class AbstractHasSizeView<T extends AbstractHasSizeView> extends
     }
 
     @Override
-    public T setSizeConstraints(double minWidth, double minHeight, double maxWidth, double maxHeight) {
-        getPath().setSizeConstraints(new BoundingBox(minWidth,
-                                                     minHeight,
-                                                     maxWidth,
-                                                     maxHeight));
+    public T setMinWidth(Double minWidth) {
+        getPath().setMaxHeight(minWidth);
+        return cast();
+    }
+
+    @Override
+    public T setMaxWidth(Double maxWidth) {
+        getPath().setMaxHeight(maxWidth);
+        return cast();
+    }
+
+    @Override
+    public T setMinHeight(Double minHeight) {
+        getPath().setMaxHeight(minHeight);
+        return cast();
+    }
+
+    @Override
+    public T setMaxHeight(Double maxHeight) {
+        getPath().setMaxHeight(maxHeight);
         return cast();
     }
 }

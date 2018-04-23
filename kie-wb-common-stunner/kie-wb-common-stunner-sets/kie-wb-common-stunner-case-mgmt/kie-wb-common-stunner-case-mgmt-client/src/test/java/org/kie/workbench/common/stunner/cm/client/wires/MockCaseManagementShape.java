@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.cm.client.wires;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.types.BoundingBox;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresContainerShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 
@@ -41,18 +40,6 @@ public class MockCaseManagementShape extends AbstractCaseManagementShape<WiresCo
     @Override
     public WiresContainerShapeView setSize(double width,
                                            double height) {
-        return this;
-    }
-
-    @Override
-    public WiresContainerShapeView setSizeConstraints(final double minWidth,
-                                                      final double minHeight,
-                                                      final double maxWidth,
-                                                      final double maxHeight) {
-        getPath().setSizeConstraints(new BoundingBox(minWidth,
-                                                     minHeight,
-                                                     maxWidth,
-                                                     maxHeight));
         return this;
     }
 }

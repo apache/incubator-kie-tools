@@ -68,9 +68,10 @@ public class DMNViewHandlersTest {
         handler.handle(view,
                        shape);
 
-        verify(shape).setSizeConstraints(eq(Width.MIN),
-                                         eq(Height.MIN),
-                                         eq(Width.MAX),
-                                         eq(Height.MAX));
+        verify(shape).setMinWidth(eq(Width.MIN));
+        verify(shape).setMaxWidth(eq(Width.MAX));
+        verify(shape).setMinHeight(eq(Height.MIN));
+        verify(shape).setMaxHeight(eq(Height.MAX));
+
     }
 }

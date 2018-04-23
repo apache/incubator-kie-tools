@@ -27,6 +27,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -97,21 +98,53 @@ public class SizeHandlerTest {
         final Object bean = mock(Object.class);
         tested.handle(new ViewImpl<>(bean, BoundsImpl.build()), view);
 
-        verify(view, never()).setSizeConstraints(anyDouble(), anyDouble(), anyDouble(), anyDouble());
+        verify(view, never()).setMinWidth(anyDouble());
+        verify(view, never()).setMaxWidth(anyDouble());
+        verify(view, never()).setMinHeight(anyDouble());
+        verify(view, never()).setMaxHeight(anyDouble());
+
+        tested = new SizeHandler.Builder<Object, ShapeViewExtStub>()
+                .minWidth(o -> -10d)
+                .maxWidth(o -> -10d)
+                .minHeight(o -> -100d)
+                .maxHeight(o -> -100d)
+                .build();
+        tested.handle(new ViewImpl<>(bean, BoundsImpl.build()), view);
+
+        verify(view, never()).setMinWidth(anyDouble());
+        verify(view, never()).setMaxWidth(anyDouble());
+        verify(view, never()).setMinHeight(anyDouble());
+        verify(view, never()).setMaxHeight(anyDouble());
     }
 
     @Test
     public void testHandleValidSizeConstraints() {
+        tested = new SizeHandler.Builder<Object, ShapeViewExtStub>()
+                .minWidth(o -> null)
+                .maxWidth(o -> null)
+                .minHeight(o -> null)
+                .maxHeight(o -> null)
+                .build();
+        final Object bean = mock(Object.class);
+        tested.handle(new ViewImpl<>(bean, BoundsImpl.build()), view);
+
+        verify(view, times(1)).setMinWidth(isNull(Double.class));
+        verify(view, times(1)).setMaxWidth(isNull(Double.class));
+        verify(view, times(1)).setMinHeight(isNull(Double.class));
+        verify(view, times(1)).setMaxHeight(isNull(Double.class));
+
         tested = new SizeHandler.Builder<Object, ShapeViewExtStub>()
                 .minWidth(o -> 10d)
                 .maxWidth(o -> 100d)
                 .minHeight(o -> 10d)
                 .maxHeight(o -> 100d)
                 .build();
-        final Object bean = mock(Object.class);
         tested.handle(new ViewImpl<>(bean, BoundsImpl.build()), view);
 
-        verify(view, times(1)).setSizeConstraints(10d, 10d, 100d, 100d);
+        verify(view, times(1)).setMinWidth(10d);
+        verify(view, times(1)).setMaxWidth(100d);
+        verify(view, times(1)).setMinHeight(10d);
+        verify(view, times(1)).setMaxHeight(100d);
     }
 
     @Test
@@ -123,18 +156,38 @@ public class SizeHandlerTest {
         final Object bean = mock(Object.class);
         tested.handle(new ViewImpl<>(bean, BoundsImpl.build()), view);
 
-        verify(view, never()).setRadiusConstraints(anyDouble(), anyDouble());
+        verify(view, never()).setMinRadius(anyDouble());
+        verify(view, never()).setMaxRadius(anyDouble());
+
+        tested = new SizeHandler.Builder<Object, ShapeViewExtStub>()
+                .minRadius(o -> -10d)
+                .maxRadius(o -> -100d)
+                .build();
+        tested.handle(new ViewImpl<>(bean, BoundsImpl.build()), view);
+
+        verify(view, never()).setMinRadius(anyDouble());
+        verify(view, never()).setMaxRadius(anyDouble());
     }
 
     @Test
     public void testHandleValidRadiusConstraints() {
         tested = new SizeHandler.Builder<Object, ShapeViewExtStub>()
-                .minRadius(o -> 10d)
-                .maxRadius(o -> 100d)
+                .minRadius(o -> null)
+                .maxRadius(o -> null)
                 .build();
         final Object bean = mock(Object.class);
         tested.handle(new ViewImpl<>(bean, BoundsImpl.build()), view);
 
-        verify(view, times(1)).setRadiusConstraints(10d, 100d);
+        verify(view, times(1)).setMinRadius(isNull(Double.class));
+        verify(view, times(1)).setMaxRadius(isNull(Double.class));
+
+        tested = new SizeHandler.Builder<Object, ShapeViewExtStub>()
+                .minRadius(o -> 10d)
+                .maxRadius(o -> 100d)
+                .build();
+        tested.handle(new ViewImpl<>(bean, BoundsImpl.build()), view);
+
+        verify(view, times(1)).setMinRadius(10d);
+        verify(view, times(1)).setMaxRadius(100d);
     }
 }

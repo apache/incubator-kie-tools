@@ -20,6 +20,7 @@ public interface HasRadius<T> {
 
     T setRadius(final double radius);
 
-    T setRadiusConstraints(final double minRadius,
-                           final double maxRadius);
+    T setMinRadius(final Double minRadius);
+
+    T setMaxRadius(final Double maxRadius);
 }

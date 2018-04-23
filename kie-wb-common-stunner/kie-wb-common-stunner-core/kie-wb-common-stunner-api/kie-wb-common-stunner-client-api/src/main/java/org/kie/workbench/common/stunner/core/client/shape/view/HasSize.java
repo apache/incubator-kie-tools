@@ -21,8 +21,8 @@ public interface HasSize<T> {
     T setSize(final double width,
               final double height);
 
-    T setSizeConstraints(final double minWidth,
-                         final double minHeight,
-                         final double maxWidth,
-                         final double maxHeight);
+    T setMinWidth (final Double minWidth);
+    T setMaxWidth (final Double maxWidth);
+    T setMinHeight (final Double minHeight);
+    T setMaxHeight (final Double maxHeight);
 }

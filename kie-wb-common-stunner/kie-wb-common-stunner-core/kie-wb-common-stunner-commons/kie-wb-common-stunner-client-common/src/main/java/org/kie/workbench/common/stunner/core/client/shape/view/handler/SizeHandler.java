@@ -75,18 +75,33 @@ public class SizeHandler<W, V extends ShapeView> implements ShapeViewHandler<Vie
             final Double beanWidth = widthProvider.apply(bean);
             final Double beanHeight = heightProvider.apply(bean);
             final double width = null != beanWidth ? beanWidth : boundsWidth;
-            final double minWidth = minWidthProvider.apply(bean);
-            final double maxWidth = maxWidthProvider.apply(bean);
             final double height = null != beanHeight ? beanHeight : boundsHeight;
-            final double minHeight = minHeightProvider.apply(bean);
-            final double maxHeight = maxHeightProvider.apply(bean);
+            final Double minWidth = minWidthProvider.apply(bean);
+            final Double maxWidth = maxWidthProvider.apply(bean);
+            final Double minHeight = minHeightProvider.apply(bean);
+            final Double maxHeight = maxHeightProvider.apply(bean);
+
+            HasSize hasSizeView = (HasSize)view;
+
             if (width > 0 && height > 0) {
-                ((HasSize) view).setSize(width, height);
-            }
-            if (minWidth > 0 && minHeight > 0 && maxWidth > 0 && maxHeight > 0) {
-                ((HasSize) view).setSizeConstraints(minWidth, minHeight, maxWidth, maxHeight);
+                hasSizeView.setSize(width, height);
             }
 
+            if (isValidSizeConstraint(minWidth)) {
+                hasSizeView.setMinWidth(minWidth);
+            }
+
+            if (isValidSizeConstraint(maxWidth)) {
+                hasSizeView.setMaxWidth(maxWidth);
+            }
+
+            if (isValidSizeConstraint(minHeight)) {
+                hasSizeView.setMinHeight(minHeight);
+            }
+
+            if (isValidSizeConstraint(maxHeight)) {
+                hasSizeView.setMaxHeight(maxHeight);
+            }
         }
         if (view instanceof HasRadius) {
             final Double beanRadius = radiusProvider.apply(bean);
@@ -94,15 +109,32 @@ public class SizeHandler<W, V extends ShapeView> implements ShapeViewHandler<Vie
                     (boundsWidth > boundsHeight ?
                         boundsWidth / 2 :
                         boundsHeight / 2);
-            final double minRadius = minRadiusProvider.apply(bean);
-            final double maxRadius = maxRadiusProvider.apply(bean);
+            final Double minRadius = minRadiusProvider.apply(bean);
+            final Double maxRadius = maxRadiusProvider.apply(bean);
             if (radius > 0) {
                 ((HasRadius) view).setRadius(radius);
             }
-            if (minRadius > 0 && maxRadius > 0) {
-                ((HasRadius) view).setRadiusConstraints(minRadius, maxRadius);
+
+            if (isValidSizeConstraint(minRadius)) {
+                ((HasRadius) view).setMinRadius(minRadius);
+            }
+
+            if (isValidSizeConstraint(maxRadius)) {
+                ((HasRadius) view).setMaxRadius(maxRadius);
             }
         }
+    }
+
+    private static boolean isValidSizeConstraint(Double value) {
+        if (value == null) {
+            return true;
+        }
+
+        if (value > 0) {
+            return true;
+        }
+
+        return false;
     }
 
     public static class Builder<W, V extends ShapeView> {
