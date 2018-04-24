@@ -33,7 +33,6 @@ import org.jboss.resteasy.client.jaxrs.BasicAuthentication;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.server.controller.client.KieServerControllerClient;
 import org.kie.server.controller.client.KieServerControllerClientFactory;
 import org.kie.server.controller.client.exception.KieServerControllerHTTPClientException;
 
@@ -63,9 +62,9 @@ public class StandaloneControllerIT extends AbstractControllerIT {
     public void testEmbeddedRestEndpoint(final @ArquillianResource URL baseURL) throws Exception {
         final String controllerURL = baseURL + "rest/controller";
         try {
-            KieServerControllerClient client = KieServerControllerClientFactory.newRestClient(controllerURL,
-                                                                                              USER,
-                                                                                              PASSWORD);
+            client = KieServerControllerClientFactory.newRestClient(controllerURL,
+                                                                    USER,
+                                                                    PASSWORD);
             client.listServerTemplates();
             fail("Connection to embedded controller endpoint should fail");
         } catch (KieServerControllerHTTPClientException ex) {
@@ -79,9 +78,9 @@ public class StandaloneControllerIT extends AbstractControllerIT {
     @OperateOnDeployment("workbench")
     public void testEmbeddedWebSocketEndpoint(final @ArquillianResource URL baseURL) throws Exception {
         try {
-            KieServerControllerClientFactory.newWebSocketClient(getWebSocketUrl(baseURL),
-                                                                USER,
-                                                                PASSWORD);
+            client = KieServerControllerClientFactory.newWebSocketClient(getWebSocketUrl(baseURL),
+                                                                         USER,
+                                                                         PASSWORD);
             fail("Connection to embedded controller endpoint should fail");
         } catch (Exception ex) {
             assertTrue(ex.getMessage().contains("Invalid response code 404"));

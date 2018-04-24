@@ -30,13 +30,13 @@ import org.kie.server.controller.api.model.events.ServerTemplateUpdated;
 import org.kie.server.controller.api.model.runtime.Container;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
-import org.kie.server.controller.api.service.NotificationService;
+import org.kie.server.controller.websocket.notification.WebSocketNotificationService;
 import org.kie.workbench.common.screens.server.management.backend.utils.EmbeddedController;
 import org.kie.workbench.common.screens.server.management.model.ContainerSpecData;
 
 @ApplicationScoped
 @EmbeddedController
-public class EmbeddedNotificationService implements NotificationService {
+public class EmbeddedNotificationService extends WebSocketNotificationService {
 
     @Inject
     private Event<ServerTemplateUpdated> serverTemplateUpdatedEvent;
@@ -60,42 +60,51 @@ public class EmbeddedNotificationService implements NotificationService {
     private Event<ContainerSpecData> containerSpecDataEvent;
 
     @Override
-    public void notify( final ServerTemplate serverTemplate,
-                        final ContainerSpec containerSpec,
-                        final List<Container> containers ) {
+    public void notify(final ServerTemplate serverTemplate,
+                       final ContainerSpec containerSpec,
+                       final List<Container> containers) {
+        super.notify(serverTemplate,
+                     containerSpec,
+                     containers);
+        ContainerSpecData containerSpecData = new ContainerSpecData(containerSpec,
+                                                                    containers);
 
-        ContainerSpecData containerSpecData = new ContainerSpecData( containerSpec, containers );
-
-        containerSpecDataEvent.fire( containerSpecData );
+        containerSpecDataEvent.fire(containerSpecData);
     }
 
     @Override
-    public void notify( final ServerTemplateUpdated serverTemplateUpdated ) {
-        serverTemplateUpdatedEvent.fire( serverTemplateUpdated );
+    public void notify(final ServerTemplateUpdated serverTemplateUpdated) {
+        super.notify(serverTemplateUpdated);
+        serverTemplateUpdatedEvent.fire(serverTemplateUpdated);
     }
 
     @Override
-    public void notify( final ServerTemplateDeleted serverTemplateDeleted ) {
-        serverTemplateDeletedEvent.fire( serverTemplateDeleted );
+    public void notify(final ServerTemplateDeleted serverTemplateDeleted) {
+        super.notify(serverTemplateDeleted);
+        serverTemplateDeletedEvent.fire(serverTemplateDeleted);
     }
 
     @Override
-    public void notify( ServerInstanceUpdated serverInstanceUpdated ) {
-        serverInstanceUpdatedEvent.fire( serverInstanceUpdated );
+    public void notify(ServerInstanceUpdated serverInstanceUpdated) {
+        super.notify(serverInstanceUpdated);
+        serverInstanceUpdatedEvent.fire(serverInstanceUpdated);
     }
 
     @Override
-    public void notify( ServerInstanceDeleted serverInstanceDeleted ) {
-        serverInstanceDeletedEvent.fire( serverInstanceDeleted );
+    public void notify(ServerInstanceDeleted serverInstanceDeleted) {
+        super.notify(serverInstanceDeleted);
+        serverInstanceDeletedEvent.fire(serverInstanceDeleted);
     }
 
     @Override
     public void notify(ServerInstanceConnected serverInstanceConnected) {
+        super.notify(serverInstanceConnected);
         serverInstanceConnectedEvent.fire(serverInstanceConnected);
     }
 
     @Override
     public void notify(ServerInstanceDisconnected serverInstanceDisconnected) {
-        serverInstanceDisconnectedEvent.fire(serverInstanceDisconnected );
+        super.notify(serverInstanceDisconnected);
+        serverInstanceDisconnectedEvent.fire(serverInstanceDisconnected);
     }
 }

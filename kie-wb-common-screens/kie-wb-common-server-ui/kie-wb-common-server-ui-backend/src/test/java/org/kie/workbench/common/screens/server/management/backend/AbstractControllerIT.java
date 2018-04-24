@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.server.management.backend;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import javax.inject.Inject;
 
@@ -25,8 +26,10 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.junit.After;
 import org.junit.Test;
 import org.kie.server.controller.api.model.spec.ServerTemplateList;
+import org.kie.server.controller.client.KieServerControllerClient;
 import org.kie.workbench.common.screens.server.management.backend.rest.StandaloneControllerDynamicFeature;
 import org.kie.workbench.common.screens.server.management.backend.rest.StandaloneControllerFilter;
 import org.kie.workbench.common.screens.server.management.backend.runtime.AsyncKieServerInstanceManager;
@@ -52,13 +55,14 @@ import static org.junit.Assert.*;
 
 public abstract class AbstractControllerIT {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractControllerIT.class);
-
     protected static final String USER = "admin";
     protected static final String PASSWORD = "admin";
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractControllerIT.class);
 
     @Inject
     SpecManagementService specManagementService;
+
+    KieServerControllerClient client;
 
     public static WebArchive createWorkbenchWar() {
         final File[] libraries = Maven.configureResolver().workOffline().loadPomFromFile("pom.xml")
@@ -78,7 +82,8 @@ public abstract class AbstractControllerIT {
                         "org.uberfire:uberfire-metadata-backend-lucene",
                         "org.jboss.errai:errai-jboss-as-support",
                         "org.jboss.errai:errai-security-server",
-                        "org.jboss.errai:errai-cdi-server"
+                        "org.jboss.errai:errai-cdi-server",
+                        "org.mockito:mockito-core"
                 ).withTransitivity().asFile();
 
         final URL extension = Thread.currentThread().getContextClassLoader().getResource("META-INF/services/javax.enterprise.inject.spi.Extension");
@@ -179,6 +184,20 @@ public abstract class AbstractControllerIT {
                      serverTemplateList.getServerTemplates().length);
         assertEquals("it-test-kie-server",
                      serverTemplateList.getServerTemplates()[0].getId());
+    }
+
+    @After
+    public void closeControllerClient() {
+        if (client != null) {
+            try {
+                LOGGER.info("Closing Kie Server Management Controller client");
+                client.close();
+            } catch (IOException e) {
+                LOGGER.warn("Error trying to close Kie Server Management Controller Client: {}",
+                            e.getMessage(),
+                            e);
+            }
+        }
     }
 
     @Test

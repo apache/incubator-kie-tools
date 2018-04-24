@@ -18,6 +18,8 @@ package org.kie.workbench.common.screens.server.management.backend;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
@@ -27,11 +29,17 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.server.controller.api.model.spec.ServerTemplateList;
 import org.kie.server.controller.client.KieServerControllerClient;
 import org.kie.server.controller.client.KieServerControllerClientFactory;
+import org.kie.server.controller.client.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 @RunWith(Arquillian.class)
 public class EmbeddedControllerIT extends AbstractControllerIT {
@@ -52,18 +60,65 @@ public class EmbeddedControllerIT extends AbstractControllerIT {
     @RunAsClient
     @OperateOnDeployment("workbench")
     public void testEmbeddedEndpointsUsingRest(final @ArquillianResource URL baseURL) {
-        testEmbeddedEndpoints(KieServerControllerClientFactory.newRestClient(getRestURL(baseURL),
-                                                                             USER,
-                                                                             PASSWORD));
+        client = KieServerControllerClientFactory.newRestClient(getRestURL(baseURL),
+                                                                USER,
+                                                                PASSWORD);
+        testEmbeddedEndpoints(client);
     }
 
     @Test
     @RunAsClient
     @OperateOnDeployment("workbench")
     public void testEmbeddedEndpointsUsingWebSocket(final @ArquillianResource URL baseURL) {
-        testEmbeddedEndpoints(KieServerControllerClientFactory.newWebSocketClient(getWebSocketUrl(baseURL),
-                                                                                  USER,
-                                                                                  PASSWORD));
+        client = KieServerControllerClientFactory.newWebSocketClient(getWebSocketUrl(baseURL),
+                                                                     USER,
+                                                                     PASSWORD);
+        testEmbeddedEndpoints(client);
+    }
+
+    @Test
+    @RunAsClient
+    @OperateOnDeployment("workbench")
+    public void testEmbeddedNotificationsUsingWebSocket(final @ArquillianResource URL baseURL) throws Exception {
+        EventHandler eventHandler = mock(EventHandler.class);
+        client = KieServerControllerClientFactory.newWebSocketClient(getWebSocketUrl(baseURL),
+                                                                     USER,
+                                                                     PASSWORD,
+                                                                     eventHandler);
+        runAsync(() -> {
+            // Check that there are no kie servers deployed in controller.
+            ServerTemplateList instanceList = client.listServerTemplates();
+            assertServerTemplateList(instanceList);
+
+            // Create new server template
+            ServerTemplate template = new ServerTemplate("notification-int-test",
+                                                         "Notification Test Server");
+            client.saveServerTemplate(template);
+
+            // Check that kie server is registered in controller.
+            instanceList = client.listServerTemplates();
+            assertNotNull(instanceList);
+            assertEquals(2,
+                         instanceList.getServerTemplates().length);
+
+            // Delete server template
+            client.deleteServerTemplate(template.getId());
+            instanceList = client.listServerTemplates();
+            assertServerTemplateList(instanceList);
+        });
+
+        verify(eventHandler,
+               timeout(2000L)).onServerTemplateUpdated(any());
+        verify(eventHandler,
+               timeout(2000L)).onServerTemplateDeleted(any());
+
+        verifyNoMoreInteractions(eventHandler);
+    }
+
+    protected void runAsync(final Runnable runnable) throws Exception {
+        final ExecutorService service = Executors.newSingleThreadExecutor();
+        service.submit(runnable);
+        service.shutdown();
     }
 
     protected void testEmbeddedEndpoints(final KieServerControllerClient client) {
