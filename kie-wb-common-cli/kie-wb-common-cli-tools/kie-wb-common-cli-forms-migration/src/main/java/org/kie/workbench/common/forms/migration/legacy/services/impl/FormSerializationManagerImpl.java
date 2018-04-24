@@ -310,6 +310,8 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
                         field.setOnChangeScript(value);
                     } else if ("movedToForm".equals(propName) && value != null) {
                         field.setMovedToForm(value);
+                    } else if ("sourceLink".equals(propName) && value != null) {
+                        field.setSourceLink(value);
                     }
                 }
             }
@@ -393,6 +395,10 @@ public class FormSerializationManagerImpl implements FormSerializationManager {
 
         if(field.getMovedToForm() != null) {
             addXMLNode("movedToForm", field.getMovedToForm(), rootNode);
+        }
+
+        if(field.getSourceLink() != null) {
+            addXMLNode("sourceLink", field.getMovedToForm(), rootNode);
         }
 
         parent.addChild(rootNode);

@@ -30,6 +30,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProcessFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
+import org.kie.workbench.common.forms.migration.legacy.model.DataHolder;
 import org.kie.workbench.common.forms.migration.legacy.model.Field;
 import org.kie.workbench.common.forms.migration.legacy.model.Form;
 import org.kie.workbench.common.forms.migration.legacy.services.impl.FieldTypeBuilder;
@@ -158,13 +159,23 @@ public class FormDefinitionGeneratorForBPMNWithComplexVariableTest extends Abstr
         Field originalLines = originalForm.getField(INVOICE_LINES);
         Field originalTotal = originalForm.getField(INVOICE_TOTAL);
 
-        String expectedExtraForm = summary.getBaseFormName() + "-" + originalForm.getHolders().iterator().next().getUniqeId();
+        DataHolder originalDataHolder = originalForm.getHolders().iterator().next();
+
+        String expectedExtraForm = summary.getBaseFormName() + "-" + originalDataHolder.getUniqeId();
 
         checkMovedField(originalInvoiceUser, expectedExtraForm);
         checkMovedField(originalLines, expectedExtraForm);
         checkMovedField(originalTotal, expectedExtraForm);
 
         Field invoiceField = originalForm.getField("invoice");
+
+        Assertions.assertThat(invoiceField)
+                .isNotNull()
+                .hasFieldOrPropertyWithValue("bag", INVOICE_MODEL)
+                .hasFieldOrPropertyWithValue("sourceLink", summary.getBaseFormName() + "-" + invoiceField.getFieldName())
+                .hasFieldOrPropertyWithValue("inputBinding", originalDataHolder.getInputId())
+                .hasFieldOrPropertyWithValue("outputBinding", originalDataHolder.getOuputId())
+                .extracting("defaultSubform").doesNotContainNull();
 
         assertNotNull(invoiceField);
         assertEquals(FieldTypeBuilder.SUBFORM, invoiceField.getFieldType().getCode());
@@ -175,6 +186,11 @@ public class FormDefinitionGeneratorForBPMNWithComplexVariableTest extends Abstr
                 .isNotNull()
                 .isInstanceOf(modelType);
 
+        Assertions.assertThat(newFormDefinition.getModel().getProperties())
+                .hasSize(1)
+                .extracting("typeInfo.className")
+                .contains(INVOICE_MODEL);
+
         Assertions.assertThat(newFormDefinition.getFields())
                 .isNotNull()
                 .hasSize(1);
@@ -183,7 +199,8 @@ public class FormDefinitionGeneratorForBPMNWithComplexVariableTest extends Abstr
 
         Assertions.assertThat(newInvoiceField)
                 .isNotNull()
-                .isInstanceOf(SubFormFieldDefinition.class);
+                .isInstanceOf(SubFormFieldDefinition.class)
+                .hasFieldOrPropertyWithValue("standaloneClassName", INVOICE_MODEL);
 
         LayoutTemplate newFormLayout = newFormDefinition.getLayoutTemplate();
 

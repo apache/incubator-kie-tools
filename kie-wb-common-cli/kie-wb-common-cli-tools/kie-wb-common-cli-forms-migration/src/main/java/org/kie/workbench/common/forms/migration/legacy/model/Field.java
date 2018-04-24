@@ -108,6 +108,7 @@ public class Field implements Serializable,
     private Boolean verticalAlignment = Boolean.TRUE;
 
     private String movedToForm;
+    private String sourceLink;
 
     private Form form;
 
@@ -473,6 +474,14 @@ public class Field implements Serializable,
 
     public void setMovedToForm(String movedToForm) {
         this.movedToForm = movedToForm;
+    }
+
+    public String getSourceLink() {
+        return sourceLink;
+    }
+
+    public void setSourceLink(String sourceLink) {
+        this.sourceLink = sourceLink;
     }
 
     public String getFieldPattern() {

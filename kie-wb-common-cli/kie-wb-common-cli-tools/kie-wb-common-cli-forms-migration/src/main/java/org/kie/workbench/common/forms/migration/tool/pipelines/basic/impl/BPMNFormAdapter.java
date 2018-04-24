@@ -133,10 +133,14 @@ public class BPMNFormAdapter extends AbstractFormAdapter {
                 field.setFieldType(fieldTypeManager.getTypeByCode(FieldTypeBuilder.SUBFORM));
                 field.setId(System.currentTimeMillis());
                 field.setFieldName(dataHolder.getUniqeId());
-                field.setInputBinding(dataHolder.getUniqeId());
+                field.setInputBinding(dataHolder.getInputId());
+                field.setOutputBinding(dataHolder.getOuputId());
                 field.setLabel(new HashMap<>());
                 field.getLabel().put(FormsMigrationConstants.DEFAULT_LANG, dataHolder.getUniqeId());
                 field.setPosition(originalForm.getFormFields().size() + 1000);
+                field.setDefaultSubform(newFormDefinition.getId());
+                field.setSourceLink(formName);
+                field.setBag(dataHolder.getClassName());
                 field.setForm(originalForm);
                 originalForm.getFormFields().add(field);
             });

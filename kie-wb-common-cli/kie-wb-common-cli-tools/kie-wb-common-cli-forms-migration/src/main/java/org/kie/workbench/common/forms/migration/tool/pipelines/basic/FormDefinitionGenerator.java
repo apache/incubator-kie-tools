@@ -71,7 +71,7 @@ public class FormDefinitionGenerator extends AbstractMigrationStep {
         List<FormMigrationSummary> possibleBPMNForms = bpmFormAdapter.migrateSummaries();
 
         if (!possibleBPMNForms.isEmpty() && !possibleDataObjectForms.isEmpty()) {
-            arrangeNestedForms(possibleDataObjectForms, possibleDataObjectForms);
+            arrangeNestedForms(possibleBPMNForms, possibleDataObjectForms);
         }
 
         if (!migrationContext.getExtraSummaries().isEmpty() && !possibleDataObjectForms.isEmpty()) {
