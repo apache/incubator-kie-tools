@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,6 +44,7 @@ import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationServic
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
@@ -132,9 +134,22 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     private Event<OnDiagramFocusEvent> onDiagramFocusEvent;
     private Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent;
-    protected SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter;
+    private Optional<SessionPresenter<AbstractClientFullSession, ?, Diagram>> fullSessionPresenter = Optional.empty();
+    private Optional<SessionPresenter<AbstractClientReadOnlySession, ?, Diagram>> readOnlySessionPresenter = Optional.empty();
     private final DiagramClientErrorHandler diagramClientErrorHandler;
     private final ClientTranslationService translationService;
+
+    private final MenuItem clearItem;
+    private final MenuItem visitGraphItem;
+    private final MenuItem switchGridItem;
+    private final MenuItem deleteSelectionItem;
+    private final MenuItem undoItem;
+    private final MenuItem redoItem;
+    private final MenuItem validateItem;
+    private final MenuItem exportsItem;
+    private final MenuItem pasteItem;
+    private final MenuItem copyItem;
+    private final MenuItem cutItem;
 
     private String title = "Project Diagram Editor";
 
@@ -172,6 +187,22 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.onDiagramLostFocusEvent = onDiagramLostFocusEvent;
         this.translationService = translationService;
         this.commands = new HashMap<>();
+
+        this.clearItem = menuItemsBuilder.newClearItem(this::menu_clear);
+        this.visitGraphItem = menuItemsBuilder.newVisitGraphItem(this::menu_visitGraph);
+        this.switchGridItem = menuItemsBuilder.newSwitchGridItem(this::menu_switchGrid);
+        this.deleteSelectionItem = menuItemsBuilder.newDeleteSelectionItem(this::menu_deleteSelected);
+        this.undoItem = menuItemsBuilder.newUndoItem(this::menu_undo);
+        this.redoItem = menuItemsBuilder.newRedoItem(this::menu_redo);
+        this.validateItem = menuItemsBuilder.newValidateItem(() -> validate(this::hideLoadingViews));
+        this.exportsItem = menuItemsBuilder.newExportsItem(this::export_imagePNG,
+                                                           this::export_imageJPG,
+                                                           this::export_imageSVG,
+                                                           this::export_imagePDF,
+                                                           this::export_fileBPMN);
+        this.pasteItem = menuItemsBuilder.newPasteItem(() -> getCommand(PasteSelectionSessionCommand.class).execute());
+        this.copyItem = menuItemsBuilder.newCopyItem(this::menu_copy);
+        this.cutItem = menuItemsBuilder.newCutItem(this::menu_cut);
     }
 
     protected abstract int getCanvasWidth();
@@ -214,15 +245,32 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     protected void open(final ProjectDiagram diagram) {
         showLoadingViews();
         setOriginalHash(diagram.hashCode());
+
+        destroySession();
+
+        //Open applicable SessionPresenter
+        if (!isReadOnly()) {
+            openSession(diagram);
+        } else {
+            openReadOnlySession(diagram);
+        }
+    }
+
+    protected boolean isReadOnly() {
+        return isReadOnly;
+    }
+
+    protected void openSession(final ProjectDiagram diagram) {
         final Metadata metadata = diagram.getMetadata();
         sessionManager.getSessionFactory(metadata,
                                          ClientFullSession.class)
                 .newSession(metadata,
                             s -> {
                                 final AbstractClientFullSession session = (AbstractClientFullSession) s;
-                                presenter = sessionPresenterFactory.newPresenterEditor();
-                                getView().setWidget(presenter.getView());
-                                presenter
+                                final SessionPresenter<AbstractClientFullSession, ?, Diagram> sessionPresenter = sessionPresenterFactory.newPresenterEditor();
+                                fullSessionPresenter = Optional.of(sessionPresenter);
+                                getView().setWidget(sessionPresenter.getView());
+                                sessionPresenter
                                         .withToolbar(false)
                                         .withPalette(true)
                                         .displayNotifications(type -> true)
@@ -241,12 +289,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
                                                   @Override
                                                   public void onSuccess() {
+                                                      initialiseKieEditorForSession(diagram);
+                                                      initialiseMenuBarStateForSession(true);
                                                       bindCommands();
-                                                      updateTitle(diagram.getMetadata().getTitle());
-                                                      hideLoadingViews();
-                                                      setOriginalHash(getCurrentDiagramHash());
-                                                      resetEditorPages(diagram.getMetadata().getOverview());
-                                                      onDiagramLoad();
                                                   }
 
                                                   @Override
@@ -255,6 +300,71 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                                   }
                                               });
                             });
+    }
+
+    protected void openReadOnlySession(final ProjectDiagram diagram) {
+        final Metadata metadata = diagram.getMetadata();
+        sessionManager.getSessionFactory(metadata,
+                                         ClientReadOnlySession.class)
+                .newSession(metadata,
+                            s -> {
+                                final AbstractClientReadOnlySession session = (AbstractClientReadOnlySession) s;
+                                final SessionPresenter<AbstractClientReadOnlySession, ?, Diagram> sessionPresenter = sessionPresenterFactory.newPresenterViewer();
+                                readOnlySessionPresenter = Optional.of(sessionPresenter);
+                                getView().setWidget(sessionPresenter.getView());
+                                sessionPresenter
+                                        .withToolbar(false)
+                                        .withPalette(false)
+                                        .displayNotifications(type -> true)
+                                        .open(diagram,
+                                              session,
+                                              new SessionPresenter.SessionPresenterCallback<AbstractClientReadOnlySession, Diagram>() {
+                                                  @Override
+                                                  public void afterSessionOpened() {
+
+                                                  }
+
+                                                  @Override
+                                                  public void afterCanvasInitialized() {
+
+                                                  }
+
+                                                  @Override
+                                                  public void onSuccess() {
+                                                      initialiseKieEditorForSession(diagram);
+                                                      initialiseMenuBarStateForSession(false);
+                                                      unbindCommands();
+                                                  }
+
+                                                  @Override
+                                                  public void onError(final ClientRuntimeError error) {
+                                                      onLoadError(error);
+                                                  }
+                                              });
+                            });
+    }
+
+    protected void initialiseKieEditorForSession(final ProjectDiagram diagram) {
+        resetEditorPages(diagram.getMetadata().getOverview());
+        updateTitle(diagram.getMetadata().getTitle());
+        setOriginalHash(getCurrentDiagramHash());
+        hideLoadingViews();
+        onDiagramLoad();
+    }
+
+    protected void initialiseMenuBarStateForSession(final boolean enabled) {
+        clearItem.setEnabled(enabled);
+        visitGraphItem.setEnabled(enabled);
+        switchGridItem.setEnabled(enabled);
+        validateItem.setEnabled(enabled);
+        exportsItem.setEnabled(enabled);
+
+        deleteSelectionItem.setEnabled(false);
+        undoItem.setEnabled(false);
+        redoItem.setEnabled(false);
+        copyItem.setEnabled(false);
+        cutItem.setEnabled(false);
+        pasteItem.setEnabled(false);
     }
 
     protected void onDiagramLoad() {
@@ -352,38 +462,22 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     @Override
     protected void makeMenuBar() {
-        final MenuItem clearItem = menuItemsBuilder.newClearItem(this::menu_clear);
         getCommand(ClearSessionCommand.class).listen(() -> clearItem.setEnabled(getCommand(ClearSessionCommand.class).isEnabled()));
-        final MenuItem visitGraphItem = menuItemsBuilder.newVisitGraphItem(this::menu_visitGraph);
         getCommand(VisitGraphSessionCommand.class).listen(() -> visitGraphItem.setEnabled(getCommand(VisitGraphSessionCommand.class).isEnabled()));
-        final MenuItem switchGridItem = menuItemsBuilder.newSwitchGridItem(this::menu_switchGrid);
         getCommand(SwitchGridSessionCommand.class).listen(() -> switchGridItem.setEnabled(getCommand(SwitchGridSessionCommand.class).isEnabled()));
-        final MenuItem deleteSelectionItem = menuItemsBuilder.newDeleteSelectionItem(this::menu_deleteSelected);
         getCommand(DeleteSelectionSessionCommand.class).listen(() -> deleteSelectionItem.setEnabled(getCommand(DeleteSelectionSessionCommand.class).isEnabled()));
-        final MenuItem undoItem = menuItemsBuilder.newUndoItem(this::menu_undo);
         getCommand(UndoSessionCommand.class).listen(() -> undoItem.setEnabled(getCommand(UndoSessionCommand.class).isEnabled()));
-        final MenuItem redoItem = menuItemsBuilder.newRedoItem(this::menu_redo);
         getCommand(RedoSessionCommand.class).listen(() -> redoItem.setEnabled(getCommand(RedoSessionCommand.class).isEnabled()));
-
-        final MenuItem validateItem = menuItemsBuilder.newValidateItem(() -> validate(this::hideLoadingViews));
         getCommand(ValidateSessionCommand.class).listen(() -> validateItem.setEnabled(getCommand(ValidateSessionCommand.class).isEnabled()));
 
-        final MenuItem exportsItem = menuItemsBuilder.newExportsItem(this::export_imagePNG,
-                                                                     this::export_imageJPG,
-                                                                     this::export_imageSVG,
-                                                                     this::export_imagePDF,
-                                                                     this::export_fileBPMN);
         getCommand(ExportToPngSessionCommand.class).listen(() -> exportsItem.setEnabled(getCommand(ExportToPngSessionCommand.class).isEnabled()));
         getCommand(ExportToJpgSessionCommand.class).listen(() -> exportsItem.setEnabled(getCommand(ExportToJpgSessionCommand.class).isEnabled()));
         getCommand(ExportToSvgSessionCommand.class).listen(() -> exportsItem.setEnabled(getCommand(ExportToSvgSessionCommand.class).isEnabled()));
         getCommand(ExportToPdfSessionCommand.class).listen(() -> exportsItem.setEnabled(getCommand(ExportToPdfSessionCommand.class).isEnabled()));
         getCommand(ExportToBpmnSessionCommand.class).listen(() -> exportsItem.setEnabled(getCommand(ExportToBpmnSessionCommand.class).isEnabled()));
 
-        final MenuItem pasteItem = menuItemsBuilder.newPasteItem(() -> getCommand(PasteSelectionSessionCommand.class).execute());
         getCommand(PasteSelectionSessionCommand.class).listen(() -> pasteItem.setEnabled(getCommand(PasteSelectionSessionCommand.class).isEnabled()));
-        final MenuItem copyItem = menuItemsBuilder.newCopyItem(this::menu_copy);
         getCommand(CopySelectionSessionCommand.class).listen(() -> copyItem.setEnabled(getCommand(CopySelectionSessionCommand.class).isEnabled()));
-        final MenuItem cutItem = menuItemsBuilder.newCutItem(this::menu_cut);
         getCommand(CutSelectionSessionCommand.class).listen(() -> cutItem.setEnabled(getCommand(CutSelectionSessionCommand.class).isEnabled()));
 
         deleteSelectionItem.setEnabled(false);
@@ -574,24 +668,32 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
             final String message = CommonConstants.INSTANCE.NoChangesSinceLastSave();
             log(Level.INFO,
                 message);
-            presenter.getView().showMessage(message);
+            getSessionPresenter().getView().showMessage(message);
         }
     }
 
     @SuppressWarnings("unchecked")
-    void bindCommands() {
-        commands.values().stream().forEach(command -> command.bind(getSession()));
+    protected void bindCommands() {
+        final ClientSession session = getSession();
+        commands.values().stream().forEach(command -> command.bind(session));
     }
 
-    void unbindCommands() {
+    protected void unbindCommands() {
         commands.values().stream().forEach(ClientSessionCommand::unbind);
     }
 
-    private void destroySession() {
+    protected void destroySession() {
         unbindCommands();
-        if (Objects.nonNull(presenter)) {
-            presenter.destroy();
-        }
+
+        //Release existing SessionPresenter
+        fullSessionPresenter.ifPresent(session -> {
+            session.destroy();
+            fullSessionPresenter = Optional.empty();
+        });
+        readOnlySessionPresenter.ifPresent(session -> {
+            session.destroy();
+            readOnlySessionPresenter = Optional.empty();
+        });
     }
 
     private void updateTitle(final String title) {
@@ -620,8 +722,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                          resourceType.getShortName());
     }
 
-    private AbstractClientFullSession getSession() {
-        return null != presenter ? presenter.getInstance() : null;
+    private ClientSession getSession() {
+        return null != getSessionPresenter() ? getSessionPresenter().getInstance() : null;
     }
 
     @SuppressWarnings("unchecked")
@@ -679,7 +781,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         final String message = translationService.getValue(StunnerProjectClientConstants.DIAGRAM_SAVE_SUCCESSFUL);
         log(Level.INFO,
             message);
-        presenter.getView().showMessage(message);
+        getSessionPresenter().getView().showMessage(message);
         setOriginalHash(getCurrentDiagramHash());
     }
 
@@ -761,11 +863,22 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         commands.put(CutSelectionSessionCommand.class, sessionCommandFactory.newCutSelectionCommand());
     }
 
-    public SessionPresenter<AbstractClientFullSession, ?, Diagram> getSessionPresenter() {
-        return presenter;
+    public SessionPresenter<? extends ClientSession, ?, Diagram> getSessionPresenter() {
+        if (fullSessionPresenter.isPresent()) {
+            return fullSessionPresenter.get();
+        } else if (readOnlySessionPresenter.isPresent()) {
+            return readOnlySessionPresenter.get();
+        }
+        return null;
     }
 
-    void setSessionPresenter(final SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter) {
-        this.presenter = presenter;
+    //For Unit Testing
+    protected void setFullSessionPresenter(final SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter) {
+        this.fullSessionPresenter = Optional.ofNullable(presenter);
+    }
+
+    //For Unit Testing
+    protected void setReadOnlySessionPresenter(final SessionPresenter<AbstractClientReadOnlySession, ?, Diagram> presenter) {
+        this.readOnlySessionPresenter = Optional.ofNullable(presenter);
     }
 }

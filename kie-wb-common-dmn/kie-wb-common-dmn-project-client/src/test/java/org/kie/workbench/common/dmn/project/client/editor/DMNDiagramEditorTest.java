@@ -16,17 +16,18 @@
 
 package org.kie.workbench.common.dmn.project.client.editor;
 
+import java.util.logging.Level;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
-import org.kie.workbench.common.stunner.core.client.api.SessionManager;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.dmn.project.client.type.DMNDiagramResourceType;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
+import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditorTest;
 import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.mockito.Mock;
-import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.mvp.PlaceRequest;
 
 import static org.mockito.Matchers.any;
@@ -38,57 +39,94 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class DMNDiagramEditorTest {
+public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
+
+    @Mock
+    private PlaceRequest currentPlace;
+
+    @Mock
+    private AbstractCanvasHandler canvasHandler;
 
     @Mock
     private DecisionNavigatorDock decisionNavigatorDock;
 
-    @Mock
-    private SessionManager sessionManager;
+    private DMNDiagramEditor diagramEditor;
 
-    private DMNDiagramEditor editor;
+    @Override
+    protected DMNDiagramResourceType mockResourceType() {
+        final DMNDiagramResourceType resourceType = mock(DMNDiagramResourceType.class);
+        when(resourceType.getSuffix()).thenReturn("dmn");
+        when(resourceType.getShortName()).thenReturn("DMN");
+        return resourceType;
+    }
 
-    @Before
-    public void setup() {
-        editor = spy(new DMNDiagramEditor(null, null, null, null, null, null, null, sessionManager, null, null, null, null, null, null, null, null, decisionNavigatorDock));
+    @SuppressWarnings("unchecked")
+    @Override
+    protected AbstractProjectDiagramEditor createDiagramEditor() {
+        diagramEditor = spy(new DMNDiagramEditor(view,
+                                                 placeManager,
+                                                 errorPopupPresenter,
+                                                 changeTitleNotificationEvent,
+                                                 savePopUpPresenter,
+                                                 (DMNDiagramResourceType) getResourceType(),
+                                                 clientProjectDiagramService,
+                                                 sessionManager,
+                                                 sessionPresenterFactory,
+                                                 sessionCommandFactory,
+                                                 projectMenuItemsBuilder,
+                                                 onDiagramFocusEvent,
+                                                 onDiagramLostFocusEvent,
+                                                 projectMessagesListener,
+                                                 diagramClientErrorHandler,
+                                                 translationService,
+                                                 decisionNavigatorDock) {
+            {
+                fileMenuBuilder = DMNDiagramEditorTest.this.fileMenuBuilder;
+                workbenchContext = DMNDiagramEditorTest.this.workbenchContext;
+                projectController = DMNDiagramEditorTest.this.projectController;
+                versionRecordManager = DMNDiagramEditorTest.this.versionRecordManager;
+                alertsButtonMenuItemBuilder = DMNDiagramEditorTest.this.alertsButtonMenuItemBuilder;
+                kieView = DMNDiagramEditorTest.this.kieView;
+                overviewWidget = DMNDiagramEditorTest.this.overviewWidget;
+            }
+
+            @Override
+            protected void log(Level level,
+                               String message) {
+                //avoid GWT log initialization.
+            }
+        });
+
+        return diagramEditor;
     }
 
     @Test
     public void testOnStartup() {
+        doNothing().when(diagramEditor).superDoStartUp(filePath, currentPlace);
 
-        final ObservablePath path = mock(ObservablePath.class);
-        final PlaceRequest place = mock(PlaceRequest.class);
+        diagramEditor.onStartup(filePath, currentPlace);
 
-        doNothing().when(editor).superDoStartUp(path, place);
-
-        editor.onStartup(path, place);
-
-        verify(editor).superDoStartUp(path, place);
+        verify(diagramEditor).superDoStartUp(filePath, currentPlace);
         verify(decisionNavigatorDock).init(PerspectiveIds.LIBRARY);
     }
 
     @Test
     public void testOnClose() {
+        doNothing().when(diagramEditor).superOnClose();
 
-        doNothing().when(editor).superOnClose();
+        diagramEditor.onClose();
 
-        editor.onClose();
-
-        verify(editor).superOnClose();
+        verify(diagramEditor).superOnClose();
         verify(decisionNavigatorDock).close();
         verify(decisionNavigatorDock).resetContent();
     }
 
     @Test
     public void testOnDiagramLoadWhenCanvasHandlerIsNotNull() {
+        when(sessionManager.getCurrentSession()).thenReturn(clientFullSession);
+        when(clientFullSession.getCanvasHandler()).thenReturn(canvasHandler);
 
-        final CanvasHandler canvasHandler = mock(CanvasHandler.class);
-        final ClientSession clientSession = mock(ClientSession.class);
-
-        when(sessionManager.getCurrentSession()).thenReturn(clientSession);
-        when(clientSession.getCanvasHandler()).thenReturn(canvasHandler);
-
-        editor.onDiagramLoad();
+        diagramEditor.onDiagramLoad();
 
         verify(decisionNavigatorDock).setupContent(canvasHandler);
         verify(decisionNavigatorDock).open();
@@ -96,8 +134,7 @@ public class DMNDiagramEditorTest {
 
     @Test
     public void testOnDiagramLoadWhenCanvasHandlerIsNull() {
-
-        editor.onDiagramLoad();
+        diagramEditor.onDiagramLoad();
 
         verify(decisionNavigatorDock, never()).setupContent(any());
         verify(decisionNavigatorDock, never()).open();
@@ -105,12 +142,11 @@ public class DMNDiagramEditorTest {
 
     @Test
     public void testOnFocus() {
+        doNothing().when(diagramEditor).superDoFocus();
 
-        doNothing().when(editor).superDoFocus();
+        diagramEditor.onFocus();
 
-        editor.onFocus();
-
-        verify(editor).superDoFocus();
-        verify(editor).onDiagramLoad();
+        verify(diagramEditor).superDoFocus();
+        verify(diagramEditor).onDiagramLoad();
     }
 }

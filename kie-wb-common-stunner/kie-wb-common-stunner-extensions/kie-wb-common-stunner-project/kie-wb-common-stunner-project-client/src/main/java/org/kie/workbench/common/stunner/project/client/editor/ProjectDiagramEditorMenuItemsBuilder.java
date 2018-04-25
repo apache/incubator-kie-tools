@@ -239,16 +239,18 @@ public class ProjectDiagramEditorMenuItemsBuilder {
             addClickHandler(event -> exportBPMNCommand.execute());
         }});
 
-        final IsWidget group = new ButtonGroup() {{
-            add(new Button() {{
-                setToggleCaret(true);
-                setDataToggle(Toggle.DROPDOWN);
-                setIcon(IconType.DOWNLOAD);
-                setSize(ButtonSize.SMALL);
-                setTitle(translationService.getValue(StunnerProjectClientConstants.DOWNLOAD_DIAGRAM));
-            }});
-            add(menu);
+        final Button button = new Button() {{
+            setToggleCaret(true);
+            setDataToggle(Toggle.DROPDOWN);
+            setIcon(IconType.DOWNLOAD);
+            setSize(ButtonSize.SMALL);
+            setTitle(translationService.getValue(StunnerProjectClientConstants.DOWNLOAD_DIAGRAM));
         }};
+        final IsWidget group = MenuUtils.buildHasEnabledWidget(new ButtonGroup() {{
+                                                                   add(button);
+                                                                   add(menu);
+                                                               }},
+                                                               button);
         return buildItem(group);
     }
 

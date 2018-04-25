@@ -36,7 +36,16 @@ import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearStatesSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.CopySelectionSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.CutSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.DeleteSelectionSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToBpmnSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToJpgSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPdfSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPngSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToSvgSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.PasteSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SwitchGridSessionCommand;
@@ -82,6 +91,7 @@ import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -142,25 +152,52 @@ public class ProjectDiagramEditorTest {
     private ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder;
 
     @Mock
-    private VisitGraphSessionCommand sessionVisitGraphCommand;
+    private ClearStatesSessionCommand clearStatesSessionCommand;
 
     @Mock
-    private SwitchGridSessionCommand sessionSwitchGridCommand;
+    private SwitchGridSessionCommand switchGridSessionCommand;
 
     @Mock
-    private ClearSessionCommand sessionClearCommand;
+    private VisitGraphSessionCommand visitGraphSessionCommand;
 
     @Mock
-    private DeleteSelectionSessionCommand sessionDeleteSelectionCommand;
+    private ClearSessionCommand clearSessionCommand;
 
     @Mock
-    private UndoSessionCommand sessionUndoCommand;
+    private DeleteSelectionSessionCommand deleteSelectionSessionCommand;
 
     @Mock
-    private RedoSessionCommand sessionRedoCommand;
+    private UndoSessionCommand undoSessionCommand;
 
     @Mock
-    private ValidateSessionCommand sessionValidateCommand;
+    private RedoSessionCommand redoSessionCommand;
+
+    @Mock
+    private ValidateSessionCommand validateSessionCommand;
+
+    @Mock
+    private ExportToPngSessionCommand exportToPngSessionCommand;
+
+    @Mock
+    private ExportToJpgSessionCommand exportToJpgSessionCommand;
+
+    @Mock
+    private ExportToPdfSessionCommand exportToPdfSessionCommand;
+
+    @Mock
+    private ExportToBpmnSessionCommand exportToBpmnSessionCommand;
+
+    @Mock
+    private CopySelectionSessionCommand copySelectionSessionCommand;
+
+    @Mock
+    private PasteSelectionSessionCommand pasteSelectionSessionCommand;
+
+    @Mock
+    private CutSelectionSessionCommand cutSelectionSessionCommand;
+
+    @Mock
+    private ExportToSvgSessionCommand exportToSvgSessionCommand;
 
     @Mock
     private ClientFullSessionImpl fullSession;
@@ -214,13 +251,22 @@ public class ProjectDiagramEditorTest {
     public void setup() {
         VersionRecordManager versionRecordManagerMock = versionRecordManager;
         when(versionRecordManager.getCurrentPath()).thenReturn(path);
-        when(sessionCommandFactory.newClearCommand()).thenReturn(sessionClearCommand);
-        when(sessionCommandFactory.newVisitGraphCommand()).thenReturn(sessionVisitGraphCommand);
-        when(sessionCommandFactory.newSwitchGridCommand()).thenReturn(sessionSwitchGridCommand);
-        when(sessionCommandFactory.newDeleteSelectedElementsCommand()).thenReturn(sessionDeleteSelectionCommand);
-        when(sessionCommandFactory.newUndoCommand()).thenReturn(sessionUndoCommand);
-        when(sessionCommandFactory.newRedoCommand()).thenReturn(sessionRedoCommand);
-        when(sessionCommandFactory.newValidateCommand()).thenReturn(sessionValidateCommand);
+        doReturn(clearStatesSessionCommand).when(sessionCommandFactory).newClearStatesCommand();
+        doReturn(switchGridSessionCommand).when(sessionCommandFactory).newSwitchGridCommand();
+        doReturn(visitGraphSessionCommand).when(sessionCommandFactory).newVisitGraphCommand();
+        doReturn(clearSessionCommand).when(sessionCommandFactory).newClearCommand();
+        doReturn(deleteSelectionSessionCommand).when(sessionCommandFactory).newDeleteSelectedElementsCommand();
+        doReturn(undoSessionCommand).when(sessionCommandFactory).newUndoCommand();
+        doReturn(redoSessionCommand).when(sessionCommandFactory).newRedoCommand();
+        doReturn(validateSessionCommand).when(sessionCommandFactory).newValidateCommand();
+        doReturn(exportToPngSessionCommand).when(sessionCommandFactory).newExportToPngSessionCommand();
+        doReturn(exportToJpgSessionCommand).when(sessionCommandFactory).newExportToJpgSessionCommand();
+        doReturn(exportToSvgSessionCommand).when(sessionCommandFactory).newExportToSvgSessionCommand();
+        doReturn(exportToPdfSessionCommand).when(sessionCommandFactory).newExportToPdfSessionCommand();
+        doReturn(exportToBpmnSessionCommand).when(sessionCommandFactory).newExportToBpmnSessionCommand();
+        doReturn(copySelectionSessionCommand).when(sessionCommandFactory).newCopySelectionCommand();
+        doReturn(pasteSelectionSessionCommand).when(sessionCommandFactory).newPasteSelectionCommand();
+        doReturn(cutSelectionSessionCommand).when(sessionCommandFactory).newCutSelectionCommand();
         when(presenterFactory.newPresenterEditor()).thenReturn(presenter);
         when(clientSessionManager.getCurrentSession()).thenReturn(fullSession);
         when(clientSessionManager.getSessionFactory(metadata,
@@ -267,7 +313,7 @@ public class ProjectDiagramEditorTest {
             }
         };
         tested.init();
-        tested.setSessionPresenter(presenter);
+        tested.setFullSessionPresenter(presenter);
 
         when(translationService.getValue(anyString())).thenAnswer(i -> i.getArguments()[0]);
     }
@@ -277,19 +323,19 @@ public class ProjectDiagramEditorTest {
     public void testInit() {
         verify(view,
                times(1)).init(eq(tested));
-        verify(sessionVisitGraphCommand,
+        verify(visitGraphSessionCommand,
                times(0)).bind(eq(fullSession));
-        verify(sessionSwitchGridCommand,
+        verify(switchGridSessionCommand,
                times(0)).bind(eq(fullSession));
-        verify(sessionClearCommand,
+        verify(clearSessionCommand,
                times(0)).bind(eq(fullSession));
-        verify(sessionDeleteSelectionCommand,
+        verify(deleteSelectionSessionCommand,
                times(0)).bind(eq(fullSession));
-        verify(sessionUndoCommand,
+        verify(undoSessionCommand,
                times(0)).bind(eq(fullSession));
-        verify(sessionRedoCommand,
+        verify(redoSessionCommand,
                times(0)).bind(eq(fullSession));
-        verify(sessionValidateCommand,
+        verify(validateSessionCommand,
                times(0)).bind(eq(fullSession));
     }
 
@@ -297,7 +343,7 @@ public class ProjectDiagramEditorTest {
     @SuppressWarnings("unchecked")
     public void testValidateBeforeSave() {
         tested.save();
-        verify(sessionValidateCommand,
+        verify(validateSessionCommand,
                times(1)).execute(any(ClientSessionCommand.Callback.class));
     }
 
@@ -419,7 +465,7 @@ public class ProjectDiagramEditorTest {
         doAnswer(i -> {
             ((ClientSessionCommand.Callback) i.getArguments()[0]).onSuccess();
             return null;
-        }).when(sessionValidateCommand).execute(any(ClientSessionCommand.Callback.class));
+        }).when(validateSessionCommand).execute(any(ClientSessionCommand.Callback.class));
 
         tested.onSave();
 
@@ -433,7 +479,7 @@ public class ProjectDiagramEditorTest {
         doAnswer(i -> {
             ((ClientSessionCommand.Callback) i.getArguments()[0]).onSuccess();
             return null;
-        }).when(sessionValidateCommand).execute(any(ClientSessionCommand.Callback.class));
+        }).when(validateSessionCommand).execute(any(ClientSessionCommand.Callback.class));
 
         tested.onSave();
 

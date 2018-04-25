@@ -46,17 +46,17 @@ public class BPMNDiagramEditorMenuItemsBuilder {
     }
 
     public MenuItem newMigrateMenuItem(final Command migrateCommand) {
-        return MenuUtils.buildItem(
-                new Button() {{
-                    setSize(ButtonSize.SMALL);
-                    setText(translationService.getValue(BPMNClientConstants.EditorMigrateActionMenu));
-                    addClickHandler(clickEvent -> migrateCommand.execute());
-                }});
+        final MenuUtils.HasEnabledIsWidget buttonWrapper = MenuUtils.buildHasEnabledWidget(new Button() {{
+            setSize(ButtonSize.SMALL);
+            setText(translationService.getValue(BPMNClientConstants.EditorMigrateActionMenu));
+            addClickHandler(clickEvent -> migrateCommand.execute());
+        }});
+        return MenuUtils.buildItem(buttonWrapper);
     }
 
     public MenuItem newFormsGenerationMenuItem(final Command generateProcessForm,
-                                        final Command generateAllForms,
-                                        final Command generateSelectedForms) {
+                                               final Command generateAllForms,
+                                               final Command generateSelectedForms) {
         final DropDownMenu menu = new DropDownMenu() {{
             setPull(Pull.RIGHT);
         }};
@@ -79,16 +79,19 @@ public class BPMNDiagramEditorMenuItemsBuilder {
             setTitle(translationService.getValue(BPMNClientConstants.EditorGenerateSelectionForms));
             addClickHandler(event -> generateSelectedForms.execute());
         }});
-        final IsWidget group = new ButtonGroup() {{
-            add(new Button() {{
-                setToggleCaret(true);
-                setDataToggle(Toggle.DROPDOWN);
-                setIcon(IconType.LIST_ALT);
-                setSize(ButtonSize.SMALL);
-                setTitle(translationService.getValue(BPMNClientConstants.EditorFormGenerationTitle));
-            }});
-            add(menu);
+
+        final Button button = new Button() {{
+            setToggleCaret(true);
+            setDataToggle(Toggle.DROPDOWN);
+            setIcon(IconType.LIST_ALT);
+            setSize(ButtonSize.SMALL);
+            setTitle(translationService.getValue(BPMNClientConstants.EditorFormGenerationTitle));
         }};
-        return  MenuUtils.buildItem(group);
+        final IsWidget group = MenuUtils.buildHasEnabledWidget(new ButtonGroup() {{
+                                                                   add(button);
+                                                                   add(menu);
+                                                               }},
+                                                               button);
+        return MenuUtils.buildItem(group);
     }
 }

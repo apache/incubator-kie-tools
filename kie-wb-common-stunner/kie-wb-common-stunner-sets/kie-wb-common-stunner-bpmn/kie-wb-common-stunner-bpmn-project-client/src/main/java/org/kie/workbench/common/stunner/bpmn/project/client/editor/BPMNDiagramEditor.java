@@ -70,6 +70,7 @@ import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
@@ -87,6 +88,9 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
     private boolean isMigrating = false;
 
     private final PopupUtil popupUtil;
+
+    private final MenuItem formsGenerationMenuItem;
+    private final MenuItem migrateMenuItem;
 
     @Inject
     public BPMNDiagramEditor(final View view,
@@ -133,6 +137,11 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
         this.bpmnDiagramEditorMenuItemsBuilder = bpmnDiagramEditorMenuItemsBuilder;
         this.migrateDiagramEvent = migrateDiagramEvent;
         this.popupUtil = popupUtil;
+
+        this.formsGenerationMenuItem = bpmnDiagramEditorMenuItemsBuilder.newFormsGenerationMenuItem(() -> executeFormsCommand(GenerateProcessFormsSessionCommand.class),
+                                                                                                    () -> executeFormsCommand(GenerateDiagramFormsSessionCommand.class),
+                                                                                                    () -> executeFormsCommand(GenerateSelectedFormsSessionCommand.class));
+        this.migrateMenuItem = bpmnDiagramEditorMenuItemsBuilder.newMigrateMenuItem(this::onMigrate);
     }
 
     @OnStartup
@@ -140,6 +149,13 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
                           final PlaceRequest place) {
         super.doStartUp(path,
                         place);
+    }
+
+    @Override
+    protected void initialiseMenuBarStateForSession(final boolean enabled) {
+        super.initialiseMenuBarStateForSession(enabled);
+        formsGenerationMenuItem.setEnabled(enabled);
+        migrateMenuItem.setEnabled(enabled);
     }
 
     @Override
@@ -159,10 +175,8 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
     protected void makeAdditionalStunnerMenus(final FileMenuBuilder fileMenuBuilder) {
         super.makeAdditionalStunnerMenus(fileMenuBuilder);
         fileMenuBuilder
-                .addNewTopLevelMenu(bpmnDiagramEditorMenuItemsBuilder.newFormsGenerationMenuItem(() -> executeFormsCommand(GenerateProcessFormsSessionCommand.class),
-                                                                                                 () -> executeFormsCommand(GenerateDiagramFormsSessionCommand.class),
-                                                                                                 () -> executeFormsCommand(GenerateSelectedFormsSessionCommand.class)))
-                .addNewTopLevelMenu(bpmnDiagramEditorMenuItemsBuilder.newMigrateMenuItem(this::onMigrate));
+                .addNewTopLevelMenu(formsGenerationMenuItem)
+                .addNewTopLevelMenu(migrateMenuItem);
     }
 
     @Override

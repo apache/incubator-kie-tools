@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearStatesSessionCommand;
@@ -54,6 +55,7 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.UndoSes
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ValidateSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGraphSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
 import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesListener;
@@ -98,7 +100,7 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class AbstractProjectDiagramEditorTest {
 
-    private static final String TITLE = "title";
+    protected static final String TITLE = "title";
 
     @Mock
     protected ProjectDiagram diagram;
@@ -221,13 +223,19 @@ public class AbstractProjectDiagramEditorTest {
     protected ExportToSvgSessionCommand exportToSvgSessionCommand;
 
     @Mock
-    protected SessionPresenter sessionPresenter;
+    protected SessionPresenter fullSessionPresenter;
+
+    @Mock
+    protected SessionPresenter readOnlySessionPresenter;
 
     @Mock
     protected SessionPresenter.View sessionPresenterView;
 
     @Mock
     protected AbstractClientFullSession clientFullSession;
+
+    @Mock
+    protected AbstractClientReadOnlySession clientReadOnlySession;
 
     @Mock
     protected ObservablePath filePath;
@@ -238,11 +246,47 @@ public class AbstractProjectDiagramEditorTest {
     @Mock
     protected OverviewWidgetPresenter overviewWidget;
 
-    @Captor
-    private ArgumentCaptor<Consumer<ClientFullSession>> clientSessionConsumerCaptor;
+    @Mock
+    protected MenuItem clearItem;
+
+    @Mock
+    protected MenuItem visitGraphItem;
+
+    @Mock
+    protected MenuItem switchGridItem;
+
+    @Mock
+    protected MenuItem deleteSelectionItem;
+
+    @Mock
+    protected MenuItem undoItem;
+
+    @Mock
+    protected MenuItem redoItem;
+
+    @Mock
+    protected MenuItem validateItem;
+
+    @Mock
+    protected MenuItem exportsItem;
+
+    @Mock
+    protected MenuItem pasteItem;
+
+    @Mock
+    protected MenuItem copyItem;
+
+    @Mock
+    protected MenuItem cutItem;
 
     @Captor
-    private ArgumentCaptor<SessionPresenter.SessionPresenterCallback> clientSessionPresenterCallbackCaptor;
+    protected ArgumentCaptor<Consumer<ClientFullSession>> clientFullSessionConsumerCaptor;
+
+    @Captor
+    protected ArgumentCaptor<Consumer<ClientReadOnlySession>> clientReadOnlySessionConsumerCaptor;
+
+    @Captor
+    protected ArgumentCaptor<SessionPresenter.SessionPresenterCallback> clientSessionPresenterCallbackCaptor;
 
     abstract class ClientResourceTypeMock implements ClientResourceType {
 
@@ -270,28 +314,35 @@ public class AbstractProjectDiagramEditorTest {
         doReturn(pasteSelectionSessionCommand).when(sessionCommandFactory).newPasteSelectionCommand();
         doReturn(cutSelectionSessionCommand).when(sessionCommandFactory).newCutSelectionCommand();
 
-        when(sessionPresenterFactory.newPresenterEditor()).thenReturn(sessionPresenter);
-        when(sessionPresenter.getInstance()).thenReturn(clientFullSession);
-        when(sessionPresenter.withToolbar(anyBoolean())).thenReturn(sessionPresenter);
-        when(sessionPresenter.withPalette(anyBoolean())).thenReturn(sessionPresenter);
-        when(sessionPresenter.displayNotifications(any(Predicate.class))).thenReturn(sessionPresenter);
-        when(sessionPresenter.getView()).thenReturn(sessionPresenterView);
+        when(sessionPresenterFactory.newPresenterEditor()).thenReturn(fullSessionPresenter);
+        when(fullSessionPresenter.getInstance()).thenReturn(clientFullSession);
+        when(fullSessionPresenter.withToolbar(anyBoolean())).thenReturn(fullSessionPresenter);
+        when(fullSessionPresenter.withPalette(anyBoolean())).thenReturn(fullSessionPresenter);
+        when(fullSessionPresenter.displayNotifications(any(Predicate.class))).thenReturn(fullSessionPresenter);
+        when(fullSessionPresenter.getView()).thenReturn(sessionPresenterView);
 
-        doReturn(mock(MenuItem.class)).when(projectMenuItemsBuilder).newClearItem(any(Command.class));
-        doReturn(mock(MenuItem.class)).when(projectMenuItemsBuilder).newVisitGraphItem(any(Command.class));
-        doReturn(mock(MenuItem.class)).when(projectMenuItemsBuilder).newSwitchGridItem(any(Command.class));
-        doReturn(mock(MenuItem.class)).when(projectMenuItemsBuilder).newDeleteSelectionItem(any(Command.class));
-        doReturn(mock(MenuItem.class)).when(projectMenuItemsBuilder).newUndoItem(any(Command.class));
-        doReturn(mock(MenuItem.class)).when(projectMenuItemsBuilder).newRedoItem(any(Command.class));
-        doReturn(mock(MenuItem.class)).when(projectMenuItemsBuilder).newValidateItem(any(Command.class));
-        doReturn(mock(MenuItem.class)).when(projectMenuItemsBuilder).newExportsItem(any(Command.class),
-                                                                                    any(Command.class),
-                                                                                    any(Command.class),
-                                                                                    any(Command.class),
-                                                                                    any(Command.class));
-        doReturn(mock(MenuItem.class)).when(projectMenuItemsBuilder).newPasteItem(any(Command.class));
-        doReturn(mock(MenuItem.class)).when(projectMenuItemsBuilder).newCopyItem(any(Command.class));
-        doReturn(mock(MenuItem.class)).when(projectMenuItemsBuilder).newCutItem(any(Command.class));
+        when(sessionPresenterFactory.newPresenterViewer()).thenReturn(readOnlySessionPresenter);
+        when(readOnlySessionPresenter.getInstance()).thenReturn(clientReadOnlySession);
+        when(readOnlySessionPresenter.withToolbar(anyBoolean())).thenReturn(readOnlySessionPresenter);
+        when(readOnlySessionPresenter.withPalette(anyBoolean())).thenReturn(readOnlySessionPresenter);
+        when(readOnlySessionPresenter.displayNotifications(any(Predicate.class))).thenReturn(readOnlySessionPresenter);
+        when(readOnlySessionPresenter.getView()).thenReturn(sessionPresenterView);
+
+        when(projectMenuItemsBuilder.newClearItem(any(Command.class))).thenReturn(clearItem);
+        when(projectMenuItemsBuilder.newVisitGraphItem(any(Command.class))).thenReturn(visitGraphItem);
+        when(projectMenuItemsBuilder.newSwitchGridItem(any(Command.class))).thenReturn(switchGridItem);
+        when(projectMenuItemsBuilder.newDeleteSelectionItem(any(Command.class))).thenReturn(deleteSelectionItem);
+        when(projectMenuItemsBuilder.newUndoItem(any(Command.class))).thenReturn(undoItem);
+        when(projectMenuItemsBuilder.newRedoItem(any(Command.class))).thenReturn(redoItem);
+        when(projectMenuItemsBuilder.newValidateItem(any(Command.class))).thenReturn(validateItem);
+        when(projectMenuItemsBuilder.newExportsItem(any(Command.class),
+                                                    any(Command.class),
+                                                    any(Command.class),
+                                                    any(Command.class),
+                                                    any(Command.class))).thenReturn(exportsItem);
+        when(projectMenuItemsBuilder.newPasteItem(any(Command.class))).thenReturn(pasteItem);
+        when(projectMenuItemsBuilder.newCopyItem(any(Command.class))).thenReturn(copyItem);
+        when(projectMenuItemsBuilder.newCutItem(any(Command.class))).thenReturn(cutItem);
 
         when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
         when(versionRecordManager.getPathToLatest()).thenReturn(filePath);
@@ -400,8 +451,10 @@ public class AbstractProjectDiagramEditorTest {
         String title = "testDiagram";
 
         String formattedTitle = presenter.formatTitle(title);
+        String suffix = getResourceType().getSuffix();
+        String shortName = getResourceType().getShortName();
         assertEquals(formattedTitle,
-                     "testDiagram.bpmn - Business Process");
+                     "testDiagram." + suffix + " - " + shortName);
     }
 
     @Test
@@ -415,25 +468,25 @@ public class AbstractProjectDiagramEditorTest {
         when(metadata.getTitle()).thenReturn(TITLE);
         when(metadata.getOverview()).thenReturn(overview);
         when(sessionManager.getSessionFactory(eq(metadata), eq(ClientFullSession.class))).thenReturn(clientSessionFactory);
-        when(sessionPresenterFactory.newPresenterEditor()).thenReturn(sessionPresenter);
 
         presenter.open(diagram);
 
         verify(view).showLoading();
         verify(presenter).setOriginalHash(anyInt());
+        verify(presenter).destroySession();
 
         verify(clientSessionFactory).newSession(eq(metadata),
-                                                clientSessionConsumerCaptor.capture());
+                                                clientFullSessionConsumerCaptor.capture());
 
-        final Consumer<ClientFullSession> clientSessionConsumer = clientSessionConsumerCaptor.getValue();
-        clientSessionConsumer.accept(clientFullSession);
+        final Consumer<ClientFullSession> clientFullSessionConsumer = clientFullSessionConsumerCaptor.getValue();
+        clientFullSessionConsumer.accept(clientFullSession);
 
         verify(view).setWidget(eq(sessionPresenterView));
-        verify(sessionPresenter).withToolbar(eq(false));
-        verify(sessionPresenter).withPalette(eq(true));
-        verify(sessionPresenter).open(eq(diagram),
-                                      eq(clientFullSession),
-                                      clientSessionPresenterCallbackCaptor.capture());
+        verify(fullSessionPresenter).withToolbar(eq(false));
+        verify(fullSessionPresenter).withPalette(eq(true));
+        verify(fullSessionPresenter).open(eq(diagram),
+                                          eq(clientFullSession),
+                                          clientSessionPresenterCallbackCaptor.capture());
 
         final SessionPresenter.SessionPresenterCallback clientSessionPresenterCallback = clientSessionPresenterCallbackCaptor.getValue();
         clientSessionPresenterCallback.onSuccess();
@@ -449,13 +502,66 @@ public class AbstractProjectDiagramEditorTest {
                                         any(com.google.gwt.user.client.Command.class));
 
         verify(presenter).onDiagramLoad();
+
+        assertEquals(fullSessionPresenter,
+                     presenter.getSessionPresenter());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testOpenReadOnly() {
+        final ProjectMetadata metadata = mock(ProjectMetadata.class);
+        final Overview overview = mock(Overview.class);
+        final ClientSessionFactory clientSessionFactory = mock(ClientSessionFactory.class);
+
+        when(diagram.getMetadata()).thenReturn(metadata);
+        when(metadata.getTitle()).thenReturn(TITLE);
+        when(metadata.getOverview()).thenReturn(overview);
+        when(sessionManager.getSessionFactory(eq(metadata), eq(ClientReadOnlySession.class))).thenReturn(clientSessionFactory);
+
+        doReturn(true).when(presenter).isReadOnly();
+        presenter.open(diagram);
+
+        verify(view).showLoading();
+        verify(presenter).setOriginalHash(anyInt());
+        verify(presenter).destroySession();
+
+        verify(clientSessionFactory).newSession(eq(metadata),
+                                                clientReadOnlySessionConsumerCaptor.capture());
+
+        final Consumer<ClientReadOnlySession> clientReadOnlySessionConsumer = clientReadOnlySessionConsumerCaptor.getValue();
+        clientReadOnlySessionConsumer.accept(clientReadOnlySession);
+
+        verify(view).setWidget(eq(sessionPresenterView));
+        verify(readOnlySessionPresenter).withToolbar(eq(false));
+        verify(readOnlySessionPresenter).withPalette(eq(false));
+        verify(readOnlySessionPresenter).open(eq(diagram),
+                                              eq(clientReadOnlySession),
+                                              clientSessionPresenterCallbackCaptor.capture());
+
+        final SessionPresenter.SessionPresenterCallback clientSessionPresenterCallback = clientSessionPresenterCallbackCaptor.getValue();
+        clientSessionPresenterCallback.onSuccess();
+
+        verify(view).hideBusyIndicator();
+
+        //Verify Overview widget was setup. It'd be nice to just verify(presenter).resetEditorPages(..) but it is protected
+        verify(overviewWidget).setContent(eq(overview),
+                                          eq(filePath));
+        verify(kieView).clear();
+        verify(kieView).addMainEditorPage(eq(view));
+        verify(kieView).addOverviewPage(eq(overviewWidget),
+                                        any(com.google.gwt.user.client.Command.class));
+
+        verify(presenter).onDiagramLoad();
+
+        assertEquals(readOnlySessionPresenter,
+                     presenter.getSessionPresenter());
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testCloseEditor() {
-        SessionPresenter sessionPresenter = mock(SessionPresenter.class);
-        presenter.setSessionPresenter(sessionPresenter);
+        presenter.setFullSessionPresenter(fullSessionPresenter);
         presenter.doClose();
         verify(clearStatesSessionCommand, times(1)).unbind();
         verify(switchGridSessionCommand, times(1)).unbind();
@@ -472,7 +578,43 @@ public class AbstractProjectDiagramEditorTest {
         verify(copySelectionSessionCommand, times(1)).unbind();
         verify(pasteSelectionSessionCommand, times(1)).unbind();
         verify(cutSelectionSessionCommand, times(1)).unbind();
-        verify(sessionPresenter, never()).clear();
-        verify(sessionPresenter, times(1)).destroy();
+        verify(fullSessionPresenter, never()).clear();
+        verify(fullSessionPresenter, times(1)).destroy();
+    }
+
+    @Test
+    public void testInitialiseMenuBarStateForSession_Enabled() {
+        presenter.initialiseMenuBarStateForSession(true);
+
+        verify(clearItem).setEnabled(true);
+        verify(visitGraphItem).setEnabled(true);
+        verify(switchGridItem).setEnabled(true);
+        verify(validateItem).setEnabled(true);
+        verify(exportsItem).setEnabled(true);
+
+        verify(deleteSelectionItem).setEnabled(false);
+        verify(undoItem).setEnabled(false);
+        verify(redoItem).setEnabled(false);
+        verify(copyItem).setEnabled(false);
+        verify(cutItem).setEnabled(false);
+        verify(pasteItem).setEnabled(false);
+    }
+
+    @Test
+    public void testInitialiseMenuBarStateForSession_Disabled() {
+        presenter.initialiseMenuBarStateForSession(false);
+
+        verify(clearItem).setEnabled(false);
+        verify(visitGraphItem).setEnabled(false);
+        verify(switchGridItem).setEnabled(false);
+        verify(validateItem).setEnabled(false);
+        verify(exportsItem).setEnabled(false);
+
+        verify(deleteSelectionItem).setEnabled(false);
+        verify(undoItem).setEnabled(false);
+        verify(redoItem).setEnabled(false);
+        verify(copyItem).setEnabled(false);
+        verify(cutItem).setEnabled(false);
+        verify(pasteItem).setEnabled(false);
     }
 }

@@ -197,6 +197,13 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-project-client</artifactId>
+      <scope>test</scope>
+      <type>test-jar</type>
+    </dependency>
+
   </dependencies>
 
 </project>

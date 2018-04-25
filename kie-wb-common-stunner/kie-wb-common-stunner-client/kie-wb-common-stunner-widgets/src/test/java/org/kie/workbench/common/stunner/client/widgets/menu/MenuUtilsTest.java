@@ -19,6 +19,8 @@ package org.kie.workbench.common.stunner.client.widgets.menu;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,6 +45,12 @@ public class MenuUtilsTest {
 
     @Mock
     private Widget widget;
+
+    @Mock
+    private Button button;
+
+    @Mock
+    private ButtonGroup buttonGroup;
 
     @Before
     public void setUp() {
@@ -79,5 +87,24 @@ public class MenuUtilsTest {
 
         menuItem.setEnabled(false);
         assertFalse(menuItem.isEnabled());
+    }
+
+    @Test
+    public void testBuildItemWithButtonGroup() {
+        final MenuUtils.HasEnabledIsWidget wrappedButtonGroup = MenuUtils.buildHasEnabledWidget(buttonGroup, button);
+        final BaseMenuCustom menuItem = (BaseMenuCustom) MenuUtils.buildItem(wrappedButtonGroup);
+        assertEquals(buttonGroup,
+                     menuItem.build());
+
+        menuItem.setEnabled(true);
+        verify(button,
+               times(1)).setEnabled(true);
+
+        menuItem.setEnabled(false);
+        verify(button,
+               times(1)).setEnabled(false);
+
+        when(button.isEnabled()).thenReturn(true);
+        assertTrue(menuItem.isEnabled());
     }
 }

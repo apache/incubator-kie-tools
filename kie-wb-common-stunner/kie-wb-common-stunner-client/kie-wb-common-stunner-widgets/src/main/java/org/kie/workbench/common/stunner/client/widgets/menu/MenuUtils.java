@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.client.widgets.menu;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
@@ -83,6 +84,26 @@ public class MenuUtils {
             @Override
             public Widget asWidget() {
                 return button;
+            }
+        };
+    }
+
+    public static HasEnabledIsWidget buildHasEnabledWidget(final ButtonGroup buttonGroup,
+                                                           final Button button) {
+        return new HasEnabledIsWidget() {
+            @Override
+            public void setEnabled(boolean enabled) {
+                button.setEnabled(enabled);
+            }
+
+            @Override
+            public boolean isEnabled() {
+                return button.isEnabled();
+            }
+
+            @Override
+            public Widget asWidget() {
+                return buttonGroup;
             }
         };
     }

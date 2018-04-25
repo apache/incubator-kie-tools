@@ -48,6 +48,7 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -104,6 +105,12 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     @Mock
     private AbstractCanvasHandler canvasHandler;
 
+    @Mock
+    private MenuItem formsGenerationMenuItem;
+
+    @Mock
+    private MenuItem migrateMenuItem;
+
     private ArgumentCaptor<Command> commandCaptor;
 
     private ArgumentCaptor<BPMNMigrateDiagramEvent> migrateDiagramEventCaptor;
@@ -137,6 +144,9 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         when(translationService.getValue(BPMNClientConstants.EditorMigrateActionWarning)).thenReturn(MIGRATE_ACTION_WARNING);
         when(translationService.getValue(BPMNClientConstants.EditorMigrateAction)).thenReturn(MIGRATE_ACTION);
         when(translationService.getValue(BPMNClientConstants.EditorMigrateConfirmAction)).thenReturn(MIGRATE_CONFIRM_ACTION);
+
+        when(bpmnDiagramEditorMenuItemsBuilder.newFormsGenerationMenuItem(any(Command.class), any(Command.class), any(Command.class))).thenReturn(formsGenerationMenuItem);
+        when(bpmnDiagramEditorMenuItemsBuilder.newMigrateMenuItem(any(Command.class))).thenReturn(migrateMenuItem);
 
         super.setUp();
     }
@@ -181,7 +191,6 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                 versionRecordManager = BPMNDiagramEditorTest.this.versionRecordManager;
                 alertsButtonMenuItemBuilder = BPMNDiagramEditorTest.this.alertsButtonMenuItemBuilder;
                 place = BPMNDiagramEditorTest.this.currentPlace;
-                presenter = BPMNDiagramEditorTest.this.sessionPresenter;
                 kieView = BPMNDiagramEditorTest.this.kieView;
                 overviewWidget = BPMNDiagramEditorTest.this.overviewWidget;
             }
@@ -192,6 +201,7 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                 //avoid GWT log initialization.
             }
         });
+
         return diagramEditor;
     }
 
@@ -225,6 +235,7 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         ObservablePath currentPath = mock(ObservablePath.class);
         when(versionRecordManager.getCurrentPath()).thenReturn(currentPath);
         doReturn(true).when(diagramEditor).isDirty(any(Integer.class));
+        doReturn(fullSessionPresenter).when(diagramEditor).getSessionPresenter();
 
         diagramEditor.onMigrate();
         verify(popupUtil,
@@ -269,5 +280,21 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         verify(generateDiagramFormsSessionCommand, times(1)).unbind();
         verify(generateProcessFormsSessionCommand, times(1)).unbind();
         verify(generateSelectedFormsSessionCommand, times(1)).unbind();
+    }
+
+    @Override
+    public void testInitialiseMenuBarStateForSession_Enabled() {
+        super.testInitialiseMenuBarStateForSession_Enabled();
+
+        verify(formsGenerationMenuItem).setEnabled(true);
+        verify(migrateMenuItem).setEnabled(true);
+    }
+
+    @Override
+    public void testInitialiseMenuBarStateForSession_Disabled() {
+        super.testInitialiseMenuBarStateForSession_Disabled();
+
+        verify(formsGenerationMenuItem).setEnabled(false);
+        verify(migrateMenuItem).setEnabled(false);
     }
 }
