@@ -22,7 +22,13 @@
 
     <ui:with field="i18n" type="org.dashbuilder.displayer.client.resources.i18n.CommonConstants"/>
 
-    <b:FormGroup ui:field="form" validationState="NONE">
-        <b:TextBox ui:field="input" width="150px" />
+    <ui:style>
+        .form-group-margin {
+            margin-bottom: 0px;
+        }
+    </ui:style>
+
+    <b:FormGroup ui:field="form" validationState="NONE" addStyleNames="{style.form-group-margin}">
+        <b:TextBox ui:field="input" />
     </b:FormGroup>
 </ui:UiBinder>

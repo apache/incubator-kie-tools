@@ -25,7 +25,7 @@
     <ui:style>
         .datePicker {
             float: left;
-            width: 150px;
+            width: 275px;
         }
         .calendarIcon {
             margin-left: -1px;
@@ -33,7 +33,7 @@
     </ui:style>
 
     <g:FlowPanel>
-      <u:DatePicker ui:field="input" styleName="{style.datePicker}" />
+      <u:DatePicker ui:field="input" styleName="{style.datePicker}" addStyleNames="form-control" />
       <b:Button  ui:field="icon" icon="CALENDAR" styleName="{style.calendarIcon}" />
     </g:FlowPanel>
 </ui:UiBinder>

@@ -36,7 +36,7 @@
 
   <b:FormGroup ui:field="form"  validationState="NONE">
     <g:HorizontalPanel>
-      <b:TextBox ui:field="searchPatternTextBox" width="150px" />
+      <b:TextBox ui:field="searchPatternTextBox" />
       <b:Tooltip isAnimated="true" placement="RIGHT" title="{i18n.like_to_pattern_instructions}">
         <b:Icon type="QUESTION_CIRCLE" />
       </b:Tooltip>

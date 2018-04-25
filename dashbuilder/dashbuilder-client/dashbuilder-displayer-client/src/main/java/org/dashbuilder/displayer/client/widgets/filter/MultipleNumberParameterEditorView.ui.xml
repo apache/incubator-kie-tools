@@ -25,7 +25,7 @@
 
     <b:FormGroup ui:field="form" validationState="NONE">
         <g:HorizontalPanel>
-            <b:TextBox ui:field="input" width="150px" />
+            <b:TextBox ui:field="input" />
             <b:Tooltip isAnimated="true" placement="RIGHT" title="{i18n.multiple_input_descriptions}">
                 <b:Icon ui:field="hintIcon" type="QUESTION_CIRCLE" />
             </b:Tooltip>

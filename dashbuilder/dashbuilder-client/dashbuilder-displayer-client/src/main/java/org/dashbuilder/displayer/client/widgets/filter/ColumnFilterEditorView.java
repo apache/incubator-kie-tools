@@ -32,7 +32,8 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.dataset.client.resources.i18n.CoreFunctionTypeConstants;
 import org.dashbuilder.dataset.filter.CoreFunctionType;
-import org.gwtbootstrap3.client.ui.Icon;
+import org.dashbuilder.displayer.client.resources.i18n.CommonConstants;
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
@@ -53,10 +54,10 @@ public class ColumnFilterEditorView extends Composite implements ColumnFilterEdi
     ListBox filterListBox;
 
     @UiField
-    Icon filterDeleteIcon;
+    Button filterDeleteIcon;
 
     @UiField
-    Icon filterExpandIcon;
+    Button filterExpandIcon;
 
     @UiField
     Panel filterDetailsPanel;
@@ -114,13 +115,15 @@ public class ColumnFilterEditorView extends Composite implements ColumnFilterEdi
     @Override
     public void showFilterConfig() {
         filterExpandIcon.setVisible(true);
-        filterExpandIcon.setType(IconType.ARROW_UP);
+        filterExpandIcon.setIcon(IconType.ANGLE_DOWN);
+        filterExpandIcon.setTitle(CommonConstants.INSTANCE.collapse());
         filterDetailsPanel.setVisible(true);
     }
 
     public void hideParamConfigWidgets() {
         filterDetailsPanel.setVisible(false);
-        filterExpandIcon.setType(IconType.ARROW_DOWN);
+        filterExpandIcon.setIcon(IconType.ANGLE_RIGHT);
+        filterExpandIcon.setTitle(CommonConstants.INSTANCE.expand());
     }
 
     @Override

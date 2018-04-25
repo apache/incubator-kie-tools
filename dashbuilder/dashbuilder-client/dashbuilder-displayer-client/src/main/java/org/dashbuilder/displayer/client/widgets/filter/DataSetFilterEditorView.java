@@ -48,7 +48,7 @@ public class DataSetFilterEditorView extends Composite implements DataSetFilterE
     Panel addFilterPanel;
 
     @UiField
-    Icon filterDeleteIcon;
+    Button filterDeleteIcon;
 
     DataSetFilterEditor presenter = null;
 

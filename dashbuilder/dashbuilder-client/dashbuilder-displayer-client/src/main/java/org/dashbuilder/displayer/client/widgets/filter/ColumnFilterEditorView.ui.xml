@@ -21,21 +21,27 @@
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
              xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
+  <ui:with field="i18n" type="org.dashbuilder.displayer.client.resources.i18n.CommonConstants"/>
+
   <ui:style>
     .filterDetailsPanel {
       width: 100%;
       padding: 5px;
-      background: #dddddd;
       border-radius: 5px;
+    }
+
+    .filter-padding {
+      padding-bottom: 5px;
     }
   </ui:style>
 
-  <g:VerticalPanel>
-    <g:HorizontalPanel>
-      <b:ListBox ui:field="filterListBox" width="180px" />
-      <b:Icon type="REMOVE" ui:field="filterDeleteIcon" size="LARGE"/>
-      <b:Icon type="ARROW_DOWN" ui:field="filterExpandIcon" size="LARGE" visible="false"/>
-    </g:HorizontalPanel>
-    <g:FlowPanel ui:field="filterDetailsPanel" visible="false" styleName="{style.filterDetailsPanel}" />
-  </g:VerticalPanel>
+  <g:FlowPanel styleName="{style.filter-padding}">
+    <g:FlowPanel addStyleNames="form-inline">
+      <b:Button icon="ANGLE_DOWN" ui:field="filterExpandIcon" type="LINK" iconSize="LARGE" visible="false" iconFixedWidth="true" />
+      <b:ListBox ui:field="filterListBox" width="240px"/>
+      <b:Button icon="TRASH" ui:field="filterDeleteIcon" type="LINK" iconSize="LARGE" iconFixedWidth="true" title="{i18n.removeFilter}"/>
+    </g:FlowPanel>
+    <g:FlowPanel ui:field="filterDetailsPanel" visible="false" styleName="{style.filterDetailsPanel}"/>
+  </g:FlowPanel>
+
 </ui:UiBinder>

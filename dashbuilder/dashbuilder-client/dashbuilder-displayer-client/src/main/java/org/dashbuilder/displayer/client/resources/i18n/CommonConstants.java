@@ -257,4 +257,9 @@ public interface CommonConstants extends Messages {
 
     String rendererliblocator_multiple_renderers_found(String renderer);
 
+    String expand();
+
+    String collapse();
+
+    String removeFilter();
 }
