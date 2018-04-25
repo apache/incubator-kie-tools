@@ -107,8 +107,144 @@ public class AssigneeLiveSearchServiceTest {
     }
 
     @Test
+    public void testSearchUsersIncludeCustomEntries() {
+        assigneeLiveSearchService.init(AssigneeType.USER);
+
+        assigneeLiveSearchService.addCustomEntry("custom_admin");
+
+        assigneeLiveSearchService.search("admin", 10, callback);
+
+        ArgumentCaptor<SearchRequestImpl> requestArgumentCaptor = ArgumentCaptor.forClass(SearchRequestImpl.class);
+
+        verify(userManager).search(requestArgumentCaptor.capture());
+
+        SearchRequestImpl request = requestArgumentCaptor.getValue();
+
+        assertEquals("admin", request.getSearchPattern());
+        assertEquals(10, request.getPageSize());
+
+        ArgumentCaptor<RemoteCallback> callbackArgumentCaptor = ArgumentCaptor.forClass(RemoteCallback.class);
+
+        verify(userSystemManager).users(callbackArgumentCaptor.capture(), any());
+
+        RemoteCallback<AbstractEntityManager.SearchResponse<?>> successCallback = callbackArgumentCaptor.getValue();
+
+        successCallback.callback(prepareUsersResponse());
+
+        ArgumentCaptor<LiveSearchResults> resultsArgumentCaptor = ArgumentCaptor.forClass(LiveSearchResults.class);
+
+        verify(callback).afterSearch(resultsArgumentCaptor.capture());
+
+        LiveSearchResults result = resultsArgumentCaptor.getValue();
+
+        assertEquals(4, result.size());
+    }
+
+    @Test
+    public void testSearchUsersIncludeCustomEntriesNotMatchSearchPattern() {
+        assigneeLiveSearchService.init(AssigneeType.USER);
+
+        assigneeLiveSearchService.addCustomEntry("custom_entry");
+
+        assigneeLiveSearchService.search("admin", 10, callback);
+
+        ArgumentCaptor<SearchRequestImpl> requestArgumentCaptor = ArgumentCaptor.forClass(SearchRequestImpl.class);
+
+        verify(userManager).search(requestArgumentCaptor.capture());
+
+        SearchRequestImpl request = requestArgumentCaptor.getValue();
+
+        assertEquals("admin", request.getSearchPattern());
+        assertEquals(10, request.getPageSize());
+
+        ArgumentCaptor<RemoteCallback> callbackArgumentCaptor = ArgumentCaptor.forClass(RemoteCallback.class);
+
+        verify(userSystemManager).users(callbackArgumentCaptor.capture(), any());
+
+        RemoteCallback<AbstractEntityManager.SearchResponse<?>> successCallback = callbackArgumentCaptor.getValue();
+
+        successCallback.callback(prepareUsersResponse());
+
+        ArgumentCaptor<LiveSearchResults> resultsArgumentCaptor = ArgumentCaptor.forClass(LiveSearchResults.class);
+
+        verify(callback).afterSearch(resultsArgumentCaptor.capture());
+
+        LiveSearchResults result = resultsArgumentCaptor.getValue();
+
+        assertEquals(3, result.size());
+    }
+
+    @Test
     public void testSearchGroups() {
         assigneeLiveSearchService.init(AssigneeType.GROUP);
+
+        assigneeLiveSearchService.search("it", 10, callback);
+
+        ArgumentCaptor<SearchRequestImpl> requestArgumentCaptor = ArgumentCaptor.forClass(SearchRequestImpl.class);
+
+        verify(groupManager).search(requestArgumentCaptor.capture());
+
+        SearchRequestImpl request = requestArgumentCaptor.getValue();
+
+        assertEquals("it", request.getSearchPattern());
+        assertEquals(10, request.getPageSize());
+
+        ArgumentCaptor<RemoteCallback> callbackArgumentCaptor = ArgumentCaptor.forClass(RemoteCallback.class);
+
+        verify(userSystemManager).groups(callbackArgumentCaptor.capture(), any());
+
+        RemoteCallback<AbstractEntityManager.SearchResponse<?>> successCallback = callbackArgumentCaptor.getValue();
+
+        successCallback.callback(prepareGroupsResponse());
+
+        ArgumentCaptor<LiveSearchResults> resultsArgumentCaptor = ArgumentCaptor.forClass(LiveSearchResults.class);
+
+        verify(callback).afterSearch(resultsArgumentCaptor.capture());
+
+        LiveSearchResults result = resultsArgumentCaptor.getValue();
+
+        assertEquals(3, result.size());
+    }
+
+    @Test
+    public void testSearchGroupsIncludeCustomEntries() {
+        assigneeLiveSearchService.init(AssigneeType.GROUP);
+
+        assigneeLiveSearchService.addCustomEntry("custom_it");
+
+        assigneeLiveSearchService.search("it", 10, callback);
+
+        ArgumentCaptor<SearchRequestImpl> requestArgumentCaptor = ArgumentCaptor.forClass(SearchRequestImpl.class);
+
+        verify(groupManager).search(requestArgumentCaptor.capture());
+
+        SearchRequestImpl request = requestArgumentCaptor.getValue();
+
+        assertEquals("it", request.getSearchPattern());
+        assertEquals(10, request.getPageSize());
+
+        ArgumentCaptor<RemoteCallback> callbackArgumentCaptor = ArgumentCaptor.forClass(RemoteCallback.class);
+
+        verify(userSystemManager).groups(callbackArgumentCaptor.capture(), any());
+
+        RemoteCallback<AbstractEntityManager.SearchResponse<?>> successCallback = callbackArgumentCaptor.getValue();
+
+        successCallback.callback(prepareGroupsResponse());
+
+        ArgumentCaptor<LiveSearchResults> resultsArgumentCaptor = ArgumentCaptor.forClass(LiveSearchResults.class);
+
+        verify(callback).afterSearch(resultsArgumentCaptor.capture());
+
+        LiveSearchResults result = resultsArgumentCaptor.getValue();
+
+        assertEquals(4, result.size());
+    }
+
+    @Test
+    public void testSearchGroupsIncludeCustomEntriesNotMatchSearchPattern() {
+        assigneeLiveSearchService.init(AssigneeType.GROUP);
+
+        assigneeLiveSearchService.addCustomEntry("custom_entry");
 
         assigneeLiveSearchService.search("it", 10, callback);
 
