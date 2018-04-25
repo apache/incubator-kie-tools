@@ -16,41 +16,46 @@
 package org.kie.workbench.common.stunner.bpmn.backend.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindDataTypesQuery;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueResourceIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
-import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
-import org.kie.workbench.common.services.refactoring.service.ResourceType;
+import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
+import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
+import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.stunner.bpmn.service.DataTypesService;
+import org.uberfire.backend.vfs.Path;
 
 @Service
 public class FindDataTypesService implements DataTypesService {
 
-    @Inject
-    protected RefactoringQueryService queryService;
+    private DataModelService dataModelService;
 
-    public List<String> getDataTypeNames() {
-        // Query Java resources
-        List<RefactoringPageRow> results = queryService.query(
-                FindDataTypesQuery.NAME,
-                new HashSet<ValueIndexTerm>() {{
-                    add(new ValueResourceIndexTerm("*",
-                                                   ResourceType.JAVA,
-                                                   ValueIndexTerm.TermSearchType.WILDCARD));
-                }});
-        final List<String> dataTypeNames = new ArrayList<String>();
-        for (RefactoringPageRow row : results) {
-            dataTypeNames.add((String) row.getValue());
+    public FindDataTypesService() {
+        //CDI proxy
+    }
+
+    @Inject
+    public FindDataTypesService(final DataModelService dataModelService) {
+        this.dataModelService = dataModelService;
+    }
+
+    public List<String> getDataTypeNames(final Path path) {
+        final List<String> dataTypeNames = new ArrayList<>();
+
+        try {
+            final PackageDataModelOracle oracle = dataModelService.getDataModel(path);
+            final String[] fullyQualifiedClassNames = DataModelOracleUtilities.getFactTypes(oracle);
+
+            dataTypeNames.addAll(Arrays.asList(fullyQualifiedClassNames));
+            Collections.sort(dataTypeNames);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
-        Collections.sort(dataTypeNames);
 
         return dataTypeNames;
     }

@@ -163,8 +163,6 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
                                    fireEvents,
                                    true);
                     }
-
-                    ;
                 },
                 new BusErrorCallback() {
                     public boolean error(final Message message,
@@ -179,7 +177,7 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
                         return false;
                     }
                 },
-                DataTypesService.class).getDataTypeNames();
+                DataTypesService.class).getDataTypeNames(presenter.getDiagramPath());
     }
 
     private List<List<String>> mergeDataTypes(final List<String> simpleDataTypes,

@@ -21,6 +21,7 @@ import java.util.List;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
+import org.uberfire.backend.vfs.Path;
 
 public interface VariablesEditorWidgetView extends IsWidget {
 
@@ -44,6 +45,8 @@ public interface VariablesEditorWidgetView extends IsWidget {
         void removeVariable(final VariableRow variableRow);
 
         ListBoxValues.ValueTester dataTypesTester();
+
+        Path getDiagramPath();
     }
 
     void init(final Presenter presenter);

@@ -18,9 +18,10 @@ package org.kie.workbench.common.stunner.bpmn.service;
 import java.util.List;
 
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.uberfire.backend.vfs.Path;
 
 @Remote
 public interface DataTypesService {
 
-    List<String> getDataTypeNames();
+    List<String> getDataTypeNames(final Path path);
 }

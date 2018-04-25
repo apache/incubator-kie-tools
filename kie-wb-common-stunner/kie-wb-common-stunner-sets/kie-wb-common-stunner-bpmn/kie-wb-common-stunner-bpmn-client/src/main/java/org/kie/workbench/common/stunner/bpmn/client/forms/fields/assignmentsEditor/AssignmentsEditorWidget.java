@@ -58,6 +58,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
@@ -184,7 +185,12 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
                         return false;
                     }
                 },
-                DataTypesService.class).getDataTypeNames();
+                DataTypesService.class).getDataTypeNames(getDiagramPath());
+    }
+
+    private Path getDiagramPath() {
+        final Diagram diagram = canvasSessionManager.getCurrentSession().getCanvasHandler().getDiagram();
+        return diagram.getMetadata().getPath();
     }
 
     public void showDataIOEditor(final String datatypes) {

@@ -35,7 +35,9 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldDefinition;
 import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 
 @Dependent
@@ -52,6 +54,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     private List<String> dataTypes = new ArrayList<String>();
     private List<String> dataTypeDisplayNames = new ArrayList<String>();
     private Graph graph;
+    private Path path;
 
     @Inject
     private ErrorPopupPresenter errorPopupPresenter;
@@ -75,7 +78,10 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
         DefaultFormGroup formGroup = formGroupsInstance.get();
 
         view.init(this);
-        graph = sessionManager.getCurrentSession().getCanvasHandler().getDiagram().getGraph();
+
+        final Diagram diagram = sessionManager.getCurrentSession().getCanvasHandler().getDiagram();
+        path = diagram.getMetadata().getPath();
+        graph = diagram.getGraph();
 
         formGroup.render(view.asWidget(), field);
 
@@ -231,5 +237,10 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
                 }
             }
         };
+    }
+
+    @Override
+    public Path getDiagramPath() {
+        return path;
     }
 }
