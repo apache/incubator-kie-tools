@@ -55,9 +55,10 @@ public class AddAssetScreen {
     private LibraryConstants libraryConstants;
     private CategoryUtils categoryUtils;
     private LibraryPlaces libraryPlaces;
-    private List<NewResourceHandler> newResourceHandlers;
+
     private String filter;
     private String filterType;
+    List<NewResourceHandler> newResourceHandlers;
 
     public AddAssetScreen() {
     }
@@ -82,11 +83,11 @@ public class AddAssetScreen {
     }
 
     @PostConstruct
-    public void intialize() {
+    public void initialize() {
         this.filter = "";
         this.view.init(this);
         this.view.setTitle(this.getTitle());
-        this.newResourceHandlers = this.resourceHandlerManager.getResourceHandlers(resourceHandler -> this.isBlacklisted(resourceHandler));
+        this.newResourceHandlers = this.resourceHandlerManager.getNewResourceHandlers(NewResourceHandler::isProjectAsset);
         this.view.setCategories(this.categoryUtils.createCategories());
         this.update();
     }
@@ -107,7 +108,7 @@ public class AddAssetScreen {
         };
     }
 
-    private void update() {
+    void update() {
         this.view.clear();
         List<NewResourceHandler> filteredHandlers = this.filterAndSortHandlers(this.newResourceHandlers,
                                                                                this.filter,
@@ -132,10 +133,6 @@ public class AddAssetScreen {
         if (resourceHandler.canCreate()) {
             resourceHandler.acceptContext(this.acceptContextCallback(resourceHandler));
         }
-    }
-
-    private boolean isBlacklisted(final NewResourceHandler resourceHandler) {
-        return resourceHandler.getClass().getName().contains("NewProjectHandler");
     }
 
     public void setFilter(String filter) {

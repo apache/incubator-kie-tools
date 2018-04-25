@@ -55,7 +55,7 @@ public class ResourceHandlerManagerTest {
         doReturn(Arrays.asList(rh1,
                                rh2)).when(this.resourceHandlerManager).getNewResourceHandlers();
 
-        List<NewResourceHandler> handlers = this.resourceHandlerManager.getResourceHandlers(resourceHandler -> !resourceHandler.getResourceType().getCategory().equals(new Model()));
+        List<NewResourceHandler> handlers = this.resourceHandlerManager.getNewResourceHandlers(resourceHandler -> resourceHandler.getResourceType().getCategory().equals(new Model()));
 
         assertTrue(handlers.size() == 1);
         assertEquals(rh1,

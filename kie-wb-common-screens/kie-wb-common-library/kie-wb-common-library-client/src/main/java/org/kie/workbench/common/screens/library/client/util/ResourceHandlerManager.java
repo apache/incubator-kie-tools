@@ -17,6 +17,7 @@
 
 package org.kie.workbench.common.screens.library.client.util;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -25,34 +26,35 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 
 @ApplicationScoped
 public class ResourceHandlerManager {
 
-    private List<NewResourceHandler> newResourceHandlers;
+    private ManagedInstance<NewResourceHandler> newResourceHandlers;
 
     public ResourceHandlerManager() {
     }
 
     @Inject
-    public ResourceHandlerManager(final Instance<NewResourceHandler> newResourceHandlers) {
-        this.newResourceHandlers = toList(newResourceHandlers);
+    public ResourceHandlerManager(final ManagedInstance<NewResourceHandler> newResourceHandlers) {
+        this.newResourceHandlers = newResourceHandlers;
     }
 
-    private <T> List<T> toList(Instance<T> instances) {
-        return StreamSupport.stream(instances.spliterator(),
-                                    false).collect(Collectors.toList());
+    public List<NewResourceHandler> getNewResourceHandlers(final Function<NewResourceHandler, Boolean> matcher) {
+        List<NewResourceHandler> matchedNewResourceHandlers = new ArrayList<>();
+
+        getNewResourceHandlers().forEach(newResourceHandler -> {
+            if (matcher.apply(newResourceHandler)) {
+                matchedNewResourceHandlers.add(newResourceHandler);
+            }
+        });
+
+        return matchedNewResourceHandlers;
     }
 
-    public List<NewResourceHandler> getResourceHandlers(Function<NewResourceHandler, Boolean> isBlacklisted) {
-        return this.getNewResourceHandlers()
-                .stream()
-                .filter(resourceHandler -> !isBlacklisted.apply(resourceHandler))
-                .collect(Collectors.toList());
-    }
-
-    protected List<NewResourceHandler> getNewResourceHandlers() {
+    public Iterable<NewResourceHandler> getNewResourceHandlers() {
         return newResourceHandlers;
     }
 }

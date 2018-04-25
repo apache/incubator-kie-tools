@@ -109,4 +109,12 @@ public interface NewResourceHandler {
     default int order() {
         return 0;
     }
+
+    /**
+     * Defines whether this resource is a project asset and should appear on the Add Asset screen
+     * @return true if it is a project asset; false otherwise.
+     */
+    default boolean isProjectAsset() {
+        return true;
+    }
 }

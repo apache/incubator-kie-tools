@@ -20,33 +20,33 @@ package org.kie.workbench.common.screens.library.client.screens.assets.add;
 import java.util.Arrays;
 import java.util.List;
 
+import org.guvnor.common.services.project.categories.Decision;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.NewJavaFileTextHandler;
+import org.kie.workbench.common.screens.defaulteditor.client.editor.NewFileUploader;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.util.CategoryUtils;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.util.ResourceHandlerManager;
 import org.kie.workbench.common.screens.library.client.widgets.project.NewAssetHandlerCardWidget;
-import org.guvnor.common.services.project.categories.Decision;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.mockito.Answers;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.CategoriesManagerCache;
 import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.category.Undefined;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AddAssetScreenTest {
-
-    private AddAssetScreen addAssetScreen;
 
     @Mock
     private AddAssetScreen.View view;
@@ -54,7 +54,7 @@ public class AddAssetScreenTest {
     @Mock
     private TranslationService ts;
 
-    @Mock
+    @Spy
     private ResourceHandlerManager resourceHandlerManager;
 
     @Mock
@@ -75,16 +75,19 @@ public class AddAssetScreenTest {
     @Mock
     private CategoriesManagerCache categoriesManagerCache;
 
+    private AddAssetScreen addAssetScreen;
+
     @Before
     public void setUp() {
-        this.addAssetScreen = new AddAssetScreen(this.view,
-                                                 this.ts,
-                                                 this.resourceHandlerManager,
-                                                 this.categoriesManagerCache,
-                                                 this.newAssetHandlerCardWidgets,
-                                                 this.libraryConstants,
-                                                 this.categoryUtils,
-                                                 this.libraryPlaces);
+        this.addAssetScreen = spy(new AddAssetScreen(this.view,
+                                                     this.ts,
+                                                     this.resourceHandlerManager,
+                                                     this.categoriesManagerCache,
+                                                     this.newAssetHandlerCardWidgets,
+                                                     this.libraryConstants,
+                                                     this.categoryUtils,
+                                                     this.libraryPlaces));
+        doNothing().when(addAssetScreen).update();
     }
 
     @Test
@@ -133,5 +136,21 @@ public class AddAssetScreenTest {
                                                                                           new Undefined());
             assertTrue(filtered.isEmpty());
         }
+    }
+
+    @Test
+    public void testInitialize() {
+        NewResourceHandler rh1 = new NewFileUploader();
+        NewResourceHandler rh2 = new NewJavaFileTextHandler();
+
+        doReturn(Arrays.asList(rh1,
+                               rh2)).when(resourceHandlerManager).getNewResourceHandlers();
+
+        addAssetScreen.initialize();
+
+        assertEquals(1,
+                     addAssetScreen.newResourceHandlers.size());
+        assertEquals(rh2,
+                     addAssetScreen.newResourceHandlers.get(0));
     }
 }

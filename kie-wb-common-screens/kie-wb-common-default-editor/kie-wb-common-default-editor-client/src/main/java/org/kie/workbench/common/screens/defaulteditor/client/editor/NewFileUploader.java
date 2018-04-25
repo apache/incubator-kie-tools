@@ -150,4 +150,9 @@ public class NewFileUploader
         }
         return "";
     }
+
+    @Override
+    public boolean isProjectAsset() {
+        return false;
+    }
 }
