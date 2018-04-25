@@ -16,8 +16,6 @@
 
 package com.ait.lienzo.client.core.shape.wires.suite;
 
-import com.ait.lienzo.client.core.shape.TextBoundsWrapTest;
-import com.ait.lienzo.client.core.shape.TextLineBreakWrapTest;
 import com.ait.lienzo.client.core.shape.wires.WiresContainerTest;
 import com.ait.lienzo.client.core.shape.wires.WiresManagerTest;
 import com.ait.lienzo.client.core.shape.wires.WiresShapeControlHandleListTest;
@@ -25,6 +23,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresShapeTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHandlerImplTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresCompositeShapeHandlerTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectorControlImplTest;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresDockingControlImplTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresParentPickerControlImplTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeLocationControlImplTest;
 import org.junit.AfterClass;
@@ -38,17 +37,18 @@ import org.junit.runners.Suite;
  * @since 1.0.0-RC2
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({WiresContainerTest.class,
-        WiresShapeTest.class,
-        WiresShapeControlHandleListTest.class,
-        WiresShapeLocationControlImplTest.class,
-        WiresParentPickerControlImplTest.class,
-        WiresConnectorControlImplTest.class,
-        WiresShapeHandlerImplTest.class,
+@Suite.SuiteClasses({
         WiresCompositeShapeHandlerTest.class,
+        WiresConnectorControlImplTest.class,
+        WiresContainerTest.class,
+        WiresDockingControlImplTest.class,
         WiresManagerTest.class,
-        TextBoundsWrapTest.class,
-        TextLineBreakWrapTest.class})
+        WiresParentPickerControlImplTest.class,
+        WiresShapeControlHandleListTest.class,
+        WiresShapeHandlerImplTest.class,
+        WiresShapeLocationControlImplTest.class,
+        WiresShapeTest.class
+})
 public class WiresTestSuite {
 
     @BeforeClass

@@ -18,29 +18,51 @@
 
 package com.ait.lienzo.test.suite;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
+import com.ait.lienzo.client.core.shape.AbstractOffsetMultiPointShapeTest;
+import com.ait.lienzo.client.core.shape.PolyLineTest;
+import com.ait.lienzo.client.core.shape.TextBoundsWrapTest;
+import com.ait.lienzo.client.core.shape.TextLineBreakWrapTest;
+import com.ait.lienzo.client.core.shape.wires.MagnetManagerTest;
+import com.ait.lienzo.client.core.shape.wires.SelectionManagerTest;
+import com.ait.lienzo.client.core.types.BoundingBoxTest;
+import com.ait.lienzo.client.widget.LienzoHandlerManagerTest;
+import com.ait.lienzo.client.widget.LienzoPanelTest;
 import com.ait.lienzo.test.BasicLienzoMockTest;
 import com.ait.lienzo.test.BasicLienzoStateTest;
 import com.ait.lienzo.test.JSOMockTest;
 import com.ait.lienzo.test.PointsMockTest;
 import com.ait.lienzo.test.PointsTest;
 import com.ait.lienzo.test.stub.custom.StubPointsTest;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
  * Lienzo testing suite.
- *
  * @author Roger Martinez
  * @since 1.0
- *
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ BasicLienzoMockTest.class, BasicLienzoStateTest.class, JSOMockTest.class, PointsTest.class, PointsMockTest.class, StubPointsTest.class })
-public class TestSuite
-{
+@Suite.SuiteClasses({
+        AbstractOffsetMultiPointShapeTest.class,
+        BasicLienzoMockTest.class,
+        BasicLienzoStateTest.class,
+        BoundingBoxTest.class,
+        JSOMockTest.class,
+        LienzoHandlerManagerTest.class,
+        LienzoPanelTest.class,
+        MagnetManagerTest.class,
+        PointsMockTest.class,
+        PointsTest.class,
+        PolyLineTest.class,
+        SelectionManagerTest.class,
+        StubPointsTest.class,
+        TextBoundsWrapTest.class,
+        TextLineBreakWrapTest.class
+})
+public class TestSuite {
+
     @BeforeClass
     public static void setUpClass()
     {
