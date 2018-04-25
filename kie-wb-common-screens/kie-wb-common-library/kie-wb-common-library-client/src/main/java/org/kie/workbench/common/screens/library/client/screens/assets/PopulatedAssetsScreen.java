@@ -370,6 +370,8 @@ public class PopulatedAssetsScreen {
 
             assetQueryService.getAssets(query)
                     .call(callback, new DefaultErrorCallback());
+        } else {
+            busyIndicatorView.hideBusyIndicator();
         }
     }
 

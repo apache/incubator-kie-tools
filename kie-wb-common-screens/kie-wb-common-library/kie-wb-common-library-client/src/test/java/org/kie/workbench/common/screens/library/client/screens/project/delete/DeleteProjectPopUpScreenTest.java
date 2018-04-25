@@ -17,25 +17,24 @@
 
 package org.kie.workbench.common.screens.library.client.screens.project.delete;
 
-import javax.enterprise.event.Event;
-
-import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
-import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
-import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DeleteProjectPopUpScreenTest {
@@ -46,29 +45,17 @@ public class DeleteProjectPopUpScreenTest {
     private DeleteProjectPopUpScreen.View view;
 
     @Mock
-    private KieModuleService kieProjectService;
-
-    @Mock
-    private ProjectController projectController;
-
-    @Mock
-    private LibraryPlaces libraryPlaces;
+    private RepositoryService repositoryService;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private WorkspaceProject project;
 
-    @Mock
-    private Event<NotificationEvent> notificationEventEvent;
-
     @Before
     public void setUp() {
 
-        when(project.getMainModule().getModuleName()).thenReturn("kieProject");
+        when(project.getName()).thenReturn("kieProject");
         presenter = spy(new DeleteProjectPopUpScreen(view,
-                                                     new CallerMock<>(kieProjectService),
-                                                     projectController,
-                                                     notificationEventEvent,
-                                                     libraryPlaces));
+                                                     new CallerMock<>(repositoryService)));
     }
 
     @Test
@@ -77,7 +64,7 @@ public class DeleteProjectPopUpScreenTest {
         this.presenter.show(project);
 
         verify(this.view,
-               times(1)).show(eq(project.getMainModule().getModuleName()));
+               times(1)).show(eq(project.getName()));
     }
 
     @Test
@@ -88,9 +75,6 @@ public class DeleteProjectPopUpScreenTest {
 
         verify(this.view,
                times(1)).showError(anyString());
-
-        verify(this.libraryPlaces,
-               never()).goToOrganizationalUnits();
     }
 
     @Test
@@ -102,8 +86,8 @@ public class DeleteProjectPopUpScreenTest {
         verify(this.view,
                never()).showError(anyString());
 
-        verify(this.kieProjectService,
-               times(1)).delete(any(),
-                                anyString());
+        verify(this.repositoryService,
+               times(1)).removeRepository(any(),
+                                          anyString());
     }
 }

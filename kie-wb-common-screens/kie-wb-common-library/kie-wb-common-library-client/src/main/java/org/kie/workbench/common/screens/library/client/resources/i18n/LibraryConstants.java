@@ -288,9 +288,6 @@ public class LibraryConstants {
     public static final String DeletingProject = "DeletingProject";
 
     @TranslationKey(defaultValue = "")
-    public static final String DeleteProjectSuccess = "DeleteProjectSuccess";
-
-    @TranslationKey(defaultValue = "")
     public static final String WrongProjectConfirmedName = "WrongProjectConfirmedName";
 
     @TranslationKey(defaultValue = "")

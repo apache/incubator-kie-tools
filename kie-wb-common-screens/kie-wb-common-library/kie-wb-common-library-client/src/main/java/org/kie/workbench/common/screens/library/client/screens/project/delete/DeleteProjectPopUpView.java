@@ -116,11 +116,6 @@ public class DeleteProjectPopUpView implements DeleteProjectPopUpScreen.View,
                          this.getConfirmedName());
     }
 
-    @Override
-    public String getDeleteSuccessMessage() {
-        return ts.format(LibraryConstants.DeleteProjectSuccess);
-    }
-
     private void modalSetup() {
         this.modal = new CommonModalBuilder()
                 .addHeader(ts.format(LibraryConstants.DeleteProject))

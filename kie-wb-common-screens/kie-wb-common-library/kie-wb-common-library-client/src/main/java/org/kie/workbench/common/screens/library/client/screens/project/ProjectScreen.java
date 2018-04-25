@@ -286,9 +286,8 @@ public class ProjectScreen {
 
     public void duplicate() {
         if (this.userCanCreateProjects()) {
-            final Path pomXMLPath = workspaceProject.getMainModule().getPomXMLPath();
             copyPopUpPresenter.show(
-                    pomXMLPath,
+                    workspaceProject.getRootPath(),
                     projectNameValidator,
                     getDuplicateCommand());
         }

@@ -334,7 +334,7 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
             CommandWithFileNameAndCommitMessage duplicateCommand = mock(CommandWithFileNameAndCommitMessage.class);
             doReturn(duplicateCommand).when(presenter).getDuplicateCommand();
             this.presenter.duplicate();
-            verify(this.copyPopUpPresenter).show(presenter.workspaceProject.getMainModule().getPomXMLPath(),
+            verify(this.copyPopUpPresenter).show(presenter.workspaceProject.getRootPath(),
                                                  projectNameValidator,
                                                  duplicateCommand);
         }

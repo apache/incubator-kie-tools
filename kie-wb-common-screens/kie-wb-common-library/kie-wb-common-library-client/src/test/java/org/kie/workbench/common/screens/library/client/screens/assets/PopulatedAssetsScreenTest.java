@@ -225,6 +225,18 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
     }
 
     @Test
+    public void updateHidesBusyIndicatorWhenThereIsNoMainModule() throws Exception {
+        doReturn(mock(WorkspaceProject.class)).when(libraryPlaces).getActiveWorkspaceContext();
+
+        populatedAssetsScreen.init();
+        populatedAssetsScreen.refreshOnFocus(mock(SelectPlaceEvent.class));
+
+        populatedAssetsScreen.update();
+
+        verify(busyIndicatorView).hideBusyIndicator();
+    }
+
+    @Test
     public void updateNotTheCorrectPlace() throws Exception {
         final WorkspaceProject workspaceProject = mock(WorkspaceProject.class);
         doReturn(workspaceProject).when(libraryPlaces).getActiveWorkspaceContext();

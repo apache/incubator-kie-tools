@@ -17,23 +17,16 @@
 package org.kie.workbench.common.screens.library.client.screens.project.delete;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.client.security.ProjectController;
-import org.guvnor.common.services.project.events.DeleteModuleEvent;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.common.client.api.Caller;
-import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
-import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
-import org.uberfire.workbench.events.NotificationEvent;
 
 public class DeleteProjectPopUpScreen {
-
-    public static final String PROJECT_DELETED = "Project deleted";
 
     public interface View extends UberElemental<DeleteProjectPopUpScreen>,
                                   HasBusyIndicator {
@@ -50,33 +43,19 @@ public class DeleteProjectPopUpScreen {
 
         String getDeletingMessage();
 
-        String getDeleteSuccessMessage();
     }
 
     private WorkspaceProject project;
 
     private DeleteProjectPopUpScreen.View view;
 
-    private Caller<KieModuleService> projectService;
-    private ProjectController projectController;
-
-    private Event<DeleteModuleEvent> deleteProjectEvent;
-
-    private Event<NotificationEvent> notificationEvent;
-
-    private LibraryPlaces libraryPlaces;
+    private Caller<RepositoryService> repositoryService;
 
     @Inject
     public DeleteProjectPopUpScreen(final DeleteProjectPopUpScreen.View view,
-                                    final Caller<KieModuleService> projectService,
-                                    final ProjectController projectController,
-                                    final Event<NotificationEvent> notificationEvent,
-                                    final LibraryPlaces libraryPlaces) {
+                                    final Caller<RepositoryService> repositoryService) {
         this.view = view;
-        this.projectService = projectService;
-        this.projectController = projectController;
-        this.notificationEvent = notificationEvent;
-        this.libraryPlaces = libraryPlaces;
+        this.repositoryService = repositoryService;
     }
 
     @PostConstruct
@@ -86,23 +65,23 @@ public class DeleteProjectPopUpScreen {
 
     public void show(final WorkspaceProject project) {
         this.project = project;
-        view.show(project.getMainModule().getModuleName());
+        view.show(project.getName());
     }
 
     public void delete() {
         final String confirmedName = view.getConfirmedName();
-        if (!project.getMainModule().getModuleName().equals(confirmedName)) {
+        if (!project.getName().equals(confirmedName)) {
             view.showError(view.getWrongConfirmedNameValidationMessage());
             return;
         }
 
         view.showBusyIndicator(view.getDeletingMessage());
-        projectService.call(v -> {
-                                view.hideBusyIndicator();
-                                view.hide();
-                            },
-                            new HasBusyIndicatorDefaultErrorCallback(view)).delete(project.getMainModule().getPomXMLPath(),
-                                                                                   PROJECT_DELETED);
+        repositoryService.call(v -> {
+                                   view.hideBusyIndicator();
+                                   view.hide();
+                               },
+                               new HasBusyIndicatorDefaultErrorCallback(view)).removeRepository(project.getSpace(),
+                                                                                                project.getRepository().getAlias());
     }
 
     public void cancel() {
