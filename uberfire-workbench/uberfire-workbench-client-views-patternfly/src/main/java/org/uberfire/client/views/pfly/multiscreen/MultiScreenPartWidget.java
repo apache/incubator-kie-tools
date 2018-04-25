@@ -193,6 +193,6 @@ public class MultiScreenPartWidget extends Composite implements MultiPartWidget 
 
     @Override
     public void onResize() {
-        //no-op
+        parts.values().stream().filter(s -> s.isVisible()).forEach(s -> s.onResize());
     }
 }

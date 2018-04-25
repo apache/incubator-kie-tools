@@ -19,8 +19,8 @@ package org.uberfire.client.views.pfly.multiscreen;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.RequiresResize;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLDocument;
 import elemental2.dom.HTMLElement;
@@ -29,11 +29,13 @@ import org.jboss.errai.common.client.api.elemental2.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.views.pfly.widgets.Button;
+import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 import org.uberfire.mvp.Command;
 
 @Dependent
 @Templated
-public class MultiScreenView implements IsElement {
+public class MultiScreenView implements IsElement,
+                                        RequiresResize {
 
     @Inject
     @DataField("screen")
@@ -41,7 +43,7 @@ public class MultiScreenView implements IsElement {
 
     @Inject
     @DataField("content")
-    FlowPanel content;
+    ResizeFlowPanel content;
 
     @Inject
     @DataField("title")
@@ -98,6 +100,10 @@ public class MultiScreenView implements IsElement {
         screen.classList.remove("hidden");
     }
 
+    public boolean isVisible(){
+        return screen.classList.contains("hidden") == false;
+    }
+
     public void hide() {
         screen.classList.add("hidden");
     }
@@ -118,5 +124,10 @@ public class MultiScreenView implements IsElement {
 
     public void disableClose() {
         actions.removeChild(closeGroup);
+    }
+
+    @Override
+    public void onResize() {
+        content.onResize();
     }
 }

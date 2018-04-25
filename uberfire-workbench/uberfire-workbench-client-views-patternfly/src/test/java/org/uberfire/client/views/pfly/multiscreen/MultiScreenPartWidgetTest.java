@@ -122,4 +122,17 @@ public class MultiScreenPartWidgetTest {
 
         assertTrue(removed);
     }
+
+    @Test
+    public void testOnResize(){
+        when(multiScreenView.isVisible()).thenReturn(true, false);
+
+        widget.addPart(view);
+
+        widget.onResize();
+        widget.onResize();
+
+        verify(multiScreenView, times(2)).isVisible();
+        verify(multiScreenView).onResize();
+    }
 }
