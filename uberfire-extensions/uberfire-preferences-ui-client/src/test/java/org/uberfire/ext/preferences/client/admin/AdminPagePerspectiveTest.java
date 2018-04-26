@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.preferences.client.admin;
 
+import java.util.Collections;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.mvp.PlaceRequest;
@@ -32,7 +34,7 @@ public class AdminPagePerspectiveTest {
     @Before
     public void setup() {
         perspective = spy(new AdminPagePerspective());
-        doNothing().when(perspective).configurePerspective(any(PlaceRequest.class));
+        doNothing().when(perspective).configurePerspective(anyMap());
     }
 
     @Test
@@ -40,8 +42,7 @@ public class AdminPagePerspectiveTest {
         final PerspectiveDefinition perspectiveDefinition = perspective.getPerspective();
 
         verify(perspective).createPerspectiveDefinition();
-        verify(perspective,
-               never()).configurePerspective(any(PlaceRequest.class));
+        verify(perspective).configurePerspective(Collections.emptyMap());
 
         assertNotNull(perspectiveDefinition);
         assertNotNull(perspectiveDefinition.getName());
@@ -54,14 +55,14 @@ public class AdminPagePerspectiveTest {
         verify(perspective,
                times(1)).createPerspectiveDefinition();
         verify(perspective,
-               times(1)).configurePerspective(any(PlaceRequest.class));
+               times(1)).configurePerspective(anyMap());
 
         final PerspectiveDefinition perspectiveDefinition = perspective.getPerspective();
 
         verify(perspective,
                times(1)).createPerspectiveDefinition();
         verify(perspective,
-               times(1)).configurePerspective(any(PlaceRequest.class));
+               times(1)).configurePerspective(anyMap());
 
         assertNotNull(perspectiveDefinition);
         assertNotNull(perspectiveDefinition.getName());
