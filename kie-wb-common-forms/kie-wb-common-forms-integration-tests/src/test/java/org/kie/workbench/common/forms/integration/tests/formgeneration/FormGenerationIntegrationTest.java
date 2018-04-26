@@ -26,6 +26,7 @@ import org.eclipse.bpmn2.Definitions;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.commons.shared.layout.FormLayoutTemplateGenerator;
@@ -94,6 +95,7 @@ import static org.kie.workbench.common.forms.jbpm.model.authoring.document.type.
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
+@Ignore("Failing randomly, see https://issues.jboss.org/browse/JBPM-7170")
 @RunWith(MockitoJUnitRunner.class)
 public class FormGenerationIntegrationTest {
 
