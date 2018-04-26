@@ -23,14 +23,11 @@ import java.util.Set;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.navigation.NavTree;
 import org.dashbuilder.navigation.impl.NavTreeBuilder;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +38,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveManager;
@@ -51,11 +47,14 @@ import org.uberfire.client.workbench.widgets.menu.UtilityMenuBar;
 import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.mvp.impl.ForcedPlaceRequest;
 import org.uberfire.workbench.model.menu.MenuGroup;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
 import static org.junit.Assert.*;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -439,6 +438,24 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
         MenuItem item2 = group2.getItems().get(0);
         assertEquals(item2.getCaption(),
                      "i2");
+    }
+
+    @Test
+    public void testResolvePlaceRequest() {
+        assertTrue(menusHelper.resolvePlaceRequest(HOME) instanceof DefaultPlaceRequest);
+        assertTrue(menusHelper.resolvePlaceRequest(LIBRARY) instanceof DefaultPlaceRequest);
+        assertTrue(menusHelper.resolvePlaceRequest(CONTENT_MANAGEMENT) instanceof DefaultPlaceRequest);
+        assertTrue(menusHelper.resolvePlaceRequest(PROVISIONING) instanceof DefaultPlaceRequest);
+        assertTrue(menusHelper.resolvePlaceRequest(SERVER_MANAGEMENT) instanceof DefaultPlaceRequest);
+        assertTrue(menusHelper.resolvePlaceRequest(CONTENT_MANAGEMENT) instanceof DefaultPlaceRequest);
+
+        assertTrue(menusHelper.resolvePlaceRequest(PROCESS_DEFINITIONS) instanceof ForcedPlaceRequest);
+        assertTrue(menusHelper.resolvePlaceRequest(PROCESS_INSTANCES) instanceof ForcedPlaceRequest);
+        assertTrue(menusHelper.resolvePlaceRequest(JOBS) instanceof ForcedPlaceRequest);
+        assertTrue(menusHelper.resolvePlaceRequest(EXECUTION_ERRORS) instanceof ForcedPlaceRequest);
+        assertTrue(menusHelper.resolvePlaceRequest(TASKS) instanceof ForcedPlaceRequest);
+        assertTrue(menusHelper.resolvePlaceRequest(PROCESS_DASHBOARD) instanceof ForcedPlaceRequest);
+        assertTrue(menusHelper.resolvePlaceRequest(TASK_DASHBOARD) instanceof ForcedPlaceRequest);
     }
 
     private void mockGroups() {

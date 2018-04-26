@@ -53,6 +53,7 @@ import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPres
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.mvp.impl.ForcedPlaceRequest;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.ResourceRef;
 import org.uberfire.security.authz.AuthorizationManager;
@@ -61,22 +62,8 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.ADMIN;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.ADMINISTRATION;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.APPS;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.DATASET_AUTHORING;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.DATASOURCE_MANAGEMENT;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.GUVNOR_M2REPO;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.LIBRARY;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.PLUGIN_AUTHORING;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.PROCESS_DEFINITIONS;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.PROCESS_INSTANCES;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.SOCIAL_HOME;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.SOCIAL_USER_HOME;
-import static org.uberfire.workbench.model.menu.MenuFactory.Builder;
-import static org.uberfire.workbench.model.menu.MenuFactory.MenuBuilder;
-import static org.uberfire.workbench.model.menu.MenuFactory.TopLevelMenusBuilder;
-import static org.uberfire.workbench.model.menu.MenuFactory.newSimpleItem;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.*;
+import static org.uberfire.workbench.model.menu.MenuFactory.*;
 
 @ApplicationScoped
 public class DefaultWorkbenchFeaturesMenusHelper {
@@ -353,7 +340,19 @@ public class DefaultWorkbenchFeaturesMenusHelper {
     }
 
     public PlaceRequest resolvePlaceRequest(String perspectiveId) {
-        return new DefaultPlaceRequest(perspectiveId);
+        switch (perspectiveId) {
+            case PROCESS_DEFINITIONS:
+            case PROCESS_INSTANCES:
+            case EXECUTION_ERRORS:
+            case JOBS:
+            case TASKS:
+            case TASKS_ADMIN:
+            case PROCESS_DASHBOARD:
+            case TASK_DASHBOARD:
+                return new ForcedPlaceRequest(perspectiveId);
+            default:
+                return new DefaultPlaceRequest(perspectiveId);
+        }
     }
 
     boolean hasAccessToPerspective(final String perspectiveId) {
