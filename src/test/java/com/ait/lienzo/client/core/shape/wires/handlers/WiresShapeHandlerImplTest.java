@@ -36,6 +36,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -82,9 +83,7 @@ public class WiresShapeHandlerImplTest {
         when(parentPickerControl.getShape()).thenReturn(shape);
         when(parentPickerControl.getParent()).thenReturn(parent);
         when(parentPickerControl.getParentShapePart()).thenReturn(PickerPart.ShapePart.BODY);
-        tested = new WiresShapeHandlerImpl(control,
-                                           highlight,
-                                           manager);
+        tested = spy(new WiresShapeHandlerImpl(control, highlight, manager));
     }
 
     @Test
@@ -140,38 +139,54 @@ public class WiresShapeHandlerImplTest {
 
     @Test
     public void testOnEndDragSuccess() {
-        when(dragContext.getDragStartX()).thenReturn(10);
-        when(dragContext.getDragStartY()).thenReturn(5);
+
+        final int adjustedX = 10;
+        final int adjustedY = 5;
+        final Point2D distanceAdjusted = new Point2D(adjustedX, adjustedY);
         final NodeDragEndEvent endEvent = mock(NodeDragEndEvent.class);
+
+        when(dragContext.getDistanceAdjusted()).thenReturn(distanceAdjusted);
+        when(dragContext.getDragStartX()).thenReturn(adjustedX);
+        when(dragContext.getDragStartY()).thenReturn(adjustedY);
         when(endEvent.getDragContext()).thenReturn(dragContext);
         when(control.onMoveComplete()).thenReturn(true);
         when(control.accept()).thenReturn(true);
+
         tested.startDrag(dragContext);
         tested.onNodeDragEnd(endEvent);
-        verify(control, times(1)).onMoveStart(eq(10d),
-                                              eq(5d));
-        verify(control, times(1)).onMoveComplete();
-        verify(control, times(1)).execute();
+
+        verify(control).onMoveStart(eq(10d), eq(5d));
+        verify(control).onMoveComplete();
+        verify(control).execute();
         verify(highlight, atLeastOnce()).restore();
         verify(control, never()).reset();
+        verify(tested, times(2)).batch();
     }
 
     @Test
     public void testOnEndDragFailed() {
-        when(dragContext.getDragStartX()).thenReturn(10);
-        when(dragContext.getDragStartY()).thenReturn(5);
+
+        final int adjustedX = 10;
+        final int adjustedY = 5;
+        final Point2D distanceAdjusted = new Point2D(adjustedX, adjustedY);
         final NodeDragEndEvent endEvent = mock(NodeDragEndEvent.class);
+
+        when(dragContext.getDistanceAdjusted()).thenReturn(distanceAdjusted);
+        when(dragContext.getDragStartX()).thenReturn(adjustedX);
+        when(dragContext.getDragStartY()).thenReturn(adjustedY);
         when(endEvent.getDragContext()).thenReturn(dragContext);
         when(control.onMoveComplete()).thenReturn(true);
         when(control.accept()).thenReturn(false);
+
         tested.startDrag(dragContext);
         tested.onNodeDragEnd(endEvent);
-        verify(control, times(1)).onMoveStart(eq(10d),
-                                              eq(5d));
-        verify(control, times(1)).onMoveComplete();
-        verify(control, times(1)).reset();
+
+        verify(control).onMoveStart(eq(10d), eq(5d));
+        verify(control).onMoveComplete();
+        verify(control).reset();
         verify(highlight, atLeastOnce()).restore();
         verify(control, never()).execute();
+        verify(tested, times(2)).batch();
     }
 
     @Test

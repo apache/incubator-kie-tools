@@ -18,7 +18,6 @@
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
-import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
@@ -59,14 +58,12 @@ public class WiresCompositeShapeHandlerTest {
     private DragContext dragContext;
 
     private WiresCompositeShapeHandler tested;
-    private Layer layer;
+
     private WiresShape parent;
 
     @Before
     public void setup() {
         parent = new WiresShape(new MultiPath().circle(10));
-        layer = new Layer();
-        layer.add(parent.getGroup());
         when(control.getSharedParent()).thenReturn(parent);
         tested = new WiresCompositeShapeHandler(control,
                                                 highlight,
@@ -132,36 +129,50 @@ public class WiresCompositeShapeHandlerTest {
 
     @Test
     public void testOnEndDragSuccess() {
-        when(dragContext.getDragStartX()).thenReturn(10);
-        when(dragContext.getDragStartY()).thenReturn(5);
+
+        final int adjustedX = 10;
+        final int adjustedY = 5;
+        final Point2D distanceAdjusted = new Point2D(adjustedX, adjustedY);
         final NodeDragEndEvent endEvent = mock(NodeDragEndEvent.class);
+
+        when(dragContext.getDistanceAdjusted()).thenReturn(distanceAdjusted);
+        when(dragContext.getDragStartX()).thenReturn(adjustedX);
+        when(dragContext.getDragStartY()).thenReturn(adjustedY);
         when(endEvent.getDragContext()).thenReturn(dragContext);
         when(control.onMoveComplete()).thenReturn(true);
         when(control.accept()).thenReturn(true);
+
         tested.startDrag(dragContext);
         tested.onNodeDragEnd(endEvent);
-        verify(control, times(1)).onMoveStart(eq(10d),
-                                              eq(5d));
-        verify(control, times(1)).onMoveComplete();
-        verify(control, times(1)).execute();
+
+        verify(control).onMoveStart(eq(10d), eq(5d));
+        verify(control).onMoveComplete();
+        verify(control).execute();
         verify(highlight, atLeastOnce()).restore();
         verify(control, never()).reset();
     }
 
     @Test
     public void testOnEndDragFailed() {
-        when(dragContext.getDragStartX()).thenReturn(10);
-        when(dragContext.getDragStartY()).thenReturn(5);
+
+        final int adjustedX = 10;
+        final int adjustedY = 5;
+        final Point2D distanceAdjusted = new Point2D(adjustedX, adjustedY);
         final NodeDragEndEvent endEvent = mock(NodeDragEndEvent.class);
+
+        when(dragContext.getDistanceAdjusted()).thenReturn(distanceAdjusted);
+        when(dragContext.getDragStartX()).thenReturn(adjustedX);
+        when(dragContext.getDragStartY()).thenReturn(adjustedY);
         when(endEvent.getDragContext()).thenReturn(dragContext);
         when(control.onMoveComplete()).thenReturn(true);
         when(control.accept()).thenReturn(false);
+
         tested.startDrag(dragContext);
         tested.onNodeDragEnd(endEvent);
-        verify(control, times(1)).onMoveStart(eq(10d),
-                                              eq(5d));
-        verify(control, times(1)).onMoveComplete();
-        verify(control, times(1)).reset();
+
+        verify(control).onMoveStart(eq(10d), eq(5d));
+        verify(control).onMoveComplete();
+        verify(control).reset();
         verify(highlight, atLeastOnce()).restore();
         verify(control, never()).execute();
     }
