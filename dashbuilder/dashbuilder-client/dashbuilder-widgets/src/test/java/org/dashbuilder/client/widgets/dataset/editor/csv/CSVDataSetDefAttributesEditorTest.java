@@ -8,12 +8,16 @@ import org.dashbuilder.common.client.editor.file.FileUploadEditor;
 import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.dataset.client.DataSetClientServices;
 import org.dashbuilder.dataset.def.CSVDataSetDef;
+import org.dashbuilder.dataset.def.DataSetDefFactory;
 import org.dashbuilder.dataset.def.SQLDataSetDef;
 import org.gwtbootstrap3.client.ui.constants.Placement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -23,8 +27,7 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 public class CSVDataSetDefAttributesEditorTest {
 
-    @Mock
-    DataSetClientServices dataSetClientServices;
+    @Mock DataSetClientServices dataSetClientServices;
     @Mock ValueBoxEditor<String> fileURL;
     @Mock FileUploadEditor filePath;
     @Mock ValueBoxEditor<Character> separatorChar;
@@ -39,6 +42,10 @@ public class CSVDataSetDefAttributesEditorTest {
     
     @Before
     public void setup() {
+        doAnswer(args -> args.getArguments()[0])
+                .when(dataSetClientServices)
+                .getUploadFileUrl(anyString());
+
         presenter = new CSVDataSetDefAttributesEditor(dataSetClientServices,
                 fileURL, filePath, separatorChar, quoteChar,
                 escapeChar, datePattern, numberPattern, view);
@@ -60,6 +67,15 @@ public class CSVDataSetDefAttributesEditorTest {
         verify(filePath, times(1)).configure(anyString(), any(FileUploadEditor.FileUploadEditorCallback.class));
         verify(view, times(1)).showFilePathInput();
         verify(view, times(0)).showFileURLInput();
+        ArgumentCaptor<FileUploadEditor.FileUploadEditorCallback> callbackCaptor = ArgumentCaptor.forClass(FileUploadEditor.FileUploadEditorCallback.class);
+        verify(filePath).configure(anyString(), callbackCaptor.capture());
+
+
+        CSVDataSetDef dataSetDef = (CSVDataSetDef) DataSetDefFactory.newCSVDataSetDef().uuid("test").buildDef();
+        presenter.setValue(dataSetDef);
+        FileUploadEditor.FileUploadEditorCallback fileCallback = callbackCaptor.getValue();
+        String fileUrl = fileCallback.getUploadFileUrl();
+        assertEquals(fileUrl, "default://master@system/datasets/tmp/test.csv");
     }
     
     @Test
