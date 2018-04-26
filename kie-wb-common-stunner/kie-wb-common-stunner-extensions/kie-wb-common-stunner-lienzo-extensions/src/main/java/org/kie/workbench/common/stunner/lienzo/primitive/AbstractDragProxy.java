@@ -22,6 +22,7 @@ import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -99,17 +100,23 @@ public abstract class AbstractDragProxy<T> {
                                                            mouseDownEvent.preventDefault();
                                                        },
                                                        MouseDownEvent.getType());
-        handlerRegs[2] = RootPanel.get().addDomHandler(mouseUpEvent -> {
-                                                           if (attached) {
-                                                               timer.cancel();
-                                                               final int x = getXDiff() + mouseUpEvent.getX();
-                                                               final int y = getYDiff() + mouseUpEvent.getY();
-                                                               AbstractDragProxy.this.clear();
-                                                               callback.onComplete(x,
-                                                                                   y);
-                                                           }
-                                                       },
+        handlerRegs[2] = RootPanel.get().addDomHandler(getMouseUpHandler(callback),
                                                        MouseUpEvent.getType());
+    }
+
+    MouseUpHandler getMouseUpHandler(final Callback callback) {
+        return mouseUpEvent -> {
+            if (isAttached()) {
+                timer.cancel();
+
+                final int x = relativeX(getXDiff() + mouseUpEvent.getX());
+                final int y = relativeY(getYDiff() + mouseUpEvent.getY());
+
+                clear();
+
+                callback.onComplete(x, y);
+            }
+        };
     }
 
     MouseMoveHandler getMouseMoveHandler(final int initialX,

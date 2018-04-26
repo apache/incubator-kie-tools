@@ -21,6 +21,8 @@ import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.user.client.Timer;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +32,7 @@ import org.mockito.Mock;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -44,6 +47,9 @@ public class AbstractDragProxyTest {
 
     @Mock
     private MouseMoveEvent mouseMoveEvent;
+
+    @Mock
+    private MouseUpEvent mouseUpEvent;
 
     @Mock
     private Timer timer;
@@ -109,7 +115,7 @@ public class AbstractDragProxyTest {
     }
 
     @Test
-    public void testGetMouseMoveHandlerWhenProxy() {
+    public void testGetMouseMoveHandler() {
 
         final int initialX = 100;
         final int initialY = 100;
@@ -130,6 +136,39 @@ public class AbstractDragProxyTest {
         verify(abstractDragProxy).setLocation(shapeProxy, expectedX, expectedY);
         verify(abstractDragProxy).scheduleMove(callback, expectedX, expectedY, timeout);
         verify(layer).batch();
+    }
+
+    @Test
+    public void testGetMouseUpHandlerWhenProxyIsNotAttached() {
+
+        final MouseUpHandler handler = abstractDragProxy.getMouseUpHandler(callback);
+
+        doReturn(false).when(abstractDragProxy).isAttached();
+
+        handler.onMouseUp(mouseUpEvent);
+
+        verify(abstractDragProxy, never()).clear();
+        verify(callback, never()).onComplete(anyInt(), anyInt());
+    }
+
+    @Test
+    public void testGetMouseUpHandler() {
+
+        final MouseUpHandler handler = abstractDragProxy.getMouseUpHandler(callback);
+        final int expectedX = 175;
+        final int expectedY = 175;
+
+        when(mouseUpEvent.getX()).thenReturn(150);
+        when(mouseUpEvent.getY()).thenReturn(150);
+        doReturn(25).when(abstractDragProxy).getXDiff();
+        doReturn(25).when(abstractDragProxy).getYDiff();
+        doNothing().when(abstractDragProxy).clear();
+        doReturn(true).when(abstractDragProxy).isAttached();
+
+        handler.onMouseUp(mouseUpEvent);
+
+        verify(abstractDragProxy).clear();
+        verify(callback).onComplete(expectedX, expectedY);
     }
 
     @Test
