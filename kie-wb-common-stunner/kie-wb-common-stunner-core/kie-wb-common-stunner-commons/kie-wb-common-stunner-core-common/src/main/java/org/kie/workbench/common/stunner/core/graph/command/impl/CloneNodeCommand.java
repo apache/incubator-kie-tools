@@ -34,15 +34,18 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.AbstractCompositeCommand;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
+import org.kie.workbench.common.stunner.core.definition.clone.CloneManager;
 import org.kie.workbench.common.stunner.core.definition.clone.ClonePolicy;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
+import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
@@ -107,15 +110,32 @@ public final class CloneNodeCommand extends AbstractGraphCompositeCommand {
         final Object bean = candidate.getContent().getDefinition();
         clone = (Node<View, Edge>) context.getFactoryManager().newElement(UUID.uuid(), bean.getClass()).asNode();
 
-        //Cloning the node content with properties
-        Object clonedDefinition = context.getDefinitionManager().cloneManager().clone(candidate.getContent().getDefinition(), ClonePolicy.ALL);
-        clone.getContent().setDefinition(clonedDefinition);
+        cloneNodeContentWithProperties(context);
 
         //creating node commands to be executed
         addCommand(new RegisterNodeCommand(clone));
         addCommand(new AddChildNodeCommand(parentUUID.get(), clone, position));
 
         return this;
+    }
+
+    void cloneNodeContentWithProperties(final GraphCommandExecutionContext context) {
+
+        final View cloneContent = getClone().getContent();
+        final View candidateContent = (View) getCandidate().getContent();
+        final Bounds candidateBounds = candidateContent.getBounds();
+        final Bounds clonedBounds = cloneBounds(candidateBounds);
+        final CloneManager cloneManager = context.getDefinitionManager().cloneManager();
+        final Object clonedDefinition = cloneManager.clone(candidateContent.getDefinition(), ClonePolicy.ALL);
+
+        cloneContent.setBounds(clonedBounds);
+        cloneContent.setDefinition(clonedDefinition);
+    }
+
+    Bounds cloneBounds(final Bounds bounds) {
+        final Bounds.Bound ul = bounds.getUpperLeft();
+        final Bounds.Bound lr = bounds.getLowerRight();
+        return BoundsImpl.build(ul.getX(), ul.getY(), lr.getX(), lr.getY());
     }
 
     @Override
@@ -246,6 +266,10 @@ public final class CloneNodeCommand extends AbstractGraphCompositeCommand {
 
     public Node<View, Edge> getClone() {
         return clone;
+    }
+
+    void setClone(final Node<View, Edge> clone) {
+        this.clone = clone;
     }
 
     public Node<Definition, Edge> getCandidate() {

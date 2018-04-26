@@ -22,18 +22,27 @@ import java.util.function.Function;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.definition.clone.CloneManager;
+import org.kie.workbench.common.stunner.core.definition.clone.ClonePolicy;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CloneNodeCommandTest extends AbstractCloneCommandTest {
@@ -46,6 +55,9 @@ public class CloneNodeCommandTest extends AbstractCloneCommandTest {
 
     private Point2D position;
 
+    @Captor
+    private ArgumentCaptor<Bounds> boundsArgumentCaptor;
+
     @Before
     public void setUp() {
         super.setUp();
@@ -55,7 +67,6 @@ public class CloneNodeCommandTest extends AbstractCloneCommandTest {
         candidate.setContent(candidateContent);
         this.position = new Point2D(1, 1);
         this.cloneNodeCommand = new CloneNodeCommand(candidate, parent.getUUID(), position, null, childrenTraverseProcessorManagedInstance);
-
     }
 
     @Test
@@ -119,5 +130,32 @@ public class CloneNodeCommandTest extends AbstractCloneCommandTest {
         testInitialize();
         cloneNodeCommand.undo(graphCommandExecutionContext);
         verify(graphIndex, times(1)).removeNode(clone);
+    }
+
+    @Test
+    public void testCloneNodeContentWithProperties() {
+
+        final View cloneContent = mock(View.class);
+        final DefinitionManager definitionManager = mock(DefinitionManager.class);
+        final CloneManager cloneManager = mock(CloneManager.class);
+        final Object clonedDefinition = mock(Object.class);
+
+        cloneNodeCommand.setClone(clone);
+
+        when(clone.getContent()).thenReturn(cloneContent);
+
+        when(graphCommandExecutionContext.getDefinitionManager()).thenReturn(definitionManager);
+        when(definitionManager.cloneManager()).thenReturn(cloneManager);
+        when(cloneManager.clone(candidateContent.getDefinition(), ClonePolicy.ALL)).thenReturn(clonedDefinition);
+
+        cloneNodeCommand.cloneNodeContentWithProperties(graphCommandExecutionContext);
+
+        verify(cloneContent).setBounds(boundsArgumentCaptor.capture());
+        verify(cloneContent).setDefinition(clonedDefinition);
+
+        final Bounds clonedBounds = boundsArgumentCaptor.getValue();
+
+        assertEquals(candidateBounds, clonedBounds);
+        assertNotSame(candidateBounds, clonedBounds);
     }
 }

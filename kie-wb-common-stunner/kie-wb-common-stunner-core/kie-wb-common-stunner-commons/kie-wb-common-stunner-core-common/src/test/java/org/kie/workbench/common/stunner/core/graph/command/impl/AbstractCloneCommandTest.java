@@ -91,6 +91,8 @@ public abstract class AbstractCloneCommandTest extends AbstractGraphCommandTest 
 
     protected static final String CLONE_EDGE_UUID = UUID.uuid();
 
+    protected Bounds candidateBounds = BoundsImpl.build();
+
     public void setUp(){
         super.init(0, 0);
 
@@ -123,6 +125,7 @@ public abstract class AbstractCloneCommandTest extends AbstractGraphCommandTest 
         when(cloneManager.clone(connectorDefinition, ClonePolicy.ALL)).thenReturn(connectorDefinition);
         when(graphCommandExecutionContext.getGraphIndex()).thenReturn(graphIndex);
         when(candidateContent.getDefinition()).thenReturn(definition);
+        when(candidateContent.getBounds()).thenReturn(candidateBounds);
         when(factoryManager.newElement(anyString(), any(Class.class))).thenReturn(cloneElement);
         when(cloneElement.asNode()).thenReturn(clone);
         when(cloneElement.asEdge()).thenReturn(cloneEdge);
