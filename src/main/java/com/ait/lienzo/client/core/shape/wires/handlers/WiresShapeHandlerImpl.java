@@ -99,10 +99,14 @@ public class WiresShapeHandlerImpl extends WiresManager.WiresDragHandler impleme
 
     @Override
     protected void doOnNodeDragEnd(NodeDragEndEvent event) {
-        final int dx = event.getDragContext().getDx();
-        final int dy = event.getDragContext().getDy();
-        control.onMove(dx,
-                       dy);
+
+        final Point2D distanceAdjusted = event.getDragContext().getDistanceAdjusted();
+        final Double adjustedX = distanceAdjusted.getX();
+        final Double adjustedY = distanceAdjusted.getY();
+        final int dx = adjustedX.intValue();
+        final int dy = adjustedY.intValue();
+
+        control.onMove(dx, dy);
 
         // Complete the control operation.
         if (control.onMoveComplete() && control.accept()) {
@@ -172,7 +176,7 @@ public class WiresShapeHandlerImpl extends WiresManager.WiresDragHandler impleme
         return null != shape.getDockedTo();
     }
 
-    private void batch() {
+    void batch() {
         getShape().getGroup().getLayer().batch();
     }
 }

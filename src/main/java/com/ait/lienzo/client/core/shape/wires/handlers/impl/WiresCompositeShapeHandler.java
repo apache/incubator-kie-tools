@@ -76,10 +76,14 @@ public class WiresCompositeShapeHandler
 
     @Override
     protected void doOnNodeDragEnd(NodeDragEndEvent event) {
-        final int dx = event.getDragContext().getDx();
-        final int dy = event.getDragContext().getDy();
-        shapeControl.onMove(dx,
-                            dy);
+
+        final Point2D distanceAdjusted = event.getDragContext().getDistanceAdjusted();
+        final Double adjustedX = distanceAdjusted.getX();
+        final Double adjustedY = distanceAdjusted.getY();
+        final int dx = adjustedX.intValue();
+        final int dy = adjustedY.intValue();
+
+        shapeControl.onMove(dx, dy);
 
         if (shapeControl.onMoveComplete() && shapeControl.accept()) {
             shapeControl.execute();

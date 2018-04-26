@@ -260,23 +260,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             {
                 if (m_selectionCreationInProcess)
                 {
-                    double width = event.getX() - m_start.getX();
-                    double height = event.getY() - m_start.getY();
-                    // if either width or height is zero, you won't see the line being drawn, so ensure atleast 1px separation
-                    if ( width == 0 )
-                    {
-                        width += 1;
-                    }
-                    if ( height == 0 )
-                    {
-                        height += 1;
-                    }
-                    drawSelectionShape(m_start.getX(),
-                                       m_start.getY(),
-                                       width,
-                                       height,
-                                       m_layer.getViewport().getOverLayer());
-                    m_layer.getViewport().getOverLayer().draw();
+                    drawSelectionShape(event);
                     return false;
                 }
                 else
@@ -291,6 +275,36 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
                 return selectionEventHandlingComplete(event);
             }
             return true;
+        }
+
+        void drawSelectionShape(final MouseEvent<? extends EventHandler> event)
+        {
+            final double relativeStartX = getSelectionManager().relativeStartX();
+            final double relativeStartY = getSelectionManager().relativeStartY();
+            final double relativeEventX = (event.getX() - getViewportTransform().getTranslateX()) / getViewportTransform().getScaleX();
+            final double relativeEventY = (event.getY() - getViewportTransform().getTranslateY()) / getViewportTransform().getScaleY();
+            final Layer overLayer = m_layer.getViewport().getOverLayer();
+
+            double width = relativeEventX - relativeStartX;
+            double height = relativeEventY - relativeStartY;
+
+            // if either width or height is zero, you won't see the line being drawn, so ensure at least 1px separation
+            if ( width == 0 )
+            {
+                width += 1;
+            }
+            if ( height == 0 )
+            {
+                height += 1;
+            }
+
+            getSelectionManager().drawSelectionShape(relativeStartX, relativeStartY, width, height, overLayer);
+            overLayer.draw();
+        }
+
+        SelectionManager getSelectionManager()
+        {
+            return SelectionManager.this;
         }
 
         private boolean selectionEventHandlingComplete(MouseEvent<? extends EventHandler> event) {
@@ -445,12 +459,12 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         if (sw < 0)
         {
             sw = Math.abs(sw);
-            sx = m_start.getX() - sw;
+            sx = relativeStartX() - sw;
         }
         if (sh < 0)
         {
             sh = Math.abs(sh);
-            sy = m_start.getY() - sh;
+            sy = relativeStartY() - sh;
         }
         sw = sw + (padding * 2);
         sh = sh + (padding * 2);
@@ -478,6 +492,28 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         m_selectionShapeProvider
                 .setLocation(location)
                 .setSize(sw, sh);
+    }
+
+    double relativeStartX()
+    {
+        final Transform transform = getViewportTransform();
+        return (getStart().getX() - transform.getTranslateX()) / transform.getScaleX();
+    }
+
+    double relativeStartY()
+    {
+        final Transform transform = getViewportTransform();
+        return (getStart().getY() - transform.getTranslateY()) / transform.getScaleY();
+    }
+
+    Point2D getStart()
+    {
+        return m_start;
+    }
+
+    private Transform getViewportTransform()
+    {
+        return m_layer.getViewport().getTransform();
     }
 
     public static class ChangedItems
