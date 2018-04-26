@@ -35,6 +35,7 @@ import org.guvnor.common.services.project.client.preferences.ProjectScopedResolu
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeHandler;
 import org.guvnor.common.services.project.events.RenameModuleEvent;
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.project.social.ModuleEventType;
@@ -80,6 +81,7 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.events.ResourceCopiedEvent;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
 @ApplicationScoped
@@ -649,21 +651,18 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
     public void goToAsset(final Path path) {
 
-        moduleService.call(new RemoteCallback<org.guvnor.common.services.project.model.Package>() {
-            @Override
-            public void callback(final org.guvnor.common.services.project.model.Package response) {
+        moduleService.call((RemoteCallback<Package>) response -> {
 
-                projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(projectContext.getActiveWorkspaceProject().orElse(null),
-                                                                                      projectContext.getActiveModule().orElse(null),
-                                                                                      response));
+            projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(projectContext.getActiveWorkspaceProject().orElse(null),
+                                                                                  projectContext.getActiveModule().orElse(null),
+                                                                                  response));
 
-                final PlaceRequest placeRequest = generatePlaceRequest(path);
-                placeManager.goTo(placeRequest);
+            final PlaceRequest placeRequest = generatePlaceRequest(path);
+            placeManager.goTo(placeRequest);
 
-                if (path != null) {
-                    final ObservablePath observablePath = ((PathPlaceRequest) placeRequest).getPath();
-                    observablePath.onRename(() -> setupLibraryBreadCrumbsForAsset(observablePath));
-                }
+            if (path != null) {
+                final ObservablePath observablePath = ((PathPlaceRequest) placeRequest).getPath();
+                observablePath.onRename(() -> setupLibraryBreadCrumbsForAsset(observablePath));
             }
         }).resolvePackage(path);
     }
@@ -801,6 +800,14 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
             if (!current.getWorkspaceProject().equals(previous.getWorkspaceProject())) {
                 closeAllPlacesOrNothing(this::goToProject);
             }
+        }
+    }
+
+    public void onResourceCopiedEvent(@Observes final ResourceCopiedEvent resourceCopiedEvent) {
+        if (this.isLibraryPerspectiveOpen()) {
+            Path path = resourceCopiedEvent.getDestinationPath();
+            this.goToAsset(path);
+            setupLibraryBreadCrumbsForAsset(path);
         }
     }
 }
