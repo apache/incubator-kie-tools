@@ -126,8 +126,7 @@ public class OrganizationalUnitPopUpView implements OrganizationalUnitPopUpPrese
 
     @Override
     public String getInvalidNameValidationMessage() {
-        return ts.format(LibraryConstants.InvalidFieldValidation,
-                         LibraryConstants.Name);
+        return ts.format(LibraryConstants.InvalidSpaceName);
     }
 
     @Override

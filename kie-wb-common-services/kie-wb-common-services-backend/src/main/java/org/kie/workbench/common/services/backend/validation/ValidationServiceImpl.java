@@ -29,6 +29,7 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.screens.projecteditor.util.NewWorkspaceProjectUtils;
 import org.kie.workbench.common.services.shared.validation.CopyValidator;
 import org.kie.workbench.common.services.shared.validation.DeleteValidator;
 import org.kie.workbench.common.services.shared.validation.SaveValidator;
@@ -75,7 +76,7 @@ public class ValidationServiceImpl
 
     @Override
     public boolean isProjectNameValid(final String projectName) {
-        return moduleNameValidator.isValid(projectName);
+        return moduleNameValidator.isValid(projectName) && NewWorkspaceProjectUtils.sanitizeProjectName(projectName).equals(projectName);
     }
 
     @Override

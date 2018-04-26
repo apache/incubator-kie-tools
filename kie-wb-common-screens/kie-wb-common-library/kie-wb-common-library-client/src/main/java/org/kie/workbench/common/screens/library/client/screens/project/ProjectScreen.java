@@ -305,11 +305,9 @@ public class ProjectScreen {
 
             view.showBusyIndicator(view.getLoadingMessage());
 
-            promises.promisify(projectScreenService,
-                               s -> {
-                                   s.copy(workspaceProject,
-                                          details.getNewFileName());
-                               }).then(i -> {
+            promises.promisify(projectScreenService, s -> {
+                s.copy(workspaceProject, details.getNewFileName());
+            }).then(i -> {
                 view.hideBusyIndicator();
                 notificationEvent.fire(new NotificationEvent(view.getItemSuccessfullyDuplicatedMessage(),
                                                              NotificationEvent.NotificationType.SUCCESS));
@@ -323,10 +321,9 @@ public class ProjectScreen {
             final Path pomXMLPath = workspaceProject.getMainModule().getPomXMLPath();
             view.showBusyIndicator(view.getLoadingMessage());
 
-            promises.promisify(projectScreenService,
-                               s -> {
-                                   s.reImport(pomXMLPath);
-                               }).then(i -> {
+            promises.promisify(projectScreenService, s -> {
+                s.reImport(pomXMLPath);
+            }).then(i -> {
                 view.hideBusyIndicator();
                 notificationEvent.fire(new NotificationEvent(view.getReimportSuccessfulMessage(),
                                                              NotificationEvent.NotificationType.SUCCESS));
@@ -336,19 +333,13 @@ public class ProjectScreen {
     }
 
     private Promise<Object> onError(final Object object) {
-        return promises.catchOrExecute(
-                object,
-                e -> {
-                    new HasBusyIndicatorDefaultErrorCallback(view).error(null,
-                                                                         e);
-                    return promises.resolve();
-                },
-                (final Promises.Error<Message> e) -> {
-                    new HasBusyIndicatorDefaultErrorCallback(view).error(e.getObject(),
-                                                                         e.getThrowable());
-                    return promises.resolve();
-                }
-        );
+        return promises.catchOrExecute(object, e -> {
+            new HasBusyIndicatorDefaultErrorCallback(view).error(null, e);
+            return promises.resolve();
+        }, (final Promises.Error<Message> e) -> {
+            new HasBusyIndicatorDefaultErrorCallback(view).error(e.getObject(), e.getThrowable());
+            return promises.resolve();
+        });
     }
 
     public void build() {

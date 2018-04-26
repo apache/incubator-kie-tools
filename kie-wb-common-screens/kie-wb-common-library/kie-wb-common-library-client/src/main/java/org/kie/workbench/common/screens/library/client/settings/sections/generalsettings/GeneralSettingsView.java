@@ -234,8 +234,7 @@ public class GeneralSettingsView implements GeneralSettingsPresenter.View {
 
     @Override
     public String getInvalidNameMessage() {
-        return translationService.format(LibraryConstants.InvalidFieldValidation,
-                                         translationService.getTranslation(LibraryConstants.Name));
+        return translationService.format(LibraryConstants.InvalidProjectName);
     }
 
     @Override

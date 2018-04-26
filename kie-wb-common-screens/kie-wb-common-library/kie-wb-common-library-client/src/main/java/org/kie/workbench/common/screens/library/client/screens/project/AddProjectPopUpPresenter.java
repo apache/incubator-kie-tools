@@ -235,8 +235,7 @@ public class AddProjectPopUpPresenter {
         }
 
         validationService.call((Boolean isValid) -> {
-            final String sanitizeProjectName = NewWorkspaceProjectUtils.sanitizeProjectName(name);
-            if (Boolean.TRUE.equals(isValid) && !sanitizeProjectName.isEmpty()) {
+            if (Boolean.TRUE.equals(isValid)) {
                 if (successCallback != null) {
                     successCallback.execute();
                 }

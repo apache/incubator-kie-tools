@@ -172,8 +172,7 @@ public class AddProjectPopUpView implements AddProjectPopUpPresenter.View,
 
     @Override
     public String getInvalidNameMessage() {
-        return ts.format(LibraryConstants.InvalidFieldValidation,
-                         ts.getTranslation(LibraryConstants.Name));
+        return ts.format(LibraryConstants.InvalidProjectName);
     }
 
     @Override

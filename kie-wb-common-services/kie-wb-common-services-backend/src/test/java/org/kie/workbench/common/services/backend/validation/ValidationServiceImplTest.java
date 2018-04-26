@@ -105,4 +105,29 @@ public class ValidationServiceImplTest {
         verify(javaValidator).isValid(mockName);
         verify(uberfireValidationService).isFileNameValid(mockName);
     }
+
+    @Test
+    public void testProjectNameValid() {
+
+        when(projectValidator.isValid(any())).thenReturn(false);
+        assertFalse(validationService.isProjectNameValid("foo"));
+
+        when(projectValidator.isValid(any())).thenReturn(true);
+        assertTrue(validationService.isProjectNameValid("t"));
+        assertTrue(validationService.isProjectNameValid("test"));
+        assertTrue(validationService.isProjectNameValid("test_"));
+        assertTrue(validationService.isProjectNameValid("test-"));
+        assertTrue(validationService.isProjectNameValid("test."));
+        assertTrue(validationService.isProjectNameValid("test0"));
+        assertTrue(validationService.isProjectNameValid("Test-0"));
+        assertTrue(validationService.isProjectNameValid("Test-._"));
+        assertTrue(validationService.isProjectNameValid("Test.test"));
+
+        assertFalse(validationService.isProjectNameValid("test@"));
+        assertFalse(validationService.isProjectNameValid("test\\u1234"));
+        assertFalse(validationService.isProjectNameValid("\\u1234\\u1111"));
+        assertFalse(validationService.isProjectNameValid("test "));
+        assertFalse(validationService.isProjectNameValid(" test "));
+        assertFalse(validationService.isProjectNameValid("test!"));
+    }
 }
