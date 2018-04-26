@@ -88,4 +88,19 @@ public class ClientProjectDiagramService extends AbstractClientDiagramService<Pr
                                           metadata,
                                           comment);
     }
+
+    public void saveAsXml(final Path path,
+                          final String xml,
+                          final Metadata metadata,
+                          final String comment,
+                          final ServiceCallback<String> callback) {
+        diagramServiceCaller.call(v -> callback.onSuccess(xml),
+                                  (message, throwable) -> {
+                                      callback.onError(new ClientRuntimeError(throwable));
+                                      return false;
+                                  }).saveAsXml(path,
+                                               xml,
+                                               metadata,
+                                               comment);
+    }
 }

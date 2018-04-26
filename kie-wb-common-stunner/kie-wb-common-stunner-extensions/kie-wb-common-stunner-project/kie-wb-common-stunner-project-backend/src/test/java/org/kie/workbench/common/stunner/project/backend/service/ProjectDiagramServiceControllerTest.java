@@ -17,6 +17,8 @@
 package org.kie.workbench.common.stunner.project.backend.service;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Map;
 
 import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
 import org.guvnor.common.services.project.model.Package;
@@ -39,6 +41,7 @@ import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 import org.mockito.Mock;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.DeleteOption;
 
 import static org.junit.Assert.assertEquals;
@@ -118,15 +121,7 @@ public class ProjectDiagramServiceControllerTest
     @Override
     @SuppressWarnings("unchecked")
     public void testGetDiagramByPath() throws IOException {
-        Path path = mock(Path.class);
-        when(path.toURI()).thenReturn(FILE_URI);
-        String fileName = FILE_NAME + "." + RESOURCE_TYPE_SUFFIX;
-        when(path.getFileName()).thenReturn(fileName);
-        when(resourceType.accept(path)).thenReturn(true);
-        final org.uberfire.java.nio.file.Path expectedNioPath = Paths.convert(path);
-
-        byte[] content = DIAGRAM_MARSHALLED.getBytes();
-        when(ioService.readAllBytes(expectedNioPath)).thenReturn(content);
+        final Path path = mockGetDiagramByPathObjects();
 
         Graph<DefinitionSet, ?> graph = mock(Graph.class);
         DefinitionSet graphContent = mock(DefinitionSet.class);
@@ -179,6 +174,27 @@ public class ProjectDiagramServiceControllerTest
         verify(ioService,
                times(1)).write(expectedNioPath,
                                DIAGRAM_MARSHALLED);
+    }
+
+    @Test
+    public void testSaveAsXml() {
+        final Path path = mock(Path.class);
+        final String xml = "xml";
+        final Map<String, ?> attributes = Collections.singletonMap("key", "value");
+        final CommentedOption option = mock(CommentedOption.class);
+        when(path.toURI()).thenReturn(FILE_URI);
+        final org.uberfire.java.nio.file.Path expectedNioPath = Paths.convert(path);
+
+        ((ProjectDiagramServiceController) diagramService).saveAsXml(path,
+                                                                     xml,
+                                                                     attributes,
+                                                                     option);
+
+        verify(ioService,
+               times(1)).write(eq(expectedNioPath),
+                               eq(xml),
+                               eq(attributes),
+                               eq(option));
     }
 
     @Test

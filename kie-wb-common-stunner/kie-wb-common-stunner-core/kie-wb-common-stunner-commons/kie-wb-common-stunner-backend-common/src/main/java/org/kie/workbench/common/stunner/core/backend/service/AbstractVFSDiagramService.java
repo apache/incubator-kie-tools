@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.core.definition.adapter.binding.Bindable
 import org.kie.workbench.common.stunner.core.definition.service.DefinitionSetService;
 import org.kie.workbench.common.stunner.core.definition.service.DiagramMarshaller;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -168,10 +169,10 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
                     return (D) factory.build(name,
                                              metadata,
                                              graph);
-                } catch (java.io.IOException e) {
-                    LOG.error("Cannot unmarshall diagram for diagram's path [" + file + "]",
-                              e);
-                    return null;
+                } catch (Exception e) {
+                    LOG.error("Cannot unmarshall diagram for diagram's path [" + file + "]", e);
+                    final String xml = getIoService().readAllString(Paths.convert(file));
+                    throw new DiagramParsingException(metadata, xml);
                 }
             }
         }
@@ -179,7 +180,7 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
     }
 
     @SuppressWarnings("unchecked")
-    protected abstract M obtainMetadata(DefinitionSetService services,
+    protected abstract M obtainMetadata(final DefinitionSetService services,
                                         final org.uberfire.backend.vfs.Path diagramFilePath,
                                         final String defSetId,
                                         final String fileName);

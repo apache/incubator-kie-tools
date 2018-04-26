@@ -16,9 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.diagram;
 
+import java.io.Serializable;
+
 import org.uberfire.backend.vfs.Path;
 
-public interface Metadata {
+public interface Metadata extends Serializable {
 
     String getDefinitionSetId();
 

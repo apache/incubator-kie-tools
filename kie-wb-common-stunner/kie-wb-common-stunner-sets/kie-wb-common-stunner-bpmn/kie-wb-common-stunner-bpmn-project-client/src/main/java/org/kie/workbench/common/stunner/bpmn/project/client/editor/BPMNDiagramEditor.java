@@ -62,6 +62,7 @@ import org.uberfire.client.views.pfly.widgets.InlineNotification;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
+import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnFocus;
 import org.uberfire.lifecycle.OnLostFocus;
@@ -83,7 +84,6 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
     private final ManagedInstance<GenerateProcessFormsSessionCommand> generateProcessFormSessionCommands;
     private final ManagedInstance<GenerateDiagramFormsSessionCommand> generateDiagramFormsSessionCommands;
     private final ManagedInstance<GenerateSelectedFormsSessionCommand> generateSelectedFormsSessionCommands;
-    private final BPMNDiagramEditorMenuItemsBuilder bpmnDiagramEditorMenuItemsBuilder;
     private final Event<BPMNMigrateDiagramEvent> migrateDiagramEvent;
     private boolean isMigrating = false;
 
@@ -114,7 +114,8 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
                              final BPMNDiagramEditorMenuItemsBuilder bpmnDiagramEditorMenuItemsBuilder,
                              final ClientTranslationService translationService,
                              final Event<BPMNMigrateDiagramEvent> migrateDiagramEvent,
-                             final PopupUtil popupUtil) {
+                             final PopupUtil popupUtil,
+                             final TextEditorView xmlEditorView) {
         super(view,
               placeManager,
               errorPopupPresenter,
@@ -130,11 +131,11 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
               onDiagramLostFocusEvent,
               projectMessagesListener,
               diagramClientErrorHandler,
-              translationService);
+              translationService,
+              xmlEditorView);
         this.generateProcessFormSessionCommands = generateProcessFormSessionCommands;
         this.generateDiagramFormsSessionCommands = generateDiagramFormsSessionCommands;
         this.generateSelectedFormsSessionCommands = generateSelectedFormsSessionCommands;
-        this.bpmnDiagramEditorMenuItemsBuilder = bpmnDiagramEditorMenuItemsBuilder;
         this.migrateDiagramEvent = migrateDiagramEvent;
         this.popupUtil = popupUtil;
 

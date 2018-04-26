@@ -17,9 +17,9 @@
 package org.kie.workbench.common.stunner.bpmn.project.client.editor;
 
 import java.util.function.Predicate;
-import java.util.logging.Level;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import com.google.gwtmockito.WithClassesToStub;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
@@ -29,10 +29,8 @@ import org.kie.workbench.common.stunner.bpmn.project.client.resources.BPMNClient
 import org.kie.workbench.common.stunner.bpmn.project.client.type.BPMNDiagramResourceType;
 import org.kie.workbench.common.stunner.client.widgets.popups.PopupUtil;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.ValidateSessionCommand;
 import org.kie.workbench.common.stunner.forms.client.session.command.GenerateDiagramFormsSessionCommand;
 import org.kie.workbench.common.stunner.forms.client.session.command.GenerateProcessFormsSessionCommand;
 import org.kie.workbench.common.stunner.forms.client.session.command.GenerateSelectedFormsSessionCommand;
@@ -47,7 +45,7 @@ import org.uberfire.client.views.pfly.widgets.InlineNotification;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.junit.Assert.assertEquals;
@@ -61,12 +59,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
+@WithClassesToStub(PathPlaceRequest.class)
 public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
-    private static final String MIGRATE_ACTION_TITLE = "MIGRATE_ACTION_TITLE";
-    private static final String MIGRATE_ACTION_WARNING = "MIGRATE_ACTION_WARNING";
-    private static final String MIGRATE_ACTION = "MIGRATE_ACTION";
-    private static final String MIGRATE_CONFIRM_ACTION = "MIGRATE_CONFIRM_ACTION";
     private static final String COMMIT_MESSAGE = "COMMIT_MESSAGE";
 
     @Mock
@@ -91,16 +86,10 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     private BPMNDiagramEditorMenuItemsBuilder bpmnDiagramEditorMenuItemsBuilder;
 
     @Mock
-    private ClientTranslationService translationService;
-
-    @Mock
     private EventSourceMock<BPMNMigrateDiagramEvent> migrateDiagramEvent;
 
     @Mock
     private PopupUtil popupUtil;
-
-    @Mock
-    private PlaceRequest currentPlace;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -140,11 +129,6 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         when(generateSelectedFormsSessionCommands.get()).thenReturn(generateSelectedFormsSessionCommand);
         when(generateSelectedFormsSessionCommand.setElementAcceptor(any(Predicate.class))).thenReturn(generateSelectedFormsSessionCommand);
 
-        when(translationService.getValue(BPMNClientConstants.EditorMigrateActionTitle)).thenReturn(MIGRATE_ACTION_TITLE);
-        when(translationService.getValue(BPMNClientConstants.EditorMigrateActionWarning)).thenReturn(MIGRATE_ACTION_WARNING);
-        when(translationService.getValue(BPMNClientConstants.EditorMigrateAction)).thenReturn(MIGRATE_ACTION);
-        when(translationService.getValue(BPMNClientConstants.EditorMigrateConfirmAction)).thenReturn(MIGRATE_CONFIRM_ACTION);
-
         when(bpmnDiagramEditorMenuItemsBuilder.newFormsGenerationMenuItem(any(Command.class), any(Command.class), any(Command.class))).thenReturn(formsGenerationMenuItem);
         when(bpmnDiagramEditorMenuItemsBuilder.newMigrateMenuItem(any(Command.class))).thenReturn(migrateMenuItem);
 
@@ -183,22 +167,18 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                                                   bpmnDiagramEditorMenuItemsBuilder,
                                                   translationService,
                                                   migrateDiagramEvent,
-                                                  popupUtil) {
+                                                  popupUtil,
+                                                  xmlEditorView) {
             {
+                place = BPMNDiagramEditorTest.this.placeRequest;
                 fileMenuBuilder = BPMNDiagramEditorTest.this.fileMenuBuilder;
                 workbenchContext = BPMNDiagramEditorTest.this.workbenchContext;
                 projectController = BPMNDiagramEditorTest.this.projectController;
                 versionRecordManager = BPMNDiagramEditorTest.this.versionRecordManager;
                 alertsButtonMenuItemBuilder = BPMNDiagramEditorTest.this.alertsButtonMenuItemBuilder;
-                place = BPMNDiagramEditorTest.this.currentPlace;
                 kieView = BPMNDiagramEditorTest.this.kieView;
                 overviewWidget = BPMNDiagramEditorTest.this.overviewWidget;
-            }
-
-            @Override
-            protected void log(Level level,
-                               String message) {
-                //avoid GWT log initialization.
+                notification = BPMNDiagramEditorTest.this.notificationEvent;
             }
         });
 
@@ -207,48 +187,55 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
     @Test
     public void testMigrateWhenNotDirty() {
+        //Need to open a diagram in order to setup Session and Presenter
+        openDiagram();
+
+        //Now we can check migration when Diagram has unsaved changes
         ObservablePath currentPath = mock(ObservablePath.class);
         when(versionRecordManager.getCurrentPath()).thenReturn(currentPath);
         doReturn(false).when(diagramEditor).isDirty(any(Integer.class));
 
         diagramEditor.onMigrate();
         verify(popupUtil,
-               times(1)).showConfirmPopup(eq(MIGRATE_ACTION_TITLE),
-                                          eq(MIGRATE_ACTION_WARNING),
+               times(1)).showConfirmPopup(eq(BPMNClientConstants.EditorMigrateActionTitle),
+                                          eq(BPMNClientConstants.EditorMigrateActionWarning),
                                           eq(InlineNotification.InlineNotificationType.WARNING),
-                                          eq(MIGRATE_ACTION),
+                                          eq(BPMNClientConstants.EditorMigrateAction),
                                           eq(Button.ButtonStyleType.PRIMARY),
-                                          eq(MIGRATE_CONFIRM_ACTION),
+                                          eq(BPMNClientConstants.EditorMigrateConfirmAction),
                                           commandCaptor.capture());
         commandCaptor.getValue().execute();
         verify(migrateDiagramEvent,
                times(1)).fire(migrateDiagramEventCaptor.capture());
         assertEquals(currentPath,
                      migrateDiagramEventCaptor.getValue().getSourcePath());
-        assertEquals(currentPlace,
+        assertEquals(placeRequest,
                      migrateDiagramEventCaptor.getValue().getSourcePlace());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
+    @SuppressWarnings("unchecked")
     public void testMigrateWhenDirty() {
-        ObservablePath currentPath = mock(ObservablePath.class);
+        //Need to open a diagram in order to setup Session and Presenter
+        openDiagram();
+
+        //Now we can check migration when Diagram has unsaved changes
+        final ObservablePath currentPath = mock(ObservablePath.class);
         when(versionRecordManager.getCurrentPath()).thenReturn(currentPath);
         doReturn(true).when(diagramEditor).isDirty(any(Integer.class));
-        doReturn(fullSessionPresenter).when(diagramEditor).getSessionPresenter();
 
         diagramEditor.onMigrate();
+
         verify(popupUtil,
-               times(1)).showConfirmPopup(eq(MIGRATE_ACTION_TITLE),
-                                          eq(MIGRATE_ACTION_WARNING),
+               times(1)).showConfirmPopup(eq(BPMNClientConstants.EditorMigrateActionTitle),
+                                          eq(BPMNClientConstants.EditorMigrateActionWarning),
                                           eq(InlineNotification.InlineNotificationType.WARNING),
-                                          eq(MIGRATE_ACTION),
+                                          eq(BPMNClientConstants.EditorMigrateAction),
                                           eq(Button.ButtonStyleType.PRIMARY),
-                                          eq(MIGRATE_CONFIRM_ACTION),
+                                          eq(BPMNClientConstants.EditorMigrateConfirmAction),
                                           commandCaptor.capture());
         commandCaptor.getValue().execute();
 
-        ValidateSessionCommand validateSessionCommand = sessionCommandFactory.newValidateCommand();
         verify(validateSessionCommand,
                times(1)).execute(sessionCommandCallback.capture());
         sessionCommandCallback.getValue().onSuccess();
@@ -269,7 +256,7 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                times(1)).fire(migrateDiagramEventCaptor.capture());
         assertEquals(currentPath,
                      migrateDiagramEventCaptor.getValue().getSourcePath());
-        assertEquals(currentPlace,
+        assertEquals(placeRequest,
                      migrateDiagramEventCaptor.getValue().getSourcePlace());
     }
 

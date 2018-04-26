@@ -16,9 +16,8 @@
 
 package org.kie.workbench.common.dmn.project.client.editor;
 
-import java.util.logging.Level;
-
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import com.google.gwtmockito.WithClassesToStub;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
@@ -29,6 +28,7 @@ import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDia
 import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.mockito.Mock;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.PathPlaceRequest;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -39,6 +39,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
+@WithClassesToStub(PathPlaceRequest.class)
 public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
     @Mock
@@ -79,8 +80,10 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                                                  projectMessagesListener,
                                                  diagramClientErrorHandler,
                                                  translationService,
+                                                 xmlEditorView,
                                                  decisionNavigatorDock) {
             {
+                place = DMNDiagramEditorTest.this.placeRequest;
                 fileMenuBuilder = DMNDiagramEditorTest.this.fileMenuBuilder;
                 workbenchContext = DMNDiagramEditorTest.this.workbenchContext;
                 projectController = DMNDiagramEditorTest.this.projectController;
@@ -88,12 +91,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                 alertsButtonMenuItemBuilder = DMNDiagramEditorTest.this.alertsButtonMenuItemBuilder;
                 kieView = DMNDiagramEditorTest.this.kieView;
                 overviewWidget = DMNDiagramEditorTest.this.overviewWidget;
-            }
-
-            @Override
-            protected void log(Level level,
-                               String message) {
-                //avoid GWT log initialization.
+                notification = DMNDiagramEditorTest.this.notificationEvent;
             }
         });
 

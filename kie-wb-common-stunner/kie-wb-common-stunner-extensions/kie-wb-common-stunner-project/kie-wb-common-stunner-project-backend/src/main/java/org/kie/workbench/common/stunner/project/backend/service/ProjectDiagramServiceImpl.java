@@ -158,6 +158,19 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
     }
 
     @Override
+    public Path saveAsXml(final Path path,
+                          final String xml,
+                          final Metadata metadata,
+                          final String comment) {
+        LOG.debug("Saving diagram as XML into path [" + path + "].");
+        return controller.saveAsXml(path,
+                                    xml,
+                                    metadataService.setUpAttributes(path,
+                                                                    metadata),
+                                    commentedOptionFactory.makeCommentedOption(comment));
+    }
+
+    @Override
     public ProjectMetadata saveOrUpdate(final ProjectDiagram diagram) {
         return controller.saveOrUpdate(diagram);
     }

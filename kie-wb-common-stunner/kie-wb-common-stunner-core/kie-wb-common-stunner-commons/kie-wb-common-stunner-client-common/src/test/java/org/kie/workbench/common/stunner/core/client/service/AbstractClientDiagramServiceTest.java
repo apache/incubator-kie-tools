@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.client.service;
 
-import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,12 +27,11 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.lookup.LookupManager;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequest;
 import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramRepresentation;
+import org.kie.workbench.common.stunner.core.service.BaseDiagramService;
 import org.kie.workbench.common.stunner.core.service.DiagramLookupService;
-import org.kie.workbench.common.stunner.core.service.DiagramService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.mocks.CallerMock;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -44,47 +42,60 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ClientDiagramServicesTest {
+public abstract class AbstractClientDiagramServiceTest<M extends Metadata, D extends Diagram<Graph, M>, S extends BaseDiagramService<M, D>, CS extends AbstractClientDiagramService<M, D, S>> {
 
     @Mock
-    ShapeManager shapeManager;
-    @Mock
-    DiagramService diagramService;
-    @Mock
-    DiagramLookupService diagramLookupService;
-    @Mock
-    Path path;
-    @Mock
-    Diagram diagram;
-    @Mock
-    Metadata metadata;
+    protected ShapeManager shapeManager;
 
-    private ClientDiagramService tested;
+    @Mock
+    protected DiagramLookupService diagramLookupService;
+
+    @Mock
+    protected Path path;
+
+    protected M metadata;
+
+    protected D diagram;
+
+    protected S diagramService;
+
+    protected CS tested;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
+        this.metadata = makeTestMetadata();
+        this.diagram = makeTestDiagram();
+        this.diagramService = makeTestDiagramService();
+        this.tested = makeTestClientDiagramService();
+
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getDefinitionSetId()).thenReturn("ds1 ");
         when(metadata.getShapeSetId()).thenReturn("ss1 ");
-        when(diagramService.saveOrUpdate(any(Diagram.class))).thenReturn(metadata);
-        Caller<DiagramService> diagramServiceCaller = new CallerMock<>(diagramService);
-        Caller<DiagramLookupService> diagramLookupServiceCaller = new CallerMock<>(diagramLookupService);
-        this.tested = new ClientDiagramService(shapeManager,
-                                               diagramServiceCaller,
-                                               diagramLookupServiceCaller);
+        when(diagramService.saveOrUpdate(eq(diagram))).thenReturn(metadata);
+        when(diagramService.getDiagramByPath(eq(path))).thenReturn(diagram);
     }
+
+    protected abstract M makeTestMetadata();
+
+    protected abstract D makeTestDiagram();
+
+    protected abstract S makeTestDiagramService();
+
+    protected abstract CS makeTestClientDiagramService();
 
     @Test
     @SuppressWarnings("unchecked")
     public void testCreate() {
-        String name = "d1";
-        String defSetId = "id1";
-        ServiceCallback<Path> callback = mock(ServiceCallback.class);
+        final String name = "d1";
+        final String defSetId = "id1";
+        final ServiceCallback<Path> callback = mock(ServiceCallback.class);
+
         tested.create(path,
                       name,
                       defSetId,
                       callback);
+
         verify(diagramService,
                times(1)).create(eq(path),
                                 eq(name),
@@ -98,13 +109,15 @@ public class ClientDiagramServicesTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testAdd() {
-        ServiceCallback<Diagram<Graph, Metadata>> callback = mock(ServiceCallback.class);
+        final ServiceCallback<D> callback = mock(ServiceCallback.class);
+
         tested.add(diagram,
                    callback);
+
         verify(diagramService,
                times(1)).saveOrUpdate(eq(diagram));
         verify(callback,
-               times(1)).onSuccess(any(Diagram.class));
+               times(1)).onSuccess(eq(diagram));
         verify(callback,
                times(0)).onError(any(ClientRuntimeError.class));
     }
@@ -112,13 +125,15 @@ public class ClientDiagramServicesTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testSaveOrUpdate() {
-        ServiceCallback<Diagram<Graph, Metadata>> callback = mock(ServiceCallback.class);
+        final ServiceCallback<D> callback = mock(ServiceCallback.class);
+
         tested.saveOrUpdate(diagram,
                             callback);
+
         verify(diagramService,
                times(1)).saveOrUpdate(eq(diagram));
         verify(callback,
-               times(1)).onSuccess(any(Diagram.class));
+               times(1)).onSuccess(eq(diagram));
         verify(callback,
                times(0)).onError(any(ClientRuntimeError.class));
     }
@@ -126,13 +141,15 @@ public class ClientDiagramServicesTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testGetByPath() {
-        ServiceCallback<Diagram<Graph, Metadata>> callback = mock(ServiceCallback.class);
+        final ServiceCallback<D> callback = mock(ServiceCallback.class);
+
         tested.getByPath(path,
                          callback);
+
         verify(diagramService,
                times(1)).getDiagramByPath(eq(path));
         verify(callback,
-               times(1)).onSuccess(any(Diagram.class));
+               times(1)).onSuccess(eq(diagram));
         verify(callback,
                times(0)).onError(any(ClientRuntimeError.class));
     }
@@ -140,10 +157,12 @@ public class ClientDiagramServicesTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testLookup() {
-        DiagramLookupRequest request = mock(DiagramLookupRequest.class);
-        ServiceCallback<LookupManager.LookupResponse<DiagramRepresentation>> callback = mock(ServiceCallback.class);
+        final DiagramLookupRequest request = mock(DiagramLookupRequest.class);
+        final ServiceCallback<LookupManager.LookupResponse<DiagramRepresentation>> callback = mock(ServiceCallback.class);
+
         tested.lookup(request,
                       callback);
+
         verify(diagramLookupService,
                times(1)).lookup(eq(request));
         verify(callback,
@@ -155,19 +174,21 @@ public class ClientDiagramServicesTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testUpdateClientMetadata() {
-        String ssid = "shapeSet1";
-        ShapeSet shapeSet = mock(ShapeSet.class);
+        final String ssid = "shapeSet1";
+        final ShapeSet shapeSet = mock(ShapeSet.class);
+        final ServiceCallback<D> callback = mock(ServiceCallback.class);
         when(shapeSet.getId()).thenReturn(ssid);
         when(shapeManager.getDefaultShapeSet(anyString())).thenReturn(shapeSet);
         when(metadata.getShapeSetId()).thenReturn(null);
-        ServiceCallback<Diagram<Graph, Metadata>> callback = mock(ServiceCallback.class);
         when(diagramService.getDiagramByPath(eq(path))).thenReturn(diagram);
+
         tested.add(diagram,
                    callback);
         tested.saveOrUpdate(diagram,
                             callback);
         tested.getByPath(path,
                          callback);
+
         verify(metadata,
                times(3)).setShapeSetId(eq(ssid));
     }
@@ -175,9 +196,11 @@ public class ClientDiagramServicesTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testGetRawContent() {
-        ServiceCallback<String> callback = mock(ServiceCallback.class);
+        final ServiceCallback<String> callback = mock(ServiceCallback.class);
+
         tested.getRawContent(diagram,
                              callback);
+
         verify(diagramService,
                times(1)).getRawContent(eq(diagram));
         verify(callback,

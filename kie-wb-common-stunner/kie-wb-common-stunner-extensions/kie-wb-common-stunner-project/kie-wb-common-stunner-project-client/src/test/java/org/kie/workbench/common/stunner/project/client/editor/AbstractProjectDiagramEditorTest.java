@@ -16,14 +16,20 @@
 
 package org.kie.workbench.common.stunner.project.client.editor;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import com.google.gwtmockito.WithClassesToStub;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.junit.Before;
@@ -34,9 +40,12 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
+import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
+import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
+import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearStatesSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.CopySelectionSessionCommand;
@@ -56,8 +65,16 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.Validat
 import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGraphSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
+import org.kie.workbench.common.stunner.core.definition.exception.DefinitionNotFoundException;
+import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.violations.BoundsExceededViolation;
+import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
+import org.kie.workbench.common.stunner.core.validation.impl.ElementViolationImpl;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
+import org.kie.workbench.common.stunner.project.client.resources.i18n.StunnerProjectClientConstants;
 import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesListener;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
@@ -75,30 +92,47 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
+import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
+import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
+import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.PathPlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
+@WithClassesToStub(PathPlaceRequest.class)
 public class AbstractProjectDiagramEditorTest {
+
+    protected static final String EDITOR_ID = "AbstractProjectDiagramEditor";
 
     protected static final String TITLE = "title";
 
@@ -110,6 +144,9 @@ public class AbstractProjectDiagramEditorTest {
 
     @Mock
     protected PlaceManager placeManager;
+
+    @Mock
+    protected PlaceRequest placeRequest;
 
     @Mock
     protected ErrorPopupPresenter errorPopupPresenter;
@@ -134,6 +171,9 @@ public class AbstractProjectDiagramEditorTest {
 
     @Mock
     protected EventSourceMock<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent;
+
+    @Mock
+    protected EventSourceMock<NotificationEvent> notificationEvent;
 
     @Mock
     protected BasicFileMenuBuilder menuBuilder;
@@ -167,6 +207,12 @@ public class AbstractProjectDiagramEditorTest {
 
     @Mock
     protected ClientTranslationService translationService;
+
+    @Mock
+    protected TextEditorView xmlEditorView;
+
+    @Mock
+    protected Widget xmlEditorWidget;
 
     @Mock
     protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
@@ -288,6 +334,18 @@ public class AbstractProjectDiagramEditorTest {
     @Captor
     protected ArgumentCaptor<SessionPresenter.SessionPresenterCallback> clientSessionPresenterCallbackCaptor;
 
+    @Captor
+    protected ArgumentCaptor<ServiceCallback> serviceCallbackCaptor;
+
+    @Captor
+    protected ArgumentCaptor<ClientSessionCommand.Callback> validationCallbackCaptor;
+
+    @Captor
+    protected ArgumentCaptor<ParameterizedCommand<String>> savePopupCommandCaptor;
+
+    @Captor
+    protected ArgumentCaptor<NotificationEvent> notificationEventCaptor;
+
     abstract class ClientResourceTypeMock implements ClientResourceType {
 
     }
@@ -347,9 +405,16 @@ public class AbstractProjectDiagramEditorTest {
         when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
         when(versionRecordManager.getPathToLatest()).thenReturn(filePath);
 
+        when(xmlEditorView.asWidget()).thenReturn(xmlEditorWidget);
+
+        doAnswer(i -> i.getArguments()[0]).when(translationService).getValue(anyString());
+
         resourceType = mockResourceType();
         presenter = createDiagramEditor();
         presenter.init();
+
+        final String editorIdentifier = presenter.getEditorIdentifier();
+        when(placeRequest.getIdentifier()).thenReturn(editorIdentifier);
     }
 
     protected ClientResourceType mockResourceType() {
@@ -380,8 +445,10 @@ public class AbstractProjectDiagramEditorTest {
                                                                             onDiagramLostFocusEvent,
                                                                             projectMessagesListener,
                                                                             diagramClientErrorHandler,
-                                                                            translationService) {
+                                                                            translationService,
+                                                                            xmlEditorView) {
             {
+                place = AbstractProjectDiagramEditorTest.this.placeRequest;
                 fileMenuBuilder = AbstractProjectDiagramEditorTest.this.fileMenuBuilder;
                 workbenchContext = AbstractProjectDiagramEditorTest.this.workbenchContext;
                 projectController = AbstractProjectDiagramEditorTest.this.projectController;
@@ -389,6 +456,7 @@ public class AbstractProjectDiagramEditorTest {
                 alertsButtonMenuItemBuilder = AbstractProjectDiagramEditorTest.this.alertsButtonMenuItemBuilder;
                 kieView = AbstractProjectDiagramEditorTest.this.kieView;
                 overviewWidget = AbstractProjectDiagramEditorTest.this.overviewWidget;
+                notification = AbstractProjectDiagramEditorTest.this.notificationEvent;
             }
 
             @Override
@@ -403,9 +471,30 @@ public class AbstractProjectDiagramEditorTest {
 
             @Override
             protected String getEditorIdentifier() {
-                return null;
+                return EDITOR_ID;
             }
         });
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testInit() {
+        verify(view,
+               times(1)).init(eq(presenter));
+        verify(visitGraphSessionCommand,
+               times(0)).bind(eq(clientFullSession));
+        verify(switchGridSessionCommand,
+               times(0)).bind(eq(clientFullSession));
+        verify(clearSessionCommand,
+               times(0)).bind(eq(clientFullSession));
+        verify(deleteSelectionSessionCommand,
+               times(0)).bind(eq(clientFullSession));
+        verify(undoSessionCommand,
+               times(0)).bind(eq(clientFullSession));
+        verify(redoSessionCommand,
+               times(0)).bind(eq(clientFullSession));
+        verify(validateSessionCommand,
+               times(0)).bind(eq(clientFullSession));
     }
 
     @Test
@@ -448,49 +537,48 @@ public class AbstractProjectDiagramEditorTest {
 
     @Test
     public void testFormatTitle() {
-        String title = "testDiagram";
-
-        String formattedTitle = presenter.formatTitle(title);
-        String suffix = getResourceType().getSuffix();
-        String shortName = getResourceType().getShortName();
+        final String title = "testDiagram";
+        final String formattedTitle = presenter.formatTitle(title);
+        final String suffix = getResourceType().getSuffix();
+        final String shortName = getResourceType().getShortName();
         assertEquals(formattedTitle,
                      "testDiagram." + suffix + " - " + shortName);
     }
 
     @Test
     @SuppressWarnings("unchecked")
+    public void testOpenWithUnhandledException() {
+        openDiagram();
+
+        verify(clientProjectDiagramService,
+               times(1)).getByPath(eq(versionRecordManager.getCurrentPath()),
+                                   serviceCallbackCaptor.capture());
+
+        serviceCallbackCaptor.getValue().onError(new ClientRuntimeError(new DefinitionNotFoundException()));
+
+        verify(placeManager,
+               times(1)).forceClosePlace(any(PathPlaceRequest.class));
+
+        final ArgumentCaptor<Consumer> consumerArgumentCaptor = forClass(Consumer.class);
+        verify(diagramClientErrorHandler,
+               times(1)).handleError(any(ClientRuntimeError.class),
+                                     consumerArgumentCaptor.capture());
+        consumerArgumentCaptor.getValue().accept("error message");
+        verify(errorPopupPresenter,
+               times(1)).showMessage("error message");
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void testOpen() {
-        final ProjectMetadata metadata = mock(ProjectMetadata.class);
-        final Overview overview = mock(Overview.class);
-        final ClientSessionFactory clientSessionFactory = mock(ClientSessionFactory.class);
-
-        when(diagram.getMetadata()).thenReturn(metadata);
-        when(metadata.getTitle()).thenReturn(TITLE);
-        when(metadata.getOverview()).thenReturn(overview);
-        when(sessionManager.getSessionFactory(eq(metadata), eq(ClientFullSession.class))).thenReturn(clientSessionFactory);
-
-        presenter.open(diagram);
+        final Overview overview = openDiagram();
 
         verify(view).showLoading();
         verify(presenter).setOriginalHash(anyInt());
-        verify(presenter).destroySession();
-
-        verify(clientSessionFactory).newSession(eq(metadata),
-                                                clientFullSessionConsumerCaptor.capture());
-
-        final Consumer<ClientFullSession> clientFullSessionConsumer = clientFullSessionConsumerCaptor.getValue();
-        clientFullSessionConsumer.accept(clientFullSession);
 
         verify(view).setWidget(eq(sessionPresenterView));
         verify(fullSessionPresenter).withToolbar(eq(false));
         verify(fullSessionPresenter).withPalette(eq(true));
-        verify(fullSessionPresenter).open(eq(diagram),
-                                          eq(clientFullSession),
-                                          clientSessionPresenterCallbackCaptor.capture());
-
-        final SessionPresenter.SessionPresenterCallback clientSessionPresenterCallback = clientSessionPresenterCallbackCaptor.getValue();
-        clientSessionPresenterCallback.onSuccess();
-
         verify(view).hideBusyIndicator();
 
         //Verify Overview widget was setup. It'd be nice to just verify(presenter).resetEditorPages(..) but it is protected
@@ -510,38 +598,14 @@ public class AbstractProjectDiagramEditorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testOpenReadOnly() {
-        final ProjectMetadata metadata = mock(ProjectMetadata.class);
-        final Overview overview = mock(Overview.class);
-        final ClientSessionFactory clientSessionFactory = mock(ClientSessionFactory.class);
-
-        when(diagram.getMetadata()).thenReturn(metadata);
-        when(metadata.getTitle()).thenReturn(TITLE);
-        when(metadata.getOverview()).thenReturn(overview);
-        when(sessionManager.getSessionFactory(eq(metadata), eq(ClientReadOnlySession.class))).thenReturn(clientSessionFactory);
-
-        doReturn(true).when(presenter).isReadOnly();
-        presenter.open(diagram);
+        final Overview overview = openReadOnlyDiagram();
 
         verify(view).showLoading();
         verify(presenter).setOriginalHash(anyInt());
-        verify(presenter).destroySession();
-
-        verify(clientSessionFactory).newSession(eq(metadata),
-                                                clientReadOnlySessionConsumerCaptor.capture());
-
-        final Consumer<ClientReadOnlySession> clientReadOnlySessionConsumer = clientReadOnlySessionConsumerCaptor.getValue();
-        clientReadOnlySessionConsumer.accept(clientReadOnlySession);
 
         verify(view).setWidget(eq(sessionPresenterView));
         verify(readOnlySessionPresenter).withToolbar(eq(false));
         verify(readOnlySessionPresenter).withPalette(eq(false));
-        verify(readOnlySessionPresenter).open(eq(diagram),
-                                              eq(clientReadOnlySession),
-                                              clientSessionPresenterCallbackCaptor.capture());
-
-        final SessionPresenter.SessionPresenterCallback clientSessionPresenterCallback = clientSessionPresenterCallbackCaptor.getValue();
-        clientSessionPresenterCallback.onSuccess();
-
         verify(view).hideBusyIndicator();
 
         //Verify Overview widget was setup. It'd be nice to just verify(presenter).resetEditorPages(..) but it is protected
@@ -560,9 +624,339 @@ public class AbstractProjectDiagramEditorTest {
 
     @Test
     @SuppressWarnings("unchecked")
+    public void testOpenWithInvalidBPMNFile() {
+        final String xml = "xml";
+        final Overview overview = openInvalidBPMNFile(xml);
+
+        verify(view).showLoading();
+        verify(presenter).setOriginalHash(eq(xml.hashCode()));
+        verify(view).setWidget(eq(xmlEditorWidget));
+        verify(view).hideBusyIndicator();
+
+        //Verify Overview widget was setup. It'd be nice to just verify(presenter).resetEditorPages(..) but it is protected
+        verify(overviewWidget).setContent(eq(overview),
+                                          eq(filePath));
+        verify(kieView).clear();
+        verify(kieView).addMainEditorPage(eq(view));
+        verify(kieView).addOverviewPage(eq(overviewWidget),
+                                        any(com.google.gwt.user.client.Command.class));
+
+        verify(presenter).initialiseMenuBarStateForSession(eq(false));
+        verify(xmlEditorView).setReadOnly(eq(false));
+        verify(xmlEditorView).setContent(eq(xml), eq(AceEditorMode.XML));
+        verify(presenter).makeXmlEditorProxy();
+    }
+
+    @Test
+    public void testIsDirty() {
+        openDiagram();
+
+        assertFalse(presenter.isDirty(presenter.getCurrentDiagramHash()));
+        presenter.setOriginalHash(~~(presenter.getCurrentDiagramHash() + 1));
+        assertTrue(presenter.isDirty(presenter.getCurrentDiagramHash()));
+    }
+
+    @Test
+    public void testHasChanges() {
+        openDiagram();
+
+        assertFalse(presenter.hasUnsavedChanges());
+        presenter.setOriginalHash(~~(presenter.getCurrentDiagramHash() + 1));
+        assertTrue(presenter.hasUnsavedChanges());
+        presenter.setOriginalHash(~~(presenter.getCurrentDiagramHash()));
+        assertFalse(presenter.hasUnsavedChanges());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testValidateBeforeSave() {
+        //Need to open a diagram in order to setup Session and Presenter
+        openDiagram();
+
+        presenter.save();
+
+        verify(validateSessionCommand,
+               times(1)).execute(any(ClientSessionCommand.Callback.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testStunnerSave_SaveFailed() {
+        final String errorMessage = "Something went wrong";
+        final ClientRuntimeError cre = new ClientRuntimeError(errorMessage);
+        final ServiceCallback<ProjectDiagram> serviceCallback = assertBasicStunnerSaveOperation();
+
+        serviceCallback.onError(cre);
+
+        verify(presenter).onSaveError(eq(cre));
+        final ArgumentCaptor<Consumer> consumerCaptor = forClass(Consumer.class);
+        verify(diagramClientErrorHandler).handleError(eq(cre), consumerCaptor.capture());
+
+        final Consumer consumer = consumerCaptor.getValue();
+        consumer.accept(errorMessage);
+
+        verify(errorPopupPresenter).showMessage(eq(errorMessage));
+    }
+
+    @Test
+    public void testStunnerSave_ValidationSuccessful() {
+        final ServiceCallback<ProjectDiagram> serviceCallback = assertBasicStunnerSaveOperation();
+
+        serviceCallback.onSuccess(diagram);
+
+        final Path path = versionRecordManager.getCurrentPath();
+        verify(versionRecordManager).reloadVersions(eq(path));
+        verify(sessionPresenterView).showMessage(eq(StunnerProjectClientConstants.DIAGRAM_SAVE_SUCCESSFUL));
+        verify(view).hideBusyIndicator();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testStunnerSave_ValidationUnsuccessful() {
+        openDiagram();
+
+        reset(presenter, view);
+
+        doReturn(diagram).when(presenter).getDiagram();
+        presenter.save();
+
+        verify(validateSessionCommand).execute(validationCallbackCaptor.capture());
+
+        final Collection<DiagramElementViolation<RuleViolation>> violations = new ArrayList<>();
+        violations.add(ElementViolationImpl.Builder.build("UUID", Collections.singletonList(new BoundsExceededViolation(mock(Bounds.class)))));
+        final ClientSessionCommand.Callback validationCallback = validationCallbackCaptor.getValue();
+        validationCallback.onError(violations);
+
+        verify(presenter).onValidationFailed(eq(violations));
+        verify(view).hideBusyIndicator();
+    }
+
+    @SuppressWarnings("unchecked")
+    private ServiceCallback<ProjectDiagram> assertBasicStunnerSaveOperation() {
+        final String commitMessage = "message";
+        final Overview overview = openDiagram();
+        final Metadata metadata = overview.getMetadata();
+
+        reset(presenter, view);
+
+        doReturn(diagram).when(presenter).getDiagram();
+        presenter.save();
+
+        verify(validateSessionCommand).execute(validationCallbackCaptor.capture());
+
+        final ClientSessionCommand.Callback validationCallback = validationCallbackCaptor.getValue();
+        validationCallback.onSuccess();
+
+        verify(savePopUpPresenter).show(eq(versionRecordManager.getCurrentPath()),
+                                        savePopupCommandCaptor.capture());
+
+        final ParameterizedCommand<String> savePopupCommand = savePopupCommandCaptor.getValue();
+        savePopupCommand.execute(commitMessage);
+
+        verify(view).showSaving();
+        verify(clientProjectDiagramService).saveOrUpdate(eq(versionRecordManager.getCurrentPath()),
+                                                         eq(diagram),
+                                                         eq(metadata),
+                                                         eq(commitMessage),
+                                                         serviceCallbackCaptor.capture());
+
+        return serviceCallbackCaptor.getValue();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testXMLSave_ValidationNotRequired() {
+        final String xml = "xml";
+        final ServiceCallback<String> serviceCallback = assertBasicXMLSaveOperation(xml);
+
+        serviceCallback.onSuccess(xml);
+
+        final Path path = versionRecordManager.getCurrentPath();
+        verify(versionRecordManager).reloadVersions(eq(path));
+        verify(notificationEvent).fire(notificationEventCaptor.capture());
+
+        final NotificationEvent notificationEvent = notificationEventCaptor.getValue();
+        assertEquals("ItemSavedSuccessfully",
+                     notificationEvent.getNotification());
+
+        verify(view).hideBusyIndicator();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testXMLSave_SaveFailed() {
+        final String xml = "xml";
+        final String errorMessage = "Something went wrong";
+        final ClientRuntimeError cre = new ClientRuntimeError(errorMessage);
+        final ServiceCallback<String> serviceCallback = assertBasicXMLSaveOperation(xml);
+
+        serviceCallback.onError(cre);
+
+        verify(presenter).onSaveError(eq(cre));
+        final ArgumentCaptor<Consumer> consumerCaptor = forClass(Consumer.class);
+        verify(diagramClientErrorHandler).handleError(eq(cre), consumerCaptor.capture());
+
+        final Consumer consumer = consumerCaptor.getValue();
+        consumer.accept(errorMessage);
+
+        verify(errorPopupPresenter).showMessage(eq(errorMessage));
+    }
+
+    @SuppressWarnings("unchecked")
+    private ServiceCallback<String> assertBasicXMLSaveOperation(final String xml) {
+        final String commitMessage = "message";
+        final Overview overview = openInvalidBPMNFile(xml);
+        final Metadata metadata = overview.getMetadata();
+
+        reset(presenter, view);
+
+        doReturn(xml).when(xmlEditorView).getContent();
+        presenter.save();
+
+        verify(savePopUpPresenter).show(eq(versionRecordManager.getCurrentPath()),
+                                        savePopupCommandCaptor.capture());
+
+        final ParameterizedCommand<String> savePopupCommand = savePopupCommandCaptor.getValue();
+        savePopupCommand.execute(commitMessage);
+
+        verify(view).showSaving();
+        verify(clientProjectDiagramService).saveAsXml(eq(versionRecordManager.getCurrentPath()),
+                                                      eq(xml),
+                                                      eq(metadata),
+                                                      eq(commitMessage),
+                                                      serviceCallbackCaptor.capture());
+
+        return serviceCallbackCaptor.getValue();
+    }
+
+    @Test
+    public void testDiagramHashCodeWithInvalidBPMNFile() {
+        final String xml = "xml";
+        when(xmlEditorView.getContent()).thenReturn(xml);
+
+        openInvalidBPMNFile(xml);
+
+        assertEquals(xml.hashCode(),
+                     presenter.getCurrentDiagramHash());
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Overview openDiagram() {
+        final ProjectMetadata metadata = mock(ProjectMetadata.class);
+        final Metadata overviewMetadata = mock(Metadata.class);
+        final Overview overview = mock(Overview.class);
+        final ClientSessionFactory clientSessionFactory = mock(ClientSessionFactory.class);
+
+        when(diagram.getMetadata()).thenReturn(metadata);
+        when(metadata.getTitle()).thenReturn(TITLE);
+        when(metadata.getOverview()).thenReturn(overview);
+        when(sessionManager.getSessionFactory(eq(metadata), eq(ClientFullSession.class))).thenReturn(clientSessionFactory);
+        when(overview.getMetadata()).thenReturn(overviewMetadata);
+
+        doAnswer(i -> {
+            final ServiceCallback serviceCallback = (ServiceCallback) i.getArguments()[1];
+            serviceCallback.onSuccess(diagram);
+            return null;
+        }).when(clientProjectDiagramService).getByPath(any(Path.class),
+                                                       any(ServiceCallback.class));
+
+        presenter.loadContent();
+
+        verify(presenter).destroySession();
+
+        verify(clientSessionFactory).newSession(eq(metadata),
+                                                clientFullSessionConsumerCaptor.capture());
+
+        final Consumer<ClientFullSession> clientFullSessionConsumer = clientFullSessionConsumerCaptor.getValue();
+        clientFullSessionConsumer.accept(clientFullSession);
+
+        verify(fullSessionPresenter).open(eq(diagram),
+                                          eq(clientFullSession),
+                                          clientSessionPresenterCallbackCaptor.capture());
+
+        final SessionPresenter.SessionPresenterCallback clientSessionPresenterCallback = clientSessionPresenterCallbackCaptor.getValue();
+        clientSessionPresenterCallback.onSuccess();
+
+        verify(presenter).makeStunnerEditorProxy();
+
+        return overview;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Overview openReadOnlyDiagram() {
+        final ProjectMetadata metadata = mock(ProjectMetadata.class);
+        final Overview overview = mock(Overview.class);
+        final ClientSessionFactory clientSessionFactory = mock(ClientSessionFactory.class);
+
+        when(diagram.getMetadata()).thenReturn(metadata);
+        when(metadata.getTitle()).thenReturn(TITLE);
+        when(metadata.getOverview()).thenReturn(overview);
+        when(sessionManager.getSessionFactory(eq(metadata), eq(ClientReadOnlySession.class))).thenReturn(clientSessionFactory);
+
+        doReturn(true).when(presenter).isReadOnly();
+
+        doAnswer(i -> {
+            final ServiceCallback serviceCallback = (ServiceCallback) i.getArguments()[1];
+            serviceCallback.onSuccess(diagram);
+            return null;
+        }).when(clientProjectDiagramService).getByPath(any(Path.class),
+                                                       any(ServiceCallback.class));
+
+        presenter.loadContent();
+
+        verify(presenter).destroySession();
+
+        verify(clientSessionFactory).newSession(eq(metadata),
+                                                clientReadOnlySessionConsumerCaptor.capture());
+
+        final Consumer<ClientReadOnlySession> clientReadOnlySessionConsumer = clientReadOnlySessionConsumerCaptor.getValue();
+        clientReadOnlySessionConsumer.accept(clientReadOnlySession);
+
+        verify(readOnlySessionPresenter).open(eq(diagram),
+                                              eq(clientReadOnlySession),
+                                              clientSessionPresenterCallbackCaptor.capture());
+
+        final SessionPresenter.SessionPresenterCallback clientSessionPresenterCallback = clientSessionPresenterCallbackCaptor.getValue();
+        clientSessionPresenterCallback.onSuccess();
+
+        verify(presenter).makeStunnerEditorProxy();
+
+        return overview;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Overview openInvalidBPMNFile(final String xml) {
+        final ClientRuntimeError clientRuntimeError = mock(ClientRuntimeError.class);
+        final DiagramParsingException dpe = mock(DiagramParsingException.class);
+        final ProjectMetadata metadata = mock(ProjectMetadata.class);
+        final Overview overview = mock(Overview.class);
+
+        when(metadata.getTitle()).thenReturn(TITLE);
+        when(metadata.getOverview()).thenReturn(overview);
+        when(clientRuntimeError.getThrowable()).thenReturn(dpe);
+        when(dpe.getMetadata()).thenReturn(metadata);
+        when(dpe.getXml()).thenReturn(xml);
+
+        doAnswer(i -> {
+            final ServiceCallback serviceCallback = (ServiceCallback) i.getArguments()[1];
+            serviceCallback.onError(clientRuntimeError);
+            return null;
+        }).when(clientProjectDiagramService).getByPath(any(Path.class),
+                                                       any(ServiceCallback.class));
+
+        presenter.loadContent();
+
+        verify(presenter).destroySession();
+
+        return overview;
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void testCloseEditor() {
         presenter.setFullSessionPresenter(fullSessionPresenter);
         presenter.doClose();
+
         verify(clearStatesSessionCommand, times(1)).unbind();
         verify(switchGridSessionCommand, times(1)).unbind();
         verify(visitGraphSessionCommand, times(1)).unbind();
@@ -616,5 +1010,72 @@ public class AbstractProjectDiagramEditorTest {
         verify(copyItem).setEnabled(false);
         verify(cutItem).setEnabled(false);
         verify(pasteItem).setEnabled(false);
+    }
+
+    @Test
+    public void testOnPlaceHiddenEvent() {
+        final PlaceHiddenEvent event = new PlaceHiddenEvent(placeRequest);
+
+        presenter.hideDiagramEditorDocks(event);
+
+        verify(onDiagramLostFocusEvent).fire(any(OnDiagramLoseFocusEvent.class));
+    }
+
+    @Test
+    public void testNotValidOnPlaceHiddenEvent() {
+        final PlaceRequest anotherRequest = mock(PlaceRequest.class);
+
+        when(anotherRequest.getIdentifier()).thenReturn("");
+
+        final PlaceHiddenEvent event = new PlaceHiddenEvent(anotherRequest);
+
+        presenter.hideDiagramEditorDocks(event);
+
+        verify(onDiagramLostFocusEvent,
+               never()).fire(any(OnDiagramLoseFocusEvent.class));
+    }
+
+    @Test
+    public void testOnPlaceGainFocusEvent() {
+        final PlaceGainFocusEvent event = new PlaceGainFocusEvent(placeRequest);
+
+        presenter.showDiagramEditorDocks(event);
+
+        verify(onDiagramFocusEvent).fire(any(OnDiagramFocusEvent.class));
+    }
+
+    @Test
+    public void testNotValidOnPlaceGainFocusEvent() {
+        final PlaceRequest anotherRequest = mock(PlaceRequest.class);
+
+        when(anotherRequest.getIdentifier()).thenReturn("");
+
+        final PlaceGainFocusEvent event = new PlaceGainFocusEvent(anotherRequest);
+
+        presenter.showDiagramEditorDocks(event);
+
+        verify(onDiagramFocusEvent,
+               never()).fire(any(OnDiagramFocusEvent.class));
+    }
+
+    @Test
+    public void testShowLoadingViews() {
+        presenter.showLoadingViews();
+
+        verify(view).showLoading();
+    }
+
+    @Test
+    public void testShowSavingViews() {
+        presenter.showSavingViews();
+
+        verify(view).showSaving();
+    }
+
+    @Test
+    public void testHideLoadingViews() {
+        presenter.hideLoadingViews();
+
+        verify(view).hideBusyIndicator();
     }
 }

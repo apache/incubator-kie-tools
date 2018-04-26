@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.core.definition.service.DefinitionSetSer
 import org.kie.workbench.common.stunner.core.definition.service.DiagramMarshaller;
 import org.kie.workbench.common.stunner.core.definition.service.DiagramMetadataMarshaller;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -40,6 +41,7 @@ import org.kie.workbench.common.stunner.core.registry.BackendRegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.uberfire.backend.server.util.Paths;
@@ -51,7 +53,9 @@ import org.uberfire.java.nio.file.SimpleFileVisitor;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
@@ -185,15 +189,7 @@ public abstract class AbstractVFSDiagramServiceTest<M extends Metadata, D extend
 
     @Test
     public void testGetDiagramByPath() throws IOException {
-        Path path = mock(Path.class);
-        when(path.toURI()).thenReturn(FILE_URI);
-        String fileName = FILE_NAME + "." + RESOURCE_TYPE_SUFFIX;
-        when(path.getFileName()).thenReturn(fileName);
-        when(resourceType.accept(path)).thenReturn(true);
-        final org.uberfire.java.nio.file.Path expectedNioPath = Paths.convert(path);
-
-        byte[] content = DIAGRAM_MARSHALLED.getBytes();
-        when(ioService.readAllBytes(expectedNioPath)).thenReturn(content);
+        final Path path = mockGetDiagramByPathObjects();
 
         Graph<DefinitionSet, ?> graph = mock(Graph.class);
         DefinitionSet graphContent = mock(DefinitionSet.class);
@@ -214,6 +210,42 @@ public abstract class AbstractVFSDiagramServiceTest<M extends Metadata, D extend
         Diagram result = diagramService.getDiagramByPath(path);
         assertEquals(diagram,
                      result);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetDiagramByPathParseException() throws IOException {
+        final String processDefinition = "broken definition";
+        final Path path = mockGetDiagramByPathObjects();
+        when(ioService.readAllString(Paths.convert(path))).thenReturn(processDefinition);
+
+        //Mock failure to unmarshall XML to Graph
+        try {
+            Mockito.when(diagramMarshaller.unmarshall(anyObject(),
+                                                      anyObject())).thenThrow(IOException.class);
+
+            diagramService.getDiagramByPath(path);
+        } catch (DiagramParsingException dpe) {
+            assertEquals(processDefinition,
+                         dpe.getXml());
+            assertNotNull(dpe.getMetadata());
+        } catch (Exception e) {
+            fail("Exception should have been caught and wrapped as DiagramParsingException");
+        }
+    }
+
+    protected Path mockGetDiagramByPathObjects() {
+        final Path path = mock(Path.class);
+        final String fileName = FILE_NAME + "." + RESOURCE_TYPE_SUFFIX;
+        when(path.toURI()).thenReturn(FILE_URI);
+        when(path.getFileName()).thenReturn(fileName);
+
+        final org.uberfire.java.nio.file.Path expectedNioPath = Paths.convert(path);
+        final byte[] content = DIAGRAM_MARSHALLED.getBytes();
+        when(resourceType.accept(path)).thenReturn(true);
+        when(ioService.readAllBytes(expectedNioPath)).thenReturn(content);
+
+        return path;
     }
 
     @Test

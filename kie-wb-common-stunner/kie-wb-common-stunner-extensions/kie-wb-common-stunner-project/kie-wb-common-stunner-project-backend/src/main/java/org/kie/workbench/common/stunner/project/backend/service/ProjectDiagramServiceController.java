@@ -165,6 +165,23 @@ class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectM
         return path;
     }
 
+    public Path saveAsXml(final Path path,
+                          final String xml,
+                          final Map<String, ?> attributes,
+                          final OpenOption... comment) {
+        try {
+            getIoService().write(Paths.convert(path),
+                                 xml,
+                                 attributes,
+                                 comment);
+        } catch (Exception e) {
+            LOG.error("Error while saving diagram.",
+                      e);
+            throw new RuntimeException(e);
+        }
+        return path;
+    }
+
     @Override
     protected ProjectMetadata doSave(final ProjectDiagram diagram,
                                      final String raw,

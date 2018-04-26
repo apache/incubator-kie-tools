@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.project.backend.service;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 import javax.enterprise.inject.Instance;
@@ -51,6 +51,7 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -218,7 +219,7 @@ public class ProjectDiagramServiceImplTest {
     public void testSave() {
         Metadata metadata = mock(Metadata.class);
         String comment = "COMMENT";
-        Map<String, Object> attributes = new HashMap<>();
+        Map<String, Object> attributes = Collections.singletonMap("key", "value");
         CommentedOption options = mock(CommentedOption.class);
         when(metadataService.setUpAttributes(path,
                                              metadata)).thenReturn(attributes);
@@ -238,6 +239,30 @@ public class ProjectDiagramServiceImplTest {
                               options);
         assertEquals(resultPath,
                      result);
+    }
+
+    @Test
+    public void testSaveAsXml() {
+        final String xml = "xml";
+        final String comment = "comment";
+        final Map<String, Object> attributes = Collections.singletonMap("key", "value");
+        final Path path = mock(Path.class);
+        final Metadata metadata = mock(Metadata.class);
+        final CommentedOption options = mock(CommentedOption.class);
+        when(metadataService.setUpAttributes(path,
+                                             metadata)).thenReturn(attributes);
+        when(commentedOptionFactory.makeCommentedOption(comment)).thenReturn(options);
+
+        diagramService.saveAsXml(path,
+                                 xml,
+                                 metadata,
+                                 comment);
+
+        verify(diagramServiceController,
+               times(1)).saveAsXml(eq(path),
+                                   eq(xml),
+                                   eq(attributes),
+                                   eq(options));
     }
 
     @Test

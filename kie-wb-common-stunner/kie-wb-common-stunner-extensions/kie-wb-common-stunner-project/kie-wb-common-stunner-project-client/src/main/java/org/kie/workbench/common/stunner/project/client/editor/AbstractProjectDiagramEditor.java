@@ -30,6 +30,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ProvidesResize;
@@ -69,6 +70,7 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientF
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -81,6 +83,7 @@ import org.kie.workbench.common.stunner.project.client.resources.i18n.StunnerPro
 import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesListener;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
+import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
@@ -96,10 +99,13 @@ import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
+import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
+import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -123,7 +129,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private ErrorPopupPresenter errorPopupPresenter;
     private Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
     private R resourceType;
-    private ClientProjectDiagramService projectDiagramServices;
+    protected ClientProjectDiagramService projectDiagramServices;
     private SessionManager sessionManager;
     private SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory;
     private SessionCommandFactory sessionCommandFactory;
@@ -153,6 +159,10 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     private String title = "Project Diagram Editor";
 
+    private final TextEditorView xmlEditorView;
+
+    protected ProjectDiagramEditorProxy editorProxy = ProjectDiagramEditorProxy.NULL_EDITOR;
+
     @Inject
     public AbstractProjectDiagramEditor(final View view,
                                         final PlaceManager placeManager,
@@ -169,7 +179,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                         final Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent,
                                         final ProjectMessagesListener projectMessagesListener,
                                         final DiagramClientErrorHandler diagramClientErrorHandler,
-                                        final ClientTranslationService translationService) {
+                                        final ClientTranslationService translationService,
+                                        final TextEditorView xmlEditorView) {
         super(view);
         this.placeManager = placeManager;
         this.errorPopupPresenter = errorPopupPresenter;
@@ -186,6 +197,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.onDiagramFocusEvent = onDiagramFocusEvent;
         this.onDiagramLostFocusEvent = onDiagramLostFocusEvent;
         this.translationService = translationService;
+        this.xmlEditorView = xmlEditorView;
+
         this.commands = new HashMap<>();
 
         this.clearItem = menuItemsBuilder.newClearItem(this::menu_clear);
@@ -227,6 +240,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     @Override
     protected void loadContent() {
+        destroySession();
+        showLoadingViews();
         projectDiagramServices.getByPath(versionRecordManager.getCurrentPath(),
                                          new ServiceCallback<ProjectDiagram>() {
                                              @Override
@@ -242,11 +257,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     }
 
     @SuppressWarnings("unchecked")
-    protected void open(final ProjectDiagram diagram) {
-        showLoadingViews();
-        setOriginalHash(diagram.hashCode());
-
-        destroySession();
+    public void open(final ProjectDiagram diagram) {
+        editorProxy = makeStunnerEditorProxy();
 
         //Open applicable SessionPresenter
         if (!isReadOnly()) {
@@ -254,6 +266,106 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         } else {
             openReadOnlySession(diagram);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    protected ProjectDiagramEditorProxy makeStunnerEditorProxy() {
+        final ProjectDiagramEditorProxy proxy = new ProjectDiagramEditorProxy();
+        proxy.setSaveAfterValidationConsumer((continueSaveOnceValid) -> {
+            getCommand(ValidateSessionCommand.class)
+                    .execute(new ClientSessionCommand.Callback<Collection<DiagramElementViolation<RuleViolation>>>() {
+                        @Override
+                        public void onSuccess() {
+                            continueSaveOnceValid.execute();
+                        }
+
+                        @Override
+                        public void onError(final Collection<DiagramElementViolation<RuleViolation>> violations) {
+                            final Violation.Type maxSeverity = ValidationUtils.getMaxSeverity(violations);
+                            if (maxSeverity.equals(Violation.Type.ERROR)) {
+                                onValidationFailed(violations);
+                            } else {
+                                // Allow saving when only warnings founds.
+                                continueSaveOnceValid.execute();
+                            }
+                        }
+                    });
+        });
+        proxy.setSaveAfterUserConfirmationConsumer((commitMessage) -> {
+            // Perform update operation remote call.
+            final ObservablePath diagramPath = versionRecordManager.getCurrentPath();
+            projectDiagramServices.saveOrUpdate(diagramPath,
+                                                getDiagram(),
+                                                metadata,
+                                                commitMessage,
+                                                new ServiceCallback<ProjectDiagram>() {
+                                                    @Override
+                                                    public void onSuccess(final ProjectDiagram item) {
+                                                        getSaveSuccessCallback(item.hashCode()).callback(diagramPath);
+                                                        onSaveSuccess();
+                                                        hideLoadingViews();
+                                                    }
+
+                                                    @Override
+                                                    public void onError(final ClientRuntimeError error) {
+                                                        onSaveError(error);
+                                                    }
+                                                });
+        });
+        proxy.setShowNoChangesSinceLastSaveMessageConsumer((message) -> getSessionPresenter().getView().showMessage(message));
+        proxy.setHashCodeSupplier(() -> {
+            if (null == getDiagram()) {
+                return 0;
+            }
+            int hash = getDiagram().hashCode();
+            if (null == getCanvasHandler() ||
+                    null == getCanvasHandler().getCanvas() ||
+                    null == getCanvasHandler().getCanvas().getShapes()) {
+                return hash;
+            }
+            Collection<Shape> collectionOfShapes = getCanvasHandler().getCanvas().getShapes();
+            ArrayList<Shape> shapes = new ArrayList<>();
+            shapes.addAll(collectionOfShapes);
+            shapes.sort((a, b) -> (a.getShapeView().getShapeX() == b.getShapeView().getShapeX()) ?
+                    (int) Math.round(a.getShapeView().getShapeY() - b.getShapeView().getShapeY()) :
+                    (int) Math.round(a.getShapeView().getShapeX() - b.getShapeView().getShapeX()));
+            for (Shape shape : shapes) {
+                hash = HashUtil.combineHashCodes(hash,
+                                                 Double.hashCode(shape.getShapeView().getShapeX()),
+                                                 Double.hashCode(shape.getShapeView().getShapeY()));
+            }
+            return hash;
+        });
+
+        return proxy;
+    }
+
+    protected ProjectDiagramEditorProxy makeXmlEditorProxy() {
+        final ProjectDiagramEditorProxy proxy = new ProjectDiagramEditorProxy();
+        proxy.setSaveAfterValidationConsumer(Command::execute);
+        proxy.setSaveAfterUserConfirmationConsumer((commitMessage) -> {
+            final ObservablePath diagramPath = versionRecordManager.getCurrentPath();
+            projectDiagramServices.saveAsXml(diagramPath,
+                                             xmlEditorView.getContent(),
+                                             metadata,
+                                             commitMessage,
+                                             new ServiceCallback<String>() {
+                                                 @Override
+                                                 public void onSuccess(final String xml) {
+                                                     getSaveSuccessCallback(xml.hashCode()).callback(diagramPath);
+                                                     notification.fire(new NotificationEvent(org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+                                                     hideLoadingViews();
+                                                 }
+
+                                                 @Override
+                                                 public void onError(final ClientRuntimeError error) {
+                                                     onSaveError(error);
+                                                 }
+                                             });
+        });
+        proxy.setShowNoChangesSinceLastSaveMessageConsumer((message) -> notification.fire(new NotificationEvent(message)));
+        proxy.setHashCodeSupplier(() -> xmlEditorView.getContent().hashCode());
+        return proxy;
     }
 
     protected boolean isReadOnly() {
@@ -389,24 +501,11 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     @Override
     protected void save() {
         final Command continueSaveOnceValid = () -> super.save();
-        getCommand(ValidateSessionCommand.class)
-                .execute(new ClientSessionCommand.Callback<Collection<DiagramElementViolation<RuleViolation>>>() {
-                    @Override
-                    public void onSuccess() {
-                        continueSaveOnceValid.execute();
-                    }
+        doSave(continueSaveOnceValid);
+    }
 
-                    @Override
-                    public void onError(final Collection<DiagramElementViolation<RuleViolation>> violations) {
-                        final Violation.Type maxSeverity = ValidationUtils.getMaxSeverity(violations);
-                        if (maxSeverity.equals(Violation.Type.ERROR)) {
-                            onValidationFailed(violations);
-                        } else {
-                            // Allow saving when only warnings founds.
-                            continueSaveOnceValid.execute();
-                        }
-                    }
-                });
+    protected void doSave(final Command continueSaveOnceValid) {
+        editorProxy.saveAfterValidation(continueSaveOnceValid);
     }
 
     /**
@@ -418,26 +517,11 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     @SuppressWarnings("unchecked")
     protected void save(final String commitMessage) {
         super.save(commitMessage);
-        showSavingViews();
-        // Perform update operation remote call.
-        final ObservablePath diagramPath = versionRecordManager.getCurrentPath();
-        projectDiagramServices.saveOrUpdate(diagramPath,
-                                            getDiagram(),
-                                            metadata,
-                                            commitMessage,
-                                            new ServiceCallback<ProjectDiagram>() {
-                                                @Override
-                                                public void onSuccess(final ProjectDiagram item) {
-                                                    getSaveSuccessCallback(item.hashCode()).callback(diagramPath);
-                                                    onSaveSuccess();
-                                                    hideLoadingViews();
-                                                }
+        doSave(commitMessage);
+    }
 
-                                                @Override
-                                                public void onError(final ClientRuntimeError error) {
-                                                    onSaveError(error);
-                                                }
-                                            });
+    protected void doSave(final String commitMessage) {
+        editorProxy.saveAfterUserConfirmation(commitMessage);
     }
 
     @Override
@@ -666,10 +750,13 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
             super.onSave();
         } else {
             final String message = CommonConstants.INSTANCE.NoChangesSinceLastSave();
-            log(Level.INFO,
-                message);
-            getSessionPresenter().getView().showMessage(message);
+            log(Level.INFO, message);
+            doShowNoChangesSinceLastSaveMessage(message);
         }
+    }
+
+    protected void doShowNoChangesSinceLastSaveMessage(final String message) {
+        editorProxy.showNoChangesSinceLastSaveMessage(message);
     }
 
     @SuppressWarnings("unchecked")
@@ -696,7 +783,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         });
     }
 
-    private void updateTitle(final String title) {
+    protected void updateTitle(final String title) {
         // Change editor's title.
         this.title = formatTitle(title);
         changeTitleNotificationEvent.fire(new ChangeTitleWidgetEvent(this.place,
@@ -728,27 +815,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     @SuppressWarnings("unchecked")
     protected int getCurrentDiagramHash() {
-        if (null == getDiagram()) {
-            return 0;
-        }
-        int hash = getDiagram().hashCode();
-        if (null == getCanvasHandler() ||
-                null == getCanvasHandler().getCanvas() ||
-                null == getCanvasHandler().getCanvas().getShapes()) {
-            return hash;
-        }
-        Collection<Shape> collectionOfShapes = getCanvasHandler().getCanvas().getShapes();
-        ArrayList<Shape> shapes = new ArrayList<>();
-        shapes.addAll(collectionOfShapes);
-        shapes.sort((a, b) -> (a.getShapeView().getShapeX() == b.getShapeView().getShapeX()) ?
-                (int) Math.round(a.getShapeView().getShapeY() - b.getShapeView().getShapeY()) :
-                (int) Math.round(a.getShapeView().getShapeX() - b.getShapeView().getShapeX()));
-        for (Shape shape : shapes) {
-            hash = HashUtil.combineHashCodes(hash,
-                                             Double.hashCode(shape.getShapeView().getShapeX()),
-                                             Double.hashCode(shape.getShapeView().getShapeY()));
-        }
-        return hash;
+        return editorProxy.getEditorHashCode();
     }
 
     protected CanvasHandler getCanvasHandler() {
@@ -794,18 +861,39 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
             "Validation SUCCESS.");
     }
 
-    private void onValidationFailed(final Collection<DiagramElementViolation<RuleViolation>> violations) {
+    protected void onValidationFailed(final Collection<DiagramElementViolation<RuleViolation>> violations) {
         log(Level.WARNING,
             "Validation FAILED [violations=" + violations.toString() + "]");
         hideLoadingViews();
     }
 
-    private void onLoadError(final ClientRuntimeError error) {
-        showError(error);
+    protected void onLoadError(final ClientRuntimeError error) {
+        final Throwable e = error.getThrowable();
+        if (e instanceof DiagramParsingException) {
+            final DiagramParsingException dpe = (DiagramParsingException) e;
+            final Metadata metadata = dpe.getMetadata();
+            final String xml = dpe.getXml();
 
-        //close editor in case of error when opening the editor
-        placeManager.forceClosePlace(new PathPlaceRequest(versionRecordManager.getCurrentPath(),
-                                                          getEditorIdentifier()));
+            setOriginalHash(xml.hashCode());
+            updateTitle(metadata.getTitle());
+            resetEditorPages(((ProjectMetadata) metadata).getOverview());
+            initialiseMenuBarStateForSession(false);
+
+            xmlEditorView.setReadOnly(isReadOnly);
+            xmlEditorView.setContent(xml, AceEditorMode.XML);
+            getView().setWidget(xmlEditorView.asWidget());
+            editorProxy = makeXmlEditorProxy();
+            hideLoadingViews();
+
+            Scheduler.get().scheduleDeferred(xmlEditorView::onResize);
+        } else {
+            editorProxy = ProjectDiagramEditorProxy.NULL_EDITOR;
+            showError(error);
+
+            //close editor in case of error when opening the editor
+            placeManager.forceClosePlace(new PathPlaceRequest(versionRecordManager.getCurrentPath(),
+                                                              getEditorIdentifier()));
+        }
     }
 
     protected void showError(final ClientRuntimeError error) {

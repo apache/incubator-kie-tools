@@ -53,6 +53,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
+import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnFocus;
 import org.uberfire.lifecycle.OnLostFocus;
@@ -88,6 +89,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
                             final ProjectMessagesListener projectMessagesListener,
                             final DiagramClientErrorHandler diagramClientErrorHandler,
                             final ClientTranslationService translationService,
+                            final TextEditorView xmlEditorView,
                             final DecisionNavigatorDock decisionNavigatorDock) {
         super(view,
               placeManager,
@@ -104,8 +106,8 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
               onDiagramLostFocusEvent,
               projectMessagesListener,
               diagramClientErrorHandler,
-              translationService);
-
+              translationService,
+              xmlEditorView);
         this.decisionNavigatorDock = decisionNavigatorDock;
     }
 
