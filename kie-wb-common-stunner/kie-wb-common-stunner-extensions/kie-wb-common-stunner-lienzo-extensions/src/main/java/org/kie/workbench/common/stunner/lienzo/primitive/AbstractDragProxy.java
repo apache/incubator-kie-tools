@@ -17,8 +17,10 @@
 package org.kie.workbench.common.stunner.lienzo.primitive;
 
 import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
@@ -63,15 +65,7 @@ public abstract class AbstractDragProxy<T> {
                              final int y,
                              final int timeout,
                              final Callback callback) {
-        this.timer = new Timer() {
-            @Override
-            public void run() {
-                if (null != timeoutRunnable) {
-                    timeoutRunnable.run();
-                    ;
-                }
-            }
-        };
+        this.timer = makeTimer();
         this.timer.schedule(timeout);
         this.xDiff = null;
         this.yDiff = null;
@@ -83,41 +77,22 @@ public abstract class AbstractDragProxy<T> {
                callback);
     }
 
-    private void create(final int initialX,
-                        final int initialY,
-                        final int timeout,
-                        final Callback callback) {
+    void create(final int initialX,
+                final int initialY,
+                final int timeout,
+                final Callback callback) {
         if (!attached) {
             addToLayer(layer,
                        shapeProxy);
             setLocation(shapeProxy,
-                        initialX,
-                        initialY);
+                        relativeX(initialX),
+                        relativeY(initialY));
             attached = true;
             callback.onStart(initialX,
                              initialY);
         }
 
-        handlerRegs[0] = RootPanel.get().addDomHandler(mouseMoveEvent -> {
-                                                           if (attached) {
-                                                               if (xDiff == null) {
-                                                                   xDiff = initialX - mouseMoveEvent.getX();
-                                                               }
-                                                               if (yDiff == null) {
-                                                                   yDiff = initialY - mouseMoveEvent.getY();
-                                                               }
-                                                               final int x = getXDiff() + mouseMoveEvent.getX();
-                                                               final int y = getYDiff() + mouseMoveEvent.getY();
-                                                               setLocation(shapeProxy,
-                                                                           x,
-                                                                           y);
-                                                               scheduleMove(callback,
-                                                                            x,
-                                                                            y,
-                                                                            timeout);
-                                                               layer.batch();
-                                                           }
-                                                       },
+        handlerRegs[0] = RootPanel.get().addDomHandler(getMouseMoveHandler(initialX, initialY, timeout, callback),
                                                        MouseMoveEvent.getType());
         handlerRegs[1] = RootPanel.get().addDomHandler(mouseDownEvent -> {
                                                            mouseDownEvent.stopPropagation();
@@ -137,10 +112,60 @@ public abstract class AbstractDragProxy<T> {
                                                        MouseUpEvent.getType());
     }
 
-    private void scheduleMove(final Callback callback,
-                              final int x,
-                              final int y,
-                              final int millis) {
+    MouseMoveHandler getMouseMoveHandler(final int initialX,
+                                         final int initialY,
+                                         final int timeout,
+                                         final Callback callback) {
+        return mouseMoveEvent -> {
+
+            if (isAttached()) {
+                if (xDiff() == null) {
+                    xDiff = initialX - mouseMoveEvent.getX();
+                }
+                if (yDiff() == null) {
+                    yDiff = initialY - mouseMoveEvent.getY();
+                }
+
+                final int x = relativeX(getXDiff() + mouseMoveEvent.getX());
+                final int y = relativeY(getYDiff() + mouseMoveEvent.getY());
+
+                setLocation(shapeProxy, x, y);
+                scheduleMove(callback, x, y, timeout);
+                layer.batch();
+            }
+        };
+    }
+
+    boolean isAttached() {
+        return attached;
+    }
+
+    Integer xDiff() {
+        return xDiff;
+    }
+
+    Integer yDiff() {
+        return yDiff;
+    }
+
+    Transform getViewportTransform() {
+        return layer.getViewport().getTransform();
+    }
+
+    int relativeX(final int x) {
+        final Double relativeX = ((x) - getViewportTransform().getTranslateX()) / getViewportTransform().getScaleX();
+        return relativeX.intValue();
+    }
+
+    int relativeY(final int y) {
+        final Double relativeY = ((y) - getViewportTransform().getTranslateY()) / getViewportTransform().getScaleY();
+        return relativeY.intValue();
+    }
+
+    void scheduleMove(final Callback callback,
+                      final int x,
+                      final int y,
+                      final int millis) {
         timeoutRunnable = () -> callback.onMove(x,
                                                 y);
         if (!timer.isRunning()) {
@@ -173,11 +198,22 @@ public abstract class AbstractDragProxy<T> {
         this.shapeProxy = null;
     }
 
-    private int getXDiff() {
+    int getXDiff() {
         return null != xDiff ? xDiff : 0;
     }
 
-    private int getYDiff() {
+    int getYDiff() {
         return null != yDiff ? yDiff : 0;
+    }
+
+    Timer makeTimer() {
+        return new Timer() {
+            @Override
+            public void run() {
+                if (null != timeoutRunnable) {
+                    timeoutRunnable.run();
+                }
+            }
+        };
     }
 }
