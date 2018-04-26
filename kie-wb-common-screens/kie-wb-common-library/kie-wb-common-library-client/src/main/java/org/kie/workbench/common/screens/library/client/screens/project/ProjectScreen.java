@@ -59,6 +59,7 @@ import org.uberfire.client.promise.Promises;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @WorkbenchScreen(identifier = LibraryPlaces.PROJECT_SCREEN,
@@ -199,6 +200,11 @@ public class ProjectScreen {
                 view.setImportAssetVisible(result);
             }
         });
+    }
+
+    @OnMayClose
+    public boolean onMayClose() {
+        return settingsPresenter.mayClose();
     }
 
     public void setAssetsCount(Integer assetsCount) {

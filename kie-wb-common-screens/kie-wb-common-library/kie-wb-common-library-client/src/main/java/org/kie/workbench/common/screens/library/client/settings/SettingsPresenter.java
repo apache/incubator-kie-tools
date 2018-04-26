@@ -318,6 +318,10 @@ public class SettingsPresenter {
         sectionManager.updateDirtyIndicator(settingsSectionChange.getSection());
     }
 
+    public boolean mayClose() {
+        return !sectionManager.hasDirtySections();
+    }
+
     public void reset() {
         setupUsingCurrentSection();
     }

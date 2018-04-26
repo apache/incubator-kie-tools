@@ -18,16 +18,21 @@ package org.kie.workbench.common.screens.library.client.screens.project.close;
 
 import java.util.List;
 import java.util.Optional;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.util.URIUtil;
+
+import static org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants.ProjectScreenSettings;
+import static org.kie.workbench.common.screens.library.client.util.LibraryPlaces.PROJECT_SCREEN;
 
 public class CloseUnsavedProjectAssetsPopUpPresenter {
 
@@ -42,9 +47,9 @@ public class CloseUnsavedProjectAssetsPopUpPresenter {
         void clearPlaces();
     }
 
-    private CloseUnsavedProjectAssetsPopUpPresenter.View view;
-
-    private ManagedInstance<CloseUnsavedProjectAssetsPopUpListItemPresenter> closeUnsavedProjectAssetsPopUpListItemPresenters;
+    private final CloseUnsavedProjectAssetsPopUpPresenter.View view;
+    private final ManagedInstance<CloseUnsavedProjectAssetsPopUpListItemPresenter> closeUnsavedProjectAssetsPopUpListItemPresenters;
+    private final TranslationService translationService;
 
     Optional<Command> proceedCallback;
 
@@ -52,9 +57,11 @@ public class CloseUnsavedProjectAssetsPopUpPresenter {
 
     @Inject
     public CloseUnsavedProjectAssetsPopUpPresenter(final CloseUnsavedProjectAssetsPopUpPresenter.View view,
-                                                   final ManagedInstance<CloseUnsavedProjectAssetsPopUpListItemPresenter> closeUnsavedProjectAssetsPopUpListItemPresenters) {
+                                                   final ManagedInstance<CloseUnsavedProjectAssetsPopUpListItemPresenter> closeUnsavedProjectAssetsPopUpListItemPresenters,
+                                                   final TranslationService translationService) {
         this.view = view;
         this.closeUnsavedProjectAssetsPopUpListItemPresenters = closeUnsavedProjectAssetsPopUpListItemPresenters;
+        this.translationService = translationService;
     }
 
     @PostConstruct
@@ -71,17 +78,9 @@ public class CloseUnsavedProjectAssetsPopUpPresenter {
 
         view.clearPlaces();
         uncloseablePlaces.forEach(place -> {
-            String placeDetail;
-            if (place instanceof PathPlaceRequest) {
-                final PathPlaceRequest pathPlaceRequest = (PathPlaceRequest) place;
-                placeDetail = getAssetPath(project,
-                                           pathPlaceRequest.getPath().toURI());
-            } else {
-                placeDetail = place.getFullIdentifier();
-            }
 
             final CloseUnsavedProjectAssetsPopUpListItemPresenter placeItem = closeUnsavedProjectAssetsPopUpListItemPresenters.get();
-            placeItem.setup(placeDetail);
+            placeItem.setup(getLabel(project, place));
             view.addPlace(placeItem.getView());
         });
         view.show(project.getName());
@@ -95,6 +94,18 @@ public class CloseUnsavedProjectAssetsPopUpPresenter {
     public void cancel() {
         view.hide();
         cancelCallback.ifPresent(Command::execute);
+    }
+
+    private String getLabel(final WorkspaceProject project, final PlaceRequest place) {
+
+        if (place instanceof PathPlaceRequest) {
+            return getAssetPath(project, ((PathPlaceRequest) place).getPath().toURI());
+        }
+        if (place.getIdentifier().equals(PROJECT_SCREEN)) {
+            return translationService.format(ProjectScreenSettings, project.getName());
+        }
+
+        return place.getFullIdentifier();
     }
 
     private String getAssetPath(final WorkspaceProject project,

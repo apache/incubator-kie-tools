@@ -135,4 +135,8 @@ public class SectionManager<T> {
     public Section<T> getCurrentSection() {
         return currentSection;
     }
+
+    public boolean hasDirtySections() {
+        return sections.stream().anyMatch(this::isDirty);
+    }
 }
