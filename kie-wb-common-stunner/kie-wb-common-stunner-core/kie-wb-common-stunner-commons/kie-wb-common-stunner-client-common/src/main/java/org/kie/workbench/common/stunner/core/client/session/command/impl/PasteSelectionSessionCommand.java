@@ -105,12 +105,16 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<C
     }
 
     void onKeyDownEvent(final Key... keys) {
-        handleCtrlV(keys);
+        if (isEnabled()) {
+            handleCtrlV(keys);
+        }
     }
 
-    private void handleCtrlV(Key[] keys) {
-        if (doKeysMatch(keys, Key.CONTROL, Key.V)) {
-            this.execute(newDefaultCallback("Error while trying to paste selected items. Message="));
+    private void handleCtrlV(final Key[] keys) {
+        if (doKeysMatch(keys,
+                        Key.CONTROL,
+                        Key.V)) {
+            this.execute();
         }
     }
 

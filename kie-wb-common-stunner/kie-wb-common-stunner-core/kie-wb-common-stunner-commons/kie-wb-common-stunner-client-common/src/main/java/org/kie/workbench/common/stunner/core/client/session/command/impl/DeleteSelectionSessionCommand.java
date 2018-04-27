@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
 import java.util.Collection;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -26,7 +25,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementsClearEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
@@ -43,6 +41,7 @@ import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher.doKeysMatch;
 
 /**
  * This session command obtains the selected elements on session and executes a delete operation for each one.
@@ -111,22 +110,16 @@ public class DeleteSelectionSessionCommand extends AbstractSelectionAwareSession
         }
     }
 
-    void onKeyDownEvent(final KeyboardEvent.Key... keys) {
-        if (KeysMatcher.doKeysMatch(keys,
-                                    KeyboardEvent.Key.DELETE)) {
-            DeleteSelectionSessionCommand.this.execute(new Callback<ClientRuntimeError>() {
-                @Override
-                public void onSuccess() {
-                    // Nothing to do.
-                }
+    protected void onKeyDownEvent(final KeyboardEvent.Key... keys) {
+        if (isEnabled()) {
+            handleDelete(keys);
+        }
+    }
 
-                @Override
-                public void onError(final ClientRuntimeError error) {
-                    LOGGER.log(Level.SEVERE,
-                               "Error while trying to delete selected items. Message=[" + error.toString() + "]",
-                               error.getThrowable());
-                }
-            });
+    private void handleDelete(final KeyboardEvent.Key... keys) {
+        if (doKeysMatch(keys,
+                        KeyboardEvent.Key.DELETE)) {
+            this.execute();
         }
     }
 

@@ -64,14 +64,16 @@ public class CopySelectionSessionCommand extends AbstractSelectionAwareSessionCo
     }
 
     protected void onKeyDownEvent(final Key... keys) {
-        handleCtrlC(keys);
+        if (isEnabled()) {
+            handleCtrlC(keys);
+        }
     }
 
-    private void handleCtrlC(Key[] keys) {
+    private void handleCtrlC(final Key[] keys) {
         if (doKeysMatch(keys,
                         Key.CONTROL,
                         Key.C)) {
-            this.execute(newDefaultCallback("Error while trying to copy selected items."));
+            this.execute();
         }
     }
 

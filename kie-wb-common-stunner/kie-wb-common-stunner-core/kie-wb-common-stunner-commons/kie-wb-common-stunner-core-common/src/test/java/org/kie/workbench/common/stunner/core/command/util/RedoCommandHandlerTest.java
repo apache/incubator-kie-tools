@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.kie.workbench.common.stunner.core.registry.impl.CommandRegistryImpl;
@@ -33,8 +34,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -101,7 +105,7 @@ public class RedoCommandHandlerTest {
                                 eq(command1));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     @SuppressWarnings("unchecked")
     public void testExecuteOnNull() {
         Object obj = mock(Object.class);
@@ -110,8 +114,10 @@ public class RedoCommandHandlerTest {
         when(commandRegistry.isEmpty()).thenReturn(true);
 
         tested = new RedoCommandHandler(registryFactory);
-        tested.execute(obj,
-                       manager);
+
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     tested.execute(obj, manager));
+        verify(manager, never()).execute(anyObject(), any(Command.class));
     }
 
     @Test

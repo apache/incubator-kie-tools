@@ -21,7 +21,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -36,6 +35,7 @@ import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.command.util.RedoCommandHandler;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher.doKeysMatch;
 
 @Dependent
 public class RedoSessionCommand extends AbstractClientSessionCommand<ClientFullSession> {
@@ -59,18 +59,22 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<ClientFullS
     @Override
     public void bind(final ClientFullSession session) {
         super.bind(session);
-        session.getKeyboardControl().addKeyShortcutCallback(keys -> {
-            if (isRedoShortcut(keys)) {
-                RedoSessionCommand.this.execute();
-            }
-        });
+        session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
     }
 
-    private boolean isRedoShortcut(final KeyboardEvent.Key... keys) {
-        return KeysMatcher.doKeysMatch(keys,
-                                       KeyboardEvent.Key.CONTROL,
-                                       KeyboardEvent.Key.SHIFT,
-                                       KeyboardEvent.Key.Z);
+    void onKeyDownEvent(final KeyboardEvent.Key... keys) {
+        if (isEnabled()) {
+            handleCtrlShiftZ(keys);
+        }
+    }
+
+    private void handleCtrlShiftZ(final KeyboardEvent.Key[] keys) {
+        if (doKeysMatch(keys,
+                        KeyboardEvent.Key.CONTROL,
+                        KeyboardEvent.Key.SHIFT,
+                        KeyboardEvent.Key.Z)) {
+            this.execute();
+        }
     }
 
     @Override

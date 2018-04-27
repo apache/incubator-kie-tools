@@ -76,14 +76,16 @@ public class CutSelectionSessionCommand extends AbstractSelectionAwareSessionCom
     }
 
     protected void onKeyDownEvent(final Key... keys) {
-        handleCtrlX(keys);
+        if (isEnabled()) {
+            handleCtrlX(keys);
+        }
     }
 
-    private void handleCtrlX(Key[] keys) {
+    private void handleCtrlX(final Key[] keys) {
         if (doKeysMatch(keys,
                         Key.CONTROL,
                         Key.X)) {
-            this.execute(newDefaultCallback("Error while trying to cut selected items."));
+            this.execute();
         }
     }
 

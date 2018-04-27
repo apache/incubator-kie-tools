@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 
@@ -84,7 +85,7 @@ public class RedoCommandHandler<C extends Command> {
     public CommandResult<?> execute(final Object context,
                                     final CommandManager commandManager) {
         if (registry.isEmpty()) {
-            throw new IllegalStateException("Not possible to execute a command: no commands to redo.");
+            return GraphCommandResultBuilder.SUCCESS;
         }
 
         final C last = registry.peek();

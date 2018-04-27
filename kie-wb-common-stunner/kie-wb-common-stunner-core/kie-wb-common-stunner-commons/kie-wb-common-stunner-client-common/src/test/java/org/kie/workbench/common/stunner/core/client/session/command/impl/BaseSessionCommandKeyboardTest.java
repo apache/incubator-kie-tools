@@ -36,6 +36,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -82,6 +83,8 @@ public abstract class BaseSessionCommandKeyboardTest {
     @Test
     @SuppressWarnings("unchecked")
     public void checkRespondsToExpectedKeys() {
+        doReturn(true).when(command).isEnabled();
+
         command.bind(session);
 
         verify(keyboardControl,
@@ -92,6 +95,22 @@ public abstract class BaseSessionCommandKeyboardTest {
 
         verify(command,
                times(1)).execute(any(ClientSessionCommand.Callback.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void checkDoesNotRespondToExpectedKeysWhenDisabled() {
+        doReturn(false).when(command).isEnabled();
+
+        command.bind(session);
+
+        verify(keyboardControl,
+               times(1)).addKeyShortcutCallback(keyShortcutCallbackCaptor.capture());
+
+        final KeyShortcutCallback keyShortcutCallback = keyShortcutCallbackCaptor.getValue();
+        keyShortcutCallback.onKeyShortcut(getExpectedKeys());
+
+        verify(command, never()).execute(any(ClientSessionCommand.Callback.class));
     }
 
     @Test
