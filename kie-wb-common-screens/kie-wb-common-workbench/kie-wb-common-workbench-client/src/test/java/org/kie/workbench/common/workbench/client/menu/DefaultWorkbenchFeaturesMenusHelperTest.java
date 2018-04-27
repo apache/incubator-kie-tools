@@ -48,7 +48,6 @@ import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPres
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.mvp.impl.ForcedPlaceRequest;
 import org.uberfire.workbench.model.menu.MenuGroup;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
@@ -448,14 +447,13 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
         assertTrue(menusHelper.resolvePlaceRequest(PROVISIONING) instanceof DefaultPlaceRequest);
         assertTrue(menusHelper.resolvePlaceRequest(SERVER_MANAGEMENT) instanceof DefaultPlaceRequest);
         assertTrue(menusHelper.resolvePlaceRequest(CONTENT_MANAGEMENT) instanceof DefaultPlaceRequest);
-
-        assertTrue(menusHelper.resolvePlaceRequest(PROCESS_DEFINITIONS) instanceof ForcedPlaceRequest);
-        assertTrue(menusHelper.resolvePlaceRequest(PROCESS_INSTANCES) instanceof ForcedPlaceRequest);
-        assertTrue(menusHelper.resolvePlaceRequest(JOBS) instanceof ForcedPlaceRequest);
-        assertTrue(menusHelper.resolvePlaceRequest(EXECUTION_ERRORS) instanceof ForcedPlaceRequest);
-        assertTrue(menusHelper.resolvePlaceRequest(TASKS) instanceof ForcedPlaceRequest);
-        assertTrue(menusHelper.resolvePlaceRequest(PROCESS_DASHBOARD) instanceof ForcedPlaceRequest);
-        assertTrue(menusHelper.resolvePlaceRequest(TASK_DASHBOARD) instanceof ForcedPlaceRequest);
+        assertTrue(menusHelper.resolvePlaceRequest(PROCESS_DEFINITIONS) instanceof DefaultPlaceRequest);
+        assertTrue(menusHelper.resolvePlaceRequest(PROCESS_INSTANCES) instanceof DefaultPlaceRequest);
+        assertTrue(menusHelper.resolvePlaceRequest(JOBS) instanceof DefaultPlaceRequest);
+        assertTrue(menusHelper.resolvePlaceRequest(EXECUTION_ERRORS) instanceof DefaultPlaceRequest);
+        assertTrue(menusHelper.resolvePlaceRequest(TASKS) instanceof DefaultPlaceRequest);
+        assertTrue(menusHelper.resolvePlaceRequest(PROCESS_DASHBOARD) instanceof DefaultPlaceRequest);
+        assertTrue(menusHelper.resolvePlaceRequest(TASK_DASHBOARD) instanceof DefaultPlaceRequest);
     }
 
     private void mockGroups() {

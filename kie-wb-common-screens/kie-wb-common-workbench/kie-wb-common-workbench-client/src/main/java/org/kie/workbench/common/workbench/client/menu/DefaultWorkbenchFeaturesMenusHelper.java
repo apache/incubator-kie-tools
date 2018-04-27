@@ -53,7 +53,6 @@ import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPres
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.mvp.impl.ForcedPlaceRequest;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.ResourceRef;
 import org.uberfire.security.authz.AuthorizationManager;
@@ -340,19 +339,7 @@ public class DefaultWorkbenchFeaturesMenusHelper {
     }
 
     public PlaceRequest resolvePlaceRequest(String perspectiveId) {
-        switch (perspectiveId) {
-            case PROCESS_DEFINITIONS:
-            case PROCESS_INSTANCES:
-            case EXECUTION_ERRORS:
-            case JOBS:
-            case TASKS:
-            case TASKS_ADMIN:
-            case PROCESS_DASHBOARD:
-            case TASK_DASHBOARD:
-                return new ForcedPlaceRequest(perspectiveId);
-            default:
-                return new DefaultPlaceRequest(perspectiveId);
-        }
+        return new DefaultPlaceRequest(perspectiveId);
     }
 
     boolean hasAccessToPerspective(final String perspectiveId) {
