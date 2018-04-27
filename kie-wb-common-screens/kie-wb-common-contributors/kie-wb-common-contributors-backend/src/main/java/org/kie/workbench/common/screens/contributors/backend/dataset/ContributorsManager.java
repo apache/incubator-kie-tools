@@ -142,7 +142,7 @@ public class ContributorsManager implements DataSetGenerator {
                               null,//repo
                               null,//project
                               null,//author
-                              "Empty organizational unit",//message
+                              null,//message
                               null);//date
 
             } else {
