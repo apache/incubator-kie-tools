@@ -26,8 +26,7 @@ public class DefaultPaletteCategory
 
     private final Glyph glyph;
 
-    DefaultPaletteCategory(final int priority,
-                           final String itemId,
+    DefaultPaletteCategory(final String itemId,
                            final String definitionId,
                            final String title,
                            final String description,
@@ -35,14 +34,7 @@ public class DefaultPaletteCategory
                            final int iconSize,
                            final List<DefaultPaletteItem> items,
                            final Glyph glyph) {
-        super(priority,
-              itemId,
-              definitionId,
-              title,
-              description,
-              tooltip,
-              iconSize,
-              items);
+        super(itemId, definitionId, title, description, tooltip, iconSize, items);
         this.glyph = glyph;
     }
 

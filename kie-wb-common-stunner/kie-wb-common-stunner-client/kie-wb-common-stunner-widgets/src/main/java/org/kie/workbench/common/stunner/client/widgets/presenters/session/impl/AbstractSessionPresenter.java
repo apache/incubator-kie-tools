@@ -36,6 +36,7 @@ import org.kie.workbench.common.stunner.core.client.components.palette.PaletteDe
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 
 public abstract class AbstractSessionPresenter<D extends Diagram, H extends AbstractCanvasHandler,
         S extends AbstractClientReadOnlySession, E extends SessionViewer<S, H, D>>
@@ -52,6 +53,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     private PaletteWidget<PaletteDefinition> palette;
     private boolean hasToolbar = false;
     private boolean hasPalette = false;
+    private StunnerPreferences preferences;
     private Optional<Predicate<Notification.Type>> typePredicate;
 
     @SuppressWarnings("unchecked")
@@ -153,6 +155,12 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     }
 
     @Override
+    public SessionPresenter<S, H, D> withPreferences(final StunnerPreferences preferences) {
+        this.preferences = preferences;
+        return this;
+    }
+
+    @Override
     public SessionPresenter<S, H, D> displayNotifications(final Predicate<Notification.Type> typePredicate) {
         this.typePredicate = Optional.of(typePredicate);
         return this;
@@ -228,6 +236,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         }
         if (hasPalette) {
             this.palette = (PaletteWidget<PaletteDefinition>) buildPalette(session);
+            palette.setPreferences(preferences);
             getView().setPaletteWidget(getPalette());
         }
         getView().setCanvasWidget(getDisplayer().getView());

@@ -29,12 +29,14 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenPanelView;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -78,6 +80,12 @@ public class SessionDiagramEditorScreenTest {
     @Captor
     private ArgumentCaptor<Consumer<ClientFullSession>> clientFullSessionConsumer;
 
+    @Mock
+    private StunnerPreferencesRegistry stunnerPreferencesRegistry;
+
+    @Mock
+    private StunnerPreferences stunnerPreferences;
+
     private SessionDiagramEditorScreen editor;
 
     @Before
@@ -86,10 +94,11 @@ public class SessionDiagramEditorScreenTest {
         doReturn(presenter).when(sessionPresenterFactory).newPresenterEditor();
         doReturn(presenter).when(presenter).withToolbar(anyBoolean());
         doReturn(presenter).when(presenter).withPalette(anyBoolean());
+        doReturn(presenter).when(presenter).withPreferences(any(StunnerPreferences.class));
         doReturn(presenter).when(presenter).displayNotifications(any());
         doNothing().when(presenter).open(any(), any(), any());
 
-        editor = spy(new SessionDiagramEditorScreen(null, null, null, sessionManager, null, sessionPresenterFactory, null, null, screenPanelView, null, expressionEditor, decisionNavigatorDock));
+        editor = spy(new SessionDiagramEditorScreen(null, null, null, sessionManager, null, sessionPresenterFactory, null, null, screenPanelView, null, expressionEditor, decisionNavigatorDock, stunnerPreferencesRegistry));
     }
 
     @Test
@@ -109,6 +118,7 @@ public class SessionDiagramEditorScreenTest {
 
         when(diagram.getMetadata()).thenReturn(metadata);
         when(sessionManager.getSessionFactory(metadata, ClientFullSession.class)).thenReturn(sessionFactory);
+        when(stunnerPreferencesRegistry.get()).thenReturn(stunnerPreferences);
 
         editor.openDiagram(diagram, callback);
 

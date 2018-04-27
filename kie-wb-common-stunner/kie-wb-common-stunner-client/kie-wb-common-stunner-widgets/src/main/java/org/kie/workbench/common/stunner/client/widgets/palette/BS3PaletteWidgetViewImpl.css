@@ -18,7 +18,7 @@
     border-width: 0;
     display: inline-block;
     padding: 0;
-    position: unset;
+    position: static; /* IE11 */
 }
 
 .kie-palette .list-group-item > button {
@@ -50,7 +50,7 @@
 .kie-palette .list-group-item .list-group-item-value {
     display: block;
     line-height: 2em;
-    max-width: 10em;
+    max-width: 13em;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -70,10 +70,10 @@
     box-shadow: 0 2px 6px rgba(3, 3, 3, 0.2);
     display: none;
     left: 44px;
-    max-height: 100vh;
+    max-height: 100%;
     min-height: 100%;
     overflow-x: visible;
-    overflow-y: scroll;
+    overflow-y: auto;
     padding: 15px 15px 15px 10px;
     position: absolute;
     top: 0;
@@ -110,8 +110,9 @@
     height: auto;
     padding: 0;
     text-decoration: none;
-    width: 200px;
+    width: 190px;
     white-space: nowrap;
+    display: inline-block; /* IE11 */
 }
 @supports (display: flex) {
     .kie-palette-flyout .list-group-item > a {

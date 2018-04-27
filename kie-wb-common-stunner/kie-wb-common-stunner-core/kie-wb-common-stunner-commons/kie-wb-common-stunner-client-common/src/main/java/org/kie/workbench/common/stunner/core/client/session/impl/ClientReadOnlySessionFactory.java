@@ -15,37 +15,38 @@
  */
 package org.kie.workbench.common.stunner.core.client.session.impl;
 
-import java.util.function.Consumer;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;
-import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
-import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 
 /**
  * Stunner's default session factory for sessions of type <code>ClientReadOnlySession</code>.
  */
 @ApplicationScoped
-public class ClientReadOnlySessionFactory implements ClientSessionFactory<ClientReadOnlySession> {
+public class ClientReadOnlySessionFactory extends AbstractClientSessionFactory<ClientReadOnlySession> {
 
     private final ManagedInstance<ClientReadOnlySessionImpl> readOnlySessionInstances;
 
     protected ClientReadOnlySessionFactory() {
-        this(null);
+        this(null, null, null);
     }
 
     @Inject
-    public ClientReadOnlySessionFactory(final ManagedInstance<ClientReadOnlySessionImpl> readOnlySessionInstances) {
+    public ClientReadOnlySessionFactory(final ManagedInstance<ClientReadOnlySessionImpl> readOnlySessionInstances,
+                                        final StunnerPreferences stunnerPreferences,
+                                        final StunnerPreferencesRegistry stunnerPreferencesRegistry) {
+        super(stunnerPreferences,
+              stunnerPreferencesRegistry);
         this.readOnlySessionInstances = readOnlySessionInstances;
     }
 
     @Override
-    public void newSession(final Metadata metadata,
-                           final Consumer<ClientReadOnlySession> sessionConsumer) {
-        sessionConsumer.accept(this.readOnlySessionInstances.get());
+    protected ClientReadOnlySession buildSessionInstance() {
+        return readOnlySessionInstances.get();
     }
 
     @Override

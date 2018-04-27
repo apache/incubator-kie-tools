@@ -41,6 +41,8 @@ public class DefinitionPaletteCategoryWidget implements DefinitionPaletteCategor
 
     private DefaultPaletteCategory category;
     private Consumer<PaletteItemMouseEvent> itemMouseDownCallback;
+    private Consumer<DefaultPaletteCategory> onOpenCallback;
+    private Consumer<DefaultPaletteCategory> onCloseCallback;
 
     private DefinitionPaletteCategoryWidgetView view;
     private ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgetInstance;
@@ -79,12 +81,24 @@ public class DefinitionPaletteCategoryWidget implements DefinitionPaletteCategor
                     shapeFactory);
     }
 
+    public void setOnOpenCallback(Consumer<DefaultPaletteCategory> onOpenCallback) {
+        this.onOpenCallback = onOpenCallback;
+    }
+
+    public void setOnCloseCallback(Consumer<DefaultPaletteCategory> onCloseCallback) {
+        this.onCloseCallback = onCloseCallback;
+    }
+
     public void setVisible(final boolean visible) {
         view.setVisible(visible);
     }
 
     public boolean isVisible() {
         return view.isVisible();
+    }
+
+    public void setAutoHidePanel(boolean autoHidePanel) {
+        view.setAutoHidePanel(autoHidePanel);
     }
 
     private void renderItems(final List<DefaultPaletteItem> items,
@@ -143,8 +157,17 @@ public class DefinitionPaletteCategoryWidget implements DefinitionPaletteCategor
     }
 
     @Override
+    public void onOpen() {
+        if (onOpenCallback != null) {
+            onOpenCallback.accept(category);
+        }
+    }
+
+    @Override
     public void onClose() {
-        view.setVisible(false);
+        if (onCloseCallback != null) {
+            onCloseCallback.accept(category);
+        }
     }
 
     @PreDestroy

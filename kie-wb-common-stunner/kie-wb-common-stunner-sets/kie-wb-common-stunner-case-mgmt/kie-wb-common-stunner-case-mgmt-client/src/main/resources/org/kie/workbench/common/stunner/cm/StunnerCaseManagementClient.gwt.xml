@@ -25,5 +25,6 @@
   <inherits name="org.kie.workbench.common.stunner.client.StunnerLienzo"/>
 
   <source path="client"/>
+  <source path="" includes="CaseManagementEntryPoint.java"/>
 
 </module>

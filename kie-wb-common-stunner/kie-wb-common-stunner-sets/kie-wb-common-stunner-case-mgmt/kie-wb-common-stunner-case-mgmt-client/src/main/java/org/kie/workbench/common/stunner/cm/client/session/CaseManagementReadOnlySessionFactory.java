@@ -16,36 +16,37 @@
 
 package org.kie.workbench.common.stunner.cm.client.session;
 
-import java.util.function.Consumer;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;
-import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
-import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 
 @ApplicationScoped
 @CaseManagementEditor
-public class CaseManagementReadOnlySessionFactory implements ClientSessionFactory<ClientReadOnlySession> {
+public class CaseManagementReadOnlySessionFactory extends AbstractCaseManagementClientSessionFactory<ClientReadOnlySession> {
 
     private final ManagedInstance<CaseManagementReadOnlySession> readOnlySessionInstances;
 
     protected CaseManagementReadOnlySessionFactory() {
-        this(null);
+        this(null, null, null);
     }
 
     @Inject
-    public CaseManagementReadOnlySessionFactory(final @CaseManagementEditor ManagedInstance<CaseManagementReadOnlySession> readOnlySessionInstances) {
+    public CaseManagementReadOnlySessionFactory(final @CaseManagementEditor ManagedInstance<CaseManagementReadOnlySession> readOnlySessionInstances,
+                                                final StunnerPreferences stunnerPreferences,
+                                                final StunnerPreferencesRegistry stunnerPreferencesRegistry) {
+        super(stunnerPreferences,
+              stunnerPreferencesRegistry);
         this.readOnlySessionInstances = readOnlySessionInstances;
     }
 
     @Override
-    public void newSession(final Metadata metadata,
-                           final Consumer<ClientReadOnlySession> sessionConsumer) {
-        sessionConsumer.accept(this.readOnlySessionInstances.get());
+    protected ClientReadOnlySession buildSessionInstance() {
+        return readOnlySessionInstances.get();
     }
 
     @Override

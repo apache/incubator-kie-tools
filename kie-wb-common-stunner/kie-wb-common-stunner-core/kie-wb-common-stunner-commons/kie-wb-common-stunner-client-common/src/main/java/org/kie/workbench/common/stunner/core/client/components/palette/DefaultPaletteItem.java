@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.core.client.components.palette;
 
 public class DefaultPaletteItem implements PaletteItem {
 
-    private final int priority;
     private final String itemId;
     private final String title;
     private final String description;
@@ -26,14 +25,12 @@ public class DefaultPaletteItem implements PaletteItem {
     private String definitionId;
     private int iconSize;
 
-    DefaultPaletteItem(final int priority,
-                       final String itemId,
+    DefaultPaletteItem(final String itemId,
                        final String definitionId,
                        final String title,
                        final String description,
                        final String tooltip,
                        final int iconSize) {
-        this.priority = priority;
         this.itemId = itemId;
         this.title = title;
         this.description = description;
@@ -57,11 +54,6 @@ public class DefaultPaletteItem implements PaletteItem {
     public DefaultPaletteItem setIconSize(final int iconSize) {
         this.iconSize = iconSize;
         return this;
-    }
-
-    @Override
-    public int getPriority() {
-        return priority;
     }
 
     @Override

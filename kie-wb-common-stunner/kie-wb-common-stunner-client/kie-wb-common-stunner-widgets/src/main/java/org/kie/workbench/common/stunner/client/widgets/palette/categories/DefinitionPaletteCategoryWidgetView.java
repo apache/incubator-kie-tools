@@ -35,6 +35,8 @@ public interface DefinitionPaletteCategoryWidgetView extends UberElement<Definit
 
     void setVisible(boolean visible);
 
+    void setAutoHidePanel(boolean autoHidePanel);
+
     boolean isVisible();
 
     interface Presenter extends BS3PaletteWidgetPresenter<DefaultPaletteCategory> {
@@ -47,5 +49,7 @@ public interface DefinitionPaletteCategoryWidgetView extends UberElement<Definit
                          int y);
 
         void onClose();
+
+        void onOpen();
     }
 }

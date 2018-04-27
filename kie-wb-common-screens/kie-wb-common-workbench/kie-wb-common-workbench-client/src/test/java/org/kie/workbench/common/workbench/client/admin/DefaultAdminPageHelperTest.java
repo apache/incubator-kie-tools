@@ -49,6 +49,10 @@ import static org.mockito.Mockito.verify;
 @RunWith(GwtMockitoTestRunner.class)
 public class DefaultAdminPageHelperTest {
 
+    private static String LIBRARY_PREFERENCES = "LibraryPreferences";
+    private static String ARTIFACT_REPOSITORY_PREFERENCES = "ArtifactRepositoryPreference";
+    private static String STUNNER_PREFERENCES = "StunnerPreferences";
+
     @Mock
     private AdminPage adminPage;
 
@@ -66,6 +70,9 @@ public class DefaultAdminPageHelperTest {
 
     @InjectMocks
     private DefaultAdminPageHelper defaultAdminPageHelper;
+
+    @Mock
+    private PreferenceScope globalScope;
 
     @Before
     public void setup() {
@@ -214,36 +221,18 @@ public class DefaultAdminPageHelperTest {
 
     @Test
     public void preferencesShouldBeSavedOnGlobalScopeWhenUserHasPermissionTest() {
-        final PreferenceScope globalScope = mock(PreferenceScope.class);
         doReturn(globalScope).when(scopeFactory).createScope(GuvnorPreferenceScopes.GLOBAL);
 
         doReturn(true).when(authorizationManager).authorize(eq(WorkbenchFeatures.EDIT_GLOBAL_PREFERENCES),
                                                             any());
 
         defaultAdminPageHelper.setup();
-
-        verify(adminPage,
-               times(2)).addPreference(anyString(),
-                                       anyString(),
-                                       anyString(),
-                                       anyString(),
-                                       anyString(),
-                                       any(PreferenceScope.class),
-                                       eq(AdminPageOptions.WITH_BREADCRUMBS));
-
-        verify(adminPage,
-               times(2)).addPreference(anyString(),
-                                       anyString(),
-                                       anyString(),
-                                       anyString(),
-                                       anyString(),
-                                       eq(globalScope),
-                                       eq(AdminPageOptions.WITH_BREADCRUMBS));
+        verifyLibraryPreferencesWasAddedInGlobalScope();
+        verifyArtifactRepositoryPreferencesWasAddedInGlobalScope();
     }
 
     @Test
     public void preferencesShouldBeSavedOnGlobalScopeWhenUserHasPermissionAndEnabledTest() {
-        final PreferenceScope globalScope = mock(PreferenceScope.class);
         doReturn(globalScope).when(scopeFactory).createScope(GuvnorPreferenceScopes.GLOBAL);
 
         doReturn(true).when(authorizationManager).authorize(eq(WorkbenchFeatures.EDIT_GLOBAL_PREFERENCES),
@@ -251,24 +240,8 @@ public class DefaultAdminPageHelperTest {
 
         defaultAdminPageHelper.setup(true,
                                      true);
-
-        verify(adminPage,
-               times(2)).addPreference(anyString(),
-                                       anyString(),
-                                       anyString(),
-                                       anyString(),
-                                       anyString(),
-                                       any(PreferenceScope.class),
-                                       eq(AdminPageOptions.WITH_BREADCRUMBS));
-
-        verify(adminPage,
-               times(2)).addPreference(anyString(),
-                                       anyString(),
-                                       anyString(),
-                                       anyString(),
-                                       anyString(),
-                                       eq(globalScope),
-                                       eq(AdminPageOptions.WITH_BREADCRUMBS));
+        verifyLibraryPreferencesWasAddedInGlobalScope();
+        verifyArtifactRepositoryPreferencesWasAddedInGlobalScope();
     }
 
     @Test
@@ -278,15 +251,8 @@ public class DefaultAdminPageHelperTest {
 
         defaultAdminPageHelper.setup(false,
                                      false);
-
-        verify(adminPage,
-               never()).addPreference(anyString(),
-                                      anyString(),
-                                      anyString(),
-                                      anyString(),
-                                      anyString(),
-                                      any(PreferenceScope.class),
-                                      any());
+        verifyLibraryPreferencesWasNotAdded();
+        verifyArtifactRepositoryPreferencesWasNotAdded();
     }
 
     @Test
@@ -295,15 +261,8 @@ public class DefaultAdminPageHelperTest {
                                                              any());
 
         defaultAdminPageHelper.setup();
-
-        verify(adminPage,
-               never()).addPreference(anyString(),
-                                      anyString(),
-                                      anyString(),
-                                      anyString(),
-                                      anyString(),
-                                      any(PreferenceScope.class),
-                                      any());
+        verifyLibraryPreferencesWasNotAdded();
+        verifyArtifactRepositoryPreferencesWasNotAdded();
     }
 
     @Test
@@ -314,14 +273,73 @@ public class DefaultAdminPageHelperTest {
         defaultAdminPageHelper.setup(false,
                                      false);
 
+        verifyLibraryPreferencesWasNotAdded();
+        verifyArtifactRepositoryPreferencesWasNotAdded();
+    }
+
+    @Test
+    public void stunnerPreferencesWasAddedTest() {
+        defaultAdminPageHelper.setup();
+        defaultAdminPageHelper.setup(false,
+                                     false);
+        defaultAdminPageHelper.setup(true,
+                                     true);
+        verifyStunnerPreferencesWasAdded(3);
+    }
+
+    private void verifyLibraryPreferencesWasAddedInGlobalScope() {
         verify(adminPage,
-               never()).addPreference(anyString(),
-                                      anyString(),
+               times(1)).addPreference(eq("root"),
+                                       eq(LIBRARY_PREFERENCES),
+                                       anyString(),
+                                       anyString(),
+                                       anyString(),
+                                       eq(globalScope),
+                                       eq(AdminPageOptions.WITH_BREADCRUMBS));
+    }
+
+    private void verifyLibraryPreferencesWasNotAdded() {
+        verify(adminPage,
+               never()).addPreference(eq("root"),
+                                      eq(LIBRARY_PREFERENCES),
                                       anyString(),
                                       anyString(),
                                       anyString(),
                                       any(PreferenceScope.class),
-                                      any());
+                                      eq(AdminPageOptions.WITH_BREADCRUMBS));
+    }
+
+    private void verifyArtifactRepositoryPreferencesWasAddedInGlobalScope() {
+        verify(adminPage,
+               times(1)).addPreference(eq("root"),
+                                       eq(ARTIFACT_REPOSITORY_PREFERENCES),
+                                       anyString(),
+                                       anyString(),
+                                       anyString(),
+                                       eq(globalScope),
+                                       eq(AdminPageOptions.WITH_BREADCRUMBS));
+    }
+
+    private void verifyArtifactRepositoryPreferencesWasNotAdded() {
+        verify(adminPage,
+               never()).addPreference(eq("root"),
+                                      eq(ARTIFACT_REPOSITORY_PREFERENCES),
+                                      anyString(),
+                                      anyString(),
+                                      anyString(),
+                                      any(PreferenceScope.class),
+                                      eq(AdminPageOptions.WITH_BREADCRUMBS));
+    }
+
+    private void verifyStunnerPreferencesWasAdded(int timesAdded) {
+        verify(adminPage,
+               times(timesAdded)).addPreference(eq("root"),
+                                           eq(STUNNER_PREFERENCES),
+                                           anyString(),
+                                           anyString(),
+                                           anyString(),
+                                           any(PreferenceScope.class),
+                                           eq(AdminPageOptions.WITH_BREADCRUMBS));
     }
 
     private void mockConstants() {

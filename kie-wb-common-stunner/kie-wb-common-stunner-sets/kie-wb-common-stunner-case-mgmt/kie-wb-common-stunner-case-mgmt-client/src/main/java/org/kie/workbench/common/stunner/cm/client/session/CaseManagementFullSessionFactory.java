@@ -16,36 +16,37 @@
 
 package org.kie.workbench.common.stunner.cm.client.session;
 
-import java.util.function.Consumer;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
-import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
-import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 
 @ApplicationScoped
 @CaseManagementEditor
-public class CaseManagementFullSessionFactory implements ClientSessionFactory<ClientFullSession> {
+public class CaseManagementFullSessionFactory extends AbstractCaseManagementClientSessionFactory<ClientFullSession> {
 
     private final ManagedInstance<CaseManagementClientFullSession> fullSessionInstances;
 
     protected CaseManagementFullSessionFactory() {
-        this(null);
+        this(null, null, null);
     }
 
     @Inject
-    public CaseManagementFullSessionFactory(final @CaseManagementEditor ManagedInstance<CaseManagementClientFullSession> fullSessionInstances) {
+    public CaseManagementFullSessionFactory(final @CaseManagementEditor ManagedInstance<CaseManagementClientFullSession> fullSessionInstances,
+                                            final StunnerPreferences stunnerPreferences,
+                                            final StunnerPreferencesRegistry stunnerPreferencesRegistry) {
+        super(stunnerPreferences,
+              stunnerPreferencesRegistry);
         this.fullSessionInstances = fullSessionInstances;
     }
 
     @Override
-    public void newSession(final Metadata metadata,
-                           final Consumer<ClientFullSession> sessionConsumer) {
-        sessionConsumer.accept(this.fullSessionInstances.get());
+    protected ClientFullSession buildSessionInstance() {
+        return fullSessionInstances.get();
     }
 
     @Override

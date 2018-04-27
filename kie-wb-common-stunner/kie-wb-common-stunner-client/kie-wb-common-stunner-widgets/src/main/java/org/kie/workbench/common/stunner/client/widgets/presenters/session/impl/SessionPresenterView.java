@@ -112,8 +112,10 @@ public class SessionPresenterView extends Composite
     @EventHandler("sessionContainer")
     protected void onScroll(@ForEvent("scroll") ScrollEvent e) {
         // on the editor scroll recalculate palette position to be fixed on the screen
-        palettePanel.getElement().getStyle().setTop(paletteInitialTop + e.getRelativeElement().getScrollTop(), Style.Unit.PX);
-        palettePanel.getElement().getStyle().setLeft(paletteInitialLeft + e.getRelativeElement().getScrollLeft(), Style.Unit.PX);
+        palettePanel.getElement().getStyle().setTop(paletteInitialTop + e.getRelativeElement().getScrollTop(),
+                                                    Style.Unit.PX);
+        palettePanel.getElement().getStyle().setLeft(paletteInitialLeft + e.getRelativeElement().getScrollLeft(),
+                                                     Style.Unit.PX);
 
         e.preventDefault();
     }
@@ -225,6 +227,10 @@ public class SessionPresenterView extends Composite
 
     @Override
     public void onResize() {
+        palettePanel.getElement().getStyle().setTop(paletteInitialTop + sessionContainer.getElement().getScrollTop(),
+                                                    Style.Unit.PX);
+        palettePanel.getElement().getStyle().setLeft(paletteInitialLeft + sessionContainer.getElement().getScrollLeft(),
+                                                     Style.Unit.PX);
         canvasPanel.onResize();
     }
 

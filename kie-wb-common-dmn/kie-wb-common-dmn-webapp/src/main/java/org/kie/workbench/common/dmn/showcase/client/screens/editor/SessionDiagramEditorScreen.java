@@ -46,6 +46,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
@@ -109,6 +110,7 @@ public class SessionDiagramEditorScreen {
     private Menus menu = null;
 
     private ExpressionEditorView.Presenter expressionEditor;
+    private StunnerPreferencesRegistry stunnerPreferencesRegistry;
 
     @Inject
     public SessionDiagramEditorScreen(final DefinitionManager definitionManager,
@@ -122,7 +124,8 @@ public class SessionDiagramEditorScreen {
                                       final ScreenPanelView screenPanelView,
                                       final ScreenErrorView screenErrorView,
                                       final ExpressionEditorView.Presenter expressionEditor,
-                                      final DecisionNavigatorDock decisionNavigatorDock) {
+                                      final DecisionNavigatorDock decisionNavigatorDock,
+                                      final StunnerPreferencesRegistry stunnerPreferencesRegistry) {
         this.definitionManager = definitionManager;
         this.clientFactoryServices = clientFactoryServices;
         this.diagramService = diagramService;
@@ -135,6 +138,7 @@ public class SessionDiagramEditorScreen {
         this.screenErrorView = screenErrorView;
         this.expressionEditor = expressionEditor;
         this.decisionNavigatorDock = decisionNavigatorDock;
+        this.stunnerPreferencesRegistry = stunnerPreferencesRegistry;
     }
 
     @PostConstruct
@@ -306,6 +310,7 @@ public class SessionDiagramEditorScreen {
                                 presenter
                                         .withToolbar(true)
                                         .withPalette(true)
+                                        .withPreferences(stunnerPreferencesRegistry.get())
                                         .displayNotifications(type -> true)
                                         .open(diagram,
                                               session,

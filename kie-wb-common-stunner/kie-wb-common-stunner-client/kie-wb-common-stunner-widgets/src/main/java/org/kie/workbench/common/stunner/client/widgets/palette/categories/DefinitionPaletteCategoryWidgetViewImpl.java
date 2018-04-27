@@ -21,6 +21,9 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseUpEvent;
 import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
@@ -43,6 +46,8 @@ public class DefinitionPaletteCategoryWidgetViewImpl implements DefinitionPalett
                                                                 IsElement {
 
     private static final String SHOW_FLYOUT_CSS = "kie-palette-show-flyout";
+
+    private static final int DRAG_DELTA = 2;
 
     @Inject
     private Document document;
@@ -68,6 +73,14 @@ public class DefinitionPaletteCategoryWidgetViewImpl implements DefinitionPalett
 
     private Presenter presenter;
 
+    private int startX = 0;
+
+    private int startY = 0;
+
+    private boolean mouseDown = false;
+
+    private boolean autoHidePanel = false;
+
     @Override
     public void init(Presenter presenter) {
         this.presenter = presenter;
@@ -78,6 +91,7 @@ public class DefinitionPaletteCategoryWidgetViewImpl implements DefinitionPalett
                        double width,
                        double height) {
         DefaultPaletteCategory category = presenter.getCategory();
+        categoryIcon.setTitle(category.getTitle());
         final org.jboss.errai.common.client.api.IsElement glyphElement =
                 domGlyphRenderers.render(glyph,
                                          width,
@@ -112,21 +126,98 @@ public class DefinitionPaletteCategoryWidgetViewImpl implements DefinitionPalett
     }
 
     @Override
+    public void setAutoHidePanel(boolean autoHidePanel) {
+        this.autoHidePanel = autoHidePanel;
+        setCloseButtonVisible(!autoHidePanel);
+    }
+
+    public boolean isAutoHidePanel() {
+        return autoHidePanel;
+    }
+
+    @Override
     public boolean isVisible() {
         return DOMUtil.hasCSSClass(listGroupItem,
                                    "kie-palette-show-flyout");
     }
 
     @EventHandler("categoryIcon")
-    public void onMouseDown(MouseDownEvent mouseDownEvent) {
-        presenter.onMouseDown(mouseDownEvent.getClientX(),
-                              mouseDownEvent.getClientY(),
-                              mouseDownEvent.getX(),
-                              mouseDownEvent.getY());
+    public void onMouseDown(MouseDownEvent event) {
+        mouseDown = true;
+        startX = event.getClientX();
+        startY = event.getClientY();
+    }
+
+    @EventHandler("categoryIcon")
+    public void onMouseMove(MouseMoveEvent event) {
+        int currentX = event.getClientX();
+        int currentY = event.getClientY();
+        if (mouseDown && isDragged(startX,
+                                   startY,
+                                   currentX,
+                                   currentY)) {
+            mouseDown = false;
+            presenter.onMouseDown(event.getClientX(),
+                                  event.getClientY(),
+                                  event.getX(),
+                                  event.getY());
+        }
+    }
+
+    @EventHandler("categoryIcon")
+    public void onMouseUp(MouseUpEvent event) {
+        if (mouseDown) {
+            if (isDragged(startX,
+                          startY,
+                          event.getClientX(),
+                          event.getClientY())) {
+                mouseDown = false;
+                presenter.onMouseDown(event.getClientX(),
+                                      event.getClientY(),
+                                      event.getX(),
+                                      event.getY());
+            } else {
+                mouseDown = false;
+                presenter.onOpen();
+            }
+        }
+    }
+
+    @EventHandler("categoryIcon")
+    public void onMouseOutEvent(MouseOutEvent event) {
+        mouseDown = false;
     }
 
     @EventHandler("closeCategoryButton")
-    public void onClose(ClickEvent mouseClickEvent) {
+    public void onClose(ClickEvent event) {
         presenter.onClose();
+    }
+
+    @EventHandler("floatingPanel")
+    public void onFloatingPanelOutEvent(MouseOutEvent event) {
+        if (isAutoHidePanel()) {
+            presenter.onClose();
+        }
+    }
+
+    private void setCloseButtonVisible(boolean visible) {
+        closeCategoryButton.getStyle().removeProperty("display");
+        if (!visible) {
+            closeCategoryButton.getStyle().setProperty("display", "none");
+        }
+    }
+
+    private boolean isDragged(int startX,
+                              int startY,
+                              int endX,
+                              int endY) {
+        return distance(startX,
+                        endX) >= DRAG_DELTA || distance(startY,
+                                                        endY) >= DRAG_DELTA;
+    }
+
+    private int distance(int start,
+                         int end) {
+        return Math.abs(start - end);
     }
 }

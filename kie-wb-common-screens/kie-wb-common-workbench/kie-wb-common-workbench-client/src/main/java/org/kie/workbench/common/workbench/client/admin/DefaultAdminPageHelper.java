@@ -103,6 +103,7 @@ public class DefaultAdminPageHelper {
         addGlobalPreferences(libraryPreferencesEnabled,
                              artifactRepositoryPreferencesEnabled);
         addGeneralPreferences();
+        addStunnerPreferences();
     }
 
     private void addGeneralPreferences() {
@@ -111,6 +112,16 @@ public class DefaultAdminPageHelper {
                           "fa-language",
                           "preferences",
                           () -> workbenchConfigurationPresenter.show(languageConfigurationHandler));
+    }
+
+    private void addStunnerPreferences() {
+        adminPage.addPreference("root",
+                                "StunnerPreferences",
+                                constants.StunnerDesignerPreferences(),
+                                "fa-object-group",
+                                "general",
+                                scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL),
+                                AdminPageOptions.WITH_BREADCRUMBS);
     }
 
     private void addSecurityPerspective() {

@@ -22,8 +22,10 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientRegistry;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ClientReadOnlySessionImpl;
+import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 
 @Dependent
 @BPMN
@@ -33,12 +35,16 @@ public class BPMNClientReadOnlySessionFactory extends AbstractBPMNClientSessionF
     private final ManagedInstance<ClientReadOnlySessionImpl> readOnlySessions;
 
     protected BPMNClientReadOnlySessionFactory() {
-        this(null, null);
+        this(null, null, null, null);
     }
 
     @Inject
     public BPMNClientReadOnlySessionFactory(final WorkItemDefinitionClientRegistry workItemDefinitionClientService,
-                                            final ManagedInstance<ClientReadOnlySessionImpl> readOnlySessions) {
+                                            final ManagedInstance<ClientReadOnlySessionImpl> readOnlySessions,
+                                            final StunnerPreferences stunnerPreferences,
+                                            final StunnerPreferencesRegistry stunnerPreferencesRegistry) {
+        super(stunnerPreferences,
+              stunnerPreferencesRegistry);
         this.workItemDefinitionClientService = workItemDefinitionClientService;
         this.readOnlySessions = readOnlySessions;
     }

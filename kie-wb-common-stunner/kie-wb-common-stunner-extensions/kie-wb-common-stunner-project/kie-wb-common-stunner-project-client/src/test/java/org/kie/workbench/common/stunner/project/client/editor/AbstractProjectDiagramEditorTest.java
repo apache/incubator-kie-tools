@@ -40,6 +40,7 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
@@ -68,6 +69,7 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientR
 import org.kie.workbench.common.stunner.core.definition.exception.DefinitionNotFoundException;
 import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.violations.BoundsExceededViolation;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
@@ -215,6 +217,9 @@ public class AbstractProjectDiagramEditorTest {
     protected Widget xmlEditorWidget;
 
     @Mock
+    protected StunnerPreferencesRegistry stunnerPreferencesRegistry;
+
+    @Mock
     protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
 
     @Mock
@@ -346,6 +351,9 @@ public class AbstractProjectDiagramEditorTest {
     @Captor
     protected ArgumentCaptor<NotificationEvent> notificationEventCaptor;
 
+    @Mock
+    private StunnerPreferences stunnerPreferences;
+
     abstract class ClientResourceTypeMock implements ClientResourceType {
 
     }
@@ -376,6 +384,7 @@ public class AbstractProjectDiagramEditorTest {
         when(fullSessionPresenter.getInstance()).thenReturn(clientFullSession);
         when(fullSessionPresenter.withToolbar(anyBoolean())).thenReturn(fullSessionPresenter);
         when(fullSessionPresenter.withPalette(anyBoolean())).thenReturn(fullSessionPresenter);
+        when(fullSessionPresenter.withPreferences(stunnerPreferences)).thenReturn(fullSessionPresenter);
         when(fullSessionPresenter.displayNotifications(any(Predicate.class))).thenReturn(fullSessionPresenter);
         when(fullSessionPresenter.getView()).thenReturn(sessionPresenterView);
 
@@ -404,6 +413,7 @@ public class AbstractProjectDiagramEditorTest {
 
         when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
         when(versionRecordManager.getPathToLatest()).thenReturn(filePath);
+        when(stunnerPreferencesRegistry.get()).thenReturn(stunnerPreferences);
 
         when(xmlEditorView.asWidget()).thenReturn(xmlEditorWidget);
 
@@ -446,7 +456,8 @@ public class AbstractProjectDiagramEditorTest {
                                                                             projectMessagesListener,
                                                                             diagramClientErrorHandler,
                                                                             translationService,
-                                                                            xmlEditorView) {
+                                                                            xmlEditorView,
+                                                                            stunnerPreferencesRegistry) {
             {
                 place = AbstractProjectDiagramEditorTest.this.placeRequest;
                 fileMenuBuilder = AbstractProjectDiagramEditorTest.this.fileMenuBuilder;

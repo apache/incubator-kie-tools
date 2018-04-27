@@ -16,36 +16,38 @@
 
 package org.kie.workbench.common.dmn.client.session;
 
-import java.util.function.Consumer;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
-import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
-import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionFactory;
+import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 
 @ApplicationScoped
 @DMNEditor
-public class DMNClientFullSessionFactory implements ClientSessionFactory<ClientFullSession> {
+public class DMNClientFullSessionFactory extends AbstractClientSessionFactory<ClientFullSession> {
 
     private final ManagedInstance<DMNClientFullSession> fullSessionInstances;
 
     protected DMNClientFullSessionFactory() {
-        this(null);
+        this(null, null, null);
     }
 
     @Inject
-    public DMNClientFullSessionFactory(final @DMNEditor ManagedInstance<DMNClientFullSession> fullSessionInstances) {
+    public DMNClientFullSessionFactory(final @DMNEditor ManagedInstance<DMNClientFullSession> fullSessionInstances,
+                                       final StunnerPreferences stunnerPreferences,
+                                       final StunnerPreferencesRegistry stunnerPreferencesRegistry) {
+        super(stunnerPreferences,
+              stunnerPreferencesRegistry);
         this.fullSessionInstances = fullSessionInstances;
     }
 
     @Override
-    public void newSession(final Metadata metadata,
-                           final Consumer<ClientFullSession> sessionConsumer) {
-        sessionConsumer.accept(fullSessionInstances.get());
+    protected ClientFullSession buildSessionInstance() {
+        return fullSessionInstances.get();
     }
 
     @Override

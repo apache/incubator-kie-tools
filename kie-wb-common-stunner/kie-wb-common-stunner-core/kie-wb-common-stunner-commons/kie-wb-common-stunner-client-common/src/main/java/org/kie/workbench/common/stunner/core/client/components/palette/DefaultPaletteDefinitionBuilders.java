@@ -26,7 +26,6 @@ public class DefaultPaletteDefinitionBuilders {
 
     public static abstract class AbstractItemBuilder<I extends DefaultPaletteItem, T extends AbstractItemBuilder> {
 
-        protected int priority;
         protected String itemId;
         protected String title;
         protected String description;
@@ -35,7 +34,6 @@ public class DefaultPaletteDefinitionBuilders {
         protected int iconSize;
 
         public AbstractItemBuilder() {
-            this.priority = -1;
             this.itemId = null;
             this.title = "";
             this.description = "";
@@ -45,11 +43,6 @@ public class DefaultPaletteDefinitionBuilders {
         }
 
         public abstract I build();
-
-        public T setPriority(final int priority) {
-            this.priority = priority;
-            return cast();
-        }
 
         public T setItemId(final String itemId) {
             this.itemId = itemId;
@@ -90,8 +83,7 @@ public class DefaultPaletteDefinitionBuilders {
     public static class ItemBuilder extends AbstractItemBuilder<DefaultPaletteItem, ItemBuilder> {
 
         public DefaultPaletteItem build() {
-            return new DefaultPaletteItem(priority,
-                                          itemId,
+            return new DefaultPaletteItem(itemId,
                                           definitionId,
                                           title,
                                           description,
@@ -103,8 +95,7 @@ public class DefaultPaletteDefinitionBuilders {
     public static class GroupBuilder extends AbstractItemBuilder<DefaultPaletteGroup, GroupBuilder> {
 
         public DefaultPaletteGroup build() {
-            return new DefaultPaletteGroup(priority,
-                                           itemId,
+            return new DefaultPaletteGroup(itemId,
                                            definitionId,
                                            title,
                                            description,
@@ -130,8 +121,7 @@ public class DefaultPaletteDefinitionBuilders {
         }
 
         public DefaultPaletteCategory build() {
-            return new DefaultPaletteCategory(priority,
-                                              itemId,
+            return new DefaultPaletteCategory(itemId,
                                               definitionId,
                                               title,
                                               description,

@@ -42,6 +42,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
@@ -72,6 +73,7 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
@@ -144,6 +146,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private Optional<SessionPresenter<AbstractClientReadOnlySession, ?, Diagram>> readOnlySessionPresenter = Optional.empty();
     private final DiagramClientErrorHandler diagramClientErrorHandler;
     private final ClientTranslationService translationService;
+    private final StunnerPreferencesRegistry stunnerPreferencesRegistry;
 
     private final MenuItem clearItem;
     private final MenuItem visitGraphItem;
@@ -180,7 +183,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                         final ProjectMessagesListener projectMessagesListener,
                                         final DiagramClientErrorHandler diagramClientErrorHandler,
                                         final ClientTranslationService translationService,
-                                        final TextEditorView xmlEditorView) {
+                                        final TextEditorView xmlEditorView,
+                                        final StunnerPreferencesRegistry stunnerPreferencesRegistry) {
         super(view);
         this.placeManager = placeManager;
         this.errorPopupPresenter = errorPopupPresenter;
@@ -198,6 +202,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.onDiagramLostFocusEvent = onDiagramLostFocusEvent;
         this.translationService = translationService;
         this.xmlEditorView = xmlEditorView;
+        this.stunnerPreferencesRegistry = stunnerPreferencesRegistry;
 
         this.commands = new HashMap<>();
 
@@ -379,38 +384,34 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                 .newSession(metadata,
                             s -> {
                                 final AbstractClientFullSession session = (AbstractClientFullSession) s;
-                                final SessionPresenter<AbstractClientFullSession, ?, Diagram> sessionPresenter = sessionPresenterFactory.newPresenterEditor();
+                                final SessionPresenter<AbstractClientFullSession, ?, Diagram> sessionPresenter = newSessionPresenter();
                                 fullSessionPresenter = Optional.of(sessionPresenter);
                                 getView().setWidget(sessionPresenter.getView());
-                                sessionPresenter
-                                        .withToolbar(false)
-                                        .withPalette(true)
-                                        .displayNotifications(type -> true)
-                                        .open(diagram,
-                                              session,
-                                              new SessionPresenter.SessionPresenterCallback<AbstractClientFullSession, Diagram>() {
-                                                  @Override
-                                                  public void afterSessionOpened() {
+                                sessionPresenter.open(diagram,
+                                                      session,
+                                                      new SessionPresenter.SessionPresenterCallback<AbstractClientFullSession, Diagram>() {
+                                                          @Override
+                                                          public void afterSessionOpened() {
 
-                                                  }
+                                                          }
 
-                                                  @Override
-                                                  public void afterCanvasInitialized() {
+                                                          @Override
+                                                          public void afterCanvasInitialized() {
 
-                                                  }
+                                                          }
 
-                                                  @Override
-                                                  public void onSuccess() {
-                                                      initialiseKieEditorForSession(diagram);
-                                                      initialiseMenuBarStateForSession(true);
-                                                      bindCommands();
-                                                  }
+                                                          @Override
+                                                          public void onSuccess() {
+                                                              initialiseKieEditorForSession(diagram);
+                                                              initialiseMenuBarStateForSession(true);
+                                                              bindCommands();
+                                                          }
 
-                                                  @Override
-                                                  public void onError(final ClientRuntimeError error) {
-                                                      onLoadError(error);
-                                                  }
-                                              });
+                                                          @Override
+                                                          public void onError(final ClientRuntimeError error) {
+                                                              onLoadError(error);
+                                                          }
+                                                      });
                             });
     }
 
@@ -481,6 +482,18 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     protected void onDiagramLoad() {
         /* Override this method to trigger some action after a Diagram is loaded. */
+    }
+
+    protected StunnerPreferences getStunnerPreferences() {
+        return stunnerPreferencesRegistry.get();
+    }
+
+    protected SessionPresenter<AbstractClientFullSession, ?, Diagram> newSessionPresenter() {
+        return sessionPresenterFactory.newPresenterEditor()
+                .withToolbar(false)
+                .withPalette(true)
+                .displayNotifications(type -> true)
+                .withPreferences(getStunnerPreferences());
     }
 
     @Override

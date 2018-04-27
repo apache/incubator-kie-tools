@@ -35,7 +35,6 @@ public class DefinitionPaletteItemWidgetViewImpl implements DefinitionPaletteIte
                                                             IsElement {
 
     private static final String DISPLAY = "display";
-    private static final String DISPLAY_INLINE = "inline";
     private static final String DISPLAY_NONE = "none";
     private static final String PADDING_RIGHT = "padding-right";
 
@@ -73,7 +72,6 @@ public class DefinitionPaletteItemWidgetViewImpl implements DefinitionPaletteIte
         final String title = presenter.getItem().getTitle();
         if (!isEmpty(title)) {
             name.setTextContent(presenter.getItem().getTitle());
-            name.getStyle().setProperty(DISPLAY, DISPLAY_INLINE);
         } else {
             name.getStyle().setProperty(DISPLAY, DISPLAY_NONE);
             icon.getStyle().setProperty(PADDING_RIGHT, "0");

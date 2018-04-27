@@ -151,6 +151,8 @@ public interface DefaultWorkbenchConstants
 
     String StunnerDesigner();
 
+    String StunnerDesignerPreferences();
+
     String InvalidBusResponseProbablySessionTimeout();
 
     String SessionTimeout();

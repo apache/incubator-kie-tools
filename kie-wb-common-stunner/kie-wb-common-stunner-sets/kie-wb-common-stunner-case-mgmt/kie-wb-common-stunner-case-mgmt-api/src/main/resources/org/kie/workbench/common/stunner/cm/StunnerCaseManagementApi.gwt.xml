@@ -26,7 +26,6 @@
   <source path="factory"/>
   <source path="qualifiers"/>
   <source path="resource"/>
-  <source path="shapes"/>
   <source path="util"/>
   <source path="" includes="CaseManagementDefinitionSet.java"/>
 

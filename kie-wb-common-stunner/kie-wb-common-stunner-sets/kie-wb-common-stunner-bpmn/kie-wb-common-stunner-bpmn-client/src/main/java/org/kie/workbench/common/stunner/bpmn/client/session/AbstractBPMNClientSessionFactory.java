@@ -19,23 +19,29 @@ package org.kie.workbench.common.stunner.bpmn.client.session;
 import java.util.function.Consumer;
 
 import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientRegistry;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionFactory;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 
 public abstract class AbstractBPMNClientSessionFactory<S extends ClientSession>
-        implements ClientSessionFactory<S> {
+        extends AbstractClientSessionFactory<S> {
 
     protected abstract WorkItemDefinitionClientRegistry getWorkItemDefinitionService();
 
-    protected abstract S buildSessionInstance();
+    protected AbstractBPMNClientSessionFactory(final StunnerPreferences stunnerPreferences,
+                                               final StunnerPreferencesRegistry stunnerPreferencesRegistry) {
+        super(stunnerPreferences,
+              stunnerPreferencesRegistry);
+    }
 
     @Override
     public void newSession(final Metadata metadata,
                            final Consumer<S> newSessionConsumer) {
-        final S session = buildSessionInstance();
-        getWorkItemDefinitionService().load(metadata,
-                                            () -> newSessionConsumer
-                                                    .accept(session));
+        super.newSession(metadata,
+                         session -> getWorkItemDefinitionService().load(metadata,
+                                                                         () -> newSessionConsumer
+                                                                                 .accept(session)));
     }
 }

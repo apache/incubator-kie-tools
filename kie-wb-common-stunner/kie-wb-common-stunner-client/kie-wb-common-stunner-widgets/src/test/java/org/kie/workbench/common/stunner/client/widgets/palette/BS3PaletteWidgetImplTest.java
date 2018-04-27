@@ -15,28 +15,57 @@
  */
 package org.kie.workbench.common.stunner.client.widgets.palette;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.DefinitionPaletteCategoryWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.items.DefinitionPaletteItemWidget;
+import org.kie.workbench.common.stunner.core.client.ShapeSet;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
+import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteCategory;
+import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteDefinition;
+import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteItem;
+import org.kie.workbench.common.stunner.core.client.components.palette.PaletteItemMouseEvent;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMinimizedEvent;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
+import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
+import org.kie.workbench.common.stunner.core.preferences.StunnerDiagramEditorPreferences;
+import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BS3PaletteWidgetImplTest {
 
+    private static final int CATEGORY_ITEMS_COUNT = 6;
+    private static final int SIMPLE_ITEMS_COUNT = 8;
+    private static final String DEFINITION_SET_ID = "DEFINITION_SET_ID";
+
     @Mock
     private ShapeManager shapeManager;
+
+    @Mock
+    private ShapeSet shapeSet;
+
+    @Mock
+    private ShapeFactory shapeFactory;
 
     @Mock
     private ClientFactoryService clientFactoryServices;
@@ -48,21 +77,59 @@ public class BS3PaletteWidgetImplTest {
     private ShapeGlyphDragHandler shapeGlyphDragHandler;
 
     @Mock
+    private Consumer<PaletteItemMouseEvent> itemMouseDownCallback;
+
+    @Mock
     private ManagedInstance<DefinitionPaletteCategoryWidget> categoryWidgetInstance;
+
+    private List<DefinitionPaletteCategoryWidget> createdCategoryWidgets = new ArrayList<>();
 
     @Mock
     private ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgets;
+
+    private List<DefinitionPaletteItemWidget> createdItemWidgets = new ArrayList<>();
+
+    @Mock
+    private DefaultPaletteDefinition paletteDefinition;
+
+    @Mock
+    private StunnerPreferences stunnerPreferences;
+
+    @Mock
+    private StunnerDiagramEditorPreferences diagramEditorPreferences;
 
     private BS3PaletteWidgetImpl palette;
 
     @Before
     public void setup() {
+        when(shapeManager.getDefaultShapeSet(DEFINITION_SET_ID)).thenReturn(shapeSet);
+        when(shapeSet.getShapeFactory()).thenReturn(shapeFactory);
+        when(stunnerPreferences.getDiagramEditorPreferences()).thenReturn(diagramEditorPreferences);
+
+        createdCategoryWidgets.clear();
+        createdItemWidgets.clear();
         this.palette = new BS3PaletteWidgetImpl(shapeManager,
                                                 clientFactoryServices,
                                                 view,
                                                 shapeGlyphDragHandler,
                                                 categoryWidgetInstance,
-                                                definitionPaletteItemWidgets);
+                                                definitionPaletteItemWidgets) {
+            @Override
+            protected DefinitionPaletteCategoryWidget newDefinitionPaletteCategoryWidget() {
+                DefinitionPaletteCategoryWidget categoryWidget = mock(DefinitionPaletteCategoryWidget.class);
+                createdCategoryWidgets.add(categoryWidget);
+                when(categoryWidgetInstance.get()).thenReturn(categoryWidget);
+                return super.newDefinitionPaletteCategoryWidget();
+            }
+
+            @Override
+            protected DefinitionPaletteItemWidget newDefinitionPaletteItemWidget() {
+                DefinitionPaletteItemWidget itemWidget = mock(DefinitionPaletteItemWidget.class);
+                createdItemWidgets.add(itemWidget);
+                when(definitionPaletteItemWidgets.get()).thenReturn(itemWidget);
+                return super.newDefinitionPaletteItemWidget();
+            }
+        };
         this.palette.init();
     }
 
@@ -108,5 +175,110 @@ public class BS3PaletteWidgetImplTest {
         palette.onScreenMinimized(event);
 
         verify(view).showEmptyView(false);
+    }
+
+    @Test
+    public void testBind() {
+        when(paletteDefinition.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
+
+        boolean arbitraryHidePanelValue = true;
+        when(diagramEditorPreferences.isAutoHidePalettePanel()).thenReturn(arbitraryHidePanelValue);
+
+        List<DefaultPaletteItem> items = new ArrayList<>();
+        items.addAll(mockCategoryItems(CATEGORY_ITEMS_COUNT));
+        items.addAll(mockSimpleItems(SIMPLE_ITEMS_COUNT));
+        when(paletteDefinition.getItems()).thenReturn(items);
+
+        palette.setPreferences(stunnerPreferences);
+        palette.bind(paletteDefinition);
+
+        verify(categoryWidgetInstance,
+               times(CATEGORY_ITEMS_COUNT)).get();
+        verify(definitionPaletteItemWidgets,
+               times(SIMPLE_ITEMS_COUNT)).get();
+        assertEquals(CATEGORY_ITEMS_COUNT,
+                     createdCategoryWidgets.size());
+        assertEquals(SIMPLE_ITEMS_COUNT,
+                     createdItemWidgets.size());
+
+        List<DefaultPaletteCategory> categoryItems = items.stream()
+                .filter(item -> (item instanceof DefaultPaletteCategory))
+                .map(categoryItem -> (DefaultPaletteCategory) categoryItem)
+                .collect(Collectors.toList());
+        for (int i = 0; i < createdCategoryWidgets.size(); i++) {
+            DefaultPaletteCategory category = categoryItems.get(i);
+            DefinitionPaletteCategoryWidget widget = createdCategoryWidgets.get(i);
+            widget.setOnOpenCallback(anyObject());
+            widget.setOnCloseCallback(anyObject());
+            verify(widget,
+                   times(1)).initialize(eq(category),
+                                        eq(shapeFactory),
+                                        anyObject());
+            verify(widget,
+                   times(1)).setAutoHidePanel(arbitraryHidePanelValue);
+        }
+
+        List<DefaultPaletteItem> paletteItems = items.stream()
+                .filter(item -> !(item instanceof DefaultPaletteCategory))
+                .collect(Collectors.toList());
+        for (int i = 0; i < createdItemWidgets.size(); i++) {
+            DefaultPaletteItem item = paletteItems.get(i);
+            DefinitionPaletteItemWidget widget = createdItemWidgets.get(i);
+            verify(widget,
+                   times(1)).initialize(eq(item),
+                                        eq(shapeFactory),
+                                        anyObject());
+        }
+    }
+
+    @Test
+    public void testSetPreferences() {
+        when(paletteDefinition.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
+        List<DefaultPaletteItem> items = new ArrayList<>();
+        items.addAll(mockCategoryItems(CATEGORY_ITEMS_COUNT));
+        items.addAll(mockSimpleItems(SIMPLE_ITEMS_COUNT));
+        when(paletteDefinition.getItems()).thenReturn(items);
+
+        palette.bind(paletteDefinition);
+
+        //initial initialization set the values to false
+        createdCategoryWidgets.forEach(categoryWidget -> verify(categoryWidget,
+                                                                times(1)).setAutoHidePanel(false));
+
+        when(paletteDefinition.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
+
+        when(diagramEditorPreferences.isAutoHidePalettePanel()).thenReturn(true);
+        palette.setPreferences(stunnerPreferences);
+        //now the value must have been set to true
+        createdCategoryWidgets.forEach(categoryWidget -> verify(categoryWidget,
+                                                                times(1)).setAutoHidePanel(false));
+
+        when(diagramEditorPreferences.isAutoHidePalettePanel()).thenReturn(false);
+        palette.setPreferences(stunnerPreferences);
+        //now the value must have been set to false again. (a false was already set)
+        createdCategoryWidgets.forEach(categoryWidget -> verify(categoryWidget,
+                                                                times(2)).setAutoHidePanel(false));
+    }
+
+    private List<DefaultPaletteItem> mockSimpleItems(int size) {
+        List<DefaultPaletteItem> items = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            items.add(mock(DefaultPaletteItem.class));
+        }
+        return items;
+    }
+
+    private List<DefaultPaletteCategory> mockCategoryItems(int size) {
+        List<DefaultPaletteCategory> items = new ArrayList<>();
+        String categoryIdPrefix = "CategoryID";
+        String categoryId;
+        DefaultPaletteCategory category;
+        for (int i = 0; i < size; i++) {
+            categoryId = categoryIdPrefix + i;
+            category = mock(DefaultPaletteCategory.class);
+            when(category.getId()).thenReturn(categoryId);
+            items.add(category);
+        }
+        return items;
     }
 }

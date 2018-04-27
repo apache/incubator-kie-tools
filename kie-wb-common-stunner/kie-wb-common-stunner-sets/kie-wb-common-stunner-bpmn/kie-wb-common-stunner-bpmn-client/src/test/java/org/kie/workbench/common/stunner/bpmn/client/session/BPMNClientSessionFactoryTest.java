@@ -16,63 +16,59 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.session;
 
-import java.util.function.Consumer;
-
-import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientRegistry;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.AbstractClientSessionFactoryTest;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSessionFactory;
+import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
-import static org.mockito.Mockito.any;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(GwtMockitoTestRunner.class)
-public class BPMNClientSessionFactoryTest {
-
-    @Mock
-    private ClientSession session;
-
-    @Mock
-    private Metadata metadata;
+public class BPMNClientSessionFactoryTest extends AbstractClientSessionFactoryTest {
 
     @Mock
     private WorkItemDefinitionClientRegistry service;
 
-    private AbstractBPMNClientSessionFactory tested;
-
-    @Before
     @SuppressWarnings("unchecked")
-    public void init() {
+    @Override
+    public void setUp() {
+        super.setUp();
         doAnswer(invocationOnMock -> {
             Command callback = (Command) invocationOnMock.getArguments()[1];
             callback.execute();
             return null;
         }).when(service).load(eq(metadata),
                               any(Command.class));
-        tested = new TestBPMNClientSession();
     }
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testBuildSession() {
-        Consumer<ClientSession> sessionConsumer = mock(Consumer.class);
-        tested.newSession(metadata,
-                          sessionConsumer);
-        verify(service, times(1)).load(eq(metadata),
-                                       any(Command.class));
-        verify(sessionConsumer, times(1)).accept(eq(session));
+    @Override
+    public AbstractClientSessionFactory createSessionFactory() {
+        return new TestBPMNClientSession(stunnerPreferences,
+                                         stunnerPreferencesRegistry);
+    }
+
+    @Override
+    public void newSessionSuccessfulTest() {
+        super.newSessionSuccessfulTest();
+        verify(service,
+               times(1)).load(eq(metadata),
+                              any(Command.class));
     }
 
     private class TestBPMNClientSession extends AbstractBPMNClientSessionFactory {
+
+        public TestBPMNClientSession(StunnerPreferences stunnerPreferences,
+                                     StunnerPreferencesRegistry stunnerPreferencesRegistry) {
+            super(stunnerPreferences,
+                  stunnerPreferencesRegistry);
+        }
 
         @Override
         protected WorkItemDefinitionClientRegistry getWorkItemDefinitionService() {
@@ -81,7 +77,7 @@ public class BPMNClientSessionFactoryTest {
 
         @Override
         protected ClientSession buildSessionInstance() {
-            return session;
+            return clientSession;
         }
 
         @Override

@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
 import org.kie.workbench.common.stunner.cm.project.client.type.CaseManagementDiagramResourceType;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
@@ -29,17 +30,18 @@ import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
 import org.kie.workbench.common.stunner.project.client.editor.ProjectDiagramEditorMenuItemsBuilder;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
 import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesListener;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
-import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -84,7 +86,8 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
                                        final ProjectMessagesListener projectMessagesListener,
                                        final DiagramClientErrorHandler diagramClientErrorHandler,
                                        final ClientTranslationService translationService,
-                                       final TextEditorView xmlEditorView) {
+                                       final TextEditorView xmlEditorView,
+                                       final StunnerPreferencesRegistry stunnerPreferencesRegistry) {
         super(view,
               placeManager,
               errorPopupPresenter,
@@ -101,7 +104,8 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
               projectMessagesListener,
               diagramClientErrorHandler,
               translationService,
-              xmlEditorView);
+              xmlEditorView,
+              stunnerPreferencesRegistry);
     }
 
     @OnStartup
@@ -129,12 +133,6 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
     @OnOpen
     public void onOpen() {
         super.doOpen();
-    }
-
-    @Override
-    public void open(final ProjectDiagram diagram) {
-        super.open(diagram);
-        getSessionPresenter().displayNotifications(type -> false);
     }
 
     @OnClose
@@ -175,5 +173,15 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
     @OnMayClose
     public boolean onMayClose() {
         return super.mayClose(getCurrentDiagramHash());
+    }
+
+    @Override
+    protected SessionPresenter<AbstractClientFullSession, ?, Diagram> newSessionPresenter() {
+        SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter = super.newSessionPresenter();
+        StunnerPreferences preferences = (StunnerPreferences)getStunnerPreferences().clone();
+        preferences.getDiagramEditorPreferences().setAutoHidePalettePanel(true);
+        presenter.withPreferences(preferences);
+        presenter.displayNotifications(type -> false);
+        return presenter;
     }
 }

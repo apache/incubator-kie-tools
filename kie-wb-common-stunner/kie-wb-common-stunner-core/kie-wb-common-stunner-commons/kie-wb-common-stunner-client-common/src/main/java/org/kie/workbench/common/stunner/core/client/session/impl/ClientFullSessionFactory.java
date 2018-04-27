@@ -15,39 +15,40 @@
  */
 package org.kie.workbench.common.stunner.core.client.session.impl;
 
-import java.util.function.Consumer;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
-import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
-import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 
 /**
  * Stunner's default session factory for sessions of type <code>ClientFullSession</code>.
  */
 @ApplicationScoped
 @Default
-public class ClientFullSessionFactory implements ClientSessionFactory<ClientFullSession> {
+public class ClientFullSessionFactory extends AbstractClientSessionFactory<ClientFullSession> {
 
     private final ManagedInstance<ClientFullSessionImpl> fullSessionInstances;
 
     protected ClientFullSessionFactory() {
-        this(null);
+        this(null, null, null);
     }
 
     @Inject
-    public ClientFullSessionFactory(final ManagedInstance<ClientFullSessionImpl> fullSessionInstances) {
+    public ClientFullSessionFactory(final ManagedInstance<ClientFullSessionImpl> fullSessionInstances,
+                                    final StunnerPreferences stunnerPreferences,
+                                    final StunnerPreferencesRegistry stunnerPreferencesRegistry) {
+        super(stunnerPreferences,
+              stunnerPreferencesRegistry);
         this.fullSessionInstances = fullSessionInstances;
     }
 
     @Override
-    public void newSession(final Metadata metadata,
-                           final Consumer<ClientFullSession> sessionConsumer) {
-        sessionConsumer.accept(this.fullSessionInstances.get());
+    protected ClientFullSession buildSessionInstance() {
+        return fullSessionInstances.get();
     }
 
     @Override

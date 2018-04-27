@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.core.client.components.palette.PaletteDe
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMinimizedEvent;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
+import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 
 public interface PaletteWidget<D extends PaletteDefinition>
         extends Palette<D> {
@@ -35,6 +36,8 @@ public interface PaletteWidget<D extends PaletteDefinition>
     PaletteWidget<D> onItemDragUpdate(Consumer<PaletteIDefinitionItemEvent> callback);
 
     void setVisible(boolean visible);
+
+    void setPreferences(StunnerPreferences preferences);
 
     void onScreenMaximized(ScreenMaximizedEvent event);
 

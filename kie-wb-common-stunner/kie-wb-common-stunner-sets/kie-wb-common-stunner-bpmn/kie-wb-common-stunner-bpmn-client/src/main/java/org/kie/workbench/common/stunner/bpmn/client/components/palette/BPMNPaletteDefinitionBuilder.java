@@ -16,8 +16,11 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.components.palette;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -48,7 +51,6 @@ import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.components.palette.AbstractPaletteDefinitionBuilder;
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteCategory;
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteDefinition;
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteDefinitionBuilders.CategoryBuilder;
@@ -111,40 +113,17 @@ public class BPMNPaletteDefinitionBuilder
                                  .useGlyph(Builder.build(BPMNImageResources.INSTANCE.categoryServiceTasks().getSafeUri())));
 
     //palette categories order customization.
-    private static final AbstractPaletteDefinitionBuilder.ItemPriorityProvider ITEM_PRIORITIES = id -> {
-        if (BPMNCategories.START_EVENTS.equals(id)) {
-            return 100;
+    private static final List<String> CATEGORIES_ORDER = new ArrayList<String>() {
+        {
+            add(BPMNCategories.START_EVENTS);
+            add(BPMNCategories.INTERMEDIATE_EVENTS);
+            add(BPMNCategories.END_EVENTS);
+            add(BPMNCategories.ACTIVITIES);
+            add(BPMNCategories.SUB_PROCESSES);
+            add(BPMNCategories.GATEWAYS);
+            add(BPMNCategories.CONTAINERS);
+            add(BPMNCategories.SERVICE_TASKS);
         }
-        if (BPMNCategories.INTERMEDIATE_EVENTS.equals(id)) {
-            return 200;
-        }
-        if (BPMNCategories.END_EVENTS.equals(id)) {
-            return 300;
-        }
-        if (BPMNCategories.ACTIVITIES.equals(id)) {
-            return 400;
-        }
-        if (BPMNCategories.SUB_PROCESSES.equals(id)) {
-            return 500;
-        }
-        if (BPMNCategories.GATEWAYS.equals(id)) {
-            return 600;
-        }
-        if (BPMNCategories.CONTAINERS.equals(id)) {
-            return 700;
-        }
-        if (BPMNCategories.SERVICE_TASKS.equals(id)) {
-            return 800;
-        }
-
-        if ("org.kie.workbench.common.stunner.bpmn.definition.BaseCatchingIntermediateEvent".equals(id)) {
-            return 1000;
-        }
-        if ("org.kie.workbench.common.stunner.bpmn.definition.BaseThrowingIntermediateEvent".equals(id)) {
-            return 2000;
-        }
-
-        return -1;
     };
 
     private static final Map<String, String> CUSTOM_GROUPS = new HashMap<String, String>() {
@@ -196,7 +175,6 @@ public class BPMNPaletteDefinitionBuilder
     public void init() {
         paletteDefinitionBuilder
                 .itemFilter(isDefinitionAllowed())
-                .itemPriorities(ITEM_PRIORITIES)
                 .categoryFilter(category -> !BPMNCategories.CONNECTING_OBJECTS.equals(category))
                 .categoryDefinitionIdProvider(CATEGORY_DEFINITION.definitionIdProvider())
                 .categoryGlyphProvider(CATEGORY_DEFINITION.glyphProvider())
@@ -210,8 +188,17 @@ public class BPMNPaletteDefinitionBuilder
                       final Consumer<DefaultPaletteDefinition> paletteDefinitionConsumer) {
         paletteDefinitionBuilder
                 .build(canvasHandler,
-                       paletteDefinition -> createPaletteServiceTasksCategory(paletteDefinition,
-                                                                              paletteDefinitionConsumer));
+                       paletteDefinition -> {
+                           paletteDefinition
+                                   .getItems()
+                                   .sort(Comparator.comparingInt(item -> getCategoryOrder(item.getId())));
+                           createPaletteServiceTasksCategory(paletteDefinition,
+                                                             paletteDefinitionConsumer);
+                       });
+    }
+
+    private int getCategoryOrder(final String categoryId) {
+        return CATEGORIES_ORDER.indexOf(categoryId);
     }
 
     ExpandedPaletteDefinitionBuilder getPaletteDefinitionBuilder() {
