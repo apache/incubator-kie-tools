@@ -191,7 +191,7 @@ public class BuildExecutorTest {
 
         verifyNotification(ProjectEditorResources.CONSTANTS.BuildSuccessful(),
                            NotificationEvent.NotificationType.SUCCESS);
-        verifyNotification(ProjectEditorResources.CONSTANTS.DeploySuccessful(),
+        verifyNotification(ProjectEditorResources.CONSTANTS.DeploySuccessfulAndContainerStarted(),
                            NotificationEvent.NotificationType.SUCCESS);
         verify(notificationEvent,
                times(2)).fire(any(NotificationEvent.class));
@@ -255,8 +255,10 @@ public class BuildExecutorTest {
 
         verifyNotification(ProjectEditorResources.CONSTANTS.BuildSuccessful(),
                            NotificationEvent.NotificationType.SUCCESS);
+        verifyNotification(ProjectEditorResources.CONSTANTS.DeploymentSkippedDueToNoServerTemplateConfigured(),
+                           NotificationEvent.NotificationType.WARNING);
         verify(notificationEvent,
-               times(1)).fire(any(NotificationEvent.class));
+               times(2)).fire(any(NotificationEvent.class));
         verifyBusyShowHideAnyString(1,
                                     1);
     }

@@ -325,4 +325,11 @@ public interface ProjectEditorConstants
 
     String ProjectPreferences();
 
+    String DeployFailed();
+
+    String DeploymentSkippedDueToNoServerTemplateConfigured();
+
+    String DeploySuccessfulButContainerFailedToStart();
+
+    String DeploySuccessfulAndContainerStarted();
 }

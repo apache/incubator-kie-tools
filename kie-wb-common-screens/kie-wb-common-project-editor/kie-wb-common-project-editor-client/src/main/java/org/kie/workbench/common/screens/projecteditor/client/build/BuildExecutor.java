@@ -35,7 +35,6 @@ import org.guvnor.common.services.project.client.repositories.ConflictingReposit
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.Module;
-import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.jboss.errai.bus.client.api.messaging.Message;
@@ -54,14 +53,19 @@ import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.server.controller.api.model.spec.ServerTemplateKey;
 import org.kie.server.controller.api.model.spec.ServerTemplateList;
 import org.kie.workbench.common.screens.projecteditor.client.editor.DeploymentScreenPopupViewImpl;
-import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.server.management.model.MergeMode;
 import org.kie.workbench.common.screens.server.management.model.RuntimeStrategy;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 import org.kie.workbench.common.widgets.client.callbacks.CommandWithThrowableDrivenErrorCallback;
+import org.kie.workbench.common.widgets.client.callbacks.CommandWithThrowableDrivenErrorCallback.CommandWithThrowable;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
+
+import static org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources.CONSTANTS;
+import static org.uberfire.workbench.events.NotificationEvent.NotificationType.ERROR;
+import static org.uberfire.workbench.events.NotificationEvent.NotificationType.SUCCESS;
+import static org.uberfire.workbench.events.NotificationEvent.NotificationType.WARNING;
 
 public class BuildExecutor {
 
@@ -114,7 +118,7 @@ public class BuildExecutor {
             final int length = serverTemplates == null || serverTemplates.getServerTemplates() == null ? 0 : serverTemplates.getServerTemplates().length;
             switch (length) {
                 case 0:
-                    safeExecuted(buildDeployCommand(DeploymentMode.VALIDATED)).execute();
+                    safeExecuted(buildDeployWithoutServerTemplateCommand(DeploymentMode.VALIDATED)).execute();
                     break;
                 case 1:
                     buildDeployWithOneServerTemplate(serverTemplates.getServerTemplates()[0]);
@@ -210,59 +214,43 @@ public class BuildExecutor {
 
     private Command buildCommand() {
         return () -> {
-            view.showBusyIndicator(ProjectEditorResources.CONSTANTS.Building());
-            build();
+            view.showBusyIndicator(CONSTANTS.Building());
+            building = true;
+
+            buildServiceCaller.call((RemoteCallback<BuildResults>) result -> {
+
+                if (result.getErrorMessages().isEmpty()) {
+                    notificationEvent.fire(new NotificationEvent(CONSTANTS.BuildSuccessful(), SUCCESS));
+                } else {
+                    notificationEvent.fire(new NotificationEvent(CONSTANTS.BuildFailed(), ERROR));
+                }
+
+                buildResultsEvent.fire(result);
+                view.hideBusyIndicator();
+                building = false;
+            }, new BuildFailureErrorCallback(view, new HashMap<>())).build(activeModule());
         };
     }
 
-    private void build() {
-        building = true;
-        buildServiceCaller.call(onBuildSuccess(),
-                                onErrorCallback()).build(activeModule());
-    }
-
-    private BuildFailureErrorCallback onErrorCallback() {
-        return new BuildFailureErrorCallback(view,
-                                             new HashMap<>());
-    }
-
-    private RemoteCallback onBuildSuccess() {
-        return (RemoteCallback<BuildResults>) result -> {
-            final Boolean hasErrors = !result.getErrorMessages().isEmpty();
-            final NotificationEvent event;
-
-            if (!hasErrors) {
-                event = new NotificationEvent(ProjectEditorResources.CONSTANTS.BuildSuccessful(),
-                                              NotificationEvent.NotificationType.SUCCESS);
-            } else {
-                event = new NotificationEvent(ProjectEditorResources.CONSTANTS.BuildFailed(),
-                                              NotificationEvent.NotificationType.ERROR);
-            }
-
-            notificationEvent.fire(event);
-            buildResultsEvent.fire(result);
-
-            view.hideBusyIndicator();
-
-            building = false;
-        };
-    }
-
-    private Command buildDeployCommand(final DeploymentMode mode) {
+    private Command buildDeployWithoutServerTemplateCommand(final DeploymentMode mode) {
         return () -> {
-            view.showBusyIndicator(ProjectEditorResources.CONSTANTS.Building());
+            view.showBusyIndicator(CONSTANTS.Building());
+            building = true;
 
-            buildAndDeploy(mode);
+            buildServiceCaller.call((RemoteCallback<BuildResults>) result -> {
+
+                if (result.getErrorMessages().isEmpty()) {
+                    notificationEvent.fire(new NotificationEvent(CONSTANTS.BuildSuccessful(), SUCCESS));
+                    notificationEvent.fire(new NotificationEvent(CONSTANTS.DeploymentSkippedDueToNoServerTemplateConfigured(), WARNING));
+                } else {
+                    notificationEvent.fire(new NotificationEvent(CONSTANTS.BuildFailed(), ERROR));
+                }
+
+                buildResultsEvent.fire(result);
+                view.hideBusyIndicator();
+                building = false;
+            }, new BuildFailureErrorCallback(view, onBuildAndDeployGavExistsHandler())).buildAndDeploy(activeModule(), mode);
         };
-    }
-
-    private void buildAndDeploy(final DeploymentMode mode) {
-        final BuildFailureErrorCallback onBuildError = new BuildFailureErrorCallback(view,
-                                                                                     onBuildAndDeployGavExistsHandler());
-        building = true;
-        buildServiceCaller.call(onBuildSuccess(),
-                                onBuildError).buildAndDeploy(activeModule(),
-                                                             mode);
     }
 
     private Command buildDeployProvision(final DeploymentMode mode,
@@ -271,9 +259,9 @@ public class BuildExecutor {
                                          final ServerTemplate serverTemplate,
                                          final Boolean startContainer) {
         return () -> {
-            view.showBusyIndicator(ProjectEditorResources.CONSTANTS.Building());
-
+            view.showBusyIndicator(CONSTANTS.Building());
             building = true;
+
             buildServiceCaller.call(onBuildDeployProvisionSuccess(containerId,
                                                                   containerAlias,
                                                                   serverTemplate,
@@ -292,51 +280,56 @@ public class BuildExecutor {
                                                          final ServerTemplate serverTemplate,
                                                          final boolean startContainer) {
         return (RemoteCallback<BuildResults>) result -> {
-            final Boolean hasErrors = !result.getErrorMessages().isEmpty();
-            final NotificationEvent event;
 
-            if (!hasErrors) {
-                event = new NotificationEvent(ProjectEditorResources.CONSTANTS.BuildSuccessful(),
-                                              NotificationEvent.NotificationType.SUCCESS);
+            if (result.getErrorMessages().isEmpty()) {
+                notificationEvent.fire(new NotificationEvent(CONSTANTS.BuildSuccessful(), SUCCESS));
 
-                saveContainerSpec(containerId,
-                                  containerAlias,
-                                  serverTemplate,
-                                  startContainer,
-                                  result.getParameters());
+                if (containerId != null && serverTemplate != null && serverTemplate.getId() != null) {
+                    saveContainerSpecAndMaybeStartContainer(containerId,
+                                                            containerAlias,
+                                                            serverTemplate,
+                                                            startContainer,
+                                                            result.getParameters());
+                }
             } else {
-                event = new NotificationEvent(ProjectEditorResources.CONSTANTS.BuildFailed(),
-                                              NotificationEvent.NotificationType.ERROR);
+                notificationEvent.fire(new NotificationEvent(CONSTANTS.BuildFailed(), ERROR));
             }
 
-            notificationEvent.fire(event);
             buildResultsEvent.fire(result);
             view.hideBusyIndicator();
             building = false;
         };
     }
 
-    private void saveContainerSpec(final String containerId,
-                                   final String containerAlias,
-                                   final ServerTemplate serverTemplate,
-                                   final Boolean startContainer,
-                                   final Map<String, String> parameters) {
-        if (containerId != null && serverTemplate != null && serverTemplate.getId() != null) {
-            final ContainerSpec containerSpec = makeContainerSpec(containerId,
-                                                                  containerAlias,
-                                                                  serverTemplate,
-                                                                  parameters);
+    private void saveContainerSpecAndMaybeStartContainer(final String containerId,
+                                                         final String containerAlias,
+                                                         final ServerTemplate serverTemplate,
+                                                         final Boolean startContainer,
+                                                         final Map<String, String> parameters) {
 
-            specManagementService.call(aVoid -> {
-                notificationEvent.fire(new NotificationEvent(ProjectEditorResources.CONSTANTS.DeploySuccessful(),
-                                                             NotificationEvent.NotificationType.SUCCESS));
+        final ContainerSpec containerSpec = makeContainerSpec(containerId,
+                                                              containerAlias,
+                                                              serverTemplate,
+                                                              parameters);
 
-                if (startContainer) {
-                    startContainer(containerSpec);
-                }
-            }).saveContainerSpec(serverTemplate.getId(),
-                                 containerSpec);
-        }
+        specManagementService.call(ignore -> {
+
+            if (!startContainer) {
+                notificationEvent.fire(new NotificationEvent(CONSTANTS.DeploySuccessful(), SUCCESS));
+                return;
+            }
+
+            specManagementService.call(ignore2 -> {
+                notificationEvent.fire(new NotificationEvent(CONSTANTS.DeploySuccessfulAndContainerStarted(), SUCCESS));
+            }, (o, throwable) -> {
+                notificationEvent.fire(new NotificationEvent(CONSTANTS.DeploySuccessfulButContainerFailedToStart(), WARNING));
+                return false;
+            }).startContainer(containerSpec);
+
+        }, (o, throwable) -> {
+            notificationEvent.fire(new NotificationEvent(CONSTANTS.DeployFailed(), ERROR));
+            return false;
+        }).saveContainerSpec(serverTemplate.getId(), containerSpec);
     }
 
     private ContainerSpec makeContainerSpec(final String containerId,
@@ -364,11 +357,6 @@ public class BuildExecutor {
         return new ReleaseId(gav.getGroupId(),
                              gav.getArtifactId(),
                              gav.getVersion());
-    }
-
-    private void startContainer(final ContainerSpec containerSpec) {
-        specManagementService.call(aVoid -> {
-        }).startContainer(containerSpec);
     }
 
     Map<Capability, ContainerConfig> makeConfigs(final ServerTemplate serverTemplate,
@@ -407,39 +395,29 @@ public class BuildExecutor {
         return capabilities.contains(process);
     }
 
-    private Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> getOnBuildAndDeployAndProvisionGavExistsHandler(final String containerId,
-                                                                                                                                                          final String containerAlias,
-                                                                                                                                                          final ServerTemplate serverTemplate,
-                                                                                                                                                          final boolean startContainer) {
-        return new HashMap<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable>() {{
-            put(GAVAlreadyExistsException.class,
-                parameter -> {
-                    showConflictingRepositoriesPopup((GAVAlreadyExistsException) parameter,
-                                                     () -> {
-                                                         conflictingRepositoriesPopup.hide();
+    private Map<Class<? extends Throwable>, CommandWithThrowable> getOnBuildAndDeployAndProvisionGavExistsHandler(final String containerId,
+                                                                                                                  final String containerAlias,
+                                                                                                                  final ServerTemplate serverTemplate,
+                                                                                                                  final boolean startContainer) {
+        return new HashMap<Class<? extends Throwable>, CommandWithThrowable>() {{
+            put(GAVAlreadyExistsException.class, e -> showConflictingRepositoriesPopup((GAVAlreadyExistsException) e, () -> {
+                conflictingRepositoriesPopup.hide();
 
-                                                         buildDeployProvision(DeploymentMode.FORCED,
-                                                                              containerId,
-                                                                              containerAlias,
-                                                                              serverTemplate,
-                                                                              startContainer).execute();
-                                                     });
-                });
+                buildDeployProvision(DeploymentMode.FORCED,
+                                     containerId,
+                                     containerAlias,
+                                     serverTemplate,
+                                     startContainer).execute();
+            }));
         }};
     }
 
-    private HashMap<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> onBuildAndDeployGavExistsHandler() {
-
-        return new HashMap<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable>() {{
-            put(GAVAlreadyExistsException.class,
-                parameter -> {
-                    showConflictingRepositoriesPopup((GAVAlreadyExistsException) parameter,
-                                                     () -> {
-                                                         conflictingRepositoriesPopup.hide();
-
-                                                         buildDeployCommand(DeploymentMode.FORCED).execute();
-                                                     });
-                });
+    private HashMap<Class<? extends Throwable>, CommandWithThrowable> onBuildAndDeployGavExistsHandler() {
+        return new HashMap<Class<? extends Throwable>, CommandWithThrowable>() {{
+            put(GAVAlreadyExistsException.class, e -> showConflictingRepositoriesPopup((GAVAlreadyExistsException) e, () -> {
+                conflictingRepositoriesPopup.hide();
+                buildDeployWithoutServerTemplateCommand(DeploymentMode.FORCED).execute();
+            }));
         }};
     }
 
@@ -461,9 +439,7 @@ public class BuildExecutor {
     }
 
     private GAV projectGAV() {
-        final POM pom = activeModule().getPom();
-
-        return pom.getGav();
+        return activeModule().getPom().getGav();
     }
 
     DeploymentScreenPopupViewImpl getDeploymentScreenPopupViewImpl() {
