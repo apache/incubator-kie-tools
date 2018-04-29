@@ -17,11 +17,14 @@
 package org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.runtime;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -29,11 +32,13 @@ import javax.inject.Inject;
 import org.kie.soup.project.datamodel.commons.oracle.ModuleDataModelOracleImpl;
 import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
 import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.soup.project.datamodel.oracle.TypeSource;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.AbstractBPMNFormGeneratorService;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.GenerationContext;
+import org.kie.workbench.common.forms.jbpm.server.service.util.JBPMFormsIntegrationBackendConstants;
 import org.kie.workbench.common.forms.jbpm.service.bpmn.util.BPMNVariableUtils;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
@@ -48,10 +53,15 @@ import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ClassFactBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.FactBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ModuleDataModelOracleBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 
 @Runtime
 @Dependent
 public class BPMNRuntimeFormGeneratorService extends AbstractBPMNFormGeneratorService<ClassLoader> {
+
+    private static final Logger logger = LoggerFactory.getLogger(BPMNRuntimeFormGeneratorService.class);
 
     private MVELEvaluator evaluator;
 
@@ -75,8 +85,8 @@ public class BPMNRuntimeFormGeneratorService extends AbstractBPMNFormGeneratorSe
                 return;
             }
 
-            FieldDefinition field = generateFieldDefinition(property,
-                                                            context);
+            FieldDefinition field = generateFieldDefinition(property, context);
+
             if (field != null) {
                 form.getFields().add(field);
             }
@@ -86,8 +96,7 @@ public class BPMNRuntimeFormGeneratorService extends AbstractBPMNFormGeneratorSe
     }
 
     @Override
-    protected List<FieldDefinition> extractModelFields(JavaFormModel formModel,
-                                                       GenerationContext<ClassLoader> context) {
+    protected List<FieldDefinition> extractModelFields(JavaFormModel formModel, GenerationContext<ClassLoader> context) {
         Class clazz;
 
         String modelType = formModel.getType();
@@ -116,35 +125,64 @@ public class BPMNRuntimeFormGeneratorService extends AbstractBPMNFormGeneratorSe
                 if (modelField.getName().equals("this")) {
                     return;
                 }
-                String fieldType = modelField.getClassName();
-                boolean isEnunm = oracle.getModuleJavaEnumDefinitions().get(modelType + "#" + modelField.getName()) != null;
-                boolean isList = DataType.TYPE_COLLECTION.equals(modelField.getType());
-
-                if (isList) {
-                    fieldType = oracle.getModuleFieldParametersType().get(modelType + "#" + modelField.getName());
+                if (!FieldAccessorsAndMutators.BOTH.equals(modelField.getAccessorsAndMutators())) {
+                    return;
                 }
+                try {
+                    String fieldType = modelField.getClassName();
+                    boolean isEnunm = oracle.getModuleJavaEnumDefinitions().get(modelType + "#" + modelField.getName()) != null;
+                    boolean isList = DataType.TYPE_COLLECTION.equals(modelField.getType());
 
-                TypeKind typeKind = isEnunm ? TypeKind.ENUM : FormModelPropertiesUtil.isBaseType(fieldType) ? TypeKind.BASE : TypeKind.OBJECT;
+                    if (isList) {
+                        fieldType = oracle.getModuleFieldParametersType().get(modelType + "#" + modelField.getName());
+                    }
 
-                TypeInfo info = new TypeInfoImpl(typeKind,
-                                                 fieldType,
-                                                 isList);
+                    TypeKind typeKind = isEnunm ? TypeKind.ENUM : FormModelPropertiesUtil.isBaseType(fieldType) ? TypeKind.BASE : TypeKind.OBJECT;
 
-                ModelProperty modelProperty = new ModelPropertyImpl(modelField.getName(),
-                                                                    info);
+                    TypeInfo info = new TypeInfoImpl(typeKind,
+                                                     fieldType,
+                                                     isList);
 
-                formModel.getProperties().add(modelProperty);
+                    ModelProperty modelProperty = new ModelPropertyImpl(modelField.getName(),
+                                                                        info);
 
-                FieldDefinition field = generateFieldDefinition(modelProperty,
-                                                                context);
-                if (field != null) {
-                    formFields.add(field);
+                    formModel.getProperties().add(modelProperty);
+
+                    FieldDefinition field = generateFieldDefinition(modelProperty, context);
+
+                    if (field != null) {
+                        formFields.add(field);
+                    }
+                } catch (Exception ex) {
+                    logger.warn("Error processing model \"" + modelType + "\" impossible generate FieldDefinition for model field \"" + modelField.getName() + "\" (" + modelField.getType() + ")");
                 }
             });
             return formFields;
         }
 
         return null;
+    }
+
+    @Override
+    protected Supplier<LayoutComponent> getRootFormHeader() {
+        return () -> {
+            ResourceBundle bundle = ResourceBundle.getBundle(JBPMFormsIntegrationBackendConstants.BUNDLE);
+
+            String warning = bundle.getString(JBPMFormsIntegrationBackendConstants.RUNTIMER_FORM_GENERATION_WARNING_KEY);
+            String message = bundle.getString(JBPMFormsIntegrationBackendConstants.RUNTIMER_FORM_GENERATION_MESSAGE_KEY);
+            String code = MessageFormat.format(JBPMFormsIntegrationBackendConstants.RUNTIME_FORM_GENERATION_WARNING_TEMPLATE, warning, message);
+            return generateHTMLElement(code);
+        };
+    }
+
+    @Override
+    protected boolean supportsEmptyNestedForms() {
+        return false;
+    }
+
+    @Override
+    protected void log(String message, Exception ex) {
+        logger.warn(message, ex);
     }
 
     protected ModuleDataModelOracle getModuleOracle(Class clazz) {
@@ -179,18 +217,7 @@ public class BPMNRuntimeFormGeneratorService extends AbstractBPMNFormGeneratorSe
         return null;
     }
 
-    protected FieldDefinition generateFieldDefinition(ModelProperty property,
-                                                      GenerationContext<ClassLoader> context) {
-
-        FieldDefinition field = fieldManager.getDefinitionByModelProperty(property);
-
-        if (field == null) {
-            return null;
-        }
-
-        processFieldDefinition(field,
-                               context);
-
-        return field;
+    protected FieldDefinition generateFieldDefinition(ModelProperty property, GenerationContext<ClassLoader> context) {
+        return fieldManager.getDefinitionByModelProperty(property);
     }
 }

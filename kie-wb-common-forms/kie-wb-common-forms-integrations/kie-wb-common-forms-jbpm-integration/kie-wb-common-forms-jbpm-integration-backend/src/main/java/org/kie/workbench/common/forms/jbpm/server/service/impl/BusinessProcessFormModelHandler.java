@@ -23,6 +23,7 @@ import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
 import org.kie.workbench.common.forms.editor.service.backend.SourceFormModelNotFoundException;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMProcessModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProcessFormModel;
+import org.kie.workbench.common.forms.jbpm.server.service.util.JBPMFormsIntegrationBackendConstants;
 import org.kie.workbench.common.forms.jbpm.service.shared.BPMFinderService;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
@@ -73,7 +74,10 @@ public class BusinessProcessFormModelHandler extends AbstractJBPMFormModelHandle
     public void checkSourceModel() throws SourceFormModelNotFoundException {
         if (getSourceModel() == null) {
             String[] params = new String[]{formModel.getProcessId()};
-            throwException(BUNDLE, MISSING_PROCESS_SHORT_KEY, params, MISSING_PROCESS_FULL_KEY, params, PROCESS_KEY);
+            throwException(JBPMFormsIntegrationBackendConstants.BUNDLE,
+                           JBPMFormsIntegrationBackendConstants.MISSING_PROCESS_SHORT_KEY, params,
+                           JBPMFormsIntegrationBackendConstants.MISSING_PROCESS_FULL_KEY, params,
+                           JBPMFormsIntegrationBackendConstants.PROCESS_KEY);
         }
     }
 

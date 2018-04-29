@@ -19,7 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.assertj.core.api.Assertions;
 import org.eclipse.bpmn2.Definitions;
+import org.jbpm.bpmn2.handler.WorkItemHandlerRuntimeException;
 import org.jbpm.simulation.util.BPMN2Utils;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -56,6 +58,7 @@ public class BPMNFormModelGeneratorImplTest {
             BPMN2_SUFFIX = ".bpmn2",
             PROCESS_WITHOUT_VARIABLES_NAME = "process-without-variables",
             PROCESS_WITH_ALL_VARIABLES_NAME = "process-with-all-possible-variables",
+            PROCESS_WITH_WRONG_TYPES = "process-with-wrong-types",
             PROCESS_WITH_SHARED_FORMS_NAME = "process-with-tasks-sharing-forms",
             PROCESS_WITH_SHARED_FORMS_WRONG_MAPPINGS_NAME = "process-with-tasks-sharing-forms-with-wrong-mapping",
             PROCESS_WITH_SHARED_FORMS_ID = "myProject.processTaskSharedForms",
@@ -102,7 +105,8 @@ public class BPMNFormModelGeneratorImplTest {
             processWithoutVariablesDefinitions,
             processWithAllVariablesDefinitions,
             processWithSharedForms,
-            processWithSharedFormsWrongMappings;
+            processWithSharedFormsWrongMappings,
+            processWithWrongTypes;
     @Mock
     private Path path;
     @Mock
@@ -120,10 +124,11 @@ public class BPMNFormModelGeneratorImplTest {
         processWithAllVariablesDefinitions = BPMN2Utils.getDefinitions(BPMNFormModelGeneratorImplTest.class.getResourceAsStream(RESOURCES_PATH + PROCESS_WITH_ALL_VARIABLES_NAME + BPMN2_SUFFIX));
         processWithSharedForms = BPMN2Utils.getDefinitions(BPMNFormModelGeneratorImplTest.class.getResourceAsStream(RESOURCES_PATH + PROCESS_WITH_SHARED_FORMS_NAME + BPMN2_SUFFIX));
         processWithSharedFormsWrongMappings = BPMN2Utils.getDefinitions(BPMNFormModelGeneratorImplTest.class.getResourceAsStream(RESOURCES_PATH + PROCESS_WITH_SHARED_FORMS_WRONG_MAPPINGS_NAME + BPMN2_SUFFIX));
+        processWithWrongTypes  = BPMN2Utils.getDefinitions(BPMNFormModelGeneratorImplTest.class.getResourceAsStream(RESOURCES_PATH + PROCESS_WITH_WRONG_TYPES + BPMN2_SUFFIX));
     }
 
     @Before
-    public void init() throws ClassNotFoundException {
+    public void init() throws Exception {
         when(projectService.resolveModule(any())).thenReturn(module);
         when(module.getRootPath()).thenReturn(path);
         when(projectClassLoaderHelper.getModuleClassLoader(module)).thenReturn(projectClassLoader);
@@ -369,6 +374,48 @@ public class BPMNFormModelGeneratorImplTest {
             assertNotEquals(TASK_NAME + BPMNVariableUtils.TASK_FORM_SUFFIX,
                             formModel.getFormName());
         }
+    }
+
+    @Test
+    public void testGenerateAllWithWrongTypes() throws Exception {
+        when(projectClassLoader.loadClass(anyString())).thenAnswer(invocationOnMock -> getClass().getClassLoader().loadClass(invocationOnMock.getArguments()[0].toString()));
+
+        final Map<String, String> EXPECTED_PROPERTIES = new HashMap<String, String>() {{
+            put("name", String.class.getName());
+            put("age", Integer.class.getName());
+            put("error", WorkItemHandlerRuntimeException.class.getName());
+            put("list", Object.class.getName());
+        }};
+
+        BusinessProcessFormModel processFormModel = generator.generateProcessFormModel(processWithWrongTypes, path);
+
+        assertProcessFormModelFieldsAreCorrect(processFormModel, PROCESS_WITH_WRONG_TYPES);
+
+        Assertions.assertThat(processFormModel.getProperties())
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(EXPECTED_PROPERTIES.size());
+
+        assertEquals(EXPECTED_PROPERTIES.size(), processFormModel.getProperties().size());
+        assertJBPMVariablesAreCorrect(processFormModel, EXPECTED_PROPERTIES);
+
+        List<TaskFormModel> taskFormModels = generator.generateTaskFormModels(processWithWrongTypes,
+                                                                              path);
+        final int EXPECTED_NUMBER_OF_HUMAN_TASKS = 1;
+
+        Assertions.assertThat(taskFormModels)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(EXPECTED_NUMBER_OF_HUMAN_TASKS);
+
+        TaskFormModel taskFormModel = taskFormModels.get(0);
+
+        Assertions.assertThat(taskFormModel.getProperties())
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(EXPECTED_PROPERTIES.size());
+
+        assertJBPMVariablesAreCorrect(taskFormModel, EXPECTED_PROPERTIES);
     }
 
     protected void checkExpectedMergedFormVariables(TaskFormModel formModel) {

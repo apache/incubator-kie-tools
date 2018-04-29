@@ -17,7 +17,11 @@
 package org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.kie.workbench.common.forms.adf.definitions.settings.ColSpan;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.layout.LayoutGenerator;
@@ -39,7 +43,10 @@ import org.kie.workbench.common.forms.model.FormLayoutComponent;
 import org.kie.workbench.common.forms.model.JavaFormModel;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.kie.workbench.common.forms.services.backend.util.UIDGenerator;
+import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
+import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
 public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFormGeneratorService<SOURCE> {
 
@@ -56,15 +63,13 @@ public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFo
     }
 
     @Override
-    public FormGenerationResult generateForms(JBPMFormModel formModel,
-                                              SOURCE source) {
+    public FormGenerationResult generateForms(JBPMFormModel formModel, SOURCE source) {
 
         if (formModel == null) {
             throw new IllegalArgumentException("FormModel cannot be null");
         }
 
-        GenerationContext<SOURCE> context = new GenerationContext<>(formModel,
-                                                                    source);
+        GenerationContext<SOURCE> context = new GenerationContext<>(formModel, source);
 
         FormDefinition rootForm = createRootFormDefinition(context);
 
@@ -72,23 +77,30 @@ public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFo
             throw new IllegalStateException("Impossible to generate form for: " + formModel.getFormName());
         }
 
+        processFormDefinition(rootForm, context);
+
         if (rootForm.getLayoutTemplate() == null) {
-            createFormLayout(rootForm);
+            createFormLayout(rootForm, getRootFormHeader());
         }
 
         context.setRootForm(rootForm);
-
-        processFormDefinition(rootForm,
-                              context);
 
         return new FormGenerationResult(context.getRootForm(),
                                         new ArrayList<>(context.getContextForms().values()));
     }
 
     protected void createFormLayout(FormDefinition form) {
+        createFormLayout(form, null);
+    }
+
+    protected void createFormLayout(FormDefinition form, Supplier<LayoutComponent> headerSupplier) {
         LayoutGenerator layoutGenerator = new LayoutGenerator();
 
         layoutGenerator.init(new LayoutColumnDefinition[]{new LayoutColumnDefinition(ColSpan.SPAN_12)});
+
+        if(headerSupplier != null) {
+            layoutGenerator.addComponent(headerSupplier.get(), new LayoutSettings());
+        }
 
         if (form.getFields().size() > 0) {
             boolean separeateInputsAndOutputs = form.getModel() instanceof TaskFormModel;
@@ -133,59 +145,142 @@ public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFo
         return htmlComponent;
     }
 
-    protected void processFormDefinition(final FormDefinition formDefinition,
-                                         final GenerationContext<SOURCE> context) {
-        formDefinition.getFields().forEach(field -> {
-            processFieldDefinition(field,
-                                   context);
-        });
+    protected void processFormDefinition(final FormDefinition formDefinition, final GenerationContext<SOURCE> context) {
+        List<FieldDefinition> fieldsToRemove = formDefinition.getFields().stream()
+                .filter(field -> !processFieldDefinition(field, context))
+                .collect(Collectors.toList());
+
+        fieldsToRemove.stream().forEach(fieldDefinition -> removeField(fieldDefinition, formDefinition));
     }
 
-    protected void processFieldDefinition(FieldDefinition field,
-                                          GenerationContext<SOURCE> context) {
-        if (field instanceof EntityRelationField) {
+    private void removeField(final FieldDefinition fieldDefinition, final FormDefinition formDefinition) {
 
-            if (field instanceof HasNestedForm) {
+        formDefinition.getFields().remove(fieldDefinition);
 
-                HasNestedForm nestedFormField = (HasNestedForm) field;
+        LayoutTemplate layout = formDefinition.getLayoutTemplate();
 
-                FormDefinition nestedForm = findFormDefinitionForModelType(field.getStandaloneClassName(),
-                                                                           context);
+        if(layout != null) {
+            Optional<LayoutRow> optionalRow = layout.getRows().stream()
+                    .filter(row -> rowContainsField(row, fieldDefinition))
+                    .findAny();
 
-                if (nestedForm == null) {
-                    nestedForm = createModelFormDefinition(field.getStandaloneClassName(),
-                                                           context);
-                }
+            if(optionalRow.isPresent()) {
+                LayoutRow row = optionalRow.get();
+                Optional<LayoutColumn> optionalColumn  = getFieldColumn(row, fieldDefinition);
 
-                nestedFormField.setNestedForm(nestedForm.getId());
-            } else if (field instanceof IsCRUDDefinition) {
-                IsCRUDDefinition crudField = (IsCRUDDefinition) field;
+                if(optionalColumn.isPresent()) {
+                    LayoutColumn column = optionalColumn.get();
 
-                FormDefinition nestedForm = findFormDefinitionForModelType(field.getStandaloneClassName(),
-                                                                           context);
+                    LayoutComponent component = getFieldComponent(column, fieldDefinition).get();
 
-                if (nestedForm == null) {
-                    nestedForm = createModelFormDefinition(field.getStandaloneClassName(),
-                                                           context);
-                    crudField.setCreationForm(nestedForm.getId());
-                    crudField.setEditionForm(nestedForm.getId());
+                    column.getLayoutComponents().remove(component);
 
-                    List<TableColumnMeta> tableColumnMetas = new ArrayList<>();
+                    if(column.getLayoutComponents().isEmpty()) {
+                        row.getLayoutColumns().remove(column);
 
-                    nestedForm.getFields().forEach(nestedField -> {
-                        tableColumnMetas.add(new TableColumnMeta(nestedField.getLabel(),
-                                                                 nestedField.getBinding()));
-                    });
+                        if(row.getLayoutColumns().isEmpty()) {
+                            layout.getRows().remove(row);
+                        } else {
+                            int span = Integer.decode(column.getSpan());
 
-                    crudField.setColumnMetas(tableColumnMetas);
+                            LayoutColumn firstColumn = row.getLayoutColumns().get(0);
+
+                            int fistSpan = Integer.decode(firstColumn.getSpan());
+
+                            LayoutColumn newFirstColumn = new LayoutColumn(String.valueOf(span + fistSpan), firstColumn.getHeight(), firstColumn.getProperties());
+
+                            firstColumn.getLayoutComponents().forEach(newFirstColumn::add);
+                            firstColumn.getRows().forEach(newFirstColumn::addRow);
+
+                            Collections.replaceAll(row.getLayoutColumns(), firstColumn, newFirstColumn);
+                        }
+                    }
                 }
             }
         }
     }
 
-    protected FormDefinition createModelFormDefinition(String modelType,
-                                                       GenerationContext<SOURCE> context) {
+    protected boolean rowContainsField(final LayoutRow row, final FieldDefinition fieldDefinition) {
+        if(!row.getLayoutColumns().isEmpty()) {
+            return getFieldColumn(row, fieldDefinition).isPresent();
+        }
+        return false;
+    }
+
+    protected Optional<LayoutColumn> getFieldColumn(final LayoutRow row, final FieldDefinition fieldDefinition) {
+        return row.getLayoutColumns().stream()
+                .filter(column -> getFieldComponent(column, fieldDefinition).isPresent())
+                .findAny();
+    }
+
+    protected Optional<LayoutComponent> getFieldComponent(final LayoutColumn column, final FieldDefinition fieldDefinition) {
+        return column.getLayoutComponents().stream()
+                .filter(component -> fieldDefinition.getId().equals(component.getProperties().get(FormLayoutComponent.FIELD_ID)))
+                .findAny();
+    }
+
+    protected boolean processFieldDefinition(final FieldDefinition field, final GenerationContext<SOURCE> context) {
+        if (field instanceof EntityRelationField) {
+            try {
+                if (field instanceof HasNestedForm) {
+
+                    HasNestedForm nestedFormField = (HasNestedForm) field;
+
+                    FormDefinition nestedForm = findFormDefinitionForModelType(field.getStandaloneClassName(),
+                                                                               context);
+
+                    if (nestedForm == null) {
+                        nestedForm = createModelFormDefinition(field.getStandaloneClassName(), context);
+
+                        verifyNestedForm(nestedForm, context);
+                    }
+
+                    nestedFormField.setNestedForm(nestedForm.getId());
+                } else if (field instanceof IsCRUDDefinition) {
+                    IsCRUDDefinition crudField = (IsCRUDDefinition) field;
+
+                    FormDefinition nestedForm = findFormDefinitionForModelType(field.getStandaloneClassName(),
+                                                                               context);
+
+                    if (nestedForm == null) {
+                        nestedForm = createModelFormDefinition(field.getStandaloneClassName(), context);
+
+                        verifyNestedForm(nestedForm, context);
+
+                        crudField.setCreationForm(nestedForm.getId());
+                        crudField.setEditionForm(nestedForm.getId());
+
+                        List<TableColumnMeta> tableColumnMetas = new ArrayList<>();
+
+                        nestedForm.getFields().forEach(nestedField -> {
+                            tableColumnMetas.add(new TableColumnMeta(nestedField.getLabel(),
+                                                                     nestedField.getBinding()));
+                        });
+
+                        crudField.setColumnMetas(tableColumnMetas);
+                    }
+                }
+            } catch (Exception ex) {
+                log("Something wrong happened processing FieldDefinition \'" + field.getName() + "\"", ex);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void verifyNestedForm(final FormDefinition nestedForm, final GenerationContext<SOURCE> context) {
+        if(nestedForm != null && nestedForm.getFields().isEmpty() && !supportsEmptyNestedForms()) {
+            if(nestedForm != null) {
+                context.getContextForms().remove(nestedForm.getId());
+            }
+            throw new RuntimeException("Not Supported empty Nested forms");
+        }
+    }
+
+    protected FormDefinition createModelFormDefinition(final String modelType, final GenerationContext<SOURCE> context) {
+
         FormDefinition form = context.getContextForms().get(modelType);
+
         if (form == null) {
 
             String modelName = modelType.substring(modelType.lastIndexOf(".") + 1);
@@ -206,26 +301,32 @@ public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFo
             form.setName(modelName);
 
             // TODO: extract model properties & generate fields
-            List<FieldDefinition> fields = extractModelFields(formModel,
-                                                              context);
+            List<FieldDefinition> fields = extractModelFields(formModel, context);
+
+            List<FieldDefinition> fieldsToRemove = fields.stream()
+                    .filter(field -> !processFieldDefinition(field, context))
+                    .collect(Collectors.toList());
+
+            fields.removeAll(fieldsToRemove);
 
             form.getFields().addAll(fields);
 
             createFormLayout(form);
-
-            processFormDefinition(form,
-                                  context);
         }
         return form;
     }
 
+    protected abstract Supplier<LayoutComponent> getRootFormHeader();
+
+    protected abstract boolean supportsEmptyNestedForms();
+
     protected abstract FormDefinition createRootFormDefinition(GenerationContext<SOURCE> context);
 
-    protected abstract List<FieldDefinition> extractModelFields(JavaFormModel formModel,
-                                                                GenerationContext<SOURCE> context);
+    protected abstract List<FieldDefinition> extractModelFields(JavaFormModel formModel, GenerationContext<SOURCE> context);
 
-    protected FormDefinition findFormDefinitionForModelType(String modelType,
-                                                            GenerationContext<SOURCE> context) {
+    protected abstract void log(String message, Exception ex);
+
+    protected FormDefinition findFormDefinitionForModelType(String modelType, GenerationContext<SOURCE> context) {
         return context.getContextForms().get(modelType);
     }
 }

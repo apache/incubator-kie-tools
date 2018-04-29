@@ -105,11 +105,11 @@ public class TaskFormVariables {
 
         List<ModelProperty> properties = variables.values().stream()
                 .sorted((o1, o2) -> sort(o1, o2))
-                .map(variable -> converterFunction.apply(variable)).collect(Collectors.toList());
+                .map(variable -> converterFunction.apply(variable))
+                .filter(modelProperty -> modelProperty != null)
+                .collect(Collectors.toList());
 
-        return new TaskFormModel(processId,
-                                 taskName,
-                                 properties);
+        return new TaskFormModel(processId, taskName, properties);
     }
 
     public void merge(TaskFormVariables other) {

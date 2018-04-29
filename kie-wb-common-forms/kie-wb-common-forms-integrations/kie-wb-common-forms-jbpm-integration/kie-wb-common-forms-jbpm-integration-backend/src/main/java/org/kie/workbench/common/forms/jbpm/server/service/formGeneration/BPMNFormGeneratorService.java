@@ -34,6 +34,5 @@ public interface BPMNFormGeneratorService<SOURCE> {
      * @return A {@link FormGenerationResult} containing the {@link FormDefinition} for the formModel and it's nested
      * forms if needed.
      */
-    public FormGenerationResult generateForms(JBPMFormModel formModel,
-                                              SOURCE source);
+    FormGenerationResult generateForms(JBPMFormModel formModel, SOURCE source);
 }

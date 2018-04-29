@@ -28,11 +28,6 @@ import org.kie.workbench.common.services.shared.project.KieModuleService;
 
 public abstract class AbstractJBPMFormModelHandler<MODEL extends JBPMFormModel> extends AbstractFormModelHandler<MODEL> {
 
-    protected static final String BUNDLE = "org.kie.workbench.common.forms.jbpm.server.service.BackendConstants";
-    protected static final String MISSING_PROCESS_SHORT_KEY = "MissingProcess.shortMessage";
-    protected static final String MISSING_PROCESS_FULL_KEY = "MissingProcess.fullMessage";
-    protected static final String PROCESS_KEY = "process";
-
     protected FieldManager fieldManager;
 
     protected BPMFinderService bpmFinderService;

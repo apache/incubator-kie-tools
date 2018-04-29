@@ -47,7 +47,6 @@ import org.kie.workbench.common.forms.jbpm.service.bpmn.util.BPMNVariableUtils;
 import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.model.impl.meta.entries.FieldReadOnlyEntry;
 import org.kie.workbench.common.forms.model.impl.meta.entries.FieldTypeEntry;
-import org.kie.workbench.common.forms.model.util.formModel.FormModelPropertiesUtil;
 import org.kie.workbench.common.forms.service.backend.util.ModelPropertiesGenerator;
 import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
@@ -89,7 +88,8 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
 
                 return createModelProperty(variable,
                                            projectClassLoader);
-            }).sorted((property1, property2) -> property1.getName().compareToIgnoreCase(property2.getName())).collect(Collectors.toList());
+            }).filter(modelProperty -> modelProperty != null)
+                    .sorted((property1, property2) -> property1.getName().compareToIgnoreCase(property2.getName())).collect(Collectors.toList());
 
             return new BusinessProcessFormModel(process.getId(),
                                                 process.getName(),
@@ -115,23 +115,24 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
                     return false;
                 }
                 return true;
-            }).map(taskFormVariables -> taskFormVariables.toFormModel(variable -> createModelProperty(variable,
-                                                                                                      projectClassLoader))).collect(Collectors.toList());
+            }).map(taskFormVariables -> taskFormVariables.toFormModel(variable -> createModelProperty(variable, projectClassLoader)))
+                    .collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
 
-    protected ModelProperty createModelProperty(Variable variable,
-                                                ClassLoader classLoader) {
+    protected ModelProperty createModelProperty(Variable variable, ClassLoader classLoader) {
+
         ModelProperty property = ModelPropertiesGenerator.createModelProperty(variable.getName(),
-                                                                              variable.getType(),
-                                                                              FormModelPropertiesUtil.isListType(variable.getType()),
+                                                                              BPMNVariableUtils.getRealTypeForInput(variable.getType()),
                                                                               classLoader);
 
-        property.getMetaData().addEntry(new FieldReadOnlyEntry(variable.isInput() && !variable.isOutput()));
+        if (property != null) {
+            property.getMetaData().addEntry(new FieldReadOnlyEntry(variable.isInput() && !variable.isOutput()));
 
-        if (!property.getTypeInfo().isMultiple() && property.getTypeInfo().getClassName().equals(Object.class.getName())) {
-            property.getMetaData().addEntry(new FieldTypeEntry(TextAreaFieldDefinition.FIELD_TYPE.getTypeName()));
+            if (!property.getTypeInfo().isMultiple() && property.getTypeInfo().getClassName().equals(Object.class.getName())) {
+                property.getMetaData().addEntry(new FieldTypeEntry(TextAreaFieldDefinition.FIELD_TYPE.getTypeName()));
+            }
         }
 
         return property;
@@ -158,8 +159,7 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
 
                 final ClassLoader projectClassLoader = projectClassLoaderHelper.getModuleClassLoader(moduleService.resolveModule(path));
 
-                return formVariables.toFormModel(variable -> createModelProperty(variable,
-                                                                                 projectClassLoader));
+                return formVariables.toFormModel(variable -> createModelProperty(variable, projectClassLoader));
             }
         }
         return null;

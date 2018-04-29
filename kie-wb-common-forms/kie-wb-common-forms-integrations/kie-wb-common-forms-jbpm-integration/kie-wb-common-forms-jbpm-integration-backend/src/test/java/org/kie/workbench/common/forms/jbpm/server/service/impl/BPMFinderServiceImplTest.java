@@ -47,7 +47,7 @@ public class BPMFinderServiceImplTest {
 
     public static final String RESOURCES_PATH = "/definitions/";
 
-    private static final int EXPECTED_PROCESSES = 4;
+    private static final int EXPECTED_PROCESSES = 5;
 
     private static final String PROCESS_WITHOUT_VARIABLES_ID = "myProject.process-without-variables";
     private static final int PROCESS_WITHOUT_VARIABLES_TASKS = 0;
@@ -60,6 +60,9 @@ public class BPMFinderServiceImplTest {
 
     private static final String PROCESS_WITH_SHARED_FORMS_WRONG_MAPPINGS_ID = "myProject.processTaskSharedFormsWrongMappings";
     private static final int PROCESS_WITH_SHARED_FORMS_WRONG_MAPPINGS_TASKS = 1;
+
+    private static final String PROCESS_WITH_WRONG_TYPES = "myProject.process-with-wrong-types";
+    private static final int PROCESS_WITH_WRONG_TYPES_TASKS = 1;
 
     private SimpleFileSystemProvider simpleFileSystemProvider = null;
 
@@ -139,6 +142,9 @@ public class BPMFinderServiceImplTest {
                              model.getTaskFormModels().size());
             } else if (model.getProcessFormModel().getProcessId().equals(PROCESS_WITH_SHARED_FORMS_WRONG_MAPPINGS_ID)) {
                 assertEquals(PROCESS_WITH_SHARED_FORMS_WRONG_MAPPINGS_TASKS,
+                             model.getTaskFormModels().size());
+            } else if (model.getProcessFormModel().getProcessId().equals(PROCESS_WITH_WRONG_TYPES)) {
+                assertEquals(PROCESS_WITH_WRONG_TYPES_TASKS,
                              model.getTaskFormModels().size());
             } else {
                 fail("Unexpected process: " + model.getProcessFormModel().getProcessId());
