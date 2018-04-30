@@ -83,17 +83,18 @@ public abstract class AbstractDiagramValidator
             if (bean.isPresent()) {
                 // If the underlying bean is a Definition, it accomplishes JSR303 validations.
                 modelValidator.validate(bean.get(),
-                                        modelViolations -> {
-                                            violations.get().add(
-                                                    ElementViolationImpl.Builder.build(element.getUUID(),
-                                                                                       ruleViolations,
-                                                                                       modelViolations)
-                                            );
-                                        });
+                                        modelViolations ->
+                                                violations.get().add(new ElementViolationImpl.Builder()
+                                                                             .setUuid(element.getUUID())
+                                                                             .setGraphViolations(ruleViolations)
+                                                                             .setModelViolations(modelViolations)
+                                                                             .build()));
             } else {
                 // Otherwise, no need not perform bean validation.
-                violations.get().add(ElementViolationImpl.Builder.build(element.getUUID(),
-                                                                        ruleViolations));
+                violations.get().add(new ElementViolationImpl.Builder()
+                                             .setUuid(element.getUUID())
+                                             .setGraphViolations(ruleViolations)
+                                             .build());
             }
         };
     }

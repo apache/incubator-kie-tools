@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationServic
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
+import org.kie.workbench.common.stunner.core.validation.DomainViolation;
 import org.kie.workbench.common.stunner.core.validation.ModelBeanViolation;
 import org.kie.workbench.common.stunner.core.validation.Violation;
 
@@ -68,6 +69,12 @@ public class NotificationMessageUtils {
                 + violation.getMessage();
     }
 
+    public static String getDomainValidationMessage(final ClientTranslationService translationService,
+                                                    final DomainViolation violation) {
+        return getViolationTypeMessage(violation) +
+                violation.getMessage();
+    }
+
     private static String getViolationTypeMessage(final Violation violation) {
         return "(" + violation.getViolationType() + ") ";
     }
@@ -86,7 +93,8 @@ public class NotificationMessageUtils {
         // Bean & graph structure resulting messages.
         final Collection<ModelBeanViolation> modelViolations = elementViolation.getModelViolations();
         final Collection<RuleViolation> graphViolations = elementViolation.getGraphViolations();
-        final boolean skip = modelViolations.isEmpty() && graphViolations.isEmpty();
+        final Collection<DomainViolation> domainViolations = elementViolation.getDomainViolations();
+        final boolean skip = modelViolations.isEmpty() && graphViolations.isEmpty() && domainViolations.isEmpty();
         if (!skip) {
             final StringBuilder message = new StringBuilder()
                     .append(OPEN_BRA)
@@ -96,10 +104,13 @@ public class NotificationMessageUtils {
                     .append(CLOSE_BRA).append(NEW_LINE);
             modelViolations
                     .forEach(v -> message.append(getBeanValidationMessage(translationService,
-                                                                          v)).append(NEW_LINE));
+                                                                                            v)).append(NEW_LINE));
             graphViolations
                     .forEach(v -> message.append(getRuleValidationMessage(translationService,
-                                                                          v)).append(NEW_LINE));
+                                                                                            v)).append(NEW_LINE));
+            domainViolations
+                    .forEach(v -> message.append("BPMN ").append(getDomainValidationMessage(translationService,
+                                                                                            v)).append(NEW_LINE));
             return message.toString();
         }
         return "";

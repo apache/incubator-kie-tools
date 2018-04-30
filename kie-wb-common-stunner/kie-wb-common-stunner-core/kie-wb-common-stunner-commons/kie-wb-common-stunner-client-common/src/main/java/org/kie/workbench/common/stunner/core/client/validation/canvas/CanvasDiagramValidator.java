@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.validation.canvas;
 
 import java.util.Collection;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -75,7 +76,7 @@ public class CanvasDiagramValidator<H extends AbstractCanvasHandler> {
         final boolean[] valid = {true};
         elementViolations
                 .forEach(v -> {
-                    if (!checkViolation(canvasHandler,
+                    if (checkViolation(canvasHandler,
                                         v)) {
                         valid[0] = false;
                     }
@@ -94,15 +95,10 @@ public class CanvasDiagramValidator<H extends AbstractCanvasHandler> {
 
     private boolean checkViolation(final H canvasHandler,
                                    final DiagramElementViolation<RuleViolation> elementViolation) {
-        final boolean[] valid = {true};
-        elementViolation.getGraphViolations()
-                .forEach(v -> {
-                    if (applyViolation(canvasHandler,
-                                       v)) {
-                        valid[0] = false;
-                    }
-                });
-        return valid[0];
+        return Stream.concat(elementViolation.getGraphViolations().stream(),
+                             elementViolation.getDomainViolations().stream())
+                .filter(v -> v instanceof RuleViolation)
+                .anyMatch(v -> applyViolation(canvasHandler, (RuleViolation) v));
     }
 
     private boolean applyViolation(final H canvasHandler,

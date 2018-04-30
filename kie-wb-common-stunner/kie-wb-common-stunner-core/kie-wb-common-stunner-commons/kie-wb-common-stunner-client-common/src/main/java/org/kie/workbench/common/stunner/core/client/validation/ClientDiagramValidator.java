@@ -16,20 +16,35 @@
 
 package org.kie.workbench.common.stunner.core.client.validation;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.core.validation.ModelValidator;
+import org.kie.workbench.common.stunner.core.validation.ValidationService;
 import org.kie.workbench.common.stunner.core.validation.impl.AbstractDiagramValidator;
 
 @ApplicationScoped
 public class ClientDiagramValidator extends AbstractDiagramValidator {
 
+    private final Caller<ValidationService> validationService;
+
     protected ClientDiagramValidator() {
         this(null,
+             null,
              null,
              null,
              null);
@@ -39,10 +54,32 @@ public class ClientDiagramValidator extends AbstractDiagramValidator {
     public ClientDiagramValidator(final DefinitionManager definitionManager,
                                   final RuleManager ruleManager,
                                   final TreeWalkTraverseProcessor treeWalkTraverseProcessor,
-                                  final ModelValidator modelValidator) {
+                                  final ModelValidator modelValidator,
+                                  final Caller<ValidationService> validationService) {
         super(definitionManager,
               ruleManager,
               treeWalkTraverseProcessor,
               modelValidator);
+        this.validationService = validationService;
+    }
+
+    @Override
+    public void validate(Diagram diagram, Consumer<Collection<DiagramElementViolation<RuleViolation>>> resultConsumer) {
+        super.validate(diagram, diagramElementViolations -> {
+            final List<DiagramElementViolation<RuleViolation>> violations =
+                    (Objects.nonNull(diagramElementViolations) ? new LinkedList<>(diagramElementViolations) : new LinkedList<>());
+            backendValidation(diagram, backendViolations -> {
+                violations.addAll(backendViolations);
+                resultConsumer.accept(violations);
+            });
+        });
+    }
+
+    private void backendValidation(Diagram diagram, final Consumer<Collection<DiagramElementViolation<RuleViolation>>> callback) {
+        validationService.call(result -> callback.accept((Collection<DiagramElementViolation<RuleViolation>>) result),
+                               (msg, error) -> {
+                                   callback.accept(Collections.emptyList());
+                                   return false;
+                               }).validate(diagram);
     }
 }

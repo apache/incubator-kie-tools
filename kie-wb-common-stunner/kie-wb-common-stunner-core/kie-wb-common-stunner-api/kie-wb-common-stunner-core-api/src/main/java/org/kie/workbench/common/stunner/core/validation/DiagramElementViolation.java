@@ -26,16 +26,21 @@ public interface DiagramElementViolation<V extends GraphElementViolation> extend
     /**
      * The violation's root element UUID.
      */
-    public String getUUID();
+    String getUUID();
 
     /**
      * Returns the resulting violations produced by the graph structure validation, if any.
      */
-    public Collection<V> getGraphViolations();
+    Collection<V> getGraphViolations();
 
     /**
      * Returns the resulting violations produced by the validation for the different beans
      * present in the graph structure, if any.
      */
-    public Collection<ModelBeanViolation> getModelViolations();
+    Collection<ModelBeanViolation> getModelViolations();
+
+    /**
+     * Returns the domain (BPMN, DMN, CM...) violations produced by a diagram validation.
+     */
+    Collection<DomainViolation> getDomainViolations();
 }

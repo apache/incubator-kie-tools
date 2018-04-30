@@ -734,7 +734,7 @@ public class AbstractProjectDiagramEditorTest {
         verify(validateSessionCommand).execute(validationCallbackCaptor.capture());
 
         final Collection<DiagramElementViolation<RuleViolation>> violations = new ArrayList<>();
-        violations.add(ElementViolationImpl.Builder.build("UUID", Collections.singletonList(new BoundsExceededViolation(mock(Bounds.class)))));
+        violations.add(new ElementViolationImpl.Builder().setUuid("UUID").setGraphViolations(Collections.singletonList(new BoundsExceededViolation(mock(Bounds.class)))).build());
         final ClientSessionCommand.Callback validationCallback = validationCallbackCaptor.getValue();
         validationCallback.onError(violations);
 
