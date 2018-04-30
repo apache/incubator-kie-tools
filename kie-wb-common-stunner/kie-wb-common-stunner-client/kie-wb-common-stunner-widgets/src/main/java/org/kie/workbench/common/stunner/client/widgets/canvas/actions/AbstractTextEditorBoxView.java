@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.client.widgets.canvas.actions;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Event;
@@ -108,5 +109,9 @@ public abstract class AbstractTextEditorBoxView<T extends TextEditorBoxView.Pres
     @EventHandler("closeButton")
     public void onClose(ClickEvent clickEvent) {
         presenter.onClose();
+    }
+
+    protected void scheduleDeferredCommand(final Scheduler.ScheduledCommand command) {
+        Scheduler.get().scheduleDeferred(command);
     }
 }

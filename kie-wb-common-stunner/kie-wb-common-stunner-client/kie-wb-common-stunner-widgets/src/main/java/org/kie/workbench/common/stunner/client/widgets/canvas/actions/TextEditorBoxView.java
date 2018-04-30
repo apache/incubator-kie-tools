@@ -41,6 +41,9 @@ public interface TextEditorBoxView extends UberElement<TextEditorBoxView.Present
                         final boolean shiftKeyPressed,
                         final String value);
 
+        void onKeyDown(final int keyCode,
+                       final String value);
+
         String getNameValue();
     }
 }

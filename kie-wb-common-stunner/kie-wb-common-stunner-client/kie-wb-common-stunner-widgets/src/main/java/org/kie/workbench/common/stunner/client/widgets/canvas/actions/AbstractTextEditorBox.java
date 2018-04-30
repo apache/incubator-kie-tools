@@ -83,6 +83,13 @@ public abstract class AbstractTextEditorBox implements TextEditorBoxView.Present
     // TODO: Check command result.
     @Override
     public void onSave() {
+        flush();
+        getView().hide();
+        fireCloseCallback();
+    }
+
+    @Override
+    public void flush() {
         if (null != this.value) {
             final TextPropertyProvider textPropertyProvider = textPropertyProviderFactory.getProvider(element);
             textPropertyProvider.setText(canvasHandler,
@@ -90,8 +97,6 @@ public abstract class AbstractTextEditorBox implements TextEditorBoxView.Present
                                          element,
                                          value);
         }
-        getView().hide();
-        fireCloseCallback();
     }
 
     @Override
@@ -130,6 +135,16 @@ public abstract class AbstractTextEditorBox implements TextEditorBoxView.Present
         this.value = value;
         // Enter key produces save.
         if ((KeyCodes.KEY_ENTER == keyCode) && (!shiftKeyPressed)) {
+            onSave();
+        }
+    }
+
+    @Override
+    public void onKeyDown(final int keyCode,
+                          final String value) {
+        this.value = value;
+        // Tab key produces save.
+        if (KeyCodes.KEY_TAB == keyCode) {
             onSave();
         }
     }

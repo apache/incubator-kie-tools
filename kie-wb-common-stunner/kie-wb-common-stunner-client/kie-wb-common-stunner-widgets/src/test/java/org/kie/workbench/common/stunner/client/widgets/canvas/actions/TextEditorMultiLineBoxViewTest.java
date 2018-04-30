@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.canvas.actions;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Event;
@@ -31,9 +32,11 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
-import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -87,8 +90,13 @@ public class TextEditorMultiLineBoxViewTest {
     @Before
     @SuppressWarnings("unchecked")
     public void init() {
-        this.tested = new TextEditorMultiLineBoxView(translationService, editNameBox, nameField, showCommand, hideCommand, closeButton, saveButton);
+        this.tested = spy(new TextEditorMultiLineBoxView(translationService, editNameBox, nameField, showCommand, hideCommand, closeButton, saveButton));
         this.tested.init(presenter);
+
+        doAnswer(i -> {
+            ((Scheduler.ScheduledCommand) i.getArguments()[0]).execute();
+            return null;
+        }).when(tested).scheduleDeferredCommand(any(Scheduler.ScheduledCommand.class));
     }
 
     @Test
@@ -124,16 +132,28 @@ public class TextEditorMultiLineBoxViewTest {
 
     @Test
     public void testOnChangeNameChangeEvent() {
+        when(nameField.getValue()).thenReturn(NAME);
         when(event.getTypeInt()).thenReturn(Event.ONCHANGE);
         tested.onChangeName(event);
-        verify(presenter, times(1)).onChangeName(anyString());
+        verify(presenter, times(1)).onChangeName(eq(NAME));
     }
 
     @Test
     public void testOnChangeNameKeyPressEvent() {
+        when(nameField.getValue()).thenReturn(NAME);
         when(event.getTypeInt()).thenReturn(Event.ONKEYPRESS);
+        when(event.getKeyCode()).thenReturn(KeyCodes.KEY_A);
         tested.onChangeName(event);
-        verify(presenter, times(1)).onKeyPress(anyInt(), eq(false), anyString());
+        verify(presenter, times(1)).onKeyPress(eq(KeyCodes.KEY_A), eq(false), eq(NAME));
+    }
+
+    @Test
+    public void testOnChangeNameKeyDownEvent() {
+        when(nameField.getValue()).thenReturn(NAME);
+        when(event.getTypeInt()).thenReturn(Event.ONKEYDOWN);
+        when(event.getKeyCode()).thenReturn(KeyCodes.KEY_A);
+        tested.onChangeName(event);
+        verify(presenter, times(1)).onKeyDown(eq(KeyCodes.KEY_A), eq(NAME));
     }
 
     @Test
@@ -145,7 +165,6 @@ public class TextEditorMultiLineBoxViewTest {
 
     @Test
     public void testShow() {
-
         tested.show(NAME);
 
         verify(nameField,

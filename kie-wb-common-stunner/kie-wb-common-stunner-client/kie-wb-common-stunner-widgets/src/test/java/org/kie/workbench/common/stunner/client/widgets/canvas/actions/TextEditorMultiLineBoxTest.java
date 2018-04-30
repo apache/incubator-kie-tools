@@ -123,6 +123,19 @@ public class TextEditorMultiLineBoxTest {
     }
 
     @Test
+    public void testSaveByPressingTab() {
+        presenter.onKeyDown(KeyCodes.KEY_T,
+                            MODIFIED_NAME);
+
+        verifyNameNotSaved();
+
+        presenter.onKeyDown(KeyCodes.KEY_TAB,
+                            MODIFIED_NAME);
+
+        verifyNameSaved();
+    }
+
+    @Test
     public void testSaveByPressingButton() {
         presenter.onChangeName(MODIFIED_NAME);
 
@@ -131,6 +144,15 @@ public class TextEditorMultiLineBoxTest {
         presenter.onSave();
 
         verifyNameSaved();
+    }
+
+    @Test
+    public void testFlush() {
+        presenter.onChangeName(MODIFIED_NAME);
+
+        presenter.flush();
+
+        verifyNameFlushed();
     }
 
     @Test
@@ -187,8 +209,14 @@ public class TextEditorMultiLineBoxTest {
                never()).execute();
     }
 
-    @SuppressWarnings("unchecked")
     protected void verifyNameSaved() {
+        verifyNameFlushed();
+        verify(view).hide();
+        verify(closeCallback).execute();
+    }
+
+    @SuppressWarnings("unchecked")
+    protected void verifyNameFlushed() {
         assertEquals(MODIFIED_NAME,
                      presenter.getNameValue());
 
@@ -200,7 +228,5 @@ public class TextEditorMultiLineBoxTest {
         verify(commandProvider).getCommandManager();
         verify(canvasCommandManager).execute(any(),
                                              any());
-        verify(view).hide();
-        verify(closeCallback).execute();
     }
 }

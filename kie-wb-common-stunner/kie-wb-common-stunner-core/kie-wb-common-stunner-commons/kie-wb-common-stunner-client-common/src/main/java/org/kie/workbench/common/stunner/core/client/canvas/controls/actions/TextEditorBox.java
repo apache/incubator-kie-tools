@@ -34,6 +34,8 @@ public interface TextEditorBox<C extends CanvasHandler, E extends Element>
     boolean isVisible();
 
     void hide();
+
+    void flush();
 }
 
 

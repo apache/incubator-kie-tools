@@ -83,7 +83,7 @@ public class TextEditorSingleLineBoxView
     }
 
     @EventHandler("nameField")
-    @SinkNative(Event.ONCHANGE | Event.ONKEYPRESS)
+    @SinkNative(Event.ONCHANGE | Event.ONKEYPRESS | Event.ONKEYDOWN)
     public void onChangeName(Event event) {
         switch (event.getTypeInt()) {
             case Event.ONCHANGE:
@@ -94,6 +94,9 @@ public class TextEditorSingleLineBoxView
                                      false,
                                      nameField.getValue());
                 break;
+            case Event.ONKEYDOWN:
+                //Defer processing of KeyDownEvent until after KeyPress has been processed as we write the value to the Presenter from the TextInput.
+                scheduleDeferredCommand(() -> presenter.onKeyDown(event.getKeyCode(), nameField.getValue()));
         }
     }
 }

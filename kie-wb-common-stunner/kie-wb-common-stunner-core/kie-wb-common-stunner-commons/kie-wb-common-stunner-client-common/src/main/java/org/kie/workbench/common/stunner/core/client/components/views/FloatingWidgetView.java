@@ -175,7 +175,7 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
             timer = new Timer() {
                 @Override
                 public void run() {
-                    FloatingWidgetView.this.doHide();
+                    FloatingWidgetView.this.hide();
                 }
             };
             timer.schedule(timeout);

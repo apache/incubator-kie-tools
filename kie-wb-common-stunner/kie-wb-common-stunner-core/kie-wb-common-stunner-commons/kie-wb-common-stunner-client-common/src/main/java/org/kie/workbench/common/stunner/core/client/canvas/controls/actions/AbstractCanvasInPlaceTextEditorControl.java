@@ -20,6 +20,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -27,6 +28,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasFocusedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeRemovedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
@@ -53,12 +56,13 @@ public abstract class AbstractCanvasInPlaceTextEditorControl
         extends AbstractCanvasHandlerRegistrationControl<AbstractCanvasHandler>
         implements CanvasInPlaceTextEditorControl<AbstractCanvasHandler, AbstractClientFullSession, Element> {
 
-    private static final int FLOATING_VIEW_TIMEOUT = 3000;
-    private static final double SHAPE_EDIT_ALPHA = 0.2d;
+    static final int FLOATING_VIEW_TIMEOUT = 3000;
+    static final double SHAPE_EDIT_ALPHA = 0.2d;
+    static final double SHAPE_NOT_EDIT_ALPHA = 1.0d;
 
     private String uuid;
 
-    private final Command floatingHideCallback = AbstractCanvasInPlaceTextEditorControl.this::hide;
+    private final Command hideFloatingViewOnTimeoutCommand = this::flush;
 
     protected abstract FloatingView<IsWidget> getFloatingView();
 
@@ -89,9 +93,13 @@ public abstract class AbstractCanvasInPlaceTextEditorControl
 
         getFloatingView()
                 .hide()
-                .setHideCallback(floatingHideCallback)
+                .setHideCallback(hideFloatingViewOnTimeoutCommand)
                 .setTimeOut(FLOATING_VIEW_TIMEOUT)
-                .add(ElementWrapperWidget.getWidget(getTextEditorBox().getElement()));
+                .add(wrapTextEditorBoxElement(getTextEditorBox().getElement()));
+    }
+
+    protected IsWidget wrapTextEditorBoxElement(final HTMLElement element) {
+        return ElementWrapperWidget.getWidget(element);
     }
 
     @Override
@@ -115,30 +123,32 @@ public abstract class AbstractCanvasInPlaceTextEditorControl
                                                     clickHandler);
                         registerHandler(shape.getUUID(),
                                         clickHandler);
-                        // Change mouse cursor, if shape supports it.
-                        if (hasEventHandlers.supports(ViewEventType.TEXT_ENTER) &&
-                                hasEventHandlers.supports(ViewEventType.TEXT_EXIT)) {
-                            final TextEnterHandler enterHandler = new TextEnterHandler() {
-                                @Override
-                                public void handle(TextEnterEvent event) {
-                                    canvasHandler.getAbstractCanvas().getView().setCursor(AbstractCanvas.Cursors.TEXT);
-                                }
-                            };
-                            hasEventHandlers.addHandler(ViewEventType.TEXT_ENTER,
-                                                        enterHandler);
-                            registerHandler(shape.getUUID(),
-                                            enterHandler);
-                            final TextExitHandler exitHandler = new TextExitHandler() {
-                                @Override
-                                public void handle(TextExitEvent event) {
-                                    canvasHandler.getAbstractCanvas().getView().setCursor(AbstractCanvas.Cursors.AUTO);
-                                }
-                            };
-                            hasEventHandlers.addHandler(ViewEventType.TEXT_EXIT,
-                                                        exitHandler);
-                            registerHandler(shape.getUUID(),
-                                            exitHandler);
-                        }
+                    }
+
+                    // Change mouse cursor, if shape supports it.
+                    if (hasEventHandlers.supports(ViewEventType.TEXT_ENTER)) {
+                        final TextEnterHandler enterHandler = new TextEnterHandler() {
+                            @Override
+                            public void handle(TextEnterEvent event) {
+                                canvasHandler.getAbstractCanvas().getView().setCursor(AbstractCanvas.Cursors.TEXT);
+                            }
+                        };
+                        hasEventHandlers.addHandler(ViewEventType.TEXT_ENTER,
+                                                    enterHandler);
+                        registerHandler(shape.getUUID(),
+                                        enterHandler);
+                    }
+                    if (hasEventHandlers.supports(ViewEventType.TEXT_EXIT)) {
+                        final TextExitHandler exitHandler = new TextExitHandler() {
+                            @Override
+                            public void handle(TextExitEvent event) {
+                                canvasHandler.getAbstractCanvas().getView().setCursor(AbstractCanvas.Cursors.AUTO);
+                            }
+                        };
+                        hasEventHandlers.addHandler(ViewEventType.TEXT_EXIT,
+                                                    exitHandler);
+                        registerHandler(shape.getUUID(),
+                                        exitHandler);
                     }
                 }
             }
@@ -150,7 +160,7 @@ public abstract class AbstractCanvasInPlaceTextEditorControl
                                                                                                           final double x,
                                                                                                           final double y) {
         if (getTextEditorBox().isVisible()) {
-            this.hide();
+            flush();
         }
         this.uuid = item.getUUID();
         enableShapeEdit();
@@ -211,7 +221,7 @@ public abstract class AbstractCanvasInPlaceTextEditorControl
         final Shape<?> shape = getShape(this.uuid);
         if (null != shape) {
             final HasTitle hasTitle = (HasTitle) shape.getShapeView();
-            final double alpha = editMode ? SHAPE_EDIT_ALPHA : 1d;
+            final double alpha = editMode ? SHAPE_EDIT_ALPHA : SHAPE_NOT_EDIT_ALPHA;
             shape.getShapeView().setFillAlpha(alpha);
             hasTitle.setTitleAlpha(alpha);
             getCanvas().draw();
@@ -240,9 +250,32 @@ public abstract class AbstractCanvasInPlaceTextEditorControl
         }
     }
 
+    void onCanvasClearSelectionEvent(final @Observes CanvasClearSelectionEvent event) {
+        checkNotNull("event",
+                     event);
+        flush();
+    }
+
+    void onCanvasShapeRemovedEvent(final @Observes CanvasShapeRemovedEvent event) {
+        checkNotNull("event",
+                     event);
+        flush();
+    }
+
     void onCanvasFocusedEvent(final @Observes CanvasFocusedEvent canvasFocusedEvent) {
         checkNotNull("canvasFocusedEvent",
                      canvasFocusedEvent);
+        flush();
+    }
+
+    void onCanvasSelectionEvent(final @Observes CanvasSelectionEvent event) {
+        checkNotNull("event",
+                     event);
+        flush();
+    }
+
+    void flush() {
+        getTextEditorBox().flush();
         hide();
     }
 }
