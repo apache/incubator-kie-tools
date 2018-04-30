@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.screens.library.client.widgets.library;
 
-import java.util.Optional;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
@@ -47,8 +46,6 @@ public class AddProjectButtonPresenter {
 
     private ManagedInstance<NewWorkspaceProjectHandler> newProjectHandlers;
 
-    private org.kie.workbench.common.screens.projecteditor.client.handlers.NewWorkspaceProjectHandler newDefaultProjectHandler;
-
     private NewResourcePresenter newResourcePresenter;
 
     private ProjectController projectController;
@@ -60,7 +57,6 @@ public class AddProjectButtonPresenter {
                                      final ManagedInstance<AddProjectPopUpPresenter> addProjectPopUpPresenters,
                                      final ManagedInstance<MenuResourceHandlerWidget> menuResourceHandlerWidgets,
                                      final ManagedInstance<NewWorkspaceProjectHandler> newProjectHandlers,
-                                     final org.kie.workbench.common.screens.projecteditor.client.handlers.NewWorkspaceProjectHandler newDefaultProjectHandler,
                                      final NewResourcePresenter newResourcePresenter,
                                      final ProjectController projectController,
                                      final LibraryPlaces libraryPlaces) {
@@ -68,7 +64,6 @@ public class AddProjectButtonPresenter {
         this.addProjectPopUpPresenters = addProjectPopUpPresenters;
         this.menuResourceHandlerWidgets = menuResourceHandlerWidgets;
         this.newProjectHandlers = newProjectHandlers;
-        this.newDefaultProjectHandler = newDefaultProjectHandler;
         this.newResourcePresenter = newResourcePresenter;
         this.projectController = projectController;
         this.libraryPlaces = libraryPlaces;
@@ -108,7 +103,7 @@ public class AddProjectButtonPresenter {
         menuResourceHandlerWidget.init(newWorkspaceProjectHandler.getDescription(),
                                        () -> libraryPlaces.closeAllPlacesOrNothing(() -> {
                                                                                        libraryPlaces.goToLibrary();
-                                                                                       newWorkspaceProjectHandler.getCommand(newResourcePresenter);
+                                                                                       newWorkspaceProjectHandler.getCommand(newResourcePresenter).execute();
                                                                                    }));
         view.addOtherProject(menuResourceHandlerWidget);
     }

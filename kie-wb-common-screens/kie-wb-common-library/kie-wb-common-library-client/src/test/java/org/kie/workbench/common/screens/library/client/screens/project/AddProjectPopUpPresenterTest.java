@@ -42,6 +42,7 @@ import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.SessionInfoMock;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -413,5 +414,19 @@ public class AddProjectPopUpPresenterTest {
         verify(view).showError(anyString());
         verify(libraryPlaces,
                never()).goToProject(any(WorkspaceProject.class));
+    }
+
+
+    @Test
+    public void createProjectWithExternalSuccessCallbackTest() {
+        doReturn("test").when(view).getName();
+        doReturn("description").when(view).getDescription();
+        ParameterizedCommand<WorkspaceProject> command = mock(ParameterizedCommand.class);
+        presenter.setSuccessCallback(command);
+
+        presenter.add();
+
+        verify(view).showBusyIndicator(anyString());
+        verify(command).execute(any());
     }
 }
