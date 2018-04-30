@@ -108,11 +108,8 @@
     <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
     <!-- TODO fix all the modules to have all direct dependencies specified, then remove this property -->
     <illegaltransitivereportonly>true</illegaltransitivereportonly>
-    <!-- Using origin-repository.jboss.org as that is the canonical URL for deployment. repository.jboss.org is just a proxy
-         which should delegate the calls to origin-repository.jboss.org, but that is often buggy. Using the canonical URL
-         directly should help to avoid some of the issues with deploying artifacts. -->
-    <jboss.releases.repo.url>https://origin-repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
-    <jboss.snapshots.repo.url>https://origin-repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
+    <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
+    <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
 
     <version.io.netty.old>3.10.6.Final</version.io.netty.old>
     <version.elasticsearch.client>5.6.1</version.elasticsearch.client>
