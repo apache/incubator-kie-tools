@@ -19,6 +19,7 @@ import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.uberfire.backend.vfs.Path;
@@ -114,6 +115,48 @@ public class Utils {
             return false;
         }
         return !pkg.equals(activePackage);
+    }
+
+    /**
+     * A convenience method to compare two Repositories avoiding cluttering code with null checks.
+     * @param repository
+     * @param activeRepository
+     * @return
+     */
+    public static boolean hasRepositoryChanged(final Repository repository,
+                                               final Repository activeRepository) {
+        if (repository == null && activeRepository != null) {
+            return true;
+        }
+        if (repository != null && activeRepository == null) {
+            return true;
+        }
+        if (repository == null && activeRepository == null) {
+            return false;
+        }
+        return !repository.equals(activeRepository);
+    }
+
+    /**
+     * A convenience method to compare two Repositories inside  WorkspaceProjects avoiding cluttering code with null checks.
+     * @param workspaceProject
+     * @param activeWorkspaceProject
+     * @return
+     */
+    public static boolean hasRepositoryChanged(final WorkspaceProject workspaceProject,
+                                               final WorkspaceProject activeWorkspaceProject) {
+        if (workspaceProject == null && activeWorkspaceProject != null) {
+            return true;
+        }
+        if (workspaceProject != null && activeWorkspaceProject == null) {
+            return true;
+        }
+        if (workspaceProject == null && activeWorkspaceProject == null) {
+            return false;
+        }
+
+        return hasRepositoryChanged(workspaceProject.getRepository(),
+                                    activeWorkspaceProject.getRepository());
     }
 
     public static boolean hasFolderItemChanged(final FolderItem item,

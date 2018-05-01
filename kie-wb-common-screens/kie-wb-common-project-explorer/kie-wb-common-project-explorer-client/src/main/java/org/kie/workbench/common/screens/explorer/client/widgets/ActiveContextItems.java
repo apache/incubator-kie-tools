@@ -122,8 +122,8 @@ public class ActiveContextItems {
         if (activeFolderItem.getItem() instanceof Package) {
             activePackage = (Package) activeFolderItem.getItem();
             contextChangedEvent.fire(new WorkspaceProjectContextChangeEvent(activeProject,
-                                                                   activeModule,
-                                                                   activePackage));
+                                                                            activeModule,
+                                                                            activePackage));
         } else if (activeFolderItem.getType().equals(FolderItemType.FOLDER)) {
             explorerService.call(getResolvePackageRemoteCallback()).resolvePackage(activeFolderItem);
         }
@@ -137,8 +137,8 @@ public class ActiveContextItems {
                                             activePackage)) {
                     activePackage = pkg;
                     contextChangedEvent.fire(new WorkspaceProjectContextChangeEvent(activeProject,
-                                                                           activeModule,
-                                                                           activePackage));
+                                                                                    activeModule,
+                                                                                    activePackage));
                 }
             }
         };

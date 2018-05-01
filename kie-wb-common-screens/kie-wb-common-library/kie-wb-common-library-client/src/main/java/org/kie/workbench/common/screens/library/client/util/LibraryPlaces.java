@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -51,6 +50,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.screens.examples.model.ExampleProject;
+import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetListUpdated;
 import org.kie.workbench.common.screens.library.api.Remote;
@@ -839,7 +839,8 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     public void onChange(WorkspaceProjectContextChangeEvent previous,
                          WorkspaceProjectContextChangeEvent current) {
         if (current.getWorkspaceProject() != null) {
-            if (!current.getWorkspaceProject().equals(previous.getWorkspaceProject())) {
+            if (Utils.hasRepositoryChanged(previous.getWorkspaceProject(),
+                                           current.getWorkspaceProject())) {
                 closeAllPlacesOrNothing(this::goToProject);
             }
         }
