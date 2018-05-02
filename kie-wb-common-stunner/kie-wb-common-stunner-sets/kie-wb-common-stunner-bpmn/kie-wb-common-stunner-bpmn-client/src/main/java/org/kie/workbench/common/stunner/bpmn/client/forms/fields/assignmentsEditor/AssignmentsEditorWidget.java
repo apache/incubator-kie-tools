@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assignmentsEditor;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -47,17 +48,26 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFor
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentData;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
+import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
+import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.MultipleInstanceSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 import org.kie.workbench.common.stunner.bpmn.service.DataTypesService;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -66,30 +76,46 @@ import org.uberfire.workbench.events.NotificationEvent;
 public class AssignmentsEditorWidget extends Composite implements HasValue<String> {
 
     @Inject
-    @DataField
-    private Button assignmentsButton;
-
-    @Inject
-    @DataField
-    private TextBox assignmentsTextBox;
-
-    @Inject
     protected ActivityDataIOEditor activityDataIOEditor;
-
-    @Inject
-    SessionManager canvasSessionManager;
-
     @Inject
     protected Event<NotificationEvent> notification;
-
-    private BPMNDefinition bpmnModel;
-
     protected String assignmentsInfo;
-
     protected boolean hasInputVars = false;
     protected boolean isSingleInputVar = false;
     protected boolean hasOutputVars = false;
     protected boolean isSingleOutputVar = false;
+    @Inject
+    SessionManager canvasSessionManager;
+    @Inject
+    @DataField
+    private Button assignmentsButton;
+    @Inject
+    @DataField
+    private TextBox assignmentsTextBox;
+    @Inject
+    private GraphUtils graphUtils;
+    private BPMNDefinition bpmnModel;
+
+    AssignmentsEditorWidget(final BPMNDefinition bpmnModel,
+                            final String assignmentsInfo,
+                            final boolean hasInputVars,
+                            final boolean isSingleInputVar,
+                            final boolean hasOutputVars,
+                            final boolean isSingleOutputVar,
+                            final SessionManager canvasSessionManager,
+                            final GraphUtils graphUtils) {
+        this.bpmnModel = bpmnModel;
+        this.assignmentsInfo = assignmentsInfo;
+        this.hasInputVars = hasInputVars;
+        this.isSingleInputVar = isSingleInputVar;
+        this.hasOutputVars = hasOutputVars;
+        this.isSingleOutputVar = isSingleOutputVar;
+        this.canvasSessionManager = canvasSessionManager;
+        this.graphUtils = graphUtils;
+    }
+
+    public AssignmentsEditorWidget() {
+    }
 
     @EventHandler("assignmentsButton")
     public void onClickAssignmentsButton(final ClickEvent clickEvent) {
@@ -272,18 +298,71 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
 
     protected String getProcessVariables() {
         Diagram diagram = canvasSessionManager.getCurrentSession().getCanvasHandler().getDiagram();
+        Node selectedElement = getSelectedElement();
+        Element parent = null;
+        if (selectedElement != null) {
+            parent = graphUtils.getParent(selectedElement);
+        }
         Iterator<Element> it = diagram.getGraph().nodes().iterator();
+        StringBuffer variables = new StringBuffer();
         while (it.hasNext()) {
             Element element = it.next();
             if (element.getContent() instanceof View) {
                 Object oDefinition = ((View) element.getContent()).getDefinition();
-                if (oDefinition instanceof BPMNDiagramImpl) {
+                if ((oDefinition instanceof BPMNDiagramImpl)) {
                     BPMNDiagramImpl bpmnDiagram = (BPMNDiagramImpl) oDefinition;
-                    ProcessVariables variables = bpmnDiagram.getProcessData().getProcessVariables();
-                    if (variables != null) {
-                        return variables.getValue();
+                    ProcessVariables processVariables = bpmnDiagram.getProcessData().getProcessVariables();
+                    if (processVariables != null) {
+                        if (variables.length() > 0) {
+                            variables.append(",");
+                        }
+                        variables.append(processVariables.getValue());
                     }
-                    break;
+                }
+                if (parent != null) {
+                    if (parent.equals(element)) {
+                        ProcessVariables subprocessVariables = null;
+                        if (oDefinition instanceof EventSubprocess) {
+                            EventSubprocess subprocess = (EventSubprocess) oDefinition;
+                            subprocessVariables = subprocess.getProcessData().getProcessVariables();
+                        } else if (oDefinition instanceof AdHocSubprocess) {
+                            AdHocSubprocess subprocess = (AdHocSubprocess) oDefinition;
+                            subprocessVariables = subprocess.getProcessData().getProcessVariables();
+                        } else if (oDefinition instanceof MultipleInstanceSubprocess) {
+                            MultipleInstanceSubprocess subprocess = (MultipleInstanceSubprocess) oDefinition;
+                            subprocessVariables = subprocess.getProcessData().getProcessVariables();
+                        } else if (oDefinition instanceof EmbeddedSubprocess) {
+                            EmbeddedSubprocess subprocess = (EmbeddedSubprocess) oDefinition;
+                            subprocessVariables = subprocess.getProcessData().getProcessVariables();
+                        }
+                        if (subprocessVariables != null) {
+                            if (variables.length() > 0) {
+                                variables.append(",");
+                            }
+                            variables.append(subprocessVariables.getValue());
+                        }
+                    }
+                }
+            }
+        }
+        return variables.toString();
+    }
+
+    protected Node getSelectedElement() {
+        String elementUUID = getSelectedElementUUID(canvasSessionManager.getCurrentSession());
+        if (elementUUID != null) {
+            return canvasSessionManager.getCurrentSession().getCanvasHandler().getDiagram().getGraph().getNode(elementUUID);
+        }
+        return null;
+    }
+
+    protected String getSelectedElementUUID(ClientSession clientSession) {
+        if (clientSession instanceof ClientFullSession) {
+            final SelectionControl selectionControl = ((ClientFullSession) clientSession).getSelectionControl();
+            if (null != selectionControl) {
+                final Collection<String> selectedItems = selectionControl.getSelectedItems();
+                if (null != selectedItems && !selectedItems.isEmpty()) {
+                    return selectedItems.iterator().next();
                 }
             }
         }
