@@ -20,17 +20,18 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
-import javax.jms.Message;
 import javax.jms.MessageConsumer;
-import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 import org.slf4j.Logger;
@@ -50,26 +51,42 @@ public class ClusterJMSService implements ClusterService {
 
     @Override
     public void connect() {
-        String jmsURL = clusterParameters.getJmsURL();
-        String jmsUserName = clusterParameters.getJmsUserName();
-        String jmsPassword = clusterParameters.getJmsPassword();
-        ConnectionFactory factory = createConnectionFactory(jmsURL,
+        try {
+            final String jmsUserName = clusterParameters.getJmsUserName();
+            final String jmsPassword = clusterParameters.getJmsPassword();
+            final ConnectionFactory factory;
+            switch (clusterParameters.getConnectionMode()) {
+                case REMOTE:
+                    final String jmsURL = clusterParameters.getProviderUrl();
+                    factory = createRemoteConnectionFactory(jmsURL,
                                                             jmsUserName,
                                                             jmsPassword);
-
-        try {
-            connection = factory.createConnection();
-            connection.setExceptionListener(new JMSExceptionListener());
-            connection.start();
+                    break;
+                case JNDI:
+                    final InitialContext context = new InitialContext(clusterParameters.getInitialContextFactory());
+                    factory = createJNDIConnectionFactory(context);
+                    break;
+                default:
+                    factory = null;
+            }
+            if (factory != null) {
+                connection = factory.createConnection(jmsUserName, jmsPassword);
+                connection.setExceptionListener(new JMSExceptionListener());
+                connection.start();
+            }
         } catch (Exception e) {
             LOGGER.error("Error connecting on JMS " + e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
-    ActiveMQConnectionFactory createConnectionFactory(String jmsURL,
-                                                      String jmsUserName,
-                                                      String jmsPassword) {
+    ConnectionFactory createJNDIConnectionFactory(final InitialContext context) throws NamingException {
+        return (ConnectionFactory) context.lookup(clusterParameters.getJmsConnectionFactoryJndiName());
+    }
+
+    ConnectionFactory createRemoteConnectionFactory(final String jmsURL,
+                                                    final String jmsUserName,
+                                                    final String jmsPassword) {
         return new ActiveMQConnectionFactory(jmsURL,
                                              jmsUserName,
                                              jmsPassword);

@@ -25,6 +25,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.commons.cluster.ClusterJMSService;
 import org.uberfire.commons.cluster.ClusterParameters;
 import org.uberfire.commons.cluster.ClusterService;
+import org.uberfire.commons.cluster.ConnectionMode;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchService;
@@ -232,9 +233,7 @@ public class JGitFileSystemsEventsManagerTest {
     }
 
     private void setupClusterParameters() {
-        System.setProperty(ClusterParameters.APPFORMER_CLUSTER,
-                           "true");
-        System.setProperty(ClusterParameters.APPFORMER_DEFAULT_CLUSTER_CONFIGS,
-                           "true");
+        System.setProperty(ClusterParameters.APPFORMER_JMS_CONNECTION_MODE,
+                           ConnectionMode.REMOTE.toString());
     }
 }

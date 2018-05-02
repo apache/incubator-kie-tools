@@ -15,70 +15,66 @@
  */
 package org.uberfire.commons.cluster;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Properties;
+
+import javax.naming.Context;
 
 public class ClusterParameters {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ClusterParameters.class);
+    public static final String APPFORMER_JMS_CONNECTION_MODE = "appformer-jms-connection-mode";
 
-    public static final String APPFORMER_CLUSTER = "appformer-cluster";
-    public static final String APPFORMER_DEFAULT_CLUSTER_CONFIGS = "appformer-default-cluster-configs";
-    public static final String APPFORMER_JMS_URL = "appformer-jms-url";
+    public static final String APPFORMER_PROVIDER_URL = "appformer-jms-url";
+
+    public static final String APPFORMER_INITIAL_CONTEXT_FACTORY = "appformer-initial-context-factory";
+    public static final String APPFORMER_JMS_CONNECTION_FACTORY = "appformer-jms-connection-factory";
+
     public static final String APPFORMER_JMS_USERNAME = "appformer-jms-username";
     public static final String APPFORMER_JMS_PASSWORD = "appformer-jms-password";
-    private Boolean appFormerClustered;
-    private String jmsURL;
-    private String jmsUserName;
-    private String jmsPassword;
+
+    private final Properties initialContextFactory = new Properties();
+    private final ConnectionMode connectionMode;
+    private final String providerUrl;
+    private final String jmsConnectionFactoryJndiName;
+    private final String jmsUserName;
+    private final String jmsPassword;
 
     public ClusterParameters() {
-
-        this.appFormerClustered = Boolean.valueOf(System.getProperty(APPFORMER_CLUSTER,
-                                                                     "false"));
-        if (appFormerClustered) {
-
-            Boolean defaultConfigs = Boolean.valueOf(System.getProperty(APPFORMER_DEFAULT_CLUSTER_CONFIGS,
-                                                                        "false"));
-            if (defaultConfigs) {
-                setupDefaultConfigs();
-            } else {
-                loadConfigs();
-            }
+        ConnectionMode connectionMode;
+        try {
+            connectionMode = ConnectionMode.valueOf(System.getProperty(APPFORMER_JMS_CONNECTION_MODE,
+                                                                       ConnectionMode.NONE.toString()));
+        } catch (final Throwable ignore) {
+            connectionMode = ConnectionMode.NONE;
         }
+        this.connectionMode = connectionMode;
+        this.initialContextFactory.put(Context.INITIAL_CONTEXT_FACTORY,
+                                       System.getProperty(APPFORMER_INITIAL_CONTEXT_FACTORY,
+                                                          "org.wildfly.naming.client.WildFlyInitialContextFactory"));
+        this.jmsConnectionFactoryJndiName = System.getProperty(APPFORMER_JMS_CONNECTION_FACTORY,
+                                                               "java:/ConnectionFactory");
+        this.providerUrl = System.getProperty(APPFORMER_PROVIDER_URL, "tcp://localhost:61616");
+        this.jmsUserName = System.getProperty(APPFORMER_JMS_USERNAME, "admin");
+        this.jmsPassword = System.getProperty(APPFORMER_JMS_PASSWORD, "admin");
     }
 
-    private void setupDefaultConfigs() {
-        this.jmsURL = "tcp://localhost:61616";
-        this.jmsUserName = "admin";
-        this.jmsPassword = "admin";
+    public boolean isAppFormerClustered() {
+        return this.connectionMode != ConnectionMode.NONE;
     }
 
-    private void loadConfigs() {
-        this.jmsURL = System.getProperty(APPFORMER_JMS_URL);
-        this.jmsUserName = System.getProperty(APPFORMER_JMS_USERNAME);
-        this.jmsPassword = System.getProperty(APPFORMER_JMS_PASSWORD);
-        if (jmsURL == null || jmsPassword == null || jmsPassword == null) {
-            throw new RuntimeException(buildErrorMessage().toString());
-        }
+    public ConnectionMode getConnectionMode() {
+        return connectionMode;
     }
 
-    private StringBuilder buildErrorMessage() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("There is a error on appFormer cluster configurations: ");
-        sb.append(APPFORMER_CLUSTER + ": " + appFormerClustered);
-        sb.append(APPFORMER_JMS_URL + ": " + jmsURL);
-        sb.append(APPFORMER_JMS_USERNAME + ": " + jmsPassword);
-        sb.append(APPFORMER_JMS_PASSWORD + ": " + jmsPassword);
-        return sb;
+    public String getProviderUrl() {
+        return providerUrl;
     }
 
-    public Boolean isAppFormerClustered() {
-        return appFormerClustered;
+    public Properties getInitialContextFactory() {
+        return initialContextFactory;
     }
 
-    public String getJmsURL() {
-        return jmsURL;
+    public String getJmsConnectionFactoryJndiName() {
+        return jmsConnectionFactoryJndiName;
     }
 
     public String getJmsUserName() {
