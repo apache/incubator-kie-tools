@@ -25,6 +25,10 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.Mult
 @MultiLineTextEditorBox
 public class TextEditorMultiLineBox extends AbstractTextEditorBox {
 
+    private static final double OFFSET_X = 90.0;
+
+    private static final double OFFSET_Y = 40.0;
+
     private final TextEditorBoxView view;
 
     @Inject
@@ -35,5 +39,15 @@ public class TextEditorMultiLineBox extends AbstractTextEditorBox {
     @Override
     protected TextEditorBoxView getView() {
         return view;
+    }
+
+    @Override
+    public double getDisplayOffsetX() {
+        return OFFSET_X;
+    }
+
+    @Override
+    public double getDisplayOffsetY() {
+        return OFFSET_Y;
     }
 }

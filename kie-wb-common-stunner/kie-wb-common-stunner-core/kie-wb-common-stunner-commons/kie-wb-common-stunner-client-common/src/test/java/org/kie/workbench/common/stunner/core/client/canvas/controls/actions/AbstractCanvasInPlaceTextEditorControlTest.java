@@ -163,6 +163,8 @@ public abstract class AbstractCanvasInPlaceTextEditorControlTest<C extends Abstr
         when(floatingView.setTimeOut(anyInt())).thenReturn(floatingView);
         when(floatingView.setX(anyDouble())).thenReturn(floatingView);
         when(floatingView.setY(anyDouble())).thenReturn(floatingView);
+        when(floatingView.setOffsetX(anyDouble())).thenReturn(floatingView);
+        when(floatingView.setOffsetY(anyDouble())).thenReturn(floatingView);
         when(textEditorBox.getElement()).thenReturn(textEditBoxElement);
         when(element.getUUID()).thenReturn(UUID);
         when(element.getContent()).thenReturn(shapeView);
@@ -442,6 +444,8 @@ public abstract class AbstractCanvasInPlaceTextEditorControlTest<C extends Abstr
 
         verify(floatingView).setX(eq(X));
         verify(floatingView).setY(eq(Y));
+        verify(floatingView).setOffsetX(eq(-textEditorBox.getDisplayOffsetX()));
+        verify(floatingView).setOffsetY(eq(-textEditorBox.getDisplayOffsetY()));
         verify(floatingView).show();
     }
 

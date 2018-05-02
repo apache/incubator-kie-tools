@@ -46,8 +46,6 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.TextExitEve
 import org.kie.workbench.common.stunner.core.client.shape.view.event.TextExitHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.uberfire.mvp.Command;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
@@ -165,16 +163,13 @@ public abstract class AbstractCanvasInPlaceTextEditorControl
         this.uuid = item.getUUID();
         enableShapeEdit();
         getTextEditorBox().show(item);
-        double[] size;
-        try {
-            size = GraphUtils.getNodeSize((View) item.getContent());
-        } catch (final ClassCastException e) {
-            size = null;
-        }
-        final double rx = null != size ? size[0] / 2 : 0d;
+        final double offsetX = getTextEditorBox().getDisplayOffsetX();
+        final double offsetY = getTextEditorBox().getDisplayOffsetY();
         getFloatingView()
-                .setX(x - rx)
+                .setX(x)
                 .setY(y)
+                .setOffsetX(-offsetX)
+                .setOffsetY(-offsetY)
                 .show();
         return this;
     }
