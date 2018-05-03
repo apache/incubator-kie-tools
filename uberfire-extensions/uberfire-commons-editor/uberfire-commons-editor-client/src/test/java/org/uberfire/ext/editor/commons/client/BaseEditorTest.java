@@ -509,6 +509,28 @@ public class BaseEditorTest {
         assertEquals(expectedTitle, actualWidget);
     }
 
+    @Test
+    public void testGetCurrentContentHashWhenContentSupplierRaisesAnException() {
+
+        // The `null` content causes an exception in the `getCurrentContentHash` method,
+        // since a `NullPointerException` is raised here: `getContentSupplier().get().hashCode()`.
+        fakeContent = null;
+
+        final Integer actualHash = editor.getCurrentContentHash();
+        final Integer expectedHash = null;
+
+        assertEquals(expectedHash, actualHash);
+    }
+
+    @Test
+    public void testGetCurrentContentHash() {
+
+        final Integer actualHash = editor.getCurrentContentHash();
+        final Integer expectedHash = fakeContent.hashCode();
+
+        assertEquals(expectedHash, actualHash);
+    }
+
     private DefaultMetadata fakeMetadata(final int hashCode) {
         return new DefaultMetadata() {
             @Override

@@ -648,16 +648,15 @@ public abstract class BaseEditor<T, M> {
     }
 
     boolean isContentDirty() {
+        return isDirty(getCurrentContentHash());
+    }
 
-        final T currentContent;
-
+    protected Integer getCurrentContentHash() {
         try {
-            currentContent = getContentSupplier().get();
+            return getContentSupplier().get().hashCode();
         } catch (final Exception e) {
-            return false;
+            return null;
         }
-
-        return isDirty(currentContent.hashCode());
     }
 
     protected Supplier<M> getMetadataSupplier() {
