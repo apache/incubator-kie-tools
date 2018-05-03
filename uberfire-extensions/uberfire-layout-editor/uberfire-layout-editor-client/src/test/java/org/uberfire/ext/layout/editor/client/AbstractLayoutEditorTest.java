@@ -109,7 +109,8 @@ public abstract class AbstractLayoutEditorTest {
                              emptyDropRowInstance,
                              componentDropEventMock,
                              layoutElementSelectEventMock,
-                             layoutElementUnselectEventMock) {
+                             layoutElementUnselectEventMock,
+                             dnDManager) {
             private UniqueIDGenerator idGenerator = new UniqueIDGenerator();
 
             @Override

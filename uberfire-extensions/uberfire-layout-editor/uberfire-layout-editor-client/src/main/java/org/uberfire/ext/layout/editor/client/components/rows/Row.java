@@ -288,6 +288,8 @@ public class Row implements LayoutEditorElement {
         return (drop) -> {
             if (dropFromMoveComponent(drop)) {
                 removeOldComponent(drop);
+                // notifying dndManager that the move has finished!
+                dndManager.endComponentMove();
             }
             notifyDrop(drop);
             Row.this.columns = updateColumns(drop,

@@ -301,8 +301,44 @@ public class RowTest extends AbstractLayoutEditorTest {
 
         verify(componentDropEventMock).fire(dropEventCaptor.capture());
         assertTrue(dropEventCaptor.getValue().getFromMove());
+        // after drop dnDManager is no longer on move state
+        assertFalse(dnDManager.isOnComponentMove());
+    }
+
+    @Test
+    public void testMoveElement() throws Exception {
+        loadLayout(SAMPLE_FULL_FLUID_LAYOUT);
+
+        Row row = getRowByIndex(FIRST_ROW);
+        assertThat(row.getColumns()).hasSize(4);
+
+        Column rowColumn = row.getColumns().get(0);
+        assertThat(rowColumn).isNotNull().isInstanceOf(ComponentColumn.class);
+
+        ComponentColumn column = (ComponentColumn) rowColumn;
+
+        dnDManager.dragComponent(column.getLayoutComponent(),
+                                 row.getId(),
+                                 column);
+        row.removeColumn(column);
+
+        assertThat(row.getColumns()).hasSize(3);
+
+        ArgumentCaptor<ComponentRemovedEvent> removeEventCaptor = ArgumentCaptor.forClass(ComponentRemovedEvent.class);
+        verify(componentRemoveEventMock,
+               times(1)).fire(removeEventCaptor.capture());
+
+        assertTrue(removeEventCaptor.getValue().getFromMove());
         assertTrue(dnDManager.isOnComponentMove());
 
+        // Dropping (we don't need any dropData for this test)
+        row.drop("", RowDrop.Orientation.BEFORE);
+        ArgumentCaptor<ComponentDropEvent> dropEventCaptor = ArgumentCaptor.forClass(ComponentDropEvent.class);
+
+        verify(componentDropEventMock).fire(dropEventCaptor.capture());
+        assertTrue(dropEventCaptor.getValue().getFromMove());
+        // after drop dnDManager is no longer on move state
+        assertFalse(dnDManager.isOnComponentMove());
     }
 
     @Test

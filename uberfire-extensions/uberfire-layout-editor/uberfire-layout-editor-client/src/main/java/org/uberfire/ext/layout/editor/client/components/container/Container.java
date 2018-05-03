@@ -70,6 +70,7 @@ public class Container implements LayoutEditorElement {
     private LayoutTemplate.Style pageStyle = LayoutTemplate.Style.FLUID;
     private Event<LayoutEditorElementSelectEvent> containerSelectEvent;
     private Event<LayoutEditorElementUnselectEvent> containerUnselectEvent;
+    private DnDManager dndManager;
     private boolean selectable = false;
     private boolean selected = false;
 
@@ -80,7 +81,8 @@ public class Container implements LayoutEditorElement {
                      Instance<EmptyDropRow> emptyDropRowInstance,
                      Event<ComponentDropEvent> componentDropEvent,
                      Event<LayoutEditorElementSelectEvent> containerSelectEvent,
-                     Event<LayoutEditorElementUnselectEvent> containerUnselectEvent) {
+                     Event<LayoutEditorElementUnselectEvent> containerUnselectEvent,
+                     DnDManager dndManager) {
         this.layoutCssHelper = layoutCssHelper;
         this.rowInstance = rowInstance;
         this.emptyDropRowInstance = emptyDropRowInstance;
@@ -88,6 +90,7 @@ public class Container implements LayoutEditorElement {
         this.componentDropEvent = componentDropEvent;
         this.containerSelectEvent = containerSelectEvent;
         this.containerUnselectEvent = containerUnselectEvent;
+        this.dndManager = dndManager;
         this.id = idGenerator.createContainerID();
     }
 
@@ -343,6 +346,8 @@ public class Container implements LayoutEditorElement {
         addNewRow(row,
                   dropRow,
                   updatedRows);
+        // notifying dndManager that the move has finished!
+        dndManager.endComponentMove();
     }
 
     private void removeOldComponent(Column column) {
