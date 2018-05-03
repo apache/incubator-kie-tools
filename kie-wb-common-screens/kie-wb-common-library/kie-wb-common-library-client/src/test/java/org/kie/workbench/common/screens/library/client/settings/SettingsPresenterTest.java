@@ -128,6 +128,15 @@ public class SettingsPresenterTest {
     }
 
     @Test
+    public void testSetupNoMainModule() {
+        doReturn(Optional.empty()).when(projectContext).getActiveModule();
+
+        presenter.setup();
+
+        verify(view, never()).showBusyIndicator();
+    }
+
+    @Test
     public void setupUsingCurrentSection() {
 
         final Section<ProjectScreenModel> section = newMockedSection();

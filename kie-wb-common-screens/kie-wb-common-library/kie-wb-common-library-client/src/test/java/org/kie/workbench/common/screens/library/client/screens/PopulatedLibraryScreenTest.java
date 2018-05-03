@@ -58,9 +58,6 @@ public class PopulatedLibraryScreenTest {
     private LibraryPlaces libraryPlaces;
 
     @Mock
-    private Event<ProjectDetailEvent> projectDetailEvent;
-
-    @Mock
     private LibraryService libraryService;
     private Caller<LibraryService> libraryServiceCaller;
 
@@ -97,7 +94,6 @@ public class PopulatedLibraryScreenTest {
 
         libraryScreen = spy(new PopulatedLibraryScreen(view,
                                                        libraryPlaces,
-                                                       projectDetailEvent,
                                                        libraryServiceCaller,
                                                        projectController,
                                                        projectContext,

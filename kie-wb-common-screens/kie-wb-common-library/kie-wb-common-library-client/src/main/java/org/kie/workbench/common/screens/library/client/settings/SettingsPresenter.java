@@ -131,8 +131,12 @@ public class SettingsPresenter {
     }
 
     void setupUsingCurrentSection() {
-
         view.init(this);
+
+        if (!projectContext.getActiveModule().isPresent()) {
+            return;
+        }
+
         view.showBusyIndicator();
 
         if (pathToPom != null) {

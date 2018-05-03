@@ -86,11 +86,6 @@ public class PopulatedLibraryView implements PopulatedLibraryScreen.View,
                          numberOfAssets);
     }
 
-    @Override
-    public String getLoadingAssetsMessage() {
-        return ts.format(LibraryConstants.LoadingAssets);
-    }
-
     @EventHandler("filter-text")
     public void filterTextChange(final KeyUpEvent event) {
         presenter.filterProjects(filterText.getValue());

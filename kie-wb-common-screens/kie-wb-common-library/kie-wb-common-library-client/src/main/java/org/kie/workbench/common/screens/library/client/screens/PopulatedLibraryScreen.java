@@ -63,14 +63,11 @@ public class PopulatedLibraryScreen {
 
         String getNumberOfAssetsMessage(int numberOfAssets);
 
-        String getLoadingAssetsMessage();
     }
 
     private View view;
 
     private LibraryPlaces libraryPlaces;
-
-    private Event<ProjectDetailEvent> projectDetailEvent;
 
     private Caller<LibraryService> libraryService;
 
@@ -86,7 +83,6 @@ public class PopulatedLibraryScreen {
     @Inject
     public PopulatedLibraryScreen(final View view,
                                   final LibraryPlaces libraryPlaces,
-                                  final Event<ProjectDetailEvent> projectDetailEvent,
                                   final Caller<LibraryService> libraryService,
                                   final ProjectController projectController,
                                   final WorkspaceProjectContext projectContext,
@@ -94,7 +90,6 @@ public class PopulatedLibraryScreen {
                                   final AddProjectButtonPresenter addProjectButtonPresenter) {
         this.view = view;
         this.libraryPlaces = libraryPlaces;
-        this.projectDetailEvent = projectDetailEvent;
         this.libraryService = libraryService;
         this.projectController = projectController;
         this.projectContext = projectContext;
