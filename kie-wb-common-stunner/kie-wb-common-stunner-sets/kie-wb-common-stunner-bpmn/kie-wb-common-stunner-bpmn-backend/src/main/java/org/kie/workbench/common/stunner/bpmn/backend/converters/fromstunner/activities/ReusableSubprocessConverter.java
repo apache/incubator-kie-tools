@@ -54,7 +54,7 @@ public class ReusableSubprocessConverter {
         p.setCalledElement(executionSet.getCalledElement().getValue());
         p.setAsync(executionSet.getIsAsync().getValue());
         p.setIndependent(executionSet.getIndependent().getValue());
-        p.setWaitForCompletion(executionSet.getIndependent().getValue());
+        p.setWaitForCompletion(executionSet.getWaitForCompletion().getValue());
 
         p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
 

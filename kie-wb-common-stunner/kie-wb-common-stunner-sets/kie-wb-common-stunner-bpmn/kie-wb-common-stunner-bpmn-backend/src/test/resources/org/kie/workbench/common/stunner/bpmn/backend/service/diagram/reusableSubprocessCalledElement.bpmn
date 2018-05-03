@@ -9,7 +9,7 @@
   <bpmn2:process id="Evaluation.ReusableSubprocess" drools:packageName="org.jbpm" drools:version="1.0" name="ReusableSubprocess" isExecutable="true">
     <bpmn2:property id="pv1" itemSubjectRef="_pv1Item"/>
     <bpmn2:property id="pv2" itemSubjectRef="_pv2Item"/>
-    <bpmn2:callActivity id="_FC6D8570-8C67-40C2-8B7B-953DE15765FB" drools:selectable="true" drools:independent="false" drools:waitForCompletion="false" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="my subprocess" calledElement="my-called-element">
+    <bpmn2:callActivity id="_FC6D8570-8C67-40C2-8B7B-953DE15765FB" drools:selectable="true" drools:independent="false" drools:waitForCompletion="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="my subprocess" calledElement="my-called-element">
       <bpmn2:extensionElements>
         <drools:metaData name="elementname">
           <drools:metaValue><![CDATA[my subprocess]]></drools:metaValue>
