@@ -19,11 +19,14 @@ package org.kie.workbench.common.screens.library.client.screens.project;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.Input;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.common.client.dom.TextArea;
@@ -124,6 +127,24 @@ public class AddProjectPopUpView implements AddProjectPopUpPresenter.View,
     @Override
     public void setDescription(String description) {
         this.description.setValue(description);
+    }
+    
+    @Override
+    public void setGroupId(String groupId) {
+        this.groupId.setValue(groupId);
+        
+    }
+
+    @Override
+    public void setArtifactId(String artifactId) {
+        this.artifactId.setValue(artifactId); 
+        
+    }
+
+    @Override
+    public void setVersion(String version) {
+        this.version.setValue(version);
+        
     }
 
     @Override
@@ -269,9 +290,13 @@ public class AddProjectPopUpView implements AddProjectPopUpPresenter.View,
         } else {
             advancedOptions.setHidden(true);
             showHideAdvancedOptions.setTextContent(ts.format(LibraryConstants.ShowAdvancedOptions));
-            groupId.setValue("");
-            artifactId.setValue("");
-            version.setValue("");
+            presenter.restoreDefaultAdvancedOptions();
         }
     }
+    
+    @EventHandler("name")
+    public void setProjectNameAndArtifactId(final KeyUpEvent keyUpEvent) {
+        artifactId.setValue(name.getValue());
+    }
+
 }

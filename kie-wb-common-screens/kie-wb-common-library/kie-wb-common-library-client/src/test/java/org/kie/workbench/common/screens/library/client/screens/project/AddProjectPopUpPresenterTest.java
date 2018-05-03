@@ -158,10 +158,11 @@ public class AddProjectPopUpPresenterTest {
 
         presenter.add();
 
-        verify(libraryService).createProject("test",
-                                             organizationalUnit,
-                                             "description",
-                                             DeploymentMode.VALIDATED);
+        final ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass(POM.class);
+
+        verify(libraryService).createProject(eq(organizationalUnit),
+                                             pomArgumentCaptor.capture(),
+                                             eq(DeploymentMode.VALIDATED));
     }
 
     @Test
@@ -191,6 +192,45 @@ public class AddProjectPopUpPresenterTest {
         assertEquals("groupId", pom.getGav().getGroupId());
         assertEquals("artifactId", pom.getGav().getArtifactId());
         assertEquals("version", pom.getGav().getVersion());
+        
+        //Checking default kie-server options
+        assertEquals("kjar", pom.getPackaging());
+        assertEquals("org.kie", pom.getBuild().getPlugins().get(0).getGroupId());
+        assertEquals("kie-maven-plugin", pom.getBuild().getPlugins().get(0).getArtifactId());
+    }
+    
+    @Test
+    public void newWorkbenchProjectWithQuickSettingsIsCreated() throws Exception {
+        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+        when(projectContext.getActiveOrganizationalUnit()).thenReturn(Optional.of(organizationalUnit));
+
+        doReturn("test").when(view).getName();
+        doReturn("description").when(view).getDescription();
+        doReturn("groupId").when(view).getGroupId();
+        doReturn("artifactId").when(view).getArtifactId();
+        doReturn("version").when(view).getVersion();
+        doReturn(false).when(view).isAdvancedOptionsSelected();
+
+        presenter.add();
+
+        final ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass(POM.class);
+
+        verify(libraryService).createProject(eq(organizationalUnit),
+                                             pomArgumentCaptor.capture(),
+                                             eq(DeploymentMode.VALIDATED));
+        
+        final POM pom = pomArgumentCaptor.getValue();
+
+        assertEquals("test", pom.getName());
+        assertEquals("description", pom.getDescription());
+        assertEquals("groupId", pom.getGav().getGroupId());
+        assertEquals("artifactId", pom.getGav().getArtifactId());
+        assertEquals("version", pom.getGav().getVersion());
+        
+        //Checking default kie-server options
+        assertEquals("kjar", pom.getPackaging());
+        assertEquals("org.kie", pom.getBuild().getPlugins().get(0).getGroupId());
+        assertEquals("kie-maven-plugin", pom.getBuild().getPlugins().get(0).getArtifactId());
     }
 
     @Test
@@ -212,9 +252,8 @@ public class AddProjectPopUpPresenterTest {
         doReturn("test").when(view).getName();
         doReturn("description").when(view).getDescription();
 
-        doThrow(new FileAlreadyExistsException()).when(libraryService).createProject(anyString(),
+        doThrow(new FileAlreadyExistsException()).when(libraryService).createProject(any(),
                                                                                      any(),
-                                                                                     anyString(),
                                                                                      any());
         doAnswer(invocationOnMock -> ((Throwable) invocationOnMock.getArguments()[0]).getCause() instanceof FileAlreadyExistsException)
                 .when(presenter).isDuplicatedProjectName(any());

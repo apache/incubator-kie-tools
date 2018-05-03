@@ -38,6 +38,8 @@ import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
+import org.kie.workbench.common.screens.projecteditor.client.util.KiePOMDefaultOptions;
+import org.kie.workbench.common.screens.projecteditor.client.wizard.POMBuilder;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.callbacks.CommandWithThrowableDrivenErrorCallback;
 import org.uberfire.client.mvp.UberElement;
@@ -65,6 +67,12 @@ public class AddProjectPopUpPresenter {
         String getVersion();
 
         void setDescription(String description);
+        
+        void setGroupId(String groupId);
+        
+        void setArtifactId(String artifactId);
+        
+        void setVersion(String version);
 
         boolean isAdvancedOptionsSelected();
 
@@ -96,7 +104,7 @@ public class AddProjectPopUpPresenter {
 
         String getInvalidVersionMessage();
     }
-
+    
     private Caller<LibraryService> libraryService;
 
     private BusyIndicatorView busyIndicatorView;
@@ -167,6 +175,9 @@ public class AddProjectPopUpPresenter {
     public void show() {
         libraryPreferences.load(loadedLibraryPreferences -> {
                                     view.setDescription(loadedLibraryPreferences.getProjectPreferences().getDescription());
+                                    view.setVersion(loadedLibraryPreferences.getProjectPreferences().getVersion());
+                                    view.setGroupId(projectContext.getActiveOrganizationalUnit().isPresent() ? projectContext.getActiveOrganizationalUnit().get().getDefaultGroupId() 
+                                                                                                             : loadedLibraryPreferences.getOrganizationalUnitPreferences().getGroupId());
                                     view.show();
                                 },
                                 error -> {
@@ -185,7 +196,7 @@ public class AddProjectPopUpPresenter {
         final String groupId = view.getGroupId();
         final String artifactId = view.getArtifactId();
         final String version = view.getVersion();
-
+        
         validateFields(name,
                        groupId,
                        artifactId,
@@ -193,26 +204,16 @@ public class AddProjectPopUpPresenter {
                        () -> {
                            final ParameterizedCommand<WorkspaceProject> successCallback = getSuccessCallback();
                            final ErrorCallback<?> errorCallback = getErrorCallback();
-                           if (view.isAdvancedOptionsSelected()) {
-
-                               final POM pom = new POM(new GAV(groupId,
-                                                               artifactId,
-                                                               version));
-                               pom.setName(name);
-                               pom.setDescription(description);
-                               libraryService.call((WorkspaceProject project) -> successCallback.execute(project),
-                                                   errorCallback).createProject(projectContext.getActiveOrganizationalUnit()
-                                                                                              .orElseThrow(() -> new IllegalStateException("Cannot create new project without an active organizational unit.")),
-                                                                                pom,
-                                                                                mode);
-                           } else {
-                               libraryService.call((WorkspaceProject project) -> successCallback.execute(project),
-                                                   errorCallback).createProject(name,
-                                                                                projectContext.getActiveOrganizationalUnit()
-                                                                                              .orElseThrow(() -> new IllegalStateException("Cannot create new project without an active organizational unit.")),
-                                                                                description,
-                                                                                mode);
-                           }
+                           final POM pom = setDefaultPOM(groupId,
+                                                         artifactId,
+                                                         version,
+                                                         name, 
+                                                         description);
+                           libraryService.call((WorkspaceProject project) -> successCallback.execute(project),
+                                               errorCallback).createProject(projectContext.getActiveOrganizationalUnit()
+                                                                                          .orElseThrow(() -> new IllegalStateException("Cannot create new project without an active organizational unit.")),
+                                                                            pom,
+                                                                            mode);
                        });
     }
 
@@ -376,5 +377,30 @@ public class AddProjectPopUpPresenter {
 
     public void cancel() {
         view.hide();
+    }
+    
+    public void restoreDefaultAdvancedOptions() {
+        libraryPreferences.load(loadedLibraryPreferences -> {
+            view.setDescription(loadedLibraryPreferences.getProjectPreferences().getDescription());
+            view.setVersion(loadedLibraryPreferences.getProjectPreferences().getVersion());
+            view.setGroupId(projectContext.getActiveOrganizationalUnit().isPresent() ? projectContext.getActiveOrganizationalUnit().get().getDefaultGroupId() 
+                                                                                     : loadedLibraryPreferences.getOrganizationalUnitPreferences().getGroupId());
+        },
+        error -> {
+        });
+    }
+    
+    private POM setDefaultPOM(String groupId, String artifactId, String version, String name, String description) {
+        final POM pom = new POM(new GAV(groupId,
+                                        artifactId,
+                                        version));
+        pom.setName(name);
+        pom.setDescription(description);
+        
+        POMBuilder pomBuilder = new POMBuilder(pom);
+        KiePOMDefaultOptions pomDefaultOptions = new KiePOMDefaultOptions();
+        pomBuilder.setBuildPlugins(pomDefaultOptions.getBuildPlugins());
+        
+        return pomBuilder.build();
     }
 }
