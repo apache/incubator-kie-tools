@@ -198,6 +198,9 @@ public class Bpmn2JsonUnmarshaller {
     public static final String defaultFontColor = "#000000";
     public static final String defaultSequenceflowColor = "#000000";
 
+    public static final String exporterName = "jBPM Process Modeler";
+    public static final String exporterVersion = "1.0";
+
     public static final String defaultRelationshipType = "BPSimData";
 
     // Variables for setting UserTask name to "Task_n" if empty
@@ -336,8 +339,8 @@ public class Bpmn2JsonUnmarshaller {
             // do the unmarshalling now:
             Definitions def = (Definitions) unmarshallItem(parser,
                                                            preProcessingData);
-            def.setExporter("jBPM Designer");
-            def.setExporterVersion("6.2.0");
+            def.setExporter(exporterName);
+            def.setExporterVersion(exporterVersion);
             revisitUserTasks(def);
             revisitServiceTasks(def);
             revisitMessages(def);
