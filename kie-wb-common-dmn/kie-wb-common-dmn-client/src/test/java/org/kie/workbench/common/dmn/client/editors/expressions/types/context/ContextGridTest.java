@@ -372,14 +372,14 @@ public class ContextGridTest {
     public void testGetItemsRowNumberColumn() {
         setupGrid(0);
 
-        assertDefaultListItems(grid.getItems(0, 0));
+        assertDefaultListItems(grid.getItems(0, 0), true);
     }
 
     @Test
     public void testOnItemSelectedNameColumn() {
         setupGrid(0);
 
-        assertDefaultListItems(grid.getItems(0, 1));
+        assertDefaultListItems(grid.getItems(0, 1), true);
     }
 
     @Test
@@ -387,7 +387,7 @@ public class ContextGridTest {
         setupGrid(0);
 
         //The default model from ContextEditorDefinition has an undefined expression at (0, 2)
-        assertDefaultListItems(grid.getItems(0, 2));
+        assertDefaultListItems(grid.getItems(0, 2), true);
     }
 
     @Test
@@ -401,11 +401,12 @@ public class ContextGridTest {
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 2);
 
         assertThat(items.size()).isEqualTo(5);
-        assertDefaultListItems(items.subList(0, 3));
+        assertDefaultListItems(items.subList(0, 3), true);
 
         assertThat(items.get(DIVIDER)).isInstanceOf(HasListSelectorControl.ListSelectorDividerItem.class);
         assertListSelectorItem(items.get(CLEAR_EXPRESSION_TYPE),
-                               DMNEditorConstants.ExpressionEditor_Clear);
+                               DMNEditorConstants.ExpressionEditor_Clear,
+                               true);
 
         ((HasListSelectorControl.ListSelectorTextItem) items.get(CLEAR_EXPRESSION_TYPE)).getCommand().execute();
         verify(cellEditorControls).hide();
@@ -413,21 +414,71 @@ public class ContextGridTest {
                                               any(ClearExpressionTypeCommand.class));
     }
 
-    private void assertDefaultListItems(final List<HasListSelectorControl.ListSelectorItem> items) {
+    @Test
+    public void testGetItemsWithCellSelectionsCoveringMultipleRows() {
+        setupGrid(0);
+
+        addContextEntry(0);
+        grid.getModel().selectCell(0, 0);
+        grid.getModel().selectCell(1, 0);
+
+        assertDefaultListItems(grid.getItems(0, 0), false);
+    }
+
+    @Test
+    public void testGetItemsWithCellSelectionsCoveringMultipleColumns() {
+        setupGrid(0);
+
+        grid.getModel().selectCell(0, 0);
+        grid.getModel().selectCell(0, 1);
+
+        assertDefaultListItems(grid.getItems(0, 0), true);
+    }
+
+    @Test
+    public void testOnItemSelectedExpressionColumnDefinedExpressionTypeWithCellSelectionsCoveringMultipleRows() {
+        setupGrid(0);
+
+        addContextEntry(0);
+        grid.getModel().selectCell(0, 0);
+        grid.getModel().selectCell(1, 0);
+
+        //Set an editor for expression at (0, 2)
+        final BaseExpressionGrid editor = mock(BaseExpressionGrid.class);
+        grid.getModel().setCellValue(0, 2, new ExpressionCellValue(Optional.of(editor)));
+
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 2);
+
+        assertThat(items.size()).isEqualTo(5);
+        assertDefaultListItems(items.subList(0, 3), false);
+
+        assertThat(items.get(DIVIDER)).isInstanceOf(HasListSelectorControl.ListSelectorDividerItem.class);
+        assertListSelectorItem(items.get(CLEAR_EXPRESSION_TYPE),
+                               DMNEditorConstants.ExpressionEditor_Clear,
+                               false);
+    }
+
+    private void assertDefaultListItems(final List<HasListSelectorControl.ListSelectorItem> items,
+                                        final boolean enabled) {
         assertThat(items.size()).isEqualTo(3);
         assertListSelectorItem(items.get(INSERT_ROW_ABOVE),
-                               DMNEditorConstants.ContextEditor_InsertContextEntryAbove);
+                               DMNEditorConstants.ContextEditor_InsertContextEntryAbove,
+                               enabled);
         assertListSelectorItem(items.get(INSERT_ROW_BELOW),
-                               DMNEditorConstants.ContextEditor_InsertContextEntryBelow);
+                               DMNEditorConstants.ContextEditor_InsertContextEntryBelow,
+                               enabled);
         assertListSelectorItem(items.get(DELETE_ROW),
-                               DMNEditorConstants.ContextEditor_DeleteContextEntry);
+                               DMNEditorConstants.ContextEditor_DeleteContextEntry,
+                               enabled && grid.getModel().getRowCount() > 2);
     }
 
     private void assertListSelectorItem(final HasListSelectorControl.ListSelectorItem item,
-                                        final String text) {
+                                        final String text,
+                                        final boolean enabled) {
         assertThat(item).isInstanceOf(HasListSelectorControl.ListSelectorTextItem.class);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) item;
         assertThat(ti.getText()).isEqualTo(text);
+        assertThat(ti.isEnabled()).isEqualTo(enabled);
     }
 
     @Test
@@ -512,13 +563,7 @@ public class ContextGridTest {
     public void testAddContextEntry() {
         setupGrid(0);
 
-        grid.addContextEntry(0);
-
-        verify(sessionCommandManager).execute(eq(canvasHandler),
-                                              addContextEntryCommandCaptor.capture());
-
-        final AddContextEntryCommand addContextEntryCommand = addContextEntryCommandCaptor.getValue();
-        addContextEntryCommand.execute(canvasHandler);
+        addContextEntry(0);
 
         verify(parent).onResize();
         verify(gridPanel).refreshScrollPosition();
@@ -529,6 +574,15 @@ public class ContextGridTest {
         redrawCommand.execute();
 
         verify(gridLayer).draw();
+    }
+
+    private void addContextEntry(final int index) {
+        grid.addContextEntry(index);
+
+        verify(sessionCommandManager).execute(eq(canvasHandler), addContextEntryCommandCaptor.capture());
+
+        final AddContextEntryCommand addContextEntryCommand = addContextEntryCommandCaptor.getValue();
+        addContextEntryCommand.execute(canvasHandler);
     }
 
     @Test

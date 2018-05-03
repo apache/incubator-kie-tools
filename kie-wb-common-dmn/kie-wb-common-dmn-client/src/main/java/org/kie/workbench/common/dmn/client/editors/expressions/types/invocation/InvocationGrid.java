@@ -41,6 +41,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Exp
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.NameColumnHeaderMetaData;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.SelectionUtils;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
@@ -184,20 +185,23 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
     public List<ListSelectorItem> getItems(final int uiRowIndex,
                                            final int uiColumnIndex) {
         final List<ListSelectorItem> items = new ArrayList<>();
+        final boolean isMultiRow = SelectionUtils.isMultiRow(model);
+        final boolean isMultiSelect = SelectionUtils.isMultiSelect(model);
+
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.InvocationEditor_InsertParameterAbove),
-                                             true,
+                                             !isMultiRow,
                                              () -> {
                                                  cellEditorControls.hide();
                                                  expression.ifPresent(e -> addParameterBinding(uiRowIndex));
                                              }));
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.InvocationEditor_InsertParameterBelow),
-                                             true,
+                                             !isMultiRow,
                                              () -> {
                                                  cellEditorControls.hide();
                                                  expression.ifPresent(e -> addParameterBinding(uiRowIndex + 1));
                                              }));
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.InvocationEditor_DeleteParameter),
-                                             model.getRowCount() > 1,
+                                             !isMultiRow && model.getRowCount() > 1,
                                              () -> {
                                                  cellEditorControls.hide();
                                                  deleteParameterBinding(uiRowIndex);
@@ -221,7 +225,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
 
         items.add(new ListSelectorDividerItem());
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.ExpressionEditor_Clear),
-                                             true,
+                                             !isMultiSelect,
                                              () -> {
                                                  cellEditorControls.hide();
                                                  clearExpressionType(uiRowIndex);

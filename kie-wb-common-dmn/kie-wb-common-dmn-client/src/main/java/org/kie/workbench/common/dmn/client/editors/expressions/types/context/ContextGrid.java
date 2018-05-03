@@ -35,6 +35,7 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.context.Cl
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.DeleteContextEntryCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.SelectionUtils;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -183,20 +184,23 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
             return items;
         }
 
+        final boolean isMultiRow = SelectionUtils.isMultiRow(model);
+        final boolean isMultiSelect = SelectionUtils.isMultiSelect(model);
+
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.ContextEditor_InsertContextEntryAbove),
-                                             true,
+                                             !isMultiRow,
                                              () -> {
                                                  cellEditorControls.hide();
                                                  expression.ifPresent(e -> addContextEntry(uiRowIndex));
                                              }));
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.ContextEditor_InsertContextEntryBelow),
-                                             true,
+                                             !isMultiRow,
                                              () -> {
                                                  cellEditorControls.hide();
                                                  expression.ifPresent(e -> addContextEntry(uiRowIndex + 1));
                                              }));
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.ContextEditor_DeleteContextEntry),
-                                             model.getRowCount() > 2 && uiRowIndex < model.getRowCount() - 1,
+                                             !isMultiRow && model.getRowCount() > 2 && uiRowIndex < model.getRowCount() - 1,
                                              () -> {
                                                  cellEditorControls.hide();
                                                  deleteContextEntry(uiRowIndex);
@@ -220,7 +224,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
 
         items.add(new ListSelectorDividerItem());
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.ExpressionEditor_Clear),
-                                             true,
+                                             !isMultiSelect,
                                              () -> {
                                                  cellEditorControls.hide();
                                                  clearExpressionType(uiRowIndex);

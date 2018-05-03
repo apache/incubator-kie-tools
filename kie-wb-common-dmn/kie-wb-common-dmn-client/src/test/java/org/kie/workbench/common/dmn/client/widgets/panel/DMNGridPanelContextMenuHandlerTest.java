@@ -96,6 +96,9 @@ public class DMNGridPanelContextMenuHandlerTest {
     private CellEditorControlsView.Presenter cellEditorControls;
 
     @Mock
+    private DMNGridPanelCellSelectionHandler cellSelectionHandler;
+
+    @Mock
     private HasCellEditorControls.Editor editor;
 
     private DMNGridPanelContextMenuHandler handler;
@@ -109,7 +112,8 @@ public class DMNGridPanelContextMenuHandlerTest {
     @SuppressWarnings("unchecked")
     public void setup() {
         this.handler = new DMNGridPanelContextMenuHandler(gridLayer,
-                                                          cellEditorControls);
+                                                          cellEditorControls,
+                                                          cellSelectionHandler);
 
         when(event.getNativeEvent()).thenReturn(nativeEvent);
         when(event.getRelativeElement()).thenReturn(element);
@@ -226,11 +230,11 @@ public class DMNGridPanelContextMenuHandlerTest {
 
         handler.onContextMenu(event);
 
-        verify(selectionStrategy).handleSelection(eq(gridWidget.getModel()),
-                                                  eq(1),
-                                                  eq(0),
-                                                  eq(false),
-                                                  eq(false));
+        verify(cellSelectionHandler).selectCellIfRequired(eq(1),
+                                                          eq(0),
+                                                          eq(gridWidget),
+                                                          eq(false),
+                                                          eq(false));
     }
 
     @Test

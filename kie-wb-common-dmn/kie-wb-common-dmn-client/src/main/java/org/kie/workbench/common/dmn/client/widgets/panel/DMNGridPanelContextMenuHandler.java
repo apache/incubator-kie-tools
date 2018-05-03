@@ -18,7 +18,6 @@ package org.kie.workbench.common.dmn.client.widgets.panel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -33,13 +32,9 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorCo
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
-import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.model.GridData.SelectedCell;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionStrategy;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RangeSelectionStrategy;
 
 @DMNEditor
 @ApplicationScoped
@@ -47,6 +42,7 @@ public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
 
     private DMNGridLayer gridLayer;
     private CellEditorControlsView.Presenter cellEditorControls;
+    private DMNGridPanelCellSelectionHandler cellSelectionHandler;
 
     private class CandidateGridWidget {
 
@@ -75,9 +71,11 @@ public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
 
     @Inject
     public DMNGridPanelContextMenuHandler(final @DMNEditor DMNGridLayer gridLayer,
-                                          final CellEditorControlsView.Presenter cellEditorControls) {
+                                          final CellEditorControlsView.Presenter cellEditorControls,
+                                          final DMNGridPanelCellSelectionHandler cellSelectionHandler) {
         this.gridLayer = gridLayer;
         this.cellEditorControls = cellEditorControls;
+        this.cellSelectionHandler = cellSelectionHandler;
     }
 
     @Override
@@ -85,10 +83,10 @@ public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
     public void onContextMenu(final ContextMenuEvent event) {
         event.preventDefault();
         event.stopPropagation();
-        final boolean isShiftKeyDown = event.getNativeEvent().getShiftKey();
-        final boolean isControlKeyDown = event.getNativeEvent().getCtrlKey();
         final int canvasX = getRelativeX(event);
         final int canvasY = getRelativeY(event);
+        final boolean isShiftKeyDown = event.getNativeEvent().getShiftKey();
+        final boolean isControlKeyDown = event.getNativeEvent().getCtrlKey();
 
         final List<CandidateGridWidget> candidateGridWidgets = new ArrayList<>();
         for (GridWidget gridWidget : gridLayer.getGridWidgets()) {
@@ -132,6 +130,13 @@ public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
         final HasCellEditorControls hasCellEditorControls = candidateGridWidget.hasCellEditorControls;
         final Optional<HasCellEditorControls.Editor> editor = hasCellEditorControls.getEditor();
 
+        //First select cell, if required, as selections are examined by HasCellEditorControls.Editor#bind
+        cellSelectionHandler.selectCellIfRequired(uiRowIndex,
+                                                  uiColumnIndex,
+                                                  gridWidget,
+                                                  isShiftKeyDown,
+                                                  isControlKeyDown);
+
         editor.ifPresent(e -> {
             e.bind(gridWidget,
                    uiRowIndex,
@@ -140,20 +145,6 @@ public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
                                     (int) (ap.getX() + gridWidget.getAbsoluteX()),
                                     (int) (ap.getY() + gridWidget.getAbsoluteY()));
         });
-
-        //If the right-click did not occur in an already selected cell, ensure the cell is selected
-        final GridData gridData = gridWidget.getModel();
-        final GridColumn<?> column = gridData.getColumns().get(uiColumnIndex);
-        final int modelColumnIndex = column.getIndex();
-        final Stream<SelectedCell> modelColumnSelectedCells = gridData.getSelectedCells().stream().filter(sc -> sc.getColumnIndex() == modelColumnIndex);
-        final boolean isContextMenuCellSelectedCell = modelColumnSelectedCells.map(SelectedCell::getRowIndex).anyMatch(ri -> ri == uiRowIndex);
-        if (!isContextMenuCellSelectedCell) {
-            selectCell(uiRowIndex,
-                       uiColumnIndex,
-                       gridWidget,
-                       isShiftKeyDown,
-                       isControlKeyDown);
-        }
     }
 
     private int getRelativeX(final ContextMenuEvent event) {
@@ -166,37 +157,5 @@ public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
         final NativeEvent e = event.getNativeEvent();
         final Element target = event.getRelativeElement();
         return e.getClientY() - target.getAbsoluteTop() + target.getScrollTop() + target.getOwnerDocument().getScrollTop();
-    }
-
-    private void selectCell(final int uiRowIndex,
-                            final int uiColumnIndex,
-                            final GridWidget gridWidget,
-                            final boolean isShiftKeyDown,
-                            final boolean isControlKeyDown) {
-        // Lookup CellSelectionManager for cell
-        final GridData gridModel = gridWidget.getModel();
-
-        CellSelectionStrategy selectionStrategy;
-        final GridCell<?> cell = gridModel.getCell(uiRowIndex,
-                                                   uiColumnIndex);
-        if (cell == null) {
-            selectionStrategy = RangeSelectionStrategy.INSTANCE;
-        } else {
-            selectionStrategy = cell.getSelectionStrategy();
-        }
-        if (selectionStrategy == null) {
-            return;
-        }
-
-        gridLayer.select(gridWidget);
-
-        // Handle selection
-        if (selectionStrategy.handleSelection(gridModel,
-                                              uiRowIndex,
-                                              uiColumnIndex,
-                                              isShiftKeyDown,
-                                              isControlKeyDown)) {
-            gridWidget.getLayer().batch();
-        }
     }
 }

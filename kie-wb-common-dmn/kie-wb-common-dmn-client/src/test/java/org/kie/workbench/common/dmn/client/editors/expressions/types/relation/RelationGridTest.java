@@ -497,6 +497,32 @@ public class RelationGridTest {
         assertListSelectorItemEnabled(1, 0, DELETE_ROW, true);
     }
 
+    @Test
+    public void testGetItemsWithCellSelectionsCoveringMultipleRows() {
+        setupGrid(0);
+
+        addRow(0);
+        grid.getModel().selectCell(0, 0);
+        grid.getModel().selectCell(1, 0);
+
+        assertListSelectorItemEnabled(0, 0, INSERT_ROW_ABOVE, false);
+        assertListSelectorItemEnabled(0, 0, INSERT_ROW_BELOW, false);
+        assertListSelectorItemEnabled(0, 0, DELETE_ROW, false);
+    }
+
+    @Test
+    public void testGetItemsWithCellSelectionsCoveringMultipleColumns() {
+        setupGrid(0);
+
+        addColumn(0);
+        grid.getModel().selectCell(0, 0);
+        grid.getModel().selectCell(0, 1);
+
+        assertListSelectorItemEnabled(0, 0, INSERT_COLUMN_BEFORE, false);
+        assertListSelectorItemEnabled(0, 0, INSERT_COLUMN_AFTER, false);
+        assertListSelectorItemEnabled(0, 0, DELETE_COLUMN, false);
+    }
+
     private void assertListSelectorItemEnabled(final int uiRowIndex,
                                                final int uiColumnIndex,
                                                final int listItemIndex,
@@ -510,16 +536,21 @@ public class RelationGridTest {
     public void testAddColumn() throws Exception {
         setupGrid(0);
 
-        grid.addColumn(0);
+        addColumn(0);
 
-        verify(sessionCommandManager).execute(eq(canvasHandler), addColumnCommand.capture());
-
-        addColumnCommand.getValue().execute(canvasHandler);
         verify(parent).proposeContainingColumnWidth(grid.getWidth() + grid.getPadding() * 2);
         verify(parentGridColumn).setWidth(grid.getWidth() + grid.getPadding() * 2);
         verify(gridLayer).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
+    }
+
+    private void addColumn(final int index) {
+        grid.addColumn(index);
+
+        verify(sessionCommandManager).execute(eq(canvasHandler), addColumnCommand.capture());
+
+        addColumnCommand.getValue().execute(canvasHandler);
     }
 
     @Test
@@ -544,14 +575,19 @@ public class RelationGridTest {
     public void testAddRow() throws Exception {
         setupGrid(0);
 
-        grid.addRow(0);
+        addRow(0);
+
+        verify(gridLayer).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
+        verify(gridPanel).refreshScrollPosition();
+        verify(gridPanel).updatePanelSize();
+    }
+
+    private void addRow(final int index) {
+        grid.addRow(index);
 
         verify(sessionCommandManager).execute(eq(canvasHandler), addRowCommand.capture());
 
         addRowCommand.getValue().execute(canvasHandler);
-        verify(gridLayer).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
-        verify(gridPanel).refreshScrollPosition();
-        verify(gridPanel).updatePanelSize();
     }
 
     @Test

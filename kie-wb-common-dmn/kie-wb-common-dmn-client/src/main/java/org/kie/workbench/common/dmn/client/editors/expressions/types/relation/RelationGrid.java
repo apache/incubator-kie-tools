@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.A
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationRowCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationColumnCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationRowCommand;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.SelectionUtils;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
@@ -160,39 +161,42 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
     public java.util.List<ListSelectorItem> getItems(final int uiRowIndex,
                                                      final int uiColumnIndex) {
         final java.util.List<ListSelectorItem> items = new ArrayList<>();
+        final boolean isMultiRow = SelectionUtils.isMultiRow(model);
+        final boolean isMultiColumn = SelectionUtils.isMultiColumn(model);
+
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_InsertColumnBefore),
-                                             uiColumnIndex > 0,
+                                             !isMultiColumn && uiColumnIndex > 0,
                                              () -> {
                                                  cellEditorControls.hide();
                                                  expression.ifPresent(e -> addColumn(uiColumnIndex));
                                              }));
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_InsertColumnAfter),
-                                             uiColumnIndex > 0,
+                                             !isMultiColumn && uiColumnIndex > 0,
                                              () -> {
                                                  cellEditorControls.hide();
                                                  expression.ifPresent(e -> addColumn(uiColumnIndex + 1));
                                              }));
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_DeleteColumn),
-                                             model.getColumnCount() - RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT > 1 && uiColumnIndex > 0,
+                                             !isMultiColumn && model.getColumnCount() - RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT > 1 && uiColumnIndex > 0,
                                              () -> {
                                                  cellEditorControls.hide();
                                                  expression.ifPresent(e -> deleteColumn(uiColumnIndex));
                                              }));
         items.add(new ListSelectorDividerItem());
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_InsertRowAbove),
-                                             true,
+                                             !isMultiRow,
                                              () -> {
                                                  cellEditorControls.hide();
                                                  expression.ifPresent(e -> addRow(uiRowIndex));
                                              }));
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_InsertRowBelow),
-                                             true,
+                                             !isMultiRow,
                                              () -> {
                                                  cellEditorControls.hide();
                                                  expression.ifPresent(e -> addRow(uiRowIndex + 1));
                                              }));
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_DeleteRow),
-                                             model.getRowCount() > 1,
+                                             !isMultiRow && model.getRowCount() > 1,
                                              () -> {
                                                  cellEditorControls.hide();
                                                  expression.ifPresent(e -> deleteRow(uiRowIndex));

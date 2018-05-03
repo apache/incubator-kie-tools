@@ -377,14 +377,14 @@ public class InvocationGridTest {
     public void testGetItemsRowNumberColumn() {
         setupGrid(0);
 
-        assertDefaultListItems(grid.getItems(0, 0));
+        assertDefaultListItems(grid.getItems(0, 0), true);
     }
 
     @Test
     public void testOnItemSelectedNameColumn() {
         setupGrid(0);
 
-        assertDefaultListItems(grid.getItems(0, 1));
+        assertDefaultListItems(grid.getItems(0, 1), true);
     }
 
     @Test
@@ -392,7 +392,7 @@ public class InvocationGridTest {
         setupGrid(0);
 
         //The default model from ContextEditorDefinition has an undefined expression at (0, 2)
-        assertDefaultListItems(grid.getItems(0, 2));
+        assertDefaultListItems(grid.getItems(0, 2), true);
     }
 
     @Test
@@ -406,11 +406,12 @@ public class InvocationGridTest {
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 2);
 
         assertThat(items.size()).isEqualTo(5);
-        assertDefaultListItems(items.subList(0, 3));
+        assertDefaultListItems(items.subList(0, 3), true);
 
         assertThat(items.get(DIVIDER)).isInstanceOf(HasListSelectorControl.ListSelectorDividerItem.class);
         assertListSelectorItem(items.get(CLEAR_EXPRESSION_TYPE),
-                               DMNEditorConstants.ExpressionEditor_Clear);
+                               DMNEditorConstants.ExpressionEditor_Clear,
+                               true);
 
         ((HasListSelectorControl.ListSelectorTextItem) items.get(CLEAR_EXPRESSION_TYPE)).getCommand().execute();
         verify(cellEditorControls).hide();
@@ -418,21 +419,61 @@ public class InvocationGridTest {
                                               any(ClearExpressionTypeCommand.class));
     }
 
-    private void assertDefaultListItems(final List<HasListSelectorControl.ListSelectorItem> items) {
+    @Test
+    public void testGetItemsWithCellSelectionsCoveringMultipleRows() {
+        setupGrid(0);
+
+        addParameterBinding(0);
+        grid.getModel().selectCell(0, 0);
+        grid.getModel().selectCell(1, 0);
+
+        assertDefaultListItems(grid.getItems(0, 0), false);
+    }
+
+    @Test
+    public void testOnItemSelectedExpressionColumnDefinedExpressionTypeWithCellSelectionsCoveringMultipleRows() {
+        setupGrid(0);
+
+        addParameterBinding(0);
+        grid.getModel().selectCell(0, 0);
+        grid.getModel().selectCell(1, 0);
+
+        //Set an editor for expression at (0, 2)
+        final BaseExpressionGrid editor = mock(BaseExpressionGrid.class);
+        grid.getModel().setCellValue(0, 2, new ExpressionCellValue(Optional.of(editor)));
+
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 2);
+
+        assertThat(items.size()).isEqualTo(5);
+        assertDefaultListItems(items.subList(0, 3), false);
+
+        assertThat(items.get(DIVIDER)).isInstanceOf(HasListSelectorControl.ListSelectorDividerItem.class);
+        assertListSelectorItem(items.get(CLEAR_EXPRESSION_TYPE),
+                               DMNEditorConstants.ExpressionEditor_Clear,
+                               false);
+    }
+
+    private void assertDefaultListItems(final List<HasListSelectorControl.ListSelectorItem> items,
+                                        final boolean enabled) {
         assertThat(items.size()).isEqualTo(3);
         assertListSelectorItem(items.get(INSERT_PARAMETER_ABOVE),
-                               DMNEditorConstants.InvocationEditor_InsertParameterAbove);
+                               DMNEditorConstants.InvocationEditor_InsertParameterAbove,
+                               enabled);
         assertListSelectorItem(items.get(INSERT_PARAMETER_BELOW),
-                               DMNEditorConstants.InvocationEditor_InsertParameterBelow);
+                               DMNEditorConstants.InvocationEditor_InsertParameterBelow,
+                               enabled);
         assertListSelectorItem(items.get(DELETE_PARAMETER),
-                               DMNEditorConstants.InvocationEditor_DeleteParameter);
+                               DMNEditorConstants.InvocationEditor_DeleteParameter,
+                               enabled && grid.getModel().getRowCount() > 1);
     }
 
     private void assertListSelectorItem(final HasListSelectorControl.ListSelectorItem item,
-                                        final String text) {
+                                        final String text,
+                                        final boolean enabled) {
         assertThat(item).isInstanceOf(HasListSelectorControl.ListSelectorTextItem.class);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) item;
         assertThat(ti.getText()).isEqualTo(text);
+        assertThat(ti.isEnabled()).isEqualTo(enabled);
     }
 
     @Test
@@ -510,13 +551,7 @@ public class InvocationGridTest {
     public void testAddParameterBinding() {
         setupGrid(0);
 
-        grid.addParameterBinding(0);
-
-        verify(sessionCommandManager).execute(eq(canvasHandler),
-                                              addParameterBindingCommandCaptor.capture());
-
-        final AddParameterBindingCommand addParameterBindingCommand = addParameterBindingCommandCaptor.getValue();
-        addParameterBindingCommand.execute(canvasHandler);
+        addParameterBinding(0);
 
         verify(parent).onResize();
         verify(gridPanel).refreshScrollPosition();
@@ -527,6 +562,15 @@ public class InvocationGridTest {
         redrawCommand.execute();
 
         verify(gridLayer).draw();
+    }
+
+    private void addParameterBinding(final int index) {
+        grid.addParameterBinding(index);
+
+        verify(sessionCommandManager).execute(eq(canvasHandler), addParameterBindingCommandCaptor.capture());
+
+        final AddParameterBindingCommand addParameterBindingCommand = addParameterBindingCommandCaptor.getValue();
+        addParameterBindingCommand.execute(canvasHandler);
     }
 
     @Test

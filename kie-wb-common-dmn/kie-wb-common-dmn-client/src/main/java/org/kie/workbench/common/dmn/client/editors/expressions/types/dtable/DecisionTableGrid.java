@@ -47,6 +47,7 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.Set
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.SetOrientationCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HasHitPolicyControl;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyEditorView;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.SelectionUtils;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
@@ -245,19 +246,21 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
     public java.util.List<ListSelectorItem> getItems(final int uiRowIndex,
                                                      final int uiColumnIndex) {
         final java.util.List<ListSelectorItem> items = new ArrayList<>();
+        final boolean isMultiColumn = SelectionUtils.isMultiColumn(model);
+
         getExpression().ifPresent(dtable -> {
             final DecisionTableUIModelMapperHelper.DecisionTableSection section = DecisionTableUIModelMapperHelper.getSection(dtable, uiColumnIndex);
             switch (section) {
                 case INPUT_CLAUSES:
                     addItems(items,
                              new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertInputClauseBefore),
-                                                            true,
+                                                            !isMultiColumn,
                                                             () -> addInputClause(uiColumnIndex)),
                              new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertInputClauseAfter),
-                                                            true,
+                                                            !isMultiColumn,
                                                             () -> addInputClause(uiColumnIndex + 1)),
                              new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_DeleteInputClause),
-                                                            dtable.getInput().size() > 1,
+                                                            !isMultiColumn && dtable.getInput().size() > 1,
                                                             () -> deleteInputClause(uiColumnIndex)));
                     items.add(new ListSelectorDividerItem());
                     addDecisionRuleItems(dtable,
@@ -268,13 +271,13 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                 case OUTPUT_CLAUSES:
                     addItems(items,
                              new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertOutputClauseBefore),
-                                                            true,
+                                                            !isMultiColumn,
                                                             () -> addOutputClause(uiColumnIndex)),
                              new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertOutputClauseAfter),
-                                                            true,
+                                                            !isMultiColumn,
                                                             () -> addOutputClause(uiColumnIndex + 1)),
                              new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_DeleteOutputClause),
-                                                            dtable.getOutput().size() > 1,
+                                                            !isMultiColumn && dtable.getOutput().size() > 1,
                                                             () -> deleteOutputClause(uiColumnIndex)));
                     items.add(new ListSelectorDividerItem());
                     addDecisionRuleItems(dtable,
@@ -319,15 +322,17 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
     void addDecisionRuleItems(final DecisionTable dtable,
                               final java.util.List<ListSelectorItem> items,
                               final int uiRowIndex) {
+        final boolean isMultiRow = SelectionUtils.isMultiRow(model);
+
         addItems(items,
                  new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertDecisionRuleAbove),
-                                                true,
+                                                !isMultiRow,
                                                 () -> addDecisionRule(uiRowIndex)),
                  new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertDecisionRuleBelow),
-                                                true,
+                                                !isMultiRow,
                                                 () -> addDecisionRule(uiRowIndex + 1)),
                  new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_DeleteDecisionRule),
-                                                dtable.getRule().size() > 1,
+                                                !isMultiRow && dtable.getRule().size() > 1,
                                                 () -> deleteDecisionRule(uiRowIndex)));
     }
 
