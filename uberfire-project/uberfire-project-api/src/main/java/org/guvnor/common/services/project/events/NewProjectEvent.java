@@ -17,8 +17,10 @@ package org.guvnor.common.services.project.events;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.commons.clusterapi.Clustered;
 
 @Portable
+@Clustered
 public class NewProjectEvent {
 
     private WorkspaceProject workspaceProject;

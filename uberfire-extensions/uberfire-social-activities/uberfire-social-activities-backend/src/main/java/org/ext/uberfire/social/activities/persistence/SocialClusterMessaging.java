@@ -17,6 +17,7 @@ package org.ext.uberfire.social.activities.persistence;
 
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -75,6 +76,13 @@ public class SocialClusterMessaging {
                                                        }
                                                    }
                                                });
+        }
+    }
+
+    @PreDestroy
+    public void shutdown(){
+        if(this.clusterService.isAppFormerClustered()){
+            this.clusterService.close();
         }
     }
 
