@@ -48,6 +48,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
@@ -58,6 +59,7 @@ import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.anyString;
@@ -170,9 +172,9 @@ public class CreateNodeActionTest {
                                            new BoundImpl(100d,
                                                          100d)));
         when(targetNodeContent.getBounds())
-                .thenReturn(new BoundsImpl(new BoundImpl(0d,
+                .thenReturn(new BoundsImpl(new BoundImpl(10d,
                                                          0d),
-                                           new BoundImpl(100d,
+                                           new BoundImpl(200d,
                                                          100d)));
         when(clientFactoryManager.newElement(anyString(),
                                              eq(EDGE_ID)))
@@ -257,5 +259,10 @@ public class CreateNodeActionTest {
         final CanvasSelectionEvent eCaptured = eventArgumentCaptor.getValue();
         assertEquals(TARGET_NODE_UUID,
                      eCaptured.getIdentifiers().iterator().next());
+
+        assertTrue(addConnectorCommand.getConnection() instanceof MagnetConnection);
+        assertEquals(((MagnetConnection) addConnectorCommand.getConnection()).getMagnetIndex().getAsInt(), MagnetConnection.MAGNET_RIGHT);
+        assertTrue(setTargetNodeCommand.getConnection() instanceof MagnetConnection);
+        assertEquals(((MagnetConnection) setTargetNodeCommand.getConnection()).getMagnetIndex().getAsInt(), MagnetConnection.MAGNET_LEFT);
     }
 }

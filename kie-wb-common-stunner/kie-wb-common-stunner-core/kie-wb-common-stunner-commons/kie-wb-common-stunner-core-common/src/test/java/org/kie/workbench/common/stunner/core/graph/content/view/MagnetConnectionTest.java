@@ -16,19 +16,42 @@
 
 package org.kie.workbench.common.stunner.core.graph.content.view;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MagnetConnectionTest {
+
+    @Mock
+    private Element element;
+
+    @Mock
+    private Element element2;
+
+    @Mock
+    private View<?> content;
+    @Mock
+    private View<?> content2;
+
+    @Before
+    public void setUp() {
+        BoundsImpl bounds = new BoundsImpl(new BoundImpl(10d,
+                                                         20d),
+                                           new BoundImpl(100d,
+                                                         200d));
+        when(element.getContent()).thenReturn(content);
+        when(content.getBounds()).thenReturn(bounds);
+    }
 
     @Test
     public void testForLocation() {
@@ -45,14 +68,6 @@ public class MagnetConnectionTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testForElement() {
-        Element element = mock(Element.class);
-        View<?> content = mock(View.class);
-        BoundsImpl bounds = new BoundsImpl(new BoundImpl(10d,
-                                                         20d),
-                                           new BoundImpl(100d,
-                                                         200d));
-        when(element.getContent()).thenReturn(content);
-        when(content.getBounds()).thenReturn(bounds);
         MagnetConnection m1 = MagnetConnection.Builder.forElement(element);
 
         assertEquals(45,
@@ -62,6 +77,40 @@ public class MagnetConnectionTest {
                      m1.getLocation().getY(),
                      0);
         assertEquals(MagnetConnection.MAGNET_CENTER,
+                     m1.getMagnetIndex().getAsInt());
+        assertFalse(m1.isAuto());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testForElementWithReferenceRight() {
+        BoundsImpl bounds2 = new BoundsImpl(new BoundImpl(20d,
+                                                          30d),
+                                            new BoundImpl(200d,
+                                                          300d));
+        when(element2.getContent()).thenReturn(content2);
+        when(content2.getBounds()).thenReturn(bounds2);
+
+        MagnetConnection m1 = MagnetConnection.Builder.forElement(element, element2);
+        assertNull(m1.getLocation());
+        assertEquals(MagnetConnection.MAGNET_RIGHT,
+                     m1.getMagnetIndex().getAsInt());
+        assertFalse(m1.isAuto());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testForElementWithReferenceLeft() {
+        BoundsImpl bounds2 = new BoundsImpl(new BoundImpl(5d,
+                                                          10d),
+                                            new BoundImpl(200d,
+                                                          300d));
+        when(element2.getContent()).thenReturn(content2);
+        when(content2.getBounds()).thenReturn(bounds2);
+
+        MagnetConnection m1 = MagnetConnection.Builder.forElement(element, element2);
+        assertNull(m1.getLocation());
+        assertEquals(MagnetConnection.MAGNET_LEFT,
                      m1.getMagnetIndex().getAsInt());
         assertFalse(m1.isAuto());
     }

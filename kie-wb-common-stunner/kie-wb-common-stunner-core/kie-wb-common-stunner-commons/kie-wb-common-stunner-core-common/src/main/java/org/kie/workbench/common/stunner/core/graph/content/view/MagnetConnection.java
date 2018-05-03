@@ -16,10 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.graph.content.view;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
@@ -28,6 +31,8 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 public class MagnetConnection extends DiscreteConnection {
 
     public static final int MAGNET_CENTER = 0;
+    public static final int MAGNET_RIGHT = 2;
+    public static final int MAGNET_LEFT = 4;
 
     private Point2D location;
     private Boolean auto;
@@ -38,6 +43,10 @@ public class MagnetConnection extends DiscreteConnection {
                      auto);
         this.location = location;
         this.auto = auto;
+    }
+
+    private MagnetConnection(int index) {
+        setIndex(index);
     }
 
     public MagnetConnection setLocation(final Point2D location) {
@@ -146,10 +155,15 @@ public class MagnetConnection extends DiscreteConnection {
                     new Point2D(width / 2,
                                 height / 2) :
                     null;
-            final MagnetConnection center = new MagnetConnection(at,
-                                                                 false);
-            center.setIndex(MAGNET_CENTER);
-            return center;
+            return new MagnetConnection(MAGNET_CENTER).setLocation(at).setAuto(false);
+        }
+
+        public static MagnetConnection forElement(final Element<? extends View<?>> element, final Element<? extends View<?>> connectedTo) {
+            final Point2D elementPosition = GraphUtils.getPosition(element.getContent());
+            final Point2D connectedToPosition = (Objects.nonNull(connectedTo) ? GraphUtils.getPosition(connectedTo.getContent()) : elementPosition);
+            final int index = (elementPosition.getX() > connectedToPosition.getX() ? MAGNET_LEFT : MAGNET_RIGHT);
+            return new MagnetConnection(index).setAuto(false);
         }
     }
 }
+
