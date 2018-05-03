@@ -16,6 +16,7 @@
 
 package org.uberfire.mocks;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import com.google.common.base.Defaults;
@@ -56,8 +57,13 @@ public class CallerProxy implements java.lang.reflect.InvocationHandler {
                               args);
         } catch (Exception e) {
             if (errorCallBack != null) {
-                errorCallBack.error(result,
-                                    e);
+                if (e instanceof InvocationTargetException) {
+                    errorCallBack.error(result,
+                                        ((InvocationTargetException) e).getTargetException());
+                } else {
+                    errorCallBack.error(result,
+                                        e);
+                }
             }
             if (m.getReturnType().isPrimitive()) {
                 return Defaults.defaultValue(m.getReturnType());

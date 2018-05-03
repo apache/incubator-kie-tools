@@ -147,6 +147,25 @@ public class CallerMockTest {
                                     any(RuntimeException.class));
     }
 
+    @Test
+    public void callerMockitoCallBackErrorbyRunTimeExceptionTest() {
+
+        SampleTarget target = mock(SampleTarget.class);
+        when(target.targetCall()).thenThrow(new RuntimeException());
+
+        callerMock = new CallerMock<>(target);
+        callerSample = new CallerSampleClient(callerMock,
+                                              successCallBack,
+                                              errorCallBack);
+
+        callerSample.targetCallWithSuccessAndErrorCallBack();
+
+        verify(successCallBack,
+               never()).callback(anyString());
+        verify(errorCallBack).error(anyString(),
+                                    any(RuntimeException.class));
+    }
+
     private interface SampleTarget {
 
         String targetCall();
