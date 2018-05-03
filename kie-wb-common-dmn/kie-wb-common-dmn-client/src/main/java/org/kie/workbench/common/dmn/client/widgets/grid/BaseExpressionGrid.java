@@ -329,7 +329,6 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
     @Override
     public void select() {
         fireExpressionEditorChanged();
-        selectFirstCell();
         super.select();
     }
 

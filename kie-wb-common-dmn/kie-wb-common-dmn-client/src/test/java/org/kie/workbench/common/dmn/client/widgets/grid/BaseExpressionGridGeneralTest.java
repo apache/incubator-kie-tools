@@ -186,7 +186,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
         grid.select();
 
-        verify(grid).selectFirstCell();
+        verify(grid, never()).selectFirstCell();
         verify(editorSelectedEvent).fire(any(ExpressionEditorChanged.class));
     }
 
