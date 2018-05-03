@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.bpmn.definition.property.event.signal;
 
+import javax.validation.constraints.Pattern;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
@@ -32,6 +34,7 @@ public class SignalRef implements BPMNProperty {
 
     @Value
     @FieldValue
+    @Pattern(regexp = "^$|[a-zA-Z0-9_]+")
     private String value;
 
     public SignalRef() {
