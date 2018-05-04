@@ -16,15 +16,9 @@
 
 package org.uberfire.backend.server.security.adapter;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.ServiceLoader;
-import java.util.Set;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.security.auth.Subject;
 
@@ -35,30 +29,33 @@ import org.jboss.errai.security.shared.api.RoleImpl;
 import org.uberfire.backend.server.security.RoleRegistry;
 import org.uberfire.security.authz.adapter.GroupsAdapter;
 
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 
 public class GroupAdapterAuthorizationSource {
 
-    private final String roleRegexTemplate = System.getProperty( "org.uberfire.regex.role_mapper",
-                                                                 null );
-    
+    private final String roleRegexTemplate = System.getProperty("org.uberfire.regex.role_mapper",
+                                                                null);
+
     private HashMap<String, Pattern> regexPatterns = new HashMap<>();
 
-    private Iterator<GroupsAdapter> groupsAdapters = null;
+    private List<GroupsAdapter> groupsAdapters = null;
 
     public GroupAdapterAuthorizationSource() {
-        this( ServiceLoader.load( GroupsAdapter.class ).iterator() );
+        this.groupsAdapters = loadGroupAdapters();
     }
 
-    /**
-     * Constructor allowing custom {@link GroupsAdapter}s to be used.
-     * 
-     * @param groupsAdapters
-     */
-    public GroupAdapterAuthorizationSource( final Iterator<GroupsAdapter> groupsAdapters ) {
-        this.groupsAdapters = groupsAdapters;
+    private static synchronized List<GroupsAdapter> loadGroupAdapters() {
+        final ServiceLoader<GroupsAdapter> providers = ServiceLoader.load(GroupsAdapter.class);
+        if (providers == null) {
+            return emptyList();
+        }
+        final List<GroupsAdapter> result = new ArrayList<>();
+
+        for (final GroupsAdapter provider : providers) {
+            result.add(provider);
+        }
+        return unmodifiableList(result);
     }
 
     protected List<String> loadEntitiesFromSubjectAndAdapters(String username,
@@ -79,30 +76,29 @@ public class GroupAdapterAuthorizationSource {
         return roles;
     }
 
-    protected List<String> collectEntitiesFromAdapters( String username,
-                                                        Subject subject ) {
+    protected List<String> collectEntitiesFromAdapters(String username,
+                                                       Subject subject) {
 
         Set<String> userGroups = new HashSet<>();
 
-        while ( groupsAdapters.hasNext() ) {
-            final List<Group> groupRoles = groupsAdapters.next().getGroups( username,
-                                                                            subject );
-            if ( groupRoles != null ) {
+        groupsAdapters.forEach(adapter -> {
+            final List<Group> groupRoles = adapter.getGroups(username,
+                                                             subject);
+            if (groupRoles != null) {
 
-                for ( Group group : groupRoles ) {
-                    // apply configurable regex pattern for adapters that do not return simple group names     
-                    if ( roleRegexTemplate == null || roleRegexTemplate.isEmpty() ) {
-                        userGroups.add( group.getName() );
+                for (Group group : groupRoles) {
+                    // apply configurable regex pattern for adapters that do not return simple group names
+                    if (roleRegexTemplate == null || roleRegexTemplate.isEmpty()) {
+                        userGroups.add(group.getName());
                     } else {
-                        userGroups.add( getSimpleName( group.getName() ) );
+                        userGroups.add(getSimpleName(group.getName()));
                     }
                 }
             }
-        }
+        });
 
-        return new LinkedList<>( userGroups );
+        return new LinkedList<>(userGroups);
     }
-
 
     /**
      * Collects the principals for a given subject.
@@ -204,22 +200,22 @@ public class GroupAdapterAuthorizationSource {
         }
         return principals.stream().filter(Objects::nonNull).collect(Collectors.toList());
     }
-    
+
     /*
      * Return simple role name if name provided by adapter matches a regex pattern
      * 
      */
-    private String getSimpleName( String name ) {
-        for ( Role role : RoleRegistry.get().getRegisteredRoles() ) {
-            if ( !regexPatterns.containsKey( role.getName() ) ) {
-                regexPatterns.put( role.getName(),
-                                   Pattern.compile( roleRegexTemplate.replaceAll( "role",
-                                                                                  role.getName() ) ) );
+    private String getSimpleName(String name) {
+        for (Role role : RoleRegistry.get().getRegisteredRoles()) {
+            if (!regexPatterns.containsKey(role.getName())) {
+                regexPatterns.put(role.getName(),
+                                  Pattern.compile(roleRegexTemplate.replaceAll("role",
+                                                                               role.getName())));
             }
 
-            Matcher matcher = regexPatterns.get( role.getName() ).matcher( name );
-            while ( matcher.find() ) {
-                if ( matcher.group( 0 ) != null ) {
+            Matcher matcher = regexPatterns.get(role.getName()).matcher(name);
+            while (matcher.find()) {
+                if (matcher.group(0) != null) {
                     return role.getName();
                 }
             }
