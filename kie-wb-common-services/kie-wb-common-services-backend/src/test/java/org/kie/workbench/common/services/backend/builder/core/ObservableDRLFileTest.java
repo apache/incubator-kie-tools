@@ -22,12 +22,14 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.NoSuchFileException;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.spy;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -81,6 +83,12 @@ public class ObservableDRLFileTest {
     public void testAcceptWithDRLFileNotDeclaringType() {
         doReturn("cheese." + ObservableDRLFile.EXTENSION).when(path).getFileName();
         doReturn("rule test when then end").when(ioService).readAllString(eq(nioPath));
+        assertFalse(observer.accept(path));
+    }
+
+    @Test
+    public void testAcceptWithNoSuchFileException() {
+        doThrow(new NoSuchFileException()).when(path).getFileName();
         assertFalse(observer.accept(path));
     }
 }

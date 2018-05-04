@@ -25,6 +25,7 @@ import org.guvnor.common.services.builder.ResourceChangeObservableFile;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.NoSuchFileException;
 
 /**
  * Changes to DRL files containing type-definitions invalidates the DMO cache
@@ -36,7 +37,8 @@ public class ObservableDRLFile implements ResourceChangeObservableFile {
 
     //Naive match for type declarations
     private static final String REGEX = "^.*declare\\s.+\\send.*$";
-    private static final Pattern PATTERN = Pattern.compile(REGEX, Pattern.DOTALL);
+    private static final Pattern PATTERN = Pattern.compile(REGEX,
+                                                           Pattern.DOTALL);
 
     private IOService ioService;
 
@@ -51,12 +53,16 @@ public class ObservableDRLFile implements ResourceChangeObservableFile {
 
     @Override
     public boolean accept(final Path path) {
-        final String fileName = path.getFileName();
-        if (!fileName.endsWith("." + EXTENSION)) {
+        try {
+            final String fileName = path.getFileName();
+            if (!fileName.endsWith("." + EXTENSION)) {
+                return false;
+            }
+            final String drl = ioService.readAllString(convert(path));
+            return PATTERN.matcher(drl.toLowerCase()).matches();
+        } catch (NoSuchFileException e) {
             return false;
         }
-        final String drl = ioService.readAllString(convert(path));
-        return PATTERN.matcher(drl.toLowerCase()).matches();
     }
 
     org.uberfire.java.nio.file.Path convert(final Path path) {

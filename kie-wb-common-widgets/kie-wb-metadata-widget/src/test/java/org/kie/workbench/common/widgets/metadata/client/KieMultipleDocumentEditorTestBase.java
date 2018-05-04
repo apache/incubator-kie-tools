@@ -183,7 +183,7 @@ abstract class KieMultipleDocumentEditorTestBase {
 
         when(versionRecordManager.newSaveMenuItem(any(Command.class))).thenReturn(saveMenuItem);
         when(versionRecordManager.buildMenu()).thenReturn(versionManagerMenuItem);
-        
+
         // Setup defaults for nothing active in context that can be overriden in individual tests
         when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(Optional.empty());
         when(workbenchContext.getActiveWorkspaceProject()).thenReturn(Optional.empty());

@@ -74,6 +74,7 @@ import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
+import org.uberfire.ext.editor.commons.client.event.ConcurrentDeleteAcceptedEvent;
 import org.uberfire.ext.editor.commons.client.event.ConcurrentRenameAcceptedEvent;
 import org.uberfire.ext.preferences.client.central.screen.PreferencesRootScreen;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralInitializationEvent;
@@ -87,6 +88,7 @@ import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.events.ResourceCopiedEvent;
+import org.uberfire.workbench.events.ResourceDeletedEvent;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
 import static org.kie.workbench.common.screens.library.client.screens.importrepository.Source.Kind.EXTERNAL;
@@ -851,6 +853,18 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
                 closeAllPlacesOrNothing(this::goToProject);
             }
         }
+    }
+
+    public void onDeletedResource(@Observes final ResourceDeletedEvent deleteFileEvent) {
+        this.closePathPlace(deleteFileEvent.getPath());
+    }
+
+    public void onConcurrentDelete(@Observes final ConcurrentDeleteAcceptedEvent concurrentDeleteAcceptedEvent) {
+        this.closePathPlace(concurrentDeleteAcceptedEvent.getPath());
+    }
+
+    private void closePathPlace(Path path) {
+        this.placeManager.closePlace(new PathPlaceRequest(path));
     }
 
     public void onResourceCopiedEvent(@Observes final ResourceCopiedEvent resourceCopiedEvent) {
