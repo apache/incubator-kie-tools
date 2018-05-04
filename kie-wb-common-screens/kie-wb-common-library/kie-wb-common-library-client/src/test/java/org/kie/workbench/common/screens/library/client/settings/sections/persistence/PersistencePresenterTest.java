@@ -161,7 +161,7 @@ public class PersistencePresenterTest {
                                                    return promises.resolve();
                                                },
                                                (final Promises.Error<?> e1) -> {
-                                                   Assert.assertEquals(e1.getThrowable().getCause(),
+                                                   Assert.assertEquals(e1.getThrowable(),
                                                                        testException);
                                                    return promises.resolve();
                                                }));

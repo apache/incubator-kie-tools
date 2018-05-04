@@ -47,6 +47,7 @@ import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.security.shared.exception.UnauthorizedException;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.screens.examples.model.ExampleProject;
@@ -109,17 +110,17 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     public static final String ADD_ASSET_SCREEN = "AddAssetsScreen";
 
     public static final List<String> LIBRARY_PLACES = Arrays.asList(
-        LIBRARY_SCREEN,
-        ORG_UNITS_METRICS_SCREEN,
-        PROJECT_SCREEN,
-        PROJECT_METRICS_SCREEN,
-        PROJECT_DETAIL_SCREEN,
-        ORGANIZATIONAL_UNITS_SCREEN,
-        PROJECT_SETTINGS,
-        ADD_ASSET_SCREEN,
-        IMPORT_PROJECTS_SCREEN,
-        IMPORT_SAMPLE_PROJECTS_SCREEN,
-        PreferencesRootScreen.IDENTIFIER
+            LIBRARY_SCREEN,
+            ORG_UNITS_METRICS_SCREEN,
+            PROJECT_SCREEN,
+            PROJECT_METRICS_SCREEN,
+            PROJECT_DETAIL_SCREEN,
+            ORGANIZATIONAL_UNITS_SCREEN,
+            PROJECT_SETTINGS,
+            ADD_ASSET_SCREEN,
+            IMPORT_PROJECTS_SCREEN,
+            IMPORT_SAMPLE_PROJECTS_SCREEN,
+            PreferencesRootScreen.IDENTIFIER
     );
 
     private UberfireBreadcrumbs breadcrumbs;
@@ -570,14 +571,20 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     public void goToLibrary() {
         if (!projectContext.getActiveOrganizationalUnit().isPresent()) {
             libraryService.call(
-                    new RemoteCallback<OrganizationalUnit>() {
-                        @Override
-                        public void callback(OrganizationalUnit organizationalUnit) {
-                            projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(organizationalUnit));
-                            setupLibraryPerspective();
+                    (RemoteCallback<OrganizationalUnit>) organizationalUnit -> {
+                        projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(organizationalUnit));
+                        setupLibraryPerspective();
+                    },
+                    (message, throwable) -> {
+                        try {
+                            throw throwable;
+                        } catch (UnauthorizedException ue) {
+                            this.goToOrganizationalUnits();
+                            return false;
+                        } catch (Throwable t) {
+                            return true; // Let default error handling happen.
                         }
-                    }
-            ).getDefaultOrganizationalUnit();
+                    }).getDefaultOrganizationalUnit();
         } else {
             setupLibraryPerspective();
         }

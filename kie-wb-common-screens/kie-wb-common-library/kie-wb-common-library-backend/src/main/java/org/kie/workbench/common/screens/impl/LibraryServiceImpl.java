@@ -53,6 +53,8 @@ import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.structure.security.OrganizationalUnitAction;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.security.shared.exception.UnauthorizedException;
+import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
 import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
@@ -234,7 +236,10 @@ public class LibraryServiceImpl implements LibraryService {
 
         final String targetProjectName = inferProjectName(repositoryURL);
 
-        final Repository repo = repoService.createRepository(targetOU, GitRepository.SCHEME.toString(), targetProjectName, config);
+        final Repository repo = repoService.createRepository(targetOU,
+                                                             GitRepository.SCHEME.toString(),
+                                                             targetProjectName,
+                                                             config);
         return projectService.resolveProject(repo);
     }
 
@@ -307,11 +312,11 @@ public class LibraryServiceImpl implements LibraryService {
 
     private String inferProjectName(String repositoryURL) {
         return Optional.of(repositoryURL)
-                       .map(url -> java.nio.file.Paths.get(repositoryURL))
-                       .map(path -> path.getFileName().toString())
-                       .map(fileName -> STRIP_DOT_GIT.matcher(fileName))
-                       .map(matcher -> matcher.replaceFirst(""))
-                       .orElse("new-project");
+                .map(url -> java.nio.file.Paths.get(repositoryURL))
+                .map(path -> path.getFileName().toString())
+                .map(fileName -> STRIP_DOT_GIT.matcher(fileName))
+                .map(matcher -> matcher.replaceFirst(""))
+                .orElse("new-project");
     }
 
     @Override
@@ -326,10 +331,12 @@ public class LibraryServiceImpl implements LibraryService {
 
         final boolean projectStillExists = ioService.exists(Paths.convert(query.getProject().getBranch().getPath()));
         if (!projectStillExists) {
-            log.info("Asset lookup result: project [{}] does not exist.", projectIdentifierFrom(query));
+            log.info("Asset lookup result: project [{}] does not exist.",
+                     projectIdentifierFrom(query));
             return AssetQueryResult.nonexistent();
         } else if (!indexOracle.isIndexed(query.getProject())) {
-            log.info("Asset lookup result: project [{}] is not indexed.", projectIdentifierFrom(query));
+            log.info("Asset lookup result: project [{}] is not indexed.",
+                     projectIdentifierFrom(query));
             return AssetQueryResult.unindexed();
         }
 
@@ -355,36 +362,38 @@ public class LibraryServiceImpl implements LibraryService {
                 })
                 .collect(Collectors.toList());
 
-        log.info("Asset lookup result: project [{}] is indexed with {} index hits.", projectIdentifierFrom(query), assets.size());
+        log.info("Asset lookup result: project [{}] is indexed with {} index hits.",
+                 projectIdentifierFrom(query),
+                 assets.size());
         return AssetQueryResult.normal(assets.stream()
-                                             .map(asset -> {
-                                                 AssetInfo info = null;
-                                                 try {
-                                                     final Map<String, Object> attributes = ioService.readAttributes(Paths.convert((Path) asset.getItem()));
+                                               .map(asset -> {
+                                                   AssetInfo info = null;
+                                                   try {
+                                                       final Map<String, Object> attributes = ioService.readAttributes(Paths.convert((Path) asset.getItem()));
 
-                                                     final FileTime lastModifiedFileTime = (FileTime) getAttribute(LibraryService.LAST_MODIFIED_TIME,
-                                                                                                                   attributes).get();
-                                                     final FileTime createdFileTime = (FileTime) getAttribute(LibraryService.CREATED_TIME,
-                                                                                                              attributes).get();
-                                                     final Date lastModifiedTime = new Date(lastModifiedFileTime.toMillis());
-                                                     final Date createdTime = new Date(createdFileTime.toMillis());
-                                                     info = new AssetInfo(asset,
-                                                                          lastModifiedTime,
-                                                                          createdTime);
-                                                 } catch (NoSuchFileException nfe) {
-                                                     log.debug("File '" + asset.getFileName() + "' in LibraryIndex but not VFS. Suspected deletion. Skipping.");
-                                                 }
-                                                 return Optional.ofNullable(info);
-                                             })
-                                             .filter(Optional::isPresent)
-                                             .map(Optional::get)
-                                             .collect(Collectors.toList()));
+                                                       final FileTime lastModifiedFileTime = (FileTime) getAttribute(LibraryService.LAST_MODIFIED_TIME,
+                                                                                                                     attributes).get();
+                                                       final FileTime createdFileTime = (FileTime) getAttribute(LibraryService.CREATED_TIME,
+                                                                                                                attributes).get();
+                                                       final Date lastModifiedTime = new Date(lastModifiedFileTime.toMillis());
+                                                       final Date createdTime = new Date(createdFileTime.toMillis());
+                                                       info = new AssetInfo(asset,
+                                                                            lastModifiedTime,
+                                                                            createdTime);
+                                                   } catch (NoSuchFileException nfe) {
+                                                       log.debug("File '" + asset.getFileName() + "' in LibraryIndex but not VFS. Suspected deletion. Skipping.");
+                                                   }
+                                                   return Optional.ofNullable(info);
+                                               })
+                                               .filter(Optional::isPresent)
+                                               .map(Optional::get)
+                                               .collect(Collectors.toList()));
     }
 
     private static String projectIdentifierFrom(final ProjectAssetsQuery query) {
         return Optional.ofNullable(query.getProject().getRepository())
-                       .map(repo -> repo.getIdentifier())
-                       .orElseGet(() -> query.getProject().getName());
+                .map(repo -> repo.getIdentifier())
+                .orElseGet(() -> query.getProject().getName());
     }
 
     private HashSet<ValueIndexTerm> buildProjectAssetsQuery(ProjectAssetsQuery query) {
@@ -553,7 +562,13 @@ public class LibraryServiceImpl implements LibraryService {
         if (!authorizationManager.authorize(OrganizationalUnit.RESOURCE_TYPE,
                                             OrganizationalUnitAction.CREATE,
                                             sessionInfo.getIdentity())) {
-            return null;
+            throw new UnauthorizedException("User :user has no permissions to :type -> :action"
+                                                    .replace(":user",
+                                                             sessionInfo.getIdentity().getIdentifier())
+                                                    .replace(":type",
+                                                             OrganizationalUnit.RESOURCE_TYPE.getName())
+                                                    .replace(":action",
+                                                             OrganizationalUnitAction.CREATE.getName()));
         }
 
         final LibraryPreferences preferences = getPreferences();

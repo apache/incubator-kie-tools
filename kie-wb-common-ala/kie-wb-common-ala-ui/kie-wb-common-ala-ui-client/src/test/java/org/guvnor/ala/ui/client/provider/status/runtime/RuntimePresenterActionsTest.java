@@ -216,7 +216,7 @@ public class RuntimePresenterActionsTest
                times(1)).error(any(Message.class),
                                exceptionCaptor.capture());
         assertEquals(ERROR_MESSAGE,
-                     exceptionCaptor.getValue().getCause().getMessage());
+                     exceptionCaptor.getValue().getMessage());
     }
 
     @Test
@@ -265,7 +265,7 @@ public class RuntimePresenterActionsTest
                times(1)).error(any(Message.class),
                                exceptionCaptor.capture());
         assertEquals(ERROR_MESSAGE,
-                     exceptionCaptor.getValue().getCause().getMessage());
+                     exceptionCaptor.getValue().getMessage());
         verify(popupHelper,
                times(1)).showBusyIndicator(BUSY_POPUP_MESSAGE);
         verify(popupHelper,
@@ -321,9 +321,9 @@ public class RuntimePresenterActionsTest
         RuntimeKey currentKey = runtime.getKey();
 
         RuntimeException deleteException = new RuntimeException(ERROR_MESSAGE);
-        //needs to use null instead of ERROR_MESSAGE because of the CallerMock
+
         when(translationService.format(RuntimePresenter_RuntimeDeleteFailedMessage,
-                                       null)).thenReturn(CONFIRM_MESSAGE_2);
+                                       ERROR_MESSAGE)).thenReturn(CONFIRM_MESSAGE_2);
         when(translationService.getTranslation(RuntimePresenter_RuntimeDeleteFailedTitle)).thenReturn(TITLE_2);
         when(translationService.getTranslation(RuntimePresenter_RuntimeDeletingMessage)).thenReturn(BUSY_POPUP_MESSAGE);
 
@@ -361,9 +361,9 @@ public class RuntimePresenterActionsTest
         RuntimeKey currentKey = runtime.getKey();
 
         RuntimeException deleteException = new RuntimeException(ERROR_MESSAGE);
-        //needs to use null instead of ERROR_MESSAGE because of the CallerMock
+
         when(translationService.format(RuntimePresenter_RuntimeDeleteFailedMessage,
-                                       null)).thenReturn(CONFIRM_MESSAGE_2);
+                                       ERROR_MESSAGE)).thenReturn(CONFIRM_MESSAGE_2);
         when(translationService.getTranslation(RuntimePresenter_RuntimeDeleteFailedTitle)).thenReturn(TITLE_2);
 
         when(translationService.getTranslation(RuntimePresenter_RuntimeConfirmForcedDeleteTitle)).thenReturn(TITLE_3);
@@ -463,7 +463,7 @@ public class RuntimePresenterActionsTest
                times(1)).error(any(Message.class),
                                exceptionCaptor.capture());
         assertEquals(ERROR_MESSAGE,
-                     exceptionCaptor.getValue().getCause().getMessage());
+                     exceptionCaptor.getValue().getMessage());
         verify(popupHelper,
                times(1)).showBusyIndicator(BUSY_POPUP_MESSAGE);
         verify(popupHelper,
@@ -536,7 +536,7 @@ public class RuntimePresenterActionsTest
                times(1)).error(any(Message.class),
                                exceptionCaptor.capture());
         assertEquals(ERROR_MESSAGE,
-                     exceptionCaptor.getValue().getCause().getMessage());
+                     exceptionCaptor.getValue().getMessage());
     }
 
     @Test
@@ -615,7 +615,7 @@ public class RuntimePresenterActionsTest
                times(1)).error(any(Message.class),
                                exceptionCaptor.capture());
         assertEquals(ERROR_MESSAGE,
-                     exceptionCaptor.getValue().getCause().getMessage());
+                     exceptionCaptor.getValue().getMessage());
     }
 
     private void preparePipelineDelete() {

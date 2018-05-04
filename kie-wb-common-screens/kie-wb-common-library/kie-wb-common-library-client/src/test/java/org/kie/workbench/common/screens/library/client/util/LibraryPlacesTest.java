@@ -17,12 +17,9 @@
 package org.kie.workbench.common.screens.library.client.util;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Optional;
 import java.util.Set;
-
 import javax.enterprise.event.Event;
 
 import org.ext.uberfire.social.activities.model.ExtendedTypes;
@@ -41,6 +38,7 @@ import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.security.shared.exception.UnauthorizedException;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -607,6 +605,14 @@ public class LibraryPlacesTest {
     }
 
     @Test
+    public void goToLibraryWhenUserIsNotAuthorizedToCreateProjectsTest() {
+        doReturn(Optional.ofNullable(null)).when(projectContext).getActiveOrganizationalUnit();
+        when(libraryService.getDefaultOrganizationalUnit()).thenThrow(new UnauthorizedException());
+        libraryPlaces.goToLibrary();
+        verify(libraryPlaces).goToOrganizationalUnits();
+    }
+
+    @Test
     public void goToProjectTest() {
         final PlaceRequest projectScreen = new DefaultPlaceRequest(LibraryPlaces.PROJECT_SCREEN);
         final PartDefinitionImpl part = new PartDefinitionImpl(projectScreen);
@@ -665,7 +671,8 @@ public class LibraryPlacesTest {
     @Test
     public void goToExternalImportProjectsTest() {
         doAnswer(inv -> {
-            final Command command = inv.getArgumentAt(0, Command.class);
+            final Command command = inv.getArgumentAt(0,
+                                                      Command.class);
             command.execute();
             return null;
         }).when(libraryPlaces).closeAllPlacesOrNothing(any());
@@ -847,7 +854,10 @@ public class LibraryPlacesTest {
         verify(placeManager).closeAllPlaces();
         verify(successCallback).execute();
         verify(closeUnsavedProjectAssetsPopUpPresenter,
-               never()).show(any(), any(), any(), any());
+               never()).show(any(),
+                             any(),
+                             any(),
+                             any());
     }
 
     @Test
