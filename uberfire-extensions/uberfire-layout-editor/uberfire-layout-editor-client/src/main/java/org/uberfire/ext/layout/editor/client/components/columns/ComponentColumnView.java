@@ -225,6 +225,7 @@ public class ComponentColumnView
             }
         });
         colUp.setOndrop(e -> {
+            e.preventDefault();
             if (contentDropOrientation != null) {
                 presenter.onDrop(contentDropOrientation,
                                  extractDndData(e));
@@ -242,6 +243,7 @@ public class ComponentColumnView
 
     private void setupColDownEvents() {
         colDown.setOndrop(e -> {
+            e.preventDefault();
             if (contentDropOrientation != null) {
                 presenter.onDrop(contentDropOrientation,
                                  extractDndData(e));

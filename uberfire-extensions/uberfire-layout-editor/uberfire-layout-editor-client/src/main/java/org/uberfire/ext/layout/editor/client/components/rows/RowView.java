@@ -91,8 +91,8 @@ public class RowView
             }
         });
         bottom.setOndrop(e -> {
+            e.preventDefault();
             if (presenter.isDropEnable()) {
-                e.preventDefault();
                 removeCSSClass(bottom,
                                "rowDropPreview");
                 presenter.drop(extractDndData(e),
@@ -156,6 +156,7 @@ public class RowView
             }
         });
         upper.setOndragend(event -> {
+            event.preventDefault();
             if (presenter.isDropEnable()) {
                 if (hasCSSClass(row,
                                 "rowDndPreview")) {
@@ -209,8 +210,8 @@ public class RowView
             }
         });
         upper.setOndrop(e -> {
+            e.preventDefault();
             if (presenter.isDropEnable()) {
-                e.preventDefault();
                 removeCSSClass(upper,
                                "rowDropPreview");
                 presenter.drop(extractDndData(e),
