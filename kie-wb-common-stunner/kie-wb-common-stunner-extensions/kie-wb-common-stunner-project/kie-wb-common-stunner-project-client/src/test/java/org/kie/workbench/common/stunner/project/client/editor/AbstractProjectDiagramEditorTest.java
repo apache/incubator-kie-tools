@@ -68,7 +68,10 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientF
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.definition.exception.DefinitionNotFoundException;
 import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
+import org.kie.workbench.common.stunner.core.preferences.StunnerDiagramEditorPreferences;
 import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.violations.BoundsExceededViolation;
@@ -137,6 +140,10 @@ public class AbstractProjectDiagramEditorTest {
     protected static final String EDITOR_ID = "AbstractProjectDiagramEditor";
 
     protected static final String TITLE = "title";
+
+    protected static final int CANVAS_HEIGHT = 1234;
+
+    protected static final int CANVAS_WIDTH = 5678;
 
     @Mock
     protected ProjectDiagram diagram;
@@ -351,8 +358,14 @@ public class AbstractProjectDiagramEditorTest {
     @Captor
     protected ArgumentCaptor<NotificationEvent> notificationEventCaptor;
 
+    @Captor
+    protected ArgumentCaptor<Bounds> diagramBoundsCaptor;
+
     @Mock
-    private StunnerPreferences stunnerPreferences;
+    protected StunnerPreferences stunnerPreferences;
+
+    @Mock
+    protected StunnerDiagramEditorPreferences diagramEditorPreferences;
 
     abstract class ClientResourceTypeMock implements ClientResourceType {
 
@@ -413,6 +426,9 @@ public class AbstractProjectDiagramEditorTest {
 
         when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
         when(versionRecordManager.getPathToLatest()).thenReturn(filePath);
+        when(stunnerPreferences.getDiagramEditorPreferences()).thenReturn(diagramEditorPreferences);
+        when(diagramEditorPreferences.getCanvasWidth()).thenReturn(CANVAS_WIDTH);
+        when(diagramEditorPreferences.getCanvasHeight()).thenReturn(CANVAS_HEIGHT);
         when(stunnerPreferencesRegistry.get()).thenReturn(stunnerPreferences);
 
         when(xmlEditorView.asWidget()).thenReturn(xmlEditorWidget);
@@ -851,14 +867,45 @@ public class AbstractProjectDiagramEditorTest {
                      presenter.getCurrentDiagramHash());
     }
 
+    @Test
+    public void testSetCanvasSizeOnOpen() {
+        openDiagram();
+        verifyCanvasSizeWasSet();
+    }
+
+    @Test
+    public void testSetCanvasSizeOnOpenReadOnly() {
+        openReadOnlyDiagram();
+        verifyCanvasSizeWasSet();
+    }
+
+    protected void verifyCanvasSizeWasSet() {
+        assertEquals(0,
+                     diagramBoundsCaptor.getValue().getUpperLeft().getX(),
+                     0);
+        assertEquals(0,
+                     diagramBoundsCaptor.getValue().getUpperLeft().getY(),
+                     0);
+        assertEquals(CANVAS_WIDTH,
+                     diagramBoundsCaptor.getValue().getLowerRight().getX(),
+                     0);
+        assertEquals(CANVAS_HEIGHT,
+                     diagramBoundsCaptor.getValue().getLowerRight().getY(),
+                     0);
+    }
+
     @SuppressWarnings("unchecked")
     protected Overview openDiagram() {
         final ProjectMetadata metadata = mock(ProjectMetadata.class);
+        final Graph graph = mock(Graph.class);
+        final DefinitionSet definitionSet = mock(DefinitionSet.class);
         final Metadata overviewMetadata = mock(Metadata.class);
         final Overview overview = mock(Overview.class);
         final ClientSessionFactory clientSessionFactory = mock(ClientSessionFactory.class);
 
         when(diagram.getMetadata()).thenReturn(metadata);
+        when(diagram.getGraph()).thenReturn(graph);
+        when(graph.getContent()).thenReturn(definitionSet);
         when(metadata.getTitle()).thenReturn(TITLE);
         when(metadata.getOverview()).thenReturn(overview);
         when(sessionManager.getSessionFactory(eq(metadata), eq(ClientFullSession.class))).thenReturn(clientSessionFactory);
@@ -888,6 +935,9 @@ public class AbstractProjectDiagramEditorTest {
         final SessionPresenter.SessionPresenterCallback clientSessionPresenterCallback = clientSessionPresenterCallbackCaptor.getValue();
         clientSessionPresenterCallback.onSuccess();
 
+        verify(definitionSet,
+               times(1)).setBounds(diagramBoundsCaptor.capture());
+
         verify(presenter).makeStunnerEditorProxy();
 
         return overview;
@@ -896,10 +946,14 @@ public class AbstractProjectDiagramEditorTest {
     @SuppressWarnings("unchecked")
     protected Overview openReadOnlyDiagram() {
         final ProjectMetadata metadata = mock(ProjectMetadata.class);
+        final Graph graph = mock(Graph.class);
+        final DefinitionSet definitionSet = mock(DefinitionSet.class);
         final Overview overview = mock(Overview.class);
         final ClientSessionFactory clientSessionFactory = mock(ClientSessionFactory.class);
 
         when(diagram.getMetadata()).thenReturn(metadata);
+        when(diagram.getGraph()).thenReturn(graph);
+        when(graph.getContent()).thenReturn(definitionSet);
         when(metadata.getTitle()).thenReturn(TITLE);
         when(metadata.getOverview()).thenReturn(overview);
         when(sessionManager.getSessionFactory(eq(metadata), eq(ClientReadOnlySession.class))).thenReturn(clientSessionFactory);
@@ -929,6 +983,9 @@ public class AbstractProjectDiagramEditorTest {
 
         final SessionPresenter.SessionPresenterCallback clientSessionPresenterCallback = clientSessionPresenterCallbackCaptor.getValue();
         clientSessionPresenterCallback.onSuccess();
+
+        verify(definitionSet,
+               times(1)).setBounds(diagramBoundsCaptor.capture());
 
         verify(presenter).makeStunnerEditorProxy();
 

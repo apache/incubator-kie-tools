@@ -31,6 +31,8 @@ public class StunnerPreferences implements BasePreference<StunnerPreferences>,
     @Override
     public StunnerPreferences defaultValue(final StunnerPreferences defaultValue) {
         defaultValue.diagramEditorPreferences.setAutoHidePalettePanel(false);
+        defaultValue.diagramEditorPreferences.setCanvasWidth(2800);
+        defaultValue.diagramEditorPreferences.setCanvasHeight(1400);
         return defaultValue;
     }
 

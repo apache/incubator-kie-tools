@@ -73,6 +73,8 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
+import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -387,6 +389,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                 final SessionPresenter<AbstractClientFullSession, ?, Diagram> sessionPresenter = newSessionPresenter();
                                 fullSessionPresenter = Optional.of(sessionPresenter);
                                 getView().setWidget(sessionPresenter.getView());
+                                //note: this canvas size setting is temporal and will be removed as soon as we move to using infinite canvases.
+                                setCanvasSize(diagram,
+                                              getStunnerPreferences());
                                 sessionPresenter.open(diagram,
                                                       session,
                                                       new SessionPresenter.SessionPresenterCallback<AbstractClientFullSession, Diagram>() {
@@ -425,6 +430,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                 final SessionPresenter<AbstractClientReadOnlySession, ?, Diagram> sessionPresenter = sessionPresenterFactory.newPresenterViewer();
                                 readOnlySessionPresenter = Optional.of(sessionPresenter);
                                 getView().setWidget(sessionPresenter.getView());
+                                //note: this canvas size setting is temporal and will be removed as soon as we move to using infinite canvases.
+                                setCanvasSize(diagram,
+                                              getStunnerPreferences());
                                 sessionPresenter
                                         .withToolbar(false)
                                         .withPalette(false)
@@ -833,7 +841,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     protected CanvasHandler getCanvasHandler() {
         return null != sessionManager.getCurrentSession() ? sessionManager.getCurrentSession().getCanvasHandler() : null;
-    }
+}
 
     protected ProjectDiagram getDiagram() {
         return null != getCanvasHandler() ? (ProjectDiagram) getCanvasHandler().getDiagram() : null;
@@ -981,5 +989,13 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     //For Unit Testing
     protected void setReadOnlySessionPresenter(final SessionPresenter<AbstractClientReadOnlySession, ?, Diagram> presenter) {
         this.readOnlySessionPresenter = Optional.ofNullable(presenter);
+    }
+
+    private void setCanvasSize(final ProjectDiagram diagram,
+                               final StunnerPreferences preferences) {
+        ((DefinitionSet) diagram.getGraph().getContent()).setBounds(BoundsImpl.build(0,
+                                                                                     0,
+                                                                                     preferences.getDiagramEditorPreferences().getCanvasWidth(),
+                                                                                     preferences.getDiagramEditorPreferences().getCanvasHeight()));
     }
 }

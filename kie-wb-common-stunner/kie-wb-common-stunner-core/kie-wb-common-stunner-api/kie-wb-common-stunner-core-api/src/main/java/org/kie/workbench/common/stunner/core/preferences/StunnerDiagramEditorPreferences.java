@@ -31,6 +31,18 @@ public class StunnerDiagramEditorPreferences implements BasePreference<StunnerDi
             formType = PropertyFormType.BOOLEAN)
     boolean autoHidePalettePanel;
 
+    @Property(bundleKey = "StunnerDiagramEditorPreferences.CanvasWidth.Label",
+            helpBundleKey = "StunnerDiagramEditorPreferences.CanvasWidth.Help",
+            formType = PropertyFormType.NATURAL_NUMBER,
+            validators = CanvasWidthValidator.class)
+    int canvasWidth;
+
+    @Property(bundleKey = "StunnerDiagramEditorPreferences.CanvasHeight.Label",
+            helpBundleKey = "StunnerDiagramEditorPreferences.CanvasHeight.Help",
+            formType = PropertyFormType.NATURAL_NUMBER,
+            validators = CanvasHeightValidator.class)
+    int canvasHeight;
+
     public boolean isAutoHidePalettePanel() {
         return autoHidePalettePanel;
     }
@@ -39,9 +51,27 @@ public class StunnerDiagramEditorPreferences implements BasePreference<StunnerDi
         this.autoHidePalettePanel = autoHidePalettePanel;
     }
 
+    public int getCanvasWidth() {
+        return canvasWidth;
+    }
+
+    public void setCanvasWidth(int canvasWidth) {
+        this.canvasWidth = canvasWidth;
+    }
+
+    public int getCanvasHeight() {
+        return canvasHeight;
+    }
+
+    public void setCanvasHeight(int canvasHeight) {
+        this.canvasHeight = canvasHeight;
+    }
+
     public Object clone() {
         StunnerDiagramEditorPreferences clone = new StunnerDiagramEditorPreferences();
         clone.setAutoHidePalettePanel(this.isAutoHidePalettePanel());
+        clone.setCanvasWidth(this.getCanvasWidth());
+        clone.setCanvasHeight(this.getCanvasHeight());
         return clone;
     }
 }
