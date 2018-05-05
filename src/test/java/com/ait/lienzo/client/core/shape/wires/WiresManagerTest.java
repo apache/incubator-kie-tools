@@ -46,6 +46,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -166,8 +167,7 @@ public class WiresManagerTest
         assertNull(tested.getShape(gUUID));
         verify(handlerRegistrationManager, times(1)).removeHandler();
         verify(shape, times(1)).destroy();
-        // TODO: Review unnecessary calls.
-        verify(layer, times(3)).remove(eq(s.getGroup()));
+        verify(layer, atLeastOnce()).remove(eq(s.getGroup()));
     }
 
     @Test
