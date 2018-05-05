@@ -43,10 +43,11 @@ public class ShapeDragProxyImpl implements ShapeDragProxy<AbstractCanvas> {
                                                                        final int x,
                                                                        final int y,
                                                                        final DragProxyCallback callback) {
-        this.shapeViewDragProxyFactory.show(item.getShapeView(),
-                                            x,
-                                            y,
-                                            callback);
+        clear();
+        shapeViewDragProxyFactory.show(item.getShapeView(),
+                                       x,
+                                       y,
+                                       callback);
         return this;
     }
 

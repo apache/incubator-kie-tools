@@ -45,6 +45,9 @@ public class FindDataTypesService implements DataTypesService {
     }
 
     public List<String> getDataTypeNames(final Path path) {
+        if (null == path) {
+            return Collections.emptyList();
+        }
         final List<String> dataTypeNames = new ArrayList<>();
 
         try {

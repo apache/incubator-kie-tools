@@ -169,7 +169,6 @@ public class LienzoMultipleSelectionControlTest {
         when(canvas.getShape(eq(ELEMENT_UUID))).thenReturn(shape);
         when(canvas.getShapes()).thenReturn(Collections.singletonList(shape));
         when(shape.getUUID()).thenReturn(ELEMENT_UUID);
-        when(selectionControl.isEnabled()).thenReturn(true);
         when(selectionControl.getCanvasHandler()).thenReturn(canvasHandler);
         when(selectionControl.getCanvas()).thenReturn(canvas);
         shapeView = new WiresShapeViewExt<>(viewEventTypes,
@@ -185,9 +184,9 @@ public class LienzoMultipleSelectionControlTest {
     }
 
     @Test
-    public void testEnable() {
-        tested.enable(canvasHandler);
-        verify(selectionControl, times(1)).enable(eq(canvasHandler));
+    public void testInit() {
+        tested.init(canvasHandler);
+        verify(selectionControl, times(1)).init(eq(canvasHandler));
         verify(selectionManager, times(1)).setSelectionShapeProvider(eq(selectionShapeProvider));
         assertNotNull(selectionListener);
     }
@@ -227,14 +226,14 @@ public class LienzoMultipleSelectionControlTest {
 
     @Test
     public void testRegister() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         verify(selectionControl, times(1)).register(eq(element));
     }
 
     @Test
     public void testSelect() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         final SelectionManager.SelectedItems selectedItems = new SelectionManager.SelectedItems(selectionManager,
                                                                                                 lienzoLayer);
@@ -247,7 +246,7 @@ public class LienzoMultipleSelectionControlTest {
     public void testOnSelectEvent() {
         final SelectionManager.SelectedItems selectedItems = mock(SelectionManager.SelectedItems.class);
         when(selectionManager.getSelectedItems()).thenReturn(selectedItems);
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         tested.onSelect(Collections.singletonList(ELEMENT_UUID));
         verify(selectedItems, times(1)).add(eq(shapeView));
@@ -308,7 +307,7 @@ public class LienzoMultipleSelectionControlTest {
 
     @Test
     public void testDeselect() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         final SelectionManager.SelectedItems selectedItems = new SelectionManager.SelectedItems(selectionManager,
                                                                                                 lienzoLayer);
@@ -322,7 +321,7 @@ public class LienzoMultipleSelectionControlTest {
     public void testClearSelection() {
         final SelectionManager.SelectedItems selectedItems = mock(SelectionManager.SelectedItems.class);
         when(selectionManager.getSelectedItems()).thenReturn(selectedItems);
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         tested.select(element);
         tested.clearSelection();
@@ -332,7 +331,7 @@ public class LienzoMultipleSelectionControlTest {
 
     @Test
     public void testOnClearSelectionEvent() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.onClearSelection();
         verify(selectionControl, never()).clearSelection();
         verify(selectionManager, times(1)).clearSelection();
@@ -346,7 +345,7 @@ public class LienzoMultipleSelectionControlTest {
                                                       canvasSelectionEvent,
                                                       clearSelectionEvent,
                                                       ssp);
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.onCanvasDrawn(new CanvasDrawnEvent(canvas));
         verify(ssp, times(1)).moveShapeToTop();
     }
@@ -354,18 +353,9 @@ public class LienzoMultipleSelectionControlTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testDeregister() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         tested.deregister(element);
         verify(selectionControl, times(1)).deregister(eq(element));
-    }
-
-    @Test
-    public void testDisable() {
-        tested.enable(canvasHandler);
-        tested.register(element);
-        tested.disable();
-        verify(selectionControl, times(1)).disable();
-        verify(selectionManager, times(1)).clearSelection();
     }
 }

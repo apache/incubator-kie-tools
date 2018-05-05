@@ -45,6 +45,7 @@ public class PrimitiveDragProxyImpl implements PrimitiveDragProxy<Layer, IPrimit
                                                                    final int x,
                                                                    final int y,
                                                                    final DragProxyCallback callback) {
+        clear();
         this.proxy = new org.kie.workbench.common.stunner.lienzo.primitive.PrimitiveDragProxy(layer,
                                                                                               item,
                                                                                               x,
@@ -79,7 +80,7 @@ public class PrimitiveDragProxyImpl implements PrimitiveDragProxy<Layer, IPrimit
     @Override
     public void clear() {
         if (null != this.proxy) {
-            this.proxy.destroy();
+            this.proxy.clear();
             this.layer.draw();
         }
     }

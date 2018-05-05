@@ -16,18 +16,18 @@
 package org.kie.workbench.common.stunner.client.widgets.menu.dev;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 
 public abstract class AbstractMenuDevCommand
         implements MenuDevCommand {
 
-    private final AbstractClientSessionManager sessionManager;
+    private final SessionManager sessionManager;
 
-    protected AbstractMenuDevCommand(final AbstractClientSessionManager sessionManager) {
+    protected AbstractMenuDevCommand(final SessionManager sessionManager) {
         this.sessionManager = sessionManager;
     }
 
@@ -36,12 +36,12 @@ public abstract class AbstractMenuDevCommand
         return IconType.PRINT;
     }
 
-    protected AbstractClientSession getSession() {
+    protected AbstractSession getSession() {
         return sessionManager.getCurrentSession();
     }
 
     protected AbstractCanvasHandler getCanvasHandler() {
-        return null != getSession() ? getSession().getCanvasHandler() : null;
+        return null != getSession() ? (AbstractCanvasHandler) getSession().getCanvasHandler() : null;
     }
 
     protected Diagram getDiagram() {

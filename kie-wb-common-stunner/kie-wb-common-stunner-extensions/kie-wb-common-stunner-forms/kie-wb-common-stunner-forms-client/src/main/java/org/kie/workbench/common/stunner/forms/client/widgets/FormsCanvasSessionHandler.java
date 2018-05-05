@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -35,9 +36,9 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Canva
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
-import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -56,9 +57,9 @@ public class FormsCanvasSessionHandler {
     private final DefinitionManager definitionManager;
     private final CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
     private final FormsCanvasListener canvasListener;
+
     private ClientSession session;
     private FormFeaturesSessionProvider featuresSessionProvider;
-
     private FormRenderer renderer;
 
     @Inject
@@ -88,6 +89,13 @@ public class FormsCanvasSessionHandler {
         canvasListener.detach();
         this.session = null;
         return this;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        unbind();
+        featuresSessionProvider = null;
+        renderer = null;
     }
 
     /**
@@ -198,7 +206,7 @@ public class FormsCanvasSessionHandler {
     }
 
     private RenderMode getRenderMode(final ClientSession session) {
-        return session instanceof ClientFullSession ? RenderMode.EDIT_MODE : RenderMode.PRETTY_MODE;
+        return session instanceof EditorSession ? RenderMode.EDIT_MODE : RenderMode.PRETTY_MODE;
     }
 
     private void render(final String uuid) {
@@ -209,7 +217,7 @@ public class FormsCanvasSessionHandler {
 
     private void render(final String uuid,
                         final Command callback) {
-        if(null != renderer) {
+        if (null != renderer) {
             renderer.render(getDiagram().getGraph().getUUID(), getElement(uuid), callback);
         }
     }
@@ -259,14 +267,14 @@ public class FormsCanvasSessionHandler {
 
         @Override
         public void deregister(final Element element) {
-            if(null != renderer) {
+            if (null != renderer) {
                 renderer.clear(getDiagram().getGraph().getUUID(), element);
             }
         }
 
         @Override
         public void clear() {
-            if(null != renderer) {
+            if (null != renderer) {
                 renderer.clearAll(getDiagram().getGraph().getUUID());
             }
         }
@@ -341,47 +349,47 @@ public class FormsCanvasSessionHandler {
         CanvasCommandManager<AbstractCanvasHandler> getCommandManager(S session);
     }
 
-    private static class FormFeaturesReadOnlySessionProvider implements FormFeaturesSessionProvider<ClientReadOnlySession> {
+    private static class FormFeaturesReadOnlySessionProvider implements FormFeaturesSessionProvider<ViewerSession> {
 
         @Override
         public boolean supports(final ClientSession type) {
-            return type instanceof ClientReadOnlySession;
+            return type instanceof ViewerSession;
         }
 
         @Override
-        public SelectionControl getSelectionControl(final ClientReadOnlySession session) {
+        public SelectionControl getSelectionControl(final ViewerSession session) {
             return cast(session).getSelectionControl();
         }
 
         @Override
-        public CanvasCommandManager<AbstractCanvasHandler> getCommandManager(final ClientReadOnlySession session) {
+        public CanvasCommandManager<AbstractCanvasHandler> getCommandManager(final ViewerSession session) {
             return null;
         }
 
-        private ClientReadOnlySession cast(final ClientSession session) {
-            return (ClientReadOnlySession) session;
+        private ViewerSession cast(final ClientSession session) {
+            return (ViewerSession) session;
         }
     }
 
-    private static class FormFeaturesFullSessionProvider implements FormFeaturesSessionProvider<ClientFullSession> {
+    private static class FormFeaturesFullSessionProvider implements FormFeaturesSessionProvider<EditorSession> {
 
         @Override
         public boolean supports(final ClientSession type) {
-            return type instanceof ClientFullSession;
+            return type instanceof EditorSession;
         }
 
         @Override
-        public SelectionControl getSelectionControl(final ClientFullSession session) {
+        public SelectionControl getSelectionControl(final EditorSession session) {
             return cast(session).getSelectionControl();
         }
 
         @Override
-        public CanvasCommandManager<AbstractCanvasHandler> getCommandManager(final ClientFullSession session) {
+        public CanvasCommandManager<AbstractCanvasHandler> getCommandManager(final EditorSession session) {
             return cast(session).getCommandManager();
         }
 
-        private ClientFullSession cast(final ClientSession session) {
-            return (ClientFullSession) session;
+        private EditorSession cast(final ClientSession session) {
+            return (EditorSession) session;
         }
     }
 

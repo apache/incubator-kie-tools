@@ -21,13 +21,14 @@ import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ControlPointControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasHandlerEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.controlpoint.CanvasControlPointDoubleClickEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.controlpoint.CanvasControlPointDragEndEvent;
@@ -38,7 +39,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
@@ -57,13 +58,16 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
-public class ControlPointControlImpl extends AbstractCanvasHandlerRegistrationControl<AbstractCanvasHandler> implements ControlPointControl<AbstractCanvasHandler> {
+@Default
+public class ControlPointControlImpl
+        extends AbstractCanvasHandlerRegistrationControl<AbstractCanvasHandler>
+        implements ControlPointControl<AbstractCanvasHandler>,
+                   CanvasControl.SessionAware<EditorSession> {
 
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     private CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
     private Edge selectedEdge;
     private ControlPoint selectedControlPoint;
-    private SelectionControl selectionControl;
 
     @Inject
     public ControlPointControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
@@ -100,13 +104,7 @@ public class ControlPointControlImpl extends AbstractCanvasHandlerRegistrationCo
     }
 
     @Override
-    public void bind(ClientFullSession session) {
-        selectionControl = session.getSelectionControl();
-    }
-
-    @Override
-    public void unbind() {
-        disable();
+    public void bind(final EditorSession session) {
     }
 
     @SuppressWarnings("unchecked")
@@ -231,12 +229,9 @@ public class ControlPointControlImpl extends AbstractCanvasHandlerRegistrationCo
     }
 
     @Override
-    public void disable() {
-        if (Objects.nonNull(selectedEdge) && Objects.nonNull(selectionControl)) {
-            selectionControl.deselect(selectedEdge);
-            selectionControl.clearSelection();
-        }
+    protected void doDestroy() {
+        super.doDestroy();
         clear();
-        super.disable();
+        commandManagerProvider = null;
     }
 }

@@ -40,11 +40,9 @@ public class CaseManagementObserverBuilderControlTest extends BaseCaseManagement
     protected AbstractElementBuilderControl getBuilderControl() {
         return new CaseManagementObserverBuilderControl(clientDefinitionManager,
                                                         clientFactoryServices,
-                                                        graphUtils,
                                                         ruleManager,
                                                         canvasCommandFactory,
                                                         graphBoundsIndexer,
-                                                        canvasLayoutUtils,
                                                         selectionEvent);
     }
 }

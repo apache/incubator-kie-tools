@@ -16,21 +16,14 @@
 
 package org.kie.workbench.common.stunner.client.widgets.toolbar.item;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.logging.client.LogConfiguration;
-import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 
 @Dependent
 public class ToolbarItem<S extends ClientSession> extends AbstractToolbarItem<S> {
-
-    private static Logger LOGGER = Logger.getLogger(ToolbarItem.class.getName());
 
     @Inject
     public ToolbarItem(final View view) {
@@ -40,18 +33,5 @@ public class ToolbarItem<S extends ClientSession> extends AbstractToolbarItem<S>
     @PostConstruct
     public void init() {
         super.doInit();
-    }
-
-    @Override
-    public Widget asWidget() {
-        return view.asWidget();
-    }
-
-    private void log(final Level level,
-                     final String message) {
-        if (LogConfiguration.loggingIsEnabled()) {
-            LOGGER.log(level,
-                       message);
-        }
     }
 }

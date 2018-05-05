@@ -29,28 +29,21 @@ import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.MenuDevCommandsBuilder;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
 import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenErrorView;
 import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenPanelView;
-import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.service.ClientDiagramService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
-import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.event.OnSessionErrorEvent;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
+import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.uberfire.client.annotations.WorkbenchContextId;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.lifecycle.OnClose;
@@ -64,7 +57,6 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -78,33 +70,25 @@ public class SessionDiagramViewerScreen {
     public static final String SCREEN_ID = "SessionDiagramViewerScreen";
 
     private final ShowcaseDiagramService diagramLoader;
-    private final SessionManager sessionManager;
-    private final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory;
+    private final SessionViewerPresenter<ViewerSession> presenter;
     private final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
     private final MenuDevCommandsBuilder menuDevCommandsBuilder;
     private final ScreenPanelView screenPanelView;
     private final ScreenErrorView screenErrorView;
 
-    private SessionPresenter<AbstractClientReadOnlySession, ?, Diagram> presenter;
     private PlaceRequest placeRequest;
     private String title = "Viewer Screen";
     private Menus menu = null;
 
     @Inject
-    public SessionDiagramViewerScreen(final DefinitionManager definitionManager,
-                                      final ClientDiagramService clientDiagramServices,
-                                      final ShowcaseDiagramService diagramLoader,
-                                      final SessionManager sessionManager,
-                                      final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory,
-                                      final PlaceManager placeManager,
+    public SessionDiagramViewerScreen(final ShowcaseDiagramService diagramLoader,
+                                      final SessionViewerPresenter<ViewerSession> presenter,
                                       final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
                                       final MenuDevCommandsBuilder menuDevCommandsBuilder,
                                       final ScreenPanelView screenPanelView,
                                       final ScreenErrorView screenErrorView) {
         this.diagramLoader = diagramLoader;
-        this.sessionManager = sessionManager;
-        this.sessionPresenterFactory = sessionPresenterFactory;
-        PlaceManager placeManager1 = placeManager;
+        this.presenter = presenter;
         this.changeTitleNotificationEvent = changeTitleNotificationEvent;
         this.menuDevCommandsBuilder = menuDevCommandsBuilder;
         this.screenPanelView = screenPanelView;
@@ -140,16 +124,13 @@ public class SessionDiagramViewerScreen {
     }
 
     private Menus makeMenuBar() {
-        if (menuDevCommandsBuilder.isEnabled()) {
-            return MenuFactory
-                    .newTopLevelMenu("Dev")
-                    .withItems(new ArrayList<MenuItem>(1) {{
-                        add(menuDevCommandsBuilder.build());
-                    }})
-                    .endMenu()
-                    .build();
-        }
-        return null;
+        return MenuFactory
+                .newTopLevelMenu("Dev")
+                .withItems(new ArrayList<MenuItem>(1) {{
+                    add(menuDevCommandsBuilder.build());
+                }})
+                .endMenu()
+                .build();
     }
 
     private void load(final String name,
@@ -159,43 +140,8 @@ public class SessionDiagramViewerScreen {
                                  new ServiceCallback<Diagram>() {
                                      @Override
                                      public void onSuccess(final Diagram diagram) {
-                                         final Metadata metadata = diagram.getMetadata();
-                                         sessionManager.getSessionFactory(metadata,
-                                                                          ClientReadOnlySession.class)
-                                                 .newSession(metadata,
-                                                             s -> {
-                                                                 final AbstractClientReadOnlySession session = (AbstractClientReadOnlySession) s;
-                                                                 presenter = sessionPresenterFactory.newPresenterViewer();
-                                                                 screenPanelView.setWidget(presenter.getView());
-                                                                 presenter
-                                                                         .withToolbar(true)
-                                                                         .withPalette(false)
-                                                                         .displayNotifications(type -> true).open(diagram,
-                                                                                                                  session,
-                                                                                                                  new SessionPresenter.SessionPresenterCallback<AbstractClientReadOnlySession, Diagram>() {
-                                                                                                                      @Override
-                                                                                                                      public void afterSessionOpened() {
-
-                                                                                                                      }
-
-                                                                                                                      @Override
-                                                                                                                      public void afterCanvasInitialized() {
-
-                                                                                                                      }
-
-                                                                                                                      @Override
-                                                                                                                      public void onSuccess() {
-                                                                                                                          BusyPopup.close();
-                                                                                                                          callback.execute();
-                                                                                                                      }
-
-                                                                                                                      @Override
-                                                                                                                      public void onError(final ClientRuntimeError error) {
-                                                                                                                          SessionDiagramViewerScreen.this.showError(error);
-                                                                                                                          callback.execute();
-                                                                                                                      }
-                                                                                                                  });
-                                                             });
+                                         open(diagram,
+                                              callback);
                                      }
 
                                      @Override
@@ -204,6 +150,39 @@ public class SessionDiagramViewerScreen {
                                          callback.execute();
                                      }
                                  });
+    }
+
+    private void open(final Diagram diagram,
+                      final Command callback) {
+        screenPanelView.setWidget(presenter.getView());
+        presenter
+                .withToolbar(true)
+                .withPalette(false)
+                .displayNotifications(type -> true)
+                .open(diagram,
+                      new SessionPresenter.SessionPresenterCallback<Diagram>() {
+                          @Override
+                          public void afterSessionOpened() {
+
+                          }
+
+                          @Override
+                          public void afterCanvasInitialized() {
+
+                          }
+
+                          @Override
+                          public void onSuccess() {
+                              BusyPopup.close();
+                              callback.execute();
+                          }
+
+                          @Override
+                          public void onError(final ClientRuntimeError error) {
+                              SessionDiagramViewerScreen.this.showError(error);
+                              callback.execute();
+                          }
+                      });
     }
 
     private void updateTitle(final String title) {
@@ -215,17 +194,10 @@ public class SessionDiagramViewerScreen {
 
     @OnOpen
     public void onOpen() {
-        resume();
     }
 
     @OnFocus
     public void onFocus() {
-        if (null != getSession() && !isSameSession(sessionManager.getCurrentSession())) {
-            sessionManager.open(getSession());
-        } else if (null != getSession()) {
-            log(FINE,
-                "Session already active, no action.");
-        }
     }
 
     private boolean isSameSession(final ClientSession other) {
@@ -236,27 +208,16 @@ public class SessionDiagramViewerScreen {
 
     @OnLostFocus
     public void OnLostFocus() {
-
     }
 
     @OnClose
     public void onClose() {
-        destroySession();
+        presenter.destroy();
     }
 
     @WorkbenchMenu
     public Menus getMenu() {
         return menu;
-    }
-
-    private void resume() {
-        if (null != getSession()) {
-            sessionManager.resume(getSession());
-        }
-    }
-
-    private void destroySession() {
-        presenter.destroy();
     }
 
     @WorkbenchPartTitle
@@ -274,12 +235,12 @@ public class SessionDiagramViewerScreen {
         return "sessionDiagramViewerScreenContext";
     }
 
-    private AbstractClientReadOnlySession getSession() {
+    private ViewerSession getSession() {
         return null != presenter ? presenter.getInstance() : null;
     }
 
     private CanvasHandler getCanvasHandler() {
-        return null != sessionManager.getCurrentSession() ? sessionManager.getCurrentSession().getCanvasHandler() : null;
+        return null != getSession() ? getSession().getCanvasHandler() : null;
     }
 
     private Diagram getDiagram() {

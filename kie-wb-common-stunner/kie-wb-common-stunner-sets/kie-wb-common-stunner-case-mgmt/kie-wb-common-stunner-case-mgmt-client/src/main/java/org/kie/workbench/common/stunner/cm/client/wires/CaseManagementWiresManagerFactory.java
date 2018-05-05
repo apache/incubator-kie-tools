@@ -28,8 +28,15 @@ import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 @CaseManagementEditor
 public class CaseManagementWiresManagerFactory extends WiresManagerFactoryImpl {
 
+    // CDI Proxy.
+    protected CaseManagementWiresManagerFactory() {
+        this(null, null);
+    }
+
     @Inject
-    public CaseManagementWiresManagerFactory(@CaseManagementEditor WiresControlFactory wiresControlFactory, WiresHandlerFactory wiresHandlerFactory) {
-        super(wiresControlFactory, wiresHandlerFactory);
+    public CaseManagementWiresManagerFactory(final @CaseManagementEditor WiresControlFactory wiresControlFactory,
+                                             final WiresHandlerFactory wiresHandlerFactory) {
+        super(wiresControlFactory,
+              wiresHandlerFactory);
     }
 }

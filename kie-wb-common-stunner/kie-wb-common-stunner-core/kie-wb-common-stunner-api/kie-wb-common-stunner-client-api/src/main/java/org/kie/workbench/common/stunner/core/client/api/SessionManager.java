@@ -16,15 +16,18 @@
 
 package org.kie.workbench.common.stunner.core.client.api;
 
+import java.util.function.Consumer;
+
+import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
+import org.kie.workbench.common.stunner.core.command.exception.CommandException;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 
 /**
  * A singleton instance for each application's client that handles the different Stunner's sessions on client side.
  * Four operations describe the lifecycle for the Stunner's client sessions:
  * <ul>
- * <li>When a session is opened, its canvas controls, listeners and other behaviours should be constructed,
+ * <li>When a session is created, its canvas controls, listeners and other behaviours should be constructed,
  * registered and enabled, although each implementation can provide its own behaviours</li>
  * <li>When a session is destroyed, its canvas controls, listeners and other behaviours should be removed and
  * destroyed. The session will no longer be paused/resumed.</li>
@@ -38,33 +41,28 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 public interface SessionManager {
 
     /**
-     * Returns the factory instance for the given session type.and targeted for the given Diagram type..
+     * Creates a new session for the given type and metadata.
      */
-    <S extends ClientSession> ClientSessionFactory<S> getSessionFactory(final Metadata metadata,
-                                                                        final Class<S> sessionType);
+    <S extends ClientSession> void newSession(Metadata metadata,
+                                              Class<S> sessionType,
+                                              Consumer<S> session);
+
+    /**
+     * Resume the session <code>session</code> and pause the current one, if any.
+     */
+    <S extends ClientSession> void open(S session);
+
+    /**
+     * Destroys the current active session (do not destroys this manager instance!).
+     */
+    <S extends ClientSession> void destroy(S session);
 
     /**
      * Returns the current active session.
      */
     <S extends ClientSession> S getCurrentSession();
 
-    /**
-     * Opens the session <code>session</code>.
-     */
-    <S extends ClientSession> void open(final S session);
+    void handleCommandError(final CommandException exception);
 
-    /**
-     * Pause the current session.
-     */
-    void pause();
-
-    /**
-     * Resume the session <code>session</code> and pause the current one, if any.
-     */
-    <S extends ClientSession> void resume(final S session);
-
-    /**
-     * Destroys the current active session (do not destroys this manager instance!).
-     */
-    void destroy();
+    void handleClientError(final ClientRuntimeError error);
 }

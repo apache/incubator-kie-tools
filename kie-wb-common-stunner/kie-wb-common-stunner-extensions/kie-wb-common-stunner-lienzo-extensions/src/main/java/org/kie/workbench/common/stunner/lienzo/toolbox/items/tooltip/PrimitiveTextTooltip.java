@@ -115,12 +115,15 @@ public class PrimitiveTextTooltip
     @Override
     public void destroy() {
         tooltip.destroy();
-        locationExecutor = null;
     }
 
     @Override
     public IPrimitive<?> asPrimitive() {
         return tooltip.asPrimitive();
+    }
+
+    BoundingLocationExecutor getLocationExecutor() {
+        return locationExecutor;
     }
 
     public static class BoundingLocationExecutor implements Consumer<Tooltip> {

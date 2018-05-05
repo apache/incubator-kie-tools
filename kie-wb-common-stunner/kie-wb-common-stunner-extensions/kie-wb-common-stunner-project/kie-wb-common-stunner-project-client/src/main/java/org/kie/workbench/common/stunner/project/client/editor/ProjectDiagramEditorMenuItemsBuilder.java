@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.stunner.project.client.editor;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -29,7 +29,6 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.kie.workbench.common.stunner.client.widgets.menu.MenuUtils;
-import org.kie.workbench.common.stunner.client.widgets.menu.dev.MenuDevCommandsBuilder;
 import org.kie.workbench.common.stunner.client.widgets.popups.PopupUtil;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
@@ -37,10 +36,8 @@ import org.kie.workbench.common.stunner.project.client.resources.i18n.StunnerPro
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
 
-@ApplicationScoped
+@Dependent
 public class ProjectDiagramEditorMenuItemsBuilder {
-
-    private final MenuDevCommandsBuilder menuDevCommandsBuilder;
 
     private final ClientTranslationService translationService;
 
@@ -48,15 +45,12 @@ public class ProjectDiagramEditorMenuItemsBuilder {
 
     protected ProjectDiagramEditorMenuItemsBuilder() {
         this(null,
-             null,
              null);
     }
 
     @Inject
-    public ProjectDiagramEditorMenuItemsBuilder(final MenuDevCommandsBuilder menuDevCommandsBuilder,
-                                                final ClientTranslationService translationService,
+    public ProjectDiagramEditorMenuItemsBuilder(final ClientTranslationService translationService,
                                                 final PopupUtil popupUtil) {
-        this.menuDevCommandsBuilder = menuDevCommandsBuilder;
         this.translationService = translationService;
         this.popupUtil = popupUtil;
     }
@@ -268,14 +262,6 @@ public class ProjectDiagramEditorMenuItemsBuilder {
                 }});
     }
 
-    public boolean isDevItemsEnabled() {
-        return menuDevCommandsBuilder.isEnabled();
-    }
-
-    public MenuItem newDevItems() {
-        return menuDevCommandsBuilder.build();
-    }
-
     private void executeWithConfirm(final Command command,
                                     final String title,
                                     final String okButtonText,
@@ -288,5 +274,13 @@ public class ProjectDiagramEditorMenuItemsBuilder {
 
     public static MenuItem buildItem(final IsWidget widget) {
         return MenuUtils.buildItem(widget);
+    }
+
+    public ClientTranslationService getTranslationService() {
+        return translationService;
+    }
+
+    public PopupUtil getPopupUtil() {
+        return popupUtil;
     }
 }

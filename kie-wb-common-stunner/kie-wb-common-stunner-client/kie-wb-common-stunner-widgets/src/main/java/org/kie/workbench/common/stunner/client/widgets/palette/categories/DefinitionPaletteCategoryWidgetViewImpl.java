@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette.categories;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -219,5 +220,14 @@ public class DefinitionPaletteCategoryWidgetViewImpl implements DefinitionPalett
     private int distance(int start,
                          int end) {
         return Math.abs(start - end);
+    }
+
+    @PreDestroy
+    public void destroy() {
+        DOMUtil.removeAllChildren(listGroupItem);
+        DOMUtil.removeAllChildren(categoryIcon);
+        DOMUtil.removeAllChildren(floatingPanel);
+        DOMUtil.removeAllChildren(closeCategoryButton);
+        presenter = null;
     }
 }

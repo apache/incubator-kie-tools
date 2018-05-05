@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -57,7 +57,7 @@ public abstract class BaseSingletonDOMElementFactoryTest<F extends BaseSingleton
     private Callback<E> onDisplay;
 
     @Mock
-    private AbstractClientSession session;
+    private EditorSession session;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;

@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.client.widgets.explorer.tree;
 
 import java.util.function.BiPredicate;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
@@ -32,6 +33,7 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.uberfire.ext.widgets.core.client.tree.Tree;
 import org.uberfire.ext.widgets.core.client.tree.TreeItem;
 
+@Dependent
 public class TreeExplorerView extends Composite implements TreeExplorer.View {
 
     private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
@@ -140,9 +142,11 @@ public class TreeExplorerView extends Composite implements TreeExplorer.View {
     }
 
     public TreeExplorer.View destroy() {
-        this.clear();
-        tree.removeFromParent();
         handlerRegistration.removeHandler();
+        tree.clear();
+        tree.removeFromParent();
+        handlerRegistration = null;
+        presenter = null;
         return this;
     }
 

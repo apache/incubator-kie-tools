@@ -38,7 +38,6 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -100,7 +99,7 @@ public class ContainmentAcceptorControlImplTest {
 
     @Test
     public void testEnable() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         assertEquals(canvasHandler,
                      tested.getCanvasHandler());
         verify(canvasView,
@@ -112,21 +111,8 @@ public class ContainmentAcceptorControlImplTest {
     }
 
     @Test
-    public void testDisable() {
-        tested.enable(canvasHandler);
-        tested.disable();
-        assertNull(tested.getCanvasHandler());
-        verify(canvasView,
-               times(1)).setContainmentAcceptor(eq(IContainmentAcceptor.NONE));
-        verify(canvasView,
-               never()).setDockingAcceptor(any(IDockingAcceptor.class));
-        verify(canvasView,
-               never()).setConnectionAcceptor(any(IConnectionAcceptor.class));
-    }
-
-    @Test
     public void testAllow() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         final boolean allow = tested.allow(parent,
                                            new Node[]{candidate});
         assertTrue(allow);
@@ -141,7 +127,7 @@ public class ContainmentAcceptorControlImplTest {
 
     @Test
     public void testAccept() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         final boolean accept = tested.accept(parent,
                                              new Node[]{candidate});
         assertTrue(accept);

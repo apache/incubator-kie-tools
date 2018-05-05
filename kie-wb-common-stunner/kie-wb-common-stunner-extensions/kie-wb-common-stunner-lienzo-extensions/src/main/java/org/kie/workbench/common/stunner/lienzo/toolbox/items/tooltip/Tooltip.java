@@ -29,6 +29,7 @@ import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.Direction;
+import org.kie.workbench.common.stunner.lienzo.util.LienzoGroupUtils;
 
 public class Tooltip {
 
@@ -117,9 +118,11 @@ public class Tooltip {
     }
 
     public void destroy() {
-        group.removeAll();
-        group.removeFromParent();
-        animationHandle = null;
+        stopIfRunning();
+        path.removeFromParent();
+        text.removeFromParent();
+        LienzoGroupUtils.removeAll(group);
+        direction = null;
     }
 
     public IPrimitive<?> asPrimitive() {

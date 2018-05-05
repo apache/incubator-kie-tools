@@ -27,9 +27,9 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasC
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
@@ -74,7 +74,7 @@ public class UndoSessionCommandTest extends BaseSessionCommandKeyboardTest {
     }
 
     @Override
-    protected AbstractClientSessionCommand<ClientFullSession> getCommand() {
+    protected AbstractClientSessionCommand<EditorSession> getCommand() {
         return new UndoSessionCommand(sessionCommandManager);
     }
 

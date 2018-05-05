@@ -28,8 +28,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
+import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.mockito.Mock;
@@ -47,11 +46,9 @@ import static org.mockito.Mockito.when;
 public class SessionViewerTest extends AbstractCanvasHandlerViewerTest {
 
     @Mock
-    AbstractClientReadOnlySession session;
+    ViewerSession session;
     @Mock
-    SessionViewer.SessionViewerCallback<AbstractClientReadOnlySession, Diagram> callback;
-    @Mock
-    CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
+    SessionViewer.SessionViewerCallback<Diagram> callback;
     @Mock
     ZoomControl<AbstractCanvas> zoomControl;
     @Mock
@@ -59,7 +56,7 @@ public class SessionViewerTest extends AbstractCanvasHandlerViewerTest {
     @Mock
     WidgetWrapperView view;
 
-    private SessionViewerImpl<AbstractClientReadOnlySession, AbstractCanvasHandler> tested;
+    private SessionViewerImpl<ViewerSession> tested;
 
     @Before
     public void setup() throws Exception {
@@ -69,8 +66,7 @@ public class SessionViewerTest extends AbstractCanvasHandlerViewerTest {
         when(session.getCanvas()).thenReturn(canvas);
         when(session.getZoomControl()).thenReturn(zoomControl);
         when(session.getSelectionControl()).thenReturn(selectionControl);
-        this.tested = new SessionViewerImpl<AbstractClientReadOnlySession, AbstractCanvasHandler>(canvasCommandManager,
-                                                                                                  view);
+        this.tested = new SessionViewerImpl<>(view);
     }
 
     @Test

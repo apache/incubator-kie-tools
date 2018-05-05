@@ -19,12 +19,12 @@ package org.kie.workbench.common.stunner.core.client.command;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandListener;
 import org.kie.workbench.common.stunner.core.command.CommandManager;
@@ -46,7 +46,7 @@ public abstract class AbstractSessionCommandManager
 
     private CommandListener<AbstractCanvasHandler, CanvasViolation> listener;
 
-    protected abstract AbstractClientSessionManager getClientSessionManager();
+    protected abstract SessionManager getClientSessionManager();
 
     protected abstract CommandListener<AbstractCanvasHandler, CanvasViolation> getRegistryListener();
 
@@ -89,39 +89,25 @@ public abstract class AbstractSessionCommandManager
     @Override
     @SuppressWarnings("unchecked")
     protected CommandManager<AbstractCanvasHandler, CanvasViolation> getDelegate() {
-        final ClientFullSession<AbstractCanvas, AbstractCanvasHandler, ClientSession> session = getFullSession();
-        if (null != session) {
-            final CanvasCommandManager<AbstractCanvasHandler> commandManager = session.getCommandManager();
-            try {
-                final HasCommandListener<CommandListener<AbstractCanvasHandler, CanvasViolation>> hasCommandListener =
-                        (HasCommandListener<CommandListener<AbstractCanvasHandler, CanvasViolation>>) commandManager;
-                hasCommandListener.setCommandListener(getRegistryListener());
-            } catch (final ClassCastException e) {
-                LOGGER.log(Level.WARNING,
-                           "Current command manager for canvas does not support" +
-                                   "command listeners. Session's registry cannot be updated.");
-            }
-            return commandManager;
-        }
-        return null;
+        return setDelegateListener(getRegistryListener());
     }
 
     @Override
     public CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> getRegistry() {
-        final ClientFullSession<AbstractCanvas, AbstractCanvasHandler, ClientSession> session = getFullSession();
+        final EditorSession session = getFullSession();
         if (null != session) {
             return session.getCommandRegistry();
         }
         return null;
     }
 
-    private ClientFullSession<AbstractCanvas, AbstractCanvasHandler, ClientSession> getFullSession() {
+    private EditorSession getFullSession() {
         final ClientSession<AbstractCanvas, AbstractCanvasHandler> session = getCurrentSession();
         try {
-            return (ClientFullSession<AbstractCanvas, AbstractCanvasHandler, ClientSession>) session;
+            return (EditorSession) session;
         } catch (final ClassCastException e) {
             LOGGER.log(Level.WARNING,
-                       "Session is not type of client full session.");
+                       "Session instance is not an editor session.");
             return null;
         }
     }
@@ -184,5 +170,18 @@ public abstract class AbstractSessionCommandManager
                        "Overriding listener for the session's command manager.");
         }
         this.listener = listener;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected CommandManager<AbstractCanvasHandler, CanvasViolation> setDelegateListener(final CommandListener<AbstractCanvasHandler, CanvasViolation> listener) {
+        final EditorSession session = getFullSession();
+        if (null != session) {
+            final CanvasCommandManager<AbstractCanvasHandler> commandManager = session.getCommandManager();
+            final HasCommandListener<CommandListener<AbstractCanvasHandler, CanvasViolation>> hasCommandListener =
+                    (HasCommandListener<CommandListener<AbstractCanvasHandler, CanvasViolation>>) commandManager;
+            hasCommandListener.setCommandListener(listener);
+            return commandManager;
+        }
+        return null;
     }
 }

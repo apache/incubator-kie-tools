@@ -19,11 +19,11 @@ package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -43,6 +43,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 
 @Dependent
 @SingleSelection
+@Default
 public final class LienzoSelectionControl<H extends AbstractCanvasHandler>
         extends AbstractSelectionControl<H> {
 
@@ -105,15 +106,11 @@ public final class LienzoSelectionControl<H extends AbstractCanvasHandler>
     }
 
     @Override
-    protected void onDisable() {
-        super.onDisable();
+    protected void onDestroy() {
+        super.onDestroy();
         new HashSet<>(handlers.keySet())
                 .forEach(this::deregister);
-        if (!handlers.isEmpty()) {
-            LOGGER.log(Level.WARNING,
-                       "Check missing handlers to deregister on some elements!");
-            handlers.clear();
-        }
+        handlers.clear();
     }
 
     private void registerHandler(final String uuid,

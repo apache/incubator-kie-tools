@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.util;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -85,6 +86,11 @@ public class CanvasLayoutUtils {
 
     public static int getPaddingY() {
         return PADDING_Y;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        graphBoundsIndexer.destroy();
     }
 
     @SuppressWarnings("unchecked")

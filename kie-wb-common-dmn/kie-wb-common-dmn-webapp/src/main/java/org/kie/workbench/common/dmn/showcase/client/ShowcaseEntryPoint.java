@@ -34,7 +34,6 @@ import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.kie.workbench.common.dmn.showcase.client.perspectives.AuthoringPerspective;
-import org.kie.workbench.common.stunner.client.widgets.menu.dev.MenuDevCommandsBuilder;
 import org.uberfire.client.views.pfly.menu.UserMenu;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.client.workbench.widgets.menu.UtilityMenuBar;
@@ -58,7 +57,6 @@ public class ShowcaseEntryPoint {
     private Caller<AuthenticationService> authService;
     private ClientUserSystemManager userSystemManager;
     private ErrorPopupPresenter errorPopupPresenter;
-    private MenuDevCommandsBuilder menuDevCommandsBuilder;
 
     public ShowcaseEntryPoint() {
         //CDI proxy
@@ -71,8 +69,7 @@ public class ShowcaseEntryPoint {
                               final UtilityMenuBar utilityMenuBar,
                               final Caller<AuthenticationService> authService,
                               final ClientUserSystemManager userSystemManager,
-                              final ErrorPopupPresenter errorPopupPresenter,
-                              final MenuDevCommandsBuilder menuDevCommandsBuilder) {
+                              final ErrorPopupPresenter errorPopupPresenter) {
         this.identity = identity;
         this.userMenu = userMenu;
         this.menuBar = menubar;
@@ -80,7 +77,6 @@ public class ShowcaseEntryPoint {
         this.authService = authService;
         this.userSystemManager = userSystemManager;
         this.errorPopupPresenter = errorPopupPresenter;
-        this.menuDevCommandsBuilder = menuDevCommandsBuilder;
     }
 
     @AfterInitialization
@@ -89,7 +85,6 @@ public class ShowcaseEntryPoint {
             setupGlobalErrorHandler();
             setupMenus();
             hideLoadingPopup();
-            menuDevCommandsBuilder.enable();
         });
     }
 

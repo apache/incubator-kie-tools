@@ -55,7 +55,7 @@ public abstract class AbstractRegistryFactory implements RegistryFactory {
 
     @Override
     public <T> TypeDefinitionRegistry<T> newDefinitionRegistry() {
-        return new DefinitionMapRegistry<T>(adapterManager);
+        return DefinitionMapRegistry.build(adapterManager);
     }
 
     @Override

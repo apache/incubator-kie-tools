@@ -18,10 +18,7 @@ package org.kie.workbench.common.stunner.client.widgets.canvas.view;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.DomEvent;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.MouseWheelEvent;
-import com.google.gwt.event.dom.client.MouseWheelHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -30,23 +27,16 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class FocusableLienzoPanelView extends com.ait.lienzo.client.widget.LienzoPanel {
 
+    private final HandlerRegistration mouseDownHandlerReg;
+    private final HandlerRegistration mouseWheelHandlerReg;
+
     public FocusableLienzoPanelView(final int width,
                                     final int height) {
         super(width,
               height);
         //Basic support to loose focus on other Widgets when a WiresCanvas is clicked
-        addMouseDownHandler(new MouseDownHandler() {
-            @Override
-            public void onMouseDown(final MouseDownEvent event) {
-                broadcastBlurEvent();
-            }
-        });
-        addMouseWheelHandler(new MouseWheelHandler() {
-            @Override
-            public void onMouseWheel(final MouseWheelEvent event) {
-                broadcastBlurEvent();
-            }
-        });
+        mouseDownHandlerReg = addMouseDownHandler(event -> broadcastBlurEvent());
+        mouseWheelHandlerReg = addMouseWheelHandler(event -> broadcastBlurEvent());
     }
 
     protected void broadcastBlurEvent() {
@@ -56,5 +46,11 @@ public class FocusableLienzoPanelView extends com.ait.lienzo.client.widget.Lienz
             DomEvent.fireNativeEvent(blur,
                                      w);
         }
+    }
+
+    public void destroy() {
+        mouseDownHandlerReg.removeHandler();
+        mouseWheelHandlerReg.removeHandler();
+        super.destroy();
     }
 }

@@ -19,18 +19,17 @@ package org.kie.workbench.common.stunner.standalone.client.screens;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramEditor;
-import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramPresenterFactory;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
 import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenErrorView;
 import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenPanelView;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -60,31 +59,24 @@ public class DiagramPresenterScreen {
     public static final String SCREEN_ID = "DiagramPresenterScreen";
     public static final String DIAGRAM_NAME = "evaluation2";
 
-    /**
-     * A loader helper instance for loading the diagram that will be used by <code>diagramViewer</code>
-     */
     @Inject
-    ShowcaseDiagramService diagramLoader;
-
-    /**
-     * The diagram presenter factory instance.
-     */
-    @Inject
-    DiagramPresenterFactory<Diagram> diagramPresenterFactory;
+    private ShowcaseDiagramService diagramLoader;
 
     @Inject
-    ScreenPanelView screenPanelView;
+    private ManagedInstance<DiagramViewer<Diagram, AbstractCanvasHandler>> diagramViewers;
 
     @Inject
-    ScreenErrorView screenErrorView;
+    private ManagedInstance<DiagramEditor<Diagram, AbstractCanvasHandler>> diagramEditors;
+
+    @Inject
+    private ScreenPanelView screenPanelView;
+
+    @Inject
+    private ScreenErrorView screenErrorView;
 
     private Menus menu = null;
-
-    private Viewer<Diagram, ?, ?, ?> presenter;
-
-    @PostConstruct
-    public void init() {
-    }
+    private DiagramViewer<Diagram, AbstractCanvasHandler> diagramViewer;
+    private DiagramEditor<Diagram, AbstractCanvasHandler> diagramEditor;
 
     @OnStartup
     public void onStartup(final PlaceRequest placeRequest) {
@@ -110,10 +102,8 @@ public class DiagramPresenterScreen {
                                  new ServiceCallback<Diagram>() {
                                      @Override
                                      public void onSuccess(final Diagram diagram) {
-                                         final DiagramViewer<Diagram, ?> diagramViewer =
-                                                 diagramPresenterFactory.newViewer(diagram);
+                                         diagramViewer = diagramViewers.get();
                                          screenPanelView.setWidget(diagramViewer.getView());
-                                         DiagramPresenterScreen.this.presenter = diagramViewer;
                                          diagramViewer.open(diagram,
                                                             new ScreenViewerCallback());
                                      }
@@ -133,10 +123,8 @@ public class DiagramPresenterScreen {
                                  new ServiceCallback<Diagram>() {
                                      @Override
                                      public void onSuccess(final Diagram diagram) {
-                                         final DiagramEditor<Diagram, ?> diagramEditor =
-                                                 diagramPresenterFactory.newEditor(diagram);
+                                         diagramEditor = diagramEditors.get();
                                          screenPanelView.setWidget(diagramEditor.getView());
-                                         DiagramPresenterScreen.this.presenter = diagramEditor;
                                          diagramEditor.open(diagram,
                                                             new ScreenViewerCallback());
                                      }
@@ -154,7 +142,7 @@ public class DiagramPresenterScreen {
 
     @OnClose
     public void onClose() {
-        clear();
+        destroy();
     }
 
     @WorkbenchMenu
@@ -180,6 +168,10 @@ public class DiagramPresenterScreen {
     private final class ScreenViewerCallback implements DiagramViewer.DiagramViewerCallback<Diagram> {
 
         @Override
+        public void onOpen(Diagram diagram) {
+        }
+
+        @Override
         public void afterCanvasInitialized() {
         }
 
@@ -196,15 +188,21 @@ public class DiagramPresenterScreen {
         }
     }
 
-    private void clear() {
-        if (null != presenter) {
-            presenter.clear();
-        }
-    }
-
     private void destroy() {
-        if (null != presenter) {
-            presenter.destroy();
+        screenPanelView.clear();
+        if (null != diagramViewer) {
+            if (null != diagramViewer.getInstance()) {
+                diagramViewer.destroy();
+            }
+            diagramViewers.destroy(diagramViewer);
+            diagramViewers.destroyAll();
+        }
+        if (null != diagramEditor) {
+            if (null != diagramEditor.getInstance()) {
+                diagramEditor.destroy();
+            }
+            diagramEditors.destroy(diagramEditor);
+            diagramEditors.destroyAll();
         }
     }
 

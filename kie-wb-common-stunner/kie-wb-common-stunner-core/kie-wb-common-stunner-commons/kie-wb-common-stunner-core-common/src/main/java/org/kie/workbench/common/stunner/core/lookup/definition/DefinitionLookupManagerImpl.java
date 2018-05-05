@@ -28,8 +28,7 @@ import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.lookup.criteria.AbstractCriteriaLookupManager;
-import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
-import org.kie.workbench.common.stunner.core.registry.definition.DefinitionRegistry;
+import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @ApplicationScoped
@@ -37,20 +36,24 @@ public class DefinitionLookupManagerImpl
         extends AbstractCriteriaLookupManager<String, DefinitionRepresentation, DefinitionLookupRequest>
         implements DefinitionLookupManager {
 
-    DefinitionManager definitionManager;
-    FactoryManager factoryManager;
-    DefinitionRegistry<Object> registry;
+    private final DefinitionManager definitionManager;
+    private final FactoryManager factoryManager;
+    private final DefinitionsCacheRegistry registry;
 
+    // CDI proxy.
     protected DefinitionLookupManagerImpl() {
+        this.definitionManager = null;
+        this.factoryManager = null;
+        this.registry = null;
     }
 
     @Inject
     public DefinitionLookupManagerImpl(final DefinitionManager definitionManager,
                                        final FactoryManager factoryManager,
-                                       final RegistryFactory registryFactory) {
+                                       final DefinitionsCacheRegistry registry) {
         this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;
-        this.registry = registryFactory.newDefinitionRegistry();
+        this.registry = registry;
     }
 
     @Override
@@ -97,12 +100,7 @@ public class DefinitionLookupManagerImpl
     }
 
     private Object getDomainObject(final String id) {
-        Object definition = registry.getDefinitionById(id);
-        if (null == definition) {
-            definition = factoryManager.newDefinition(id);
-            registry.register(definition);
-        }
-        return definition;
+        return registry.getDefinitionById(id);
     }
 
     @SuppressWarnings("unchecked")

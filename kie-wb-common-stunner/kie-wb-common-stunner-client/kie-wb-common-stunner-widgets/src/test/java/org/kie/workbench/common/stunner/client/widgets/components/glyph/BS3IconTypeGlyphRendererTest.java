@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.components.views.WidgetElementRendererView;
 import org.mockito.Mock;
+import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
@@ -42,12 +43,16 @@ public class BS3IconTypeGlyphRendererTest {
     @Mock
     private Supplier<WidgetElementRendererView> viewSupplier;
 
+    @Mock
+    private Command viewDestroyer;
+
     private BS3IconTypeGlyphRenderer tested;
 
     @Before
     public void setup() throws Exception {
         when(viewSupplier.get()).thenReturn(view);
-        this.tested = new BS3IconTypeGlyphRenderer(viewSupplier);
+        this.tested = new BS3IconTypeGlyphRenderer(viewSupplier,
+                                                   viewDestroyer);
     }
 
     @Test
@@ -66,5 +71,11 @@ public class BS3IconTypeGlyphRendererTest {
                times(1)).get();
         verify(view,
                times(1)).setWidget(any(Icon.class));
+    }
+
+    @Test
+    public void testDestroy() {
+        tested.destroy();
+        verify(viewDestroyer, times(1)).execute();
     }
 }

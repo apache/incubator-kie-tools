@@ -53,13 +53,7 @@ public abstract class AbstractCanvasHandlerRegistrationControl<H extends Abstrac
     }
 
     @Override
-    protected void doDisable() {
-        doOnAllHandlers(disableEventHandler());
-    }
-
-    @Override
-    public void enable(H canvasHandler) {
-        super.enable(canvasHandler);
+    protected void doInit() {
         doOnAllHandlers(enableEventHandler());
     }
 
@@ -73,13 +67,6 @@ public abstract class AbstractCanvasHandlerRegistrationControl<H extends Abstrac
                     .forEach(handlerFunction);
         }
     }
-    private Consumer<Shape> disableEventHandler() {
-        return shape -> {
-            ViewHandler<?> eventHandler = handlers.get(shape.getUUID());
-            ((HasEventHandlers) shape.getShapeView()).removeHandler(eventHandler);
-            disabledHandlers.put(shape.getUUID(), eventHandler);
-        };
-    }
 
     private Consumer<Shape> enableEventHandler() {
         return shape -> {
@@ -89,11 +76,15 @@ public abstract class AbstractCanvasHandlerRegistrationControl<H extends Abstrac
         };
     }
 
-    public void deregisterAll() {
+    @Override
+    protected void doDestroy() {
         new HashSet<>(handlers.keySet())
                 .stream()
                 .forEach(this::deregister);
         handlers.clear();
+        new HashSet<>(disabledHandlers.keySet())
+                .stream()
+                .forEach(this::deregister);
         disabledHandlers.clear();
     }
 

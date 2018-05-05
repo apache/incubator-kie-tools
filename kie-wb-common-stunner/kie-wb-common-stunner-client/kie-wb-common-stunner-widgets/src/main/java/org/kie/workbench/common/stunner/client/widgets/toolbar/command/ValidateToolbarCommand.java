@@ -20,18 +20,23 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ValidateSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @Dependent
-public class ValidateToolbarCommand extends AbstractToolbarCommand<AbstractClientFullSession, ValidateSessionCommand> {
+public class ValidateToolbarCommand extends AbstractToolbarCommand<EditorSession, ValidateSessionCommand> {
 
     @Inject
-    public ValidateToolbarCommand(final SessionCommandFactory sessionCommandFactory, final ClientTranslationService translationService) {
-        super(sessionCommandFactory.newValidateCommand(), translationService);
+    public ValidateToolbarCommand(final DefinitionUtils definitionUtils,
+                                  final ManagedInstance<ValidateSessionCommand> command,
+                                  final ClientTranslationService translationService) {
+        super(definitionUtils,
+              command,
+              translationService);
     }
 
     @Override

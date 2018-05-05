@@ -69,6 +69,7 @@ public class ConnectorDragProxyImpl implements ConnectorDragProxy<AbstractCanvas
                                                                           final int x,
                                                                           final int y,
                                                                           final DragProxyCallback callback) {
+        clear();
         // Source connector's shape - Obtain the shape for the source node.
         final Node<View<?>, Edge> sourceNode = item.getSourceNode();
         final Shape<?> sourceNodeShape = getCanvas().getShape(sourceNode.getUUID());
@@ -148,17 +149,15 @@ public class ConnectorDragProxyImpl implements ConnectorDragProxy<AbstractCanvas
 
     @Override
     public void clear() {
-        if (null != this.shapeViewDragProxyFactory) {
-            this.shapeViewDragProxyFactory.clear();
-        }
+        shapeViewDragProxyFactory.clear();
         deregisterTransientConnector();
     }
 
     public void destroy() {
-        clear();
-        this.graphBoundsIndexer.destroy();
-        this.shapeViewDragProxyFactory.destroy();
-        this.canvasHandler = null;
+        deregisterTransientConnector();
+        shapeViewDragProxyFactory.destroy();
+        graphBoundsIndexer.destroy();
+        canvasHandler = null;
     }
 
     private WiresManager getWiresManager() {

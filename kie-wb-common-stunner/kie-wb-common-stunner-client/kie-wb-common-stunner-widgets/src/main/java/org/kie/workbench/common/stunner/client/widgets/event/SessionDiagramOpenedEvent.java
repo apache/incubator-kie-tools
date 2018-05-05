@@ -19,7 +19,7 @@ import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.uberfire.workbench.events.UberFireEvent;
 
 /**
- * <p>Event when a ldiagram has been loaded and drawn into the session's canvas.</p>
+ * <p>Event when a diagram has been loaded and drawn into the session's canvas.</p>
  */
 public final class SessionDiagramOpenedEvent implements UberFireEvent {
 
@@ -35,6 +35,6 @@ public final class SessionDiagramOpenedEvent implements UberFireEvent {
 
     @Override
     public String toString() {
-        return "SessionDiagramOpenedEvent [session=" + session.toString() + "]";
+        return "SessionDiagramOpenedEvent [session=" + session + "]";
     }
 }

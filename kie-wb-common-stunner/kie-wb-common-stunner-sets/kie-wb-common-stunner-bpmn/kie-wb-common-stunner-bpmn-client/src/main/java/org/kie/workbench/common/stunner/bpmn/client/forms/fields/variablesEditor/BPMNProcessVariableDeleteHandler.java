@@ -21,7 +21,7 @@ import java.util.Collection;
 
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
-import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
@@ -31,7 +31,7 @@ public class BPMNProcessVariableDeleteHandler {
     private final String PROPERTY_IN_PREFIX = "[din]";
     private final String PROPERTY_OUT_PREFIX = "[dout]";
 
-    private AbstractClientSessionManager canvasSessionManager;
+    private SessionManager canvasSessionManager;
 
     public boolean isVariableBoundToNodes(Graph graph,
                                           String propertyId) {

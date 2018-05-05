@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -38,7 +38,7 @@ public class LogNodeEdgesDevCommand extends AbstractSelectedNodeDevCommand {
     }
 
     @Inject
-    public LogNodeEdgesDevCommand(final AbstractClientSessionManager sessionManager) {
+    public LogNodeEdgesDevCommand(final SessionManager sessionManager) {
         super(sessionManager);
     }
 

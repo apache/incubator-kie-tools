@@ -21,30 +21,40 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxFactory;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultToolboxControlTest {
 
     @Mock
-    private ActionsToolboxFactory flowActionsToolboxFactory;
+    private ActionsToolboxFactory flowActionsToolboxFactoryInstance;
+    private ManagedInstanceStub<ActionsToolboxFactory> flowActionsToolboxFactory;
 
     @Mock
-    private ActionsToolboxFactory morphActionsToolboxFactory;
+    private ActionsToolboxFactory morphActionsToolboxFactoryInstance;
+    private ManagedInstanceStub<ActionsToolboxFactory> morphActionsToolboxFactory;
 
     @Mock
-    private ActionsToolboxFactory commonActionsToolboxFactory;
+    private ActionsToolboxFactory commonActionsToolboxFactoryInstance;
+    private ManagedInstanceStub<ActionsToolboxFactory> commonActionsToolboxFactory;
 
     private DefaultToolboxControl tested;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
+        flowActionsToolboxFactory = spy(new ManagedInstanceStub<>(flowActionsToolboxFactoryInstance));
+        morphActionsToolboxFactory = spy(new ManagedInstanceStub<>(morphActionsToolboxFactoryInstance));
+        commonActionsToolboxFactory = spy(new ManagedInstanceStub<>(commonActionsToolboxFactoryInstance));
         this.tested = new DefaultToolboxControl(flowActionsToolboxFactory,
                                                 morphActionsToolboxFactory,
                                                 commonActionsToolboxFactory);
@@ -52,12 +62,19 @@ public class DefaultToolboxControlTest {
 
     @Test
     public void testGetTheRightFactories() {
-        tested.init();
         final List<ActionsToolboxFactory> factories = this.tested.getFactories();
         assertEquals(3,
                      factories.size());
-        assertTrue(factories.contains(flowActionsToolboxFactory));
-        assertTrue(factories.contains(morphActionsToolboxFactory));
-        assertTrue(factories.contains(commonActionsToolboxFactory));
+        assertTrue(factories.contains(flowActionsToolboxFactoryInstance));
+        assertTrue(factories.contains(morphActionsToolboxFactoryInstance));
+        assertTrue(factories.contains(commonActionsToolboxFactoryInstance));
+    }
+
+    @Test
+    public void testDestroy() {
+        tested.destroy();
+        verify(flowActionsToolboxFactory, times(1)).destroyAll();
+        verify(morphActionsToolboxFactory, times(1)).destroyAll();
+        verify(commonActionsToolboxFactory, times(1)).destroyAll();
     }
 }

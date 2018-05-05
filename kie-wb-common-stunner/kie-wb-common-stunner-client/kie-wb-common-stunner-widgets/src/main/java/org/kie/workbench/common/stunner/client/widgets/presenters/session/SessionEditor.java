@@ -24,14 +24,14 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
 /**
  * An editor type for generic client session instances.
- * <p/>
+ * <p>
  * The goal for a diagram editor is to provide a DOM element that can be easily attached to other components
  * and encapsulates the components and logic necessary in order to provide authoring features for the session's diagram
  * instance.
- * <p/>
+ * <p>
  * The session editor type expects the session instance already initialized with the diagram instance and all canvas,
  * handler and controls instances.
- * <p/>
+ * <p>
  * Notes:
  * - The interaction with the editor different controls, such as CDI context interactions, depends on
  * each control's implementation.
@@ -42,6 +42,6 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
  */
 public interface SessionEditor<S extends ClientSession, H extends CanvasHandler, D extends Diagram>
         extends SessionViewer<S, H, D>,
-                Editor<S, H, IsWidget, SessionViewer.SessionViewerCallback<S, D>> {
+                Editor<S, H, IsWidget, SessionViewer.SessionViewerCallback<D>> {
 
 }

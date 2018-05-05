@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Default;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasControl;
@@ -38,12 +39,14 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 @ApplicationScoped
-public class LocalClipboardControl extends AbstractCanvasControl<AbstractCanvas> implements ClipboardControl<Element, AbstractCanvas, ClientSession> {
+@Default
+public class LocalClipboardControl
+        extends AbstractCanvasControl<AbstractCanvas>
+        implements ClipboardControl<Element, AbstractCanvas, ClientSession> {
 
     private final Set<Element> elements;
     private final Map<String, String> elementsParent;
     private final List<Command> commands;
-    private ClientSession session;
 
     public LocalClipboardControl() {
         this.elements = new HashSet<>();
@@ -101,18 +104,11 @@ public class LocalClipboardControl extends AbstractCanvasControl<AbstractCanvas>
     }
 
     @Override
-    public void bind(final ClientSession session) {
-        this.session = session;
+    protected void doInit() {
     }
 
     @Override
-    public void unbind() {
-        clear();
-        this.session = null;
-    }
-
-    @Override
-    protected void doDisable() {
+    protected void doDestroy() {
         clear();
     }
 }

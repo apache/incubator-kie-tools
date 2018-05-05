@@ -21,8 +21,8 @@ import javax.enterprise.event.Event;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -34,7 +34,7 @@ public class DeleteSelectionSessionCommandTest extends BaseSessionCommandKeyboar
 
     @Override
 
-    protected AbstractClientSessionCommand<ClientFullSession> getCommand() {
+    protected AbstractClientSessionCommand<EditorSession> getCommand() {
         return new DeleteSelectionSessionCommand(sessionCommandManager,
                                                  canvasCommandFactory,
                                                  canvasClearSelectionEventEvent);

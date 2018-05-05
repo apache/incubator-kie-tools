@@ -24,6 +24,7 @@ import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import org.kie.workbench.common.stunner.lienzo.Decorator;
 import org.kie.workbench.common.stunner.lienzo.Decorator.ItemCallback;
 import org.kie.workbench.common.stunner.lienzo.grid.Grid;
+import org.kie.workbench.common.stunner.lienzo.util.LienzoGroupUtils;
 
 public abstract class AbstractPalette<T> extends Group {
 
@@ -218,14 +219,14 @@ public abstract class AbstractPalette<T> extends Group {
     }
 
     public T clearItems() {
-        this.handlerRegistrationManager.removeHandler();
-        this.itemsGroup.removeAll();
+        handlerRegistrationManager.removeHandler();
+        LienzoGroupUtils.removeChildren(itemsGroup);
         return (T) this;
     }
 
     public T clear() {
         clearItems();
-        this.removeAll();
+        LienzoGroupUtils.removeChildren(this);
         return (T) this;
     }
 

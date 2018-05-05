@@ -29,7 +29,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -69,7 +69,7 @@ import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
 
 import static org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteDefinitionProviders.isType;
 
-@ApplicationScoped
+@Dependent
 @BPMN
 public class BPMNPaletteDefinitionBuilder
         implements PaletteDefinitionBuilder<AbstractCanvasHandler, DefaultPaletteDefinition> {

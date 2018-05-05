@@ -19,12 +19,12 @@ package org.kie.workbench.common.stunner.standalone.client.screens;
 import javax.enterprise.event.Observes;
 
 import org.kie.workbench.common.stunner.client.widgets.event.SessionDiagramOpenedEvent;
+import org.kie.workbench.common.stunner.client.widgets.event.SessionFocusedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionDestroyedEvent;
-import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedEvent;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
@@ -33,8 +33,6 @@ public abstract class AbstractSessionScreen {
 
     private ClientSession<AbstractCanvas, AbstractCanvasHandler> session;
 
-    protected abstract void doOpenSession();
-
     protected abstract void doOpenDiagram();
 
     protected abstract void doCloseSession();
@@ -42,13 +40,12 @@ public abstract class AbstractSessionScreen {
     protected abstract void doUpdateTitle(String title);
 
     public void open(final ClientSession<AbstractCanvas, AbstractCanvasHandler> session) {
-        if (null == this.session) {
-            this.session = session;
-            doOpenSession();
-        } else if (isSameSession(session)) {
-            doOpenDiagram();
-            updateTitle();
+        if (null != this.session) {
+            close();
         }
+        this.session = session;
+        doOpenDiagram();
+        updateTitle();
     }
 
     public void close() {
@@ -57,30 +54,21 @@ public abstract class AbstractSessionScreen {
     }
 
     @SuppressWarnings("unchecked")
-    void onCanvasSessionOpened(@Observes SessionOpenedEvent sessionOpenedEvent) {
-        checkNotNull("sessionOpenedEvent",
-                     sessionOpenedEvent);
-        open(sessionOpenedEvent.getSession());
+    void onSessionDiagramOpenedEvent(@Observes SessionDiagramOpenedEvent sessionDiagramOpenedEvent) {
+        checkNotNull("sessionDiagramOpenedEvent",
+                     sessionDiagramOpenedEvent);
+        open(sessionDiagramOpenedEvent.getSession());
+    }
+
+    @SuppressWarnings("unchecked")
+    void onSessionFocusedEvent(@Observes SessionFocusedEvent focusedEvent) {
+        open(focusedEvent.getSession());
     }
 
     void onCanvasSessionDestroyed(@Observes SessionDestroyedEvent sessionDestroyedEvent) {
         checkNotNull("sessionDestroyedEvent",
                      sessionDestroyedEvent);
         close();
-    }
-
-    void onSessionDiagramOpenedEvent(@Observes SessionDiagramOpenedEvent sessionDiagramOpenedEvent) {
-        checkNotNull("sessionDiagramOpenedEvent",
-                     sessionDiagramOpenedEvent);
-        if (null != getCanvas() && getCanvas().equals(sessionDiagramOpenedEvent.getSession().getCanvas())) {
-            // Force to reload current session, for example, when a new diagram is just created.
-            open(session);
-        }
-    }
-
-    protected boolean isSameSession(final ClientSession session) {
-        return null != getCanvasHandler()
-                && getCanvasHandler().equals(session.getCanvasHandler());
     }
 
     protected AbstractCanvasHandler getCanvasHandler() {
@@ -91,8 +79,8 @@ public abstract class AbstractSessionScreen {
         return null != session ? session.getCanvas() : null;
     }
 
-    protected AbstractClientSession getSession() {
-        return (AbstractClientSession) session;
+    protected AbstractSession getSession() {
+        return (AbstractSession) session;
     }
 
     private void updateTitle() {

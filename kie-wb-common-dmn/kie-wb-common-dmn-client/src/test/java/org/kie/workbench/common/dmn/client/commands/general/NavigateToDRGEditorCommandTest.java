@@ -54,7 +54,6 @@ public class NavigateToDRGEditorCommandTest extends BaseNavigationCommandTest {
                      command.getCanvasCommand(canvasHandler).execute(canvasHandler));
 
         verify(layer).enableHandlers();
-        verify(session).resume();
         verify(command).hidePaletteWidget(eq(false));
         verify(command).addDRGEditorToCanvasWidget();
         verify(sessionPresenterView).setCanvasWidget(view);
@@ -68,7 +67,6 @@ public class NavigateToDRGEditorCommandTest extends BaseNavigationCommandTest {
                      command.getCanvasCommand(canvasHandler).undo(canvasHandler));
 
         verify(layer).disableHandlers();
-        verify(session).pause();
         verify(command).hidePaletteWidget(eq(true));
         verify(command).addExpressionEditorToCanvasWidget();
         verify(sessionPresenterView).setCanvasWidget(editorContainerForErrai1090);

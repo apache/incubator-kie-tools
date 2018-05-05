@@ -16,13 +16,15 @@
 
 package org.kie.workbench.common.dmn.client.canvas.controls.toolbox;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.AbstractToolboxControl;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxFactory;
@@ -31,27 +33,27 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.A
 @DMNEditor
 public class DMNToolboxControl extends AbstractToolboxControl {
 
-    private final ActionsToolboxFactory flowActionsToolboxFactory;
-    private final ActionsToolboxFactory commonActionsToolboxFactory;
-    private List<ActionsToolboxFactory> factories;
+    private final ManagedInstance<ActionsToolboxFactory> flowActionsToolboxFactories;
+    private final ManagedInstance<ActionsToolboxFactory> commonActionsToolboxFactories;
 
     @Inject
-    public DMNToolboxControl(final @DMNFlowActionsToolbox ActionsToolboxFactory flowActionsToolboxFactory,
-                             final @DMNCommonActionsToolbox ActionsToolboxFactory commonActionsToolboxFactory) {
-        this.flowActionsToolboxFactory = flowActionsToolboxFactory;
-        this.commonActionsToolboxFactory = commonActionsToolboxFactory;
-    }
-
-    @PostConstruct
-    public void init() {
-        factories = new ArrayList<ActionsToolboxFactory>(2) {{
-            add(flowActionsToolboxFactory);
-            add(commonActionsToolboxFactory);
-        }};
+    public DMNToolboxControl(final @Any @DMNFlowActionsToolbox ManagedInstance<ActionsToolboxFactory> flowActionsToolboxFactories,
+                             final @Any @DMNCommonActionsToolbox ManagedInstance<ActionsToolboxFactory> commonActionsToolboxFactories) {
+        this.flowActionsToolboxFactories = flowActionsToolboxFactories;
+        this.commonActionsToolboxFactories = commonActionsToolboxFactories;
     }
 
     @Override
     protected List<ActionsToolboxFactory> getFactories() {
-        return factories;
+        return Arrays.asList(flowActionsToolboxFactories.get(),
+                             commonActionsToolboxFactories.get());
+    }
+
+    @PreDestroy
+    @Override
+    public void destroy() {
+        super.destroy();
+        flowActionsToolboxFactories.destroyAll();
+        commonActionsToolboxFactories.destroyAll();
     }
 }

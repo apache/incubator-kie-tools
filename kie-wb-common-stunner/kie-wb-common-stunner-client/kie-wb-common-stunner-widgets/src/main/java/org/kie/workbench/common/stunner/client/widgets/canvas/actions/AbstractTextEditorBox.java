@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.widgets.canvas.actions;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 import com.google.gwt.event.dom.client.KeyCodes;
 import org.jboss.errai.common.client.dom.HTMLElement;
@@ -103,6 +104,16 @@ public abstract class AbstractTextEditorBox implements TextEditorBoxView.Present
     public void onClose() {
         this.hide();
         fireCloseCallback();
+    }
+
+    @PreDestroy
+    public void destroy() {
+        canvasHandler = null;
+        textPropertyProviderFactory = null;
+        commandManagerProvider = null;
+        closeCallback = null;
+        element = null;
+        value = null;
     }
 
     private void fireCloseCallback() {

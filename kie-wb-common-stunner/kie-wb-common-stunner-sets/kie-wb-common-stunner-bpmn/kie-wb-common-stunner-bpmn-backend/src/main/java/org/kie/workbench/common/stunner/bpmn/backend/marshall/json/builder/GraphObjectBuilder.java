@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFact
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
+import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public interface GraphObjectBuilder<W, T extends Element<View<W>>> {
@@ -66,6 +67,8 @@ public interface GraphObjectBuilder<W, T extends Element<View<W>>> {
         DefinitionManager getDefinitionManager();
 
         FactoryManager getFactoryManager();
+
+        DefinitionsCacheRegistry getDefinitionsRegistry();
 
         OryxManager getOryxManager();
 

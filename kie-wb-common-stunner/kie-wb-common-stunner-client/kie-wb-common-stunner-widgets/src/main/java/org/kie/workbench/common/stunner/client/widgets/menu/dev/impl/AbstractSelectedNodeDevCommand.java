@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.client.widgets.menu.dev.impl;
 
 import java.util.Collection;
 
-import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 public abstract class AbstractSelectedNodeDevCommand
         extends AbstractSelectionDevCommand {
 
-    protected AbstractSelectedNodeDevCommand(final AbstractClientSessionManager sessionManager) {
+    protected AbstractSelectedNodeDevCommand(final SessionManager sessionManager) {
         super(sessionManager);
     }
 

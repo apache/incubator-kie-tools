@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.service.ClientDiagramService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -98,7 +98,7 @@ public class ShowcaseDiagramService {
                                            diagramServiceCallback);
     }
 
-    public void save(final AbstractClientFullSession session,
+    public void save(final EditorSession session,
                      final ServiceCallback<Diagram<Graph, Metadata>> diagramServiceCallback) {
         // Update diagram's image data as thumbnail.
         final String thumbData = toImageData(session);
@@ -109,7 +109,7 @@ public class ShowcaseDiagramService {
              diagramServiceCallback);
     }
 
-    private String toImageData(final AbstractClientFullSession session) {
+    private String toImageData(final EditorSession session) {
         return canvasExport.toImageData(session.getCanvasHandler(),
                                         Layer.URLDataType.JPG);
     }

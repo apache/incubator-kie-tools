@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -28,9 +29,11 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.wires.ILocationAcceptor;
+import com.ait.lienzo.client.core.shape.wires.SelectionManager;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -39,6 +42,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.LocationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
 import org.kie.workbench.common.stunner.core.client.canvas.event.ShapeLocationsChangedEvent;
@@ -49,7 +53,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasDragBounds;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
@@ -76,9 +80,11 @@ import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
+@Default
 public class LocationControlImpl
         extends AbstractCanvasHandlerRegistrationControl<AbstractCanvasHandler>
-        implements LocationControl<AbstractCanvasHandler, Element> {
+        implements LocationControl<AbstractCanvasHandler, Element>,
+                   CanvasControl.SessionAware<EditorSession> {
 
     private final static double LARGE_DISTANCE = 25d;
     private final static double NORMAL_DISTANCE = 5d;
@@ -105,7 +111,7 @@ public class LocationControlImpl
     }
 
     @Override
-    public void bind(ClientFullSession session) {
+    public void bind(final EditorSession session) {
         // Keyboard event handling.
         session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
     }
@@ -171,18 +177,13 @@ public class LocationControlImpl
     }
 
     @Override
-    public void unbind() {
-        // Nothing to unbind.
-    }
-
-    @Override
     public void setCommandManagerProvider(final CommandManagerProvider<AbstractCanvasHandler> provider) {
         this.commandManagerProvider = provider;
     }
 
     @Override
-    public void enable(final AbstractCanvasHandler canvasHandler) {
-        super.enable(canvasHandler);
+    protected void doInit() {
+        super.doInit();
         getWiresManager().setLocationAcceptor(LOCATION_ACCEPTOR);
     }
 
@@ -271,14 +272,35 @@ public class LocationControlImpl
     }
 
     @Override
-    protected void doDisable() {
-        super.doDisable();
-        getWiresManager().setLocationAcceptor(ILocationAcceptor.ALL);
-        getWiresManager().getSelectionManager()
-                .getControl()
-                .setBoundsConstraint(null);
-        boundsConstraint = null;
+    protected void doDestroy() {
+        clear();
         commandManagerProvider = null;
+        boundsConstraint = null;
+        super.doDestroy();
+    }
+
+    private void clear() {
+        getWiresManager().setLocationAcceptor(ILocationAcceptor.ALL);
+        ifSelectionManager(s -> s.getControl().setBoundsConstraint(null));
+        selectedIDs.clear();
+    }
+
+    void onCanvasSelectionEvent(final @Observes CanvasSelectionEvent event) {
+        checkNotNull("event",
+                     event);
+
+        if (checkEventContext(event)) {
+            selectedIDs.clear();
+            selectedIDs.addAll(event.getIdentifiers());
+        }
+    }
+
+    void onCanvasClearSelectionEvent(final @Observes CanvasClearSelectionEvent event) {
+        checkNotNull("event",
+                     event);
+        if (checkEventContext(event)) {
+            selectedIDs.clear();
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -286,12 +308,10 @@ public class LocationControlImpl
         if (null == boundsConstraint) {
             boundsConstraint = getLocationBounds();
             // Selection multiple bounding constraints.
-            getWiresManager().getSelectionManager()
-                    .getControl()
-                    .setBoundsConstraint(new BoundingBox(boundsConstraint[0],
-                                                         boundsConstraint[1],
-                                                         boundsConstraint[2],
-                                                         boundsConstraint[3]));
+            ifSelectionManager(s -> s.getControl().setBoundsConstraint(new BoundingBox(boundsConstraint[0],
+                                                                                       boundsConstraint[1],
+                                                                                       boundsConstraint[2],
+                                                                                       boundsConstraint[3])));
         }
         // Shape drag bounds.
         shapeView.setDragBounds(boundsConstraint[0],
@@ -374,21 +394,9 @@ public class LocationControlImpl
         return canvas.getWiresManager();
     }
 
-    void onCanvasSelectionEvent(final @Observes CanvasSelectionEvent event) {
-        checkNotNull("event",
-                     event);
-
-        if (checkEventContext(event)) {
-            selectedIDs.clear();
-            selectedIDs.addAll(event.getIdentifiers());
-        }
-    }
-
-    void onCanvasClearSelectionEvent(final @Observes CanvasClearSelectionEvent event) {
-        checkNotNull("event",
-                     event);
-        if (checkEventContext(event)) {
-            selectedIDs.clear();
+    private void ifSelectionManager(Consumer<SelectionManager> selectionManagerConsumer) {
+        if (null != getWiresManager().getSelectionManager()) {
+            selectionManagerConsumer.accept(getWiresManager().getSelectionManager());
         }
     }
 }

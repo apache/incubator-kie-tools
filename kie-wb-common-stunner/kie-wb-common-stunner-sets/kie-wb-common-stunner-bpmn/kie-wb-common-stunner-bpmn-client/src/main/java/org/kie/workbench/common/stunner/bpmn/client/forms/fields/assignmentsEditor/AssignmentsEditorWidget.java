@@ -61,8 +61,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.variables.Proce
 import org.kie.workbench.common.stunner.bpmn.service.DataTypesService;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -357,8 +357,8 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
     }
 
     protected String getSelectedElementUUID(ClientSession clientSession) {
-        if (clientSession instanceof ClientFullSession) {
-            final SelectionControl selectionControl = ((ClientFullSession) clientSession).getSelectionControl();
+        if (clientSession instanceof EditorSession) {
+            final SelectionControl selectionControl = ((EditorSession) clientSession).getSelectionControl();
             if (null != selectionControl) {
                 final Collection<String> selectedItems = selectionControl.getSelectedItems();
                 if (null != selectedItems && !selectedItems.isEmpty()) {

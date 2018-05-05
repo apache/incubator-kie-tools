@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.core.client.command;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -38,20 +38,20 @@ import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 public class SessionCommandManagerImpl
         extends AbstractSessionCommandManager {
 
-    private final AbstractClientSessionManager clientSessionManager;
+    private final SessionManager sessionManager;
 
     protected SessionCommandManagerImpl() {
         this(null);
     }
 
     @Inject
-    public SessionCommandManagerImpl(final AbstractClientSessionManager clientSessionManager) {
-        this.clientSessionManager = clientSessionManager;
+    public SessionCommandManagerImpl(final SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
     }
 
     @Override
-    protected AbstractClientSessionManager getClientSessionManager() {
-        return clientSessionManager;
+    protected SessionManager getClientSessionManager() {
+        return sessionManager;
     }
 
     @Override

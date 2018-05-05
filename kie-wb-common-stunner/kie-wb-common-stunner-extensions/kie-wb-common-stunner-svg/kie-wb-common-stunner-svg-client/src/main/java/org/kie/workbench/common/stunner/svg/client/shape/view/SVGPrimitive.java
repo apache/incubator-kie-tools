@@ -48,4 +48,8 @@ public class SVGPrimitive<T extends IPrimitive<?>> {
     public T get() {
         return primitive;
     }
+
+    public void destroy() {
+        primitive.removeFromParent();
+    }
 }

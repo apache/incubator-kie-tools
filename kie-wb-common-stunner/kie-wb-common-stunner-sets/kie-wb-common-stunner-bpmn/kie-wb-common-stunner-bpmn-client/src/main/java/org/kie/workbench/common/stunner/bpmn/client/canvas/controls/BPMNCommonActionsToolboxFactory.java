@@ -19,9 +19,9 @@ package org.kie.workbench.common.stunner.bpmn.client.canvas.controls;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Supplier;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
@@ -41,15 +41,14 @@ import org.kie.workbench.common.stunner.forms.client.components.toolbox.FormGene
  * Produces same toolbox content and view as the @CommonActionsToolbox but
  * it additionally add the form generation action, if it applies.
  */
-@ApplicationScoped
+@Dependent
 @BPMN
 public class BPMNCommonActionsToolboxFactory extends AbstractActionsToolboxFactory {
 
     private final ActionsToolboxFactory commonActionToolbox;
-    private final Supplier<FormGenerationToolboxAction> generateFormsActions;
-    private final Supplier<ActionsToolboxView> views;
+    private final ManagedInstance<FormGenerationToolboxAction> generateFormsActions;
+    private final ManagedInstance<ActionsToolboxView> views;
 
-    // CDI proxy.
     protected BPMNCommonActionsToolboxFactory() {
         this.commonActionToolbox = null;
         this.generateFormsActions = null;
@@ -59,18 +58,10 @@ public class BPMNCommonActionsToolboxFactory extends AbstractActionsToolboxFacto
     @Inject
     public BPMNCommonActionsToolboxFactory(final @CommonActionsToolbox ActionsToolboxFactory commonActionToolbox,
                                            final @Any ManagedInstance<FormGenerationToolboxAction> generateFormsActions,
-                                           final @CommonActionsToolbox ManagedInstance<ActionsToolboxView> views) {
+                                           final @Any @CommonActionsToolbox ManagedInstance<ActionsToolboxView> views) {
         this.commonActionToolbox = commonActionToolbox;
-        this.generateFormsActions = generateFormsActions::get;
-        this.views = views::get;
-    }
-
-    BPMNCommonActionsToolboxFactory(final ActionsToolboxFactory commonActionToolbox,
-                                    final Supplier<FormGenerationToolboxAction> generateFormsActions,
-                                    final Supplier<ActionsToolboxView> views) {
-        this.commonActionToolbox = commonActionToolbox;
-        this.generateFormsActions = generateFormsActions::get;
-        this.views = views::get;
+        this.generateFormsActions = generateFormsActions;
+        this.views = views;
     }
 
     @Override
@@ -89,5 +80,11 @@ public class BPMNCommonActionsToolboxFactory extends AbstractActionsToolboxFacto
             actions.add(generateFormsActions.get());
         }
         return actions;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        generateFormsActions.destroyAll();
+        views.destroyAll();
     }
 }

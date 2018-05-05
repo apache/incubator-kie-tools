@@ -20,18 +20,23 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @Dependent
-public class ClearToolbarCommand extends AbstractToolbarCommand<ClientFullSession, ClearSessionCommand> {
+public class ClearToolbarCommand extends AbstractToolbarCommand<EditorSession, ClearSessionCommand> {
 
     @Inject
-    public ClearToolbarCommand(final SessionCommandFactory sessionCommandFactory, final ClientTranslationService translationService) {
-        super(sessionCommandFactory.newClearCommand(), translationService);
+    public ClearToolbarCommand(final DefinitionUtils definitionUtils,
+                               final ManagedInstance<ClearSessionCommand> clearSessionCommand,
+                               final ClientTranslationService translationService) {
+        super(definitionUtils,
+              clearSessionCommand,
+              translationService);
     }
 
     @Override

@@ -19,9 +19,9 @@ package org.kie.workbench.common.dmn.client.canvas.controls.toolbox;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.function.Supplier;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
@@ -42,35 +42,23 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.lookup.util.CommonLookups;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
-@ApplicationScoped
+@Dependent
 @DMNFlowActionsToolbox
 public class DMNFlowActionsToolboxFactory
         extends AbstractActionsToolboxFactory {
 
     private final DefinitionUtils definitionUtils;
     private final CommonLookups commonLookups;
-    private final Supplier<CreateConnectorAction> createConnectorActions;
-    private final Supplier<CreateNodeAction> createNodeActions;
-    private final Supplier<ActionsToolboxView> views;
+    private final ManagedInstance<CreateConnectorAction> createConnectorActions;
+    private final ManagedInstance<CreateNodeAction> createNodeActions;
+    private final ManagedInstance<ActionsToolboxView> views;
 
     @Inject
     public DMNFlowActionsToolboxFactory(final DefinitionUtils definitionUtils,
                                         final CommonLookups commonLookups,
                                         final @Any ManagedInstance<CreateConnectorAction> createConnectorActions,
                                         final @Any ManagedInstance<CreateNodeAction> createNodeActions,
-                                        final @FlowActionsToolbox ManagedInstance<ActionsToolboxView> views) {
-        this(definitionUtils,
-             commonLookups,
-             createConnectorActions::get,
-             createNodeActions::get,
-             views::get);
-    }
-
-    DMNFlowActionsToolboxFactory(final DefinitionUtils definitionUtils,
-                                 final CommonLookups commonLookups,
-                                 final Supplier<CreateConnectorAction> createConnectorActions,
-                                 final Supplier<CreateNodeAction> createNodeActions,
-                                 final Supplier<ActionsToolboxView> views) {
+                                        final @Any @FlowActionsToolbox ManagedInstance<ActionsToolboxView> views) {
         this.definitionUtils = definitionUtils;
         this.commonLookups = commonLookups;
         this.createConnectorActions = createConnectorActions;
@@ -114,6 +102,13 @@ public class DMNFlowActionsToolboxFactory
                                                         .setNodeId(getDefinitionId(def))));
         }
         return actions;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        createConnectorActions.destroyAll();
+        createNodeActions.destroyAll();
+        views.destroyAll();
     }
 
     private String getDefinitionId(final Object def) {

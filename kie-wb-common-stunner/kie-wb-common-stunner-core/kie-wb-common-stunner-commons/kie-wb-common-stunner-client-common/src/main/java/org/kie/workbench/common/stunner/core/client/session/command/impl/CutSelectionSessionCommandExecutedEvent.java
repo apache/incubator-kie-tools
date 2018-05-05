@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommandExecutedEvent;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 
-public class CutSelectionSessionCommandExecutedEvent extends AbstractClientSessionCommandExecutedEvent<CutSelectionSessionCommand, ClientFullSession> {
+public class CutSelectionSessionCommandExecutedEvent extends AbstractClientSessionCommandExecutedEvent<CutSelectionSessionCommand, EditorSession> {
 
     public CutSelectionSessionCommandExecutedEvent(final CutSelectionSessionCommand executedCommand,
-                                                   final ClientFullSession clientFullSession) {
+                                                   final EditorSession clientFullSession) {
         super(executedCommand,
               clientFullSession);
     }

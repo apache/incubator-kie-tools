@@ -36,7 +36,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Buil
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.ObserverBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.ElementBuildRequest;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.exceptions.ElementOutOfBoundsException;
-import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
@@ -89,7 +88,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-
 @RunWith(MockitoJUnitRunner.class)
 public class ObserverBuilderControlTest {
 
@@ -112,9 +110,6 @@ public class ObserverBuilderControlTest {
     GraphBoundsIndexer graphBoundsIndexer;
 
     @Mock
-    CanvasLayoutUtils canvasLayoutUtils;
-
-    @Mock
     GraphIndexBuilder graphIndexBuilder;
 
     @Mock
@@ -123,13 +118,8 @@ public class ObserverBuilderControlTest {
     @Mock
     RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
 
-    @Mock
-    DefinitionSet graphDefinitionSet;
-
     private View<Object> view;
-    private AbstractCanvasHandler canvasHandler;
     private ObserverBuilderControl tested;
-    private double x, y;
 
     private static final String DEF = "def";
     private static final String DEF_ID = "def_id";
@@ -140,7 +130,7 @@ public class ObserverBuilderControlTest {
         doAnswer(new Answer() {
 
             @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+            public Object answer(InvocationOnMock invocationOnMock) {
                 ServiceCallback<Node<View<Object>, Edge>> callback = (ServiceCallback<Node<View<Object>, Edge>>) (invocationOnMock.getArguments()[2]);
                 view = new ViewImpl<>(new Object(), new BoundsImpl(new BoundImpl(0.0, 0.0), new BoundImpl(10.0, 20.0)));
                 Node<View<Object>, Edge> item = new NodeImpl<>("UUID");
@@ -194,7 +184,7 @@ public class ObserverBuilderControlTest {
         when(shapeManager.getShapeSet(anyString())).thenReturn(shapeSet);
         when(shapeManager.getDefaultShapeSet(anyString())).thenReturn(shapeSet);
 
-        tested = new ObserverBuilderControl(clientDefinitionManager, clientFactoryServices, graphUtils, ruleManager, canvasCommandFactory, graphBoundsIndexer, canvasLayoutUtils, mock(Event.class));
+        tested = new ObserverBuilderControl(clientDefinitionManager, clientFactoryServices, ruleManager, canvasCommandFactory, graphBoundsIndexer, mock(Event.class));
 
         Diagram diagram = mock(Diagram.class);
         Metadata metadata = mock(Metadata.class);
@@ -209,19 +199,29 @@ public class ObserverBuilderControlTest {
         when(index.getGraph()).thenReturn(graph);
 
         when(graphIndexBuilder.build(any(Graph.class))).thenReturn(index);
-        canvasHandler = new CanvasHandlerImpl(clientDefinitionManager, canvasCommandFactory, clientFactoryServices, ruleManager, graphUtils, graphIndexBuilder, shapeManager, mock(TextPropertyProviderFactory.class), mock(Event.class), null, null, null);
+        AbstractCanvasHandler canvasHandler = new CanvasHandlerImpl(clientDefinitionManager,
+                                                                    canvasCommandFactory,
+                                                                    clientFactoryServices,
+                                                                    ruleManager,
+                                                                    graphUtils,
+                                                                    graphIndexBuilder,
+                                                                    shapeManager,
+                                                                    mock(TextPropertyProviderFactory.class),
+                                                                    mock(Event.class),
+                                                                    null,
+                                                                    null,
+                                                                    null);
         canvasHandler.handle(mock(AbstractCanvas.class));
         canvasHandler.draw(diagram, mock(ParameterizedCommand.class));
         when(diagram.getGraph()).thenReturn(graph);
         when(graph.nodes()).thenReturn(Collections.emptyList());
-
 
         CanvasCommandManager commandManager = mock(CanvasCommandManager.class);
 
         doAnswer(new Answer() {
 
             @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+            public Object answer(InvocationOnMock invocationOnMock) {
                 Command command = (Command) invocationOnMock.getArguments()[1];
                 command.execute(invocationOnMock.getArguments()[0]);
                 return null;
@@ -229,7 +229,7 @@ public class ObserverBuilderControlTest {
         }).when(commandManager).execute(any(), any(Command.class));
         when(commandManagerProvider.getCommandManager()).thenReturn(commandManager);
 
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.setCommandManagerProvider(commandManagerProvider);
     }
 

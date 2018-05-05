@@ -22,11 +22,9 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 
 /**
@@ -40,17 +38,13 @@ public class ElementBuilderControlImpl extends AbstractElementBuilderControl {
     @Inject
     public ElementBuilderControlImpl(final ClientDefinitionManager clientDefinitionManager,
                                      final ClientFactoryService clientFactoryServices,
-                                     final GraphUtils graphUtils,
                                      final RuleManager ruleManager,
                                      final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
-                                     final GraphBoundsIndexer graphBoundsIndexer,
-                                     final CanvasLayoutUtils canvasLayoutUtils) {
+                                     final GraphBoundsIndexer graphBoundsIndexer) {
         super(clientDefinitionManager,
               clientFactoryServices,
-              graphUtils,
               ruleManager,
               canvasCommandFactory,
-              graphBoundsIndexer,
-              canvasLayoutUtils);
+              graphBoundsIndexer);
     }
 }

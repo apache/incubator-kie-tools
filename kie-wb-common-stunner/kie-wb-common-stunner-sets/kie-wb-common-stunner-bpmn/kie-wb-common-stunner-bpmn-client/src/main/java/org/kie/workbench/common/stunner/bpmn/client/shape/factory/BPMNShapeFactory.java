@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.factory;
 import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -75,7 +75,7 @@ import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.shapes.client.factory.BasicShapesFactory;
 import org.kie.workbench.common.stunner.svg.client.shape.factory.SVGShapeFactory;
 
-@ApplicationScoped
+@Dependent
 public class BPMNShapeFactory
         implements ShapeFactory<BPMNDefinition, Shape> {
 

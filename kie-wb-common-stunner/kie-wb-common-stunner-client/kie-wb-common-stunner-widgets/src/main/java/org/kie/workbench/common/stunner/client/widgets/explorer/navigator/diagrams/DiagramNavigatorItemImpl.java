@@ -16,14 +16,11 @@
 
 package org.kie.workbench.common.stunner.client.widgets.explorer.navigator.diagrams;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -37,10 +34,8 @@ import org.uberfire.mvp.Command;
 public class DiagramNavigatorItemImpl implements IsWidget,
                                                  DiagramNavigatorItem {
 
-    private static Logger LOGGER = Logger.getLogger(DiagramNavigatorItemImpl.class.getName());
-
-    ShapeManager shapeManager;
-    NavigatorItemView<NavigatorItem> view;
+    private final ShapeManager shapeManager;
+    private final NavigatorItemView<NavigatorItem> view;
 
     private String name;
     private Command callback;
@@ -107,6 +102,12 @@ public class DiagramNavigatorItemImpl implements IsWidget,
         return s == null || s.trim().length() == 0;
     }
 
+    @PreDestroy
+    public void destroy() {
+        name = null;
+        callback = null;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -122,13 +123,5 @@ public class DiagramNavigatorItemImpl implements IsWidget,
     @Override
     public int hashCode() {
         return name == null ? 0 : ~~name.hashCode();
-    }
-
-    private void log(final Level level,
-                     final String message) {
-        if (LogConfiguration.loggingIsEnabled()) {
-            LOGGER.log(level,
-                       message);
-        }
     }
 }

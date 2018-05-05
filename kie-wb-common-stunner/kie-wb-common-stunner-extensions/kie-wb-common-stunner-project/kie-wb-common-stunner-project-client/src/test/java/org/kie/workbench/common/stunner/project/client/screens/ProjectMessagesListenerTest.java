@@ -30,7 +30,7 @@ import org.kie.workbench.common.stunner.client.widgets.notification.CommandNotif
 import org.kie.workbench.common.stunner.client.widgets.notification.Notification;
 import org.kie.workbench.common.stunner.client.widgets.notification.NotificationContext;
 import org.kie.workbench.common.stunner.client.widgets.notification.NotificationsObserver;
-import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
@@ -60,7 +60,7 @@ public class ProjectMessagesListenerTest {
     @Mock
     private ParameterizedCommand parameterizedCommand;
     @Mock
-    private AbstractClientSessionManager clientSessionManager;
+    private SessionManager clientSessionManager;
     @Mock
     private Path path;
     @Mock

@@ -280,6 +280,10 @@ public class ItemGridImplTest {
         assertEquals(0,
                      tested.size());
         assertFalse(tested.iterator().hasNext());
+        verify(button1,
+               times(1)).destroy();
+        verify(button2,
+               times(1)).destroy();
         verify(groupItem,
                times(1)).destroy();
     }

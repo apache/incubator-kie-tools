@@ -26,10 +26,10 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.select.Selec
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -55,7 +55,7 @@ public abstract class BaseSessionCommandKeyboardTest {
     protected KeyboardControl<AbstractCanvas, ClientSession> keyboardControl;
 
     @Mock
-    protected ClientFullSession session;
+    protected EditorSession session;
 
     @Mock
     protected SelectionControl<AbstractCanvasHandler, Element> selectionControl;
@@ -63,7 +63,7 @@ public abstract class BaseSessionCommandKeyboardTest {
     @Captor
     protected ArgumentCaptor<KeyShortcutCallback> keyShortcutCallbackCaptor;
 
-    protected AbstractClientSessionCommand<ClientFullSession> command;
+    protected AbstractClientSessionCommand<EditorSession> command;
 
     @Before
     public void setup() {
@@ -128,7 +128,7 @@ public abstract class BaseSessionCommandKeyboardTest {
                never()).execute(any(ClientSessionCommand.Callback.class));
     }
 
-    protected abstract AbstractClientSessionCommand<ClientFullSession> getCommand();
+    protected abstract AbstractClientSessionCommand<EditorSession> getCommand();
 
     protected abstract KeyboardEvent.Key[] getExpectedKeys();
 

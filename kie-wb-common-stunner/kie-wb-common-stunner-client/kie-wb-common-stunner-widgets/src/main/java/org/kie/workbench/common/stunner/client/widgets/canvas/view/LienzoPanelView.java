@@ -24,8 +24,8 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.HandlerRegi
 
 public class LienzoPanelView extends FocusableLienzoPanelView implements LienzoPanel.View {
 
-    private LienzoPanel presenter;
     private final HandlerRegistrationImpl handlerRegistrationManager = new HandlerRegistrationImpl();
+    private LienzoPanel presenter;
 
     public LienzoPanelView(final int width,
                            final int height) {
@@ -75,5 +75,6 @@ public class LienzoPanelView extends FocusableLienzoPanelView implements LienzoP
     public void destroy() {
         handlerRegistrationManager.removeHandler();
         presenter = null;
+        super.destroy();
     }
 }

@@ -27,9 +27,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
-import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -57,7 +57,7 @@ public class VariablesEditorFieldRendererTest {
     private VariableListItemWidgetView variableListItemWidgetView;
 
     @Mock
-    private AbstractClientSessionManager abstractClientSessionManager;
+    private SessionManager abstractClientSessionManager;
 
     @Mock
     private BPMNProcessVariableDeleteHandler deleteHandler;
@@ -75,7 +75,7 @@ public class VariablesEditorFieldRendererTest {
     private Diagram diagram;
 
     @Mock
-    private AbstractClientFullSession clientFullSession;
+    private EditorSession clientFullSession;
 
     @Mock
     private Iterable nodes;

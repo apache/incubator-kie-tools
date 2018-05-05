@@ -189,7 +189,7 @@ public class TimerSettingsFieldEditorView
         timeDateTimePicker.setHighlightToday(true);
         timeDateTimePicker.setShowTodayButton(true);
         timeDateTimePicker.setForceParse(false);
-        timeDateTimePicker.setFormat(DATE_TIME_PICKER_FORMAT);
+        // TODO timeDateTimePicker.setFormat(DATE_TIME_PICKER_FORMAT);
         timeDateTimePicker.addValueChangeHandler(event -> presenter.onTimeDateTimePickerChange());
         timeDateTimePicker.addHideHandler(hideEvent -> presenter.onTimeDateTimePickerHidden());
         timeDateTimePicker.setPosition(DateTimePickerPosition.BOTTOM_RIGHT);

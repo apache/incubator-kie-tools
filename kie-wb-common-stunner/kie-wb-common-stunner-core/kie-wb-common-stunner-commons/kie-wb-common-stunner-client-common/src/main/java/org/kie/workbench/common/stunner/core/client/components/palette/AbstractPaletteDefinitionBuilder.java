@@ -23,17 +23,14 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteDefinitionProviders.DefaultItemMessageProvider;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
-import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
-import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
+import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.mvp.Command;
 
@@ -47,10 +44,8 @@ public abstract class AbstractPaletteDefinitionBuilder<T extends AbstractPalette
         String getDescription(String id);
     }
 
-    private static Logger LOGGER = Logger.getLogger(AbstractPaletteDefinitionBuilder.class.getName());
-
     protected final DefinitionUtils definitionUtils;
-    protected final ClientFactoryService clientFactoryServices;
+    protected final DefinitionsCacheRegistry definitionsRegistry;
     protected final StunnerTranslationService translationService;
 
     protected Predicate<String> itemFilter;
@@ -59,10 +54,10 @@ public abstract class AbstractPaletteDefinitionBuilder<T extends AbstractPalette
     protected ItemMessageProvider itemMessageProvider;
 
     protected AbstractPaletteDefinitionBuilder(final DefinitionUtils definitionUtils,
-                                               final ClientFactoryService clientFactoryServices,
+                                               final DefinitionsCacheRegistry definitionsRegistry,
                                                final StunnerTranslationService translationService) {
         this.definitionUtils = definitionUtils;
-        this.clientFactoryServices = clientFactoryServices;
+        this.definitionsRegistry = definitionsRegistry;
         this.translationService = translationService;
         initDefaults();
     }
@@ -136,23 +131,11 @@ public abstract class AbstractPaletteDefinitionBuilder<T extends AbstractPalette
                 consumed.remove(defId);
                 // Check if this concrete definition is excluded from the palette model.
                 if (itemFilter.test(defId)) {
-                    clientFactoryServices
-                            .newDefinition(defId,
-                                           new ServiceCallback<Object>() {
-                                               @Override
-                                               public void onSuccess(final Object definition) {
-                                                   buildItem(definition,
-                                                             metadata,
-                                                             items);
-                                                   checkConsumedAndComplete.execute();
-                                               }
-
-                                               @Override
-                                               public void onError(final ClientRuntimeError error) {
-                                                   LOGGER.severe("Error while building the palette definition. " +
-                                                                         "[Message=" + error.getMessage() + "]");
-                                               }
-                                           });
+                    final Object def = definitionsRegistry.getDefinitionById(defId);
+                    buildItem(def,
+                              metadata,
+                              items);
+                    checkConsumedAndComplete.execute();
                 } else {
                     checkConsumedAndComplete.execute();
                 }

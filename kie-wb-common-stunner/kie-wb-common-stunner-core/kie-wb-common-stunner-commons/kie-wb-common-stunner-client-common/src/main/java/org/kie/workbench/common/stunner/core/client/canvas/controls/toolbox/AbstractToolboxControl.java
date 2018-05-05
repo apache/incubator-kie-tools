@@ -70,13 +70,8 @@ public abstract class AbstractToolboxControl
     }
 
     @Override
-    public void enable(final AbstractCanvasHandler context) {
-        toolboxControl.enable(context);
-    }
-
-    @Override
-    public void disable() {
-        toolboxControl.disable();
+    public void init(final AbstractCanvasHandler context) {
+        toolboxControl.init(context);
     }
 
     @Override
@@ -126,31 +121,38 @@ public abstract class AbstractToolboxControl
 
     protected void handleCanvasClearSelectionEvent(final CanvasClearSelectionEvent event) {
         if (checkEventContext(event)) {
-            destroy();
+            clear();
         }
     }
 
     protected void handleCanvasShapeRemovedEvent(final CanvasShapeRemovedEvent event) {
         if (checkEventContext(event)) {
-            destroy();
+            clear();
         }
     }
 
     private void show(final String uuid) {
+        clear();
         toolboxShowPredicate.id = uuid;
         toolboxShowPredicate.count = 1;
         toolboxControl.show(uuid);
     }
 
     private void showMultiple(final Collection<String> ids) {
+        clear();
         toolboxShowPredicate.id = ids.iterator().next();
         toolboxShowPredicate.count = ids.size();
-        toolboxControl.destroy();
+        toolboxControl.destroyToolboxes();
     }
 
-    private void destroy() {
+    public void clear() {
+        toolboxControl.destroyToolboxes();
         toolboxShowPredicate.id = null;
         toolboxShowPredicate.count = 0;
+    }
+
+    public void destroy() {
+        clear();
         toolboxControl.destroy();
     }
 

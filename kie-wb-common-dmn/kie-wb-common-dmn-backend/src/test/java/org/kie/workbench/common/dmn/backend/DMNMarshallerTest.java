@@ -110,6 +110,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
+import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
@@ -149,6 +150,9 @@ public class DMNMarshallerTest {
     @Mock
     BackendFactoryManager applicationFactoryManager;
 
+    @Mock
+    DefinitionsCacheRegistry definitionsRegistry;
+
     EdgeFactory<Object> connectionEdgeFactory;
     NodeFactory<Object> viewNodeFactory;
     DefinitionUtils definitionUtils;
@@ -166,7 +170,8 @@ public class DMNMarshallerTest {
         when(definitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.registry()).thenReturn(adapterRegistry);
         definitionUtils = new DefinitionUtils(definitionManager,
-                                              applicationFactoryManager);
+                                              applicationFactoryManager,
+                                              definitionsRegistry);
         testScopeModelFactory = new TestScopeModelFactory(new DMNDefinitionSet.DMNDefinitionSetBuilder().build());
         // Definition manager.
         final BackendDefinitionAdapter definitionAdapter = new BackendDefinitionAdapter(definitionUtils);
@@ -267,20 +272,22 @@ public class DMNMarshallerTest {
     public void testLoan() throws IOException {
         roundTripUnmarshalMarshalThenUnmarshalDMN(getClass().getResourceAsStream("/Loan Pre-Qualification.dmn"));
         DMNMarshaller m = new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
-                                           applicationFactoryManager);
+                                            applicationFactoryManager);
         Graph<?, ?> g = m.unmarshall(null, this.getClass().getResourceAsStream("/Loan Pre-Qualification.dmn"));
         DiagramImpl diagram = new DiagramImpl("", null);
         diagram.setGraph(g);
         String mString = m.marshall(diagram);
         final KieServices ks = KieServices.Factory.get();
         final KieContainer kieContainer = KieHelper.getKieContainer(ks.newReleaseId("org.kie", "dmn-testLoan", "1.0"),
-        ks.getResources().newByteArrayResource(mString.getBytes()).setTargetPath("src/main/resources/Loan Pre-Qualification.dmn"));
+                                                                    ks.getResources().newByteArrayResource(mString.getBytes()).setTargetPath("src/main/resources/Loan Pre-Qualification.dmn"));
 
         final DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
         Assert.assertNotNull(runtime);
         DMNModel model = runtime.getModel("http://www.trisotech.com/definitions/_4e0a7f15-3176-427e-add8-68d30903c84c", "Loan Pre-Qualification");
         DMNContext dmnContext = runtime.newContext();
-        dmnContext.set("Credit Score", new HashMap<String, Object>(){{ put("FICO", 400); }});
+        dmnContext.set("Credit Score", new HashMap<String, Object>() {{
+            put("FICO", 400);
+        }});
         DMNResult dmnResult = runtime.evaluateByName(model, dmnContext, "Credit Score Rating");
         assertFalse(dmnResult.getMessages().toString(), dmnResult.hasErrors());
     }
@@ -1025,8 +1032,8 @@ public class DMNMarshallerTest {
         diagram.setGraph(marshaller.unmarshall(null, getClass().getResourceAsStream("/dummy.dmn")));
         String roundtripped = marshaller.marshall(diagram);
         XPath xpath = namespaceAwareXPath(
-            new AbstractMap.SimpleEntry<>("semantic", "http://www.omg.org/spec/DMN/20151101/dmn.xsd"),
-            new AbstractMap.SimpleEntry<>("drools", "http://www.drools.org/kie/dmn/1.1")
+                new AbstractMap.SimpleEntry<>("semantic", "http://www.omg.org/spec/DMN/20151101/dmn.xsd"),
+                new AbstractMap.SimpleEntry<>("drools", "http://www.drools.org/kie/dmn/1.1")
         );
         assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:extensionElements)"), original, roundtripped);
 

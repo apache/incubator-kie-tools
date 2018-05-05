@@ -33,12 +33,10 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.requ
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.ElementBuildRequestImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.event.BuildCanvasShapeEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
@@ -53,33 +51,18 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
 
     private final Event<CanvasSelectionEvent> canvasSelectionEvent;
 
-    protected ObserverBuilderControl() {
-        this(null,
-             null,
-             null,
-             null,
-             null,
-             null,
-             null,
-             null);
-    }
-
     @Inject
     public ObserverBuilderControl(final ClientDefinitionManager clientDefinitionManager,
                                   final ClientFactoryService clientFactoryServices,
-                                  final GraphUtils graphUtils,
                                   final RuleManager ruleManager,
                                   final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                   final GraphBoundsIndexer graphBoundsIndexer,
-                                  final CanvasLayoutUtils canvasLayoutUtils,
                                   final Event<CanvasSelectionEvent> canvasSelectionEvent) {
         super(clientDefinitionManager,
               clientFactoryServices,
-              graphUtils,
               ruleManager,
               canvasCommandFactory,
-              graphBoundsIndexer,
-              canvasLayoutUtils);
+              graphBoundsIndexer);
         this.canvasSelectionEvent = canvasSelectionEvent;
     }
 

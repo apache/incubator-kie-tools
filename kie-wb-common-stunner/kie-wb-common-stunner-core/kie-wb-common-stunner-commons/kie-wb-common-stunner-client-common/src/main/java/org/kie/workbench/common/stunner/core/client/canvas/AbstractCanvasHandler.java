@@ -146,7 +146,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
      * @param child The graph element to set as a docked child.
      */
     public abstract boolean dock(final Element parent,
-                              final Element child);
+                                 final Element child);
 
     /**
      * This method removes the given <code>child</code> instance as docked child for the given
@@ -400,9 +400,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
      */
     @Override
     public void destroy() {
-        if (null != getCanvas()) {
-            getCanvas().destroy();
-        }
+        getCanvas().destroy();
         doDestroy();
         listeners.clear();
     }

@@ -61,12 +61,12 @@ public class CaseManagementContainmentAcceptorControlImpl extends AbstractAccept
     }
 
     @Override
-    protected void onEnable(final WiresCanvas.View view) {
+    protected void onInit(final WiresCanvas.View view) {
         view.setContainmentAcceptor(CONTAINMENT_ACCEPTOR);
     }
 
     @Override
-    protected void onDisable(final WiresCanvas.View view) {
+    protected void onDestroy(final WiresCanvas.View view) {
         view.setContainmentAcceptor(IContainmentAcceptor.NONE);
     }
 

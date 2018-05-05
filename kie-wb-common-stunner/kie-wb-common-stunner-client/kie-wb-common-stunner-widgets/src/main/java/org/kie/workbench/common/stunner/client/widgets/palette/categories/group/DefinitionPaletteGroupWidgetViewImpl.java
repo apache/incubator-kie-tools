@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette.categories.group;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -96,5 +97,12 @@ public class DefinitionPaletteGroupWidgetViewImpl implements DefinitionPaletteGr
     @EventHandler("lessAnchor")
     public void showLess(ClickEvent clickEvent) {
         presenter.showLess();
+    }
+
+    @PreDestroy
+    public void destroy() {
+        DOMUtil.removeAllChildren(moreAnchor);
+        DOMUtil.removeAllChildren(lessAnchor);
+        presenter = null;
     }
 }

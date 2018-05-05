@@ -18,7 +18,9 @@ package org.kie.workbench.common.stunner.client.widgets.components.glyph;
 
 import java.util.function.Supplier;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.IsElement;
@@ -26,27 +28,33 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.components.glyph.DOMGlyphRenderer;
 import org.kie.workbench.common.stunner.core.client.components.views.ImageElementRendererView;
 import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
+import org.uberfire.mvp.Command;
 
 /**
  * DOM element renderer for image data-uri's glyphs.
  * It renders a DOM image element.
  */
-@ApplicationScoped
+@Dependent
 public class ImageElementGlyphRenderer implements DOMGlyphRenderer<ImageDataUriGlyph> {
 
-    private final Supplier<ImageElementRendererView> viewInstanceSuppoier;
+    private final Supplier<ImageElementRendererView> viewInstanceSupplier;
+    private final Command viewInstancesDestroyer;
 
     protected ImageElementGlyphRenderer() {
-        this.viewInstanceSuppoier = null;
+        this.viewInstanceSupplier = null;
+        this.viewInstancesDestroyer = null;
     }
 
     @Inject
-    public ImageElementGlyphRenderer(final ManagedInstance<ImageElementRendererView> viewInstances) {
-        this.viewInstanceSuppoier = viewInstances::get;
+    public ImageElementGlyphRenderer(final @Any ManagedInstance<ImageElementRendererView> viewInstances) {
+        this.viewInstanceSupplier = viewInstances::get;
+        this.viewInstancesDestroyer = viewInstances::destroyAll;
     }
 
-    ImageElementGlyphRenderer(final Supplier<ImageElementRendererView> viewInstanceSuppoier) {
-        this.viewInstanceSuppoier = viewInstanceSuppoier;
+    ImageElementGlyphRenderer(final Supplier<ImageElementRendererView> viewInstanceSupplier,
+                              final Command viewInstancesDestroyer) {
+        this.viewInstanceSupplier = viewInstanceSupplier;
+        this.viewInstancesDestroyer = viewInstancesDestroyer;
     }
 
     @Override
@@ -58,9 +66,14 @@ public class ImageElementGlyphRenderer implements DOMGlyphRenderer<ImageDataUriG
     public IsElement render(final ImageDataUriGlyph glyph,
                             final double width,
                             final double height) {
-        final ImageElementRendererView view = viewInstanceSuppoier.get();
+        final ImageElementRendererView view = viewInstanceSupplier.get();
         return view.setImage(glyph.getUri(),
                              (int) width,
                              (int) height);
+    }
+
+    @PreDestroy
+    public void destroy() {
+        viewInstancesDestroyer.execute();
     }
 }

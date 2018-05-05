@@ -145,8 +145,8 @@ public class ConnectionAcceptorControlImplTest {
     }
 
     @Test
-    public void testEnable() {
-        tested.enable(canvasHandler);
+    public void testInit() {
+        tested.init(canvasHandler);
         assertEquals(canvasHandler,
                      tested.getCanvasHandler());
         verify(canvasView,
@@ -158,21 +158,8 @@ public class ConnectionAcceptorControlImplTest {
     }
 
     @Test
-    public void testDisable() {
-        tested.enable(canvasHandler);
-        tested.disable();
-        assertNull(tested.getCanvasHandler());
-        verify(canvasView,
-               times(1)).setConnectionAcceptor(eq(IConnectionAcceptor.NONE));
-        verify(canvasView,
-               never()).setDockingAcceptor(any(IDockingAcceptor.class));
-        verify(canvasView,
-               never()).setContainmentAcceptor(any(IContainmentAcceptor.class));
-    }
-
-    @Test
     public void testAllowSource() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         final boolean allow = tested.allowSource(node,
                                                  edge,
                                                  connection);
@@ -195,7 +182,7 @@ public class ConnectionAcceptorControlImplTest {
     public void testSkipAllowSourceAsNoChanges() {
         when(edge.getSourceNode()).thenReturn(node);
         when(edgeContent.getSourceConnection()).thenReturn(Optional.of(connection));
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         final boolean allow = tested.allowSource(node,
                                                  edge,
                                                  connection);
@@ -210,7 +197,7 @@ public class ConnectionAcceptorControlImplTest {
 
     @Test
     public void testAllowTarget() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         final boolean allow = tested.allowTarget(node,
                                                  edge,
                                                  connection);
@@ -233,7 +220,7 @@ public class ConnectionAcceptorControlImplTest {
     public void testSkipAllowTargetAsNoChanges() {
         when(edge.getTargetNode()).thenReturn(node);
         when(edgeContent.getTargetConnection()).thenReturn(Optional.of(connection));
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         final boolean allow = tested.allowTarget(node,
                                                  edge,
                                                  connection);
@@ -248,7 +235,7 @@ public class ConnectionAcceptorControlImplTest {
 
     @Test
     public void testAcceptSource() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         final boolean allow = tested.acceptSource(node,
                                                   edge,
                                                   connection);
@@ -269,7 +256,7 @@ public class ConnectionAcceptorControlImplTest {
 
     @Test
     public void testAcceptTarget() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         final boolean allow = tested.acceptTarget(node,
                                                   edge,
                                                   connection);
@@ -291,7 +278,7 @@ public class ConnectionAcceptorControlImplTest {
     @Test
     public void testAcceptSourceAsNewConnection() {
         when(edge.getSourceNode()).thenReturn(node);
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         final boolean allow = tested.acceptSource(node,
                                                   edge,
                                                   connection);
@@ -313,7 +300,7 @@ public class ConnectionAcceptorControlImplTest {
     @Test
     public void testAcceptTargetNotNewConnection() {
         when(edge.getTargetNode()).thenReturn(node);
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         final boolean allow = tested.acceptTarget(node,
                                                   edge,
                                                   connection);
@@ -336,7 +323,7 @@ public class ConnectionAcceptorControlImplTest {
     public void testSkipAcceptSourceAsNoChanges() {
         when(edge.getSourceNode()).thenReturn(node);
         when(edgeContent.getSourceConnection()).thenReturn(Optional.of(connection));
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         final boolean accept = tested.acceptSource(node,
                                                    edge,
                                                    connection);
@@ -353,7 +340,7 @@ public class ConnectionAcceptorControlImplTest {
     public void testSkipAcceptTargetAsNoChanges() {
         when(edge.getTargetNode()).thenReturn(node);
         when(edgeContent.getTargetConnection()).thenReturn(Optional.of(connection));
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         final boolean accept = tested.acceptTarget(node,
                                                    edge,
                                                    connection);
@@ -421,7 +408,7 @@ public class ConnectionAcceptorControlImplTest {
     public void onKeyDownEventTest() {
         InOrder inOrder = inOrder(cancelCanvasActionEvent);
 
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.onKeyDownEvent(KeyboardEvent.Key.ESC);
         tested.onKeyDownEvent(KeyboardEvent.Key.CONTROL);
         tested.onKeyDownEvent(KeyboardEvent.Key.ARROW_RIGHT);

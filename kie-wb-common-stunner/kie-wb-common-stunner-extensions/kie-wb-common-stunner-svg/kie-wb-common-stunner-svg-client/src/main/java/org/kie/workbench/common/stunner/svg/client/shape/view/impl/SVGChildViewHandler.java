@@ -19,19 +19,17 @@ package org.kie.workbench.common.stunner.svg.client.shape.view.impl;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import com.ait.lienzo.client.core.shape.IContainer;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShapeView;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.DecoratedShapeView;
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGBasicShapeView;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGContainer;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitive;
 
 public class SVGChildViewHandler {
-
-    private static Logger LOGGER = Logger.getLogger(SVGChildViewHandler.class.getName());
 
     private final WiresShapeView<?> view;
     private final List<SVGPrimitive<?>> primChildren = new LinkedList<>();
@@ -65,7 +63,9 @@ public class SVGChildViewHandler {
     }
 
     public void clear() {
+        primChildren.forEach(SVGPrimitive::destroy);
         primChildren.clear();
+        svgChildren.forEach(ShapeView::destroy);
         svgChildren.clear();
     }
 

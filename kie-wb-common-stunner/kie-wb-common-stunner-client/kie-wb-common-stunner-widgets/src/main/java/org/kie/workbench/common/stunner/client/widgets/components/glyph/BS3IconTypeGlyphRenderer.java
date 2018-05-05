@@ -18,7 +18,9 @@ package org.kie.workbench.common.stunner.client.widgets.components.glyph;
 
 import java.util.function.Supplier;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.Icon;
@@ -26,26 +28,32 @@ import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.components.glyph.DOMGlyphRenderer;
 import org.kie.workbench.common.stunner.core.client.components.views.WidgetElementRendererView;
+import org.uberfire.mvp.Command;
 
 /**
  * Renders a BS3 icon using the given icon type from the glyph definition.
  */
-@ApplicationScoped
+@Dependent
 public class BS3IconTypeGlyphRenderer implements DOMGlyphRenderer<BS3IconTypeGlyph> {
 
     private final Supplier<WidgetElementRendererView> viewInstanceSupplier;
+    private final Command viewInstancesDestroyer;
 
     protected BS3IconTypeGlyphRenderer() {
         this.viewInstanceSupplier = null;
-    }
-
-    BS3IconTypeGlyphRenderer(final Supplier<WidgetElementRendererView> viewInstanceSupplier) {
-        this.viewInstanceSupplier = viewInstanceSupplier;
+        this.viewInstancesDestroyer = null;
     }
 
     @Inject
-    public BS3IconTypeGlyphRenderer(final ManagedInstance<WidgetElementRendererView> viewInstances) {
-        this.viewInstanceSupplier = () -> viewInstances.get();
+    public BS3IconTypeGlyphRenderer(final @Any ManagedInstance<WidgetElementRendererView> viewInstances) {
+        this.viewInstanceSupplier = viewInstances::get;
+        this.viewInstancesDestroyer = viewInstances::destroyAll;
+    }
+
+    BS3IconTypeGlyphRenderer(final Supplier<WidgetElementRendererView> viewInstanceSupplier,
+                             final Command viewInstancesDestroyer) {
+        this.viewInstanceSupplier = viewInstanceSupplier;
+        this.viewInstancesDestroyer = viewInstancesDestroyer;
     }
 
     @Override
@@ -60,5 +68,10 @@ public class BS3IconTypeGlyphRenderer implements DOMGlyphRenderer<BS3IconTypeGly
         final WidgetElementRendererView view = viewInstanceSupplier.get();
         final Icon icon = new Icon(glyph.getIconType());
         return view.setWidget(icon);
+    }
+
+    @PreDestroy
+    public void destroy() {
+        viewInstancesDestroyer.execute();
     }
 }

@@ -19,18 +19,21 @@ package org.kie.workbench.common.stunner.client.widgets.toolbar.command;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToBpmnSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
-public class ExportToBpmnToolbarCommand extends AbstractToolbarCommand<AbstractClientSession, ExportToBpmnSessionCommand> {
+public class ExportToBpmnToolbarCommand extends AbstractToolbarCommand<ViewerSession, ExportToBpmnSessionCommand> {
 
     @Inject
-    public ExportToBpmnToolbarCommand(final SessionCommandFactory sessionCommandFactory,
+    public ExportToBpmnToolbarCommand(final DefinitionUtils definitionUtils,
+                                      final ManagedInstance<ExportToBpmnSessionCommand> command,
                                       final ClientTranslationService translationService) {
-        super(sessionCommandFactory.newExportToBpmnSessionCommand(),
+        super(definitionUtils,
+              command,
               translationService);
     }
 

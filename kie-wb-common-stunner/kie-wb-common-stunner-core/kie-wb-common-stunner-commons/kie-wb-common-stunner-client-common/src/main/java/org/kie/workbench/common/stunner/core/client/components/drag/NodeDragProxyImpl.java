@@ -35,8 +35,8 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 @Dependent
 public class NodeDragProxyImpl implements NodeDragProxy<AbstractCanvasHandler> {
 
+    private final ShapeDragProxy<AbstractCanvas> shapeDragProxyFactory;
     private AbstractCanvasHandler canvasHandler;
-    private ShapeDragProxy<AbstractCanvas> shapeDragProxyFactory;
     private EdgeShape transientEdgeShape;
 
     @Inject
@@ -57,6 +57,7 @@ public class NodeDragProxyImpl implements NodeDragProxy<AbstractCanvasHandler> {
                                                                               final int x,
                                                                               final int y,
                                                                               final NodeDragProxyCallback callback) {
+        clear();
         final AbstractCanvas canvas = canvasHandler.getAbstractCanvas();
         final Node<View<?>, Edge> node = item.getNode();
         final ShapeFactory<Object, ?> nodeShapeFactory = item.getNodeShapeFactory();
@@ -134,21 +135,15 @@ public class NodeDragProxyImpl implements NodeDragProxy<AbstractCanvasHandler> {
 
     @Override
     public void clear() {
-        if (null != shapeDragProxyFactory) {
-            this.shapeDragProxyFactory.clear();
-        }
+        shapeDragProxyFactory.clear();
         deleteTransientEdgeShape();
     }
 
     @Override
     public void destroy() {
-        if (null != shapeDragProxyFactory) {
-            clear();
-            this.shapeDragProxyFactory.destroy();
-        }
-        this.shapeDragProxyFactory = null;
-        this.canvasHandler = null;
-        this.transientEdgeShape = null;
+        deleteTransientEdgeShape();
+        shapeDragProxyFactory.destroy();
+        canvasHandler = null;
     }
 
     private AbstractCanvas getCanvas() {

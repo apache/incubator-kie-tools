@@ -20,14 +20,8 @@ import java.util.Collection;
 
 import com.google.gwt.safehtml.shared.SafeUri;
 import org.kie.workbench.common.stunner.core.client.ShapeSet;
-import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
 public interface ShapeManager {
-
-    <C extends Canvas, H extends CanvasHandler> CanvasFactory<C, H> getCanvasFactory(final Diagram diagram);
 
     /**
      * Returns the available Shape Sets.

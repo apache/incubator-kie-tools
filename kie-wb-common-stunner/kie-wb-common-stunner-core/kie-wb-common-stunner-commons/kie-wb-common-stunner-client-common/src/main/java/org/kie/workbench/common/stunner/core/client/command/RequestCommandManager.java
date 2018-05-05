@@ -25,7 +25,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.mouse.CanvasMouseDownEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.mouse.CanvasMouseUpEvent;
@@ -56,7 +56,7 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
 
     private static Logger LOGGER = Logger.getLogger(RequestCommandManager.class.getName());
 
-    private final AbstractClientSessionManager clientSessionManager;
+    private final SessionManager sessionManager;
     private Stack<Command<AbstractCanvasHandler, CanvasViolation>> commands;
 
     private boolean roolback;
@@ -66,14 +66,14 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
     }
 
     @Inject
-    public RequestCommandManager(final AbstractClientSessionManager clientSessionManager) {
-        this.clientSessionManager = clientSessionManager;
+    public RequestCommandManager(final SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
         this.roolback = false;
     }
 
     @Override
-    protected AbstractClientSessionManager getClientSessionManager() {
-        return clientSessionManager;
+    protected SessionManager getClientSessionManager() {
+        return sessionManager;
     }
 
     @Override
@@ -112,8 +112,7 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
                         roolback = true;
                     } else if (commands != null) {
                         commands.push(command);
-                    }
-                    else {
+                    } else {
                         getRegistry().register(command);
                     }
                     // Notify listener, if any.
@@ -221,13 +220,13 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
                                                .addCommands(commands.stream().collect(Collectors.toList()))
                                                .build());
             }
-            clear();
             LOGGER.log(Level.FINEST,
                        "Current client request completed.");
         } else {
             LOGGER.log(Level.WARNING,
                        "Current client request has not been started.");
         }
+        clear();
     }
 
     private boolean isRequestStarted() {
@@ -235,6 +234,8 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
     }
 
     private void clear() {
+        setDelegateListener(null);
+        commands.clear();
         commands = null;
         roolback = false;
     }

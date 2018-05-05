@@ -68,8 +68,7 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
     }
 
     @Override
-    public void enable(final H canvasHandler) {
-        super.enable(canvasHandler);
+    protected void doInit() {
         final Layer layer = canvasHandler.getCanvas().getLayer();
         // Click handler for the canvas area - cleans current selection, if any.
         final MouseClickHandler clickHandler = new MouseClickHandler() {
@@ -97,8 +96,7 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
          * - element is not registered
          * - element has visible representation
          */
-        if (isEnabled()
-                && !itemsRegistered().test(element.getUUID())
+        if (!itemsRegistered().test(element.getUUID())
                 && element.getContent() instanceof View) {
             items.put(element.getUUID(),
                       false);
@@ -137,10 +135,6 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
     @Override
     public SelectionControl<H, Element> clearSelection() {
         return clearSelection(true);
-    }
-
-    public boolean isEnabled() {
-        return super.isEnabled() && null != canvasHandler.getCanvas();
     }
 
     public boolean isReadonly() {
@@ -187,31 +181,28 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
 
     @SuppressWarnings("unchecked")
     private void updateViewShapesState() {
-        if (isEnabled()) {
-            final List<Shape> shapes = getCanvas().getShapes();
-            for (final Shape shape : shapes) {
-                final boolean isSelected = isSelected(shape.getUUID());
-                if (isSelected && isReadonly()) {
-                    shape.applyState(ShapeState.HIGHLIGHT);
-                }else if(isSelected) {
-                    shape.applyState(ShapeState.SELECTED);
-                } else {
-                    shape.applyState(ShapeState.NONE);
-                }
+        final List<Shape> shapes = getCanvas().getShapes();
+        for (final Shape shape : shapes) {
+            final boolean isSelected = isSelected(shape.getUUID());
+            if (isSelected && isReadonly()) {
+                shape.applyState(ShapeState.HIGHLIGHT);
+            } else if (isSelected) {
+                shape.applyState(ShapeState.SELECTED);
+            } else {
+                shape.applyState(ShapeState.NONE);
             }
-            // Batch a show operation.
-            getCanvas().draw();
         }
+        // Batch a show operation.
+        getCanvas().draw();
     }
 
     @Override
-    protected void doDisable() {
-        if (isEnabled()
-                && null != layerClickHandler
-                && null != getCanvas().getLayer()) {
+    protected void doDestroy() {
+        if (null != layerClickHandler) {
             getCanvas().getLayer().removeHandler(layerClickHandler);
             this.layerClickHandler = null;
         }
+        items.clear();
     }
 
     public void onShapeRemoved(final CanvasShapeRemovedEvent shapeRemovedEvent) {
@@ -220,7 +211,7 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
         if (null == canvasHandler) {
             return;
         }
-        if (isEnabled() && getCanvas().equals(shapeRemovedEvent.getCanvas())) {
+        if (getCanvas().equals(shapeRemovedEvent.getCanvas())) {
             final Shape<?> shape = shapeRemovedEvent.getShape();
             deselect(Collections.singletonList(shape.getUUID()));
         }

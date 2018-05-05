@@ -96,6 +96,7 @@ public abstract class AbstractFocusableGroupItem<T extends AbstractFocusableGrou
     @Override
     public T hide(final Command before,
                   final Command after) {
+        cancelTimers();
         getGroupItem().hide(() -> {
                                 unFocus();
                                 before.execute();
@@ -106,9 +107,13 @@ public abstract class AbstractFocusableGroupItem<T extends AbstractFocusableGrou
 
     @Override
     public void destroy() {
+        cancelTimers();
+        super.destroy();
+    }
+
+    void cancelTimers() {
         cancelFocusTimer();
         cancelUnFocusTimer();
-        super.destroy();
     }
 
     protected T setupFocusingHandlers() {
@@ -126,15 +131,11 @@ public abstract class AbstractFocusableGroupItem<T extends AbstractFocusableGrou
     }
 
     private void cancelFocusTimer() {
-        if (focusDelayTimer.isRunning()) {
-            focusDelayTimer.cancel();
-        }
+        focusDelayTimer.cancel();
     }
 
     private void cancelUnFocusTimer() {
-        if (unFocusDelayTimer.isRunning()) {
-            unFocusDelayTimer.cancel();
-        }
+        unFocusDelayTimer.cancel();
     }
 
     public class FocusGroupExecutor

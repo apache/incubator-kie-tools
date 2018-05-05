@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.shape.view;
 
-import java.util.function.BiFunction;
-
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
@@ -45,6 +43,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventTy
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -69,16 +68,6 @@ public class ViewEventHandlerManagerTest {
 
     private ViewEventHandlerManager tested;
 
-    private static class TestTimerFunction implements BiFunction<Runnable, Integer, Void> {
-
-        @Override
-        public Void apply(final Runnable runnable,
-                          final Integer delay) {
-            runnable.run();
-            return null;
-        }
-    }
-
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
@@ -86,7 +75,12 @@ public class ViewEventHandlerManagerTest {
         when(shape.setFillBoundsForSelection(anyBoolean())).thenReturn(shape);
         this.tested = new ViewEventHandlerManager(node,
                                                   shape,
-                                                  new TestTimerFunction(),
+                                                  new ViewEventHandlerManager.GWTTimer(1) {
+                                                      @Override
+                                                      public void run(Command callback) {
+                                                          callback.execute();
+                                                      }
+                                                  },
                                                   ShapeViewSupportedEvents.ALL_EVENT_TYPES);
     }
 
@@ -241,9 +235,6 @@ public class ViewEventHandlerManagerTest {
         assertTrue(viewEvent.isShiftKeyDown());
         assertNotNull(tested.getRegistrationMap().get(ViewEventType.MOUSE_DBL_CLICK));
     }
-
-
-
 
     @Test
     @SuppressWarnings("unchecked")

@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.Toolbox;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolbox;
@@ -79,13 +80,16 @@ public class DMNFlowActionsToolboxFactoryTest {
     private CommonLookups commonLookups;
 
     @Mock
-    private CreateConnectorAction createConnectorAction;
+    private CreateConnectorAction createConnectorActionInstance;
+    private ManagedInstanceStub<CreateConnectorAction> createConnectorAction;
 
     @Mock
-    private CreateNodeAction createNodeAction;
+    private CreateNodeAction createNodeActionInstance;
+    private ManagedInstanceStub<CreateNodeAction> createNodeAction;
 
     @Mock
-    private ActionsToolboxView view;
+    private ActionsToolboxView viewInstance;
+    private ManagedInstanceStub<ActionsToolboxView> view;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -114,9 +118,11 @@ public class DMNFlowActionsToolboxFactoryTest {
         when(definitionManager.adapters()).thenReturn(adapters);
         when(adapters.forDefinition()).thenReturn(definitionAdapter);
         when(definitionAdapter.getId(eq(allowedNodeDefinition))).thenReturn(NODE_ID);
-        when(createConnectorAction.setEdgeId(anyString())).thenReturn(createConnectorAction);
-        when(createNodeAction.setEdgeId(anyString())).thenReturn(createNodeAction);
-        when(createNodeAction.setNodeId(anyString())).thenReturn(createNodeAction);
+        createConnectorAction = new ManagedInstanceStub<>(createConnectorActionInstance);
+        when(createConnectorActionInstance.setEdgeId(anyString())).thenReturn(createConnectorActionInstance);
+        createNodeAction = new ManagedInstanceStub<>(createNodeActionInstance);
+        when(createNodeActionInstance.setEdgeId(anyString())).thenReturn(createNodeActionInstance);
+        when(createNodeActionInstance.setNodeId(anyString())).thenReturn(createNodeActionInstance);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(diagram.getGraph()).thenReturn(graph);
         when(diagram.getMetadata()).thenReturn(metadata);
@@ -137,11 +143,12 @@ public class DMNFlowActionsToolboxFactoryTest {
                                                        anyInt(),
                                                        anyInt()))
                 .thenReturn(Collections.singleton(allowedNodeDefinition));
+        view = new ManagedInstanceStub<>(viewInstance);
         this.tested = new DMNFlowActionsToolboxFactory(definitionUtils,
                                                        commonLookups,
-                                                       () -> createConnectorAction,
-                                                       () -> createNodeAction,
-                                                       () -> view);
+                                                       createConnectorAction,
+                                                       createNodeAction,
+                                                       view);
     }
 
     @Test
@@ -158,19 +165,19 @@ public class DMNFlowActionsToolboxFactoryTest {
         assertEquals(2,
                      actionsToolbox.size());
         final Iterator actionIt = actionsToolbox.iterator();
-        assertEquals(createConnectorAction,
+        assertEquals(createConnectorActionInstance,
                      actionIt.next());
-        assertEquals(createNodeAction,
+        assertEquals(createNodeActionInstance,
                      actionIt.next());
-        verify(createConnectorAction,
+        verify(createConnectorActionInstance,
                times(1)).setEdgeId(eq(EDGE_ID));
-        verify(createNodeAction,
+        verify(createNodeActionInstance,
                times(1)).setEdgeId(eq(EDGE_ID));
-        verify(createNodeAction,
+        verify(createNodeActionInstance,
                times(1)).setNodeId(eq(NODE_ID));
-        verify(view,
+        verify(viewInstance,
                times(1)).init(eq(actionsToolbox));
-        verify(view,
+        verify(viewInstance,
                times(2)).addButton(any(Glyph.class),
                                    anyString(),
                                    any(Consumer.class));

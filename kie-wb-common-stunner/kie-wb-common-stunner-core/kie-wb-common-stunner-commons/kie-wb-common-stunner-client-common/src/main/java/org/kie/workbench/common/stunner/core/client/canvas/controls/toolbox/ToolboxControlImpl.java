@@ -88,15 +88,14 @@ public class ToolboxControlImpl<F extends ToolboxFactory<AbstractCanvasHandler, 
         return toolboxes.list.iterator();
     }
 
-    public ToolboxControl<AbstractCanvasHandler, Element> destroy() {
-        toolboxes.destroy();
-        return this;
+    @Override
+    protected void doDestroy() {
+        destroyToolboxes();
+        super.doDestroy();
     }
 
-    @Override
-    public void deregisterAll() {
-        super.deregisterAll();
-        destroy();
+    public void destroyToolboxes() {
+        toolboxes.destroy();
     }
 
     @SuppressWarnings("unchecked")
@@ -136,7 +135,7 @@ public class ToolboxControlImpl<F extends ToolboxFactory<AbstractCanvasHandler, 
             // Actually only nodes are being registered.
             load((Node<?, Edge>) element);
         } else {
-            destroy();
+            destroyToolboxes();
         }
     }
 

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.project.client.screens;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -39,22 +40,41 @@ public class ProjectDiagramExplorerScreenView extends Composite implements Proje
 
     @Override
     public ProjectDiagramExplorerScreen.View setPreviewWidget(final IsWidget widget) {
-        previewPanelBody.clear();
+        clearPreviewWidget();
         previewPanelBody.add(widget);
         return this;
     }
 
     @Override
+    public ProjectDiagramExplorerScreen.View clearPreviewWidget() {
+        previewPanelBody.clear();
+        return this;
+    }
+
+    @Override
     public ProjectDiagramExplorerScreen.View setExplorerWidget(final IsWidget widget) {
-        explorerPanelBody.clear();
+        clearExplorerWidget();
         explorerPanelBody.add(widget);
         return this;
     }
 
     @Override
-    public ProjectDiagramExplorerScreen.View clear() {
-        previewPanelBody.clear();
+    public ProjectDiagramExplorerScreen.View clearExplorerWidget() {
         explorerPanelBody.clear();
         return this;
+    }
+
+    @Override
+    public ProjectDiagramExplorerScreen.View clear() {
+        clearPreviewWidget();
+        clearExplorerWidget();
+        return this;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        clear();
+        previewPanelBody.removeFromParent();
+        explorerPanelBody.removeFromParent();
     }
 }

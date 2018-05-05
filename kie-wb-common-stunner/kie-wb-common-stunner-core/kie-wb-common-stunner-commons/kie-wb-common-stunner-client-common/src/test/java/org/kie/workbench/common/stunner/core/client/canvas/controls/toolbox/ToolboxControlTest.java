@@ -80,14 +80,14 @@ public class ToolboxControlTest {
 
     @Test
     public void testEnable() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         verify(delegated,
-               times(1)).enable(eq(canvasHandler));
+               times(1)).init(eq(canvasHandler));
     }
 
     @Test
     public void testRegister() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         verify(delegated,
                times(1)).register(eq(element));
@@ -97,19 +97,12 @@ public class ToolboxControlTest {
 
     @Test
     public void testDeRegister() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.deregister(element);
         verify(delegated,
                times(1)).deregister(eq(element));
         verify(delegated,
                never()).register(any(Element.class));
-    }
-
-    @Test
-    public void testDisable() {
-        tested.disable();
-        verify(delegated,
-               times(1)).disable();
     }
 
     @Test
@@ -137,7 +130,7 @@ public class ToolboxControlTest {
         final CanvasClearSelectionEvent event = new CanvasClearSelectionEvent(canvasHandler);
         tested.onCanvasClearSelectionEvent(event);
         verify(delegated,
-               times(1)).destroy();
+               times(1)).destroyToolboxes();
         verify(delegated,
                never()).show(any(Element.class));
         verify(delegated,
@@ -154,7 +147,7 @@ public class ToolboxControlTest {
                                                                           shape);
         tested.onCanvasShapeRemovedEvent(event);
         verify(delegated,
-               times(1)).destroy();
+               times(1)).destroyToolboxes();
         verify(delegated,
                never()).show(any(Element.class));
         verify(delegated,

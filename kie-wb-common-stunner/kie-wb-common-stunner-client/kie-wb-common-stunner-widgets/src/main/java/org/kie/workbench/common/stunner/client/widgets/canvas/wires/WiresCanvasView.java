@@ -43,17 +43,19 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 @Default
 public class WiresCanvasView extends CanvasView implements WiresCanvas.View {
 
+    private final WiresManagerFactory wiresManagerFactory;
+
     protected WiresManager wiresManager;
-    private WiresManagerFactory wiresManagerFactory;
 
     @Inject
     public WiresCanvasView(@Default WiresManagerFactory wiresManagerFactory) {
         this.wiresManagerFactory = wiresManagerFactory;
     }
 
+    @Override
     public void init() {
         super.init();
-        wiresManager = wiresManagerFactory.newWiresManager(canvasLayer);
+        wiresManager = wiresManagerFactory.newWiresManager(getCanvasLayer());
         wiresManager.setSpliceEnabled(false);
     }
 
@@ -113,13 +115,20 @@ public class WiresCanvasView extends CanvasView implements WiresCanvas.View {
     }
 
     @Override
+    public void destroy() {
+        WiresManager.remove(wiresManager);
+        wiresManager = null;
+        super.destroy();
+    }
+
+    @Override
     public WiresManager getWiresManager() {
         return wiresManager;
     }
 
     @Override
     public Layer getTopLayer() {
-        return canvasLayer.getScene().getTopLayer();
+        return getCanvasLayer().getScene().getTopLayer();
     }
 
     protected Direction[] getMagnetCardinals() {

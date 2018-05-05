@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Categories;
@@ -32,7 +32,7 @@ import org.kie.workbench.common.stunner.core.client.components.palette.Collapsed
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteDefinition;
 import org.kie.workbench.common.stunner.core.client.components.palette.PaletteDefinitionBuilder;
 
-@ApplicationScoped
+@Dependent
 @DMNEditor
 public class DMNPaletteDefinitionBuilder
         implements PaletteDefinitionBuilder<AbstractCanvasHandler, DefaultPaletteDefinition> {

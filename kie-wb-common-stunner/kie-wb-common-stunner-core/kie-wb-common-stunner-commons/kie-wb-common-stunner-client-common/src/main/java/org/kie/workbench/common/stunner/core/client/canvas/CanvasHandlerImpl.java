@@ -166,8 +166,9 @@ public class CanvasHandlerImpl<D extends Diagram, C extends AbstractCanvas> exte
 
     @Override
     protected void destroyGraphIndex(final Command callback) {
-        if (null != getGraphIndex() && getGraphIndex() instanceof MutableIndex) {
-            ((MutableIndex) getGraphIndex()).clear();
+        if (null != graphIndex) {
+            graphIndex.clear();
+            graphIndex = null;
         }
         callback.execute();
     }

@@ -231,8 +231,6 @@ public class CreateConnectorActionTest {
         final BuilderControl.BuildCallback completeCallback = completeCallbackCaptor.getValue();
         completeCallback.onSuccess(TARGET_NODE_UUID);
         verify(edgeBuilderControl,
-               times(1)).disable();
-        verify(edgeBuilderControl,
                times(1)).setCommandManagerProvider(eq(null));
         verify(canvasHighlight,
                times(1)).destroy();
@@ -294,7 +292,7 @@ public class CreateConnectorActionTest {
         verify(graphBoundsIndexer,
                times(1)).build(eq(graph));
         verify(edgeBuilderControl,
-               times(1)).enable(eq(canvasHandler));
+               times(1)).init(eq(canvasHandler));
         ArgumentCaptor<RequiresCommandManager.CommandManagerProvider> providerArgumentCaptor =
                 ArgumentCaptor.forClass(RequiresCommandManager.CommandManagerProvider.class);
         verify(edgeBuilderControl,

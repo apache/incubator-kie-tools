@@ -66,17 +66,12 @@ public class CutSelectionSessionCommandTest extends BaseSessionCommandKeyboardSe
     @Mock
     private DeleteNodeCommand deleteNodeCommand;
 
-    @Mock
-    private SessionCommandFactory sessionCommandFactory;
-
     private ClipboardControl<Element, AbstractCanvas, ClientSession> clipboardControl;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         clipboardControl = spy(new LocalClipboardControl());
-        when(sessionCommandFactory.newCopySelectionCommand()).thenReturn(copySelectionSessionCommand);
-        when(sessionCommandFactory.newDeleteSelectedElementsCommand()).thenReturn(deleteSelectionSessionCommand);
         when(sessionCommandManager.getRegistry()).thenReturn(commandRegistry);
         when(commandRegistry.peek()).thenReturn(deleteNodeCommand);
         when(session.getClipboardControl()).thenReturn(clipboardControl);
@@ -110,7 +105,7 @@ public class CutSelectionSessionCommandTest extends BaseSessionCommandKeyboardSe
 
     @Override
     protected CutSelectionSessionCommand getCommand() {
-        return new CutSelectionSessionCommand(sessionCommandFactory, sessionCommandManager, commandExecutedEvent);
+        return new CutSelectionSessionCommand(copySelectionSessionCommand, deleteSelectionSessionCommand, sessionCommandManager, commandExecutedEvent);
     }
 
     @Override

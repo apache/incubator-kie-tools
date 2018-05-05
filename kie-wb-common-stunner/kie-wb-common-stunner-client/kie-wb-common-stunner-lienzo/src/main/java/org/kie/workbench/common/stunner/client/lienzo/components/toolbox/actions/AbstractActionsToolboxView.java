@@ -103,6 +103,11 @@ public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolbo
     @Override
     public void destroy() {
         toolboxView.destroy();
+        if (null != tooltip) {
+            tooltip.destroy();
+            tooltip = null;
+        }
+        toolboxView = null;
         canvas = null;
     }
 

@@ -158,7 +158,10 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
 
     @Override
     public void destroy() {
+        stopTimeout();
         detach();
+        timer = null;
+        hideCallback = null;
     }
 
     private void detach() {

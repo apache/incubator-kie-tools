@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -46,28 +45,31 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
+import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @ApplicationScoped
 public class DefinitionUtils {
 
-    private static Logger LOGGER = Logger.getLogger(DefinitionUtils.class.getName());
-
     private final DefinitionManager definitionManager;
     private final FactoryManager factoryManager;
+    private final DefinitionsCacheRegistry definitionsRegistry;
 
     protected DefinitionUtils() {
         this(null,
+             null,
              null);
     }
 
     @Inject
     @SuppressWarnings("all")
     public DefinitionUtils(final DefinitionManager definitionManager,
-                           final FactoryManager factoryManager) {
+                           final FactoryManager factoryManager,
+                           final DefinitionsCacheRegistry definitionsRegistry) {
         this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;
+        this.definitionsRegistry = definitionsRegistry;
     }
 
     public <T> Object getProperty(final T definition,
@@ -98,7 +100,7 @@ public class DefinitionUtils {
         return definitionManager
                 .adapters()
                 .forDefinition()
-                .getTitle(factoryManager.newDefinition(definitionId));
+                .getTitle(definitionsRegistry.getDefinitionById(definitionId));
     }
 
     @SuppressWarnings("unchecked")
@@ -197,8 +199,7 @@ public class DefinitionUtils {
             final Set<String> definitions = definitionManager.adapters().forDefinitionSet().getDefinitions(defSet);
             if (null != definitions && !definitions.isEmpty()) {
                 for (final String defId : definitions) {
-                    // TODO: Find a way to have a default connector for a DefSet or at least do not create objects here.
-                    final Object def = factoryManager.newDefinition(defId);
+                    final Object def = definitionsRegistry.getDefinitionById(defId);
                     if (null != def) {
                         final Class<? extends ElementFactory> graphElement = definitionManager.adapters().forDefinition().getGraphFactoryType(def);
                         if (isEdgeFactory(graphElement,

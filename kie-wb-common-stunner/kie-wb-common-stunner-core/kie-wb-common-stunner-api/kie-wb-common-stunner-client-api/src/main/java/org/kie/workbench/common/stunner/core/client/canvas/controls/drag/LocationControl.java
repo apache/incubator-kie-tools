@@ -20,17 +20,14 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 public interface LocationControl<C extends CanvasHandler, E extends Element>
         extends CanvasControl<C>,
-                RequiresCommandManager<C>,
-                CanvasControl.SessionAware<ClientFullSession> {
+                RequiresCommandManager<C> {
 
     CommandResult<CanvasViolation> move(final E[] element,
                                         final Point2D[] location);
-
 }

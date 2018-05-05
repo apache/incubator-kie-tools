@@ -33,7 +33,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Canva
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
@@ -52,7 +52,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 
 public abstract class AbstractCanvasInPlaceTextEditorControl
         extends AbstractCanvasHandlerRegistrationControl<AbstractCanvasHandler>
-        implements CanvasInPlaceTextEditorControl<AbstractCanvasHandler, AbstractClientFullSession, Element> {
+        implements CanvasInPlaceTextEditorControl<AbstractCanvasHandler, EditorSession, Element> {
 
     static final int FLOATING_VIEW_TIMEOUT = 3000;
     static final double SHAPE_EDIT_ALPHA = 0.2d;
@@ -69,18 +69,13 @@ public abstract class AbstractCanvasInPlaceTextEditorControl
     protected abstract Event<CanvasSelectionEvent> getCanvasSelectionEvent();
 
     @Override
-    public void bind(final AbstractClientFullSession session) {
+    public void bind(final EditorSession session) {
         session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
     }
 
     @Override
-    public void unbind() {
-        //Nothing to do
-    }
-
-    @Override
-    public void enable(final AbstractCanvasHandler canvasHandler) {
-        super.enable(canvasHandler);
+    protected void doInit() {
+        super.doInit();
         getTextEditorBox().initialize(canvasHandler,
                                       () -> {
                                           final String idToSelect = AbstractCanvasInPlaceTextEditorControl.this.uuid;
@@ -154,9 +149,9 @@ public abstract class AbstractCanvasInPlaceTextEditorControl
     }
 
     @Override
-    public CanvasInPlaceTextEditorControl<AbstractCanvasHandler, AbstractClientFullSession, Element> show(final Element item,
-                                                                                                          final double x,
-                                                                                                          final double y) {
+    public CanvasInPlaceTextEditorControl<AbstractCanvasHandler, EditorSession, Element> show(final Element item,
+                                                                                              final double x,
+                                                                                              final double y) {
         if (getTextEditorBox().isVisible()) {
             flush();
         }
@@ -175,7 +170,7 @@ public abstract class AbstractCanvasInPlaceTextEditorControl
     }
 
     @Override
-    public CanvasInPlaceTextEditorControl<AbstractCanvasHandler, AbstractClientFullSession, Element> hide() {
+    public CanvasInPlaceTextEditorControl<AbstractCanvasHandler, EditorSession, Element> hide() {
         if (isVisible()) {
             disableShapeEdit();
             this.uuid = null;
@@ -191,17 +186,12 @@ public abstract class AbstractCanvasInPlaceTextEditorControl
     }
 
     @Override
-    protected void doDisable() {
-        super.doDisable();
-        disableShapeEdit();
-        this.uuid = null;
+    protected void doDestroy() {
+        super.doDestroy();
         getTextEditorBox().hide();
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
+        disableShapeEdit();
         getFloatingView().destroy();
+        this.uuid = null;
     }
 
     private boolean enableShapeEdit() {

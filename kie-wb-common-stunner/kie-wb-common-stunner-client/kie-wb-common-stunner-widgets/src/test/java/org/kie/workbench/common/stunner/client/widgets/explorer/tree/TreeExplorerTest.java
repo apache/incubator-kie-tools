@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,9 +31,11 @@ import org.kie.workbench.common.stunner.client.widgets.components.glyph.DOMGlyph
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.ShapeSet;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProvider;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasClearEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
@@ -54,13 +57,18 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.Tree
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mvp.Command;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.anyDouble;
 import static org.mockito.Mockito.anyObject;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -90,6 +98,9 @@ public class TreeExplorerTest {
     TreeExplorerView view;
 
     @Mock
+    ManagedInstance<TreeExplorer.View> views;
+
+    @Mock
     DOMGlyphRenderers domGlyphRenderers;
 
     @Mock
@@ -103,6 +114,9 @@ public class TreeExplorerTest {
 
     @Mock
     CanvasHandler canvasHandler;
+
+    @Mock
+    Canvas canvas;
 
     @Mock
     DefinitionManager definitionManager;
@@ -132,6 +146,8 @@ public class TreeExplorerTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
+        when(views.get()).thenReturn(view);
+        when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(canvasHandler.getDiagram().getGraph()).thenReturn(graph);
         when(diagram.getMetadata()).thenReturn(metadata);
@@ -147,40 +163,24 @@ public class TreeExplorerTest {
         when(domGlyphRenderers.render(eq(glyph),
                                       anyDouble(),
                                       anyDouble())).thenReturn(isElement);
+        when(graph.nodes()).thenReturn(getMockNodes());
 
         this.childrenTraverseProcessor = spy(new ChildrenTraverseProcessorImpl(new TreeWalkTraverseProcessorImpl()));
 
-        this.testedTree = new TreeExplorer(childrenTraverseProcessor,
-                                           textPropertyProviderFactory,
-                                           elementSelectedEvent,
-                                           definitionUtils,
-                                           shapeManager,
-                                           domGlyphRenderers,
-                                           view) {
-
-            @Override
-            ElementWrapperWidget<?> wrapIconElement(final IsElement icon) {
-                return mock(ElementWrapperWidget.class);
-            }
-        };
-    }
-
-    @Test
-    public void testInit() {
-        testedTree.init();
-        verify(view,
-               times(1)).init(eq(testedTree));
+        this.testedTree = createTestInstance();
     }
 
     @Test
     public void testClear() {
+        testedTree.show(canvasHandler);
         testedTree.clear();
         verify(view,
-               times(1)).clear();
+               atLeastOnce()).clear();
     }
 
     @Test
     public void testDestroy() {
+        testedTree.show(canvasHandler);
         testedTree.destroy();
         verify(view,
                times(1)).destroy();
@@ -189,10 +189,9 @@ public class TreeExplorerTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testShow() {
-        when(graph.nodes()).thenReturn(getMockNodes());
-
         testedTree.show(canvasHandler);
-
+        verify(view,
+               times(1)).init(eq(testedTree));
         verify(childrenTraverseProcessor,
                times(1)).traverse(eq(graph),
                                   any(AbstractChildrenTraverseCallback.class));
@@ -253,6 +252,39 @@ public class TreeExplorerTest {
                              any(IsWidget.class),
                              anyBoolean(),
                              anyBoolean());
+    }
+
+    @Test
+    public void testNotFiringSelectionEventFromObservers() {
+        testedTree = spy(createTestInstance());
+        final CanvasClearEvent clearEvent = mock(CanvasClearEvent.class);
+        when(clearEvent.getCanvas()).thenReturn(canvas);
+        testedTree.show(canvasHandler);
+        Command runnable = () -> {
+            assertTrue(testedTree.isEventInProgress());
+            testedTree.onSelect("someUUID");
+            verify(elementSelectedEvent,
+                   never()).fire(any(CanvasSelectionEvent.class));
+        };
+        testedTree.checkEventContext(clearEvent,
+                                     runnable);
+        assertFalse(testedTree.isEventInProgress());
+    }
+
+    private TreeExplorer createTestInstance() {
+        return new TreeExplorer(childrenTraverseProcessor,
+                                textPropertyProviderFactory,
+                                elementSelectedEvent,
+                                definitionUtils,
+                                shapeManager,
+                                domGlyphRenderers,
+                                views) {
+
+            @Override
+            ElementWrapperWidget<?> wrapIconElement(final IsElement icon) {
+                return mock(ElementWrapperWidget.class);
+            }
+        };
     }
 
     private Iterable<Node<Content, Edge>> getMockNodes(final String... uuids) {

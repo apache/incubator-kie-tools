@@ -221,11 +221,11 @@ public class ButtonGridItemImpl
 
     @Override
     public void destroy() {
-        super.destroy();
         removeDecoratorHandlers();
         button.destroy();
         toolbox.destroy();
         arrow.removeFromParent();
+        super.destroy();
     }
 
     @Override

@@ -16,8 +16,11 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.components.glyph;
 
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
@@ -30,16 +33,23 @@ import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 @ApplicationScoped
 public class LienzoGlyphRenderers implements LienzoGlyphRenderer<Glyph> {
 
-    private final Function<Class<?>, LienzoGlyphRenderer> rendererProvider;
+    private final ManagedInstance<LienzoGlyphRenderer> rendererInstances;
+    private final List<LienzoGlyphRenderer> renderers;
 
-    @Inject
-    public LienzoGlyphRenderers(final @Any ManagedInstance<LienzoGlyphRenderer> lienzoGlyphRenderers) {
-        this.rendererProvider = aClass -> GlyphRenderer.getRenderer(lienzoGlyphRenderers::spliterator,
-                                                                    aClass);
+    // CDI proxy.
+    protected LienzoGlyphRenderers() {
+        this(null);
     }
 
-    LienzoGlyphRenderers(final Function<Class<?>, LienzoGlyphRenderer> rendererProvider) {
-        this.rendererProvider = rendererProvider;
+    @Inject
+    public LienzoGlyphRenderers(final @Any ManagedInstance<LienzoGlyphRenderer> rendererInstances) {
+        this.rendererInstances = rendererInstances;
+        this.renderers = new ArrayList<>();
+    }
+
+    @PostConstruct
+    public void init() {
+        rendererInstances.forEach(renderers::add);
     }
 
     @Override
@@ -47,14 +57,25 @@ public class LienzoGlyphRenderers implements LienzoGlyphRenderer<Glyph> {
     public Group render(final Glyph glyph,
                         final double width,
                         final double height) {
-        return (Group) rendererProvider.apply(glyph.getClass())
+        return (Group) getRenderer(glyph.getClass())
                 .render(glyph,
                         width,
                         height);
     }
 
+    private LienzoGlyphRenderer getRenderer(final Class<?> type) {
+        return GlyphRenderer.getRenderer(renderers::spliterator,
+                                         type);
+    }
+
     @Override
     public Class<Glyph> getGlyphType() {
         return Glyph.class;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        renderers.clear();
+        rendererInstances.destroyAll();
     }
 }

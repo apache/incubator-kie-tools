@@ -19,15 +19,13 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.connection;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 public interface ConnectionAcceptorControl<H extends CanvasHandler> extends CanvasControl<H>,
-                                                                            RequiresCommandManager<H>,
-                                                                            CanvasControl.SessionAware<ClientFullSession> {
+                                                                            RequiresCommandManager<H> {
 
     boolean allowSource(final Node source,
                         final Edge<ViewConnector<?>, Node> connector,

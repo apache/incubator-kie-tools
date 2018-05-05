@@ -32,7 +32,7 @@ import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManag
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
@@ -57,7 +57,6 @@ import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyInt;
@@ -95,7 +94,7 @@ public abstract class AbstractCanvasInPlaceTextEditorControlTest<C extends Abstr
     protected EventSourceMock<CanvasSelectionEvent> canvasSelectionEvent;
 
     @Mock
-    protected AbstractClientFullSession session;
+    protected EditorSession session;
 
     @Mock
     protected KeyboardControl<AbstractCanvas, ClientSession> keyboardControl;
@@ -220,7 +219,7 @@ public abstract class AbstractCanvasInPlaceTextEditorControlTest<C extends Abstr
 
     @Test
     public void testEnable() {
-        control.enable(canvasHandler);
+        control.init(canvasHandler);
 
         verify(textEditorBox).initialize(eq(canvasHandler),
                                          any(Command.class));
@@ -232,7 +231,7 @@ public abstract class AbstractCanvasInPlaceTextEditorControlTest<C extends Abstr
 
     @Test
     public void testEnableCloseCallback() {
-        control.enable(canvasHandler);
+        control.init(canvasHandler);
 
         verify(textEditorBox).initialize(eq(canvasHandler),
                                          commandCaptor.capture());
@@ -250,7 +249,7 @@ public abstract class AbstractCanvasInPlaceTextEditorControlTest<C extends Abstr
 
     @Test
     public void testEnableTimeoutCallback() {
-        control.enable(canvasHandler);
+        control.init(canvasHandler);
 
         verify(floatingView).setHideCallback(commandCaptor.capture());
 
@@ -262,7 +261,7 @@ public abstract class AbstractCanvasInPlaceTextEditorControlTest<C extends Abstr
 
     @Test
     public void testRegisterDoubleClickHandler() {
-        control.enable(canvasHandler);
+        control.init(canvasHandler);
 
         when(testShapeView.supports(ViewEventType.TEXT_DBL_CLICK)).thenReturn(true);
 
@@ -283,7 +282,7 @@ public abstract class AbstractCanvasInPlaceTextEditorControlTest<C extends Abstr
 
     @Test
     public void testRegisterTextEnter() {
-        control.enable(canvasHandler);
+        control.init(canvasHandler);
 
         when(testShapeView.supports(ViewEventType.TEXT_ENTER)).thenReturn(true);
 
@@ -301,7 +300,7 @@ public abstract class AbstractCanvasInPlaceTextEditorControlTest<C extends Abstr
 
     @Test
     public void testRegisterTextExit() {
-        control.enable(canvasHandler);
+        control.init(canvasHandler);
 
         when(testShapeView.supports(ViewEventType.TEXT_EXIT)).thenReturn(true);
 
@@ -319,7 +318,7 @@ public abstract class AbstractCanvasInPlaceTextEditorControlTest<C extends Abstr
 
     @Test
     public void testShowWhenAlreadyShown() {
-        control.enable(canvasHandler);
+        control.init(canvasHandler);
 
         when(textEditorBox.isVisible()).thenReturn(true);
 
@@ -331,7 +330,7 @@ public abstract class AbstractCanvasInPlaceTextEditorControlTest<C extends Abstr
 
     @Test
     public void testShowWhenNotAlreadyShown() {
-        control.enable(canvasHandler);
+        control.init(canvasHandler);
 
         when(textEditorBox.isVisible()).thenReturn(false);
 
@@ -342,7 +341,7 @@ public abstract class AbstractCanvasInPlaceTextEditorControlTest<C extends Abstr
 
     @Test
     public void testHideWhenIsVisible() {
-        control.enable(canvasHandler);
+        control.init(canvasHandler);
 
         control.show(element, X, Y);
 
@@ -357,7 +356,7 @@ public abstract class AbstractCanvasInPlaceTextEditorControlTest<C extends Abstr
 
     @Test
     public void testHideWhenIsNotVisible() {
-        control.enable(canvasHandler);
+        control.init(canvasHandler);
 
         reset(textEditorBox, floatingView);
 
@@ -373,38 +372,6 @@ public abstract class AbstractCanvasInPlaceTextEditorControlTest<C extends Abstr
         control.setCommandManagerProvider(commandManagerProvider);
 
         verify(textEditorBox).setCommandManagerProvider(eq(commandManagerProvider));
-    }
-
-    @Test
-    public void testDoDisableWhenShown() {
-        control.enable(canvasHandler);
-        control.show(element, X, Y);
-
-        reset(textEditorBox, floatingView);
-
-        control.doDisable();
-
-        verify(testShapeView).setFillAlpha(eq(AbstractCanvasInPlaceTextEditorControl.SHAPE_NOT_EDIT_ALPHA));
-        verify(testShapeView).setTitleAlpha(eq(AbstractCanvasInPlaceTextEditorControl.SHAPE_NOT_EDIT_ALPHA));
-        verify(textEditorBox).hide();
-    }
-
-    @Test
-    public void testDoDisableWhenNotShown() {
-        control.doDisable();
-
-        verify(textEditorBox).hide();
-    }
-
-    @Test
-    public void testFinal() {
-        try {
-            control.finalize();
-
-            verify(floatingView).destroy();
-        } catch (Throwable t) {
-            fail(t.getMessage());
-        }
     }
 
     @Test

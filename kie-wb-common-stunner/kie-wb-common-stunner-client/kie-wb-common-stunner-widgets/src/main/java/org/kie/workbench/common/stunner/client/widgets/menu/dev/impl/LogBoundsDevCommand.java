@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.util.StunnerClientLogger;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -37,7 +37,7 @@ public class LogBoundsDevCommand extends AbstractSelectedNodeDevCommand {
     }
 
     @Inject
-    public LogBoundsDevCommand(final AbstractClientSessionManager sessionManager) {
+    public LogBoundsDevCommand(final SessionManager sessionManager) {
         super(sessionManager);
     }
 

@@ -20,18 +20,23 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SwitchGridSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @Dependent
-public class SwitchGridToolbarCommand extends AbstractToolbarCommand<AbstractClientSession, SwitchGridSessionCommand> {
+public class SwitchGridToolbarCommand extends AbstractToolbarCommand<EditorSession, SwitchGridSessionCommand> {
 
     @Inject
-    public SwitchGridToolbarCommand(final SessionCommandFactory sessionCommandFactory, final ClientTranslationService translationService) {
-        super(sessionCommandFactory.newSwitchGridCommand(), translationService);
+    public SwitchGridToolbarCommand(final DefinitionUtils definitionUtils,
+                                    final ManagedInstance<SwitchGridSessionCommand> command,
+                                    final ClientTranslationService translationService) {
+        super(definitionUtils,
+              command,
+              translationService);
     }
 
     @Override

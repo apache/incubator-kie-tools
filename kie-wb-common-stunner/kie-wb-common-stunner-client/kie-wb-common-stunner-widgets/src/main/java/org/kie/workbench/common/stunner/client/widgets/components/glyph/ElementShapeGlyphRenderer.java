@@ -18,44 +18,57 @@ package org.kie.workbench.common.stunner.client.widgets.components.glyph;
 
 import java.util.function.Supplier;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.lienzo.components.glyph.LienzoGlyphRenderer;
 import org.kie.workbench.common.stunner.core.client.components.views.WidgetElementRendererView;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeGlyph;
+import org.uberfire.mvp.Command;
 
 /**
  * DOM element renderer for a ShapeGlyph.
  * It renders a LienzoPanel that contains the shape.
  */
-@ApplicationScoped
+@Dependent
 public class ElementShapeGlyphRenderer extends LienzoElementGlyphRenderer<ShapeGlyph> {
 
     private final LienzoGlyphRenderer<ShapeGlyph> lienzoShapeGlyphRenderer;
+    private final Command viewsDestroyer;
 
     protected ElementShapeGlyphRenderer() {
         super(null);
         this.lienzoShapeGlyphRenderer = null;
-    }
-
-    ElementShapeGlyphRenderer(final LienzoGlyphRenderer<ShapeGlyph> lienzoShapeGlyphRenderer,
-                              final Supplier<WidgetElementRendererView> viewInstances) {
-        super(viewInstances);
-        this.lienzoShapeGlyphRenderer = lienzoShapeGlyphRenderer;
+        this.viewsDestroyer = null;
     }
 
     @Inject
     public ElementShapeGlyphRenderer(final LienzoGlyphRenderer<ShapeGlyph> lienzoShapeGlyphRenderer,
-                                     final ManagedInstance<WidgetElementRendererView> viewInstances) {
+                                     final @Any ManagedInstance<WidgetElementRendererView> viewInstances) {
         super(viewInstances::get);
         this.lienzoShapeGlyphRenderer = lienzoShapeGlyphRenderer;
+        this.viewsDestroyer = viewInstances::destroyAll;
+    }
+
+    ElementShapeGlyphRenderer(final LienzoGlyphRenderer<ShapeGlyph> lienzoShapeGlyphRenderer,
+                              final Supplier<WidgetElementRendererView> viewInstances,
+                              final Command viewsDestroyer) {
+        super(viewInstances);
+        this.lienzoShapeGlyphRenderer = lienzoShapeGlyphRenderer;
+        this.viewsDestroyer = viewsDestroyer;
     }
 
     @Override
     public Class<ShapeGlyph> getGlyphType() {
         return ShapeGlyph.class;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        viewsDestroyer.execute();
     }
 
     @Override

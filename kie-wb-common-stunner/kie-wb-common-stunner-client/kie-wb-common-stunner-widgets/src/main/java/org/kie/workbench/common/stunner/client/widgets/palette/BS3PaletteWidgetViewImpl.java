@@ -136,10 +136,17 @@ public class BS3PaletteWidgetViewImpl implements BS3PaletteWidgetView,
 
     @Override
     public void destroy() {
-        clear();
+        DOMUtil.removeAllChildren(ul);
+        DOMUtil.removeAllChildren(palette);
         if (Objects.nonNull(itemDragProxy)) {
             itemDragProxy.destroy();
+            itemDragProxy = null;
         }
+        if (Objects.nonNull(shapeGlyphDragHandler)) {
+            shapeGlyphDragHandler.destroy();
+            shapeGlyphDragHandler = null;
+        }
+        presenter = null;
     }
 
     @Override

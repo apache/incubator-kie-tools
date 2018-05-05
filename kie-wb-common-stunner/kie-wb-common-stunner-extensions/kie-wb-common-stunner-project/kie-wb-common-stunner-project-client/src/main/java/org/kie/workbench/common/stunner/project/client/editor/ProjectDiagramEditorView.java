@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.project.client.editor;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -73,5 +74,12 @@ public class ProjectDiagramEditorView
     public void setWidget(final IsWidget widget) {
         editorPanel.clear();
         editorPanel.add(widget);
+    }
+
+    @PreDestroy
+    public void destroy() {
+        editorPanel.clear();
+        editorPanel.removeFromParent();
+        presenter = null;
     }
 }

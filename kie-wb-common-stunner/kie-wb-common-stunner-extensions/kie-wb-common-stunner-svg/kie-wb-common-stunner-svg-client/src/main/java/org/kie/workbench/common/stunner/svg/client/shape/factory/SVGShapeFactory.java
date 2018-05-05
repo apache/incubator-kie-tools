@@ -17,7 +17,7 @@
 package org.kie.workbench.common.stunner.svg.client.shape.factory;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -35,7 +35,7 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.impl.SVGShapeViewI
 /**
  * A Shape Factory type that handles SVG Shapes.
  */
-@ApplicationScoped
+@Dependent
 public class SVGShapeFactory
         implements ShapeDefFactory<Object, SVGShapeDef, SVGShape<?>> {
 

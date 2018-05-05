@@ -31,6 +31,7 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -54,6 +55,12 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     private DMNDiagramEditor diagramEditor;
 
     @Override
+    public void setUp() {
+        super.setUp();
+        when(resourceType.getSuffix()).thenReturn("dmn");
+    }
+
+    @Override
     protected DMNDiagramResourceType mockResourceType() {
         final DMNDiagramResourceType resourceType = mock(DMNDiagramResourceType.class);
         when(resourceType.getSuffix()).thenReturn("dmn");
@@ -71,28 +78,27 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                                                  savePopUpPresenter,
                                                  (DMNDiagramResourceType) getResourceType(),
                                                  clientProjectDiagramService,
-                                                 sessionManager,
-                                                 sessionPresenterFactory,
-                                                 sessionCommandFactory,
-                                                 projectMenuItemsBuilder,
+                                                 sessionEditorPresenters,
+                                                 sessionViewerPresenters,
+                                                 getMenuSessionItems(),
                                                  onDiagramFocusEvent,
                                                  onDiagramLostFocusEvent,
                                                  projectMessagesListener,
                                                  diagramClientErrorHandler,
                                                  translationService,
                                                  xmlEditorView,
-                                                 stunnerPreferencesRegistry,
+                                                 stunnerPreferencesRegistr,
                                                  decisionNavigatorDock) {
             {
-                place = DMNDiagramEditorTest.this.placeRequest;
                 fileMenuBuilder = DMNDiagramEditorTest.this.fileMenuBuilder;
                 workbenchContext = DMNDiagramEditorTest.this.workbenchContext;
                 projectController = DMNDiagramEditorTest.this.projectController;
                 versionRecordManager = DMNDiagramEditorTest.this.versionRecordManager;
+                sessionEditorPresenters = DMNDiagramEditorTest.this.sessionEditorPresenters;
                 alertsButtonMenuItemBuilder = DMNDiagramEditorTest.this.alertsButtonMenuItemBuilder;
                 kieView = DMNDiagramEditorTest.this.kieView;
                 overviewWidget = DMNDiagramEditorTest.this.overviewWidget;
-                notification = DMNDiagramEditorTest.this.notificationEvent;
+                notification = DMNDiagramEditorTest.this.notification;
             }
         });
 
@@ -122,12 +128,11 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
     @Test
     public void testOnDiagramLoadWhenCanvasHandlerIsNotNull() {
-        when(sessionManager.getCurrentSession()).thenReturn(clientFullSession);
-        when(clientFullSession.getCanvasHandler()).thenReturn(canvasHandler);
+        when(editorSession.getCanvasHandler()).thenReturn(canvasHandler);
 
-        diagramEditor.onDiagramLoad();
+        open();
 
-        verify(decisionNavigatorDock).setupContent(canvasHandler);
+        verify(decisionNavigatorDock).setupContent(eq(canvasHandler));
         verify(decisionNavigatorDock).open();
     }
 
@@ -147,5 +152,13 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         verify(diagramEditor).superDoFocus();
         verify(diagramEditor).onDiagramLoad();
+    }
+
+    @Override
+    public void testOpen() {
+    }
+
+    @Override
+    public void testFormatTitle() {
     }
 }

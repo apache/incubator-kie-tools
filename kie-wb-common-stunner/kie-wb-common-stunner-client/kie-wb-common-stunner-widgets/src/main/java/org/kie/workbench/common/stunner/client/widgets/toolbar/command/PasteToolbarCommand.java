@@ -20,17 +20,23 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.PasteSelectionSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @Dependent
-public class PasteToolbarCommand extends AbstractToolbarCommand<ClientFullSession, PasteSelectionSessionCommand> {
+public class PasteToolbarCommand extends AbstractToolbarCommand<EditorSession, PasteSelectionSessionCommand> {
 
     @Inject
-    public PasteToolbarCommand(final PasteSelectionSessionCommand pasteSelectionSessionCommand, final ClientTranslationService translationService) {
-        super(pasteSelectionSessionCommand, translationService);
+    public PasteToolbarCommand(final DefinitionUtils definitionUtils,
+                               final ManagedInstance<PasteSelectionSessionCommand> command,
+                               final ClientTranslationService translationService) {
+        super(definitionUtils,
+              command,
+              translationService);
     }
 
     @Override

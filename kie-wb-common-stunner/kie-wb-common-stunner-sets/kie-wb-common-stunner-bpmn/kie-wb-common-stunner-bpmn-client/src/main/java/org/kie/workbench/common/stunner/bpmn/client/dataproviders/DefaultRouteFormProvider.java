@@ -36,8 +36,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.BaseThrowingIntermediate
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -120,8 +120,8 @@ public class DefaultRouteFormProvider
     }
 
     protected String getSelectedElementUUID(ClientSession clientSession) {
-        if (clientSession instanceof ClientFullSession) {
-            final SelectionControl selectionControl = ((ClientFullSession) clientSession).getSelectionControl();
+        if (clientSession instanceof EditorSession) {
+            final SelectionControl selectionControl = ((EditorSession) clientSession).getSelectionControl();
             if (null != selectionControl) {
                 final Collection<String> selectedItems = selectionControl.getSelectedItems();
                 if (null != selectedItems && !selectedItems.isEmpty()) {

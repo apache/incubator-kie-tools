@@ -19,10 +19,10 @@ package org.kie.workbench.common.stunner.core.client.command;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.mockito.Mock;
@@ -42,13 +42,13 @@ import static org.mockito.Mockito.when;
 public class SessionCommandManagerTest {
 
     @Mock
-    AbstractClientSessionManager clientSessionManager;
+    SessionManager clientSessionManager;
     @Mock
     AbstractCanvasHandler canvasHandler;
     @Mock
     AbstractCanvas canvas;
     @Mock
-    ClientFullSession clientFullSession;
+    EditorSession editorSession;
     @Mock
     Command<AbstractCanvasHandler, CanvasViolation> command;
     @Mock
@@ -60,9 +60,9 @@ public class SessionCommandManagerTest {
     public void setup() throws Exception {
         CanvasCommandManagerImpl commandManager = new CanvasCommandManagerImpl();
         when(canvasHandler.getCanvas()).thenReturn(canvas);
-        when(clientSessionManager.getCurrentSession()).thenReturn(clientFullSession);
-        when(clientFullSession.getCommandRegistry()).thenReturn(commandRegistry);
-        when(clientFullSession.getCommandManager()).thenReturn(commandManager);
+        when(clientSessionManager.getCurrentSession()).thenReturn(editorSession);
+        when(editorSession.getCommandRegistry()).thenReturn(commandRegistry);
+        when(editorSession.getCommandManager()).thenReturn(commandManager);
         this.tested = new SessionCommandManagerImpl(clientSessionManager);
     }
 

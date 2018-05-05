@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.client.lienzo.components.glyph.LienzoGly
 import org.kie.workbench.common.stunner.core.client.components.views.WidgetElementRendererView;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeGlyph;
 import org.mockito.Mock;
+import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
@@ -49,6 +50,9 @@ public class ElementShapeGlyphRendererTest {
     @Mock
     private WidgetElementRendererView view;
 
+    @Mock
+    private Command viewDestroyer;
+
     private ElementShapeGlyphRenderer tested;
 
     @Before
@@ -58,7 +62,8 @@ public class ElementShapeGlyphRendererTest {
                                              anyDouble(),
                                              anyDouble())).thenReturn(new Group());
         this.tested = new ElementShapeGlyphRenderer(lienzoShapeGlyphRenderer,
-                                                    viewSupplier);
+                                                    viewSupplier,
+                                                    viewDestroyer);
     }
 
     @Test
@@ -81,5 +86,11 @@ public class ElementShapeGlyphRendererTest {
                                 eq(200d));
         verify(view,
                times(1)).setWidget(any(LienzoPanel.class));
+    }
+
+    @Test
+    public void testDestroy() {
+        tested.destroy();
+        verify(viewDestroyer, times(1)).execute();
     }
 }

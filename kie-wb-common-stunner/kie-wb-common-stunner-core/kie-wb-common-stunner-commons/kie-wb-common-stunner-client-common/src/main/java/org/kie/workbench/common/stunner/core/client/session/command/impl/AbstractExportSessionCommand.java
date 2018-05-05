@@ -17,10 +17,10 @@
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.uberfire.backend.vfs.Path;
 
-public abstract class AbstractExportSessionCommand extends AbstractClientSessionCommand<AbstractClientSession> {
+public abstract class AbstractExportSessionCommand extends AbstractClientSessionCommand<ViewerSession> {
 
     public AbstractExportSessionCommand(final boolean enabled) {
         super(enabled);

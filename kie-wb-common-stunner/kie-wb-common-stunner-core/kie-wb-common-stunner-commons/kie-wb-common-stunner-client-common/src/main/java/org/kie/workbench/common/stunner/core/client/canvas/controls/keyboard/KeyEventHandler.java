@@ -113,6 +113,7 @@ public class KeyEventHandler {
     }
 
     void reset() {
+        setEnabled(false);
         _keys = null;
         keys.clear();
         timer = null;

@@ -20,18 +20,23 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToSvgSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @Dependent
-public class ExportToSvgToolbarCommand extends AbstractToolbarCommand<AbstractClientSession, ExportToSvgSessionCommand> {
+public class ExportToSvgToolbarCommand extends AbstractToolbarCommand<ViewerSession, ExportToSvgSessionCommand> {
 
     @Inject
-    public ExportToSvgToolbarCommand(final SessionCommandFactory sessionCommandFactory, final ClientTranslationService translationService) {
-        super(sessionCommandFactory.newExportToSvgSessionCommand(), translationService);
+    public ExportToSvgToolbarCommand(final DefinitionUtils definitionUtils,
+                                     final ManagedInstance<ExportToSvgSessionCommand> command,
+                                     final ClientTranslationService translationService) {
+        super(definitionUtils,
+              command,
+              translationService);
     }
 
     @Override

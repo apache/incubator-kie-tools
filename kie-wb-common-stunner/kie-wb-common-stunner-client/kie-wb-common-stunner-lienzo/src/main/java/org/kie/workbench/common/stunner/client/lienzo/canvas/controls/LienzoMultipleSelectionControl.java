@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.Shape;
@@ -56,6 +57,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 
 @Dependent
 @MultipleSelection
+@Default
 public final class LienzoMultipleSelectionControl<H extends AbstractCanvasHandler>
         extends AbstractSelectionControl<H> {
 
@@ -162,9 +164,10 @@ public final class LienzoMultipleSelectionControl<H extends AbstractCanvasHandle
     }
 
     @Override
-    protected void onDisable() {
-        super.onDisable();
-        clear();
+    protected void onDestroy() {
+        getSelectionManager().destroy();
+        selectionShapeProvider.destroy();
+        super.onDestroy();
     }
 
     private void clear() {
@@ -261,6 +264,12 @@ public final class LienzoMultipleSelectionControl<H extends AbstractCanvasHandle
             clearHandlerRegs();
             provider.clear();
             return this;
+        }
+
+        public void destroy() {
+            clear();
+            mouseEnterHandlerReg = null;
+            mouseExitHandlerReg = null;
         }
 
         public CursoredSelectionShapeProvider moveShapeToTop() {

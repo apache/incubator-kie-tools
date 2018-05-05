@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.shape.factory;
 
 import java.util.function.Supplier;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
@@ -52,6 +53,11 @@ public class DelegateShapeFactory<W, S extends Shape> extends AbstractShapeFacto
         return (S) bindings.factory.get()
                 .newShape(definition,
                           shapeDef);
+    }
+
+    @PreDestroy
+    public void destroy() {
+        definitionTypeBindings.clear();
     }
 
     @Override

@@ -30,4 +30,9 @@ public interface DefinitionRegistry<D> extends DynamicRegistry<D> {
      * @return The Definition of type <code>D</code> that this registry contains, <code>null</code> otherwise.
      */
     D getDefinitionById(final String id);
+
+    /**
+     * Clears the registry.
+     */
+    void clear();
 }

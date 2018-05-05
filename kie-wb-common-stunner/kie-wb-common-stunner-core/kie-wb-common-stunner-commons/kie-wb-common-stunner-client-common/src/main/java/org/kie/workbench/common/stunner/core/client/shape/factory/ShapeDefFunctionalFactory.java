@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
@@ -53,6 +54,11 @@ public class ShapeDefFunctionalFactory<W, D extends ShapeDef, S extends Shape> i
         return (S) newShape(instance,
                             shapeDef,
                             shapeDef.getType());
+    }
+
+    @PreDestroy
+    public void destroy() {
+        shapeBuilders.clear();
     }
 
     private S newShape(final W instance,

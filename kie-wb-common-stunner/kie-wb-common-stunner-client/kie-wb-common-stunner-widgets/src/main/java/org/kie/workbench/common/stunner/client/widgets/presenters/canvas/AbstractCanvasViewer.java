@@ -45,11 +45,6 @@ public abstract class AbstractCanvasViewer<T, H extends AbstractCanvasHandler, V
     protected abstract void enableControls();
 
     /**
-     * Implementations must disable here the controls, at least, the zoom control instance.
-     */
-    protected abstract void disableControls();
-
-    /**
      * Implementations must destroy here the controls, at least, the zoom control instance.
      */
     protected abstract void destroyControls();
@@ -60,7 +55,6 @@ public abstract class AbstractCanvasViewer<T, H extends AbstractCanvasHandler, V
      */
     @Override
     public void clear() {
-        disableControls();
         getHandler().clear();
         getView().clear();
     }
@@ -73,6 +67,10 @@ public abstract class AbstractCanvasViewer<T, H extends AbstractCanvasHandler, V
     @Override
     public void destroy() {
         destroyControls();
+        destroyInstances();
+    }
+
+    protected void destroyInstances() {
         getHandler().destroy();
         getView().clear();
     }

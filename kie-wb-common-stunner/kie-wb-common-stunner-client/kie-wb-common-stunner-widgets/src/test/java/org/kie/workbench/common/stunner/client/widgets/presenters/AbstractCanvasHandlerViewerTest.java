@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
@@ -55,6 +56,8 @@ public abstract class AbstractCanvasHandlerViewerTest {
     protected AbstractCanvasHandler canvasHandler;
     @Mock
     protected Diagram diagram;
+    @Mock
+    protected Metadata metadata;
     @Mock
     protected Graph graph;
     @Mock
@@ -92,6 +95,7 @@ public abstract class AbstractCanvasHandlerViewerTest {
             when(canvasHandler.getDiagram()).thenReturn(canvasHandlerDiagram);
             return null;
         }).when(canvasHandler).destroy();
+        when(diagram.getMetadata()).thenReturn(metadata);
         when(diagram.getGraph()).thenReturn(graph);
         when(graph.getContent()).thenReturn(graphContent);
         when(graphContent.getBounds()).thenReturn(GRAPH_BOUNDS);

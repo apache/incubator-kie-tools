@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.client.widgets.palette;
 
 import java.lang.annotation.Annotation;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
@@ -48,7 +49,7 @@ public class DefaultPaletteFactory<H extends AbstractCanvasHandler>
     @Inject
     public DefaultPaletteFactory(final DefinitionUtils definitionUtils,
                                  final @Any ManagedInstance<PaletteDefinitionBuilder<H, DefaultPaletteDefinition>> paletteDefinitionBuilders,
-                                 final ManagedInstance<DefaultPaletteWidget> palettes,
+                                 final @Any ManagedInstance<DefaultPaletteWidget> palettes,
                                  final Event<BuildCanvasShapeEvent> buildCanvasShapeEvent,
                                  final Event<CanvasShapeDragStartEvent> canvasShapeDragStartEvent,
                                  final Event<CanvasShapeDragUpdateEvent> canvasShapeDragUpdateEvent) {
@@ -67,6 +68,12 @@ public class DefaultPaletteFactory<H extends AbstractCanvasHandler>
                 .build(canvasHandler,
                        palette::bind);
         return palette;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        paletteDefinitionBuilders.destroyAll();
+        palettes.destroyAll();
     }
 
     private PaletteDefinitionBuilder<H, DefaultPaletteDefinition> getPaletteDefinitionBuilder(final H canvasHandler) {

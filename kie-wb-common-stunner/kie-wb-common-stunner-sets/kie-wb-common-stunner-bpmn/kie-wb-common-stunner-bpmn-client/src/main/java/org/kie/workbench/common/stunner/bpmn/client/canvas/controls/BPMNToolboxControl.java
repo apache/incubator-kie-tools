@@ -16,13 +16,15 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.canvas.controls;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.AbstractToolboxControl;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxFactory;
@@ -36,38 +38,32 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.M
 @BPMN
 public class BPMNToolboxControl extends AbstractToolboxControl {
 
-    private final ActionsToolboxFactory flowActionsToolboxFactory;
-    private final ActionsToolboxFactory morphActionsToolboxFactory;
-    private final ActionsToolboxFactory bpmnCommonActionsToolboxFactory;
-    private List<ActionsToolboxFactory> factories;
-
-    // CDI proxy.
-    public BPMNToolboxControl() {
-        this(null,
-             null,
-             null);
-    }
+    private final ManagedInstance<ActionsToolboxFactory> flowActionsToolboxFactories;
+    private final ManagedInstance<ActionsToolboxFactory> morphActionsToolboxFactories;
+    private final ManagedInstance<ActionsToolboxFactory> bpmnCommonActionsToolboxFactories;
 
     @Inject
-    public BPMNToolboxControl(final @FlowActionsToolbox ActionsToolboxFactory flowActionsToolboxFactory,
-                              final @MorphActionsToolbox ActionsToolboxFactory morphActionsToolboxFactory,
-                              final @BPMN ActionsToolboxFactory bpmnCommonActionsToolboxFactory) {
-        this.flowActionsToolboxFactory = flowActionsToolboxFactory;
-        this.morphActionsToolboxFactory = morphActionsToolboxFactory;
-        this.bpmnCommonActionsToolboxFactory = bpmnCommonActionsToolboxFactory;
-    }
-
-    @PostConstruct
-    public void init() {
-        factories = new ArrayList<ActionsToolboxFactory>(2) {{
-            add(flowActionsToolboxFactory);
-            add(morphActionsToolboxFactory);
-            add(bpmnCommonActionsToolboxFactory);
-        }};
+    public BPMNToolboxControl(final @Any @FlowActionsToolbox ManagedInstance<ActionsToolboxFactory> flowActionsToolboxFactories,
+                              final @Any @MorphActionsToolbox ManagedInstance<ActionsToolboxFactory> morphActionsToolboxFactories,
+                              final @Any @BPMN ManagedInstance<ActionsToolboxFactory> bpmnCommonActionsToolboxFactories) {
+        this.flowActionsToolboxFactories = flowActionsToolboxFactories;
+        this.morphActionsToolboxFactories = morphActionsToolboxFactories;
+        this.bpmnCommonActionsToolboxFactories = bpmnCommonActionsToolboxFactories;
     }
 
     @Override
     protected List<ActionsToolboxFactory> getFactories() {
-        return factories;
+        return Arrays.asList(flowActionsToolboxFactories.get(),
+                             morphActionsToolboxFactories.get(),
+                             bpmnCommonActionsToolboxFactories.get());
+    }
+
+    @PreDestroy
+    @Override
+    public void destroy() {
+        super.destroy();
+        flowActionsToolboxFactories.destroyAll();
+        morphActionsToolboxFactories.destroyAll();
+        bpmnCommonActionsToolboxFactories.destroyAll();
     }
 }

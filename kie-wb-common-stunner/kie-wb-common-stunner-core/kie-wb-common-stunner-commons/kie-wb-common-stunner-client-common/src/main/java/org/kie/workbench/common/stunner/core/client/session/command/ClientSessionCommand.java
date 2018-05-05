@@ -33,4 +33,6 @@ public interface ClientSessionCommand<S extends ClientSession> extends CanvasCon
     <V> void execute(final Callback<V> callback);
 
     boolean isEnabled();
+
+    void destroy();
 }

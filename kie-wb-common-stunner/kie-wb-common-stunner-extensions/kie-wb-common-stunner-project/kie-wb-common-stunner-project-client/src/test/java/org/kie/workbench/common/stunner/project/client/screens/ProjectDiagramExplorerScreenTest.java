@@ -18,16 +18,17 @@ package org.kie.workbench.common.stunner.project.client.screens;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.widgets.explorer.tree.TreeExplorer;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPreview;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
-import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.Mock;
@@ -48,31 +49,31 @@ import static org.mockito.Mockito.when;
 public class ProjectDiagramExplorerScreenTest {
 
     @Mock
-    AbstractClientSessionManager clientSessionManager;
+    private SessionManager clientSessionManager;
     @Mock
-    TreeExplorer treeExplorer;
+    private TreeExplorer treeExplorer;
+    private ManagedInstance<TreeExplorer> treeExplorers;
     @Mock
-    SessionPresenterFactory sessionPresenterFactory;
+    private SessionDiagramPreview<AbstractSession> sessionPreview;
+    private ManagedInstance<SessionDiagramPreview<AbstractSession>> sessionPreviews;
     @Mock
-    SessionPreview sessionPreview;
+    private EventSourceMock<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
     @Mock
-    EventSourceMock<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
+    private Widget treeExplorerWidget;
     @Mock
-    Widget treeExplorerWidget;
+    private IsWidget previewWidget;
     @Mock
-    IsWidget previewWidget;
+    private AbstractSession session;
     @Mock
-    AbstractClientSession session;
+    private AbstractCanvasHandler canvasHandler;
     @Mock
-    AbstractCanvasHandler canvasHandler;
+    private Diagram diagram;
     @Mock
-    Diagram diagram;
+    private Metadata metadata;
     @Mock
-    Metadata metadata;
+    private ErrorPopupPresenter errorPopupPresenter;
     @Mock
-    ErrorPopupPresenter errorPopupPresenter;
-    @Mock
-    ProjectDiagramExplorerScreen.View view;
+    private ProjectDiagramExplorerScreen.View view;
 
     private ProjectDiagramExplorerScreen tested;
 
@@ -80,7 +81,6 @@ public class ProjectDiagramExplorerScreenTest {
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         when(clientSessionManager.getCurrentSession()).thenReturn(session);
-        when(sessionPresenterFactory.newPreview()).thenReturn(sessionPreview);
         when(sessionPreview.getView()).thenReturn(previewWidget);
         when(sessionPreview.getInstance()).thenReturn(session);
         when(treeExplorer.asWidget()).thenReturn(treeExplorerWidget);
@@ -88,26 +88,18 @@ public class ProjectDiagramExplorerScreenTest {
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getTitle()).thenReturn("Diagram title");
+        treeExplorers = new ManagedInstanceStub<>(treeExplorer);
+        sessionPreviews = new ManagedInstanceStub<>(sessionPreview);
         this.tested = new ProjectDiagramExplorerScreen(clientSessionManager,
-                                                       treeExplorer,
+                                                       treeExplorers,
                                                        changeTitleNotificationEvent,
-                                                       sessionPresenterFactory,
+                                                       sessionPreviews,
                                                        errorPopupPresenter,
                                                        view);
     }
 
     @Test
-    public void testInit() {
-        tested.init();
-        verify(view,
-               times(0)).setPreviewWidget(any(IsWidget.class));
-        verify(view,
-               times(1)).setExplorerWidget(eq(treeExplorerWidget));
-    }
-
-    @Test
     public void testView() {
-        tested.init();
         assertEquals(view,
                      tested.getWidget());
     }
@@ -115,10 +107,7 @@ public class ProjectDiagramExplorerScreenTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testShow() {
-        tested.init();
         tested.show(session);
-        verify(sessionPresenterFactory,
-               times(1)).newPreview();
         verify(sessionPreview,
                times(1)).open(eq(session),
                               anyInt(),
@@ -134,25 +123,18 @@ public class ProjectDiagramExplorerScreenTest {
                times(0)).clear();
         verify(errorPopupPresenter,
                times(0)).showMessage(anyString());
+        verify(view,
+               times(0)).setPreviewWidget(any(IsWidget.class));
+        verify(view,
+               times(1)).setExplorerWidget(any(IsWidget.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testClose() {
-        tested.init();
+        tested.show(session);
         tested.close();
         verify(sessionPreview,
-               times(0)).open(any(AbstractClientSession.class),
-                              anyInt(),
-                              anyInt(),
-                              any(SessionViewer.SessionViewerCallback.class));
-        verify(sessionPreview,
-               times(0)).clear();
-        verify(treeExplorer,
-               times(1)).clear();
-        verify(treeExplorer,
-               times(0)).show(any(AbstractCanvasHandler.class));
-        verify(errorPopupPresenter,
-               times(0)).showMessage(anyString());
+               times(1)).destroy();
     }
 }

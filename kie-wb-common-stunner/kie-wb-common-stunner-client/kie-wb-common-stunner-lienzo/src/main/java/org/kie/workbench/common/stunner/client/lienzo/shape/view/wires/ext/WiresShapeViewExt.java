@@ -50,11 +50,10 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler
 
 public class WiresShapeViewExt<T extends WiresShapeViewExt>
         extends WiresShapeView<T>
-        implements
-        HasTitle<T>,
-        HasControlPoints<T>,
-        HasEventHandlers<T, Shape<?>>,
-        HasFillGradient<T> {
+        implements HasTitle<T>,
+                   HasControlPoints<T>,
+                   HasEventHandlers<T, Shape<?>>,
+                   HasFillGradient<T> {
 
     private ViewEventHandlerManager eventHandlerManager;
     private WiresTextDecorator textViewDecorator;

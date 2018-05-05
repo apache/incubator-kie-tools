@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -32,7 +31,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanv
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.ElementBuildRequest;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.exceptions.ElementOutOfBoundsException;
-import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
@@ -71,31 +69,23 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         NONE
     }
 
-    private static Logger LOGGER = Logger.getLogger(AbstractElementBuilderControl.class.getName());
-
     private final ClientDefinitionManager clientDefinitionManager;
     private final ClientFactoryService clientFactoryServices;
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
-    private final GraphUtils graphUtils;
     private final RuleManager ruleManager;
     private final GraphBoundsIndexer graphBoundsIndexer;
-    private final CanvasLayoutUtils canvasLayoutUtils;
     private RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
 
     public AbstractElementBuilderControl(final ClientDefinitionManager clientDefinitionManager,
                                          final ClientFactoryService clientFactoryServices,
-                                         final GraphUtils graphUtils,
                                          final RuleManager ruleManager,
                                          final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
-                                         final GraphBoundsIndexer graphBoundsIndexer,
-                                         final CanvasLayoutUtils canvasLayoutUtils) {
+                                         final GraphBoundsIndexer graphBoundsIndexer) {
         this.clientDefinitionManager = clientDefinitionManager;
         this.clientFactoryServices = clientFactoryServices;
-        this.graphUtils = graphUtils;
         this.ruleManager = ruleManager;
         this.canvasCommandFactory = canvasCommandFactory;
         this.graphBoundsIndexer = graphBoundsIndexer;
-        this.canvasLayoutUtils = canvasLayoutUtils;
     }
 
     @Override
@@ -222,14 +212,13 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
     }
 
     @Override
-    protected void doDisable() {
-        graphBoundsIndexer.destroy();
-        commandManagerProvider = null;
+    protected void doInit() {
     }
 
     @Override
-    protected boolean isEnabled() {
-        return super.isEnabled();
+    protected void doDestroy() {
+        graphBoundsIndexer.destroy();
+        commandManagerProvider = null;
     }
 
     public void getCommands(final Object definition,

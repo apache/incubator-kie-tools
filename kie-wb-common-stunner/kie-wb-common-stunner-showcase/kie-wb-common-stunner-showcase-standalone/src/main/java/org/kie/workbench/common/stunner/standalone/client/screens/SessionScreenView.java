@@ -28,4 +28,6 @@ public interface SessionScreenView extends IsWidget {
     void setMarginTop(final int px);
 
     void setPaddingTop(final int px);
+
+    void clear();
 }

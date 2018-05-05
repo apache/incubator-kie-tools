@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.wires.IConnectionAcceptor;
@@ -29,6 +30,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CancelCanvasAction;
@@ -36,7 +38,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasHighlight;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -47,12 +49,15 @@ import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 @Dependent
-public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
-        implements ConnectionAcceptorControl<AbstractCanvasHandler> {
+@Default
+public class ConnectionAcceptorControlImpl
+        extends AbstractAcceptorControl
+        implements ConnectionAcceptorControl<AbstractCanvasHandler>,
+                   CanvasControl.SessionAware<EditorSession> {
 
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+    private final Event<CancelCanvasAction> cancelCanvasActionEvent;
     private CanvasHighlight canvasHighlight;
-    private Event<CancelCanvasAction> cancelCanvasActionEvent;
 
     @Inject
     public ConnectionAcceptorControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
@@ -62,7 +67,7 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
     }
 
     @Override
-    public void bind(ClientFullSession session) {
+    public void bind(final EditorSession session) {
         session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
     }
 
@@ -74,21 +79,9 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
     }
 
     @Override
-    public void unbind() {
-
-    }
-
-    @Override
-    protected void onEnable(final WiresCanvas.View canvasView) {
+    protected void onInit(final WiresCanvas.View canvasView) {
         this.canvasHighlight = new CanvasHighlight(getCanvasHandler());
         canvasView.setConnectionAcceptor(CONNECTION_ACCEPTOR);
-    }
-
-    @Override
-    protected void onDisable(final WiresCanvas.View canvasView) {
-        canvasView.setConnectionAcceptor(IConnectionAcceptor.NONE);
-        this.canvasHighlight.destroy();
-        this.canvasHighlight = null;
     }
 
     @Override
@@ -220,9 +213,6 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
         @SuppressWarnings("unchecked")
         public boolean acceptHead(final WiresConnection head,
                                   final WiresMagnet wiresMagnet) {
-            if (!isEnabled()) {
-                return false;
-            }
             final Edge edge = WiresUtils.getEdge(getCanvasHandler(),
                                                  head.getConnector());
             final Node sourceNode = WiresUtils.getNode(getCanvasHandler(),
@@ -239,9 +229,6 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
         @SuppressWarnings("unchecked")
         public boolean acceptTail(final WiresConnection tail,
                                   final WiresMagnet wiresMagnet) {
-            if (!isEnabled()) {
-                return false;
-            }
             final WiresConnection head = tail.getConnector().getHeadConnection();
             final Edge edge = WiresUtils.getEdge(getCanvasHandler(),
                                                  head.getConnector());
@@ -258,10 +245,6 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
         @SuppressWarnings("unchecked")
         public boolean headConnectionAllowed(final WiresConnection head,
                                              final WiresShape shape) {
-
-            if (!isEnabled()) {
-                return false;
-            }
             final Edge<ViewConnector<?>, Node> edge = WiresUtils.getEdge(getCanvasHandler(),
                                                                          head.getConnector());
             final Node sourceNode = WiresUtils.getNode(getCanvasHandler(),
@@ -275,9 +258,6 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
         @SuppressWarnings("unchecked")
         public boolean tailConnectionAllowed(final WiresConnection tail,
                                              final WiresShape shape) {
-            if (!isEnabled()) {
-                return false;
-            }
             final Edge<ViewConnector<?>, Node> edge = WiresUtils.getEdge(getCanvasHandler(),
                                                                          tail.getConnector());
             final Node targetNode = WiresUtils.getNode(getCanvasHandler(),
@@ -325,5 +305,12 @@ public class ConnectionAcceptorControlImpl extends AbstractAcceptorControl
         return null != element ?
                 MagnetConnection.Builder.forElement(element) :
                 null;
+    }
+
+    @Override
+    protected void onDestroy(final WiresCanvas.View view) {
+        view.setConnectionAcceptor(IConnectionAcceptor.NONE);
+        this.canvasHighlight.destroy();
+        this.canvasHighlight = null;
     }
 }

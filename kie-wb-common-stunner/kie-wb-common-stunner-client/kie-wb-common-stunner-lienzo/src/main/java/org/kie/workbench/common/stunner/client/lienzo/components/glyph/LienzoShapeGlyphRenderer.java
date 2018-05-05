@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.client.lienzo.components.glyph;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.Group;
@@ -34,7 +34,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeGlyph;
 
-@ApplicationScoped
+@Dependent
 public class LienzoShapeGlyphRenderer implements LienzoGlyphRenderer<ShapeGlyph> {
 
     private final FactoryManager factoryManager;

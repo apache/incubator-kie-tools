@@ -16,11 +16,10 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.components.glyph;
 
-import java.util.function.Function;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeGlyph;
 import org.mockito.Mock;
@@ -28,6 +27,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,18 +36,18 @@ import static org.mockito.Mockito.when;
 public class LienzoGlyphRenderersTest {
 
     @Mock
-    private Function<Class<?>, LienzoGlyphRenderer> rendererProvider;
-
-    @Mock
-    private LienzoGlyphRenderer shapeGlyphRenderer;
+    private LienzoGlyphRenderer shapeGlyphRendererInstance;
+    private ManagedInstanceStub<LienzoGlyphRenderer> rendererInstances;
 
     private LienzoGlyphRenderers tested;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        when(rendererProvider.apply(eq(ShapeGlyph.class))).thenReturn(shapeGlyphRenderer);
-        this.tested = new LienzoGlyphRenderers(rendererProvider);
+        rendererInstances = spy(new ManagedInstanceStub<>(shapeGlyphRendererInstance));
+        when(shapeGlyphRendererInstance.getGlyphType()).thenReturn(ShapeGlyph.class);
+        this.tested = new LienzoGlyphRenderers(rendererInstances);
+        tested.init();
     }
 
     @Test
@@ -63,7 +63,15 @@ public class LienzoGlyphRenderersTest {
         tested.render(glyph,
                       100,
                       200);
-        verify(rendererProvider,
-               times(1)).apply(eq(ShapeGlyph.class));
+        verify(shapeGlyphRendererInstance,
+               times(1)).render(eq(glyph),
+                                eq(100d),
+                                eq(200d));
+    }
+
+    @Test
+    public void testDestroy() {
+        tested.destroy();
+        verify(rendererInstances, times(1)).destroyAll();
     }
 }

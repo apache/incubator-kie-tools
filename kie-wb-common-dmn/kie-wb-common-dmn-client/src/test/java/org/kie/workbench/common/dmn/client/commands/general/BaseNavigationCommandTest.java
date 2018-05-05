@@ -31,7 +31,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.mockito.Mock;
 import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
@@ -70,7 +70,7 @@ public abstract class BaseNavigationCommandTest {
     protected SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
-    protected AbstractClientSession session;
+    protected EditorSession session;
 
     @Mock
     protected HasName hasName;

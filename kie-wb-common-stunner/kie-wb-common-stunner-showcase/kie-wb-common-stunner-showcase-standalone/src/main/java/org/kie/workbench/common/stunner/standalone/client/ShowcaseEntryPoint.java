@@ -35,7 +35,6 @@ import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.service.AuthenticationService;
-import org.kie.workbench.common.stunner.client.widgets.menu.dev.MenuDevCommandsBuilder;
 import org.kie.workbench.common.stunner.standalone.client.perspectives.AuthoringPerspective;
 import org.kie.workbench.common.stunner.standalone.client.perspectives.CanvasPerspective;
 import org.kie.workbench.common.stunner.standalone.client.perspectives.HomePerspective;
@@ -87,9 +86,6 @@ public class ShowcaseEntryPoint {
     @Inject
     private ErrorPopupPresenter errorPopupPresenter;
 
-    @Inject
-    private MenuDevCommandsBuilder menuDevCommandsBuilder;
-
     @PostConstruct
     public void startApp() {
         userSystemManager.waitForInitialization(new Command() {
@@ -98,7 +94,6 @@ public class ShowcaseEntryPoint {
                 setupGlobalErrorHandler();
                 setupMenus();
                 hideLoadingPopup();
-                menuDevCommandsBuilder.enable();
             }
         });
     }

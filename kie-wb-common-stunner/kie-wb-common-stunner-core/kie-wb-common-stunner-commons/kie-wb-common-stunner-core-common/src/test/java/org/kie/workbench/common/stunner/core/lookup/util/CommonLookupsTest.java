@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -38,10 +39,10 @@ import org.kie.workbench.common.stunner.core.lookup.definition.DefinitionLookupM
 import org.kie.workbench.common.stunner.core.lookup.definition.DefinitionLookupManagerImpl;
 import org.kie.workbench.common.stunner.core.lookup.rule.RuleLookupManager;
 import org.kie.workbench.common.stunner.core.lookup.rule.RuleLookupManagerImpl;
-import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionRegistry;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
+import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 import org.kie.workbench.common.stunner.core.rule.EmptyRuleSet;
 import org.kie.workbench.common.stunner.core.rule.Rule;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
@@ -92,7 +93,7 @@ public class CommonLookupsTest {
     private FactoryManager factoryManager;
 
     @Mock
-    private RegistryFactory registryFactory;
+    private DefinitionsCacheRegistry registry;
 
     @Mock
     private TypeDefinitionRegistry typeDefinitionRegistry;
@@ -123,7 +124,6 @@ public class CommonLookupsTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        when(registryFactory.newDefinitionRegistry()).thenReturn(typeDefinitionRegistry);
         when(typeDefinitionRegistry.getDefinitionById(eq(MockDefinition.class.getName()))).thenReturn(new MockDefinition());
         when(typeDefinitionRegistry.getDefinitionById(eq(MockConnector.class.getName()))).thenReturn(new MockConnector());
 
@@ -131,12 +131,12 @@ public class CommonLookupsTest {
         this.ruleLookupManager = new RuleLookupManagerImpl(definitionManager);
         this.definitionLookupManager = new DefinitionLookupManagerImpl(definitionManager,
                                                                        factoryManager,
-                                                                       registryFactory);
+                                                                       registry);
         this.lookups = new CommonLookups(definitionUtils,
                                          ruleManager,
                                          definitionLookupManager,
                                          ruleLookupManager,
-                                         factoryManager);
+                                         registry);
 
         when(node.getContent()).thenReturn(nodeContent);
         when(nodeContent.getDefinition()).thenReturn(new MockDefinition());
@@ -163,6 +163,10 @@ public class CommonLookupsTest {
 
         when(graph.nodes()).thenReturn(Collections.emptyList());
 
+        when(registry.getDefinitionById(eq(BindableAdapterUtils.getDefinitionId(MockDefinition.class))))
+                .thenReturn(new MockDefinition());
+        when(registry.getDefinitionById(eq(BindableAdapterUtils.getDefinitionId(MockConnector.class))))
+                .thenReturn(new MockConnector());
         when(factoryManager.newDefinition(eq(MockDefinition.class.getName()))).thenReturn(new MockDefinition());
         when(factoryManager.newDefinition(eq(MockConnector.class.getName()))).thenReturn(new MockConnector());
     }

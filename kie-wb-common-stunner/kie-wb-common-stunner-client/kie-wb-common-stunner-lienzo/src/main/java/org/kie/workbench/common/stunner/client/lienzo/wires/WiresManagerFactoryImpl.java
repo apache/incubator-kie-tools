@@ -33,14 +33,20 @@ public class WiresManagerFactoryImpl implements WiresManagerFactory {
 
     private final WiresHandlerFactory wiresHandlerFactory;
 
+    // CDI Proxy.
+    protected WiresManagerFactoryImpl() {
+        this(null, null);
+    }
+
     @Inject
-    public WiresManagerFactoryImpl(final WiresControlFactory wiresControlFactory, final WiresHandlerFactory wiresHandlerFactory) {
+    public WiresManagerFactoryImpl(final WiresControlFactory wiresControlFactory,
+                                   final WiresHandlerFactory wiresHandlerFactory) {
         this.wiresControlFactory = wiresControlFactory;
         this.wiresHandlerFactory = wiresHandlerFactory;
     }
 
     @Override
-    public WiresManager newWiresManager(Layer layer){
+    public WiresManager newWiresManager(final Layer layer) {
         WiresManager wiresManager = WiresManager.get(layer);
         wiresManager.setWiresHandlerFactory(wiresHandlerFactory);
         wiresManager.setWiresControlFactory(wiresControlFactory);

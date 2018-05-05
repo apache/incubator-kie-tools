@@ -46,10 +46,10 @@ public class WiresContainerShapeViewTest {
         parent.addChild(child2,
                         HasChildren.Layout.CENTER);
 
-        parent.preDestroy();
+        parent.destroy();
 
-        verify(child1).preDestroy();
-        verify(child2).preDestroy();
+        verify(child1).destroy();
+        verify(child2).destroy();
     }
 
     private WiresContainerShapeView makeShape() {

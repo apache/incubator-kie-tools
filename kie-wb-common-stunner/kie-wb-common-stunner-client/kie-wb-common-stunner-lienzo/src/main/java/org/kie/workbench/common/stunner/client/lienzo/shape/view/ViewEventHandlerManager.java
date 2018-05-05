@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.client.lienzo.shape.view;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiFunction;
 
 import com.ait.lienzo.client.core.event.AbstractNodeGestureEvent;
 import com.ait.lienzo.client.core.event.AbstractNodeTouchEvent;
@@ -47,19 +46,20 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.TouchHandle
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
+import org.uberfire.mvp.Command;
 
 public class ViewEventHandlerManager {
 
-    private static final int CLICK_HANDLER_TIMER_DURATION = 50;
+    private static final int TIMER_DELAY = 50;
 
-    protected final HandlerRegistrationImpl registrationManager = new HandlerRegistrationImpl();
-    protected final Map<ViewEventType, HandlerRegistration[]> registrationMap = new HashMap<>();
+    private final HandlerRegistrationImpl registrationManager = new HandlerRegistrationImpl();
+    private final Map<ViewEventType, HandlerRegistration[]> registrationMap = new HashMap<>();
 
     private final Node<?> node;
     private final Shape<?> shape;
     private final ViewEventType[] supportedTypes;
+    private final GWTTimer timer;
     private boolean enabled;
-    private BiFunction<Runnable, Integer, Void> timer;
 
     /**
      * This is a flag used to distinguish between click / double click events fired for same node.
@@ -82,13 +82,13 @@ public class ViewEventHandlerManager {
                                    final ViewEventType... supportedTypes) {
         this(node,
              shape,
-             new GWTTimerFunction(),
+             new GWTTimer(TIMER_DELAY),
              supportedTypes);
     }
 
     ViewEventHandlerManager(final Node<?> node,
                             final Shape<?> shape,
-                            final BiFunction<Runnable, Integer, Void> timer,
+                            final GWTTimer timer,
                             final ViewEventType... supportedTypes) {
         this.node = node;
         this.shape = shape;
@@ -180,13 +180,15 @@ public class ViewEventHandlerManager {
                     registrationManager.deregister(registration);
                 }
             }
+            registrationMap.remove(type);
         }
     }
 
     @SuppressWarnings("unchecked")
     public void destroy() {
+        timer.cancel();
         restoreClickHandler();
-        registrationManager.removeHandler();
+        registrationManager.destroy();
         registrationMap.clear();
     }
 
@@ -283,22 +285,21 @@ public class ViewEventHandlerManager {
                         final boolean isButtonLeft = nodeMouseClickEvent.isButtonLeft();
                         final boolean isButtonMiddle = nodeMouseClickEvent.isButtonMiddle();
                         final boolean isButtonRight = nodeMouseClickEvent.isButtonRight();
-                        timer.apply(() -> {
-                                        if (fireClickHandler) {
-                                            ViewEventHandlerManager.this.onMouseClick(eventHandler,
-                                                                                      x,
-                                                                                      y,
-                                                                                      clientX,
-                                                                                      clientY,
-                                                                                      isShiftKeyDown,
-                                                                                      isAltKeyDown,
-                                                                                      isMetaKeyDown,
-                                                                                      isButtonLeft,
-                                                                                      isButtonMiddle,
-                                                                                      isButtonRight);
-                                        }
-                                    },
-                                    CLICK_HANDLER_TIMER_DURATION);
+                        timer.run(() -> {
+                            if (fireClickHandler) {
+                                ViewEventHandlerManager.this.onMouseClick(eventHandler,
+                                                                          x,
+                                                                          y,
+                                                                          clientX,
+                                                                          clientY,
+                                                                          isShiftKeyDown,
+                                                                          isAltKeyDown,
+                                                                          isMetaKeyDown,
+                                                                          isButtonLeft,
+                                                                          isButtonMiddle,
+                                                                          isButtonRight);
+                            }
+                        });
                     }
                 })
         };
@@ -443,18 +444,32 @@ public class ViewEventHandlerManager {
         return this.enabled;
     }
 
-    private static class GWTTimerFunction implements BiFunction<Runnable, Integer, Void> {
+    static class GWTTimer {
 
-        @Override
-        public Void apply(final Runnable runnable,
-                          final Integer delay) {
-            new Timer() {
+        private final int delay;
+        private Timer timer;
+
+        GWTTimer(final int delay) {
+            this.delay = delay;
+        }
+
+        public void run(final Command callback) {
+            cancel();
+            timer = new Timer() {
                 @Override
                 public void run() {
-                    runnable.run();
+                    callback.execute();
+                    timer = null;
                 }
-            }.schedule(delay);
-            return null;
+            };
+            timer.schedule(delay);
+        }
+
+        public void cancel() {
+            if (null != timer) {
+                timer.cancel();
+                timer = null;
+            }
         }
     }
 }

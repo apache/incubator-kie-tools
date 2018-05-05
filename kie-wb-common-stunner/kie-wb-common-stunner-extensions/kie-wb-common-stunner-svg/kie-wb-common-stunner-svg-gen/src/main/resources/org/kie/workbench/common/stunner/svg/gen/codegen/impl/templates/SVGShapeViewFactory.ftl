@@ -1,7 +1,7 @@
 package ${pkg};
 
 import javax.annotation.Generated;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Shape;
@@ -18,7 +18,7 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitiveShape;
 import org.kie.workbench.common.stunner.svg.client.shape.view.impl.SVGPrimitiveFactory;
 
 @Generated("${genClassName}")
-@ApplicationScoped
+@Dependent
 public class ${name}
     implements ${implementedTypeName} {
 

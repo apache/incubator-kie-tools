@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.client.widgets.menu.dev.impl;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.util.StunnerClientLogger;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -33,7 +33,7 @@ public class LogDefinitionDevCommand extends AbstractSelectedNodeDevCommand {
     }
 
     @Inject
-    public LogDefinitionDevCommand(final AbstractClientSessionManager sessionManager) {
+    public LogDefinitionDevCommand(final SessionManager sessionManager) {
         super(sessionManager);
     }
 

@@ -16,26 +16,20 @@
 
 package org.kie.workbench.common.stunner.client.widgets.toolbar.item;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.inject.Inject;
 
-import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.constants.IconRotate;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.AbstractToolbarCommand;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.AbstractToolbar;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
 
 public abstract class AbstractToolbarItem<S extends ClientSession> implements IsWidget {
-
-    private static Logger LOGGER = Logger.getLogger(AbstractToolbarItem.class.getName());
 
     public interface View extends UberView<AbstractToolbarItem> {
 
@@ -58,9 +52,7 @@ public abstract class AbstractToolbarItem<S extends ClientSession> implements Is
         void destroy();
     }
 
-    View view;
-
-    private String uuid;
+    private final View view;
 
     @Inject
     public AbstractToolbarItem(final View view) {
@@ -76,15 +68,7 @@ public abstract class AbstractToolbarItem<S extends ClientSession> implements Is
         return view.asWidget();
     }
 
-    public void setUUID(final String uuid) {
-        this.uuid = uuid;
-    }
-
-    public String getUUID() {
-        return uuid;
-    }
-
-    public void show(final AbstractToolbar<S> toolbar,
+    public void show(final Toolbar<S> toolbar,
                      final S session,
                      final AbstractToolbarCommand<S, ?> command,
                      final Command clickHandler) {
@@ -123,28 +107,7 @@ public abstract class AbstractToolbarItem<S extends ClientSession> implements Is
         view.destroy();
     }
 
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof AbstractToolbarItem)) {
-            return false;
-        }
-        final AbstractToolbarItem that = (AbstractToolbarItem) o;
-        return uuid.equals(that.uuid);
-    }
-
-    @Override
-    public int hashCode() {
-        return uuid == null ? 0 : ~~uuid.hashCode();
-    }
-
-    private void log(final Level level,
-                     final String message) {
-        if (LogConfiguration.loggingIsEnabled()) {
-            LOGGER.log(level,
-                       message);
-        }
+    protected View getView() {
+        return view;
     }
 }

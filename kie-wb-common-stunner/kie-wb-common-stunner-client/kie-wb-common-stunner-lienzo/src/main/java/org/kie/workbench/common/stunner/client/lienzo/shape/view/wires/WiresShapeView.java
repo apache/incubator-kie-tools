@@ -36,10 +36,10 @@ import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasDragBounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
-public class WiresShapeView<T> extends WiresShape
-        implements
-        LienzoShapeView<T>,
-        HasDragBounds<T> {
+public class WiresShapeView<T>
+        extends WiresShape
+        implements LienzoShapeView<T>,
+                   HasDragBounds<T> {
 
     private String uuid;
 

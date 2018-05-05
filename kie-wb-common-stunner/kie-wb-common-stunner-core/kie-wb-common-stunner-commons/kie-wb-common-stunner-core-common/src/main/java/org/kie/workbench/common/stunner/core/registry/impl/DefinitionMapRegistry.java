@@ -17,20 +17,33 @@
 package org.kie.workbench.common.stunner.core.registry.impl;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionRegistry;
 
-class DefinitionMapRegistry<T> extends AbstractDynamicRegistryWrapper<T, MapRegistry<T>> implements TypeDefinitionRegistry<T> {
+public class DefinitionMapRegistry<T> extends AbstractDynamicRegistryWrapper<T, MapRegistry<T>> implements TypeDefinitionRegistry<T> {
 
     private AdapterManager adapterManager;
 
-    DefinitionMapRegistry(final AdapterManager adapterManager) {
+    public static <T> DefinitionMapRegistry<T> build(final AdapterManager adapterManager) {
+        return build(adapterManager,
+                     new HashMap<String, T>());
+    }
+
+    public static <T> DefinitionMapRegistry<T> build(final AdapterManager adapterManager,
+                                                     final Map<String, T> map) {
+        return new DefinitionMapRegistry<T>(adapterManager,
+                                            map);
+    }
+
+    private DefinitionMapRegistry(final AdapterManager adapterManager,
+                                  final Map<String, T> map) {
         super(
                 new MapRegistry<T>(
                         item -> null != item ? adapterManager.forDefinition().getId(item) : null,
-                        new HashMap<String, T>())
+                        map)
         );
         this.adapterManager = adapterManager;
     }
@@ -45,5 +58,10 @@ class DefinitionMapRegistry<T> extends AbstractDynamicRegistryWrapper<T, MapRegi
         final String id = BindableAdapterUtils.getDefinitionId(type,
                                                                adapterManager.registry());
         return getDefinitionById(id);
+    }
+
+    @Override
+    public void clear() {
+        getWrapped().clear();
     }
 }

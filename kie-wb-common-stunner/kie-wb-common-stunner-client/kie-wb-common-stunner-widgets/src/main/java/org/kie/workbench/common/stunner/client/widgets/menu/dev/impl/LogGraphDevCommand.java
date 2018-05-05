@@ -19,7 +19,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.AbstractMenuDevCommand;
-import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.util.StunnerLogger;
 
 @Dependent
@@ -30,7 +30,7 @@ public class LogGraphDevCommand extends AbstractMenuDevCommand {
     }
 
     @Inject
-    public LogGraphDevCommand(final AbstractClientSessionManager sessionManager) {
+    public LogGraphDevCommand(final SessionManager sessionManager) {
         super(sessionManager);
     }
 

@@ -74,6 +74,7 @@ public class CaseManagementDiagramMarshallerTest {
                                                               indexBuilder,
                                                               oryxManager,
                                                               factoryManager,
+                                                              null, // TODO!
                                                               rulesManager,
                                                               graphCommandManager,
                                                               commandFactory);

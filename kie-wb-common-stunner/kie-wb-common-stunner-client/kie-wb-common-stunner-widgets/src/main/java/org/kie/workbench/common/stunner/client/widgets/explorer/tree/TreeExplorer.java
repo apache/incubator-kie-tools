@@ -19,19 +19,20 @@ package org.kie.workbench.common.stunner.client.widgets.explorer.tree;
 import java.util.List;
 import java.util.function.Predicate;
 
-import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.components.glyph.DOMGlyphRenderers;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
-import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProvider;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
@@ -55,11 +56,12 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.C
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.mvp.Command;
 
 @Dependent
 public class TreeExplorer implements IsWidget {
 
-    static final String NO_NAME = "- No name -";
+    static final String NO_NAME = "-- No name --";
 
     private final int icoHeight = 16;
     private final int icoWidth = 16;
@@ -68,11 +70,13 @@ public class TreeExplorer implements IsWidget {
     private final DefinitionUtils definitionUtils;
     private final ShapeManager shapeManager;
     private final Event<CanvasSelectionEvent> selectionEvent;
-    private final View view;
+    private final ManagedInstance<View> views;
     private final DOMGlyphRenderers domGlyphRenderers;
 
     private String selectedItemCanvasUuid;
     private CanvasHandler canvasHandler;
+    private View view;
+    private boolean eventInProgress;
 
     @Inject
     public TreeExplorer(final ChildrenTraverseProcessor childrenTraverseProcessor,
@@ -81,24 +85,21 @@ public class TreeExplorer implements IsWidget {
                         final DefinitionUtils definitionUtils,
                         final ShapeManager shapeManager,
                         final DOMGlyphRenderers domGlyphRenderers,
-                        final View view) {
+                        final @Any ManagedInstance<View> views) {
         this.childrenTraverseProcessor = childrenTraverseProcessor;
         this.textPropertyProviderFactory = textPropertyProviderFactory;
         this.selectionEvent = selectionEvent;
         this.definitionUtils = definitionUtils;
         this.shapeManager = shapeManager;
         this.domGlyphRenderers = domGlyphRenderers;
-        this.view = view;
-    }
-
-    @PostConstruct
-    public void init() {
-        view.init(this);
+        this.views = views;
+        this.eventInProgress = false;
     }
 
     @SuppressWarnings("unchecked")
     public void show(final CanvasHandler canvasHandler) {
         this.canvasHandler = canvasHandler;
+        initView();
         if (null != canvasHandler && null != canvasHandler.getDiagram()) {
             doShow(canvasHandler.getDiagram().getGraph());
         }
@@ -146,62 +147,21 @@ public class TreeExplorer implements IsWidget {
         return factory.getGlyph(defId);
     }
 
-    private void inc(final List<Integer> levels,
-                     final int level) {
-        if (levels.size() < (level + 1)) {
-            levels.add(0);
-        } else {
-            final int idx = levels.get(level);
-            levels.set(level,
-                       idx + 1);
-        }
-    }
-
-    private int[] getParentsIdx(final List<Integer> idxList,
-                                final int maxLevel) {
-
-        if (!idxList.isEmpty()) {
-            final int targetPos = (idxList.size() - (idxList.size() - maxLevel)) + 1;
-            final int[] resultArray = new int[targetPos];
-            for (int x = 0; x < targetPos; x++) {
-                resultArray[x] = idxList.get(x);
-            }
-            return resultArray;
-        }
-        return new int[]{};
-    }
-
     public void clear() {
         view.clear();
     }
 
+    @PreDestroy
     public void destroy() {
-        this.selectedItemCanvasUuid = null;
-        view.destroy();
+        destroyView();
+        selectedItemCanvasUuid = null;
+        canvasHandler = null;
     }
 
     void onSelect(final String uuid) {
-        selectShape(canvasHandler.getCanvas(),
-                    uuid);
-    }
-
-    private void selectShape(final Canvas canvas,
-                             final String uuid) {
-        selectionEvent.fire(new CanvasSelectionEvent(canvasHandler,
-                                                     uuid));
-    }
-
-    void onCanvasClearEvent(@Observes CanvasClearEvent canvasClearEvent) {
-        if (null != canvasHandler &&
-                null != canvasHandler.getCanvas() &&
-                canvasHandler.getCanvas().equals(canvasClearEvent.getCanvas())) {
-            clear();
-        }
-    }
-
-    void onCanvasElementAddedEvent(final @Observes CanvasElementAddedEvent canvasElementAddedEvent) {
-        if (checkEventContext(canvasElementAddedEvent)) {
-            onElementAdded(canvasElementAddedEvent.getElement());
+        if (!eventInProgress) {
+            selectionEvent.fire(new CanvasSelectionEvent(canvasHandler,
+                                                         uuid));
         }
     }
 
@@ -219,14 +179,14 @@ public class TreeExplorer implements IsWidget {
     private void onElementUpdated(Element element,
                                   CanvasHandler canvasHandler) {
         if (isValidTreeItem().test(element)) {
-            final Element lane = GraphUtils.getParent((Node<?, ? extends Edge>) element);
+            final Element parent = GraphUtils.getParent((Node<?, ? extends Edge>) element);
 
             if (view.isItemChanged(element.getUUID(),
-                                   null != lane ? lane.getUUID() : null,
+                                   null != parent ? parent.getUUID() : null,
                                    getItemName(element))) {
 
                 view.removeItem(element.getUUID());
-                addItem(lane,
+                addItem(parent,
                         (Node) element,
                         true,
                         true);
@@ -341,48 +301,87 @@ public class TreeExplorer implements IsWidget {
                 checkParent);
     }
 
+    void onCanvasClearEvent(@Observes CanvasClearEvent canvasClearEvent) {
+        checkEventContext(canvasClearEvent,
+                          this::clear);
+    }
+
+    void onCanvasElementAddedEvent(final @Observes CanvasElementAddedEvent canvasElementAddedEvent) {
+        checkEventContext(canvasElementAddedEvent,
+                          () -> onElementAdded(canvasElementAddedEvent.getElement()));
+    }
+
     void onCanvasElementRemovedEvent(final @Observes CanvasElementRemovedEvent elementRemovedEvent) {
-        if (checkEventContext(elementRemovedEvent)) {
-            onElementRemoved(elementRemovedEvent.getElement());
-        }
+        checkEventContext(elementRemovedEvent,
+                          () -> onElementRemoved(elementRemovedEvent.getElement()));
     }
 
     void onCanvasElementsClearEvent(final @Observes CanvasElementsClearEvent canvasClearEvent) {
-        if (checkEventContext(canvasClearEvent)) {
-            showEventGraph(canvasClearEvent);
-        }
+        checkEventContext(canvasClearEvent,
+                          () -> showEventGraph(canvasClearEvent));
     }
 
     void onCanvasElementUpdatedEvent(final @Observes CanvasElementUpdatedEvent canvasElementUpdatedEvent) {
-        if (checkEventContext(canvasElementUpdatedEvent)) {
-            onElementUpdated(canvasElementUpdatedEvent.getElement(),
-                             canvasElementUpdatedEvent.getCanvasHandler());
-        }
+        checkEventContext(canvasElementUpdatedEvent,
+                          () -> onElementUpdated(canvasElementUpdatedEvent.getElement(),
+                                                 canvasElementUpdatedEvent.getCanvasHandler()));
     }
 
     void onCanvasSelectionEvent(final @Observes CanvasSelectionEvent event) {
-        if (checkEventContext(event)) {
-            if (null != getCanvasHandler()
-                    && event.getIdentifiers().size() == 1) {
-                final String uuid = event.getIdentifiers().iterator().next();
+        checkEventContext(event,
+                          () -> {
+                              if (null != getCanvasHandler()
+                                      && event.getIdentifiers().size() == 1) {
+                                  final String uuid = event.getIdentifiers().iterator().next();
+                                  select(uuid);
+                              }
+                          });
+    }
 
-                if (!(uuid.equals(this.selectedItemCanvasUuid))) {
-                    this.selectedItemCanvasUuid = uuid;
-                    view.setSelectedItem(uuid);
-                }
-            }
+    private boolean select(final String uuid) {
+        if (!(uuid.equals(this.selectedItemCanvasUuid))) {
+            this.selectedItemCanvasUuid = uuid;
+            view.setSelectedItem(uuid);
+            return true;
+        }
+        return false;
+    }
+
+    void checkEventContext(final AbstractCanvasEvent canvasEvent,
+                           final Command runnable) {
+        if (null != canvasHandler &&
+                null != canvasHandler.getCanvas() &&
+                canvasHandler.getCanvas().equals(canvasEvent.getCanvas())) {
+            runEventInContext(runnable);
         }
     }
 
-    private boolean checkEventContext(final AbstractCanvasHandlerEvent canvasHandlerEvent) {
+    private void checkEventContext(final AbstractCanvasHandlerEvent canvasHandlerEvent,
+                                   final Command runnable) {
         final CanvasHandler _canvasHandler = canvasHandlerEvent.getCanvasHandler();
-        return canvasHandler != null && canvasHandler.equals(_canvasHandler);
+        if (canvasHandler != null && canvasHandler.equals(_canvasHandler)) {
+            runEventInContext(runnable);
+        }
     }
 
-    private boolean checkEventContext(final AbstractCanvasEvent canvasEvent) {
-        final Canvas canvas = canvasEvent.getCanvas();
-        return null != canvasHandler && null != canvasHandler.getCanvas()
-                && canvasHandler.getCanvas().equals(canvas);
+    private void runEventInContext(final Command runnable) {
+        eventInProgress = true;
+        runnable.execute();
+        eventInProgress = false;
+    }
+
+    private void initView() {
+        if (null != view) {
+            destroyView();
+        }
+        view = views.get();
+        view.init(this);
+    }
+
+    private void destroyView() {
+        view.destroy();
+        views.destroy(view);
+        view = null;
     }
 
     private String getShapeSetId() {
@@ -401,6 +400,10 @@ public class TreeExplorer implements IsWidget {
 
     public CanvasHandler getCanvasHandler() {
         return canvasHandler;
+    }
+
+    boolean isEventInProgress() {
+        return eventInProgress;
     }
 
     private String getItemName(final Element<org.kie.workbench.common.stunner.core.graph.content.view.View> item) {

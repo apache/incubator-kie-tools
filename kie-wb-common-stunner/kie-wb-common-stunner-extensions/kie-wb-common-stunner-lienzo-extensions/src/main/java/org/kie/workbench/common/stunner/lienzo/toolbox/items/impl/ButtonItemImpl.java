@@ -107,11 +107,11 @@ public class ButtonItemImpl
 
     @Override
     public void destroy() {
-        getWrapped().destroy();
         removeClickHandlerRegistration();
         removeDragStartHandlerRegistration();
         removeDragMoveHandlerRegistration();
         removeDragEndHandlerRegistration();
+        getWrapped().destroy();
     }
 
     @Override

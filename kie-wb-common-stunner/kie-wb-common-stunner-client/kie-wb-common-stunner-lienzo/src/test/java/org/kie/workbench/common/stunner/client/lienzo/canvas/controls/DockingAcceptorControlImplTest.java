@@ -38,7 +38,6 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -95,8 +94,8 @@ public class DockingAcceptorControlImplTest {
     }
 
     @Test
-    public void testEnable() {
-        tested.enable(canvasHandler);
+    public void testInit() {
+        tested.init(canvasHandler);
         assertEquals(canvasHandler,
                      tested.getCanvasHandler());
         verify(canvasView,
@@ -108,21 +107,8 @@ public class DockingAcceptorControlImplTest {
     }
 
     @Test
-    public void testDisable() {
-        tested.enable(canvasHandler);
-        tested.disable();
-        assertNull(tested.getCanvasHandler());
-        verify(canvasView,
-               times(1)).setDockingAcceptor(eq(IDockingAcceptor.NONE));
-        verify(canvasView,
-               never()).setContainmentAcceptor(any(IContainmentAcceptor.class));
-        verify(canvasView,
-               never()).setConnectionAcceptor(any(IConnectionAcceptor.class));
-    }
-
-    @Test
     public void testAllow() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         final boolean allow = tested.allow(source,
                                            docked);
         assertTrue(allow);
@@ -137,7 +123,7 @@ public class DockingAcceptorControlImplTest {
 
     @Test
     public void testAllowNoParent() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         final boolean allow = tested.allow(null,
                                            docked);
         assertFalse(allow);
@@ -148,7 +134,7 @@ public class DockingAcceptorControlImplTest {
 
     @Test
     public void testAccept() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         final boolean accept = tested.accept(source,
                                              docked);
         assertTrue(accept);
@@ -163,7 +149,7 @@ public class DockingAcceptorControlImplTest {
 
     @Test
     public void testAceeptNoParent() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         final boolean accept = tested.accept(null,
                                              docked);
         assertFalse(accept);

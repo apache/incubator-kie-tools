@@ -24,12 +24,12 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.AbstractPaletteDefinitionBuilder.ItemMessageProvider;
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteDefinitionBuilders.CategoryBuilder;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
+import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -87,7 +87,7 @@ public class ExpandedPaletteDefinitionBuilderTest {
     private AdapterManager adapterManager;
 
     @Mock
-    private ClientFactoryService clientFactoryServices;
+    private DefinitionsCacheRegistry definitionsRegistry;
 
     @Mock
     private StunnerTranslationService translationService;
@@ -116,7 +116,7 @@ public class ExpandedPaletteDefinitionBuilderTest {
         when(definitionAdapter1.getTitle(eq(definition1))).thenReturn(DEF1_TITLE);
         when(definitionAdapter1.getDescription(eq(definition1))).thenReturn(DEF1_DESC);
         tested = new ExpandedPaletteDefinitionBuilder(definitionUtils,
-                                                      clientFactoryServices,
+                                                      definitionsRegistry,
                                                       translationService);
     }
 

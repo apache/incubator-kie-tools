@@ -21,7 +21,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
@@ -31,42 +32,44 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.uberfire.mvp.Command;
 
 /**
  * This factory builds a toolbox with some already defined buttons for common actions, like
  * removing an element.
  */
-@ApplicationScoped
+@Dependent
 @CommonActionsToolbox
 public class CommonActionsToolboxFactory
         extends AbstractActionsToolboxFactory {
 
     private final CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
     private final Supplier<DeleteNodeAction> deleteNodeActions;
+    private final Command deleteNodeActionsDestroyer;
     private final Supplier<ActionsToolboxView> views;
-
-    // CDI proxy.
-    protected CommonActionsToolboxFactory() {
-        this(null,
-             (Supplier) null,
-             (Supplier) null);
-    }
+    private final Command viewsDestroyer;
 
     @Inject
     public CommonActionsToolboxFactory(final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
                                        final @Any ManagedInstance<DeleteNodeAction> deleteNodeActions,
-                                       final @CommonActionsToolbox ManagedInstance<ActionsToolboxView> views) {
+                                       final @Any @CommonActionsToolbox ManagedInstance<ActionsToolboxView> views) {
         this(commandFactory,
              deleteNodeActions::get,
-             views::get);
+             deleteNodeActions::destroyAll,
+             views::get,
+             views::destroyAll);
     }
 
     CommonActionsToolboxFactory(final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
                                 final Supplier<DeleteNodeAction> deleteNodeActions,
-                                final Supplier<ActionsToolboxView> views) {
+                                final Command deleteNodeActionsDestroyer,
+                                final Supplier<ActionsToolboxView> views,
+                                final Command viewsDestroyer) {
         this.commandFactory = commandFactory;
         this.deleteNodeActions = deleteNodeActions;
+        this.deleteNodeActionsDestroyer = deleteNodeActionsDestroyer;
         this.views = views;
+        this.viewsDestroyer = viewsDestroyer;
     }
 
     @Override
@@ -84,6 +87,12 @@ public class CommonActionsToolboxFactory
             actions.add(deleteNodeActions.get());
         }
         return actions;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        deleteNodeActionsDestroyer.execute();
+        viewsDestroyer.execute();
     }
 
     private boolean isSupported(final AbstractCanvasHandler canvasHandler,

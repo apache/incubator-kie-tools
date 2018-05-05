@@ -94,7 +94,10 @@ public class TextTooltipItemImpl
 
     @Override
     public void destroy() {
+        textTooltipSupplier.get().destroy();
         this.text = null;
+        this.at = null;
+        this.towards = null;
         this.boundingBoxSupplier = null;
     }
 

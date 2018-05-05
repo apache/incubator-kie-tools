@@ -24,7 +24,7 @@ import org.kie.workbench.common.stunner.core.client.service.ClientDiagramService
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.ArgumentCaptor;
@@ -53,7 +53,7 @@ public class ExportToBpmnSessionCommandTest {
     private static final String ERROR = "ERROR";
 
     @Mock
-    private AbstractClientSession session;
+    private ViewerSession session;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;

@@ -191,7 +191,8 @@ public class MigrationDiagramMarshallerTest {
         when(definitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.registry()).thenReturn(adapterRegistry);
         DefinitionUtils definitionUtils1 = new DefinitionUtils(definitionManager,
-                                                               applicationFactoryManager);
+                                                               applicationFactoryManager,
+                                                               null); // TODO!
         testScopeModelFactory = new TestScopeModelFactory(new BPMNDefinitionSet.BPMNDefinitionSetBuilder().build());
         // Definition manager.
         final BackendDefinitionAdapter definitionAdapter = new BackendDefinitionAdapter(definitionUtils1);
@@ -332,6 +333,7 @@ public class MigrationDiagramMarshallerTest {
                                                   indexBuilder,
                                                   oryxManager,
                                                   applicationFactoryManager,
+                                                  null, // TODO!
                                                   rulesManager,
                                                   commandManager1,
                                                   commandFactory1,
@@ -345,7 +347,8 @@ public class MigrationDiagramMarshallerTest {
                                    any(RuleEvaluationContext.class))).thenReturn(new DefaultRuleViolations());
 
         DefinitionUtils definitionUtils = new DefinitionUtils(definitionManager,
-                                                              applicationFactoryManager);
+                                                              applicationFactoryManager,
+                                                              null); // TODO!
         TestScopeModelFactory testScopeModelFactory = new TestScopeModelFactory(new BPMNDefinitionSet.BPMNDefinitionSetBuilder().build());
         // Definition manager.
         mockAdapterManager(definitionAdapter, definitionSetAdapter, propertySetAdapter, propertyAdapter);

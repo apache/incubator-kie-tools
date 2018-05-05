@@ -21,8 +21,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import com.google.gwt.logging.client.LogConfiguration;
@@ -68,7 +70,7 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
 
     @Inject
     public DiagramsNavigatorImpl(final ClientDiagramService clientDiagramServices,
-                                 final ManagedInstance<DiagramNavigatorItem> navigatorItemInstances,
+                                 final @Any ManagedInstance<DiagramNavigatorItem> navigatorItemInstances,
                                  final Event<LoadDiagramEvent> loadDiagramEventEvent,
                                  final NavigatorView<?> view,
                                  final DiagramClientErrorHandler diagramClientErrorHandler,
@@ -139,6 +141,12 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
     @Override
     public NavigatorView<?> getView() {
         return view;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        items.clear();
+        navigatorItemInstances.destroyAll();
     }
 
     private void addEntry(final DiagramRepresentation diagramRepresentation) {

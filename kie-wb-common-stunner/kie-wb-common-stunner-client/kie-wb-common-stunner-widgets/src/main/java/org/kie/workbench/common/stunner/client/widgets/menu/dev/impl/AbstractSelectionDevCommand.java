@@ -22,8 +22,8 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.AbstractMenuDevCommand;
-import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
@@ -31,7 +31,7 @@ public abstract class AbstractSelectionDevCommand extends AbstractMenuDevCommand
 
     private static Logger LOGGER = Logger.getLogger(AbstractSelectionDevCommand.class.getName());
 
-    protected AbstractSelectionDevCommand(final AbstractClientSessionManager sessionManager) {
+    protected AbstractSelectionDevCommand(final SessionManager sessionManager) {
         super(sessionManager);
     }
 
@@ -42,7 +42,7 @@ public abstract class AbstractSelectionDevCommand extends AbstractMenuDevCommand
     public void execute() {
         try {
             boolean found = false;
-            final ClientFullSession session = (ClientFullSession) getSession();
+            final EditorSession session = (EditorSession) getSession();
             final Collection<String> selectedItems = session.getSelectionControl().getSelectedItems();
             if (null != selectedItems) {
 

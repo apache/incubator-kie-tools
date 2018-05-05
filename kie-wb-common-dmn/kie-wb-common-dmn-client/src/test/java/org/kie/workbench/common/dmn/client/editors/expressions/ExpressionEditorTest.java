@@ -25,9 +25,9 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
+import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNEditorToolbar;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.EditorToolbar;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.mockito.Mock;
@@ -57,7 +57,7 @@ public class ExpressionEditorTest {
     private DecisionNavigatorPresenter decisionNavigator;
 
     @Mock
-    private EditorToolbar editorToolbar;
+    private DMNEditorToolbar editorToolbar;
 
     @Mock
     private HasName hasName;

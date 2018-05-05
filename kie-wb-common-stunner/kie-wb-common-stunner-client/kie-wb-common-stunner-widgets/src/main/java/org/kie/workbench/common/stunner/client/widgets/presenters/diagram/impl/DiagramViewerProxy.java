@@ -20,7 +20,6 @@ import org.kie.workbench.common.stunner.client.widgets.canvas.wires.WiresCanvasP
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.BaseCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
@@ -34,12 +33,8 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 public abstract class DiagramViewerProxy<D extends Diagram>
         extends AbstractDiagramViewer<D, AbstractCanvasHandler> {
 
-    private final SelectionControl<AbstractCanvasHandler, ?> selectionControl;
-
-    public DiagramViewerProxy(final WidgetWrapperView view,
-                              final SelectionControl<AbstractCanvasHandler, ?> selectionControl) {
+    public DiagramViewerProxy(final WidgetWrapperView view) {
         super(view);
-        this.selectionControl = selectionControl;
     }
 
     protected abstract BaseCanvasHandler<D, ?> getCanvasHandler();
@@ -61,11 +56,6 @@ public abstract class DiagramViewerProxy<D extends Diagram>
     @Override
     public AbstractCanvasHandler getHandler() {
         return getCanvasHandler();
-    }
-
-    @Override
-    public SelectionControl<AbstractCanvasHandler, ?> getSelectionControl() {
-        return selectionControl;
     }
 
     @Override

@@ -32,7 +32,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.registration.Ca
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
@@ -41,7 +41,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
         implements SelectionControl<H, Element>,
                    CanvasRegistationControl<H, Element>,
-                   CanvasControl.SessionAware<ClientFullSession> {
+                   CanvasControl.SessionAware<EditorSession> {
 
     private final Event<CanvasSelectionEvent> canvasSelectionEvent;
     private Event<CanvasClearSelectionEvent> canvasClearSelectionEvent;
@@ -65,8 +65,8 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
     }
 
     @Override
-    public final void enable(final H canvasHandler) {
-        selectionControl.enable(canvasHandler);
+    public final void init(final H canvasHandler) {
+        selectionControl.init(canvasHandler);
         onEnable(canvasHandler);
     }
 
@@ -75,10 +75,8 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
 
     @Override
     public final void register(final Element element) {
-        if (selectionControl.isEnabled()) {
-            selectionControl.register(element);
-            onRegister(element);
-        }
+        selectionControl.register(element);
+        onRegister(element);
     }
 
     protected void onRegister(final Element element) {
@@ -86,10 +84,8 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
 
     @Override
     public final void deregister(final Element element) {
-        if (selectionControl.isEnabled()) {
-            selectionControl.deregister(element);
-            onDeregister(element);
-        }
+        selectionControl.deregister(element);
+        onDeregister(element);
     }
 
     protected void onDeregister(final Element element) {
@@ -97,10 +93,8 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
 
     @Override
     public SelectionControl<H, Element> select(final Element element) {
-        if (selectionControl.isEnabled()) {
-            selectionControl.select(element);
-            onSelect(Collections.singletonList(element.getUUID()));
-        }
+        selectionControl.select(element);
+        onSelect(Collections.singletonList(element.getUUID()));
         return this;
     }
 
@@ -109,9 +103,7 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
 
     @Override
     public SelectionControl<H, Element> deselect(final Element element) {
-        if (selectionControl.isEnabled()) {
-            selectionControl.deselect(element);
-        }
+        selectionControl.deselect(element);
         return this;
     }
 
@@ -127,10 +119,8 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
 
     @Override
     public final SelectionControl<H, Element> clearSelection() {
-        if (selectionControl.isEnabled()) {
-            selectionControl.clearSelection();
-            onClearSelection();
-        }
+        selectionControl.clearSelection();
+        onClearSelection();
         return this;
     }
 
@@ -138,12 +128,12 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
     }
 
     @Override
-    public final void disable() {
-        onDisable();
-        selectionControl.disable();
+    public void destroy() {
+        onDestroy();
+        selectionControl.destroy();
     }
 
-    protected void onDisable() {
+    protected void onDestroy() {
     }
 
     void onShapeRemovedEvent(final @Observes CanvasShapeRemovedEvent shapeRemovedEvent) {
@@ -177,14 +167,9 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
     }
 
     @Override
-    public void bind(ClientFullSession session) {
+    public void bind(final EditorSession session) {
         session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
         selectionControl.setReadonly(false);
-    }
-
-    @Override
-    public void unbind() {
-        // Nothing to unbind here.
     }
 
     protected MapSelectionControl<H> getSelectionControl() {

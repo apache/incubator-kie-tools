@@ -58,7 +58,7 @@ public class PictureShapeViewTest {
 
     @Test
     public void checkPreDestructionRemovesResourcesFromDOM() {
-        view.preDestroy();
+        view.destroy();
 
         verify(picture).removeFromParent();
         verify(imageElement).removeFromParent();

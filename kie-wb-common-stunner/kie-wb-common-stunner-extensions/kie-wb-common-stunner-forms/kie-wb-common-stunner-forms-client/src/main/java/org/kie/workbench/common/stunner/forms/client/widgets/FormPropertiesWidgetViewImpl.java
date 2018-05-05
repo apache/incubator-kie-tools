@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.forms.client.widgets;
 
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.DOMUtil;
@@ -39,5 +40,11 @@ public class FormPropertiesWidgetViewImpl implements FormPropertiesWidgetView,
         this.presenter = presenter;
         DOMUtil.removeAllChildren(formContent);
         formContent.appendChild(presenter.getDisplayerElement());
+    }
+
+    @PreDestroy
+    public void destroy() {
+        DOMUtil.removeFromParent(formContent);
+        presenter = null;
     }
 }

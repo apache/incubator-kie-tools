@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.components.toolbox.actions;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -120,6 +121,12 @@ public class MorphNodeAction extends AbstractToolboxAction {
     protected String getGlyphId(final AbstractCanvasHandler canvasHandler,
                                 final String uuid) {
         return targetDefinitionId;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        morphDefinition = null;
+        targetDefinitionId = null;
     }
 
     @Override

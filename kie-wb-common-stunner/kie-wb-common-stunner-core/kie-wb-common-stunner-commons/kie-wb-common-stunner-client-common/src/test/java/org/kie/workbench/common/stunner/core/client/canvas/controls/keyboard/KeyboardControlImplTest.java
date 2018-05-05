@@ -73,10 +73,5 @@ public class KeyboardControlImplTest {
         sessionCallback[0].onKeyShortcut(KeyboardEvent.Key.ESC);
         verify(callback,
                times(1)).onKeyShortcut(eq(KeyboardEvent.Key.ESC));
-        tested.unbind();
-        // Verify the callback is not called a second time, due to the above session unbind.
-        sessionCallback[0].onKeyShortcut(KeyboardEvent.Key.ESC);
-        verify(callback,
-               times(1)).onKeyShortcut(any(KeyboardEvent.Key.class));
     }
 }

@@ -17,20 +17,21 @@
 package org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.ioc.client.api.Disposer;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.widgets.presenters.AbstractCanvasHandlerViewerTest;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
+import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -38,6 +39,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -45,10 +47,18 @@ import static org.mockito.Mockito.verify;
 public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
 
     @Mock
-    ZoomControl<AbstractCanvas> zoomControl;
+    private DefinitionUtils definitionUtils;
 
     @Mock
-    SelectionControl<AbstractCanvasHandler, Element> selectionControl;
+    private ZoomControl<AbstractCanvas> zoomControlInstance;
+    private ManagedInstance<ZoomControl<AbstractCanvas>> zoomControl;
+
+    @Mock
+    private SelectionControl<AbstractCanvasHandler, Element> selectionControlInstance;
+    private ManagedInstance<SelectionControl<AbstractCanvasHandler, Element>> selectionControl;
+
+    private ManagedInstance<AbstractCanvas> canvases;
+    private ManagedInstance<AbstractCanvasHandler> canvasHandlers;
 
     @Mock
     WidgetWrapperView view;
@@ -56,22 +66,23 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
     @Mock
     DiagramViewer.DiagramViewerCallback<Diagram> callback;
 
-    @Mock
-    Disposer disposer;
-
-    private DiagramViewerImpl<Diagram, AbstractCanvasHandler, ClientSession> tested;
+    private DefaultDiagramViewer tested;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         super.init();
+        canvases = spy(new ManagedInstanceStub<>(canvas));
+        canvasHandlers = spy(new ManagedInstanceStub<>(canvasHandler));
+        zoomControl = spy(new ManagedInstanceStub<>(zoomControlInstance));
+        selectionControl = spy(new ManagedInstanceStub<>(selectionControlInstance));
         this.tested =
-                new DiagramViewerImpl<>(canvas,
-                                        canvasHandler,
-                                        view,
-                                        zoomControl,
-                                        selectionControl,
-                                        disposer);
+                new DefaultDiagramViewer(definitionUtils,
+                                         canvases,
+                                         canvasHandlers,
+                                         zoomControl,
+                                         selectionControl,
+                                         view);
     }
 
     @Test
@@ -91,10 +102,10 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
                               any(ParameterizedCommand.class));
         verify(callback,
                times(1)).afterCanvasInitialized();
-        verify(zoomControl,
-               times(1)).enable(eq(canvas));
-        verify(selectionControl,
-               times(1)).enable(eq(canvasHandler));
+        verify(zoomControlInstance,
+               times(1)).init(eq(canvas));
+        verify(selectionControlInstance,
+               times(1)).init(eq(canvasHandler));
         verify(view,
                times(1)).setWidget(eq(canvasViewWidget));
     }
@@ -108,7 +119,7 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
                      50);
         assertEquals(diagram,
                      tested.getInstance());
-        verify(zoomControl,
+        verify(zoomControlInstance,
                times(1)).scale(eq(0.5d),
                                eq(0.5d));
         verify(lienzoPanel,
@@ -123,10 +134,6 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
                     callback);
         tested.clear();
         assertNull(tested.getInstance());
-        verify(zoomControl,
-               times(1)).disable();
-        verify(selectionControl,
-               times(1)).disable();
         verify(canvasHandler,
                times(1)).clear();
         verify(view,
@@ -141,11 +148,13 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
         tested.destroy();
         assertNull(tested.getInstance());
         verify(zoomControl,
-               times(1)).disable();
+               times(1)).destroyAll();
         verify(selectionControl,
-               times(1)).disable();
-        verify(canvasHandler,
-               times(1)).destroy();
+               times(1)).destroyAll();
+        verify(canvases,
+               times(1)).destroyAll();
+        verify(canvasHandlers,
+               times(1)).destroyAll();
         verify(view,
                times(1)).clear();
     }

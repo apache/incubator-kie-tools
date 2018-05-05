@@ -23,11 +23,9 @@ import org.kie.workbench.common.stunner.cm.client.canvas.CaseManagementCanvasHan
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.AbstractElementBuilderControl;
-import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.mockito.Mock;
 
@@ -46,9 +44,6 @@ public abstract class BaseCaseManagementBuilderControlTest {
     protected ClientFactoryService clientFactoryServices;
 
     @Mock
-    protected GraphUtils graphUtils;
-
-    @Mock
     protected RuleManager ruleManager;
 
     @Mock
@@ -58,16 +53,13 @@ public abstract class BaseCaseManagementBuilderControlTest {
     protected GraphBoundsIndexer graphBoundsIndexer;
 
     @Mock
-    protected CanvasLayoutUtils canvasLayoutUtils;
-
-    @Mock
     protected CaseManagementCanvasHandler canvasHandler;
 
     protected AbstractElementBuilderControl control;
 
     protected void setup() {
         this.control = getBuilderControl();
-        this.control.enable(canvasHandler);
+        this.control.init(canvasHandler);
 
         when(canvasHandler.getElementAt(anyDouble(),
                                         anyDouble())).thenReturn(Optional.empty());

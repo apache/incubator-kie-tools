@@ -40,13 +40,17 @@ public abstract class AbstractDiagramViewer<D extends Diagram, H extends Abstrac
         super(view);
     }
 
+    protected abstract void onOpen(D diagram);
+
     protected abstract AbstractCanvas getCanvas();
 
     @Override
     @SuppressWarnings("unchecked")
-    public void open(final D item,
+    public void open(final D diagram,
                      final DiagramViewer.DiagramViewerCallback<D> callback) {
-        final int[] ds = getDiagramSize(item);
+        onOpen(diagram);
+        callback.onOpen(diagram);
+        final int[] ds = getDiagramSize(diagram);
         // Open and initialize the canvas and its hander.
         openCanvas(getCanvas(),
                    ds[0],
@@ -54,7 +58,7 @@ public abstract class AbstractDiagramViewer<D extends Diagram, H extends Abstrac
         // Notify listeners that the canvas and the handler are ready.
         callback.afterCanvasInitialized();
         // Loads and draw the diagram into the canvas handled instance.
-        getHandler().draw(item,
+        getHandler().draw(diagram,
                           new ParameterizedCommand<CommandResult<?>>() {
                               @Override
                               public void execute(CommandResult<?> result) {
@@ -72,9 +76,14 @@ public abstract class AbstractDiagramViewer<D extends Diagram, H extends Abstrac
                      final int width,
                      final int height,
                      final boolean keepAspectRatio,
-                     final DiagramViewer.DiagramViewerCallback callback) {
+                     final DiagramViewer.DiagramViewerCallback<D> callback) {
         this.open(item,
                   new DiagramViewer.DiagramViewerCallback<D>() {
+                      @Override
+                      public void onOpen(final D diagram) {
+                          callback.onOpen(diagram);
+                      }
+
                       @Override
                       public void afterCanvasInitialized() {
                           callback.afterCanvasInitialized();
@@ -106,7 +115,7 @@ public abstract class AbstractDiagramViewer<D extends Diagram, H extends Abstrac
     @Override
     @SuppressWarnings("unchecked")
     public D getInstance() {
-        return (D) getHandler().getDiagram();
+        return null != getHandler() ? (D) getHandler().getDiagram() : null;
     }
 
     protected void scale(final int toWidth,

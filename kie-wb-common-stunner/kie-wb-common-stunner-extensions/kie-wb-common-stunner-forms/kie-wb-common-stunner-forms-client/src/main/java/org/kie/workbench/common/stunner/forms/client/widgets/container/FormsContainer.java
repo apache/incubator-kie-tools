@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.IsElement;
@@ -40,17 +41,18 @@ public class FormsContainer implements IsElement {
 
     private static Logger LOGGER = Logger.getLogger(FormsContainer.class.getName());
 
-    private FormsContainerView view;
-    private ManagedInstance<FormDisplayer> displayersInstance;
-
-    private Map<FormDisplayerKey, FormDisplayer> formDisplayers = new HashMap<>();
+    private final FormsContainerView view;
+    private final ManagedInstance<FormDisplayer> displayersInstance;
+    private final Map<FormDisplayerKey, FormDisplayer> formDisplayers;
 
     private FormDisplayer currentDisplayer;
 
     @Inject
-    public FormsContainer(FormsContainerView view, ManagedInstance<FormDisplayer> displayersInstance) {
+    public FormsContainer(final FormsContainerView view,
+                          final @Any ManagedInstance<FormDisplayer> displayersInstance) {
         this.view = view;
         this.displayersInstance = displayersInstance;
+        this.formDisplayers = new HashMap<>();
     }
 
     public void render(final String graphUuid, final Element<? extends Definition<?>> element, final Path diagramPath, final FieldChangeHandler changeHandler) {
@@ -125,8 +127,9 @@ public class FormsContainer implements IsElement {
     @PreDestroy
     public void destroyAll() {
         view.clear();
-        formDisplayers.clear();
         currentDisplayer = null;
         displayersInstance.destroyAll();
+        formDisplayers.clear();
+        currentDisplayer = null;
     }
 }

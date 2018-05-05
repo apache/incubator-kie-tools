@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommandExecutedEvent;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 
-public class ClearSessionCommandExecutedEvent extends AbstractClientSessionCommandExecutedEvent<ClearSessionCommand, ClientFullSession> {
+public class ClearSessionCommandExecutedEvent extends AbstractClientSessionCommandExecutedEvent<ClearSessionCommand, EditorSession> {
 
     public ClearSessionCommandExecutedEvent(final ClearSessionCommand executedCommand,
-                                            final ClientFullSession clientSession) {
+                                            final EditorSession clientSession) {
         super(executedCommand,
               clientSession);
     }

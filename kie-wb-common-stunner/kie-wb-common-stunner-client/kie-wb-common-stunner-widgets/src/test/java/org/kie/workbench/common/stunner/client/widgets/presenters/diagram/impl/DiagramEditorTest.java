@@ -17,20 +17,20 @@
 package org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.ioc.client.api.Disposer;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.widgets.presenters.AbstractCanvasHandlerViewerTest;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
+import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
@@ -38,6 +38,7 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -46,36 +47,46 @@ import static org.mockito.Mockito.when;
 public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
 
     @Mock
+    DefinitionUtils definitionUtils;
+
+    @Mock
     DiagramViewer viewer;
 
     @Mock
-    CanvasCommandManager<AbstractCanvasHandler> commandManager;
+    CanvasCommandManager<AbstractCanvasHandler> commandManagerInstance;
+    private ManagedInstance<CanvasCommandManager<AbstractCanvasHandler>> commandManager;
 
     @Mock
-    ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl;
+    ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControlInstance;
+    private ManagedInstance<ConnectionAcceptorControl<AbstractCanvasHandler>> connectionAcceptorControl;
 
     @Mock
-    ContainmentAcceptorControl<AbstractCanvasHandler> containmentAcceptorControl;
+    ContainmentAcceptorControl<AbstractCanvasHandler> containmentAcceptorControlInstance;
+    private ManagedInstance<ContainmentAcceptorControl<AbstractCanvasHandler>> containmentAcceptorControl;
 
     @Mock
-    DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl;
+    DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControlInstance;
+    private ManagedInstance<DockingAcceptorControl<AbstractCanvasHandler>> dockingAcceptorControl;
 
     @Mock
     DiagramViewer.DiagramViewerCallback<Diagram> callback;
 
-    private DiagramEditorImpl<Diagram, AbstractCanvasHandler, ClientSession> tested;
-
-    @Mock
-    private Disposer<CanvasControl> disposer;
+    private DefaultDiagramEditor tested;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         super.init();
+        when(metadata.getDefinitionSetId()).thenReturn("ds1");
+        commandManager = spy(new ManagedInstanceStub<>(commandManagerInstance));
+        connectionAcceptorControl = spy(new ManagedInstanceStub<>(connectionAcceptorControlInstance));
+        containmentAcceptorControl = spy(new ManagedInstanceStub<>(containmentAcceptorControlInstance));
+        dockingAcceptorControl = spy(new ManagedInstanceStub<>(dockingAcceptorControlInstance));
         when(viewer.getHandler()).thenReturn(canvasHandler);
         doAnswer(invocationOnMock -> {
             when(viewer.getInstance()).thenReturn(diagram);
             final DiagramViewer.DiagramViewerCallback c = (DiagramViewer.DiagramViewerCallback) invocationOnMock.getArguments()[1];
+            c.onOpen(diagram);
             c.afterCanvasInitialized();
             c.onSuccess();
             return diagram;
@@ -90,12 +101,12 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
             return null;
         }).when(viewer).destroy();
         this.tested =
-                new DiagramEditorImpl<>(viewer,
-                                        commandManager,
-                                        connectionAcceptorControl,
-                                        containmentAcceptorControl,
-                                        dockingAcceptorControl,
-                                        disposer);
+                new DefaultDiagramEditor(definitionUtils,
+                                         viewer,
+                                         commandManager,
+                                         connectionAcceptorControl,
+                                         containmentAcceptorControl,
+                                         dockingAcceptorControl);
     }
 
     @Test
@@ -108,12 +119,12 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
         verify(viewer,
                times(1)).open(eq(diagram),
                               any(DiagramViewer.DiagramViewerCallback.class));
-        verify(connectionAcceptorControl,
-               times(1)).enable(eq(canvasHandler));
-        verify(containmentAcceptorControl,
-               times(1)).enable(eq(canvasHandler));
-        verify(dockingAcceptorControl,
-               times(1)).enable(eq(canvasHandler));
+        verify(connectionAcceptorControlInstance,
+               times(1)).init(eq(canvasHandler));
+        verify(containmentAcceptorControlInstance,
+               times(1)).init(eq(canvasHandler));
+        verify(dockingAcceptorControlInstance,
+               times(1)).init(eq(canvasHandler));
     }
 
     @Test
@@ -139,12 +150,6 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
         assertNull(tested.getInstance());
         verify(viewer,
                times(1)).clear();
-        verify(connectionAcceptorControl,
-               times(1)).disable();
-        verify(containmentAcceptorControl,
-               times(1)).disable();
-        verify(dockingAcceptorControl,
-               times(1)).disable();
     }
 
     @Test
@@ -156,11 +161,13 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
         assertNull(tested.getInstance());
         verify(viewer,
                times(1)).destroy();
+        verify(commandManager,
+               times(1)).destroyAll();
         verify(connectionAcceptorControl,
-               times(1)).disable();
+               times(1)).destroyAll();
         verify(containmentAcceptorControl,
-               times(1)).disable();
+               times(1)).destroyAll();
         verify(dockingAcceptorControl,
-               times(1)).disable();
+               times(1)).destroyAll();
     }
 }

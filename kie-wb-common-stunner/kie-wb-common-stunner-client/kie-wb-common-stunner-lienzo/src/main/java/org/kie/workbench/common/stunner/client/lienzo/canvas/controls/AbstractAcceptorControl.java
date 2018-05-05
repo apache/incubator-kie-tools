@@ -41,29 +41,25 @@ public abstract class AbstractAcceptorControl
     private AbstractCanvasHandler canvasHandler;
     private CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
 
-    protected abstract void onEnable(final WiresCanvas.View view);
+    protected abstract void onInit(final WiresCanvas.View view);
 
-    protected abstract void onDisable(final WiresCanvas.View view);
+    protected abstract void onDestroy(final WiresCanvas.View view);
 
     @Override
-    public void enable(final AbstractCanvasHandler canvasHandler) {
+    public void init(final AbstractCanvasHandler canvasHandler) {
         this.canvasHandler = canvasHandler;
         final WiresCanvas.View canvasView = (WiresCanvas.View) canvasHandler.getAbstractCanvas().getView();
-        onEnable(canvasView);
+        onInit(canvasView);
     }
 
     @Override
-    public void disable() {
+    public void destroy() {
         if (null != canvasHandler && null != canvasHandler.getCanvas()) {
             final WiresCanvas.View canvasView = (WiresCanvas.View) canvasHandler.getAbstractCanvas().getView();
-            onDisable(canvasView);
+            onDestroy(canvasView);
         }
         this.canvasHandler = null;
         this.commandManagerProvider = null;
-    }
-
-    public boolean isEnabled() {
-        return canvasHandler != null;
     }
 
     @Override
@@ -98,18 +94,12 @@ public abstract class AbstractAcceptorControl
     }
 
     protected boolean isWiresParentAccept(final WiresContainer wiresContainer) {
-        if (!isEnabled() || !WiresUtils.isWiresShape(wiresContainer)) {
-            return false;
-        }
-        return true;
+        return WiresUtils.isWiresShape(wiresContainer);
     }
 
     protected boolean isWiresViewAccept(final WiresContainer wiresContainer,
                                         final WiresShape wiresShape) {
-        if (!isEnabled() || !WiresUtils.isWiresShape(wiresContainer) || !WiresUtils.isWiresShape(wiresShape)) {
-            return false;
-        }
-        return true;
+        return WiresUtils.isWiresShape(wiresContainer) || WiresUtils.isWiresShape(wiresShape);
     }
 
     protected Optional<Edge<?, Node>> getAnyEdge(final List<Edge<?, Node>> edges,

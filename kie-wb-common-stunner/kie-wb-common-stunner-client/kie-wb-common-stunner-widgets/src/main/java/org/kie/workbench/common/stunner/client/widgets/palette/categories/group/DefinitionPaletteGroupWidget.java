@@ -43,9 +43,9 @@ public class DefinitionPaletteGroupWidget implements DefinitionPaletteGroupWidge
 
     public static final int COMPACT_ELEMENTS_LIST_SIZE = 6;
 
-    private State state = State.COMPACT;
+    private final List<DefinitionPaletteItemWidget> hiddenList = new ArrayList<>();
 
-    private List<DefinitionPaletteItemWidget> hiddenList = new ArrayList<>();
+    private State state = State.COMPACT;
 
     private DefinitionPaletteGroupWidgetView view;
 
@@ -149,6 +149,10 @@ public class DefinitionPaletteGroupWidget implements DefinitionPaletteGroupWidge
 
     @PreDestroy
     public void destroy() {
+        hiddenList.clear();
         definitionPaletteItemWidgets.destroyAll();
+        view = null;
+        group = null;
+        itemMouseDownCallback = null;
     }
 }

@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanva
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -39,7 +39,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 public class NavigateToDRGEditorCommand extends BaseNavigateCommand implements VetoUndoCommand {
 
     public NavigateToDRGEditorCommand(final ExpressionEditorView.Presenter editor,
-                                      final SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter,
+                                      final SessionPresenter<EditorSession, ?, Diagram> presenter,
                                       final SessionManager sessionManager,
                                       final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                       final String nodeUUID,

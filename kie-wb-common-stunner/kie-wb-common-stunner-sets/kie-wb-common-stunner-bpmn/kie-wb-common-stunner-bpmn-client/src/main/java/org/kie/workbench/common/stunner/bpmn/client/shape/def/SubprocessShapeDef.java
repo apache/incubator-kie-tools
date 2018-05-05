@@ -77,9 +77,7 @@ public class SubprocessShapeDef extends BaseDimensionedShapeDef
                 .width(task -> task.getDimensionsSet().getWidth().getValue())
                 .height(task -> task.getDimensionsSet().getHeight().getValue())
                 .minWidth(task -> 50d)
-                .maxWidth(task -> 1200d)
                 .minHeight(task -> 50d)
-                .maxHeight(task -> 1200d)
                 .build();
     }
 

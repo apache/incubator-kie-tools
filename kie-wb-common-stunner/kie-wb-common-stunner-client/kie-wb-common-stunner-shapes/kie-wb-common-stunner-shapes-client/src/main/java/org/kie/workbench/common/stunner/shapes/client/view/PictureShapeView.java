@@ -61,8 +61,8 @@ public class PictureShapeView<T extends PictureShapeView>
     }
 
     @Override
-    protected void preDestroy() {
-        super.preDestroy();
+    public void destroy() {
+        super.destroy();
         LienzoPictureUtils.tryDestroy(getPicture(),
                                       (p) -> Scheduler.get().scheduleFixedDelay(() -> !LienzoPictureUtils.retryDestroy(p),
                                                                                 200));

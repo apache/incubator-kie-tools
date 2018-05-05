@@ -19,10 +19,10 @@ package org.kie.workbench.common.stunner.core.client.command;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandListener;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -51,7 +51,7 @@ public class DefaultSessionCommandManagerTest {
             extends AbstractSessionCommandManager {
 
         @Override
-        protected AbstractClientSessionManager getClientSessionManager() {
+        protected SessionManager getClientSessionManager() {
             return clientSessionManager;
         }
 
@@ -118,11 +118,11 @@ public class DefaultSessionCommandManagerTest {
     }
 
     @Mock
-    AbstractClientSessionManager clientSessionManager;
+    SessionManager clientSessionManager;
     @Mock
     AbstractCanvasHandler canvasHandler;
     @Mock
-    AbstractClientFullSession clientFullSession;
+    EditorSession editorSession;
     @Mock
     Command<AbstractCanvasHandler, CanvasViolation> command;
     @Mock
@@ -134,8 +134,8 @@ public class DefaultSessionCommandManagerTest {
 
     @Before
     public void setup() throws Exception {
-        when(clientSessionManager.getCurrentSession()).thenReturn(clientFullSession);
-        when(clientFullSession.getCommandRegistry()).thenReturn(commandRegistry);
+        when(clientSessionManager.getCurrentSession()).thenReturn(editorSession);
+        when(editorSession.getCommandRegistry()).thenReturn(commandRegistry);
     }
 
     @Test
@@ -143,7 +143,7 @@ public class DefaultSessionCommandManagerTest {
     public void testExecuteSuccess() {
         SuccessCanvasCommandManager commandManager =
                 new SuccessCanvasCommandManager();
-        when(clientFullSession.getCommandManager()).thenReturn(commandManager);
+        when(editorSession.getCommandManager()).thenReturn(commandManager);
         this.tested = new SessionCommandManagerStub();
         CommandResult<CanvasViolation> result = tested.execute(canvasHandler,
                                                                mock(Command.class));
@@ -163,7 +163,7 @@ public class DefaultSessionCommandManagerTest {
     public void testExecuteCommandException() {
         CommandExceptionCanvasCommandManager commandManager =
                 new CommandExceptionCanvasCommandManager();
-        when(clientFullSession.getCommandManager()).thenReturn(commandManager);
+        when(editorSession.getCommandManager()).thenReturn(commandManager);
         this.tested = new SessionCommandManagerStub();
         tested.execute(canvasHandler, mock(Command.class));
         assertEquals(commandListener,
@@ -179,7 +179,7 @@ public class DefaultSessionCommandManagerTest {
     public void testExecuteClientError() {
         RuntimeExceptionCanvasCommandManager commandManager =
                 new RuntimeExceptionCanvasCommandManager();
-        when(clientFullSession.getCommandManager()).thenReturn(commandManager);
+        when(editorSession.getCommandManager()).thenReturn(commandManager);
         this.tested = new SessionCommandManagerStub();
         tested.execute(canvasHandler,
                        mock(Command.class));
@@ -196,7 +196,7 @@ public class DefaultSessionCommandManagerTest {
     public void testUndoSuccess() {
         SuccessCanvasCommandManager commandManager =
                 new SuccessCanvasCommandManager();
-        when(clientFullSession.getCommandManager()).thenReturn(commandManager);
+        when(editorSession.getCommandManager()).thenReturn(commandManager);
         this.tested = new SessionCommandManagerStub();
         CommandResult<CanvasViolation> result = tested.undo(canvasHandler,
                                                             mock(Command.class));
@@ -216,7 +216,7 @@ public class DefaultSessionCommandManagerTest {
     public void testUndoCommandException() {
         CommandExceptionCanvasCommandManager commandManager =
                 new CommandExceptionCanvasCommandManager();
-        when(clientFullSession.getCommandManager()).thenReturn(commandManager);
+        when(editorSession.getCommandManager()).thenReturn(commandManager);
         this.tested = new SessionCommandManagerStub();
         tested.undo(canvasHandler,
                     mock(Command.class));
@@ -233,7 +233,7 @@ public class DefaultSessionCommandManagerTest {
     public void testUndoClientError() {
         RuntimeExceptionCanvasCommandManager commandManager =
                 new RuntimeExceptionCanvasCommandManager();
-        when(clientFullSession.getCommandManager()).thenReturn(commandManager);
+        when(editorSession.getCommandManager()).thenReturn(commandManager);
         this.tested = new SessionCommandManagerStub();
         tested.undo(canvasHandler,
                     mock(Command.class));

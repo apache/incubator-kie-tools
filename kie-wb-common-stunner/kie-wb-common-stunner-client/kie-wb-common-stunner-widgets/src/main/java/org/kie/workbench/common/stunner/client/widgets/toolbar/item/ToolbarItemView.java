@@ -39,7 +39,7 @@ public class ToolbarItemView extends Composite implements ToolbarItem.View {
     @UiField
     Button button;
 
-    AbstractToolbarItem presenter;
+    private AbstractToolbarItem presenter;
 
     @Override
     public void init(final AbstractToolbarItem presenter) {
@@ -99,5 +99,6 @@ public class ToolbarItemView extends Composite implements ToolbarItem.View {
     @Override
     public void destroy() {
         this.removeFromParent();
+        presenter = null;
     }
 }

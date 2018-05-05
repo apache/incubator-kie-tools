@@ -20,13 +20,13 @@ import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 
 public interface Toolbar<S extends ClientSession> {
 
-    void disable(final ToolbarCommand<S> command);
+    void load(S session);
 
     void enable(final ToolbarCommand<S> command);
 
-    boolean isEnabled(final ToolbarCommand<S> command);
+    void disable(final ToolbarCommand<S> command);
 
-    void clear();
+    boolean isEnabled(final ToolbarCommand<S> command);
 
     void destroy();
 

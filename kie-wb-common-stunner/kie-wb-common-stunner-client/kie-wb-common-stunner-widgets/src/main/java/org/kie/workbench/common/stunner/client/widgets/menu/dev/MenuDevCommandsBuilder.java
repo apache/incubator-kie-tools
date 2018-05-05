@@ -18,7 +18,10 @@ package org.kie.workbench.common.stunner.client.widgets.menu.dev;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -37,35 +40,23 @@ import org.uberfire.workbench.model.menu.MenuItem;
  * The menu builder for different Stunner's dev menu items.
  * By default this class is not enabled. Enable it in your @EntryPoint if necessary.
  */
-@ApplicationScoped
+@Dependent
 public class MenuDevCommandsBuilder {
 
     private final ManagedInstance<MenuDevCommand> menuDevCommandManagedInstances;
     private final List<MenuDevCommand> devCommands = new LinkedList<>();
-    private boolean enabled;
 
     @Inject
-    public MenuDevCommandsBuilder(final ManagedInstance<MenuDevCommand> menuDevCommandManagedInstances) {
+    public MenuDevCommandsBuilder(final @Any ManagedInstance<MenuDevCommand> menuDevCommandManagedInstances) {
         this.menuDevCommandManagedInstances = menuDevCommandManagedInstances;
-        this.enabled = false;
     }
 
-    public void enable() {
-        if (!enabled) {
-            this.enabled = true;
-            menuDevCommandManagedInstances.iterator().forEachRemaining(devCommands::add);
-        }
+    @PostConstruct
+    public void init() {
+        menuDevCommandManagedInstances.iterator().forEachRemaining(devCommands::add);
     }
 
     public MenuItem build() {
-        return enabled ? buildDevMenuItem() : null;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    private MenuItem buildDevMenuItem() {
         final DropDownMenu menu = new DropDownMenu() {{
             addStyleName("pull-right");
         }};
@@ -86,5 +77,11 @@ public class MenuDevCommandsBuilder {
             add(menu);
         }};
         return MenuUtils.buildItem(group);
+    }
+
+    @PreDestroy
+    public void destroy() {
+        devCommands.clear();
+        menuDevCommandManagedInstances.destroyAll();
     }
 }

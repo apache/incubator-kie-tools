@@ -17,11 +17,13 @@
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 
 @Dependent
+@Default
 public class ExportToJpgSessionCommand extends AbstractExportSessionCommand {
 
     private final CanvasFileExport canvasFileExport;

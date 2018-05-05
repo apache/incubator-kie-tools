@@ -142,8 +142,8 @@ public class CaseManagementContainmentAcceptorControlImplTest {
     }
 
     @Test
-    public void checkDoEnable() {
-        control.onEnable(canvasView);
+    public void checkDoInit() {
+        control.onInit(canvasView);
 
         final IContainmentAcceptor containmentAcceptor = getContainmentAcceptor();
         assertNotNull(containmentAcceptor);
@@ -155,14 +155,6 @@ public class CaseManagementContainmentAcceptorControlImplTest {
                times(1)).setContainmentAcceptor(containmentAcceptorArgumentCaptor.capture());
         final IContainmentAcceptor containmentAcceptor = containmentAcceptorArgumentCaptor.getValue();
         return containmentAcceptor;
-    }
-
-    @Test
-    public void checkDoDisable() {
-        control.onDisable(canvasView);
-
-        verify(canvasView,
-               times(1)).setContainmentAcceptor(eq(IContainmentAcceptor.NONE));
     }
 
     @Test
@@ -212,7 +204,7 @@ public class CaseManagementContainmentAcceptorControlImplTest {
 
     @Test
     public void checkContainmentAllowed() {
-        control.enable(canvasHandler);
+        control.init(canvasHandler);
 
         final IContainmentAcceptor containmentAcceptor = getContainmentAcceptor();
         final WiresShape parentShape = makeWiresShape(PARENT_UUID);
@@ -246,7 +238,7 @@ public class CaseManagementContainmentAcceptorControlImplTest {
 
     @Test
     public void testAcceptContainment() {
-        control.enable(canvasHandler);
+        control.init(canvasHandler);
         final WiresShape parentShape = makeWiresShape(PARENT_UUID);
         final WiresShape childShape = makeWiresShape(CANDIDATE_UUID);
         final MockCaseManagementShape ghost = makeWiresShape(CANDIDATE_UUID);
@@ -274,7 +266,7 @@ public class CaseManagementContainmentAcceptorControlImplTest {
 
     @Test
     public void checkInterceptingLayoutHandlerRemove() {
-        control.enable(canvasHandler);
+        control.init(canvasHandler);
 
         final WiresShape parentShape = makeWiresShape();
         final WiresShape childShape = makeWiresShape();

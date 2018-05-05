@@ -34,14 +34,15 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.TextEnterEv
 import org.kie.workbench.common.stunner.core.client.shape.view.event.TextExitEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
+import org.kie.workbench.common.stunner.lienzo.util.LienzoGroupUtils;
 
 /**
  * A helper class for handling the wires shapes' text primitive
  * that is used to display the shape's name.
- * <p/>
+ * <p>
  * It handles common logic for ShapeViews that implement <code>HasText</code>
  * type, can be reused for shapes or connectors.
- * <p/>
+ * <p>
  */
 public class WiresTextDecorator {
 
@@ -272,11 +273,14 @@ public class WiresTextDecorator {
             text.removeFromParent();
             this.text = null;
         }
-        textContainer.removeFromParent();
+        LienzoGroupUtils.removeAll(textContainer);
         deregisterHandler(textOverHandlerViewHandler);
         deregisterHandler(textOutEventViewHandler);
         deregisterHandler(textClickEventViewHandler);
         deregisterHandler(textDblClickEventViewHandler);
+        eventHandlerManager.get().destroy();
+        textWrapper = null;
+        currentTextLayout = null;
     }
 
     private void deregisterHandler(final ViewHandler<?> handler) {

@@ -83,20 +83,20 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
      * @param loadCallback Callback to run once load finishes. This kind of indexes could be loaded or
      * cached in/from server side as well.
      */
-    protected abstract void buildGraphIndex(final Command loadCallback);
+    protected abstract void buildGraphIndex(Command loadCallback);
 
     /**
      * Delegates the draw behavior to the subtypes.
      * @param loadCallback Callback to run once draw has finished. It must provide a result for
      * the draw operation/s.
      */
-    public abstract void draw(final ParameterizedCommand<CommandResult<?>> loadCallback);
+    public abstract void draw(ParameterizedCommand<CommandResult<?>> loadCallback);
 
     /**
      * Destroys this instance' graph index.
      * @param loadCallback Callback to run once index has been destroyed.
      */
-    protected abstract void destroyGraphIndex(final Command loadCallback);
+    protected abstract void destroyGraphIndex(Command loadCallback);
 
     @Override
     public CanvasHandler<D, C> handle(final C canvas) {
@@ -353,7 +353,7 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
         if (!isCanvasRoot(targetUUID)) {
             final Shape targetShape = getCanvas().getShape(targetUUID);
             final Shape childShape = getCanvas().getShape(childUUID);
-            if(Objects.nonNull(targetShape) && Objects.nonNull(childShape)) {
+            if (Objects.nonNull(targetShape) && Objects.nonNull(childShape)) {
                 getCanvas().undock(targetShape,
                                    childShape);
             }
@@ -387,17 +387,28 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
 
     @Override
     public CanvasHandler<D, C> doClear() {
-        destroyGraphIndex(() -> {
+        destroyGraph(() -> {
             diagram = null;
+            ruleSet = null;
         });
         return this;
     }
 
     @Override
     public void doDestroy() {
-        destroyGraphIndex(() -> {
+        destroyGraph(() -> {
             canvas = null;
             diagram = null;
+            ruleSet = null;
+        });
+    }
+
+    protected void destroyGraph(final Command callback) {
+        destroyGraphIndex(() -> {
+            if (null != diagram && null != diagram.getGraph()) {
+                diagram.getGraph().clear();
+            }
+            callback.execute();
         });
     }
 

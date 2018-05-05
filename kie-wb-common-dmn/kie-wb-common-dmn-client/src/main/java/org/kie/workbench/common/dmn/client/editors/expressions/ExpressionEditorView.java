@@ -23,7 +23,7 @@ import org.jboss.errai.common.client.api.IsElement;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.mvp.Command;
@@ -35,7 +35,7 @@ public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.ap
 
     interface Presenter extends IsElement {
 
-        void init(final SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter);
+        void init(final SessionPresenter<EditorSession, ?, Diagram> presenter);
 
         void setExpression(final String nodeUUID,
                            final HasExpression hasExpression,

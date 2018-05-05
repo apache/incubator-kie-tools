@@ -32,6 +32,7 @@ import java.util.stream.StreamSupport;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
@@ -43,10 +44,10 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultB
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
@@ -66,7 +67,8 @@ import static org.kie.workbench.common.stunner.core.client.canvas.controls.keybo
  * This session command obtains the selected elements on the clipboard and clone each one of them.
  */
 @Dependent
-public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<ClientFullSession> {
+@Default
+public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<EditorSession> {
 
     public static final int DEFAULT_PADDING = 15;
     private static Logger LOGGER = Logger.getLogger(PasteSelectionSessionCommand.class.getName());
@@ -75,8 +77,8 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<C
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     private final Event<CanvasSelectionEvent> selectionEvent;
     private final Map<String, String> clonedElements;
-    private ClipboardControl<Element, AbstractCanvas, ClientSession> clipboardControl;
     private final CopySelectionSessionCommand copySelectionSessionCommand;
+    private ClipboardControl<Element, AbstractCanvas, ClientSession> clipboardControl;
     private transient DoubleSummaryStatistics yPositionStatistics;
 
     protected PasteSelectionSessionCommand() {
@@ -87,17 +89,17 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<C
     public PasteSelectionSessionCommand(final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                         final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                         final Event<CanvasSelectionEvent> selectionEvent,
-                                        final SessionCommandFactory sessionCommandFactory) {
+                                        final CopySelectionSessionCommand copySelectionSessionCommand) {
         super(true);
         this.sessionCommandManager = sessionCommandManager;
         this.canvasCommandFactory = canvasCommandFactory;
         this.selectionEvent = selectionEvent;
         this.clonedElements = new HashMap<>();
-        this.copySelectionSessionCommand = sessionCommandFactory.newCopySelectionCommand();
+        this.copySelectionSessionCommand = copySelectionSessionCommand;
     }
 
     @Override
-    public void bind(final ClientFullSession session) {
+    public void bind(final EditorSession session) {
         super.bind(session);
         session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
         this.clipboardControl = session.getClipboardControl();
@@ -116,12 +118,6 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<C
                         Key.V)) {
             this.execute();
         }
-    }
-
-    @Override
-    public void unbind() {
-        super.unbind();
-        clear();
     }
 
     @Override
@@ -245,6 +241,13 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<C
 
     public boolean wasNodesDeletedFromGraph() {
         return clipboardControl.getElements().stream().allMatch(element -> Objects.isNull(getElement(element.getUUID())));
+    }
+
+    @Override
+    protected void doDestroy() {
+        super.doDestroy();
+        clear();
+        clipboardControl = null;
     }
 
     public void clear() {

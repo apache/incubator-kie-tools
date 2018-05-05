@@ -23,8 +23,8 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.AbstractMenuDevCommand;
-import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 
 @Dependent
 public class ClearCommandHistoryDevCommand extends AbstractMenuDevCommand {
@@ -36,7 +36,7 @@ public class ClearCommandHistoryDevCommand extends AbstractMenuDevCommand {
     }
 
     @Inject
-    public ClearCommandHistoryDevCommand(final AbstractClientSessionManager sessionManager) {
+    public ClearCommandHistoryDevCommand(final SessionManager sessionManager) {
         super(sessionManager);
     }
 
@@ -49,7 +49,7 @@ public class ClearCommandHistoryDevCommand extends AbstractMenuDevCommand {
     @SuppressWarnings("unchecked")
     public void execute() {
         try {
-            final ClientFullSession session = (ClientFullSession) getSession();
+            final EditorSession session = (EditorSession) getSession();
             if (null != session) {
                 session.getCommandRegistry().getCommandHistory().clear();
             }

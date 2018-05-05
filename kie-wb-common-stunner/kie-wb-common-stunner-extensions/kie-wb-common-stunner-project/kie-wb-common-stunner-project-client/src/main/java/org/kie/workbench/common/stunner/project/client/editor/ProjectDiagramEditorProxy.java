@@ -30,6 +30,13 @@ public class ProjectDiagramEditorProxy {
     private Optional<Consumer<String>> showNoChangesSinceLastSaveMessageConsumer;
     private Optional<Supplier<Integer>> hashCodeSupplier;
 
+    public ProjectDiagramEditorProxy() {
+        saveAfterValidationConsumer = Optional.empty();
+        saveAfterUserConfirmationConsumer = Optional.empty();
+        showNoChangesSinceLastSaveMessageConsumer = Optional.empty();
+        hashCodeSupplier = Optional.empty();
+    }
+
     void setSaveAfterValidationConsumer(final Consumer<Command> saveAfterValidationConsumer) {
         this.saveAfterValidationConsumer = Optional.ofNullable(saveAfterValidationConsumer);
     }

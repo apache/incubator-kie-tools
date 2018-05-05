@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.client.widgets.palette.categories.items
 import java.util.function.Consumer;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -44,6 +45,12 @@ public class DefinitionPaletteItemWidget implements DefinitionPaletteItemWidgetV
     @PostConstruct
     public void setUp() {
         view.init(this);
+    }
+
+    @PreDestroy
+    public void destroy() {
+        item = null;
+        itemMouseDownCallback = null;
     }
 
     @Override

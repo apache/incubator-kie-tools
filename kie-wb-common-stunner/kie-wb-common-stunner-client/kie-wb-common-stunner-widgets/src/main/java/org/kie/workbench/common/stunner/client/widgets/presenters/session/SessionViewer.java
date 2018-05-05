@@ -25,17 +25,17 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
 /**
  * A viewer type for generic client session instances.
- * <p/>
+ * <p>
  * The goal for a diagram viewer is to provide a DOM element that can be easily attached to other components
  * and encapsulates the components and logic necessary in order to display a session's diagram in the session's canvas
  * instance.
- * <p/>
+ * <p>
  * The session viewer type expects the session instance already initialized with the diagram instance and all canvas,
  * handler and controls instances.
- * <p/>
+ * <p>
  * As it inherits from Viewer type, it provides by default a zoom control enabled for this viewer session's canvas instance.
  * Consider as well that the each session's type can provide its own additional controls.
- * <p/>
+ * <p>
  * Note the interaction with the selection control and other session's controls, such as CDI, depends on its implementation.
  * Subtypes can provide additional controls.
  * @param <S> The session type.
@@ -43,14 +43,17 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
  * @param <D> The diagram type.
  */
 public interface SessionViewer<S extends ClientSession, H extends CanvasHandler, D extends Diagram>
-        extends CanvasViewer<S, H, IsWidget, SessionViewer.SessionViewerCallback<S, D>> {
+        extends CanvasViewer<S, H, IsWidget, SessionViewer.SessionViewerCallback<D>> {
 
     /**
      * The callback type for session viewers.
-     * @param <S> The session type.
      * @param <D> The diagram type.
      */
-    interface SessionViewerCallback<S extends ClientSession, D extends Diagram> extends DiagramViewer.DiagramViewerCallback<D> {
+    interface SessionViewerCallback<D extends Diagram> extends DiagramViewer.DiagramViewerCallback<D> {
 
+        @Override
+        default void onOpen(D diagram) {
+            // Handled by th session instance.
+        }
     }
 }

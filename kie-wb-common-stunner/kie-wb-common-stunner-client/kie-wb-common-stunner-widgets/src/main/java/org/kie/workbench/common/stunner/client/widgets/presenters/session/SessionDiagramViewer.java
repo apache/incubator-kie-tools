@@ -17,18 +17,17 @@
 package org.kie.workbench.common.stunner.client.widgets.presenters.session;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;
+import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
 /**
  * A session's diagram viewer type for Diagrams of type <code>Diagram</code>.
- * <p/>
+ * <p>
  * This type reduces the number of bean instances resolved for a SessionViewer type to the ones
  * specific only for Diagrams of type <code>Diagram</code>.
  * @param <S> The session type.
- * @param <H> The canvas handler type.
  */
-public interface SessionDiagramViewer<S extends ClientReadOnlySession, H extends AbstractCanvasHandler>
-        extends SessionViewer<S, H, Diagram> {
+public interface SessionDiagramViewer<S extends ViewerSession>
+        extends SessionViewer<S, AbstractCanvasHandler, Diagram> {
 
 }

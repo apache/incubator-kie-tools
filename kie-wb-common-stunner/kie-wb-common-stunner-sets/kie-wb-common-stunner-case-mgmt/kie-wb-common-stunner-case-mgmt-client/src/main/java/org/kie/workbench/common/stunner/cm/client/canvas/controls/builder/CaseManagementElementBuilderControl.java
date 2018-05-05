@@ -26,14 +26,12 @@ import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.Element;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.ElementBuilderControlImpl;
-import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 
 @Element
@@ -46,26 +44,20 @@ public class CaseManagementElementBuilderControl extends ElementBuilderControlIm
              null,
              null,
              null,
-             null,
-             null,
              null);
     }
 
     @Inject
     public CaseManagementElementBuilderControl(final ClientDefinitionManager clientDefinitionManager,
                                                final ClientFactoryService clientFactoryServices,
-                                               final GraphUtils graphUtils,
                                                final RuleManager ruleManager,
                                                final @CaseManagementEditor CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
-                                               final GraphBoundsIndexer graphBoundsIndexer,
-                                               final CanvasLayoutUtils canvasLayoutUtils) {
+                                               final GraphBoundsIndexer graphBoundsIndexer) {
         super(clientDefinitionManager,
               clientFactoryServices,
-              graphUtils,
               ruleManager,
               canvasCommandFactory,
-              graphBoundsIndexer,
-              canvasLayoutUtils);
+              graphBoundsIndexer);
     }
 
     @Override

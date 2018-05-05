@@ -59,8 +59,8 @@ public class WiresContainerShapeView<T extends WiresContainerShapeView>
     }
 
     @Override
-    protected void preDestroy() {
+    public void destroy() {
         this.getChildren().forEach(WiresContainerShapeView::destroy);
-        super.preDestroy();
+        super.destroy();
     }
 }

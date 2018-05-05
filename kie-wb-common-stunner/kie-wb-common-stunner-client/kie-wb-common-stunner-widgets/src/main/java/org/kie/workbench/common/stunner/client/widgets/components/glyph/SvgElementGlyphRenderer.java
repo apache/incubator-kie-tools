@@ -18,7 +18,9 @@ package org.kie.workbench.common.stunner.client.widgets.components.glyph;
 
 import java.util.function.Supplier;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.IsElement;
@@ -27,33 +29,39 @@ import org.kie.workbench.common.stunner.core.client.components.glyph.DOMGlyphRen
 import org.kie.workbench.common.stunner.core.client.components.views.ImageElementRendererView;
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.util.SvgDataUriGenerator;
+import org.uberfire.mvp.Command;
 
 /**
  * Extracts the SVG content from the data-uri and appends the content into the DOM.
  * It renders as an SVG DOM element.
  */
-@ApplicationScoped
+@Dependent
 public class SvgElementGlyphRenderer implements DOMGlyphRenderer<SvgDataUriGlyph> {
 
     private final SvgDataUriGenerator svgDataUriUtil;
     private final Supplier<ImageElementRendererView> viewInstanceSupplier;
+    private final Command viewInstancesDestroyer;
 
     protected SvgElementGlyphRenderer() {
         this.svgDataUriUtil = null;
         this.viewInstanceSupplier = null;
+        this.viewInstancesDestroyer = null;
     }
 
     @Inject
     public SvgElementGlyphRenderer(final SvgDataUriGenerator svgDataUriUtil,
-                                   final ManagedInstance<ImageElementRendererView> viewInstances) {
+                                   final @Any ManagedInstance<ImageElementRendererView> viewInstances) {
         this.svgDataUriUtil = svgDataUriUtil;
         this.viewInstanceSupplier = viewInstances::get;
+        this.viewInstancesDestroyer = viewInstances::destroyAll;
     }
 
     SvgElementGlyphRenderer(final SvgDataUriGenerator svgDataUriUtil,
-                            final Supplier<ImageElementRendererView> viewInstanceSupplier) {
+                            final Supplier<ImageElementRendererView> viewInstanceSupplier,
+                            final Command viewInstancesDestroyer) {
         this.svgDataUriUtil = svgDataUriUtil;
         this.viewInstanceSupplier = viewInstanceSupplier;
+        this.viewInstancesDestroyer = viewInstancesDestroyer;
     }
 
     @Override
@@ -73,5 +81,10 @@ public class SvgElementGlyphRenderer implements DOMGlyphRenderer<SvgDataUriGlyph
         return view.setDOMContent(content,
                                   (int) width,
                                   (int) height);
+    }
+
+    @PreDestroy
+    public void destroy() {
+        viewInstancesDestroyer.execute();
     }
 }

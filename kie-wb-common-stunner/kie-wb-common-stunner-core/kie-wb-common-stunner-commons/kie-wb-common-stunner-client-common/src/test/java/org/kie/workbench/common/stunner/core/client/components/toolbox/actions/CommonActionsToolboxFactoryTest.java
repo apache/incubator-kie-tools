@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.Toolbox;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.mockito.Mock;
+import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -54,7 +55,13 @@ public class CommonActionsToolboxFactoryTest {
     private DeleteNodeAction deleteNodeAction;
 
     @Mock
+    private Command deleteNodeActionDestroyer;
+
+    @Mock
     private ActionsToolboxView view;
+
+    @Mock
+    private Command viewDestroyer;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -74,7 +81,9 @@ public class CommonActionsToolboxFactoryTest {
         when(commandFactory.deleteNode(eq(element))).thenReturn(deleteNodeCommand);
         this.tested = new CommonActionsToolboxFactory(commandFactory,
                                                       () -> deleteNodeAction,
-                                                      () -> view);
+                                                      deleteNodeActionDestroyer,
+                                                      () -> view,
+                                                      viewDestroyer);
     }
 
     @Test
@@ -109,5 +118,12 @@ public class CommonActionsToolboxFactoryTest {
                 tested.build(canvasHandler,
                              element);
         assertFalse(toolbox.isPresent());
+    }
+
+    @Test
+    public void testDestroy() {
+        tested.destroy();
+        verify(deleteNodeActionDestroyer, times(1)).execute();
+        verify(viewDestroyer, times(1)).execute();
     }
 }

@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.Toolbox;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolbox;
@@ -68,13 +69,16 @@ public class DMNCommonActionsToolboxFactoryTest {
     private DeleteNodeAction deleteNodeAction;
 
     @Mock
-    private DMNEditDecisionToolboxAction editDecisionToolboxAction;
+    private DMNEditDecisionToolboxAction editDecisionToolboxActionInstance;
+    private ManagedInstanceStub<DMNEditDecisionToolboxAction> editDecisionToolboxAction;
 
     @Mock
-    private DMNEditBusinessKnowledgeModelToolboxAction editBusinessKnowledgeModelToolboxAction;
+    private DMNEditBusinessKnowledgeModelToolboxAction editBusinessKnowledgeModelToolboxActionInstance;
+    private ManagedInstanceStub<DMNEditBusinessKnowledgeModelToolboxAction> editBusinessKnowledgeModelToolboxAction;
 
     @Mock
-    private ActionsToolboxView view;
+    private ActionsToolboxView viewInstance;
+    private ManagedInstanceStub<ActionsToolboxView> view;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -91,10 +95,13 @@ public class DMNCommonActionsToolboxFactoryTest {
         when(commonActionsToolboxFactory.getActions(eq(canvasHandler),
                                                     any(Element.class)))
                 .thenReturn(Collections.singleton(deleteNodeAction));
+        editDecisionToolboxAction = new ManagedInstanceStub<>(editDecisionToolboxActionInstance);
+        editBusinessKnowledgeModelToolboxAction = new ManagedInstanceStub<>(editBusinessKnowledgeModelToolboxActionInstance);
+        view = new ManagedInstanceStub<>(viewInstance);
         this.tested = new DMNCommonActionsToolboxFactory(commonActionsToolboxFactory,
-                                                         () -> editDecisionToolboxAction,
-                                                         () -> editBusinessKnowledgeModelToolboxAction,
-                                                         () -> view);
+                                                         editDecisionToolboxAction,
+                                                         editBusinessKnowledgeModelToolboxAction,
+                                                         view);
     }
 
     @Test
@@ -113,9 +120,9 @@ public class DMNCommonActionsToolboxFactoryTest {
                      actionsToolbox.size());
         assertEquals(deleteNodeAction,
                      actionsToolbox.iterator().next());
-        verify(view,
+        verify(viewInstance,
                times(1)).init(eq(actionsToolbox));
-        verify(view,
+        verify(viewInstance,
                times(1)).addButton(any(Glyph.class),
                                    anyString(),
                                    any(Consumer.class));
@@ -147,12 +154,12 @@ public class DMNCommonActionsToolboxFactoryTest {
         final Iterator<ToolboxAction> actionsIt = actionsToolbox.iterator();
         assertEquals(deleteNodeAction,
                      actionsIt.next());
-        assertEquals(editDecisionToolboxAction,
+        assertEquals(editDecisionToolboxActionInstance,
                      actionsIt.next());
         assertFalse(actionsIt.hasNext());
-        verify(view,
+        verify(viewInstance,
                times(1)).init(eq(actionsToolbox));
-        verify(view,
+        verify(viewInstance,
                times(2)).addButton(any(Glyph.class),
                                    anyString(),
                                    any(Consumer.class));
@@ -184,12 +191,12 @@ public class DMNCommonActionsToolboxFactoryTest {
         final Iterator<ToolboxAction> actionsIt = actionsToolbox.iterator();
         assertEquals(deleteNodeAction,
                      actionsIt.next());
-        assertEquals(editBusinessKnowledgeModelToolboxAction,
+        assertEquals(editBusinessKnowledgeModelToolboxActionInstance,
                      actionsIt.next());
         assertFalse(actionsIt.hasNext());
-        verify(view,
+        verify(viewInstance,
                times(1)).init(eq(actionsToolbox));
-        verify(view,
+        verify(viewInstance,
                times(2)).addButton(any(Glyph.class),
                                    anyString(),
                                    any(Consumer.class));

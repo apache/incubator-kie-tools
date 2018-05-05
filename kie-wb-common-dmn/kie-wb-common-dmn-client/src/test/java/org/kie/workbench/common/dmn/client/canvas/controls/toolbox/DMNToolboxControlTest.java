@@ -21,6 +21,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxFactory;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -32,29 +33,32 @@ import static org.junit.Assert.assertNotNull;
 public class DMNToolboxControlTest {
 
     @Mock
-    private ActionsToolboxFactory flowActionsToolboxFactory;
+    private ActionsToolboxFactory flowActionsToolboxFactoryInstance;
+    private ManagedInstanceStub<ActionsToolboxFactory> flowActionsToolboxFactory;
 
     @Mock
-    private ActionsToolboxFactory commonActionsToolboxFactory;
+    private ActionsToolboxFactory commonActionsToolboxFactoryInstance;
+    private ManagedInstanceStub<ActionsToolboxFactory> commonActionsToolboxFactory;
 
     private DMNToolboxControl tested;
 
     @Before
     public void setup() throws Exception {
+        flowActionsToolboxFactory = new ManagedInstanceStub<>(flowActionsToolboxFactoryInstance);
+        commonActionsToolboxFactory = new ManagedInstanceStub<>(commonActionsToolboxFactoryInstance);
         this.tested = new DMNToolboxControl(flowActionsToolboxFactory,
                                             commonActionsToolboxFactory);
     }
 
     @Test
     public void testRegisterTheRightFactories() {
-        tested.init();
         final List<ActionsToolboxFactory> factories = tested.getFactories();
         assertNotNull(factories);
         assertEquals(2,
                      factories.size());
-        assertEquals(flowActionsToolboxFactory,
+        assertEquals(flowActionsToolboxFactoryInstance,
                      factories.get(0));
-        assertEquals(commonActionsToolboxFactory,
+        assertEquals(commonActionsToolboxFactoryInstance,
                      factories.get(1));
     }
 }

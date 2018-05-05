@@ -15,12 +15,18 @@
  */
 package org.kie.workbench.common.stunner.client.widgets.toolbar.command;
 
+import java.lang.annotation.Annotation;
+
 import org.gwtbootstrap3.client.ui.constants.IconRotate;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.mvp.Command;
@@ -29,14 +35,18 @@ public abstract class AbstractToolbarCommand<S extends ClientSession, C extends 
         implements ToolbarCommand<S> {
 
     private final String uuid;
-    private final C command;
-    private Toolbar<S> toolbar;
+    private final DefinitionUtils definitionUtils;
+    private final ManagedInstance<C> commands;
     protected final ClientTranslationService translationService;
+    private Toolbar<S> toolbar;
+    private C command;
 
-    protected AbstractToolbarCommand(final C command, final ClientTranslationService translationService) {
+    protected AbstractToolbarCommand(final DefinitionUtils definitionUtils,
+                                     final ManagedInstance<C> commands,
+                                     final ClientTranslationService translationService) {
         this.uuid = UUID.uuid();
-        this.command = command;
-        this.command.listen(this::checkState);
+        this.definitionUtils = definitionUtils;
+        this.commands = commands;
         this.translationService = translationService;
     }
 
@@ -45,14 +55,19 @@ public abstract class AbstractToolbarCommand<S extends ClientSession, C extends 
     public ToolbarCommand<S> initialize(final Toolbar<S> toolbar,
                                         final S session) {
         this.toolbar = toolbar;
-        this.command.bind(session);
+        final Diagram diagram = session.getCanvasHandler().getDiagram();
+        final String id = diagram.getMetadata().getDefinitionSetId();
+        final Annotation qualifier = definitionUtils.getQualifier(id);
+        command = InstanceUtils.lookup(commands,
+                                       qualifier);
+        command.listen(this::checkState);
+        command.bind(session);
         checkState();
         return this;
     }
 
     @Override
     public void execute() {
-
         if (requiresConfirm()) {
             this.executeWithConfirm(noOpCallback);
         } else {
@@ -141,13 +156,15 @@ public abstract class AbstractToolbarCommand<S extends ClientSession, C extends 
     }
 
     @Override
-    public void destroy() {
+    public final void destroy() {
         doDestroy();
-        this.command.unbind();
+        command.destroy();
+        commands.destroy(command);
+        command = null;
+        toolbar = null;
     }
 
     protected void doDestroy() {
-        command.unbind();
     }
 
     protected void enable() {

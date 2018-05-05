@@ -21,7 +21,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.safehtml.shared.SafeUri;
@@ -30,7 +31,7 @@ import org.kie.workbench.common.stunner.shapes.def.picture.PictureProvider;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
-@ApplicationScoped
+@Dependent
 public class PictureProvidersManager {
 
     private static Logger LOGGER = Logger.getLogger(PictureProvidersManager.class.getName());
@@ -62,5 +63,11 @@ public class PictureProvidersManager {
                        "Picture provider not found for [" + source + "]");
             return null;
         }
+    }
+
+    @PreDestroy
+    public void destroy() {
+        providers.clear();
+        pictureProviderManagedInstances.destroyAll();
     }
 }

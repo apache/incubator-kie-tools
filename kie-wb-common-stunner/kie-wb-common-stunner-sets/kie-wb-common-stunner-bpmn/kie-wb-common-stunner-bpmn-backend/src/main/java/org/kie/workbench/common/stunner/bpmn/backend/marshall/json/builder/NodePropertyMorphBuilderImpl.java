@@ -59,7 +59,8 @@ public class NodePropertyMorphBuilderImpl extends NodeBuilderImpl {
         final MorphProperty morphProperty = mps.iterator().next();
         final Object defaultDefinition = context.getFactoryManager().newDefinition(defaultDefinitionId);
         final DefinitionUtils definitionUtils = new DefinitionUtils(context.getDefinitionManager(),
-                                                                    context.getFactoryManager());
+                                                                    context.getFactoryManager(),
+                                                                    context.getDefinitionsRegistry());
         final Object mp = definitionUtils.getProperty(defaultDefinition,
                                                       morphProperty.getProperty());
         final PropertyType propertyType = context.getDefinitionManager().adapters().forProperty().getType(mp);

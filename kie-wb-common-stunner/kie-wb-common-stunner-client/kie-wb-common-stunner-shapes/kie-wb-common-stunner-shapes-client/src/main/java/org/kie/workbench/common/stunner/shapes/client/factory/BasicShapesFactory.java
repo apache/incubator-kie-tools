@@ -17,7 +17,7 @@
 package org.kie.workbench.common.stunner.shapes.client.factory;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
@@ -43,17 +43,12 @@ import org.kie.workbench.common.stunner.shapes.def.RectangleShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.RingShapeDef;
 import org.kie.workbench.common.stunner.shapes.def.picture.PictureShapeDef;
 
-@ApplicationScoped
+@Dependent
 public class BasicShapesFactory
         implements ShapeDefFactory<Object, BasicShapeDef<Object>, Shape<ShapeView>> {
 
     private final ShapeDefFunctionalFactory<Object, BasicShapeDef, Shape> functionalFactory;
     private final ShapeViewFactory shapeViewFactory;
-
-    protected BasicShapesFactory() {
-        this(null,
-             null);
-    }
 
     @Inject
     public BasicShapesFactory(ShapeDefFunctionalFactory<Object, BasicShapeDef, Shape> functionalFactory,

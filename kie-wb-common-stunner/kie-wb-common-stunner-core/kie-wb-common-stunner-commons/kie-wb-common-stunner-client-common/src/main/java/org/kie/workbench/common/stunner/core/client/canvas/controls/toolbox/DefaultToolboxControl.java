@@ -16,14 +16,16 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxFactory;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.CommonActionsToolbox;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.FlowActionsToolbox;
@@ -33,31 +35,32 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.M
 @Default
 public class DefaultToolboxControl extends AbstractToolboxControl {
 
-    private final ActionsToolboxFactory flowActionsToolboxFactory;
-    private final ActionsToolboxFactory morphActionsToolboxFactory;
-    private final ActionsToolboxFactory commonActionsToolboxFactory;
-    private List<ActionsToolboxFactory> factories;
+    private final ManagedInstance<ActionsToolboxFactory> flowActionsToolboxFactories;
+    private final ManagedInstance<ActionsToolboxFactory> morphActionsToolboxFactories;
+    private final ManagedInstance<ActionsToolboxFactory> commonActionsToolboxFactories;
 
     @Inject
-    public DefaultToolboxControl(final @FlowActionsToolbox ActionsToolboxFactory flowActionsToolboxFactory,
-                                 final @MorphActionsToolbox ActionsToolboxFactory morphActionsToolboxFactory,
-                                 final @CommonActionsToolbox ActionsToolboxFactory commonActionsToolboxFactory) {
-        this.flowActionsToolboxFactory = flowActionsToolboxFactory;
-        this.morphActionsToolboxFactory = morphActionsToolboxFactory;
-        this.commonActionsToolboxFactory = commonActionsToolboxFactory;
-    }
-
-    @PostConstruct
-    public void init() {
-        factories = new ArrayList<ActionsToolboxFactory>(3) {{
-            add(flowActionsToolboxFactory);
-            add(morphActionsToolboxFactory);
-            add(commonActionsToolboxFactory);
-        }};
+    public DefaultToolboxControl(final @Any @FlowActionsToolbox ManagedInstance<ActionsToolboxFactory> flowActionsToolboxFactories,
+                                 final @Any @MorphActionsToolbox ManagedInstance<ActionsToolboxFactory> morphActionsToolboxFactories,
+                                 final @Any @CommonActionsToolbox ManagedInstance<ActionsToolboxFactory> commonActionsToolboxFactories) {
+        this.flowActionsToolboxFactories = flowActionsToolboxFactories;
+        this.morphActionsToolboxFactories = morphActionsToolboxFactories;
+        this.commonActionsToolboxFactories = commonActionsToolboxFactories;
     }
 
     @Override
     protected List<ActionsToolboxFactory> getFactories() {
-        return factories;
+        return Arrays.asList(flowActionsToolboxFactories.get(),
+                             morphActionsToolboxFactories.get(),
+                             commonActionsToolboxFactories.get());
+    }
+
+    @PreDestroy
+    @Override
+    public void destroy() {
+        super.destroy();
+        flowActionsToolboxFactories.destroyAll();
+        morphActionsToolboxFactories.destroyAll();
+        commonActionsToolboxFactories.destroyAll();
     }
 }

@@ -19,11 +19,12 @@ package org.kie.workbench.common.stunner.core.client.session.command.impl;
 import java.util.Collection;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasDiagramValidator;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
@@ -32,7 +33,8 @@ import org.kie.workbench.common.stunner.core.validation.Violation;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
-public class ValidateSessionCommand extends AbstractClientSessionCommand<AbstractClientFullSession> {
+@Default
+public class ValidateSessionCommand extends AbstractClientSessionCommand<EditorSession> {
 
     private final CanvasDiagramValidator<AbstractCanvasHandler> validator;
 

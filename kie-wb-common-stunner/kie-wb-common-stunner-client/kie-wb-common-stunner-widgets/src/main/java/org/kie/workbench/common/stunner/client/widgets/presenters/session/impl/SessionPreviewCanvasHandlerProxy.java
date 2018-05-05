@@ -56,7 +56,7 @@ public class SessionPreviewCanvasHandlerProxy<D extends Diagram, C extends Abstr
         this.wrapped = wrapped;
     }
 
-    BaseCanvasHandler getWrapped() {
+    public BaseCanvasHandler getWrapped() {
         return wrapped;
     }
 
@@ -176,9 +176,9 @@ public class SessionPreviewCanvasHandlerProxy<D extends Diagram, C extends Abstr
 
     @Override
     public boolean dock(final Element parent,
-                     final Element child) {
+                        final Element child) {
         return wrapped.dock(parent,
-                     child);
+                            child);
     }
 
     @Override

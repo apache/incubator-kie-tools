@@ -30,7 +30,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -43,6 +42,7 @@ import org.kie.workbench.common.stunner.core.lookup.definition.DefinitionLookupR
 import org.kie.workbench.common.stunner.core.lookup.definition.DefinitionRepresentation;
 import org.kie.workbench.common.stunner.core.lookup.rule.RuleLookupManager;
 import org.kie.workbench.common.stunner.core.lookup.rule.RuleLookupRequest;
+import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 import org.kie.workbench.common.stunner.core.rule.Rule;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleSet;
@@ -69,10 +69,10 @@ public class CommonLookups {
     private static Logger LOGGER = Logger.getLogger(CommonLookups.class.getName());
 
     private final DefinitionUtils definitionUtils;
+    private final DefinitionsCacheRegistry definitionsRegistry;
     private final DefinitionLookupManager definitionLookupManager;
     private final RuleManager ruleManager;
     private final RuleLookupManager ruleLookupManager;
-    private final FactoryManager factoryManager;
 
     protected CommonLookups() {
         this(null,
@@ -87,12 +87,12 @@ public class CommonLookups {
                          final RuleManager ruleManager,
                          final DefinitionLookupManager definitionLookupManager,
                          final RuleLookupManager ruleLookupManager,
-                         final FactoryManager factoryManager) {
+                         final DefinitionsCacheRegistry definitionsRegistry) {
         this.definitionUtils = definitionUtils;
         this.ruleManager = ruleManager;
         this.definitionLookupManager = definitionLookupManager;
         this.ruleLookupManager = ruleLookupManager;
-        this.factoryManager = factoryManager;
+        this.definitionsRegistry = definitionsRegistry;
     }
 
     /**
@@ -439,8 +439,7 @@ public class CommonLookups {
     }
 
     private Object createDefinition(final String defId) {
-        // TODO: Avoid new instances here.
-        return factoryManager.newDefinition(defId);
+        return definitionsRegistry.getDefinitionById(defId);
     }
 
     private DefinitionManager getDefinitionManager() {

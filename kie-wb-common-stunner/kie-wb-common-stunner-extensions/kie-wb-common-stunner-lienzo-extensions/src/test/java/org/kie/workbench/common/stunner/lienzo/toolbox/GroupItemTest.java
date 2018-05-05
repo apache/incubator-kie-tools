@@ -21,6 +21,7 @@ import java.util.function.BiConsumer;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -155,10 +156,11 @@ public class GroupItemTest {
 
     @Test
     public void testDestroy() {
+        IPrimitive<?> p = mock(IPrimitive.class);
+        NFastArrayList<IPrimitive<?>> children = new NFastArrayList<>();
+        children.add(p);
+        when(group.getChildNodes()).thenReturn(children);
         tested.destroy();
-        verify(group,
-               times(1)).removeAll();
-        verify(group,
-               times(1)).removeFromParent();
+        verify(p, times(1)).removeFromParent();
     }
 }

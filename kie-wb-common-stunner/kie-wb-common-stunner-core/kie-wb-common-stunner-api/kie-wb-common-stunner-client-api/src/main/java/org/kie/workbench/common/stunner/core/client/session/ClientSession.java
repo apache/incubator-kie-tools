@@ -28,6 +28,9 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
  */
 public interface ClientSession<C extends Canvas, H extends CanvasHandler> {
 
+    /**
+     * Returns a unique session's identifier.
+     */
     String getSessionUUID();
 
     /**

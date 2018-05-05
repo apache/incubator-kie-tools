@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.client.lienzo.components.drag;
 
 import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
@@ -37,10 +36,6 @@ public class ShapeViewDragProxyImpl implements ShapeViewDragProxy<AbstractCanvas
     private LienzoLayer layer;
     private AbstractDragProxy<?> proxy;
 
-    @Inject
-    public ShapeViewDragProxyImpl() {
-    }
-
     @Override
     public DragProxy<AbstractCanvas, ShapeView<?>, DragProxyCallback> proxyFor(final AbstractCanvas context) {
         this.layer = (LienzoLayer) context.getLayer();
@@ -52,6 +47,7 @@ public class ShapeViewDragProxyImpl implements ShapeViewDragProxy<AbstractCanvas
                                                                            final int x,
                                                                            final int y,
                                                                            final DragProxyCallback callback) {
+        clear();
         final AbstractDragProxy.Callback c = new AbstractDragProxy.Callback() {
 
             @Override

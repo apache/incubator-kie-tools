@@ -20,8 +20,8 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.util.RedoCommandHandler;
 import org.mockito.Mock;
@@ -34,7 +34,7 @@ public class RedoSessionCommandTest extends BaseSessionCommandKeyboardTest {
     private RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler;
 
     @Override
-    protected AbstractClientSessionCommand<ClientFullSession> getCommand() {
+    protected AbstractClientSessionCommand<EditorSession> getCommand() {
         return new RedoSessionCommand(sessionCommandManager,
                                       redoCommandHandler);
     }

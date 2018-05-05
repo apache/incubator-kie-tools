@@ -38,6 +38,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
+import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -77,7 +78,13 @@ public class MorphActionsToolboxFactoryTest {
     private MorphNodeAction morphNodeAction;
 
     @Mock
+    private Command morphNodeActionDestroyer;
+
+    @Mock
     private ActionsToolboxView view;
+
+    @Mock
+    private Command viewDestroyer;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -118,7 +125,9 @@ public class MorphActionsToolboxFactoryTest {
         when(definitionUtils.hasMorphTargets(eq(definition))).thenReturn(true);
         this.tested = new MorphActionsToolboxFactory(definitionUtils,
                                                      () -> morphNodeAction,
-                                                     () -> view);
+                                                     morphNodeActionDestroyer,
+                                                     () -> view,
+                                                     viewDestroyer);
     }
 
     @Test
@@ -146,5 +155,12 @@ public class MorphActionsToolboxFactoryTest {
                times(1)).addButton(any(Glyph.class),
                                    anyString(),
                                    any(Consumer.class));
+    }
+
+    @Test
+    public void testDestroy() {
+        tested.destroy();
+        verify(morphNodeActionDestroyer, times(1)).execute();
+        verify(viewDestroyer, times(1)).execute();
     }
 }

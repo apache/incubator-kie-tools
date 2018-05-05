@@ -18,26 +18,25 @@ package org.kie.workbench.common.stunner.project.client.screens;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.event.SessionDiagramOpenedEvent;
 import org.kie.workbench.common.stunner.client.widgets.explorer.tree.TreeExplorer;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPreview;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
-import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionDestroyedEvent;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedEvent;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.uberfire.client.annotations.WorkbenchContextId;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -68,16 +67,17 @@ public class ProjectDiagramExplorerScreen {
     public static final int PREVIEW_WIDTH = 350;
     public static final int PREVIEW_HEIGHT = 175;
     private static Logger LOGGER = Logger.getLogger(ProjectDiagramExplorerScreen.class.getName());
-    private final AbstractClientSessionManager clientSessionManager;
-    private final TreeExplorer treeExplorer;
-    private final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory;
+    private final SessionManager clientSessionManager;
+    private final ManagedInstance<TreeExplorer> treeExplorers;
+    private final ManagedInstance<SessionDiagramPreview<AbstractSession>> sessionPreviews;
     private final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
     private final ErrorPopupPresenter errorPopupPresenter;
     private final View view;
 
-    private SessionPreview<AbstractClientSession, Diagram> sessionPreview;
     private PlaceRequest placeRequest;
     private String title = TITLE;
+    private TreeExplorer explorerWidget;
+    private SessionDiagramPreview<AbstractSession> previewWidget;
 
     protected ProjectDiagramExplorerScreen() {
         this(null,
@@ -89,24 +89,18 @@ public class ProjectDiagramExplorerScreen {
     }
 
     @Inject
-    public ProjectDiagramExplorerScreen(final AbstractClientSessionManager clientSessionManager,
-                                        final TreeExplorer treeExplorer,
+    public ProjectDiagramExplorerScreen(final SessionManager clientSessionManager,
+                                        final @Any ManagedInstance<TreeExplorer> treeExplorers,
                                         final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
-                                        final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory,
+                                        final @Any @Default ManagedInstance<SessionDiagramPreview<AbstractSession>> sessionPreviews,
                                         final ErrorPopupPresenter errorPopupPresenter,
                                         final View view) {
         this.clientSessionManager = clientSessionManager;
-        this.treeExplorer = treeExplorer;
+        this.treeExplorers = treeExplorers;
         this.changeTitleNotificationEvent = changeTitleNotificationEvent;
-        this.sessionPresenterFactory = sessionPresenterFactory;
+        this.sessionPreviews = sessionPreviews;
         this.errorPopupPresenter = errorPopupPresenter;
         this.view = view;
-        this.sessionPreview = null;
-    }
-
-    @PostConstruct
-    public void init() {
-        view.setExplorerWidget(treeExplorer.asWidget());
     }
 
     @OnStartup
@@ -157,8 +151,25 @@ public class ProjectDiagramExplorerScreen {
     }
 
     public void close() {
-        clearPreview();
-        clearExplorer();
+        closeTreeExplorer();
+        closePreview();
+    }
+
+    private void closeTreeExplorer() {
+        view.clearExplorerWidget();
+        if (null != explorerWidget) {
+            treeExplorers.destroy(explorerWidget);
+            explorerWidget = null;
+        }
+    }
+
+    private void closePreview() {
+        view.clearPreviewWidget();
+        if (null != previewWidget) {
+            previewWidget.destroy();
+            sessionPreviews.destroy(previewWidget);
+            previewWidget = null;
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -181,44 +192,40 @@ public class ProjectDiagramExplorerScreen {
     }
 
     private void showExplorer(final ClientSession session) {
-        treeExplorer.show(session.getCanvasHandler());
+        if (null != explorerWidget) {
+            closeTreeExplorer();
+        }
+        explorerWidget = treeExplorers.get();
+        explorerWidget.show(session.getCanvasHandler());
+        view.setExplorerWidget(explorerWidget);
     }
 
     private void showPreview(final ClientSession session) {
-        if (null != session && session instanceof AbstractClientSession) {
-            sessionPreview = sessionPresenterFactory.newPreview();
-            sessionPreview.open((AbstractClientSession) session,
-                                PREVIEW_WIDTH,
-                                PREVIEW_HEIGHT,
-                                new SessionViewer.SessionViewerCallback<AbstractClientSession, Diagram>() {
-                                    @Override
-                                    public void afterCanvasInitialized() {
+        if (null != session && session instanceof AbstractSession) {
+            if (null != previewWidget) {
+                closePreview();
+            }
+            previewWidget = sessionPreviews.get();
+            previewWidget.open((AbstractSession) session,
+                               PREVIEW_WIDTH,
+                               PREVIEW_HEIGHT,
+                               new SessionViewer.SessionViewerCallback<Diagram>() {
+                                   @Override
+                                   public void afterCanvasInitialized() {
 
-                                    }
+                                   }
 
-                                    @Override
-                                    public void onSuccess() {
-                                        view.setPreviewWidget(sessionPreview.getView());
-                                        updateTitle();
-                                    }
+                                   @Override
+                                   public void onSuccess() {
+                                       view.setPreviewWidget(previewWidget.getView());
+                                       updateTitle();
+                                   }
 
-                                    @Override
-                                    public void onError(final ClientRuntimeError error) {
-                                        showError(error);
-                                    }
-                                });
-        }
-    }
-
-    private void clearExplorer() {
-        treeExplorer.clear();
-        treeExplorer.destroy();
-    }
-
-    private void clearPreview() {
-        if (null != sessionPreview) {
-            sessionPreview.destroy();
-            sessionPreview = null;
+                                   @Override
+                                   public void onError(final ClientRuntimeError error) {
+                                       showError(error);
+                                   }
+                               });
         }
     }
 
@@ -254,7 +261,11 @@ public class ProjectDiagramExplorerScreen {
 
         View setPreviewWidget(final IsWidget widget);
 
+        View clearPreviewWidget();
+
         View setExplorerWidget(final IsWidget widget);
+
+        View clearExplorerWidget();
 
         View clear();
     }

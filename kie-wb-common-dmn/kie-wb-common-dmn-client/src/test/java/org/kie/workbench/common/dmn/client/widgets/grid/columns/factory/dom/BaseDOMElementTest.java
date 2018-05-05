@@ -30,7 +30,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -58,7 +58,7 @@ public abstract class BaseDOMElementTest<W extends Widget, D extends BaseDOMElem
     private Style widgetElementStyle;
 
     @Mock
-    private AbstractClientSession session;
+    private EditorSession session;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;

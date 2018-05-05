@@ -32,9 +32,9 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.ExpandedPaletteDefinitionBuilder;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
+import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -56,7 +56,7 @@ public class CaseManagementPaletteDefinitionBuilderTest {
     private DefinitionUtils definitionUtils;
 
     @Mock
-    private ClientFactoryService clientFactoryServices;
+    private DefinitionsCacheRegistry definitionsRegistry;
 
     @Mock
     private StunnerTranslationService translationService;
@@ -68,7 +68,7 @@ public class CaseManagementPaletteDefinitionBuilderTest {
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         paletteDefinitionBuilder = new ExpandedPaletteDefinitionBuilder(definitionUtils,
-                                                                        clientFactoryServices,
+                                                                        definitionsRegistry,
                                                                         translationService);
         tested = new CaseManagementPaletteDefinitionBuilder(paletteDefinitionBuilder,
                                                             definitionManager);

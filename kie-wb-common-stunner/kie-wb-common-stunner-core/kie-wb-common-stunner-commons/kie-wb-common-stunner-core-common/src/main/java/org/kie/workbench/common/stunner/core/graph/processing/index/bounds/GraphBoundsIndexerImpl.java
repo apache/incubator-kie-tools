@@ -69,7 +69,7 @@ public class GraphBoundsIndexerImpl implements GraphBoundsIndexer {
         double xToCheck = 0;
         double yToCheck = 0;
         if (parentNode != null) {
-            parentNodePosition=GraphUtils.getPosition((View) parentNode.asNode().getContent());
+            parentNodePosition = GraphUtils.getPosition((View) parentNode.asNode().getContent());
             xToCheck = x + parentNodePosition.getX();
             yToCheck = y + parentNodePosition.getY();
         }
@@ -218,6 +218,7 @@ public class GraphBoundsIndexerImpl implements GraphBoundsIndexer {
     public void destroy() {
         this.graph = null;
         this.rootUUID = null;
+        this.childrenTraverseProcessor = null;
     }
 
     private abstract class NodeBoundsTraverseCallback {

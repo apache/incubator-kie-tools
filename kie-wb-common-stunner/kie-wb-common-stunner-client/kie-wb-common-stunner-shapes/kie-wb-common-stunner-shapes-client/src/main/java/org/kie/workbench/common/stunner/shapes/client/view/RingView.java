@@ -83,8 +83,8 @@ public class RingView extends AbstractHasRadiusView<RingView> {
     }
 
     @Override
-    protected void preDestroy() {
-        super.preDestroy();
+    public void destroy() {
+        super.destroy();
         registrations.removeHandler();
         ring.removeFromParent();
     }

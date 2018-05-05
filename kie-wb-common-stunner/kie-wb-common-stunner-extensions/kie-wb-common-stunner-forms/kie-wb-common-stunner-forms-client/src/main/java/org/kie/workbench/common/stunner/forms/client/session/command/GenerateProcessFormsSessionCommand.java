@@ -17,15 +17,17 @@
 package org.kie.workbench.common.stunner.forms.client.session.command;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.forms.client.gen.ClientFormGenerationManager;
 import org.kie.workbench.common.stunner.forms.service.FormGenerationService;
 
 @Dependent
-public class GenerateProcessFormsSessionCommand extends AbstractClientSessionCommand<ClientFullSession> {
+@Default
+public class GenerateProcessFormsSessionCommand extends AbstractClientSessionCommand<EditorSession> {
 
     private final ClientFormGenerationManager formGenerationManager;
 

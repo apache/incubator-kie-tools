@@ -23,7 +23,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
@@ -35,35 +36,44 @@ import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.uberfire.mvp.Command;
 
 /**
  * This factory builds a toolbox with a button for each target morph definition available
  * for the toolbox' related node.
  */
-@ApplicationScoped
+@Dependent
 @MorphActionsToolbox
 public class MorphActionsToolboxFactory
         extends AbstractActionsToolboxFactory {
 
     private final DefinitionUtils definitionUtils;
     private final Supplier<MorphNodeAction> morphNodeActions;
+    private final Command morphNodeActionsDestroyer;
     private final Supplier<ActionsToolboxView> views;
+    private final Command viewsDestroyer;
 
     @Inject
     public MorphActionsToolboxFactory(final DefinitionUtils definitionUtils,
                                       final @Any ManagedInstance<MorphNodeAction> morphNodeActions,
-                                      final @MorphActionsToolbox ManagedInstance<ActionsToolboxView> views) {
+                                      final @Any @MorphActionsToolbox ManagedInstance<ActionsToolboxView> views) {
         this(definitionUtils,
              morphNodeActions::get,
-             views::get);
+             morphNodeActions::destroyAll,
+             views::get,
+             views::destroyAll);
     }
 
     MorphActionsToolboxFactory(final DefinitionUtils definitionUtils,
                                final Supplier<MorphNodeAction> morphNodeActions,
-                               final Supplier<ActionsToolboxView> views) {
+                               final Command morphNodeActionsDestroyer,
+                               final Supplier<ActionsToolboxView> views,
+                               final Command viewsDestroyer) {
         this.definitionUtils = definitionUtils;
         this.morphNodeActions = morphNodeActions;
+        this.morphNodeActionsDestroyer = morphNodeActionsDestroyer;
         this.views = views;
+        this.viewsDestroyer = viewsDestroyer;
     }
 
     private DefinitionManager getDefinitionManager() {
@@ -109,5 +119,11 @@ public class MorphActionsToolboxFactory
             }
         }
         return actions;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        morphNodeActionsDestroyer.execute();
+        viewsDestroyer.execute();
     }
 }

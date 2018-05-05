@@ -18,9 +18,11 @@ package org.kie.workbench.common.stunner.standalone.client.screens;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.explorer.tree.TreeExplorer;
 import org.uberfire.client.annotations.WorkbenchContextId;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -42,17 +44,22 @@ public class SessionTreeExplorerScreen extends AbstractSessionScreen {
     public static final String SCREEN_ID = "SessionTreeExplorerScreen";
     public static final String TITLE = "Explorer";
 
-    @Inject
-    TreeExplorer treeExplorer;
-
-    @Inject
-    SessionScreenView view;
-
-    @Inject
-    Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
+    private final ManagedInstance<TreeExplorer> treeExplorers;
+    private final SessionScreenView view;
+    private final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
 
     private PlaceRequest placeRequest;
     private String title = TITLE;
+    private TreeExplorer widget;
+
+    @Inject
+    public SessionTreeExplorerScreen(final @Any ManagedInstance<TreeExplorer> treeExplorers,
+                                     final SessionScreenView view,
+                                     final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent) {
+        this.treeExplorers = treeExplorers;
+        this.view = view;
+        this.changeTitleNotificationEvent = changeTitleNotificationEvent;
+    }
 
     @PostConstruct
     public void init() {
@@ -94,24 +101,17 @@ public class SessionTreeExplorerScreen extends AbstractSessionScreen {
     }
 
     @Override
-    protected void doOpenSession() {
-        // No need to initialize state or views until a diagram is present.
-    }
-
-    @Override
     protected void doOpenDiagram() {
-        // No need to initialize state or views.
-        if (null != getCanvasHandler()) {
-            treeExplorer.show(getCanvasHandler());
-            view.showScreenView(treeExplorer);
-        }
+        widget = treeExplorers.get();
+        widget.show(getCanvasHandler());
+        view.showScreenView(widget);
     }
 
     @Override
     protected void doCloseSession() {
-        treeExplorer.clear();
-        treeExplorer.destroy();
-        view.showEmptySession();
+        view.clear();
+        treeExplorers.destroyAll();
+        widget = null;
     }
 
     protected void doUpdateTitle(final String title) {

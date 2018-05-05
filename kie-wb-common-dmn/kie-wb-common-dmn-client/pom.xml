@@ -237,6 +237,11 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>com.ahome-it</groupId>
+      <artifactId>ahome-tooling-common</artifactId>
+    </dependency>
+
     <!-- Test -->
     <dependency>
       <groupId>org.mockito</groupId>
@@ -257,13 +262,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
-      <artifactId>kie-wb-common-stunner-client-common</artifactId>
-      <scope>test</scope>
-      <type>test-jar</type>
-    </dependency>
-
-    <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-module-junit4</artifactId>
       <scope>test</scope>
@@ -279,6 +277,13 @@
       <groupId>org.kie</groupId>
       <artifactId>lienzo-tests</artifactId>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-client-common</artifactId>
+      <scope>test</scope>
+      <type>test-jar</type>
     </dependency>
 
     <dependency>

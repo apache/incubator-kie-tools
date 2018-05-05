@@ -32,7 +32,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.command.AddNodeComman
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateDockNodeCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPositionCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.AbstractElementBuilderControl.ParentAssignment;
-import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
@@ -49,7 +48,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.rule.context.ContainmentContext;
@@ -84,8 +82,6 @@ public class ElementBuilderControlImplTest {
     @Mock
     private ClientFactoryService clientFactoryServices;
 
-    private GraphUtils graphUtils;
-
     @Mock
     private RuleManager ruleManager;
 
@@ -94,9 +90,6 @@ public class ElementBuilderControlImplTest {
 
     @Mock
     private GraphBoundsIndexer graphBoundsIndexer;
-
-    @Mock
-    private CanvasLayoutUtils canvasLayoutUtil;
 
     @Mock
     private Node<View<?>, Edge> parent;
@@ -175,10 +168,8 @@ public class ElementBuilderControlImplTest {
         when(canvasCommandFactory.updatePosition(eq(node), any())).thenReturn(updateDockPositionCommand);
         when(canvasCommandFactory.addChildNode(any(), eq(node), eq(SHAPE_SET_ID))).thenReturn(addChildCommand);
         when(canvasCommandFactory.addNode(eq(node), eq(SHAPE_SET_ID))).thenReturn(addNodeCommand);
-
-        graphUtils = new GraphUtils();
-        elementBuilderControl = new ElementBuilderControlImpl(clientDefinitionManager, clientFactoryServices, graphUtils, ruleManager, canvasCommandFactory, graphBoundsIndexer, canvasLayoutUtil);
-        elementBuilderControl.enable(canvasHandler);
+        elementBuilderControl = new ElementBuilderControlImpl(clientDefinitionManager, clientFactoryServices, ruleManager, canvasCommandFactory, graphBoundsIndexer);
+        elementBuilderControl.init(canvasHandler);
     }
 
     @Test

@@ -46,7 +46,7 @@ public class LienzoPanel implements IsWidget {
     private final Event<KeyUpEvent> keyUpEvent;
     private final Event<CanvasMouseDownEvent> mouseDownEvent;
     private final Event<CanvasMouseUpEvent> mouseUpEvent;
-    View view;
+    private View view;
 
     private boolean listening;
 
@@ -86,6 +86,7 @@ public class LienzoPanel implements IsWidget {
     public void destroy() {
         this.listening = false;
         view.destroy();
+        view = null;
     }
 
     void onMouseDown() {

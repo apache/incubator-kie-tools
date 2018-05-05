@@ -32,6 +32,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -170,6 +171,7 @@ public class PrimitiveTextTooltipTest {
     @Test
     public void testDestroy() {
         tested.destroy();
+        assertNotNull(tested.getLocationExecutor());
         verify(tooltip,
                times(1)).destroy();
         verify(tooltip,

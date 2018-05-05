@@ -39,6 +39,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -91,10 +92,10 @@ public class FocusableGroupTest {
             return groupItem;
         }).when(groupItem).hide(any(Command.class),
                                 any(Command.class));
-        tested = new FocusableGroup(groupItem,
-                                    group)
-                .useHideExecutor(hideExecutor)
-                .useShowExecutor(showExecutor);
+        tested = spy(new FocusableGroup(groupItem,
+                                        group)
+                             .useHideExecutor(hideExecutor)
+                             .useShowExecutor(showExecutor));
     }
 
     @Test
@@ -140,6 +141,8 @@ public class FocusableGroupTest {
         final Command after = mock(Command.class);
         tested.hide(before,
                     after);
+        verify(tested,
+               times(1)).cancelTimers();
         verify(groupItem,
                times(1)).hide(any(Command.class),
                               eq(after));
@@ -155,6 +158,8 @@ public class FocusableGroupTest {
     @Test
     public void testDestroy() {
         tested.destroy();
+        verify(tested,
+               times(1)).cancelTimers();
         verify(groupItem,
                times(1)).destroy();
     }

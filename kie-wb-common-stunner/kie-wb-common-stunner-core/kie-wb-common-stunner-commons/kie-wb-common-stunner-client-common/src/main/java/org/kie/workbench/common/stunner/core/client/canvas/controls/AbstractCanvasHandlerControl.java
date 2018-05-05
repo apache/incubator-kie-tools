@@ -22,22 +22,19 @@ public abstract class AbstractCanvasHandlerControl<H extends AbstractCanvasHandl
 
     protected H canvasHandler;
 
-    protected abstract void doDisable();
+    protected abstract void doInit();
+
+    protected abstract void doDestroy();
 
     @Override
-    public void enable(final H canvasHandler) {
+    public void init(final H canvasHandler) {
         this.canvasHandler = canvasHandler;
+        doInit();
     }
 
     @Override
-    public void disable() {
-        if (isEnabled()) {
-            doDisable();
-            this.canvasHandler = null;
-        }
-    }
-
-    protected boolean isEnabled() {
-        return canvasHandler != null;
+    public void destroy() {
+        doDestroy();
+        this.canvasHandler = null;
     }
 }

@@ -22,10 +22,10 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Transform;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
+import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 
 /**
  * A tooltip that shows the specified Definition title in the canvas.
@@ -48,11 +48,11 @@ public class CanvasDefinitionTooltip implements CanvasTooltip<CanvasDefinitionTo
 
     @Inject
     public CanvasDefinitionTooltip(final DefinitionManager definitionManager,
-                                   final FactoryManager factoryManager,
+                                   final DefinitionsCacheRegistry registry,
                                    final CanvasTooltip<String> textTooltip) {
         this(textTooltip,
              defId -> getDefinitionTitle(definitionManager,
-                                         factoryManager,
+                                         registry,
                                          defId));
     }
 
@@ -109,11 +109,11 @@ public class CanvasDefinitionTooltip implements CanvasTooltip<CanvasDefinitionTo
     }
 
     private static String getDefinitionTitle(final DefinitionManager definitionManager,
-                                             final FactoryManager factoryManager,
+                                             final DefinitionsCacheRegistry registry,
                                              final String id) {
         return definitionManager
                 .adapters()
                 .forDefinition()
-                .getTitle(factoryManager.newDefinition(id));
+                .getTitle(registry.getDefinitionById(id));
     }
 }

@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.project.client.screens;
 
 import java.util.ArrayList;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -27,16 +27,16 @@ import org.guvnor.messageconsole.events.PublishMessagesEvent;
 import org.guvnor.messageconsole.events.SystemMessage;
 import org.kie.workbench.common.stunner.client.widgets.notification.AbstractNotification;
 import org.kie.workbench.common.stunner.client.widgets.notification.NotificationsObserver;
-import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.uberfire.backend.vfs.Path;
 
-@ApplicationScoped
+@Dependent
 public class ProjectMessagesListener {
 
     private final Event<PublishMessagesEvent> publishMessagesEvent;
     private final NotificationsObserver notificationsObserver;
-    private final AbstractClientSessionManager clientSessionManager;
+    private final SessionManager clientSessionManager;
 
     protected ProjectMessagesListener() {
         this(null,
@@ -47,7 +47,7 @@ public class ProjectMessagesListener {
     @Inject
     public ProjectMessagesListener(final NotificationsObserver notificationsObserver,
                                    final Event<PublishMessagesEvent> publishMessagesEvent,
-                                   final AbstractClientSessionManager clientSessionManager) {
+                                   final SessionManager clientSessionManager) {
         this.publishMessagesEvent = publishMessagesEvent;
         this.notificationsObserver = notificationsObserver;
         this.clientSessionManager = clientSessionManager;

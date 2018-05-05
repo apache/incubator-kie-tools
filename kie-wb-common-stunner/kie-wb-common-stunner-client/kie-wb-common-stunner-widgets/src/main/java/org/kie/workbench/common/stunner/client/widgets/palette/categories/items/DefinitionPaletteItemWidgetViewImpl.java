@@ -16,11 +16,13 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette.categories.items;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import org.jboss.errai.common.client.dom.Anchor;
+import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -90,6 +92,14 @@ public class DefinitionPaletteItemWidgetViewImpl implements DefinitionPaletteIte
                               mouseDownEvent.getClientY(),
                               mouseDownEvent.getX(),
                               mouseDownEvent.getY());
+    }
+
+    @PreDestroy
+    public void destroy() {
+        DOMUtil.removeAllChildren(itemAnchor);
+        DOMUtil.removeAllChildren(icon);
+        DOMUtil.removeAllChildren(name);
+        presenter = null;
     }
 
     private static boolean isEmpty(final String s) {

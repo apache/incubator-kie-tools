@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.components.views.ImageElementRendererView;
 import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
 import org.mockito.Mock;
+import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.eq;
@@ -47,13 +48,17 @@ public class ImageElementGlyphRendererTest {
     @Mock
     private ImageElementRendererView view;
 
+    @Mock
+    private Command viewDestroyer;
+
     private ImageElementGlyphRenderer tested;
 
     @Before
     public void setup() throws Exception {
         when(uri.asString()).thenReturn(DATA_URI);
         when(viewSupplier.get()).thenReturn(view);
-        this.tested = new ImageElementGlyphRenderer(viewSupplier);
+        this.tested = new ImageElementGlyphRenderer(viewSupplier,
+                                                    viewDestroyer);
     }
 
     @Test
@@ -74,5 +79,11 @@ public class ImageElementGlyphRendererTest {
                times(1)).setImage(eq(uri),
                                   eq(100),
                                   eq(200));
+    }
+
+    @Test
+    public void testDestroy() {
+        tested.destroy();
+        verify(viewDestroyer, times(1)).execute();
     }
 }

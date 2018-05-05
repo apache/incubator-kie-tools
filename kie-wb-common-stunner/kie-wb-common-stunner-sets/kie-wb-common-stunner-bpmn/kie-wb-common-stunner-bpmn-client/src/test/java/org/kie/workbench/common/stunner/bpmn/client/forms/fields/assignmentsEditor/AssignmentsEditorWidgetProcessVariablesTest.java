@@ -35,9 +35,9 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGen
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -67,7 +67,7 @@ public class AssignmentsEditorWidgetProcessVariablesTest {
     @Mock
     private SessionManager canvasSessionManager;
     @Mock
-    private ClientFullSession clientSession;
+    private EditorSession clientSession;
     @Mock
     private UserTask userTask;
     @Mock
@@ -75,7 +75,7 @@ public class AssignmentsEditorWidgetProcessVariablesTest {
     @Mock
     private Name taskName;
     @Mock
-    private CanvasHandler canvasHandler;
+    private AbstractCanvasHandler canvasHandler;
     @Mock
     private Diagram diagram;
     @Mock

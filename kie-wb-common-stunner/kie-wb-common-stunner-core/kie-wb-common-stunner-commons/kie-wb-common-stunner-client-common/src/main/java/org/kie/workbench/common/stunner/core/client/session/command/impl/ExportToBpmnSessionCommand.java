@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.service.ClientDiagramService;
@@ -25,12 +27,12 @@ import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.exports.TextContent;
 import org.uberfire.ext.editor.commons.client.file.exports.TextFileExport;
 
+@Dependent
+@Default
 public class ExportToBpmnSessionCommand extends AbstractExportSessionCommand {
 
     private final ClientDiagramService clientDiagramService;
-
     private final ErrorPopupPresenter errorPopupPresenter;
-
     private final TextFileExport textFileExport;
 
     protected ExportToBpmnSessionCommand() {

@@ -41,7 +41,7 @@ import org.kie.workbench.common.dmn.client.commands.general.DeleteHeaderValueCom
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueCommand;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
-import org.kie.workbench.common.dmn.client.session.DMNClientFullSession;
+import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -136,7 +136,7 @@ public class RelationGridTest {
     private SessionManager sessionManager;
 
     @Mock
-    private DMNClientFullSession dmnClientFullSession;
+    private DMNEditorSession dmnEditorSession;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -204,8 +204,8 @@ public class RelationGridTest {
         hasName = Optional.of(decision);
         expression = definition.getModelClass();
 
-        doReturn(canvasHandler).when(dmnClientFullSession).getCanvasHandler();
-        doReturn(dmnClientFullSession).when(sessionManager).getCurrentSession();
+        doReturn(canvasHandler).when(dmnEditorSession).getCanvasHandler();
+        doReturn(dmnEditorSession).when(sessionManager).getCurrentSession();
         doReturn(parentGridData).when(parentGridWidget).getModel();
         doReturn(Collections.singletonList(parentGridColumn)).when(parentGridData).getColumns();
 

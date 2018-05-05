@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.svg.client.shape.view.impl;
 
 import java.util.Collection;
-import java.util.logging.Logger;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Shape;
@@ -32,8 +31,6 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitiveShape;
 public class SVGBasicShapeViewImpl
         extends WiresShapeView<SVGBasicShapeViewImpl>
         implements SVGBasicShapeView<SVGBasicShapeViewImpl> {
-
-    private static Logger LOGGER = Logger.getLogger(SVGBasicShapeViewImpl.class.getName());
 
     private final String name;
     private final SVGPrimitiveShape svgPrimitive;
@@ -97,8 +94,9 @@ public class SVGBasicShapeViewImpl
 
     @Override
     public void destroy() {
-        super.destroy();
+        svgPrimitive.destroy();
         childViewHandler.clear();
+        super.destroy();
     }
 
     private static MultiPath setupDecorator(final MultiPath path,

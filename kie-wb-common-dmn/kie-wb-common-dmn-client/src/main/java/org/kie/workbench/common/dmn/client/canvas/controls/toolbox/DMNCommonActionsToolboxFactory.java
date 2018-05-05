@@ -19,9 +19,9 @@ package org.kie.workbench.common.dmn.client.canvas.controls.toolbox;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Supplier;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
@@ -37,31 +37,21 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.T
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 
-@ApplicationScoped
+@Dependent
 @DMNCommonActionsToolbox
 public class DMNCommonActionsToolboxFactory
         extends AbstractActionsToolboxFactory {
 
     private final ActionsToolboxFactory commonActionsToolboxFactory;
-    private final Supplier<DMNEditDecisionToolboxAction> editDecisionToolboxActions;
-    private final Supplier<DMNEditBusinessKnowledgeModelToolboxAction> editBusinessKnowledgeModelToolboxActions;
-    private final Supplier<ActionsToolboxView> views;
+    private final ManagedInstance<DMNEditDecisionToolboxAction> editDecisionToolboxActions;
+    private final ManagedInstance<DMNEditBusinessKnowledgeModelToolboxAction> editBusinessKnowledgeModelToolboxActions;
+    private final ManagedInstance<ActionsToolboxView> views;
 
     @Inject
     public DMNCommonActionsToolboxFactory(final @CommonActionsToolbox ActionsToolboxFactory commonActionsToolboxFactory,
                                           final @Any ManagedInstance<DMNEditDecisionToolboxAction> editDecisionToolboxActions,
                                           final @Any ManagedInstance<DMNEditBusinessKnowledgeModelToolboxAction> editBusinessKnowledgeModelToolboxActions,
-                                          final @CommonActionsToolbox ManagedInstance<ActionsToolboxView> views) {
-        this(commonActionsToolboxFactory,
-             editDecisionToolboxActions::get,
-             editBusinessKnowledgeModelToolboxActions::get,
-             views::get);
-    }
-
-    DMNCommonActionsToolboxFactory(final ActionsToolboxFactory commonActionsToolboxFactory,
-                                   final Supplier<DMNEditDecisionToolboxAction> editDecisionToolboxActions,
-                                   final Supplier<DMNEditBusinessKnowledgeModelToolboxAction> editBusinessKnowledgeModelToolboxActions,
-                                   final Supplier<ActionsToolboxView> views) {
+                                          final @Any @CommonActionsToolbox ManagedInstance<ActionsToolboxView> views) {
         this.commonActionsToolboxFactory = commonActionsToolboxFactory;
         this.editDecisionToolboxActions = editDecisionToolboxActions;
         this.editBusinessKnowledgeModelToolboxActions = editBusinessKnowledgeModelToolboxActions;
@@ -89,6 +79,13 @@ public class DMNCommonActionsToolboxFactory
             actions.add(editBusinessKnowledgeModelToolboxActions.get());
         }
         return actions;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        editDecisionToolboxActions.destroyAll();
+        editBusinessKnowledgeModelToolboxActions.destroyAll();
+        views.destroyAll();
     }
 
     private boolean isDecision(final Element<?> element) {

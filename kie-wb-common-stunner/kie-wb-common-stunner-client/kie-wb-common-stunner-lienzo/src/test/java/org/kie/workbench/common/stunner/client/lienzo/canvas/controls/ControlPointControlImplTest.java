@@ -99,7 +99,7 @@ public class ControlPointControlImplTest extends AbstractCanvasControlTest {
         when(connectorShape.getShapeView()).thenReturn(shapeView);
         when(viewConnector.getControlPoints()).thenReturn(Arrays.asList(controlPoint1));
 
-        controlPointControl.enable(canvasHandler);
+        controlPointControl.init(canvasHandler);
         controlPointControl.setCommandManagerProvider(() -> commandManager);
         controlPointControl.register(edge);
     }
@@ -131,7 +131,7 @@ public class ControlPointControlImplTest extends AbstractCanvasControlTest {
         verify(canvasCommandFactory, never()).updateControlPointPosition(any(), any(), any());
         try {
             controlPointControl.moveControlPoint(null, newControlPointPosition);
-        }catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
             assertNotNull(e);
         }
     }

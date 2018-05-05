@@ -34,10 +34,8 @@ public class CaseManagementElementBuilderControlTest extends BaseCaseManagementB
     protected AbstractElementBuilderControl getBuilderControl() {
         return new CaseManagementElementBuilderControl(clientDefinitionManager,
                                                        clientFactoryServices,
-                                                       graphUtils,
                                                        ruleManager,
                                                        canvasCommandFactory,
-                                                       graphBoundsIndexer,
-                                                       canvasLayoutUtils);
+                                                       graphBoundsIndexer);
     }
 }

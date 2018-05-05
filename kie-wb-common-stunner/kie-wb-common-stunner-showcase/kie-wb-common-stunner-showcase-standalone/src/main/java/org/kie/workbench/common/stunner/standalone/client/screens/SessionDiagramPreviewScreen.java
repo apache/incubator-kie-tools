@@ -22,23 +22,20 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.menu.MenuUtils;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPreview;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.uberfire.client.annotations.WorkbenchContextId;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -49,7 +46,6 @@ import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -57,7 +53,6 @@ import org.uberfire.workbench.model.menu.Menus;
 
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.SEVERE;
-import static java.util.logging.Level.WARNING;
 
 /**
  * This screen provides a preview for a diagram.
@@ -75,19 +70,23 @@ public class SessionDiagramPreviewScreen extends AbstractSessionScreen {
     public static final int WIDTH = 420;
     public static final int HEIGHT = 280;
 
-    @Inject
-    SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory;
+    private final ManagedInstance<SessionDiagramPreview<AbstractSession>> sessionPreviews;
+    private final SessionScreenView view;
+    private final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
 
-    @Inject
-    SessionScreenView view;
-
-    @Inject
-    Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
-
-    private SessionPreview<AbstractClientSession, Diagram> sessionPreview;
     private PlaceRequest placeRequest;
     private String title = TITLE;
-    private Menus menu = null;
+    private Menus menu;
+    private SessionDiagramPreview<AbstractSession> preview;
+
+    @Inject
+    public SessionDiagramPreviewScreen(final @Any @Default ManagedInstance<SessionDiagramPreview<AbstractSession>> sessionPreviews,
+                                       final SessionScreenView view,
+                                       final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent) {
+        this.sessionPreviews = sessionPreviews;
+        this.view = view;
+        this.changeTitleNotificationEvent = changeTitleNotificationEvent;
+    }
 
     @PostConstruct
     public void init() {
@@ -130,62 +129,39 @@ public class SessionDiagramPreviewScreen extends AbstractSessionScreen {
     }
 
     @Override
-    protected void doOpenSession() {
-        // No need to initialize state or views if no diagram is present.
-    }
-
-    @Override
     protected void doOpenDiagram() {
-        final AbstractClientSession session = getSession();
-        if (null != session) {
-            newPreview(() -> {
-                sessionPreview.open(session,
-                                    WIDTH,
-                                    HEIGHT,
-                                    new SessionViewer.SessionViewerCallback<AbstractClientSession, Diagram>() {
-                                        @Override
-                                        public void afterCanvasInitialized() {
-                                        }
+        final AbstractSession session = getSession();
+        preview = sessionPreviews.get();
+        preview.open(session,
+                     WIDTH,
+                     HEIGHT,
+                     new SessionViewer.SessionViewerCallback<Diagram>() {
+                         @Override
+                         public void afterCanvasInitialized() {
+                         }
 
-                                        @Override
-                                        public void onSuccess() {
-                                            LOGGER.log(FINE,
-                                                       "Session's preview completed for [" + session + "]");
-                                            view.showScreenView(sessionPreview.getView());
-                                        }
+                         @Override
+                         public void onSuccess() {
+                             LOGGER.log(FINE,
+                                        "Session's preview completed for [" + session + "]");
+                             view.showScreenView(preview.getView());
+                         }
 
-                                        @Override
-                                        public void onError(final ClientRuntimeError error) {
-                                            LOGGER.log(SEVERE,
-                                                       "Error while showing session preview for [" + session + "]. " +
-                                                               "Error=[" + error + "]");
-                                        }
-                                    });
-            });
-        } else {
-            LOGGER.log(WARNING,
-                       "Trying to open a null session!");
-        }
+                         @Override
+                         public void onError(final ClientRuntimeError error) {
+                             LOGGER.log(SEVERE,
+                                        "Error while showing session preview for [" + session + "]. " +
+                                                "Error=[" + error + "]");
+                         }
+                     });
     }
 
     @Override
     protected void doCloseSession() {
-        destroyPreview();
         view.showEmptySession();
-    }
-
-    private void newPreview(final Command callback) {
-        destroyPreview();
-        sessionPreview = sessionPresenterFactory.newPreview();
-        callback.execute();
-    }
-
-    private void destroyPreview() {
-        // Clear the session's preview presenter if it has been initialized before.
-        if (null != sessionPreview) {
-            sessionPreview.destroy();
-            sessionPreview = null;
-        }
+        preview.destroy();
+        sessionPreviews.destroy(preview);
+        preview = null;
     }
 
     @Override
@@ -197,7 +173,7 @@ public class SessionDiagramPreviewScreen extends AbstractSessionScreen {
     }
 
     private void refresh() {
-        final ClientSession<AbstractCanvas, AbstractCanvasHandler> session = getSession();
+        final AbstractSession session = getSession();
         open(session);
     }
 

@@ -23,8 +23,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.mockito.ArgumentCaptor;
@@ -51,7 +51,7 @@ public class ClearSessionCommandTest {
     private EventSourceMock<ClearSessionCommandExecutedEvent> commandExecutedEvent;
 
     @Mock
-    private ClientFullSession session;
+    private EditorSession session;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;

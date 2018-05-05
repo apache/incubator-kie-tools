@@ -854,7 +854,8 @@
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
           <draftCompile>true</draftCompile>
           <extraJvmArgs>-Xmx4096m -Xms1024m -Xss1M -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home} -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
-          <module>org.kie.workbench.common.stunner.standalone.FastCompiledStunnerStandaloneShowcase</module>
+          <module>org.kie.workbench.common.stunner.standalone.StunnerStandaloneShowcaseWithSourceMap</module>
+          <style>PRETTY</style>
           <logLevel>INFO</logLevel>
           <noServer>false</noServer>
           <server>org.jboss.errai.cdi.server.gwt.EmbeddedWildFlyLauncher</server>

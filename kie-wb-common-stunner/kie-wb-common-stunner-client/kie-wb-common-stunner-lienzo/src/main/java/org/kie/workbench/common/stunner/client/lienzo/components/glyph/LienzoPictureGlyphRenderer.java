@@ -19,27 +19,26 @@ package org.kie.workbench.common.stunner.client.lienzo.components.glyph;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 
+import com.ait.lienzo.client.core.image.PictureLoadedHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Picture;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.shared.core.types.ColorName;
-import com.google.gwt.core.client.Scheduler;
-import org.kie.workbench.common.stunner.client.lienzo.shape.util.LienzoPictureUtils;
 import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
 
 import static org.kie.workbench.common.stunner.client.lienzo.util.LienzoShapeUtils.scalePicture;
 
-@ApplicationScoped
+@Dependent
 public class LienzoPictureGlyphRenderer implements LienzoGlyphRenderer<ImageDataUriGlyph> {
 
     private final BiConsumer<String, Consumer<Picture>> pictureBuilder;
 
     public LienzoPictureGlyphRenderer() {
         this.pictureBuilder = (uri,
-                               consumer) -> new Picture(uri,
-                                                        consumer::accept);
+                               consumer) -> new DestroyablePicture(uri,
+                                                                   consumer::accept);
     }
 
     LienzoPictureGlyphRenderer(final BiConsumer<String, Consumer<Picture>> pictureBuilder) {
@@ -63,7 +62,7 @@ public class LienzoPictureGlyphRenderer implements LienzoGlyphRenderer<ImageData
     public Group render(final String data,
                         final double width,
                         final double height) {
-        final DestroyableGroup group = new DestroyableGroup();
+        final DestroyablePictureGroup group = new DestroyablePictureGroup();
         final Rectangle decorator =
                 new Rectangle(width,
                               height)
@@ -72,7 +71,7 @@ public class LienzoPictureGlyphRenderer implements LienzoGlyphRenderer<ImageData
                         .setFillAlpha(0.7d);
         pictureBuilder.accept(data,
                               picture -> {
-                                  group.picture = picture;
+                                  group.forPicture(picture);
                                   scalePicture(picture,
                                                width,
                                                height);
@@ -83,17 +82,36 @@ public class LienzoPictureGlyphRenderer implements LienzoGlyphRenderer<ImageData
         return group;
     }
 
-    private static class DestroyableGroup extends Group {
+    public static class DestroyablePictureGroup extends Group {
 
         private Picture picture;
 
+        public void forPicture(final Picture picture) {
+            this.picture = picture;
+        }
+
         @Override
         public boolean removeFromParent() {
-            LienzoPictureUtils.tryDestroy(picture,
-                                          (p) -> Scheduler.get()
-                                                  .scheduleFixedDelay(() -> !LienzoPictureUtils.retryDestroy(p),
-                                                                      200));
+            if (null != picture) {
+                if (picture instanceof DestroyablePicture) {
+                    ((DestroyablePicture) picture).destroy();
+                }
+                picture = null;
+            }
             return super.removeFromParent();
+        }
+    }
+
+    public static class DestroyablePicture extends Picture {
+
+        public DestroyablePicture(final String url,
+                                  final PictureLoadedHandler loadedHandler) {
+            super(url, loadedHandler);
+        }
+
+        public void destroy() {
+            getImageProxy().destroy();
+            removeFromParent();
         }
     }
 }

@@ -29,8 +29,14 @@ public class ScreenPanelViewImpl implements ScreenPanelView {
 
     @Override
     public ScreenPanelView setWidget(final IsWidget widget) {
-        panel.clear();
+        clear();
         panel.add(widget);
+        return this;
+    }
+
+    @Override
+    public ScreenPanelView clear() {
+        panel.clear();
         return this;
     }
 

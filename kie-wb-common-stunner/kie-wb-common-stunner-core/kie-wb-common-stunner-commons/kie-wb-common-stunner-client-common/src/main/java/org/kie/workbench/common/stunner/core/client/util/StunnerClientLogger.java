@@ -27,12 +27,11 @@ import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
@@ -143,10 +142,11 @@ public class StunnerClientLogger {
                            ", H=" + (lr.getY() - ul.getY()) + "] }");
     }
 
-    public static void logSessionInfo(final AbstractClientSession session) {
+    public static void logSessionInfo(final AbstractSession session) {
         log("************ Session Info ****************");
         if (null != session) {
             log("Session = " + session.toString());
+            log("Session id = " + session.getSessionUUID());
             log("Canvas = " + session.getCanvas().toString());
             if (null != session.getCanvasHandler()) {
                 final CanvasHandler canvasHandler = session.getCanvasHandler();
@@ -170,8 +170,8 @@ public class StunnerClientLogger {
             } else {
                 log("CanvasHandler = null");
             }
-            if (session instanceof ClientFullSession) {
-                logFullSessionInfo((ClientFullSession) session);
+            if (session instanceof EditorSession) {
+                logFullSessionInfo((EditorSession) session);
             }
         } else {
             log("Session is null");
@@ -179,16 +179,14 @@ public class StunnerClientLogger {
         log("******************************************");
     }
 
-    private static void logFullSessionInfo(final ClientFullSession session) {
-        final ElementBuilderControl<AbstractCanvasHandler> builderControl = session.getBuilderControl();
+    private static void logFullSessionInfo(final EditorSession session) {
         final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager =
                 session.getCommandManager();
-        log("Builder control = " + (null != builderControl ? builderControl.toString() : "null"));
         log("Canvas command mgr = " + (null != canvasCommandManager ? canvasCommandManager.toString() : "null"));
     }
 
     @SuppressWarnings("unchecked")
-    public static void logCommandHistory(final ClientFullSession session) {
+    public static void logCommandHistory(final EditorSession session) {
         if (null != session) {
             final List<Command<AbstractCanvasHandler, CanvasViolation>> history =
                     session.getCommandRegistry().getCommandHistory();

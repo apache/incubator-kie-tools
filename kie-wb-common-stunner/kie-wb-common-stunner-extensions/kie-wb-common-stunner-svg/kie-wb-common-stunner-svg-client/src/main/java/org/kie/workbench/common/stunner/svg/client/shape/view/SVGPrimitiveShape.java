@@ -190,11 +190,6 @@ public final class SVGPrimitiveShape
     }
 
     @Override
-    public void destroy() {
-        removeFromParent();
-    }
-
-    @Override
     public List<Shape<?>> getDecorators() {
         return Collections.singletonList(get());
     }

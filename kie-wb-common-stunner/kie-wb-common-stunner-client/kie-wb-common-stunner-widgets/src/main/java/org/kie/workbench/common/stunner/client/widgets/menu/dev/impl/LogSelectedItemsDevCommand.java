@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
@@ -37,7 +37,7 @@ public class LogSelectedItemsDevCommand extends AbstractSelectionDevCommand {
     }
 
     @Inject
-    public LogSelectedItemsDevCommand(final AbstractClientSessionManager sessionManager) {
+    public LogSelectedItemsDevCommand(final SessionManager sessionManager) {
         super(sessionManager);
     }
 

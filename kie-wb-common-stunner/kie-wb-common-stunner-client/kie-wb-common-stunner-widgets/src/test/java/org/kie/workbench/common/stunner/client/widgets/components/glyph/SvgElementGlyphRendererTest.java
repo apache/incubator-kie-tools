@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.core.client.components.views.ImageElemen
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.util.SvgDataUriGenerator;
 import org.mockito.Mock;
+import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.eq;
@@ -52,6 +53,9 @@ public class SvgElementGlyphRendererTest {
     private Supplier<ImageElementRendererView> viewSupplier;
 
     @Mock
+    private Command viewDestroyer;
+
+    @Mock
     private ImageElementRendererView view;
 
     private SvgElementGlyphRenderer tested;
@@ -61,7 +65,8 @@ public class SvgElementGlyphRendererTest {
         when(uri.asString()).thenReturn(DATA_URI);
         when(viewSupplier.get()).thenReturn(view);
         this.tested = new SvgElementGlyphRenderer(DATA_URI_UTIL,
-                                                  viewSupplier);
+                                                  viewSupplier,
+                                                  viewDestroyer);
     }
 
     @Test
@@ -90,5 +95,11 @@ public class SvgElementGlyphRendererTest {
         tested.render(SvgDataUriGlyph.Builder.build(uri),
                       100,
                       200);
+    }
+
+    @Test
+    public void testDestroy() {
+        tested.destroy();
+        verify(viewDestroyer, times(1)).execute();
     }
 }

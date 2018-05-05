@@ -21,6 +21,7 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -247,7 +248,7 @@ public class CreateConnectorAction extends AbstractToolboxAction {
         canvasHighlight = canvasHighlightBuilder.apply(canvasHandler);
         graphBoundsIndexer.setRootUUID(canvasHandler.getDiagram().getMetadata().getCanvasRootUUID());
         graphBoundsIndexer.build(canvasHandler.getDiagram().getGraph());
-        edgeBuilderControl.enable(canvasHandler);
+        edgeBuilderControl.init(canvasHandler);
         edgeBuilderControl.setCommandManagerProvider(() -> sessionCommandManager);
     }
 
@@ -299,7 +300,6 @@ public class CreateConnectorAction extends AbstractToolboxAction {
 
     private void complete() {
         edgeBuilderControl.setCommandManagerProvider(null);
-        edgeBuilderControl.disable();
         canvasHighlight.destroy();
     }
 
@@ -315,6 +315,22 @@ public class CreateConnectorAction extends AbstractToolboxAction {
 
     protected DragProxy<AbstractCanvasHandler, ConnectorDragProxy.Item, DragProxyCallback> getDragProxy() {
         return dragProxy;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        graphBoundsIndexer.destroy();
+        connectorDragProxyFactory.destroy();
+        edgeBuilderControl.destroy();
+        if (null != canvasHighlight) {
+            canvasHighlight.destroy();
+            canvasHighlight = null;
+        }
+        if (null != dragProxy) {
+            dragProxy.destroy();
+            dragProxy = null;
+        }
+        edgeId = null;
     }
 
     @Override

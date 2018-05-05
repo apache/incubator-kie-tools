@@ -16,15 +16,17 @@
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Default;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasGrid;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
-public class SwitchGridSessionCommand extends AbstractClientSessionCommand<AbstractClientSession> {
+@Default
+public class SwitchGridSessionCommand extends AbstractClientSessionCommand<EditorSession> {
 
     public final static CanvasGrid[] GRIDS = new CanvasGrid[]{
             CanvasGrid.SMALL_POINT_GRID, CanvasGrid.DEFAULT_GRID,
@@ -39,7 +41,7 @@ public class SwitchGridSessionCommand extends AbstractClientSessionCommand<Abstr
     }
 
     @Override
-    public void bind(final AbstractClientSession session) {
+    public void bind(final EditorSession session) {
         super.bind(session);
         resetGrid();
     }
@@ -54,6 +56,11 @@ public class SwitchGridSessionCommand extends AbstractClientSessionCommand<Abstr
         updateGrid();
         // Run the callback.
         callback.onSuccess();
+    }
+
+    @Override
+    protected void doDestroy() {
+        super.doDestroy();
     }
 
     private void resetGrid() {

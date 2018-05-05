@@ -20,12 +20,13 @@ import java.util.Collection;
 import java.util.function.Predicate;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.forms.client.gen.ClientFormGenerationManager;
@@ -34,7 +35,8 @@ import org.kie.workbench.common.stunner.forms.client.resources.i18n.FormsClientC
 import org.kie.workbench.common.stunner.forms.service.FormGenerationService;
 
 @Dependent
-public class GenerateSelectedFormsSessionCommand extends AbstractClientSessionCommand<ClientFullSession> {
+@Default
+public class GenerateSelectedFormsSessionCommand extends AbstractClientSessionCommand<EditorSession> {
 
     private final ClientFormGenerationManager formGenerationManager;
     private final FormGenerationNotifier formGenerationNotifier;

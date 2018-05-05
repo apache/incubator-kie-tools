@@ -45,15 +45,13 @@ public class ShapeGlyphDragHandlerImpl implements ShapeGlyphDragHandler<Abstract
     private static final int ZINDEX = Integer.MAX_VALUE;
 
     private final LienzoGlyphRenderer<Glyph> glyphLienzoGlyphRenderer;
+    final List<HandlerRegistration> handlerRegistrations = new ArrayList<>();
+    LienzoPanel dragProxyPanel;
 
     @Inject
     public ShapeGlyphDragHandlerImpl(final LienzoGlyphRenderers glyphLienzoGlyphRenderer) {
         this.glyphLienzoGlyphRenderer = glyphLienzoGlyphRenderer;
     }
-
-    protected LienzoPanel dragProxyPanel;
-
-    protected final List<HandlerRegistration> handlerRegistrations = new ArrayList<>();
 
     @Override
     public DragProxy<AbstractCanvas, Item, DragProxyCallback> proxyFor(AbstractCanvas context) {
@@ -88,7 +86,6 @@ public class ShapeGlyphDragHandlerImpl implements ShapeGlyphDragHandler<Abstract
         if (Objects.nonNull(dragProxyPanel)) {
             clearHandlers();
             dragProxyPanel.clear();
-            dragProxyPanel.removeAll();
             RootPanel.get().remove(dragProxyPanel);
             dragProxyPanel = null;
         }
@@ -96,7 +93,12 @@ public class ShapeGlyphDragHandlerImpl implements ShapeGlyphDragHandler<Abstract
 
     @Override
     public void destroy() {
-        clear();
+        clearHandlers();
+        if (Objects.nonNull(dragProxyPanel)) {
+            RootPanel.get().remove(dragProxyPanel);
+            dragProxyPanel.destroy();
+            dragProxyPanel = null;
+        }
     }
 
     private void setDragProxyPosition(final LienzoPanel dragProxyPanel, final double proxyWidth, final double proxyHeight, final double x, final double y) {

@@ -101,7 +101,6 @@ public class LienzoSelectionControlTest {
         when(canvas.getShape(eq(ELEMENT_UUID))).thenReturn(shape);
         when(canvas.getShapes()).thenReturn(Collections.singletonList(shape));
         when(shape.getUUID()).thenReturn(ELEMENT_UUID);
-        when(selectionControl.isEnabled()).thenReturn(true);
         when(selectionControl.getCanvasHandler()).thenReturn(canvasHandler);
         when(selectionControl.getCanvas()).thenReturn(canvas);
         when(shapeViewHandlers.supports(any(ViewEventType.class))).thenReturn(true);
@@ -113,14 +112,14 @@ public class LienzoSelectionControlTest {
     }
 
     @Test
-    public void testEnable() {
-        tested.enable(canvasHandler);
-        verify(selectionControl, times(1)).enable(eq(canvasHandler));
+    public void testInit() {
+        tested.init(canvasHandler);
+        verify(selectionControl, times(1)).init(eq(canvasHandler));
     }
 
     @Test
     public void testRegisterAndClick() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         verify(selectionControl, times(1)).register(eq(element));
         ArgumentCaptor<MouseClickHandler> clickHandlerCaptor = ArgumentCaptor.forClass(MouseClickHandler.class);
@@ -138,7 +137,7 @@ public class LienzoSelectionControlTest {
     @Test
     public void testSelectionIsSingle() {
         when(selectionControl.getSelectedItems()).thenReturn(Collections.singletonList(ELEMENT_UUID));
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         tested.singleSelect(element);
         verify(selectionControl, times(1)).clearSelection();
@@ -147,7 +146,7 @@ public class LienzoSelectionControlTest {
 
     @Test
     public void testClearSelection() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         tested.singleSelect(element);
         tested.clearSelection();
@@ -157,20 +156,10 @@ public class LienzoSelectionControlTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testDeregister() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         tested.deregister(element);
         verify(selectionControl, times(1)).deregister(eq(element));
-        verify(shapeViewHandlers, times(1)).removeHandler(any(ViewHandler.class));
-        assertTrue(tested.getHandlers().isEmpty());
-    }
-
-    @Test
-    public void testDisable() {
-        tested.enable(canvasHandler);
-        tested.register(element);
-        tested.disable();
-        verify(selectionControl, times(1)).disable();
         verify(shapeViewHandlers, times(1)).removeHandler(any(ViewHandler.class));
         assertTrue(tested.getHandlers().isEmpty());
     }

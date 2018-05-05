@@ -34,8 +34,8 @@ import org.kie.workbench.common.stunner.forms.client.formFilters.StunnerFormElem
 
 public class StartEventFilterProvider implements StunnerFormElementFilterProvider {
 
-    private SessionManager sessionManager;
-    private Supplier<Class<?>> definitionTypeSupplier;
+    private final SessionManager sessionManager;
+    private final Supplier<Class<?>> definitionTypeSupplier;
 
     public StartEventFilterProvider(final SessionManager sessionManager,
                                     final Class<?> startEventClass) {

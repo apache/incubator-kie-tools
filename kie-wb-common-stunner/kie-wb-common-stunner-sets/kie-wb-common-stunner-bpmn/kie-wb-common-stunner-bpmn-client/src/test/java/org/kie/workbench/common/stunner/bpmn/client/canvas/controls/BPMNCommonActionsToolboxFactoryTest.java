@@ -18,14 +18,15 @@ package org.kie.workbench.common.stunner.bpmn.client.canvas.controls;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.function.Supplier;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
+import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxFactory;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxView;
@@ -41,6 +42,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -55,14 +59,12 @@ public class BPMNCommonActionsToolboxFactoryTest {
     @Mock
     private ToolboxAction<AbstractCanvasHandler> action1;
 
-    @Mock
-    private Supplier<FormGenerationToolboxAction> generateFormsActions;
+    private ManagedInstance<FormGenerationToolboxAction> generateFormsActions;
 
     @Mock
     private FormGenerationToolboxAction formGenerationToolboxAction;
 
-    @Mock
-    private Supplier<ActionsToolboxView> views;
+    private ManagedInstance<ActionsToolboxView> views;
 
     @Mock
     private ActionsToolboxView view;
@@ -73,10 +75,10 @@ public class BPMNCommonActionsToolboxFactoryTest {
     @Before
     public void init() {
         element = new NodeImpl<>("node1");
-        when(generateFormsActions.get()).thenReturn(formGenerationToolboxAction);
-        when(views.get()).thenReturn(view);
         when(commonActionToolbox.getActions(eq(canvasHandler),
                                             eq(element))).thenReturn(Collections.singletonList(action1));
+        generateFormsActions = spy(new ManagedInstanceStub<>(formGenerationToolboxAction));
+        views = spy(new ManagedInstanceStub<>(view));
         tested = new BPMNCommonActionsToolboxFactory(commonActionToolbox,
                                                      generateFormsActions,
                                                      views);
@@ -109,5 +111,12 @@ public class BPMNCommonActionsToolboxFactoryTest {
         assertEquals(1, actions.size());
         assertTrue(actions.contains(action1));
         assertFalse(actions.contains(formGenerationToolboxAction));
+    }
+
+    @Test
+    public void testDestroy() {
+        tested.destroy();
+        verify(generateFormsActions, times(1)).destroyAll();
+        verify(views, times(1)).destroyAll();
     }
 }

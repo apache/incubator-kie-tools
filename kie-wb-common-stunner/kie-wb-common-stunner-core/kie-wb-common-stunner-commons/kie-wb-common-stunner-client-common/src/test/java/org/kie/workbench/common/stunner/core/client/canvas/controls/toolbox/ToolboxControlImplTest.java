@@ -122,15 +122,15 @@ public class ToolboxControlImplTest {
     }
 
     @Test
-    public void testEnable() {
-        tested.enable(canvasHandler);
+    public void testInitnable() {
+        tested.init(canvasHandler);
         assertEquals(canvasHandler,
                      tested.getCanvasHandler());
     }
 
     @Test
     public void testRegisterElement() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         assertFalse(tested.isRegistered(element));
         tested.register(element);
         verify(shapeEventHandler,
@@ -143,7 +143,7 @@ public class ToolboxControlImplTest {
 
     @Test
     public void testNotSupportedElement() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         final Edge edge = mock(Edge.class);
         tested.register(edge);
         assertFalse(tested.isRegistered(edge));
@@ -156,7 +156,7 @@ public class ToolboxControlImplTest {
 
     @Test
     public void testGetFactories() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         assertTrue(tested.isRegistered(element));
         final Iterator<Toolbox<?>> toolboxes = tested.getToolboxes(element);
@@ -174,7 +174,7 @@ public class ToolboxControlImplTest {
     @Test
     public void testShowPredicate() {
         when(showToolboxPredicate.test(anyString())).thenReturn(false);
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         tested.show(element);
         tested.show(ELEMENT_UUID);
@@ -188,7 +188,7 @@ public class ToolboxControlImplTest {
 
     @Test
     public void testShow() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         assertTrue(tested.isRegistered(element));
         tested.show(element);
@@ -202,7 +202,7 @@ public class ToolboxControlImplTest {
 
     @Test
     public void testActiveElement() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         assertTrue(tested.isRegistered(element));
         assertFalse(tested.isActive(element.getUUID()));
@@ -214,7 +214,7 @@ public class ToolboxControlImplTest {
 
     @Test
     public void testDestroy() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         assertTrue(tested.isRegistered(element));
         tested.show(element);
@@ -230,26 +230,11 @@ public class ToolboxControlImplTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testDeregisterElement() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         tested.deregister(element);
         verify(shapeEventHandler,
                times(1)).removeHandler(any(ViewHandler.class));
         assertFalse(tested.isRegistered(element));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testDisable() {
-        tested.enable(canvasHandler);
-        tested.register(element);
-        tested.show(element);
-        tested.disable();
-        verify(toolbox,
-               times(1)).show();
-        verify(toolbox,
-               never()).destroy();
-        verify(toolbox,
-               never()).hide();
     }
 }

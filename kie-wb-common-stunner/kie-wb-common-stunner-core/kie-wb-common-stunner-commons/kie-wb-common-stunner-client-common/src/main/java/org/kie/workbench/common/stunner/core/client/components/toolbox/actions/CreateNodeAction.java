@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.components.toolbox.actions;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -165,6 +166,12 @@ public class CreateNodeAction extends AbstractToolboxAction {
         }
 
         return this;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        nodeId = null;
+        edgeId = null;
     }
 
     private CanvasCommand<AbstractCanvasHandler> updateNodeLocation(final AbstractCanvasHandler canvasHandler,

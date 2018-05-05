@@ -22,21 +22,20 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
+import com.ait.tooling.common.api.java.util.function.Predicate;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl.DiagramPreviewProxy;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
-import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.BaseCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SingleSelection;
@@ -45,9 +44,15 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasC
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils;
+import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
@@ -60,54 +65,66 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
  * size for the preview.
  */
 @Dependent
+@Typed(SessionDiagramPreview.class)
 @Default
-public class SessionPreviewImpl
-        extends AbstractSessionViewer<AbstractClientSession, AbstractCanvasHandler>
-        implements SessionDiagramPreview<AbstractClientSession> {
+public class SessionPreviewImpl<S extends AbstractSession>
+        extends AbstractSessionViewer<S>
+        implements SessionDiagramPreview<S> {
 
     private static final int DEFAULT_WIDTH = 300;
     private static final int DEFAULT_HEIGHT = 300;
 
-    private DiagramPreviewProxy<Diagram> diagramPreview;
-    private AbstractCanvas canvas;
-    private ZoomControl<AbstractCanvas> zoomControl;
+    private final DefinitionUtils definitionUtils;
+    private final GraphUtils graphUtils;
+    private final ShapeManager shapeManager;
+    private final TextPropertyProviderFactory textPropertyProviderFactory;
+    private final ManagedInstance<AbstractCanvas> canvases;
+    private final ManagedInstance<BaseCanvasHandler> canvasHandlers;
+    private final ManagedInstance<ZoomControl<AbstractCanvas>> zoomControls;
+    private final ManagedInstance<SelectionControl<AbstractCanvasHandler, Element>> selectionControls;
+    private final ManagedInstance<CanvasCommandFactory> canvasCommandFactories;
+    private final ManagedInstance<CanvasCommandManager<AbstractCanvasHandler>> canvasCommandManagers;
 
-    private DefinitionManager definitionManager;
-    private ShapeManager shapeManager;
-    private TextPropertyProviderFactory textPropertyProviderFactory;
-    private CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
-    private DefinitionUtils definitionUtils;
-    private GraphUtils graphUtils;
-    private ManagedInstance<BaseCanvasHandler> canvasHandlerFactories;
-    private ManagedInstance<CanvasCommandFactory> canvasCommandFactories;
-    private BaseCanvasHandler canvasHandler;
-    private CanvasCommandFactory canvasCommandFactory;
+    private AbstractCanvas canvas;
+    private SessionPreviewCanvasHandlerProxy canvasHandler;
+    private ZoomControl<AbstractCanvas> zoomControl;
+    private SelectionControl<AbstractCanvasHandler, Element> selectionControl;
+    private CanvasCommandFactory commandFactory;
+    private CanvasCommandManager<AbstractCanvasHandler> commandManager;
+    private DiagramPreviewProxy<Diagram> diagramPreview;
+    private Predicate<Command<AbstractCanvasHandler, CanvasViolation>> isCommandAllowed;
 
     @Inject
     @SuppressWarnings("unchecked")
-    public SessionPreviewImpl(final DefinitionManager definitionManager,
+    public SessionPreviewImpl(final DefinitionUtils definitionUtils,
+                              final GraphUtils graphUtils,
                               final ShapeManager shapeManager,
                               final TextPropertyProviderFactory textPropertyProviderFactory,
-                              final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
-                              final DefinitionUtils definitionUtils,
-                              final GraphUtils graphUtils,
-                              final @Any ManagedInstance<BaseCanvasHandler> canvasHandlerFactories,
+                              final @Any ManagedInstance<AbstractCanvas> canvases,
+                              final @Any ManagedInstance<BaseCanvasHandler> canvasHandlers,
+                              final @Any ManagedInstance<ZoomControl<AbstractCanvas>> zoomControls,
+                              final @Any @SingleSelection ManagedInstance<SelectionControl<AbstractCanvasHandler, Element>> selectionControls,
                               final @Any ManagedInstance<CanvasCommandFactory> canvasCommandFactories,
-                              final @SingleSelection SelectionControl<AbstractCanvasHandler, ?> selectionControl,
+                              final @Any ManagedInstance<CanvasCommandManager<AbstractCanvasHandler>> canvasCommandManagers,
                               final WidgetWrapperView view) {
-        this.definitionManager = definitionManager;
-        this.shapeManager = shapeManager;
-        this.textPropertyProviderFactory = textPropertyProviderFactory;
-        this.canvasCommandManager = canvasCommandManager;
-
         this.definitionUtils = definitionUtils;
         this.graphUtils = graphUtils;
-        this.canvasHandlerFactories = canvasHandlerFactories;
+        this.shapeManager = shapeManager;
+        this.textPropertyProviderFactory = textPropertyProviderFactory;
+        this.canvases = canvases;
+        this.canvasHandlers = canvasHandlers;
+        this.zoomControls = zoomControls;
+        this.selectionControls = selectionControls;
         this.canvasCommandFactories = canvasCommandFactories;
-
+        this.canvasCommandManagers = canvasCommandManagers;
+        this.isCommandAllowed = c -> true;
         this.diagramPreview =
-                new DiagramPreviewProxy<Diagram>(view,
-                                                 selectionControl) {
+                new DiagramPreviewProxy<Diagram>(view) {
+                    @Override
+                    public SelectionControl<AbstractCanvasHandler, Element> getSelectionControl() {
+                        return selectionControl;
+                    }
+
                     @Override
                     public <C extends Canvas> ZoomControl<C> getZoomControl() {
                         return (ZoomControl<C>) zoomControl;
@@ -124,88 +141,105 @@ public class SessionPreviewImpl
                     }
 
                     @Override
+                    protected void onOpen(final Diagram diagram) {
+                        SessionPreviewImpl.this.onOpen(diagram);
+                    }
+
+                    @Override
                     protected AbstractCanvas getCanvas() {
                         return canvas;
                     }
 
                     @Override
                     protected CanvasCommandFactory getCanvasCommandFactory() {
-                        return SessionPreviewImpl.this.getCanvasCommandFactory();
+                        return commandFactory;
                     }
 
                     @Override
                     protected BaseCanvasHandler<Diagram, ?> getCanvasHandler() {
-                        return SessionPreviewImpl.this.getCanvasHandler();
+                        return canvasHandler;
                     }
 
                     @Override
                     protected void enableControls() {
-                        zoomControl.enable(canvas);
+                        zoomControl.init(canvas);
                         zoomControl.setMinScale(0);
                         zoomControl.setMaxScale(1);
                     }
 
                     @Override
-                    protected void disableControls() {
-                        zoomControl.disable();
+                    protected void destroyControls() {
+                        zoomControl.destroy();
                     }
 
                     @Override
-                    protected void destroyControls() {
-                        zoomControl.disable();
+                    protected void destroyInstances() {
+                        SessionPreviewImpl.this.destroyInstances();
                     }
                 };
         this.canvas = null;
         this.zoomControl = null;
     }
 
-    BaseCanvasHandler getCanvasHandler() {
-        if (canvasHandler == null) {
-            BaseCanvasHandler handler;
-            final String defSetId = getDiagram().getMetadata().getDefinitionSetId();
-            final Annotation qualifier = definitionUtils.getQualifier(defSetId);
-            final ManagedInstance<BaseCanvasHandler> customInstances = canvasHandlerFactories.select(qualifier);
-            if (customInstances.isUnsatisfied()) {
-                handler = canvasHandlerFactories.select(DefinitionManager.DEFAULT_QUALIFIER).get();
-            } else {
-                handler = customInstances.get();
-            }
-            canvasHandler = new SessionPreviewCanvasHandlerProxy(handler,
-                                                                 definitionManager,
-                                                                 graphUtils,
-                                                                 shapeManager,
-                                                                 textPropertyProviderFactory);
-        }
+    public SessionPreviewImpl setCommandAllowed(final Predicate<Command<AbstractCanvasHandler, CanvasViolation>> isCommandAllowed) {
+        this.isCommandAllowed = isCommandAllowed;
+        return this;
+    }
 
+    @SuppressWarnings("unchecked")
+    private void onOpen(final Diagram diagram) {
+        final Annotation qualifier = definitionUtils.getQualifier(diagram.getMetadata().getDefinitionSetId());
+        final BaseCanvasHandler delegate = InstanceUtils.lookup(canvasHandlers, qualifier);
+        canvas = InstanceUtils.lookup(canvases, qualifier);
+        canvasHandler = new SessionPreviewCanvasHandlerProxy(delegate,
+                                                             definitionUtils.getDefinitionManager(),
+                                                             graphUtils,
+                                                             shapeManager,
+                                                             textPropertyProviderFactory);
+        zoomControl = InstanceUtils.lookup(zoomControls, qualifier);
+        selectionControl = InstanceUtils.lookup(selectionControls, qualifier);
+        commandFactory = InstanceUtils.lookup(canvasCommandFactories, qualifier);
+        commandManager = InstanceUtils.lookup(canvasCommandManagers, qualifier);
+    }
+
+    private void destroyInstances() {
+        canvases.destroy(canvas);
+        canvases.destroyAll();
+        canvasHandlers.destroy(canvasHandler.getWrapped());
+        canvasHandlers.destroyAll();
+        zoomControls.destroy(zoomControl);
+        zoomControls.destroyAll();
+        selectionControls.destroy(selectionControl);
+        selectionControls.destroyAll();
+        canvasCommandFactories.destroy(commandFactory);
+        canvasCommandFactories.destroyAll();
+        canvasCommandManagers.destroy(commandManager);
+        canvasCommandManagers.destroyAll();
+        canvas = null;
+        canvasHandler = null;
+        zoomControl = null;
+        selectionControl = null;
+        commandFactory = null;
+        commandManager = null;
+        diagramPreview = null;
+        isCommandAllowed = null;
+    }
+
+    public CanvasCommandManager<AbstractCanvasHandler> getCommandManager() {
+        return commandManager;
+    }
+
+    public SessionPreviewCanvasHandlerProxy getCanvasHandler() {
         return canvasHandler;
     }
 
-    CanvasCommandFactory getCanvasCommandFactory() {
-        if (canvasCommandFactory == null) {
-            final String defSetId = getDiagram().getMetadata().getDefinitionSetId();
-            final Annotation qualifier = definitionUtils.getQualifier(defSetId);
-            final ManagedInstance<CanvasCommandFactory> customInstances = canvasCommandFactories.select(qualifier);
-            if (customInstances.isUnsatisfied()) {
-                canvasCommandFactory = canvasCommandFactories.select(DefinitionManager.DEFAULT_QUALIFIER).get();
-            } else {
-                canvasCommandFactory = customInstances.get();
-            }
-        }
-        return canvasCommandFactory;
+    @Override
+    public AbstractCanvas getCanvas() {
+        return canvas;
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    protected void beforeOpen() {
-        super.beforeOpen();
-        final CanvasFactory<Canvas, CanvasHandler> canvasFactory = shapeManager.getCanvasFactory(getDiagram());
-        canvas = (AbstractCanvas) canvasFactory.newCanvas();
-        zoomControl = canvasFactory.newControl(ZoomControl.class);
-    }
-
-    @Override
-    protected CanvasCommandManager<AbstractCanvasHandler> getCommandManager() {
-        return canvasCommandManager;
+    public CanvasCommandFactory getCommandFactory() {
+        return commandFactory;
     }
 
     @Override
@@ -218,20 +252,62 @@ public class SessionPreviewImpl
         return null != getSessionHandler() ? getSessionHandler().getDiagram() : null;
     }
 
+    @SuppressWarnings("unchecked")
     void commandExecutedFired(@Observes CanvasCommandExecutedEvent commandExecutedEvent) {
-        handleCanvasCommandExecutedEvent(commandExecutedEvent);
+        checkNotNull("commandExecutedEvent",
+                     commandExecutedEvent);
+        final Command<AbstractCanvasHandler, CanvasViolation> command = commandExecutedEvent.getCommand();
+        if (isCommandAllowed.test(command)) {
+            final AbstractCanvasHandler context = (AbstractCanvasHandler) commandExecutedEvent.getCanvasHandler();
+            final CommandResult<CanvasViolation> result = commandExecutedEvent.getResult();
+            onExecute(context,
+                      command,
+                      result);
+        }
     }
 
+    @SuppressWarnings("unchecked")
     void commandUndoExecutedFired(@Observes CanvasUndoCommandExecutedEvent commandUndoExecutedEvent) {
-        handleCanvasUndoCommandExecutedEvent(commandUndoExecutedEvent);
+        checkNotNull("commandUndoExecutedEvent",
+                     commandUndoExecutedEvent);
+        final Command<AbstractCanvasHandler, CanvasViolation> command = commandUndoExecutedEvent.getCommand();
+        if (isCommandAllowed.test(command)) {
+            final AbstractCanvasHandler context = (AbstractCanvasHandler) commandUndoExecutedEvent.getCanvasHandler();
+            final CommandResult<CanvasViolation> result = commandUndoExecutedEvent.getResult();
+            onUndo(context,
+                   command,
+                   result);
+        }
     }
 
-    protected void handleCanvasCommandExecutedEvent(final CanvasCommandExecutedEvent event) {
-        super.onCommandExecuted(event);
+    private void onExecute(final AbstractCanvasHandler context,
+                           final Command<AbstractCanvasHandler, CanvasViolation> command,
+                           final CommandResult<CanvasViolation> result) {
+        if (isOperationAllowed(context,
+                               result)) {
+            getCommandManager().execute(getDiagramViewer().getHandler(),
+                                        command);
+        }
     }
 
-    protected void handleCanvasUndoCommandExecutedEvent(final CanvasUndoCommandExecutedEvent event) {
-        super.onCommandUndoExecuted(event);
+    private void onUndo(final AbstractCanvasHandler context,
+                        final Command<AbstractCanvasHandler, CanvasViolation> command,
+                        final CommandResult<CanvasViolation> result) {
+        if (isOperationAllowed(context,
+                               result)) {
+            getCommandManager().undo(getDiagramViewer().getHandler(),
+                                     command);
+        }
+    }
+
+    private boolean isOperationAllowed(final AbstractCanvasHandler sessionHandlerContext,
+                                       final CommandResult<CanvasViolation> result) {
+        return isSameContext(sessionHandlerContext) && !CommandUtils.isError(result);
+    }
+
+    private boolean isSameContext(final AbstractCanvasHandler sessionHandlerContext) {
+        return null != getSessionHandler() &&
+                getSessionHandler().equals(sessionHandlerContext);
     }
 
     @Override
@@ -245,8 +321,13 @@ public class SessionPreviewImpl
      * the canvas has been initialized.
      */
     @Override
-    protected DiagramViewer.DiagramViewerCallback<Diagram> buildCallback(final SessionViewerCallback<AbstractClientSession, Diagram> callback) {
+    protected DiagramViewer.DiagramViewerCallback<Diagram> buildCallback(final SessionViewerCallback<Diagram> callback) {
         return new DiagramViewer.DiagramViewerCallback<Diagram>() {
+            @Override
+            public void onOpen(final Diagram diagram) {
+                callback.onOpen(diagram);
+            }
+
             @Override
             public void afterCanvasInitialized() {
                 checkNotNull("canvas",

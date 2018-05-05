@@ -25,6 +25,7 @@ import java.util.function.Supplier;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
+import org.kie.workbench.common.stunner.lienzo.toolbox.Item;
 import org.kie.workbench.common.stunner.lienzo.toolbox.ItemGrid;
 import org.kie.workbench.common.stunner.lienzo.toolbox.grid.Point2DGrid;
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.AbstractDecoratedItem;
@@ -149,8 +150,10 @@ public class ItemGridImpl
 
     @Override
     public void destroy() {
-        getWrapped().destroy();
+        items.forEach(Item::destroy);
         items.clear();
+        getWrapped().destroy();
+        grid = null;
         refreshCallback = null;
         boundingBoxSupplier = null;
         boundingBox = null;

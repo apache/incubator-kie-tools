@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -56,11 +57,16 @@ public class FormDisplayer implements FormDisplayerView.Presenter,
     private final DynamicFormModelGenerator modelGenerator;
 
     @Inject
-    public FormDisplayer(FormDisplayerView view, DynamicFormRenderer renderer, DynamicFormModelGenerator modelGenerator) {
+    public FormDisplayer(final FormDisplayerView view,
+                         final DynamicFormRenderer renderer,
+                         final DynamicFormModelGenerator modelGenerator) {
         this.view = view;
         this.renderer = renderer;
         this.modelGenerator = modelGenerator;
+    }
 
+    @PostConstruct
+    public void init() {
         view.init(this);
     }
 

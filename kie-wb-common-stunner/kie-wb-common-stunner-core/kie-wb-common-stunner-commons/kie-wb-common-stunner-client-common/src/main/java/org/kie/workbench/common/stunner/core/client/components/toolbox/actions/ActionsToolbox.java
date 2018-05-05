@@ -31,7 +31,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
  * A default toolbox implementation that decouples
  * the actions/operations to perform for an element
  * and the concrete toolbox' view implementation.
- * <p/>
+ * <p>
  * Several <code>ToolboxAction</code> instances can be added in this
  * toolbox, depending on the current context. On the other hand,
  * this toolbox uses a concrete inmutable view, given at instance
@@ -102,8 +102,8 @@ public class ActionsToolbox<V extends ActionsToolboxView<?>>
 
     @Override
     public void destroy() {
-        actions.clear();
         getView().destroy();
+        actions.clear();
     }
 
     public V getView() {

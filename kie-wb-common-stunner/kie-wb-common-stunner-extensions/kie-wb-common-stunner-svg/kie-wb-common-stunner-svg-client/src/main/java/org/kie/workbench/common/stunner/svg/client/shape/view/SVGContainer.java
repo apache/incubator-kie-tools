@@ -55,6 +55,13 @@ public final class SVGContainer extends SVGPrimitive<Group> {
         return this;
     }
 
+    @Override
+    public void destroy() {
+        super.destroy();
+        children.forEach(SVGPrimitive::destroy);
+        children.clear();
+    }
+
     public String getId() {
         return id;
     }

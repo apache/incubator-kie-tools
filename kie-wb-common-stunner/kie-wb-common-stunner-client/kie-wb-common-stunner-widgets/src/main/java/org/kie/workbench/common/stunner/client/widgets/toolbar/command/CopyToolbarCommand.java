@@ -20,17 +20,23 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.CopySelectionSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @Dependent
-public class CopyToolbarCommand extends AbstractToolbarCommand<ClientFullSession, CopySelectionSessionCommand> {
+public class CopyToolbarCommand extends AbstractToolbarCommand<EditorSession, CopySelectionSessionCommand> {
 
     @Inject
-    public CopyToolbarCommand(final CopySelectionSessionCommand copySelectionSessionCommand, final ClientTranslationService translationService) {
-        super(copySelectionSessionCommand, translationService);
+    public CopyToolbarCommand(final DefinitionUtils definitionUtils,
+                              final ManagedInstance<CopySelectionSessionCommand> command,
+                              final ClientTranslationService translationService) {
+        super(definitionUtils,
+              command,
+              translationService);
     }
 
     @Override

@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 import java.util.function.Function;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
@@ -35,11 +36,12 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
 @Dependent
+@Default
 public class DockingAcceptorControlImpl extends AbstractAcceptorControl
         implements DockingAcceptorControl<AbstractCanvasHandler> {
 
     private static final int HOTSPOT = 10;
-    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+    private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     @Inject
     public DockingAcceptorControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
@@ -47,12 +49,12 @@ public class DockingAcceptorControlImpl extends AbstractAcceptorControl
     }
 
     @Override
-    protected void onEnable(final WiresCanvas.View view) {
+    protected void onInit(final WiresCanvas.View view) {
         view.setDockingAcceptor(DOCKING_ACCEPTOR);
     }
 
     @Override
-    protected void onDisable(final WiresCanvas.View view) {
+    protected void onDestroy(final WiresCanvas.View view) {
         view.setDockingAcceptor(IDockingAcceptor.NONE);
     }
 

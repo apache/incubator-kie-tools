@@ -235,14 +235,13 @@ public class ResizeControlImplTest {
         when(dockedShapeView.getShapeX()).thenReturn(SHAPE_X);
         when(dockedShapeView.getShapeY()).thenReturn(SHAPE_Y);
 
-
         this.tested = new ResizeControlImpl(canvasCommandFactory);
         tested.setCommandManagerProvider(() -> commandManager);
     }
 
     @Test
     public void testRegister() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         assertFalse(tested.isRegistered(element));
         tested.register(element);
         verify(shapeEventHandler,
@@ -256,7 +255,7 @@ public class ResizeControlImplTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testDeregister() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         tested.deregister(element);
         verify(shapeEventHandler,
@@ -269,7 +268,7 @@ public class ResizeControlImplTest {
     public void testResize() {
         when(commandManager.execute(eq(canvasHandler),
                                     any(Command.class))).thenReturn(CanvasCommandResultBuilder.SUCCESS);
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         assertFalse(tested.isRegistered(element));
         tested.register(element);
         verify(shapeEventHandler,

@@ -28,11 +28,11 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.AbstractCanvas
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.BaseCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
@@ -42,12 +42,12 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomCon
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
 import org.kie.workbench.common.stunner.core.rule.EmptyRuleSet;
@@ -57,7 +57,6 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -79,7 +78,7 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
 
     @Mock
     private CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
-
+    private ManagedInstance<CanvasCommandManager<AbstractCanvasHandler>> canvasCommandManagers;
     @Mock
     private DefinitionUtils definitionUtils;
 
@@ -89,23 +88,27 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
     @Mock
     private ManagedInstance<CanvasCommandFactory> canvasCommandFactories;
 
+    private ManagedInstance<AbstractCanvas> canvases;
+
     @Mock
     private ManagedInstance<BaseCanvasHandler> canvasHandlerFactories;
 
     @Mock
-    private SelectionControl<AbstractCanvasHandler, ?> selectionControl;
+    private SelectionControl<AbstractCanvasHandler, Element> selectionControl;
+    private ManagedInstance<SelectionControl<AbstractCanvasHandler, Element>> selectionControls;
 
     @Mock
     private WidgetWrapperView view;
 
     @Mock
-    private AbstractClientFullSession session;
+    private EditorSession session;
 
     @Mock
-    private SessionViewer.SessionViewerCallback<AbstractClientSession, Diagram> callback;
+    private SessionViewer.SessionViewerCallback<Diagram> callback;
 
     @Mock
     private ZoomControl<AbstractCanvas> zoomControl;
+    private ManagedInstance<ZoomControl<AbstractCanvas>> zoomControls;
 
     @Mock
     private ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl;
@@ -115,9 +118,6 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
 
     @Mock
     private DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl;
-
-    @Mock
-    private CanvasFactory canvasFactory;
 
     @Mock
     private Metadata metaData;
@@ -167,6 +167,10 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         super.init();
+        zoomControls = new ManagedInstanceStub<>(zoomControl);
+        selectionControls = new ManagedInstanceStub<>(selectionControl);
+        canvasCommandManagers = new ManagedInstanceStub<>(canvasCommandManager);
+        canvases = new ManagedInstanceStub<>(canvas);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(session.getCanvas()).thenReturn(canvas);
@@ -179,9 +183,6 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
         when(ruleAdapter.getRuleSet(eq(defSet))).thenReturn(EMPTY_RULESET);
         when(definitionManager.definitionSets()).thenReturn(definitionSetRegistry);
         when(definitionSetRegistry.getDefinitionSetById(eq(DEFINITION_SET_ID))).thenReturn(defSet);
-        when(shapeManager.getCanvasFactory(any(Diagram.class))).thenReturn(canvasFactory);
-        when(canvasFactory.newCanvas()).thenReturn(canvas);
-        when(canvasFactory.newControl(eq(ZoomControl.class))).thenReturn(zoomControl);
         when(diagram.getMetadata()).thenReturn(metaData);
         when(metaData.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
         when(definitionUtils.getQualifier(eq(DEFINITION_SET_ID))).thenReturn(qualifier);
@@ -198,15 +199,16 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
         when(canvasHandlerFactories.select(eq(qualifier))).thenReturn(customCanvasHandlerInstance);
         when(canvasHandlerFactories.select(eq(DefinitionManager.DEFAULT_QUALIFIER))).thenReturn(defaultCanvasHandlerInstance);
 
-        this.preview = new SessionPreviewImpl(definitionManager,
+        this.preview = new SessionPreviewImpl(definitionUtils,
+                                              graphUtils,
                                               shapeManager,
                                               textPropertyProviderFactory,
-                                              canvasCommandManager,
-                                              definitionUtils,
-                                              graphUtils,
+                                              canvases,
                                               canvasHandlerFactories,
+                                              zoomControls,
+                                              selectionControls,
                                               canvasCommandFactories,
-                                              selectionControl,
+                                              canvasCommandManagers,
                                               view);
     }
 
@@ -262,7 +264,7 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
         preview.open(session,
                      callback);
 
-        final CanvasCommandFactory factory = preview.getCanvasCommandFactory();
+        final CanvasCommandFactory factory = preview.getCommandFactory();
         assertion.accept(factory);
     }
 }

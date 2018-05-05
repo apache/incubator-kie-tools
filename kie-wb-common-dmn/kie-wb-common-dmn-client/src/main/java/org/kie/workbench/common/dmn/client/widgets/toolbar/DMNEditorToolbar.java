@@ -16,9 +16,11 @@
 
 package org.kie.workbench.common.dmn.client.widgets.toolbar;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarView;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ClearStatesToolbarCommand;
+import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Default;
+import javax.inject.Inject;
+
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ClearToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.CopyToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.CutToolbarCommand;
@@ -29,38 +31,98 @@ import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToP
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.PasteToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.RedoToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.SwitchGridToolbarCommand;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ToolbarCommandFactory;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.UndoToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ValidateToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.VisitGraphToolbarCommand;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.AbstractToolbar;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.EditorToolbar;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.item.AbstractToolbarItem;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.ManagedToolbar;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.ManagedToolbarDelegate;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 
-public class DMNEditorToolbar extends EditorToolbar {
+@Default
+@DMNEditor
+public class DMNEditorToolbar
+        extends ManagedToolbarDelegate<EditorSession>
+        implements EditorToolbar {
 
-    public DMNEditorToolbar(ToolbarCommandFactory commandFactory,
-                            ManagedInstance<AbstractToolbarItem<AbstractClientFullSession>> items,
-                            ToolbarView<AbstractToolbar> view) {
-        super(commandFactory, items, view);
+    private final ManagedToolbar<EditorSession> toolbar;
+
+    @Inject
+    public DMNEditorToolbar(final ManagedToolbar<EditorSession> toolbar) {
+        this.toolbar = toolbar;
+    }
+
+    @PostConstruct
+    public void init() {
+        toolbar.register(VisitGraphToolbarCommand.class)
+                .register(ClearToolbarCommand.class)
+                .register(DeleteSelectionToolbarCommand.class)
+                .register(SwitchGridToolbarCommand.class)
+                .register(UndoToolbarCommand.class)
+                .register(RedoToolbarCommand.class)
+                .register(ValidateToolbarCommand.class)
+                .register(ExportToPngToolbarCommand.class)
+                .register(ExportToJpgToolbarCommand.class)
+                .register(ExportToPdfToolbarCommand.class)
+                .register(CopyToolbarCommand.class)
+                .register(CutToolbarCommand.class)
+                .register(PasteToolbarCommand.class);
+    }
+
+    public VisitGraphToolbarCommand getVisitGraphToolbarCommand() {
+        return (VisitGraphToolbarCommand) toolbar.getCommand(0);
+    }
+
+    public ClearToolbarCommand getClearToolbarCommand() {
+        return (ClearToolbarCommand) toolbar.getCommand(1);
+    }
+
+    public DeleteSelectionToolbarCommand getDeleteSelectionToolbarCommand() {
+        return (DeleteSelectionToolbarCommand) toolbar.getCommand(2);
+    }
+
+    public SwitchGridToolbarCommand getSwitchGridToolbarCommand() {
+        return (SwitchGridToolbarCommand) toolbar.getCommand(3);
+    }
+
+    public UndoToolbarCommand getUndoToolbarCommand() {
+        return (UndoToolbarCommand) toolbar.getCommand(4);
+    }
+
+    public RedoToolbarCommand getRedoToolbarCommand() {
+        return (RedoToolbarCommand) toolbar.getCommand(5);
+    }
+
+    public ValidateToolbarCommand getValidateCommand() {
+        return (ValidateToolbarCommand) toolbar.getCommand(6);
+    }
+
+    public ExportToPngToolbarCommand getExportToPngToolbarCommand() {
+        return (ExportToPngToolbarCommand) toolbar.getCommand(7);
+    }
+
+    public ExportToJpgToolbarCommand getExportToJpgToolbarCommand() {
+        return (ExportToJpgToolbarCommand) toolbar.getCommand(8);
+    }
+
+    public ExportToPdfToolbarCommand getExportToPdfToolbarCommand() {
+        return (ExportToPdfToolbarCommand) toolbar.getCommand(9);
+    }
+
+    public CopyToolbarCommand getCopyToolbarCommand() {
+        return (CopyToolbarCommand) toolbar.getCommand(10);
+    }
+
+    public CutToolbarCommand getCutToolbarCommand() {
+        return (CutToolbarCommand) toolbar.getCommand(11);
+    }
+
+    public PasteToolbarCommand getPasteToolbarCommand() {
+        return (PasteToolbarCommand) toolbar.getCommand(12);
     }
 
     @Override
-    protected void addDefaultCommands() {
-        addCommand(VisitGraphToolbarCommand.class, commandFactory.newVisitGraphCommand());
-        addCommand(ClearToolbarCommand.class, commandFactory.newClearCommand());
-        addCommand(ClearStatesToolbarCommand.class, commandFactory.newClearStatesCommand());
-        addCommand(DeleteSelectionToolbarCommand.class, commandFactory.newDeleteSelectedElementsCommand());
-        addCommand(SwitchGridToolbarCommand.class, commandFactory.newSwitchGridCommand());
-        addCommand(UndoToolbarCommand.class, commandFactory.newUndoCommand());
-        addCommand(RedoToolbarCommand.class, commandFactory.newRedoCommand());
-        addCommand(ValidateToolbarCommand.class, commandFactory.newValidateCommand());
-        addCommand(ExportToPngToolbarCommand.class, commandFactory.newExportToPngToolbarCommand());
-        addCommand(ExportToJpgToolbarCommand.class, commandFactory.newExportToJpgToolbarCommand());
-        addCommand(ExportToPdfToolbarCommand.class, commandFactory.newExportToPdfToolbarCommand());
-        addCommand(CopyToolbarCommand.class, commandFactory.newCopyCommand());
-        addCommand(CutToolbarCommand.class, commandFactory.newCutToolbarCommand());
-        addCommand(PasteToolbarCommand.class, commandFactory.newPasteCommand());
+    protected ManagedToolbar<EditorSession> getDelegate() {
+        return toolbar;
     }
 }

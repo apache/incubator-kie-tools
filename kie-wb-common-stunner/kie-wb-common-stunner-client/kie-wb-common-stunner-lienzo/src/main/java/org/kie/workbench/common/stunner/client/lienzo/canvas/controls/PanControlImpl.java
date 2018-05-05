@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Default;
 
 import com.ait.lienzo.client.core.mediator.EventFilter;
 import com.ait.lienzo.client.core.mediator.IEventFilter;
@@ -26,6 +27,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 
 @Dependent
+@Default
 public class PanControlImpl<C extends AbstractCanvas> extends AbstractMediatorControl<MousePanMediator, C> implements PanControl<C> {
 
     private final IEventFilter[] filters = new IEventFilter[]{EventFilter.ALT};

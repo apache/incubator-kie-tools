@@ -22,6 +22,7 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +37,7 @@ import static org.mockito.Mockito.anyDouble;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.anyObject;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -94,6 +96,8 @@ public class PaletteTest {
         doReturn(decorator).when(decorator).setX(anyDouble());
         doReturn(decorator).when(decorator).setY(anyDouble());
         doReturn(group).when(decorator).add(anyObject());
+        when(group.getChildNodes()).thenReturn(new NFastArrayList<>());
+        when(itemsGroup.getChildNodes()).thenReturn(new NFastArrayList<>());
         miniPalette.itemsGroup = itemsGroup;
     }
 
@@ -150,8 +154,12 @@ public class PaletteTest {
 
     @Test
     public void testClear() {
+        IPrimitive<?> p = mock(IPrimitive.class);
+        NFastArrayList<IPrimitive<?>> children = new NFastArrayList<>();
+        children.add(p);
+        when(itemsGroup.getChildNodes()).thenReturn(children);
         miniPalette.clear();
-        verify(miniPalette).removeAll();
+        verify(p).removeFromParent();
     }
 
     @Test

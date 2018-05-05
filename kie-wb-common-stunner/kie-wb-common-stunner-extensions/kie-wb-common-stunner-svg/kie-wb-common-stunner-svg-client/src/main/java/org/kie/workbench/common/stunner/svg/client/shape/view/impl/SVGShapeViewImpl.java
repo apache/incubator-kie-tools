@@ -82,6 +82,14 @@ public class SVGShapeViewImpl
     }
 
     @Override
+    public void destroy() {
+        svgPrimitive.destroy();
+        childViewHandler.clear();
+        shapeStateHandler.reset();
+        super.destroy();
+    }
+
+    @Override
     public Collection<SVGPrimitive<?>> getChildren() {
         return childViewHandler.getChildren();
     }

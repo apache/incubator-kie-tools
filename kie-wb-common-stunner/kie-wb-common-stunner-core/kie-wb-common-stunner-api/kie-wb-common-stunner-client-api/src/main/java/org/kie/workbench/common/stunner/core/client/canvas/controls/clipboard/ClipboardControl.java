@@ -25,8 +25,7 @@ import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
-public interface ClipboardControl<E extends Element, C extends Canvas, S extends ClientSession> extends CanvasControl<C>,
-                                                                                                        CanvasControl.SessionAware<S> {
+public interface ClipboardControl<E extends Element, C extends Canvas, S extends ClientSession> extends CanvasControl<C> {
 
     ClipboardControl<E, C, S> set(final E... item);
 

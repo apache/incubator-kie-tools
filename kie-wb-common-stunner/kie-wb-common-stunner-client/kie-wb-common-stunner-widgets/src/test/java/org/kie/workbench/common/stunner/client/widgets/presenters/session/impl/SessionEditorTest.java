@@ -31,8 +31,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.mockito.Mock;
@@ -42,6 +41,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -50,11 +50,9 @@ import static org.mockito.Mockito.when;
 public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
 
     @Mock
-    AbstractClientFullSession session;
+    EditorSession session;
     @Mock
-    SessionViewer.SessionViewerCallback<AbstractClientFullSession, Diagram> callback;
-    @Mock
-    CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
+    SessionViewer.SessionViewerCallback<Diagram> callback;
     @Mock
     ZoomControl<AbstractCanvas> zoomControl;
     @Mock
@@ -68,7 +66,7 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
     @Mock
     WidgetWrapperView view;
 
-    private SessionEditorImpl<AbstractClientFullSession, AbstractCanvasHandler> tested;
+    private SessionEditorImpl<EditorSession> tested;
 
     @Before
     public void setup() throws Exception {
@@ -81,8 +79,7 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
         when(session.getConnectionAcceptorControl()).thenReturn(connectionAcceptorControl);
         when(session.getContainmentAcceptorControl()).thenReturn(containmentAcceptorControl);
         when(session.getDockingAcceptorControl()).thenReturn(dockingAcceptorControl);
-        this.tested = new SessionEditorImpl<AbstractClientFullSession, AbstractCanvasHandler>(canvasCommandManager,
-                                                                                              view);
+        this.tested = new SessionEditorImpl<>(view);
     }
 
     @Test
@@ -133,7 +130,7 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
         tested.destroy();
         assertNull(tested.getInstance());
         verify(canvasHandler,
-               times(1)).destroy();
+               never()).destroy();
         verify(view,
                times(1)).clear();
     }

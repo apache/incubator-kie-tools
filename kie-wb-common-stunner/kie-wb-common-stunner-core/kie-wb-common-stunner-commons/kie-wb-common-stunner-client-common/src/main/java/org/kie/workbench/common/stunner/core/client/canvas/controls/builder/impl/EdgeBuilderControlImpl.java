@@ -20,10 +20,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
-import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerControl;
@@ -44,27 +43,18 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 @Dependent
-public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl<AbstractCanvasHandler> implements EdgeBuilderControl<AbstractCanvasHandler> {
+@Default
+public class EdgeBuilderControlImpl
+        extends AbstractCanvasHandlerControl<AbstractCanvasHandler>
+        implements EdgeBuilderControl<AbstractCanvasHandler> {
 
     private static Logger LOGGER = Logger.getLogger(EdgeBuilderControlImpl.class.getName());
 
-    private final ClientDefinitionManager clientDefinitionManager;
-    private final ShapeManager shapeManager;
     private final CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
     private RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
 
-    protected EdgeBuilderControlImpl() {
-        this(null,
-             null,
-             null);
-    }
-
     @Inject
-    public EdgeBuilderControlImpl(final ClientDefinitionManager clientDefinitionManager,
-                                  final ShapeManager shapeManager,
-                                  final CanvasCommandFactory<AbstractCanvasHandler> commandFactory) {
-        this.clientDefinitionManager = clientDefinitionManager;
-        this.shapeManager = shapeManager;
+    public EdgeBuilderControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> commandFactory) {
         this.commandFactory = commandFactory;
     }
 
@@ -137,7 +127,11 @@ public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
     }
 
     @Override
-    protected void doDisable() {
+    protected void doInit() {
+    }
+
+    @Override
+    protected void doDestroy() {
         commandManagerProvider = null;
     }
 

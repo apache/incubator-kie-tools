@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.shapes.client;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 
 import com.ait.lienzo.client.core.shape.Arrow;
 import com.ait.lienzo.client.core.shape.Group;
@@ -26,7 +26,7 @@ import com.ait.lienzo.shared.core.types.ArrowType;
 import org.kie.workbench.common.stunner.client.lienzo.components.glyph.LienzoGlyphRenderer;
 import org.kie.workbench.common.stunner.shapes.def.ConnectorGlyph;
 
-@ApplicationScoped
+@Dependent
 public class ConnectorGlyphLienzoRenderer implements LienzoGlyphRenderer<ConnectorGlyph> {
 
     private static final double STROKE_SIZE = 2.5;

@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -66,6 +67,7 @@ import org.kie.workbench.common.stunner.core.rule.violations.BoundsExceededViola
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
+@Default
 public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<AbstractCanvasHandler> implements ResizeControl<AbstractCanvasHandler, Element> {
 
     private static Logger LOGGER = Logger.getLogger(ResizeControlImpl.class.getName());
@@ -127,8 +129,8 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
     }
 
     @Override
-    protected void doDisable() {
-        super.doDisable();
+    protected void doDestroy() {
+        super.doDestroy();
         this.commandManagerProvider = null;
     }
 

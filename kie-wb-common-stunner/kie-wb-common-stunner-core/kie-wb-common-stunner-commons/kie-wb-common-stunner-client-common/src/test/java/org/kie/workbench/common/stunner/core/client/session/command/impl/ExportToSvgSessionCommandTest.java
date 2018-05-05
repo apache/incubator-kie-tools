@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.Mock;
@@ -46,7 +46,7 @@ public class ExportToSvgSessionCommandTest {
     private CanvasFileExport canvasFileExport;
 
     @Mock
-    private AbstractClientSession session;
+    private ViewerSession session;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;

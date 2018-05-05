@@ -33,8 +33,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
@@ -48,7 +47,7 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
     static final NoOperationGraphCommand NOP_GRAPH_COMMAND = new NoOperationGraphCommand();
 
     protected final ExpressionEditorView.Presenter editor;
-    protected final SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter;
+    protected final SessionPresenter<EditorSession, ?, Diagram> presenter;
     protected final SessionManager sessionManager;
     protected final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     protected final String nodeUUID;
@@ -56,7 +55,7 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
     protected final Optional<HasName> hasName;
 
     public BaseNavigateCommand(final ExpressionEditorView.Presenter editor,
-                               final SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter,
+                               final SessionPresenter<EditorSession, ?, Diagram> presenter,
                                final SessionManager sessionManager,
                                final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                final String nodeUUID,
@@ -103,10 +102,8 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
         final Layer layer = handler.getCanvas().getLayer();
         if (enabled) {
             layer.enableHandlers();
-            ((AbstractClientSession) sessionManager.getCurrentSession()).resume();
         } else {
             layer.disableHandlers();
-            ((AbstractClientSession) sessionManager.getCurrentSession()).pause();
         }
     }
 

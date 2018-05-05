@@ -189,8 +189,8 @@ public class LocationControlImplTest {
     }
 
     @Test
-    public void testEnable() {
-        tested.enable(canvasHandler);
+    public void testInit() {
+        tested.init(canvasHandler);
         ArgumentCaptor<ILocationAcceptor> locationAcceptorArgumentCaptor = ArgumentCaptor.forClass(ILocationAcceptor.class);
         verify(wiresManager, times(1)).setLocationAcceptor(locationAcceptorArgumentCaptor.capture());
         assertEquals(tested.LOCATION_ACCEPTOR, locationAcceptorArgumentCaptor.getValue());
@@ -198,7 +198,7 @@ public class LocationControlImplTest {
 
     @Test
     public void testRegisterAndSetBounds() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         assertFalse(tested.isRegistered(element));
         tested.register(element);
         assertTrue(tested.isRegistered(element));
@@ -226,7 +226,7 @@ public class LocationControlImplTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testMove() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         Point2D location = new Point2D(45d, 65.5d);
         tested.move(new Element[]{element}, new Point2D[]{location});
@@ -246,7 +246,7 @@ public class LocationControlImplTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testLocationAcceptor() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         ArgumentCaptor<ILocationAcceptor> locationAcceptorArgumentCaptor = ArgumentCaptor.forClass(ILocationAcceptor.class);
         verify(wiresManager, times(1)).setLocationAcceptor(locationAcceptorArgumentCaptor.capture());
@@ -267,20 +267,11 @@ public class LocationControlImplTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testDeregister() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         tested.deregister(element);
         verify(shapeEventHandler,
                times(1)).removeHandler(any(ViewHandler.class));
         assertFalse(tested.isRegistered(element));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testDisable() {
-        tested.enable(canvasHandler);
-        tested.disable();
-        verify(wiresManager, times(1)).setLocationAcceptor(eq(ILocationAcceptor.ALL));
-        verify(wiresCompositeControl, times(1)).setBoundsConstraint(eq(null));
     }
 }

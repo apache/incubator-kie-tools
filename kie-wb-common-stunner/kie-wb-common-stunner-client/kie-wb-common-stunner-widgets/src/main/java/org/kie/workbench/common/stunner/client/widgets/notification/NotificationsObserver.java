@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.client.widgets.notification;
 import java.util.Collection;
 import java.util.Optional;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -82,6 +83,16 @@ public class NotificationsObserver {
     public NotificationsObserver onValidationFailed(final ParameterizedCommand<ValidationFailedNotification> callback) {
         this.validationFailed = Optional.ofNullable(callback);
         return this;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        onNotification = null;
+        commandFailed = null;
+        commandSuccess = null;
+        validationSuccess = null;
+        validationFailed = null;
+        notificationBuilder = null;
     }
 
     @SuppressWarnings("unchecked")

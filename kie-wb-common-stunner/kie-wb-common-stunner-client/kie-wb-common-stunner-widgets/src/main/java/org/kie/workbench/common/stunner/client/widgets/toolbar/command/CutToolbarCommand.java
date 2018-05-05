@@ -20,17 +20,23 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.CutSelectionSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @Dependent
-public class CutToolbarCommand extends AbstractToolbarCommand<ClientFullSession, CutSelectionSessionCommand> {
+public class CutToolbarCommand extends AbstractToolbarCommand<EditorSession, CutSelectionSessionCommand> {
 
     @Inject
-    public CutToolbarCommand(final CutSelectionSessionCommand cutSelectionSessionCommand, final ClientTranslationService translationService) {
-        super(cutSelectionSessionCommand, translationService);
+    public CutToolbarCommand(final DefinitionUtils definitionUtils,
+                             final ManagedInstance<CutSelectionSessionCommand> command,
+                             final ClientTranslationService translationService) {
+        super(definitionUtils,
+              command,
+              translationService);
     }
 
     @Override

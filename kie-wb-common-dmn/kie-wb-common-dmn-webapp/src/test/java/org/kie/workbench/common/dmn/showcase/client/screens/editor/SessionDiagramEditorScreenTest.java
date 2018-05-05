@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.showcase.client.screens.editor;
 
 import java.util.function.Consumer;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,27 +26,25 @@ import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.showcase.client.perspectives.AuthoringPerspective;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenPanelView;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
-import org.kie.workbench.common.stunner.core.client.session.ClientSessionFactory;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.uberfire.mvp.Command;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -53,20 +52,17 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class SessionDiagramEditorScreenTest {
 
     @Mock
     private DecisionNavigatorDock decisionNavigatorDock;
 
     @Mock
-    private SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory;
-
-    @Mock
     private ScreenPanelView screenPanelView;
 
     @Mock
-    private SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter;
+    private SessionEditorPresenter<EditorSession> presenter;
 
     @Mock
     private ExpressionEditorView.Presenter expressionEditor;
@@ -75,10 +71,10 @@ public class SessionDiagramEditorScreenTest {
     private SessionManager sessionManager;
 
     @Mock
-    private ClientSessionFactory<ClientFullSession> sessionFactory;
+    private EditorSession session;
 
     @Captor
-    private ArgumentCaptor<Consumer<ClientFullSession>> clientFullSessionConsumer;
+    private ArgumentCaptor<Consumer<EditorSession>> clientFullSessionConsumer;
 
     @Mock
     private StunnerPreferencesRegistry stunnerPreferencesRegistry;
@@ -91,14 +87,40 @@ public class SessionDiagramEditorScreenTest {
     @Before
     public void setup() {
 
-        doReturn(presenter).when(sessionPresenterFactory).newPresenterEditor();
         doReturn(presenter).when(presenter).withToolbar(anyBoolean());
         doReturn(presenter).when(presenter).withPalette(anyBoolean());
         doReturn(presenter).when(presenter).withPreferences(any(StunnerPreferences.class));
         doReturn(presenter).when(presenter).displayNotifications(any());
-        doNothing().when(presenter).open(any(), any(), any());
+        doReturn(session).when(presenter).getInstance();
+        doReturn(session).when(sessionManager).getCurrentSession();
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Diagram diagram = (Diagram) invocation.getArguments()[0];
+                SessionPresenter.SessionPresenterCallback callback = (SessionPresenter.SessionPresenterCallback) invocation.getArguments()[1];
+                callback.onOpen(diagram);
+                callback.afterCanvasInitialized();
+                callback.afterSessionOpened();
+                callback.onSuccess();
+                return null;
+            }
+        }).when(presenter).open(any(Diagram.class),
+                                any(SessionPresenter.SessionPresenterCallback.class));
 
-        editor = spy(new SessionDiagramEditorScreen(null, null, null, sessionManager, null, sessionPresenterFactory, null, null, screenPanelView, null, expressionEditor, decisionNavigatorDock, stunnerPreferencesRegistry));
+        editor = spy(new SessionDiagramEditorScreen(null,
+                                                    null,
+                                                    null,
+                                                    sessionManager,
+                                                    null,
+                                                    presenter,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    screenPanelView,
+                                                    null,
+                                                    expressionEditor,
+                                                    decisionNavigatorDock,
+                                                    stunnerPreferencesRegistry));
     }
 
     @Test
@@ -114,17 +136,11 @@ public class SessionDiagramEditorScreenTest {
         final Diagram diagram = mock(Diagram.class);
         final Command callback = mock(Command.class);
         final Metadata metadata = mock(Metadata.class);
-        final AbstractClientFullSession session = mock(AbstractClientFullSession.class);
 
         when(diagram.getMetadata()).thenReturn(metadata);
-        when(sessionManager.getSessionFactory(metadata, ClientFullSession.class)).thenReturn(sessionFactory);
         when(stunnerPreferencesRegistry.get()).thenReturn(stunnerPreferences);
 
-        editor.openDiagram(diagram, callback);
-
-        verify(sessionFactory).newSession(eq(metadata), clientFullSessionConsumer.capture());
-
-        clientFullSessionConsumer.getValue().accept(session);
+        editor.open(diagram, callback);
 
         verify(editor).openDock(session);
     }
@@ -144,7 +160,7 @@ public class SessionDiagramEditorScreenTest {
     @Test
     public void testOpenDock() {
 
-        final AbstractClientFullSession session = mock(AbstractClientFullSession.class);
+        final EditorSession session = mock(EditorSession.class);
         final AbstractCanvasHandler canvasHandler = mock(AbstractCanvasHandler.class);
 
         when(session.getCanvasHandler()).thenReturn(canvasHandler);

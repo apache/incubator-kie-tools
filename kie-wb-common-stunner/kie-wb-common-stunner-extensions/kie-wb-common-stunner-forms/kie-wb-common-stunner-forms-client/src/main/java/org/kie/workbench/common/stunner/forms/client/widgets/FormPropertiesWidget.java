@@ -20,17 +20,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.client.session.event.SessionDestroyedEvent;
-import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedEvent;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
@@ -38,8 +36,6 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
 import org.kie.workbench.common.stunner.forms.client.widgets.container.FormsContainer;
 import org.uberfire.mvp.Command;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class FormPropertiesWidget implements IsElement,
@@ -102,6 +98,10 @@ public class FormPropertiesWidget implements IsElement,
         return formsContainer.getElement();
     }
 
+    public FormsCanvasSessionHandler getFormSessionHandler() {
+        return formSessionHandler;
+    }
+
     /**
      * Binds a session.
      */
@@ -120,6 +120,12 @@ public class FormPropertiesWidget implements IsElement,
         return this;
     }
 
+    @PreDestroy
+    public void destroy() {
+        formSessionHandler.destroy();
+        formsContainer.destroyAll();
+    }
+
     public void show() {
         formSessionHandler.show();
     }
@@ -127,21 +133,6 @@ public class FormPropertiesWidget implements IsElement,
     @SuppressWarnings("unchecked")
     public void show(final Command callback) {
         formSessionHandler.show(callback);
-    }
-
-    void onCanvasSessionOpened(@Observes SessionOpenedEvent sessionOpenedEvent) {
-        checkNotNull("sessionOpenedEvent", sessionOpenedEvent);
-        try {
-            bind(sessionOpenedEvent.getSession()).show();
-        } catch (ClassCastException e) {
-            // No writteable session. Do not show properties until read mode available.
-            log(Level.INFO, "Session discarded for opening as not instance of full session.");
-        }
-    }
-
-    void onCanvasSessionDestroyed(@Observes SessionDestroyedEvent sessionDestroyedEvent) {
-        checkNotNull("sessionDestroyedEvent", sessionDestroyedEvent);
-        unbind();
     }
 
     private void show(final String graphUuid,

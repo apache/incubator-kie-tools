@@ -16,26 +16,33 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
-import java.util.Optional;
+import java.lang.annotation.Annotation;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.event.SessionDiagramOpenedEvent;
+import org.kie.workbench.common.stunner.client.widgets.event.SessionFocusedEvent;
 import org.kie.workbench.common.stunner.client.widgets.notification.NotificationsObserver;
 import org.kie.workbench.common.stunner.client.widgets.palette.DefaultPaletteFactory;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPresenter;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionEditor;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarFactory;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.EditorToolbarFactory;
-import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.EditorToolbar;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMinimizedEvent;
-import org.kie.workbench.common.stunner.core.client.event.screen.ScreenResizeEventObserver;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 /**
  * A generic session's presenter instance for authoring purposes.
@@ -46,43 +53,42 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
  * different editors' controls with the diagram and controls for the given session.
  * @see <a>org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorImpl</a>
  */
-public class SessionEditorPresenter<S extends AbstractClientFullSession, H extends AbstractCanvasHandler>
-        extends AbstractSessionPresenter<Diagram, H, S, SessionEditor<S, H, Diagram>>
-        implements SessionDiagramPresenter<S, H> {
+@Dependent
+public class SessionEditorPresenter<S extends EditorSession>
+        extends AbstractSessionPresenter<Diagram, AbstractCanvasHandler, S, SessionDiagramEditor<S>>
+        implements SessionDiagramPresenter<S> {
 
     private final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEvent;
-    private final SessionEditor<S, H, Diagram> editor;
+    private final SessionEditorImpl<S> editor;
+    private final ManagedInstance<EditorToolbar> toolbars;
 
+    @Inject
     @SuppressWarnings("unchecked")
-    SessionEditorPresenter(final SessionManager sessionManager,
-                           final CanvasCommandManager<H> commandManager,
-                           final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEvent,
-                           final EditorToolbarFactory toolbarFactory,
-                           final DefaultPaletteFactory<H> paletteWidgetFactory,
-                           final WidgetWrapperView diagramEditorView,
-                           final NotificationsObserver notificationsObserver,
-                           final View view,
-                           final ScreenResizeEventObserver screenResizeEventObserver) {
-        super(sessionManager,
+    public SessionEditorPresenter(final DefinitionUtils definitionUtils,
+                                  final SessionManager sessionManager,
+                                  final SessionEditorImpl<S> editor,
+                                  final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEvent,
+                                  final @Any ManagedInstance<EditorToolbar> toolbars,
+                                  final DefaultPaletteFactory<AbstractCanvasHandler> paletteWidgetFactory,
+                                  final NotificationsObserver notificationsObserver,
+                                  final Event<SessionFocusedEvent> sessionFocusedEvent,
+                                  final StunnerPreferencesRegistry stunnerPreferencesRegistry,
+                                  final View view) {
+        super(definitionUtils,
+              sessionManager,
               view,
-              Optional.of((ToolbarFactory<S>) toolbarFactory),
-              Optional.of(paletteWidgetFactory),
-              notificationsObserver);
+              paletteWidgetFactory,
+              notificationsObserver,
+              sessionFocusedEvent,
+              stunnerPreferencesRegistry);
         this.sessionDiagramOpenedEvent = sessionDiagramOpenedEvent;
-        this.editor = new CustomSessionEditor(commandManager,
-                                              diagramEditorView);
-
-        //Registering event observers
-        screenResizeEventObserver.registerEventCallback(ScreenMaximizedEvent.class, event -> onScreenMaximized(event));
-        screenResizeEventObserver.registerEventCallback(ScreenMinimizedEvent.class, event -> onScreenMinimized(event));
+        this.editor = editor;
+        this.toolbars = toolbars;
     }
 
-    private void onScreenMaximized(ScreenMaximizedEvent event) {
-        getPalette().onScreenMaximized(event);
-    }
-
-    private void onScreenMinimized(ScreenMinimizedEvent event) {
-        getPalette().onScreenMinimized(event);
+    @PostConstruct
+    public void init() {
+        editor.setDiagramSupplier(this::getDiagram);
     }
 
     @Override
@@ -91,29 +97,29 @@ public class SessionEditorPresenter<S extends AbstractClientFullSession, H exten
         sessionDiagramOpenedEvent.fire(new SessionDiagramOpenedEvent(session));
     }
 
-    @Override
-    public SessionEditor<S, H, Diagram> getDisplayer() {
-        return editor;
+    void onScreenMaximizedEvent(@Observes ScreenMaximizedEvent event) {
+        getPalette().onScreenMaximized(event);
     }
 
-    /**
-     * A session editor which diagram is the instance to be presented.
-     * Consider the default session editor (SessionEditorImpl) works for already loaded sessions,
-     * it expects the diagram instance to be loaded and available from the canvas handler.
-     * This is not the same case for the session presenter, which just presents a diagram instance, either
-     * loaded from backend or recently created, and it loads the given diagram into the given session.
-     */
-    private class CustomSessionEditor extends SessionEditorImpl<S, H> {
+    void onScreenMinimizedEvent(@Observes ScreenMinimizedEvent event) {
+        getPalette().onScreenMinimized(event);
+    }
 
-        private CustomSessionEditor(final CanvasCommandManager<H> canvasCommandManager,
-                                    final WidgetWrapperView view) {
-            super(canvasCommandManager,
-                  view);
-        }
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Toolbar<S> newToolbar(final Annotation qualifier) {
+        return (Toolbar<S>) InstanceUtils.lookup(toolbars,
+                                                 qualifier);
+    }
 
-        @Override
-        protected Diagram getDiagram() {
-            return SessionEditorPresenter.this.getDiagram();
-        }
+    @Override
+    protected void destroyToolbarInstace(final Toolbar<S> toolbar) {
+        toolbars.destroy((EditorToolbar) toolbar);
+        toolbars.destroyAll();
+    }
+
+    @Override
+    public SessionDiagramEditor<S> getDisplayer() {
+        return editor;
     }
 }

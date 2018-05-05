@@ -44,12 +44,7 @@ public class ToolboxTextTooltip implements TextTooltipItem<ToolboxTextTooltip> {
     }
 
     public TextTooltipItemImpl createItem(final String text) {
-        return new TextTooltipItemImpl(new Supplier<TextTooltipItem>() {
-            @Override
-            public TextTooltipItem get() {
-                return tooltip;
-            }
-        },
+        return new TextTooltipItemImpl(() -> tooltip,
                                        text,
                                        delegate.getAt(),
                                        delegate.getTowards());
@@ -118,12 +113,6 @@ public class ToolboxTextTooltip implements TextTooltipItem<ToolboxTextTooltip> {
                       }
                   },
                   "");
-        }
-
-        @Override
-        public void destroy() {
-            super.destroy();
-            tooltip.destroy();
         }
     }
 }

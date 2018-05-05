@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.shapes.client.view;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.safehtml.shared.SafeUri;
@@ -24,7 +24,7 @@ import org.kie.workbench.common.stunner.shapes.client.factory.PictureProvidersMa
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
-@ApplicationScoped
+@Dependent
 public class ShapeViewFactory {
 
     private final PictureProvidersManager pictureProvidersManager;

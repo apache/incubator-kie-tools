@@ -26,8 +26,8 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Categories;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.palette.CollapsedPaletteDefinitionBuilder;
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteDefinition;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
+import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
@@ -50,7 +50,7 @@ public class DMNPaletteDefinitionBuilderTest {
     private DefinitionUtils definitionUtils;
 
     @Mock
-    private ClientFactoryService clientFactoryServices;
+    private DefinitionsCacheRegistry definitionsRegistry;
 
     @Mock
     private StunnerTranslationService translationService;
@@ -68,7 +68,7 @@ public class DMNPaletteDefinitionBuilderTest {
     @SuppressWarnings("unchecked")
     public void setup() {
         collapsedPaletteBuilder = spy(new CollapsedPaletteDefinitionBuilder(definitionUtils,
-                                                                            clientFactoryServices,
+                                                                            definitionsRegistry,
                                                                             translationService));
         doAnswer(new Answer() {
             @Override

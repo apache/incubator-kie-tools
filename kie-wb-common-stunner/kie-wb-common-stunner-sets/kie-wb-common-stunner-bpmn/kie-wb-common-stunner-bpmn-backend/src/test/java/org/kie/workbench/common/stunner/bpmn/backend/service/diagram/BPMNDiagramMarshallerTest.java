@@ -303,7 +303,8 @@ public class BPMNDiagramMarshallerTest {
         when(definitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.registry()).thenReturn(adapterRegistry);
         definitionUtils = new DefinitionUtils(definitionManager,
-                                              applicationFactoryManager);
+                                              applicationFactoryManager,
+                                              null); // TODO!!!
         testScopeModelFactory = new BPMNTestScopeModelFactory(new BPMNDefinitionSet.BPMNDefinitionSetBuilder().build(),
                                                               workItemDefinitionMockRegistry);
         // Definition manager.
@@ -454,6 +455,7 @@ public class BPMNDiagramMarshallerTest {
                                            indexBuilder,
                                            oryxManager,
                                            applicationFactoryManager,
+                                           null, // TODO!
                                            rulesManager,
                                            commandManager,
                                            commandFactory,

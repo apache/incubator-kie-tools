@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
@@ -40,6 +41,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
 @Dependent
+@Default
 public class ContainmentAcceptorControlImpl extends AbstractAcceptorControl
         implements ContainmentAcceptorControl<AbstractCanvasHandler> {
 
@@ -52,13 +54,13 @@ public class ContainmentAcceptorControlImpl extends AbstractAcceptorControl
     }
 
     @Override
-    protected void onEnable(final WiresCanvas.View view) {
+    protected void onInit(final WiresCanvas.View view) {
         view.setContainmentAcceptor(CONTAINMENT_ACCEPTOR);
         this.canvasHighlight = new CanvasHighlight(getCanvasHandler());
     }
 
     @Override
-    protected void onDisable(final WiresCanvas.View view) {
+    protected void onDestroy(final WiresCanvas.View view) {
         view.setContainmentAcceptor(IContainmentAcceptor.NONE);
         this.canvasHighlight.destroy();
         this.canvasHighlight = null;
@@ -113,8 +115,8 @@ public class ContainmentAcceptorControlImpl extends AbstractAcceptorControl
             final boolean success = isCommandSuccess(result);
             if (highlights && !success) {
                 canvasHighlight.invalid(result.getViolations());
-            } else if(highlights){
-                    canvasHighlight.highLight(parent);
+            } else if (highlights) {
+                canvasHighlight.highLight(parent);
             } else {
                 canvasHighlight.unhighLight();
             }

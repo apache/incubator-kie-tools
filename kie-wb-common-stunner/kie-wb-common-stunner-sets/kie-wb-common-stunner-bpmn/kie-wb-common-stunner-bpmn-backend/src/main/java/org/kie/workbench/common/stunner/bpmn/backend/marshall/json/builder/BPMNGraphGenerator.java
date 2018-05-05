@@ -55,6 +55,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
+import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.util.UUID;
@@ -67,6 +68,7 @@ public class BPMNGraphGenerator extends JsonGenerator {
     private final GraphObjectBuilderFactory bpmnGraphBuilderFactory;
     private final DefinitionManager definitionManager;
     private final FactoryManager factoryManager;
+    private final DefinitionsCacheRegistry definitionsCacheRegistry;
     private final RuleManager ruleManager;
     private final OryxManager oryxManager;
     private final CommandManager<GraphCommandExecutionContext, RuleViolation> commandManager;
@@ -83,6 +85,7 @@ public class BPMNGraphGenerator extends JsonGenerator {
     public BPMNGraphGenerator(final GraphObjectBuilderFactory bpmnGraphBuilderFactory,
                               final DefinitionManager definitionManager,
                               final FactoryManager factoryManager,
+                              final DefinitionsCacheRegistry definitionsCacheRegistry,
                               final RuleManager ruleManager,
                               final OryxManager oryxManager,
                               final CommandManager<GraphCommandExecutionContext, RuleViolation> commandManager,
@@ -93,6 +96,7 @@ public class BPMNGraphGenerator extends JsonGenerator {
         this.bpmnGraphBuilderFactory = bpmnGraphBuilderFactory;
         this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;
+        this.definitionsCacheRegistry = definitionsCacheRegistry;
         this.ruleManager = ruleManager;
         this.oryxManager = oryxManager;
         this.commandManager = commandManager;
@@ -223,6 +227,11 @@ public class BPMNGraphGenerator extends JsonGenerator {
         @Override
         public FactoryManager getFactoryManager() {
             return factoryManager;
+        }
+
+        @Override
+        public DefinitionsCacheRegistry getDefinitionsRegistry() {
+            return definitionsCacheRegistry;
         }
 
         @Override

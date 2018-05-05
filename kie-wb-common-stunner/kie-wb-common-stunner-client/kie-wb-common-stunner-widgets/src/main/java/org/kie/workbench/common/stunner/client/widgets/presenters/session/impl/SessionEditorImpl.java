@@ -16,6 +16,11 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
+import java.util.function.Supplier;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl.AbstractDiagramViewer;
@@ -29,45 +34,56 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.Dock
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.graph.Element;
 
 /**
  * A generic session's editor instance.
  * It aggregates a custom diagram editor type which provides binds the editors's diagram instance and the
  * different editors' controls with the diagram and controls for the given session.
  */
-public class SessionEditorImpl<S extends AbstractClientFullSession, H extends AbstractCanvasHandler>
-        extends AbstractSessionViewer<S, H>
-        implements SessionDiagramEditor<S, H> {
+@Dependent
+public class SessionEditorImpl<S extends EditorSession>
+        extends AbstractSessionViewer<S>
+        implements SessionDiagramEditor<S> {
 
-    private final AbstractDiagramViewer<Diagram, H> diagramViewer;
-    private final CanvasCommandManager<H> canvasCommandManager;
+    private final AbstractDiagramViewer<Diagram, AbstractCanvasHandler> diagramViewer;
 
-    SessionEditorImpl(final CanvasCommandManager<H> canvasCommandManager,
-                      final WidgetWrapperView view) {
+    private Supplier<Diagram> diagramSupplier;
+
+    @Inject
+    public SessionEditorImpl(final WidgetWrapperView view) {
         this.diagramViewer = new SessionDiagramEditor(view);
-        this.canvasCommandManager = canvasCommandManager;
+        this.diagramSupplier = () -> null != getSessionHandler() ?
+                getSessionHandler().getDiagram() :
+                null;
+    }
+
+    public SessionEditorImpl<S> setDiagramSupplier(final Supplier<Diagram> diagramSupplier) {
+        this.diagramSupplier = diagramSupplier;
+        return this;
     }
 
     @Override
-    public CanvasCommandManager<H> getCommandManager() {
-        return canvasCommandManager;
+    @SuppressWarnings("unchecked")
+    public CanvasCommandManager<AbstractCanvasHandler> getCommandManager() {
+        return (CanvasCommandManager<AbstractCanvasHandler>) getSession().getCommandManager();
     }
 
     @SuppressWarnings("unchecked")
-    public DiagramEditor<Diagram, H> getDiagramEditor() {
-        return (DiagramEditor<Diagram, H>) diagramViewer;
+    public DiagramEditor<Diagram, AbstractCanvasHandler> getDiagramEditor() {
+        return (DiagramEditor<Diagram, AbstractCanvasHandler>) diagramViewer;
     }
 
     @Override
-    protected DiagramViewer<Diagram, H> getDiagramViewer() {
+    protected DiagramViewer<Diagram, AbstractCanvasHandler> getDiagramViewer() {
         return diagramViewer;
     }
 
     @Override
     protected Diagram getDiagram() {
-        return null != getSessionHandler() ? getSessionHandler().getDiagram() : null;
+        return diagramSupplier.get();
     }
 
     @Override
@@ -80,16 +96,32 @@ public class SessionEditorImpl<S extends AbstractClientFullSession, H extends Ab
         return getInstance();
     }
 
+    @Override
+    public void destroy() {
+        super.destroy();
+        ((WidgetWrapperView) getView()).clear();
+        diagramSupplier = null;
+    }
+
     /**
      * the custom internal diagram editor type which provides binds the editors's diagram instance and the
      * different editors' controls with the diagram and controls for the given session.
      */
     private class SessionDiagramEditor
-            extends AbstractDiagramViewer<Diagram, H>
-            implements DiagramEditor<Diagram, H> {
+            extends AbstractDiagramViewer<Diagram, AbstractCanvasHandler>
+            implements DiagramEditor<Diagram, AbstractCanvasHandler> {
 
         public SessionDiagramEditor(final WidgetWrapperView view) {
             super(view);
+        }
+
+        @Override
+        protected void onOpen(final Diagram diagram) {
+        }
+
+        @Override
+        protected void destroyInstances() {
+            // The control lifecycle for this diagram editor instance are handled by the session itself.
         }
 
         @Override
@@ -117,11 +149,6 @@ public class SessionEditorImpl<S extends AbstractClientFullSession, H extends Ab
         }
 
         @Override
-        protected void disableControls() {
-            // The control lifecycle for this diagram editor instance are handled by the session itself.
-        }
-
-        @Override
         protected void destroyControls() {
             // The control lifecycle for this diagram editor instance are handled by the session itself.
         }
@@ -133,44 +160,44 @@ public class SessionEditorImpl<S extends AbstractClientFullSession, H extends Ab
 
         @Override
         @SuppressWarnings("unchecked")
-        public H getHandler() {
-            return (H) getSession().getCanvasHandler();
+        public AbstractCanvasHandler getHandler() {
+            return getSession().getCanvasHandler();
         }
 
         @Override
         @SuppressWarnings("unchecked")
         public ZoomControl<AbstractCanvas> getZoomControl() {
-            return getSession().getZoomControl();
+            return SessionEditorImpl.this.getZoomControl();
         }
 
         @Override
         @SuppressWarnings("unchecked")
-        public SelectionControl<H, ?> getSelectionControl() {
-            return (SelectionControl<H, ?>) getSession().getSelectionControl();
+        public SelectionControl<AbstractCanvasHandler, Element> getSelectionControl() {
+            return getSession().getSelectionControl();
         }
 
         @Override
         @SuppressWarnings("unchecked")
-        public CanvasCommandManager<H> getCommandManager() {
-            return (CanvasCommandManager<H>) canvasCommandManager;
+        public CanvasCommandManager<AbstractCanvasHandler> getCommandManager() {
+            return SessionEditorImpl.this.getCommandManager();
         }
 
         @Override
         @SuppressWarnings("unchecked")
-        public ConnectionAcceptorControl<H> getConnectionAcceptorControl() {
-            return (ConnectionAcceptorControl<H>) getSession().getConnectionAcceptorControl();
+        public ConnectionAcceptorControl<AbstractCanvasHandler> getConnectionAcceptorControl() {
+            return getSession().getConnectionAcceptorControl();
         }
 
         @Override
         @SuppressWarnings("unchecked")
-        public ContainmentAcceptorControl<H> getContainmentAcceptorControl() {
-            return (ContainmentAcceptorControl<H>) getSession().getContainmentAcceptorControl();
+        public ContainmentAcceptorControl<AbstractCanvasHandler> getContainmentAcceptorControl() {
+            return getSession().getContainmentAcceptorControl();
         }
 
         @Override
         @SuppressWarnings("unchecked")
-        public DockingAcceptorControl<H> getDockingAcceptorControl() {
-            return (DockingAcceptorControl<H>) getSession().getDockingAcceptorControl();
+        public DockingAcceptorControl<AbstractCanvasHandler> getDockingAcceptorControl() {
+            return getSession().getDockingAcceptorControl();
         }
     }
 }

@@ -25,11 +25,11 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
+import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNEditorToolbar;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.EditorToolbar;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.uberfire.mvp.Command;
 
@@ -68,8 +68,8 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
     }
 
     @Override
-    public void init(final SessionPresenter<AbstractClientFullSession, ?, Diagram> presenter) {
-        this.toolbarCommandStateHandler = new ToolbarCommandStateHandler((EditorToolbar) presenter.getToolbar());
+    public void init(final SessionPresenter<EditorSession, ?, Diagram> presenter) {
+        this.toolbarCommandStateHandler = new ToolbarCommandStateHandler((DMNEditorToolbar) presenter.getToolbar());
     }
 
     @Override
@@ -114,12 +114,11 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
     @SuppressWarnings("unchecked")
     static class ToolbarCommandStateHandler {
 
-        private EditorToolbar toolbar;
+        private DMNEditorToolbar toolbar;
 
         //Package-protected for Unit Tests
         boolean visitGraphToolbarCommandEnabled = false;
         boolean clearToolbarCommandEnabled = false;
-        boolean clearStatesToolbarCommandEnabled = false;
         boolean deleteSelectionToolbarCommandEnabled = false;
         boolean switchGridToolbarCommandEnabled = false;
         boolean undoToolbarCommandEnabled = false;
@@ -127,28 +126,25 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
         boolean validateToolbarCommandEnabled = false;
         boolean exportToPngToolbarCommandEnabled = false;
         boolean exportToJpgToolbarCommandEnabled = false;
-        boolean exportToSvgToolbarCommandEnabled = false;
         boolean exportToPdfToolbarCommandEnabled = false;
         boolean copyCommandEnabled = false;
         boolean cutCommandEnabled = false;
         boolean pasteCommandEnabled = false;
 
-        private ToolbarCommandStateHandler(final EditorToolbar toolbar) {
+        private ToolbarCommandStateHandler(final DMNEditorToolbar toolbar) {
             this.toolbar = toolbar;
         }
 
         private void enter() {
             this.visitGraphToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getVisitGraphToolbarCommand());
             this.clearToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getClearToolbarCommand());
-            this.clearStatesToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getClearStatesToolbarCommand());
             this.deleteSelectionToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getDeleteSelectionToolbarCommand());
             this.switchGridToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getSwitchGridToolbarCommand());
             this.undoToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getUndoToolbarCommand());
             this.redoToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getRedoToolbarCommand());
-            this.validateToolbarCommandEnabled = toolbar.isEnabled(toolbar.getValidateToolbarCommand());
+            this.validateToolbarCommandEnabled = toolbar.isEnabled(toolbar.getValidateCommand());
             this.exportToPngToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getExportToPngToolbarCommand());
             this.exportToJpgToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getExportToJpgToolbarCommand());
-            this.exportToSvgToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getExportToSvgToolbarCommand());
             this.exportToPdfToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getExportToPdfToolbarCommand());
             this.copyCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getCopyToolbarCommand());
             this.cutCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getCutToolbarCommand());
@@ -158,8 +154,6 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
                                  false);
             enableToolbarCommand(toolbar.getClearToolbarCommand(),
                                  false);
-            enableToolbarCommand(toolbar.getClearStatesToolbarCommand(),
-                                 false);
             enableToolbarCommand(toolbar.getDeleteSelectionToolbarCommand(),
                                  false);
             enableToolbarCommand(toolbar.getSwitchGridToolbarCommand(),
@@ -168,13 +162,11 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
                                  false);
             enableToolbarCommand(toolbar.getRedoToolbarCommand(),
                                  false);
-            enableToolbarCommand(toolbar.getValidateToolbarCommand(),
+            enableToolbarCommand(toolbar.getValidateCommand(),
                                  false);
             enableToolbarCommand(toolbar.getExportToPngToolbarCommand(),
                                  false);
             enableToolbarCommand(toolbar.getExportToJpgToolbarCommand(),
-                                 false);
-            enableToolbarCommand(toolbar.getExportToSvgToolbarCommand(),
                                  false);
             enableToolbarCommand(toolbar.getExportToPdfToolbarCommand(),
                                  false);
@@ -191,8 +183,6 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
                                  visitGraphToolbarCommandEnabled);
             enableToolbarCommand(toolbar.getClearToolbarCommand(),
                                  clearToolbarCommandEnabled);
-            enableToolbarCommand(toolbar.getClearStatesToolbarCommand(),
-                                 clearStatesToolbarCommandEnabled);
             enableToolbarCommand(toolbar.getDeleteSelectionToolbarCommand(),
                                  deleteSelectionToolbarCommandEnabled);
             enableToolbarCommand(toolbar.getSwitchGridToolbarCommand(),
@@ -201,14 +191,12 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
                                  undoToolbarCommandEnabled);
             enableToolbarCommand(toolbar.getRedoToolbarCommand(),
                                  redoToolbarCommandEnabled);
-            enableToolbarCommand(toolbar.getValidateToolbarCommand(),
+            enableToolbarCommand(toolbar.getValidateCommand(),
                                  validateToolbarCommandEnabled);
             enableToolbarCommand(toolbar.getExportToPngToolbarCommand(),
                                  exportToPngToolbarCommandEnabled);
             enableToolbarCommand(toolbar.getExportToJpgToolbarCommand(),
                                  exportToJpgToolbarCommandEnabled);
-            enableToolbarCommand(toolbar.getExportToSvgToolbarCommand(),
-                                 exportToSvgToolbarCommandEnabled);
             enableToolbarCommand(toolbar.getExportToPdfToolbarCommand(),
                                  exportToPdfToolbarCommandEnabled);
             enableToolbarCommand(toolbar.getCopyToolbarCommand(),

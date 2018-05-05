@@ -16,14 +16,14 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.components.glyph;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.Group;
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.util.SvgDataUriGenerator;
 
-@ApplicationScoped
+@Dependent
 public class LienzoSvgDataUriGlyphRenderer implements LienzoGlyphRenderer<SvgDataUriGlyph> {
 
     private final SvgDataUriGenerator svgDataUriUtil;

@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.stunner.project.client.view;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -64,5 +65,11 @@ public class ProjectScreenViewImpl implements ProjectScreenView,
     @Override
     public IsWidget asWidget() {
         return ElementWrapperWidget.getWidget(this.getElement());
+    }
+
+    @PreDestroy
+    public void destroy() {
+        loadingPanel.removeFromParent();
+        widgetPanel.removeFromParent();
     }
 }

@@ -44,11 +44,6 @@ public abstract class AbstractClientSessionCommand<S extends ClientSession> impl
     }
 
     @Override
-    public void unbind() {
-        this.session = null;
-    }
-
-    @Override
     public ClientSessionCommand<S> listen(final Command statusCallback) {
         this.statusCallback = statusCallback;
         return this;
@@ -71,6 +66,17 @@ public abstract class AbstractClientSessionCommand<S extends ClientSession> impl
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    @Override
+    public final void destroy() {
+        doDestroy();
+        enabled = false;
+        session = null;
+        statusCallback = null;
+    }
+
+    protected void doDestroy() {
     }
 
     protected void setEnabled(final boolean enabled) {

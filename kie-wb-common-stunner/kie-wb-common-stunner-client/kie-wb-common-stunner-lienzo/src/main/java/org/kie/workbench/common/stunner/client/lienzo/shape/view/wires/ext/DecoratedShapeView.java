@@ -36,12 +36,12 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventTy
  * So the internal multi-path instance "decorates" the given shape and the others
  * shape's children, if any, by providing a non visible square in which
  * the different control points.
- * <p/>
+ * <p>
  * This way any kind of path or primitive instance can be added
  * as child for this shape and even if that instance cannot be resized
  * or supports some control point handler, due to it's state, the already
  * provided multi-path instance is used for these goals.
- * <p/>
+ * <p>
  * When scaling this shape, it scales all children for fitting the given
  * new size, and the multi-path instance is rebuild to provide the right
  * magnets and control points.
@@ -142,6 +142,12 @@ public class DecoratedShapeView<T extends WiresShapeViewExt>
     @SuppressWarnings("unchecked")
     public DecoratedWiresShapeControlHandleList getControls() {
         return (DecoratedWiresShapeControlHandleList) super.getControls();
+    }
+
+    @Override
+    public void destroy() {
+        scalableContainer.destroy();
+        super.destroy();
     }
 
     void resize(final double x,

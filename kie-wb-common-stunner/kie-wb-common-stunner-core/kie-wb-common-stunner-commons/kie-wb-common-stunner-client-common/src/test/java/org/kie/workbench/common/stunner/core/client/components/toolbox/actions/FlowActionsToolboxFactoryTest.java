@@ -37,6 +37,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.lookup.util.CommonLookups;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
+import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -66,10 +67,19 @@ public class FlowActionsToolboxFactoryTest {
     private CreateConnectorAction createConnectorAction;
 
     @Mock
+    private Command createConnectorActionDestroyer;
+
+    @Mock
     private CreateNodeAction createNodeAction;
 
     @Mock
+    private Command createNodeActionDestroyer;
+
+    @Mock
     private ActionsToolboxView view;
+
+    @Mock
+    private Command viewDestroyer;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -117,8 +127,11 @@ public class FlowActionsToolboxFactoryTest {
         this.tested = new FlowActionsToolboxFactory(definitionUtils,
                                                     commonLookups,
                                                     () -> createConnectorAction,
+                                                    createConnectorActionDestroyer,
                                                     () -> createNodeAction,
-                                                    () -> view);
+                                                    createNodeActionDestroyer,
+                                                    () -> view,
+                                                    viewDestroyer);
     }
 
     @Test
@@ -151,5 +164,13 @@ public class FlowActionsToolboxFactoryTest {
                times(2)).addButton(any(Glyph.class),
                                    anyString(),
                                    any(Consumer.class));
+    }
+
+    @Test
+    public void testDestroy() {
+        tested.destroy();
+        verify(createConnectorActionDestroyer, times(1)).execute();
+        verify(createNodeActionDestroyer, times(1)).execute();
+        verify(viewDestroyer, times(1)).execute();
     }
 }

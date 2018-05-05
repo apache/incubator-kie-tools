@@ -29,9 +29,7 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
@@ -110,7 +108,7 @@ public class WorkItemDefinitionClientRegistry implements WorkItemDefinitionRegis
             final WorkItemDefinitionCacheRegistry registry = getRegistryForModule(metadata);
             workItemDefinitions.forEach(registry::register);
             callback.execute();
-        }, (ErrorCallback<Message>) (message, throwable) -> {
+        }, (message, throwable) -> {
             errorPresenter.accept(throwable);
             callback.execute();
             return false;

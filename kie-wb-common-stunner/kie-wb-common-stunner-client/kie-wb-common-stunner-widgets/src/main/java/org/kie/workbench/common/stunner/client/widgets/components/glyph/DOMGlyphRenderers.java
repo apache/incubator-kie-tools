@@ -16,8 +16,11 @@
 
 package org.kie.workbench.common.stunner.client.widgets.components.glyph;
 
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
@@ -31,20 +34,23 @@ import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 @ApplicationScoped
 public class DOMGlyphRenderers implements DOMGlyphRenderer<Glyph> {
 
-    private final Function<Class<?>, DOMGlyphRenderer> rendererProvider;
+    private final ManagedInstance<DOMGlyphRenderer> rendererInstances;
+    private final List<DOMGlyphRenderer> renderers;
 
+    // CDI proxy.
     protected DOMGlyphRenderers() {
-        this.rendererProvider = null;
+        this(null);
     }
 
     @Inject
-    public DOMGlyphRenderers(final @Any ManagedInstance<DOMGlyphRenderer> domGlyphRenderers) {
-        this.rendererProvider = aClass -> GlyphRenderer.getRenderer(domGlyphRenderers::spliterator,
-                                                                    aClass);
+    public DOMGlyphRenderers(final @Any ManagedInstance<DOMGlyphRenderer> rendererInstances) {
+        this.rendererInstances = rendererInstances;
+        this.renderers = new ArrayList<>();
     }
 
-    DOMGlyphRenderers(final Function<Class<?>, DOMGlyphRenderer> rendererProvider) {
-        this.rendererProvider = rendererProvider;
+    @PostConstruct
+    public void init() {
+        rendererInstances.forEach(renderers::add);
     }
 
     @Override
@@ -57,10 +63,20 @@ public class DOMGlyphRenderers implements DOMGlyphRenderer<Glyph> {
     public IsElement render(Glyph glyph,
                             double width,
                             double height) {
-        return (IsElement) rendererProvider
-                .apply(glyph.getClass())
+        return (IsElement) getRenderer(glyph.getClass())
                 .render(glyph,
                         width,
                         height);
+    }
+
+    private DOMGlyphRenderer getRenderer(final Class<?> type) {
+        return GlyphRenderer.getRenderer(renderers::spliterator,
+                                         type);
+    }
+
+    @PreDestroy
+    public void destroy() {
+        renderers.clear();
+        rendererInstances.destroyAll();
     }
 }

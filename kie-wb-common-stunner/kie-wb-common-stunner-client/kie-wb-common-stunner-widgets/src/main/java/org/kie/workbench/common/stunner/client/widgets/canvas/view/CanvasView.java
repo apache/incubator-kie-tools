@@ -42,11 +42,12 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
     public static final String CURSOR_NOT_ALLOWED = "not-allowed";
     private static final String Bg_COLOR = "#FFFFFF";
 
-    protected FlowPanel mainPanel = new FlowPanel();
-    protected FlowPanel toolsPanel = new FlowPanel();
-    protected com.ait.lienzo.client.widget.LienzoPanel panel;
-    protected Layer canvasLayer = new Layer();
-    protected org.kie.workbench.common.stunner.core.client.canvas.Layer layer;
+    private final FlowPanel mainPanel = new FlowPanel();
+    private final FlowPanel toolsPanel = new FlowPanel();
+    private final Layer canvasLayer = new Layer();
+    private com.ait.lienzo.client.widget.LienzoPanel panel;
+    private org.kie.workbench.common.stunner.core.client.canvas.Layer layer;
+
     /**
      * Defines the usable area in the layer by stroking a rectangle for the
      * defined canvas size. It provides visual feedback about the diagram's
@@ -264,6 +265,10 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
         return layer;
     }
 
+    protected Layer getCanvasLayer() {
+        return canvasLayer;
+    }
+
     @Override
     public AbstractCanvas.View clear() {
         layer.clear();
@@ -277,12 +282,10 @@ public class CanvasView extends Composite implements AbstractCanvas.View<com.ait
         this.toolsPanel.clear();
         this.layer.destroy();
         this.canvasLayer.removeFromParent();
-        this.panel.removeFromParent();
-        this.mainPanel = null;
-        this.toolsPanel = null;
-        this.panel = null;
         this.layer = null;
-        this.canvasLayer = null;
+        this.panel.removeAll();
+        this.panel.removeFromParent();
+        this.panel = null;
     }
 }
 

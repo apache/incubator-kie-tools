@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionDestroyedEvent;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedEvent;
-import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -87,7 +87,7 @@ public abstract class BaseSessionScreen {
         return null != session ? session.getCanvas() : null;
     }
 
-    protected AbstractClientSession getSession() {
-        return (AbstractClientSession) session;
+    protected EditorSession getSession() {
+        return (EditorSession) session;
     }
 }

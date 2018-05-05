@@ -64,6 +64,10 @@ public class DefinitionIdMap<V> {
         return value;
     }
 
+    public void clear() {
+        entries.clear();
+    }
+
     private static String getDefinitionId(final Class<?> type) {
         return BindableAdapterUtils.getDefinitionId(type);
     }

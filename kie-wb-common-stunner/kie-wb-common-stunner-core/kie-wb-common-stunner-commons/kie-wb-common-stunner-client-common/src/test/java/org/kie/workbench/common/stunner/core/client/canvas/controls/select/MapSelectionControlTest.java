@@ -36,7 +36,6 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -127,7 +126,7 @@ public class MapSelectionControlTest {
 
     @Test
     public void testEnable() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         verify(layer,
                times(1)).addHandler(eq(ViewEventType.MOUSE_CLICK),
                                     any(MouseClickHandler.class));
@@ -135,7 +134,7 @@ public class MapSelectionControlTest {
 
     @Test
     public void testLayerClickAndSelectRootElement() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         final ArgumentCaptor<MouseClickHandler> clickHandlerArgumentCaptor =
                 ArgumentCaptor.forClass(MouseClickHandler.class);
         verify(layer,
@@ -163,7 +162,7 @@ public class MapSelectionControlTest {
     @Test
     public void testLayerClickAndClear() {
         when(metadata.getCanvasRootUUID()).thenReturn(null);
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         final ArgumentCaptor<MouseClickHandler> clickHandlerArgumentCaptor =
                 ArgumentCaptor.forClass(MouseClickHandler.class);
         verify(layer,
@@ -185,7 +184,7 @@ public class MapSelectionControlTest {
 
     @Test
     public void testRegisterElement() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         assertFalse(isRegistered(element));
         tested.register(element);
         assertTrue(isRegistered(element));
@@ -194,24 +193,15 @@ public class MapSelectionControlTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testDeregisterElement() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         tested.deregister(element);
         assertFalse(isRegistered(element));
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void testDisable() {
-        tested.enable(canvasHandler);
-        tested.disable();
-        verify(layer,
-               times(1)).removeHandler(any(ViewHandler.class));
-    }
-
-    @Test
     public void testSelect() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         tested.select(element);
         assertEquals(1, tested.getSelectedItems().size());
@@ -231,7 +221,7 @@ public class MapSelectionControlTest {
 
     @Test
     public void testSelectReadOnly() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         tested.setReadonly(true);
         tested.select(element);
@@ -243,7 +233,7 @@ public class MapSelectionControlTest {
 
     @Test
     public void testDeselect() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         tested.select(element);
         tested.deselect(element);
@@ -256,7 +246,7 @@ public class MapSelectionControlTest {
 
     @Test
     public void testClearSelection() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         tested.select(element);
         tested.clearSelection();
@@ -272,7 +262,7 @@ public class MapSelectionControlTest {
 
     @Test
     public void testOnShapeRemovedEvent() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         tested.select(element);
         CanvasShapeRemovedEvent shapeRemovedEvent = new CanvasShapeRemovedEvent(canvas,
@@ -287,7 +277,7 @@ public class MapSelectionControlTest {
 
     @Test
     public void testOnClearSelectionEvent() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         tested.select(element);
         CanvasClearSelectionEvent event = new CanvasClearSelectionEvent(canvasHandler);
@@ -304,7 +294,7 @@ public class MapSelectionControlTest {
 
     @Test
     public void testOnSelectEvent() {
-        tested.enable(canvasHandler);
+        tested.init(canvasHandler);
         tested.register(element);
         CanvasSelectionEvent event = new CanvasSelectionEvent(canvasHandler,
                                                               ELEMENT_UUID);
