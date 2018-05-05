@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.image;
 
+import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.event.dom.client.ErrorEvent;
 import com.google.gwt.event.dom.client.ErrorHandler;
@@ -29,8 +30,13 @@ public abstract class ImageLoader
 {
     public ImageLoader(final String url)
     {
-        final Image image = new Image();
+        this(url,
+             new Image());
+    }
 
+    public ImageLoader(final String url,
+                       final Image image)
+    {
         final ImageElement element = ImageElement.as(image.getElement());
 
         image.setVisible(false);
@@ -41,24 +47,33 @@ public abstract class ImageLoader
         {
             setCrossOrigin(element, crossOrigin);
         }
-        image.addLoadHandler(new LoadHandler()
-        {
-            @Override
-            public final void onLoad(final LoadEvent event)
-            {
-                doImageElementLoadAndRetry(element, image, crossOrigin, url);
-            }
-        });
-        image.addErrorHandler(new ErrorHandler()
-        {
-            @Override
-            public final void onError(final ErrorEvent event)
-            {
-                RootPanel.get().remove(image);
 
-                onImageElementError("Image " + url + " failed to load");
-            }
-        });
+        final HandlerRegistrationManager m_HandlerRegManager = new HandlerRegistrationManager();
+
+        m_HandlerRegManager.register(
+                image.addLoadHandler(new LoadHandler()
+                {
+                    @Override
+                    public final void onLoad(final LoadEvent event)
+                    {
+                        m_HandlerRegManager.removeHandler();
+                        doImageElementLoadAndRetry(element, image, crossOrigin, url);
+                    }
+                })
+        );
+        m_HandlerRegManager.register(
+                image.addErrorHandler(new ErrorHandler()
+                {
+                    @Override
+                    public final void onError(final ErrorEvent event)
+                    {
+                        RootPanel.get().remove(image);
+                        m_HandlerRegManager.removeHandler();
+
+                        onImageElementError("Image " + url + " failed to load");
+                    }
+                })
+        );
         RootPanel.get().add(image);
 
         if (isValidDataURL(url) && isValidSVG(url))
@@ -71,7 +86,53 @@ public abstract class ImageLoader
         }
     }
 
-    private final void doImageElementLoadAndRetry(final ImageElement elem, final Image image, final String orig, final String url)
+    public ImageLoader(final ImageResource resource)
+    {
+        this(resource,
+             new Image());
+    }
+
+    public ImageLoader(final ImageResource resource,
+                       final Image image)
+    {
+        final ImageElement element = ImageElement.as(image.getElement());
+
+        image.setVisible(false);
+
+        final HandlerRegistrationManager m_HandlerRegManager = new HandlerRegistrationManager();
+
+        m_HandlerRegManager.register(
+                image.addLoadHandler(new LoadHandler()
+        {
+            @Override
+            public final void onLoad(final LoadEvent event)
+            {
+                onImageElementLoad(element);
+                m_HandlerRegManager.removeHandler();
+            }
+        })
+        );
+        m_HandlerRegManager.register(
+            image.addErrorHandler(new ErrorHandler()
+            {
+                @Override
+                public final void onError(final ErrorEvent event)
+                {
+                    RootPanel.get().remove(image);
+                    m_HandlerRegManager.removeHandler();
+                    onImageElementError("Resource " + resource.getName() + " failed to load");
+                }
+            })
+        );
+        image.setResource(resource);
+
+        RootPanel.get().add(image);
+    }
+
+    private final void doImageElementLoadAndRetry(final ImageElement elem,
+                                                  final Image image,
+                                                  final String orig,
+                                                  final String url)
     {
         final int w = Math.max(image.getWidth(), elem.getWidth());
 
@@ -120,37 +181,6 @@ public abstract class ImageLoader
         return url.toLowerCase().contains("svg+xml");
     }
 
-    public ImageLoader(final ImageResource resource)
-    {
-        final Image image = new Image();
-
-        final ImageElement element = ImageElement.as(image.getElement());
-
-        image.setVisible(false);
-
-        image.addLoadHandler(new LoadHandler()
-        {
-            @Override
-            public final void onLoad(final LoadEvent event)
-            {
-                onImageElementLoad(element);
-            }
-        });
-        image.addErrorHandler(new ErrorHandler()
-        {
-            @Override
-            public final void onError(final ErrorEvent event)
-            {
-                RootPanel.get().remove(image);
-
-                onImageElementError("Resource " + resource.getName() + " failed to load");
-            }
-        });
-        image.setResource(resource);
-
-        RootPanel.get().add(image);
-    }
-
     private final native void load(String url, String orig, JSImageCallback self)
     /*-{
 		var image = new $wnd.Image();
@@ -181,7 +211,6 @@ public abstract class ImageLoader
     }-*/;
 
     public abstract void onImageElementLoad(ImageElement elem);
-
     public abstract void onImageElementError(String message);
 
     private interface JSImageCallback

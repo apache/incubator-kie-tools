@@ -57,7 +57,7 @@ public class MagnetManager
 
     public static final ColorKeyRotor m_c_rotor               = new ColorKeyRotor();
 
-    private NFastStringMap<Magnets>   m_magnetRegistry        = new NFastStringMap<Magnets>();
+    private NFastStringMap<Magnets>   m_magnetRegistry        = new NFastStringMap<>();
 
     private int                       m_ctrlSize              = CONTROL_RADIUS;
 
@@ -128,7 +128,7 @@ public class MagnetManager
             list.add(m);
         }
 
-        String uuid = primTarget.uuid();
+        final String uuid = wiresShape.uuid();
         m_magnetRegistry.put(uuid, magnets);
 
         wiresShape.setMagnets(magnets);
@@ -257,11 +257,11 @@ public class MagnetManager
 
     public static class Magnets implements AttributesChangedHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
     {
-        private IControlHandleList m_list;
+        private final IControlHandleList m_list;
 
-        private MagnetManager m_magnetManager;
+        private final MagnetManager m_magnetManager;
 
-        private WiresShape m_wiresShape;
+        private final WiresShape m_wiresShape;
 
         private boolean m_isDragging;
 
@@ -337,7 +337,8 @@ public class MagnetManager
 
             m_registrationManager.removeHandler();
 
-            m_magnetManager.m_magnetRegistry.remove(m_wiresShape.getPath().uuid());
+            m_magnetManager.m_magnetRegistry.remove(m_wiresShape.uuid());
+
         }
 
         public void destroy(WiresMagnet magnet)

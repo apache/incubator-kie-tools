@@ -172,6 +172,19 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
         onResize();
     }
 
+    public void destroy() {
+        removeAll();
+        removeFromParent();
+        m_auto = null;
+        m_events.destroy();
+        m_events = null;
+        m_widget_cursor = null;
+        m_active_cursor = null;
+        m_normal_cursor = null;
+        m_select_cursor = null;
+        m_drag_mouse_control = null;
+    }
+
     public LienzoPanel setAutoScale(final AutoScaleType type)
     {
         m_auto = type;

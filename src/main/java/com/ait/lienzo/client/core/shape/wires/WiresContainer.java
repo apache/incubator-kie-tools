@@ -54,15 +54,19 @@ public class WiresContainer
 {
     private static final Flows.BooleanOp     XYWH_OP               = any(Attribute.X, Attribute.Y);
 
-    private NFastArrayList<WiresShape>       m_childShapes;
+    private final NFastArrayList<WiresShape>       m_childShapes;
 
-    private IContainer<?, IPrimitive<?>>     m_container;
+    private final IContainer<?, IPrimitive<?>>     m_container;
+
+    private final HandlerManager             m_events;
+
+    private final IAttributesChangedBatcher  attributesChangedBatcher;
+
+    private final HandlerRegistrationManager m_registrationManager;
 
     private WiresContainer                   m_parent;
 
     private WiresContainer                   dockedTo;
-
-    private final HandlerManager             m_events;
 
     private WiresManager                     m_wiresManager;
 
@@ -71,10 +75,6 @@ public class WiresContainer
     private boolean                          m_dragging;
 
     private ILayoutHandler                   m_layoutHandler       = ILayoutHandler.NONE;
-
-    private final IAttributesChangedBatcher  attributesChangedBatcher;
-
-    private final HandlerRegistrationManager m_registrationManager;
 
     public WiresContainer(final IContainer<?, IPrimitive<?>> container)
     {
@@ -87,7 +87,7 @@ public class WiresContainer
         this.m_events = null != m_events ? m_events : new HandlerManager(this);
         this.m_dragging = false;
         this.m_drag_initialized = false;
-        this.m_childShapes = new NFastArrayList<WiresShape>();
+        this.m_childShapes = new NFastArrayList<>();
         this.m_registrationManager = m_registrationManager;
         this.attributesChangedBatcher = attributesChangedBatcher;
     }
@@ -136,11 +136,6 @@ public class WiresContainer
     public Point2D getComputedLocation()
     {
         return getGroup().getComputedLocation();
-    }
-
-    public void setContainer(IContainer<?, IPrimitive<?>> container)
-    {
-        m_container = container;
     }
 
     public WiresContainer getParent()
@@ -340,23 +335,21 @@ public class WiresContainer
 
     }
 
-    protected void preDestroy()
-    {
-
-    }
-
     public void destroy()
     {
-        preDestroy();
-        removeHandlers();
+        for (WiresShape shape : m_childShapes) {
+            remove(shape);
+        }
+        m_childShapes.clear();
+        m_registrationManager.removeHandler();
+        m_container.setAttributesChangedBatcher(null);
+        attributesChangedBatcher.cancelAttributesChangedBatcher();
+        // TODO: m_events.removeHandler();
         m_container.removeFromParent();
         m_parent = null;
-    }
-
-    private void removeHandlers()
-    {
-        m_registrationManager.removeHandler();
-        attributesChangedBatcher.cancelAttributesChangedBatcher();
+        dockedTo = null;
+        m_wiresManager = null;
+        m_layoutHandler = null;
     }
 
     protected HandlerManager getHandlerManager()

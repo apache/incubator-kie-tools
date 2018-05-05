@@ -53,6 +53,7 @@ import com.ait.lienzo.shared.core.types.DragMode;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.tooling.common.api.java.util.function.Predicate;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
@@ -106,6 +107,8 @@ final class LienzoHandlerManager
 
     private final Mediators   m_mediators;
 
+    private final HandlerRegistrationManager handlerRegistrationManager;
+
     private boolean           m_dragging               = false;
 
     private boolean           m_dragging_using_touches = false;
@@ -140,7 +143,25 @@ final class LienzoHandlerManager
 
         m_mediators = m_viewport.getMediators();
 
+        handlerRegistrationManager = new HandlerRegistrationManager();
         addHandlers();
+    }
+
+    public void destroy()
+    {
+        if (null != m_mediators)
+        {
+            while (null != m_mediators.pop()) {}
+        }
+        if (null != m_touches)
+        {
+            m_touches.clear();
+        }
+        handlerRegistrationManager.removeHandler();
+        m_drag_mode = null;
+        m_drag_node = null;
+        m_over_prim = null;
+        m_dragContext = null;
     }
 
     private final List<TouchPoint> getTouches(final TouchEvent<?> event)
@@ -175,316 +196,342 @@ final class LienzoHandlerManager
 
     private final void addHandlers()
     {
-        m_lienzo.addClickHandler(new ClickHandler()
-        {
-            @Override
-            public void onClick(final ClickEvent event)
-            {
-                if (!m_viewport.getOnEventHandlers().getOnMouseClickEventHandle().onMouseEventBefore(event))
-                {
-                    m_dragging_mouse_pressed = false; // could have been set previously by a mousedown, it will need cleaning up
-                    m_dragging_ignore_clicks = false;
-                    m_dragging = false;
-                    return;
+        handlerRegistrationManager.register (
+            m_lienzo.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(final ClickEvent event) {
+                    if (!m_viewport.getOnEventHandlers().getOnMouseClickEventHandle().onMouseEventBefore(event)) {
+                        m_dragging_mouse_pressed = false; // could have been set previously by a mousedown, it will need cleaning up
+                        m_dragging_ignore_clicks = false;
+                        m_dragging = false;
+                        return;
+                    }
+
+                    onNodeMouseClick(new NodeMouseClickEvent(event));
+                    m_mouse_button_left = (event.getNativeButton() == NativeEvent.BUTTON_LEFT);
+                    m_mouse_button_middle = (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE);
+                    m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
+
+                    m_viewport.getOnEventHandlers().getOnMouseClickEventHandle().onMouseEventAfter(event);
                 }
-
-                onNodeMouseClick(new NodeMouseClickEvent(event));
-                m_mouse_button_left = (event.getNativeButton() == NativeEvent.BUTTON_LEFT);
-                m_mouse_button_middle = (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE);
-                m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
-
-                m_viewport.getOnEventHandlers().getOnMouseClickEventHandle().onMouseEventAfter(event);
-            }
-        });
-        m_lienzo.addDoubleClickHandler(new DoubleClickHandler()
+            })
+        );
+        handlerRegistrationManager.register (
+                m_lienzo.addDoubleClickHandler(new DoubleClickHandler()
         {
             @Override
             public void onDoubleClick(final DoubleClickEvent event)
             {
-                if (!m_viewport.getOnEventHandlers().getOnMouseDoubleClickEventHandle().onMouseEventBefore(event))
-                {
-                    return;
+                    if (!m_viewport.getOnEventHandlers().getOnMouseDoubleClickEventHandle().onMouseEventBefore(event))
+                    {
+                        return;
+                    }
+
+                    onNodeMouseDoubleClick(new NodeMouseDoubleClickEvent(event));
+                    m_mouse_button_left = (event.getNativeButton() == NativeEvent.BUTTON_LEFT);
+                    m_mouse_button_middle = (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE);
+                    m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
+
+                    event.preventDefault();
+
+                    m_viewport.getOnEventHandlers().getOnMouseDoubleClickEventHandle().onMouseEventBefore(event);
                 }
-
-                onNodeMouseDoubleClick(new NodeMouseDoubleClickEvent(event));
-                m_mouse_button_left = (event.getNativeButton() == NativeEvent.BUTTON_LEFT);
-                m_mouse_button_middle = (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE);
-                m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
-
-                event.preventDefault();
-
-                m_viewport.getOnEventHandlers().getOnMouseDoubleClickEventHandle().onMouseEventBefore(event);
-            }
-        });
-        m_lienzo.addMouseMoveHandler(new MouseMoveHandler()
+            })
+        );
+        handlerRegistrationManager.register (
+                m_lienzo.addMouseMoveHandler(new MouseMoveHandler()
         {
             @Override
             public void onMouseMove(final MouseMoveEvent event)
             {
-                if (!m_viewport.getOnEventHandlers().getOnMouseMoveEventHandle().onMouseEventBefore(event))
-                {
-                    return;
-                }
+                    if (!m_viewport.getOnEventHandlers().getOnMouseMoveEventHandle().onMouseEventBefore(event))
+                    {
+                        return;
+                    }
 
-                if ((m_dragging) && (m_dragging_using_touches))
-                {
+                    if ((m_dragging) && (m_dragging_using_touches))
+                    {
+                        event.preventDefault();
+
+                        return;// Ignore weird Mouse Move (0,0) in the middle of a Touch Drag on iOS/Safari
+                    }
+                    final NodeMouseMoveEvent nevent = new NodeMouseMoveEvent(event);
+
+                    if (m_mediators.handleEvent(nevent))
+                    {
+                        event.preventDefault();
+
+                        return;
+                    }
+                    m_mouse_button_left = (event.getNativeButton() == NativeEvent.BUTTON_LEFT);
+                    m_mouse_button_middle = (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE);
+                    m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
+
+                    onNodeMouseMove(nevent);
+
                     event.preventDefault();
 
-                    return;// Ignore weird Mouse Move (0,0) in the middle of a Touch Drag on iOS/Safari
+                    m_viewport.getOnEventHandlers().getOnMouseMoveEventHandle().onMouseEventBefore(event);
                 }
-                final NodeMouseMoveEvent nevent = new NodeMouseMoveEvent(event);
-
-                if (m_mediators.handleEvent(nevent))
-                {
-                    event.preventDefault();
-
-                    return;
-                }
-                m_mouse_button_left = (event.getNativeButton() == NativeEvent.BUTTON_LEFT);
-                m_mouse_button_middle = (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE);
-                m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
-
-                onNodeMouseMove(nevent);
-
-                event.preventDefault();
-
-                m_viewport.getOnEventHandlers().getOnMouseMoveEventHandle().onMouseEventBefore(event);
-            }
-        });
-        m_lienzo.addMouseUpHandler(new MouseUpHandler()
-        {
-            @Override
-            public void onMouseUp(final MouseUpEvent event)
+            })
+        );
+        handlerRegistrationManager.register (
+                m_lienzo.addMouseUpHandler(new MouseUpHandler()
             {
-                if (!m_viewport.getOnEventHandlers().getOnMouseUpEventHandle().onMouseEventBefore(event))
+                @Override
+                public void onMouseUp(final MouseUpEvent event)
                 {
-                    m_dragging_mouse_pressed = false; // could have been set previously by a mousedown, it will need cleaning up
-                    m_dragging_ignore_clicks = false;
-                    m_dragging = false;
-                    return;
+                    if (!m_viewport.getOnEventHandlers().getOnMouseUpEventHandle().onMouseEventBefore(event))
+                    {
+                        m_dragging_mouse_pressed = false; // could have been set previously by a mousedown, it will need cleaning up
+                        m_dragging_ignore_clicks = false;
+                        m_dragging = false;
+                        return;
+                    }
+
+                    final NodeMouseUpEvent nevent = new NodeMouseUpEvent(event);
+
+                    if (m_mediators.handleEvent(nevent))
+                    {
+                        return;
+                    }
+
+                    m_mouse_button_left = (event.getNativeButton() == NativeEvent.BUTTON_LEFT);
+                    m_mouse_button_middle = (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE);
+                    m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
+
+                    onNodeMouseUp(nevent);
+
+                    m_viewport.getOnEventHandlers().getOnMouseUpEventHandle().onMouseEventBefore(event);
                 }
-
-                final NodeMouseUpEvent nevent = new NodeMouseUpEvent(event);
-
-                if (m_mediators.handleEvent(nevent))
-                {
-                    return;
-                }
-
-                m_mouse_button_left = (event.getNativeButton() == NativeEvent.BUTTON_LEFT);
-                m_mouse_button_middle = (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE);
-                m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
-
-                onNodeMouseUp(nevent);
-
-                m_viewport.getOnEventHandlers().getOnMouseUpEventHandle().onMouseEventBefore(event);
-            }
-        });
-        m_lienzo.addMouseDownHandler(new MouseDownHandler()
-        {
-            @Override
-            public void onMouseDown(final MouseDownEvent event)
+            })
+        );
+        handlerRegistrationManager.register (
+                m_lienzo.addMouseDownHandler(new MouseDownHandler()
             {
-                if (!m_viewport.getOnEventHandlers().getOnMouseDownEventHandle().onMouseEventBefore(event))
+                @Override
+                public void onMouseDown(final MouseDownEvent event)
                 {
-                    return;
+                    if (!m_viewport.getOnEventHandlers().getOnMouseDownEventHandle().onMouseEventBefore(event))
+                    {
+                        return;
+                    }
+
+                    final NodeMouseDownEvent nevent = new NodeMouseDownEvent(event);
+
+                    if (m_mediators.handleEvent(nevent))
+                    {
+                        event.preventDefault();
+
+                        return;
+                    }
+
+                    m_mouse_button_left = (event.getNativeButton() == NativeEvent.BUTTON_LEFT);
+                    m_mouse_button_middle = (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE);
+                    m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
+
+                    onNodeMouseDown(nevent);
+
+                    m_viewport.getOnEventHandlers().getOnMouseDownEventHandle().onMouseEventBefore(event);
                 }
-
-                final NodeMouseDownEvent nevent = new NodeMouseDownEvent(event);
-
-                if (m_mediators.handleEvent(nevent))
-                {
-                    event.preventDefault();
-
-                    return;
-                }
-
-                m_mouse_button_left = (event.getNativeButton() == NativeEvent.BUTTON_LEFT);
-                m_mouse_button_middle = (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE);
-                m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
-
-                onNodeMouseDown(nevent);
-
-                m_viewport.getOnEventHandlers().getOnMouseDownEventHandle().onMouseEventBefore(event);
-            }
-        });
-        m_lienzo.addMouseOutHandler(new MouseOutHandler()
-        {
-            @Override
-            public void onMouseOut(final MouseOutEvent event)
+            })
+        );
+        handlerRegistrationManager.register (
+                m_lienzo.addMouseOutHandler(new MouseOutHandler()
             {
-                final NodeMouseOutEvent nevent = new NodeMouseOutEvent(event);
-
-                if (m_mediators.handleEvent(nevent))
+                @Override
+                public void onMouseOut(final MouseOutEvent event)
                 {
-                    return;
+                    final NodeMouseOutEvent nevent = new NodeMouseOutEvent(event);
+
+                    if (m_mediators.handleEvent(nevent))
+                    {
+                        return;
+                    }
+                    onNodeMouseOut(nevent);
                 }
-                onNodeMouseOut(nevent);
-            }
-        });
-        m_lienzo.addMouseOverHandler(new MouseOverHandler()
+            })
+        );
+        handlerRegistrationManager.register (
+            m_lienzo.addMouseOverHandler(new MouseOverHandler()
         {
             @Override
             public void onMouseOver(final MouseOverEvent event)
             {
-                final NodeMouseOverEvent nevent = new NodeMouseOverEvent(event);
+                    final NodeMouseOverEvent nevent = new NodeMouseOverEvent(event);
 
-                if (m_mediators.handleEvent(nevent))
-                {
-                    return;
+                    if (m_mediators.handleEvent(nevent))
+                    {
+                        return;
+                    }
+                    onNodeMouseOver(nevent);
                 }
-                onNodeMouseOver(nevent);
-            }
-        });
-        m_lienzo.addMouseWheelHandler(new MouseWheelHandler()
+            })
+        );
+        handlerRegistrationManager.register (
+            m_lienzo.addMouseWheelHandler(new MouseWheelHandler()
         {
             @Override
             public void onMouseWheel(final MouseWheelEvent event)
             {
-                final NodeMouseWheelEvent nevent = new NodeMouseWheelEvent(event);
+                    final NodeMouseWheelEvent nevent = new NodeMouseWheelEvent(event);
 
-                if (m_mediators.handleEvent(nevent))
-                {
-                    event.preventDefault();
+                    if (m_mediators.handleEvent(nevent))
+                    {
+                        event.preventDefault();
 
-                    event.stopPropagation();
+                        event.stopPropagation();
+                    }
+                    else
+                    {
+                        fireEvent(nevent);
+                    }
                 }
-                else
-                {
-                    fireEvent(nevent);
-                }
-            }
-        });
-        m_lienzo.addTouchCancelHandler(new TouchCancelHandler()
+            })
+        );
+        handlerRegistrationManager.register (
+            m_lienzo.addTouchCancelHandler(new TouchCancelHandler()
         {
             @Override
             public void onTouchCancel(final TouchCancelEvent event)
             {
-                final NodeTouchCancelEvent nevent = new NodeTouchCancelEvent(event, getTouches(event));
+                    final NodeTouchCancelEvent nevent = new NodeTouchCancelEvent(event, getTouches(event));
 
-                if (m_mediators.handleEvent(event))
-                {
+                    if (m_mediators.handleEvent(event))
+                    {
+                        event.preventDefault();
+
+                        return;
+                    }
+                    onNodeMouseOut(nevent);
+
                     event.preventDefault();
-
-                    return;
                 }
-                onNodeMouseOut(nevent);
-
-                event.preventDefault();
-            }
-        });
-        m_lienzo.addTouchEndHandler(new TouchEndHandler()
+            })
+        );
+        handlerRegistrationManager.register (
+            m_lienzo.addTouchEndHandler(new TouchEndHandler()
         {
             @Override
             public void onTouchEnd(final TouchEndEvent event)
             {
-                final NodeTouchEndEvent nevent = new NodeTouchEndEvent(event, m_touches);
+                    final NodeTouchEndEvent nevent = new NodeTouchEndEvent(event, m_touches);
 
-                if (m_mediators.handleEvent(nevent))
-                {
+                    if (m_mediators.handleEvent(nevent))
+                    {
+                        event.preventDefault();
+
+                        return;
+                    }
+                    onNodeMouseUp(nevent);
+
                     event.preventDefault();
-
-                    return;
                 }
-                onNodeMouseUp(nevent);
-
-                event.preventDefault();
-            }
-        });
-        m_lienzo.addTouchMoveHandler(new TouchMoveHandler()
+            })
+        );
+        handlerRegistrationManager.register (
+            m_lienzo.addTouchMoveHandler(new TouchMoveHandler()
         {
             @Override
             public void onTouchMove(final TouchMoveEvent event)
             {
-                m_touches = getTouches(event);
+                    m_touches = getTouches(event);
 
-                final NodeTouchMoveEvent nevent = new NodeTouchMoveEvent(event, m_touches);
+                    final NodeTouchMoveEvent nevent = new NodeTouchMoveEvent(event, m_touches);
 
-                if (m_mediators.handleEvent(nevent))
-                {
+                    if (m_mediators.handleEvent(nevent))
+                    {
+                        event.preventDefault();
+
+                        return;
+                    }
+                    onNodeMouseMove(nevent);
+
                     event.preventDefault();
-
-                    return;
                 }
-                onNodeMouseMove(nevent);
-
-                event.preventDefault();
-            }
-        });
-        m_lienzo.addTouchStartHandler(new TouchStartHandler()
+            })
+        );
+        handlerRegistrationManager.register (
+            m_lienzo.addTouchStartHandler(new TouchStartHandler()
         {
             @Override
             public void onTouchStart(final TouchStartEvent event)
             {
-                m_touches = getTouches(event);
+                    m_touches = getTouches(event);
 
-                final NodeTouchStartEvent nevent = new NodeTouchStartEvent(event, m_touches);
+                    final NodeTouchStartEvent nevent = new NodeTouchStartEvent(event, m_touches);
 
-                if (m_mediators.handleEvent(nevent))
-                {
+                    if (m_mediators.handleEvent(nevent))
+                    {
+                        event.preventDefault();
+
+                        return;
+                    }
+                    onNodeMouseDown(nevent);
+
                     event.preventDefault();
-
-                    return;
                 }
-                onNodeMouseDown(nevent);
-
-                event.preventDefault();
-            }
-        });
-        m_lienzo.addGestureStartHandler(new GestureStartHandler()
+            })
+        );
+        handlerRegistrationManager.register (
+            m_lienzo.addGestureStartHandler(new GestureStartHandler()
         {
             @Override
             public void onGestureStart(final GestureStartEvent event)
             {
-                final NodeGestureStartEvent nevent = new NodeGestureStartEvent(event.getScale(), event.getRotation());
+                    final NodeGestureStartEvent nevent = new NodeGestureStartEvent(event.getScale(), event.getRotation());
 
-                if (m_mediators.handleEvent(nevent))
-                {
+                    if (m_mediators.handleEvent(nevent))
+                    {
+                        event.preventDefault();
+
+                        return;
+                    }
+                    fireEvent(nevent);
+
                     event.preventDefault();
-
-                    return;
                 }
-                fireEvent(nevent);
-
-                event.preventDefault();
-            }
-        });
-        m_lienzo.addGestureEndHandler(new GestureEndHandler()
+            })
+        );
+        handlerRegistrationManager.register (
+            m_lienzo.addGestureEndHandler(new GestureEndHandler()
         {
             @Override
             public void onGestureEnd(final GestureEndEvent event)
             {
-                final NodeGestureEndEvent nevent = new NodeGestureEndEvent(event.getScale(), event.getRotation());
+                    final NodeGestureEndEvent nevent = new NodeGestureEndEvent(event.getScale(), event.getRotation());
 
-                if (m_mediators.handleEvent(nevent))
-                {
+                    if (m_mediators.handleEvent(nevent))
+                    {
+                        event.preventDefault();
+
+                        return;
+                    }
+                    fireEvent(nevent);
+
                     event.preventDefault();
-
-                    return;
                 }
-                fireEvent(nevent);
-
-                event.preventDefault();
-            }
-        });
-        m_lienzo.addGestureChangeHandler(new GestureChangeHandler()
-        {
-            @Override
-            public void onGestureChange(final GestureChangeEvent event)
-            {
-                final NodeGestureChangeEvent nevent = new NodeGestureChangeEvent(event.getScale(), event.getRotation());
-
-                if (m_mediators.handleEvent(nevent))
+            })
+        );
+        handlerRegistrationManager.register (
+            m_lienzo.addGestureChangeHandler(new GestureChangeHandler() {
+                @Override
+                public void onGestureChange(final GestureChangeEvent event)
                 {
+                    final NodeGestureChangeEvent nevent = new NodeGestureChangeEvent(event.getScale(), event.getRotation());
+
+                    if (m_mediators.handleEvent(nevent))
+                    {
+                        event.preventDefault();
+
+                        return;
+                    }
+                    fireEvent(nevent);
+
                     event.preventDefault();
-
-                    return;
                 }
-                fireEvent(nevent);
-
-                event.preventDefault();
-            }
-        });
+            })
+        );
     }
 
     private final Shape<?> findShapeAtPoint(final int x, final int y)

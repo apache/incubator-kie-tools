@@ -49,19 +49,13 @@ public class WiresLayoutContainer implements LayoutContainer
 
     private final Group                      group;
 
-    private Point2D                          offset;
-
-    private double                           width;
-
-    private double                           height;
-
     private final NFastArrayList<ChildEntry> children;
 
-    protected HandlerRegistrationManager attrHandlerRegs = new HandlerRegistrationManager();
+    private final HandlerRegistrationManager attrHandlerRegs = new HandlerRegistrationManager();
 
-    protected HashMap<ObjectAttribute, HandlerRegistration> registrations = new HashMap<ObjectAttribute,HandlerRegistration>();
+    private final HashMap<ObjectAttribute, HandlerRegistration> registrations = new HashMap<>();
 
-    private final AttributesChangedHandler ShapeAttributesChangedHandler = new AttributesChangedHandler()
+    private final AttributesChangedHandler shapeAttributesChangedHandler = new AttributesChangedHandler()
     {
         @Override
         public void onAttributesChanged(AttributesChangedEvent event)
@@ -70,13 +64,19 @@ public class WiresLayoutContainer implements LayoutContainer
         }
     };
 
+    private Point2D                          offset;
+
+    private double                           width;
+
+    private double                           height;
+
     public WiresLayoutContainer()
     {
         this.group = new Group().setDraggable(false);
         this.offset = new Point2D(0, 0);
         this.width = 0;
         this.height = 0;
-        this.children = new NFastArrayList<ChildEntry>();
+        this.children = new NFastArrayList<>();
     }
 
     @Override
@@ -134,7 +134,7 @@ public class WiresLayoutContainer implements LayoutContainer
             final ChildEntry entry = new ChildEntry(child.getID(), layout);
             children.add(entry);
             for (Attribute attribute : child.getTransformingAttributes()) {
-                HandlerRegistration reg = child.addAttributesChangedHandler(attribute,ShapeAttributesChangedHandler);
+                HandlerRegistration reg = child.addAttributesChangedHandler(attribute, shapeAttributesChangedHandler);
                 registrations.put(new ObjectAttribute(child,attribute), reg);
                 attrHandlerRegs.register(reg);
             }
@@ -197,21 +197,18 @@ public class WiresLayoutContainer implements LayoutContainer
         return this;
     }
 
-    private WiresLayoutContainer clear()
-    {
-        children.clear();
-        group.removeAll();
-        registrations.clear();
-        attrHandlerRegs.clear();
-        return this;
-    }
-
     @Override
     public void destroy()
     {
-        clear();
+        for (HandlerRegistration registration : registrations.values()) {
+            registration.removeHandler();
+        }
+        registrations.clear();
         attrHandlerRegs.destroy();
+        children.clear();
+        group.removeAll();
         group.removeFromParent();
+        offset = null;
     }
 
     public Group getGroup()

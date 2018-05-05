@@ -42,11 +42,11 @@ import com.google.gwt.event.shared.HandlerRegistration;
 public class WiresShape extends WiresContainer
 {
 
-    private MultiPath                   m_drawnObject;
+    private final MultiPath                   m_drawnObject;
+
+    private final LayoutContainer             m_innerLayoutContainer;
 
     private Magnets                     m_magnets;
-
-    private LayoutContainer             m_innerLayoutContainer;
 
     private WiresShapeControlHandleList m_ctrls;
 
@@ -261,19 +261,31 @@ public class WiresShape extends WiresContainer
 
     }
 
-    protected void preDestroy()
+    @Override
+    public void destroy()
     {
-        super.preDestroy();
-        m_innerLayoutContainer.destroy();
-        removeHandlers();
-        removeFromParent();
-    }
+        super.destroy();
 
-    private void removeHandlers()
-    {
+        removeFromParent();
+
+        m_innerLayoutContainer.destroy();
+
         if (null != getControls())
         {
             getControls().destroy();
+            m_ctrls = null;
+        }
+
+        if (null != getMagnets())
+        {
+            getMagnets().destroy();
+            m_magnets = null;
+        }
+
+        if (null != getControl())
+        {
+            getControl().reset();
+            m_control = null;
         }
     }
 

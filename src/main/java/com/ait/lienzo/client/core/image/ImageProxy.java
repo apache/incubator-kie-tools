@@ -34,13 +34,17 @@ import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * ImageProxy is used by {@link AbstractImageShape} to load and draw the image.
  */
 public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFilterable<ImageProxy<T>>
 {
-    private T                          m_image;
+    private final T                          m_image;
+
+    private Image                      m_img;
 
     private ImageElement               m_jsimg;
 
@@ -106,7 +110,10 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
 
         m_dest_high = m_obounds.getDestHigh();
 
-        new ImageLoader(url)
+        m_img = new Image();
+
+        new ImageLoader(url,
+                        m_img)
         {
             @Override
             public final void onImageElementLoad(final ImageElement elem)
@@ -138,7 +145,10 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
 
         m_dest_high = m_obounds.getDestHigh();
 
-        new ImageLoader(resource)
+        m_img = new Image();
+
+        new ImageLoader(resource,
+                        m_img)
         {
             @Override
             public final void onImageElementLoad(final ImageElement elem)
@@ -668,6 +678,22 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
     public BoundingBox getBoundingBox()
     {
         return new BoundingBox(0, 0, m_dest_wide, m_dest_high);
+    }
+
+    public void destroy()
+    {
+        RootPanel.get().remove(m_img);
+        m_img.removeFromParent();
+        m_image.removeFromParent();
+        m_jsimg.removeFromParent();
+        m_normalImage.clear();
+        m_filterImage.clear();
+        m_selectImage.clear();
+        m_filters.clearFilters();
+        m_handler = null;
+        m_obounds = null;
+        m_img = null;
+        m_jsimg = null;
     }
 
     private static final class ClearFilter implements ImageDataFilter<ClearFilter>

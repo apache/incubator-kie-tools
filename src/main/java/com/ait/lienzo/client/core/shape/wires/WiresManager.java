@@ -17,6 +17,9 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.shape.Layer;
@@ -46,10 +49,6 @@ public final class WiresManager
 
     private final MagnetManager                              m_magnetManager       = new MagnetManager();
 
-    private SelectionManager                                 m_selectionManager;
-
-    private WiresDragHandler                                 m_handler;
-
     private final AlignAndDistribute                         m_index;
 
     private final NFastStringMap<WiresShape>                 m_shapesMap           = new NFastStringMap<WiresShape>();
@@ -72,13 +71,17 @@ public final class WiresManager
 
     private IDockingAcceptor                                 m_dockingAcceptor     = IDockingAcceptor.NONE;
 
+    private SelectionManager                                 m_selectionManager;
+
+    private WiresDragHandler                                 m_handler;
+
     private boolean                                          m_spliceEnabled;
 
     public static final WiresManager get(Layer layer)
     {
-        String uuid = layer.uuid();
+        final String uuid = layer.uuid();
 
-        WiresManager manager = MANAGER_MAP.get(uuid);
+        WiresManager manager = MANAGER_MAP.get(layer.uuid());
 
         if (null != manager)
         {
@@ -89,6 +92,18 @@ public final class WiresManager
         MANAGER_MAP.put(uuid, manager);
 
         return manager;
+    }
+
+    public static void remove(Layer layer)
+    {
+        remove(get(layer));
+    }
+
+    public static void remove(WiresManager manager)
+    {
+        final String uuid = manager.getLayer().getLayer().uuid();
+        manager.destroy();
+        MANAGER_MAP.remove(uuid);
     }
 
     private WiresManager(final Layer layer)
@@ -167,16 +182,18 @@ public final class WiresManager
     {
         shape.setWiresManager(this);
 
-        final WiresShapeHandler handler = getWiresHandlerFactory().newShapeHandler(getControlFactory().newShapeControl(shape, this),
-                                                                getControlFactory().newShapeHighlight(this),
-                                                                this);
+        final WiresShapeHandler handler =
+                getWiresHandlerFactory()
+                        .newShapeHandler(getControlFactory()
+                                                 .newShapeControl(shape, this),
+                                         getControlFactory().newShapeHighlight(this),
+                                         this);
 
         if (addIntoIndex)
         {
             // Shapes added to the align and distribute index.
             final AlignAndDistributeControl alignAndDistrControl = addToIndex(shape);
             handler.getControl().setAlignAndDistributeControl(alignAndDistrControl);
-
             shape.addWiresResizeEndHandler(new WiresResizeEndHandler()
             {
                 @Override
@@ -247,8 +264,8 @@ public final class WiresManager
 
     public void deregister(final WiresConnector connector)
     {
-        connector.removeFromLayer();
         final String uuid = connector.uuid();
+        connector.removeFromLayer();
         removeHandlers(uuid);
         connector.destroy();
         getConnectorList().remove(connector);
@@ -259,6 +276,38 @@ public final class WiresManager
             m_handler.reset();
             m_handler = null;
         }
+    }
+
+    private void destroy() {
+        if (!m_shapesMap.isEmpty()) {
+            final Collection<WiresShape> shapes = new ArrayList<>(m_shapesMap.values());
+            for (WiresShape shape : shapes) {
+                deregister(shape);
+            }
+            m_shapesMap.clear();
+        }
+        if (!m_connectorList.isEmpty()) {
+            final NFastArrayList<WiresConnector> connectors = m_connectorList.copy();
+            for (WiresConnector connector : connectors) {
+                deregister(connector);
+            }
+            m_connectorList.clear();
+        }
+        if (null != m_selectionManager) {
+            m_selectionManager.destroy();
+            m_selectionManager = null;
+        }
+        if (null != m_handler) {
+            m_handler.reset();
+            m_handler = null;
+        }
+        m_shapeHandlersMap.clear();
+        m_controlFactory = null;
+        m_wiresHandlerFactory = null;
+        m_locationAcceptor = null;
+        m_connectionAcceptor = null;
+        m_containmentAcceptor = null;
+        m_dockingAcceptor = null;
     }
 
     public WiresLayer getLayer()
@@ -363,6 +412,7 @@ public final class WiresManager
         if (null != m_registrationManager)
         {
             m_registrationManager.removeHandler();
+            m_shapeHandlersMap.remove(uuid);
         }
     }
 
