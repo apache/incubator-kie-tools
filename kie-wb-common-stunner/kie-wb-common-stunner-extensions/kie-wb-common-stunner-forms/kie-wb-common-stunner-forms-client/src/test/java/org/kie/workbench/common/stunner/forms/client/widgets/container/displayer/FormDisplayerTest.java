@@ -135,12 +135,15 @@ public class FormDisplayerTest {
         when(formRenderer.getCurrentForm()).thenReturn(form);
 
         displayer = new FormDisplayer(view, formRenderer, dynamicFormModelGenerator);
-
-        verify(view, times(1)).init(displayer);
     }
 
     @Test
     public void testBasicFunctions() {
+
+        displayer.init();
+
+        verify(view, times(1)).init(displayer);
+
         displayer.show();
         verify(view).show();
 
