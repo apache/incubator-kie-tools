@@ -58,7 +58,7 @@ public class SafeDeleteNodeCommandTest {
         final CommandResult<RuleViolation> result = tested.allow(graphTestHandler.graphCommandExecutionContext);
         final List<Command<GraphCommandExecutionContext, RuleViolation>> commands = tested.getCommands();
         assertNotNull(commands);
-        assertTrue(3 == commands.size());
+        assertTrue(4 == commands.size());
         final RemoveChildCommand removeChild = (RemoveChildCommand) commands.get(0);
         assertNotNull(removeChild);
         assertEquals(graphHolder.parentNode,
@@ -84,7 +84,7 @@ public class SafeDeleteNodeCommandTest {
         final CommandResult<RuleViolation> result = tested.allow(graphTestHandler.graphCommandExecutionContext);
         final List<Command<GraphCommandExecutionContext, RuleViolation>> commands = tested.getCommands();
         assertNotNull(commands);
-        assertTrue(3 == commands.size());
+        assertTrue(4 == commands.size());
         final RemoveChildCommand removeChild = (RemoveChildCommand) commands.get(0);
         assertNotNull(removeChild);
         assertEquals(graphHolder.parentNode,
@@ -112,7 +112,7 @@ public class SafeDeleteNodeCommandTest {
         final CommandResult<RuleViolation> result = tested.allow(graphTestHandler.graphCommandExecutionContext);
         final List<Command<GraphCommandExecutionContext, RuleViolation>> commands = tested.getCommands();
         assertNotNull(commands);
-        assertTrue(4 == commands.size());
+        assertTrue(6 == commands.size());
         final RemoveChildCommand removeChild = (RemoveChildCommand) commands.get(0);
         assertNotNull(removeChild);
         assertEquals(graphHolder.parentNode,

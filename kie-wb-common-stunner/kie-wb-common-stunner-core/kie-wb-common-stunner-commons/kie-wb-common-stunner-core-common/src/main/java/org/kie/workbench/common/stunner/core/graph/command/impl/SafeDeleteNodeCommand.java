@@ -187,6 +187,16 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
                         log("DeregisterNodeCommand [node=" + node.getUUID() + "]");
                         addCommand(new DeregisterNodeCommand(node));
                         safeDeleteCallback.ifPresent(c -> c.deleteNode(node));
+
+                        node.getInEdges()
+                                .stream()
+                                .filter(edge -> edge.getContent() instanceof ViewConnector)
+                                .forEach(edge -> RemoveTargetConnection(edge));
+
+                        node.getOutEdges()
+                                .stream()
+                                .filter(edge -> edge.getContent() instanceof ViewConnector)
+                                .forEach(edge -> RemoveSourceConnection(edge));
                     }
 
                     private void processCandidateConnectors() {
@@ -232,6 +242,20 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
                 });
 
         return this;
+    }
+
+    private void RemoveTargetConnection(Edge edge) {
+        ViewConnector<?> connector = (ViewConnector<?>)edge.getContent();
+        addCommand(new SetConnectionTargetNodeCommand(null,
+                                                      edge,
+                                                      connector.getTargetConnection().orElse(null)));
+    }
+
+    private void RemoveSourceConnection(Edge edge) {
+        ViewConnector<?> connector = (ViewConnector<?>)edge.getContent();
+        addCommand(new SetConnectionSourceNodeCommand(null,
+                                                      edge,
+                                                      connector.getSourceConnection().orElse(null)));
     }
 
     @Override
