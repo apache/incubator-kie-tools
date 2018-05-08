@@ -54,6 +54,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
 import org.kie.workbench.common.stunner.core.definition.annotation.DefinitionSet;
+import org.kie.workbench.common.stunner.core.definition.annotation.SvgNodeId;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
@@ -103,6 +104,9 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
 @Occurrences(role = "Startevents_all", min = 1)
 @Occurrences(role = "Endevents_all", min = 1)
 public class BPMNDefinitionSet {
+
+    @SvgNodeId
+    public static final String SVG_BPMN_ID = "bpmn2nodeid";
 
     public BPMNDefinitionSet() {
     }

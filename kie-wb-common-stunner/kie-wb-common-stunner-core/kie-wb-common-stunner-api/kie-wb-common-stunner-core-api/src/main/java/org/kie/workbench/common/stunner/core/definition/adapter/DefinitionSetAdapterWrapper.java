@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
 import java.lang.annotation.Annotation;
+import java.util.Optional;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
@@ -76,5 +77,10 @@ public abstract class DefinitionSetAdapterWrapper<T, A extends DefinitionSetAdap
     @Override
     public boolean accepts(final Class<?> type) {
         return adapter.accepts(type);
+    }
+
+    @Override
+    public Optional<String> getSvgNodeId(T pojo) {
+        return adapter.getSvgNodeId(pojo);
     }
 }

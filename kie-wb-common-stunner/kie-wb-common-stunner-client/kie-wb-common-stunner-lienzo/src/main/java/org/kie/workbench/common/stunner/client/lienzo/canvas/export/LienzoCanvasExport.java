@@ -73,9 +73,12 @@ public class LienzoCanvasExport implements CanvasExport<AbstractCanvasHandler> {
         final com.ait.lienzo.client.core.shape.Layer layer = getLayer(canvasHandler).getLienzoLayer();
         final IContext2D svgContext2D = Context2DFactory.create(new SvgExportSettings(layer.getWidth(), layer.getHeight(), layer.getContext()));
         //draw on the context to be returned
-        layer.draw(new Context2D(new DelegateNativeContext2D(svgContext2D)));
+        layer.draw();
+
+        layer.draw(new Context2D(new DelegateNativeContext2D(svgContext2D, canvasHandler)));
         //redraw on canvas
         layer.draw();
+
         return svgContext2D;
     }
 

@@ -22,7 +22,6 @@ import java.util.Set;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.AbstractBindableDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableDefinitionAdapter;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,12 +131,5 @@ class BackendBindableDefinitionAdapter<T> extends AbstractBindableDefinitionAdap
             LOG.error("Error obtaining properties for Definition with id " + getId(definition));
         }
         return Collections.emptySet();
-    }
-
-    @Override
-    public Object getMetaProperty(final PropertyMetaTypes metaPropertyType,
-                                  final T pojo) {
-        // TODO
-        return null;
     }
 }

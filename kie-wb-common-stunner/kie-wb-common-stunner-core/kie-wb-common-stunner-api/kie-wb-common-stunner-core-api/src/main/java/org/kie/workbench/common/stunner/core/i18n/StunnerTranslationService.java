@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.i18n;
 
+import java.util.Optional;
+
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 /**
@@ -67,4 +69,6 @@ public interface StunnerTranslationService {
      * Returns the localized message for the given rule violation.
      */
     String getViolationMessage(RuleViolation ruleViolation);
+
+    Optional<String> getDefinitionSetSvgNodeId(String defId);
 }

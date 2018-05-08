@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportT
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToSvgSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.PasteSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.SaveDiagramSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SwitchGridSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.UndoSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ValidateSessionCommand;
@@ -65,7 +66,8 @@ public class EditorSessionCommands {
                 .register(ExportToBpmnSessionCommand.class)
                 .register(CopySelectionSessionCommand.class)
                 .register(PasteSelectionSessionCommand.class)
-                .register(CutSelectionSessionCommand.class);
+                .register(CutSelectionSessionCommand.class)
+                .register(SaveDiagramSessionCommand.class);
     }
 
     public EditorSessionCommands bind(final ClientSession session) {
@@ -135,6 +137,10 @@ public class EditorSessionCommands {
 
     public CutSelectionSessionCommand getCutSelectionSessionCommand() {
         return commands.get(14);
+    }
+
+    public SaveDiagramSessionCommand getSaveDiagramSessionCommand() {
+        return commands.get(15);
     }
 
     public <S extends ClientSessionCommand> S get(final int index) {

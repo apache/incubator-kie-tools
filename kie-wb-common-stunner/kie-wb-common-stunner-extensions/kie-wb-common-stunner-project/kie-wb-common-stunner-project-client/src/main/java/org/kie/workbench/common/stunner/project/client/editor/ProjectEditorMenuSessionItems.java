@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.project.client.editor;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.annotation.PreDestroy;
@@ -145,7 +146,7 @@ public class ProjectEditorMenuSessionItems {
                 .bind(session)
                 .getCommands()
                 .visit((type, command) -> {
-                    command.listen(() -> menuItems.get(type).setEnabled(command.isEnabled()));
+                    command.listen(() -> Optional.ofNullable(menuItems.get(type)).ifPresent(item -> item.setEnabled(command.isEnabled())));
                 });
         // Default disabled items.
         setEnabled(session instanceof EditorSession);

@@ -16,21 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.service.ClientDiagramService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
-import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
-import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.exports.TextContent;
 import org.uberfire.ext.editor.commons.client.file.exports.TextFileExport;
@@ -41,31 +35,13 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ExportToBpmnSessionCommandTest {
-
-    private static final String FILE_NAME = "FILE_NAME";
+@RunWith(GwtMockitoTestRunner.class)
+public class ExportToBpmnSessionCommandTest extends AbstractExportSessionCommandTest {
 
     private static final String FILE_RAW_CONTENT = "FILE_RAW_CONTENT";
 
     private static final String ERROR = "ERROR";
-
-    @Mock
-    private ViewerSession session;
-
-    @Mock
-    private AbstractCanvasHandler canvasHandler;
-
-    @Mock
-    private Diagram diagram;
-
-    @Mock
-    private Metadata metadata;
-
-    @Mock
-    private Path path;
 
     @Mock
     private ClientDiagramService clientDiagramService;
@@ -78,32 +54,27 @@ public class ExportToBpmnSessionCommandTest {
 
     private ExportToBpmnSessionCommand command;
 
-    @Mock
-    private ClientSessionCommand.Callback callback;
-
     private ArgumentCaptor<ServiceCallback> callbackCaptor;
 
     private ArgumentCaptor<TextContent> textContentCaptor;
 
     @Before
     public void setUp() {
+        super.setup();
         callbackCaptor = ArgumentCaptor.forClass(ServiceCallback.class);
         textContentCaptor = ArgumentCaptor.forClass(TextContent.class);
-        when(session.getCanvasHandler()).thenReturn(canvasHandler);
-        when(canvasHandler.getDiagram()).thenReturn(diagram);
-        when(diagram.getMetadata()).thenReturn(metadata);
-        when(metadata.getPath()).thenReturn(path);
-        when(path.getFileName()).thenReturn(FILE_NAME);
         command = new ExportToBpmnSessionCommand(clientDiagramService,
                                                  errorPopupPresenter,
                                                  textFileExport);
         command.bind(session);
+        setTimer(command);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testExportSuccessful() {
         command.execute(callback);
+
         verify(clientDiagramService,
                times(1)).getRawContent(eq(diagram),
                                        callbackCaptor.capture());
@@ -120,6 +91,7 @@ public class ExportToBpmnSessionCommandTest {
     @SuppressWarnings("unchecked")
     public void testExportUnSuccessful() {
         command.execute(callback);
+
         verify(clientDiagramService,
                times(1)).getRawContent(eq(diagram),
                                        callbackCaptor.capture());

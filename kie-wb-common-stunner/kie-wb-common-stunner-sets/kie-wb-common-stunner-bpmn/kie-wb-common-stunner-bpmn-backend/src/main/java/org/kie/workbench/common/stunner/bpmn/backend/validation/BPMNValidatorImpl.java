@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.drools.core.xml.SemanticModules;
@@ -62,7 +63,7 @@ public class BPMNValidatorImpl implements BPMNValidator {
     }
 
     @Inject
-    public BPMNValidatorImpl(final DiagramService diagramService) {
+    public BPMNValidatorImpl(final @Default DiagramService diagramService) {
         this.diagramService = diagramService;
     }
 

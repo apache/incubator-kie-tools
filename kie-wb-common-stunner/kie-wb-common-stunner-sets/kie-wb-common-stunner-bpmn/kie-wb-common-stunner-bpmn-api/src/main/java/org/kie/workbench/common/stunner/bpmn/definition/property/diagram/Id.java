@@ -27,10 +27,11 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18n
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 
 @Portable
 @Bindable
-@Property
+@Property(meta = PropertyMetaTypes.ID)
 @FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
 public class Id implements BPMNProperty {
 

@@ -65,6 +65,8 @@ public class CoreTranslationMessages {
 
     public static final String REDO = "org.kie.workbench.common.stunner.core.client.toolbox.Redo";
 
+    public static final String SAVE = "org.kie.workbench.common.stunner.core.client.toolbox.Save";
+
     public static final String EXPORT_PNG = "org.kie.workbench.common.stunner.core.client.toolbox.ExportPNG";
 
     public static final String EXPORT_PDF = "org.kie.workbench.common.stunner.core.client.toolbox.ExportPDF";

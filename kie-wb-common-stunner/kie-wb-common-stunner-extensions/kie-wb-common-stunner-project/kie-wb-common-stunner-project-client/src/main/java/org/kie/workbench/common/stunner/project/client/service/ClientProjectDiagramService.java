@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.stunner.project.client.service;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Specializes;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.Package;
@@ -24,9 +26,10 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
-import org.kie.workbench.common.stunner.core.client.service.AbstractClientDiagramService;
+import org.kie.workbench.common.stunner.core.client.service.ClientDiagramServiceImpl;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
+import org.kie.workbench.common.stunner.core.client.session.command.event.SaveDiagramSessionCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.service.DiagramLookupService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
@@ -36,11 +39,13 @@ import org.uberfire.backend.vfs.Path;
 /**
  * A wrapper util class for handling different diagram services for the current Guvnor Project from client side.
  */
-@ApplicationScoped
-public class ClientProjectDiagramService extends AbstractClientDiagramService<ProjectMetadata, ProjectDiagram, ProjectDiagramService> {
+@Dependent
+@Specializes
+public class ClientProjectDiagramService extends ClientDiagramServiceImpl<ProjectMetadata, ProjectDiagram, ProjectDiagramService> {
 
     protected ClientProjectDiagramService() {
         this(null,
+             null,
              null,
              null);
     }
@@ -48,10 +53,12 @@ public class ClientProjectDiagramService extends AbstractClientDiagramService<Pr
     @Inject
     public ClientProjectDiagramService(final ShapeManager shapeManager,
                                        final Caller<ProjectDiagramService> diagramServiceCaller,
-                                       final Caller<DiagramLookupService> diagramLookupServiceCaller) {
+                                       final Caller<DiagramLookupService> diagramLookupServiceCaller,
+                                       final Event<SaveDiagramSessionCommandExecutedEvent> saveEvent) {
         super(shapeManager,
               diagramServiceCaller,
-              diagramLookupServiceCaller);
+              diagramLookupServiceCaller,
+              saveEvent);
     }
 
     public void create(final Path path,
@@ -79,6 +86,7 @@ public class ClientProjectDiagramService extends AbstractClientDiagramService<Pr
         diagramServiceCaller.call(v -> {
                                       updateClientMetadata(diagram);
                                       callback.onSuccess(diagram);
+                                      fireSavedEvent(diagram);
                                   },
                                   (message, throwable) -> {
                                       callback.onError(new ClientRuntimeError(throwable));

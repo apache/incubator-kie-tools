@@ -33,9 +33,6 @@ import org.kie.workbench.common.stunner.core.backend.service.AbstractVFSDiagramS
 import org.kie.workbench.common.stunner.core.backend.service.AbstractVFSDiagramServiceTest;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
-import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 import org.mockito.Mock;
@@ -123,17 +120,8 @@ public class ProjectDiagramServiceControllerTest
     public void testGetDiagramByPath() throws IOException {
         final Path path = mockGetDiagramByPathObjects();
 
-        Graph<DefinitionSet, ?> graph = mock(Graph.class);
-        DefinitionSet graphContent = mock(DefinitionSet.class);
-        when(graph.getContent()).thenReturn(graphContent);
-        when(graphContent.getDefinition()).thenReturn("DefinitionSet");
-
         when(diagramMarshaller.unmarshall(anyObject(),
                                           anyObject())).thenReturn(graph);
-
-        DiagramFactory diagramFactory = mock(DiagramFactory.class);
-        when(factoryRegistry.getDiagramFactory("DefinitionSet",
-                                               getMetadataType())).thenReturn(diagramFactory);
 
         when(diagramFactory.build(eq(FILE_NAME),
                                   any(Metadata.class),

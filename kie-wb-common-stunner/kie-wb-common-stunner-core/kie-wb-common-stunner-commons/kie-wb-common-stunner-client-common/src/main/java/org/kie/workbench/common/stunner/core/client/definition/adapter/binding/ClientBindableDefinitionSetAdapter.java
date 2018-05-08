@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.definition.adapter.binding;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
@@ -108,5 +109,10 @@ class ClientBindableDefinitionSetAdapter extends AbstractClientBindableAdapter<O
 
     private Set<String> getDefinitionIds() {
         return definitionIds;
+    }
+
+    @Override
+    public Optional<String> getSvgNodeId(Object pojo) {
+        return translationService.getDefinitionSetSvgNodeId(pojo.getClass().getName());
     }
 }

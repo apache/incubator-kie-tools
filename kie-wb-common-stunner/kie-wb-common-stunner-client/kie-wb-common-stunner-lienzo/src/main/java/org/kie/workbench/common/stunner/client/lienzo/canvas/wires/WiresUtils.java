@@ -121,6 +121,7 @@ public final class WiresUtils {
                                        final String uuid) {
         final UserData ud = assertUserData(shape);
         ud.setUuid(uuid);
+        shape.setID(uuid);
     }
 
     private static UserData assertUserData(final IDrawable<?> shape) {

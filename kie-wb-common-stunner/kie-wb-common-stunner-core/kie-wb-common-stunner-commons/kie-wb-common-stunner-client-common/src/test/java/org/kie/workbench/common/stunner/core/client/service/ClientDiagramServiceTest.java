@@ -29,7 +29,7 @@ import org.uberfire.mocks.CallerMock;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ClientDiagramServiceTest extends AbstractClientDiagramServiceTest<Metadata, Diagram<Graph, Metadata>, DiagramService, ClientDiagramService> {
+public class ClientDiagramServiceTest extends AbstractClientDiagramServiceTest<Metadata, Diagram<Graph, Metadata>, DiagramService, ClientDiagramServiceImpl<Metadata, Diagram<Graph, Metadata>, DiagramService>> {
 
     @Override
     protected Metadata makeTestMetadata() {
@@ -49,11 +49,12 @@ public class ClientDiagramServiceTest extends AbstractClientDiagramServiceTest<M
 
     @Override
     @SuppressWarnings("unchecked")
-    protected ClientDiagramService makeTestClientDiagramService() {
+    protected ClientDiagramServiceImpl makeTestClientDiagramService() {
         final Caller<DiagramService> diagramServiceCaller = new CallerMock<>(diagramService);
         final Caller<DiagramLookupService> diagramLookupServiceCaller = new CallerMock<>(diagramLookupService);
-        return new ClientDiagramService(shapeManager,
+        return new ClientDiagramServiceImpl(shapeManager,
                                         diagramServiceCaller,
-                                        diagramLookupServiceCaller);
+                                        diagramLookupServiceCaller,
+                                        saveDiagramSessionCommandExecutedEventEvent);
     }
 }

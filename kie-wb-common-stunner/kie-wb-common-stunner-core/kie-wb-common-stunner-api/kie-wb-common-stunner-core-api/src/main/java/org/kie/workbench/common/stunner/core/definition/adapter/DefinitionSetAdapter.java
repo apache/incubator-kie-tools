@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
 import java.lang.annotation.Annotation;
+import java.util.Optional;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
@@ -57,4 +58,9 @@ public interface DefinitionSetAdapter<T> extends PriorityAdapter {
      * or <code>javax.enterprise.inject.Any</code>.
      */
     Annotation getQualifier(final T pojo);
+
+    /**
+     * Returns the definition set's node id for SVG generation.
+     */
+    Optional<String> getSvgNodeId(final T pojo);
 }

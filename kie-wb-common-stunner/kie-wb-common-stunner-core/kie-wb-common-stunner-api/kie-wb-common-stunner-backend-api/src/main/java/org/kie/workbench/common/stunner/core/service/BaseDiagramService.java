@@ -58,6 +58,14 @@ public interface BaseDiagramService<M extends Metadata, D extends Diagram<Graph,
     M saveOrUpdate(final D diagram);
 
     /**
+     * Saves or updates the diagram.
+     * Save applies when diagram is not present on the VFS. A new path will be assigned and returned into
+     * the resulting metadata instance (eg: when diagrams are created and authored in client side).
+     * Update applies if the diagram is already present on the VFS.
+     */
+    Path saveOrUpdateSvg(final Path diagramPath, String rawDiagramSvg);
+
+    /**
      * Deletes the diagram.
      * Implementations can throw unchecked exceptions.
      * @return <code>true</code> if the operation result is success, <code>false</code> otherwise.

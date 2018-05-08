@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.definition.adapter.bootstrap;
 
 import java.lang.annotation.Annotation;
+import java.util.Optional;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetAdapter;
@@ -82,5 +83,10 @@ class BootstrapDefinitionSetAdapter implements DefinitionSetAdapter<Object> {
 
     private DefinitionSetAdapter<Object> getWrapped(final Class<?> type) {
         return adapterRegistry.getDefinitionSetAdapter(type);
+    }
+
+    @Override
+    public Optional<String> getSvgNodeId(Object pojo) {
+        return getWrapped(pojo).getSvgNodeId(pojo);
     }
 }

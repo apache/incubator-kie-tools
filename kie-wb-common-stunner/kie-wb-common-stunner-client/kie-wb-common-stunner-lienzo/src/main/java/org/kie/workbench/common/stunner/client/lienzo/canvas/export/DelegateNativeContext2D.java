@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.export;
 
+import java.util.HashMap;
 import java.util.Objects;
+import java.util.Optional;
 
 import com.ait.lienzo.client.core.INativeContext2D;
 import com.ait.lienzo.client.core.Path2D;
@@ -33,32 +35,55 @@ import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.google.gwt.dom.client.Element;
 import elemental2.dom.HTMLCanvasElement;
 import org.kie.workbench.common.stunner.client.lienzo.util.NativeClassConverter;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.uberfire.ext.editor.commons.client.file.exports.svg.IContext2D;
 
 public class DelegateNativeContext2D implements INativeContext2D {
 
+    private static final String DEFAULT_NODE_ID = "id";
+
     interface Converter {
-        <I,O> O convert(I input, Class<O> outputType);
+
+        <I, O> O convert(I input, Class<O> outputType);
     }
 
     private final IContext2D context;
     private final Converter nativeClassConverter;
+    private String svgNodeId;
+    private AbstractCanvasHandler canvasHandler;
 
-    public DelegateNativeContext2D(IContext2D context) {
-        this(context, NativeClassConverter::convert);
+    public DelegateNativeContext2D(IContext2D context, AbstractCanvasHandler canvasHandler) {
+        this(context, canvasHandler, NativeClassConverter::convert);
     }
 
-    DelegateNativeContext2D(IContext2D context, Converter converter) {
+    DelegateNativeContext2D(IContext2D context, AbstractCanvasHandler canvasHandler, Converter converter) {
         this.context = context;
         this.nativeClassConverter = converter;
+        this.canvasHandler = canvasHandler;
+        this.svgNodeId = getSvgNodeId(canvasHandler).orElse(DEFAULT_NODE_ID);
+    }
+
+    /**
+     * Get the SVG node id referred to the current diagram definition set. It uses the adapters to get the id.
+     * @param canvasHandler the current {@link CanvasHandler}
+     * @return the optional id if set otherwise empty.
+     */
+    private Optional<String> getSvgNodeId(AbstractCanvasHandler canvasHandler) {
+        final String diagramDefinitionSetId = canvasHandler.getDiagram().getMetadata().getDefinitionSetId();
+        final Object diagramDefinitionSet = canvasHandler.getDefinitionManager().definitionSets().getDefinitionSetById(diagramDefinitionSetId);
+        return canvasHandler.getDefinitionManager().adapters().forDefinitionSet().getSvgNodeId(diagramDefinitionSet);
     }
 
     public void initDeviceRatio() {
     }
 
     @Override
-    public void saveContainer() {
-        context.saveGroup();
+    public void saveContainer(String id) {
+        context.saveGroup(new HashMap<String, String>() {{
+            //setting the node id in case it exists on graph
+            Optional.ofNullable(canvasHandler.getGraphIndex().get(id)).ifPresent(node -> put(svgNodeId, id));
+        }});
     }
 
     @Override

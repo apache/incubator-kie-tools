@@ -46,5 +46,6 @@ public enum PropertyMetaTypes {
      * If the shape supports resize and it is resized on client side, these properties will be
      * updated with the radius value of an arc that produces the new bounding box size.
      */
-    RADIUS
+    RADIUS,
+    ID
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,35 +16,39 @@
 
 package org.kie.workbench.common.stunner.core.client.service;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.jboss.errai.common.client.api.Caller;
-import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.service.DiagramLookupService;
-import org.kie.workbench.common.stunner.core.service.DiagramService;
+import org.kie.workbench.common.stunner.core.lookup.LookupManager;
+import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequest;
+import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramRepresentation;
+import org.kie.workbench.common.stunner.core.service.BaseDiagramService;
+import org.uberfire.backend.vfs.Path;
 
-/**
- * A wrapper util class for handling different diagram services from client side.
- */
-@ApplicationScoped
-public class ClientDiagramService extends AbstractClientDiagramService<Metadata, Diagram<Graph, Metadata>, DiagramService> {
+public interface ClientDiagramService<M extends Metadata, D extends Diagram<Graph, M>, S extends BaseDiagramService<M, D>> {
 
-    protected ClientDiagramService() {
-        this(null,
-             null,
-             null);
-    }
+    void create(Path path,
+                String name,
+                String defSetId,
+                ServiceCallback<Path> callback);
 
-    @Inject
-    public ClientDiagramService(final ShapeManager shapeManager,
-                                final Caller<DiagramService> diagramServiceCaller,
-                                final Caller<DiagramLookupService> diagramLookupServiceCaller) {
-        super(shapeManager,
-              diagramServiceCaller,
-              diagramLookupServiceCaller);
-    }
+    @SuppressWarnings("unchecked")
+    void saveOrUpdate(D diagram,
+                      ServiceCallback<D> callback);
+
+    void saveOrUpdateSvg(Path diagramPath, String rawSvg, ServiceCallback<Path> callback);
+
+    void add(D diagram,
+             ServiceCallback<D> callback);
+
+    @SuppressWarnings("unchecked")
+    void getByPath(Path path,
+                   ServiceCallback<D> callback);
+
+    @SuppressWarnings("unchecked")
+    void lookup(DiagramLookupRequest request,
+                ServiceCallback<LookupManager.LookupResponse<DiagramRepresentation>> callback);
+
+    void getRawContent(D diagram,
+                       ServiceCallback<String> callback);
 }

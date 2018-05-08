@@ -16,8 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.client.service;
 
+import javax.enterprise.event.Event;
+
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.session.command.event.SaveDiagramSessionCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -28,20 +31,24 @@ import org.kie.workbench.common.stunner.core.service.BaseDiagramService;
 import org.kie.workbench.common.stunner.core.service.DiagramLookupService;
 import org.uberfire.backend.vfs.Path;
 
-public abstract class AbstractClientDiagramService<M extends Metadata, D extends Diagram<Graph, M>, S extends BaseDiagramService<M, D>> {
+public abstract class AbstractClientDiagramService<M extends Metadata, D extends Diagram<Graph, M>, S extends BaseDiagramService<M, D>> implements ClientDiagramService<M, D, S> {
 
-    private ShapeManager shapeManager;
-    protected Caller<S> diagramServiceCaller;
-    protected Caller<DiagramLookupService> diagramLookupServiceCaller;
+    private final ShapeManager shapeManager;
+    protected final Caller<S> diagramServiceCaller;
+    protected final Caller<DiagramLookupService> diagramLookupServiceCaller;
+    private final Event<SaveDiagramSessionCommandExecutedEvent> saveEvent;
 
     public AbstractClientDiagramService(final ShapeManager shapeManager,
                                         final Caller<S> diagramServiceCaller,
-                                        final Caller<DiagramLookupService> diagramLookupServiceCaller) {
+                                        final Caller<DiagramLookupService> diagramLookupServiceCaller,
+                                        final Event<SaveDiagramSessionCommandExecutedEvent> saveEvent) {
         this.shapeManager = shapeManager;
         this.diagramServiceCaller = diagramServiceCaller;
         this.diagramLookupServiceCaller = diagramLookupServiceCaller;
+        this.saveEvent = saveEvent;
     }
 
+    @Override
     public void create(final Path path,
                        final String name,
                        final String defSetId,
@@ -55,13 +62,15 @@ public abstract class AbstractClientDiagramService<M extends Metadata, D extends
                                             defSetId);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public void saveOrUpdate(final D diagram,
                              final ServiceCallback<D> callback) {
         diagramServiceCaller.call(serverMetadata -> {
-                                      AbstractClientDiagramService.this.updateClientMetadata(diagram);
+                                      updateClientMetadata(diagram);
                                       diagram.getMetadata().setPath(((M) serverMetadata).getPath());
                                       callback.onSuccess(diagram);
+                                      fireSavedEvent(diagram);
                                   },
                                   (message, throwable) -> {
                                       callback.onError(new ClientRuntimeError(throwable));
@@ -69,6 +78,16 @@ public abstract class AbstractClientDiagramService<M extends Metadata, D extends
                                   }).saveOrUpdate(diagram);
     }
 
+    @Override
+    public void saveOrUpdateSvg(Path diagramPath, String rawSvg, ServiceCallback<Path> callback) {
+        diagramServiceCaller.call(res -> callback.onSuccess((Path) res)).saveOrUpdateSvg(diagramPath, rawSvg);
+    }
+
+    protected void fireSavedEvent(D diagram) {
+        saveEvent.fire(new SaveDiagramSessionCommandExecutedEvent(diagram.getMetadata().getCanvasRootUUID()));
+    }
+
+    @Override
     public void add(final D diagram,
                     final ServiceCallback<D> callback) {
         diagramServiceCaller.call(v -> {
@@ -81,6 +100,7 @@ public abstract class AbstractClientDiagramService<M extends Metadata, D extends
                                   }).saveOrUpdate(diagram);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public void getByPath(final Path path,
                           final ServiceCallback<D> callback) {
@@ -94,6 +114,7 @@ public abstract class AbstractClientDiagramService<M extends Metadata, D extends
                                   }).getDiagramByPath(path);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public void lookup(final DiagramLookupRequest request,
                        final ServiceCallback<LookupManager.LookupResponse<DiagramRepresentation>> callback) {
@@ -104,6 +125,7 @@ public abstract class AbstractClientDiagramService<M extends Metadata, D extends
                                         }).lookup(request);
     }
 
+    @Override
     public void getRawContent(final D diagram,
                               final ServiceCallback<String> callback) {
         diagramServiceCaller.call(rawContent -> {

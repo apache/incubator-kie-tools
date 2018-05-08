@@ -16,27 +16,56 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import com.google.gwt.user.client.Timer;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
+import org.kie.workbench.common.stunner.core.client.util.TimerUtils;
 import org.uberfire.backend.vfs.Path;
 
-public abstract class AbstractExportSessionCommand extends AbstractClientSessionCommand<ViewerSession> {
+public abstract class AbstractExportSessionCommand extends AbstractClientSessionCommand<AbstractSession<AbstractCanvas, AbstractCanvasHandler>> {
+
+    protected TimerUtils timer;
 
     public AbstractExportSessionCommand(final boolean enabled) {
         super(enabled);
+        this.timer = new TimerUtils();
     }
 
     protected abstract void export(final String fileName);
 
     @Override
     public <T> void execute(final Callback<T> callback) {
-        final String fileName = getFileName();
-        export(fileName);
-        callback.onSuccess();
+        //prevents to render selection on canvas
+        if(getSession() instanceof EditorSession){
+            ((EditorSession) getSession()).getSelectionControl().clearSelection();
+        }
+
+        //This is a workaround to overcome the animations executed on canvas when clear selection
+        //FIXME: remove the delay, handle this on the proper way, i.e perform the action on a static way
+        timer.executeWithDelay(() -> {
+            final String fileName = getFileName();
+            export(fileName);
+            callback.onSuccess();
+        }, 150);
+    }
+
+    private void executeWithDelay(Runnable executeFunction, int delayMillis) {
+        new Timer() {
+            public void run() {
+                executeFunction.run();
+            }
+        }.schedule(delayMillis);
     }
 
     private String getFileName() {
         final Path path = getSession().getCanvasHandler().getDiagram().getMetadata().getPath();
         return null != path ? path.getFileName() : getSession().getCanvasHandler().getDiagram().getGraph().getUUID();
+    }
+
+    protected void setTimer(TimerUtils timer) {
+        this.timer = timer;
     }
 }

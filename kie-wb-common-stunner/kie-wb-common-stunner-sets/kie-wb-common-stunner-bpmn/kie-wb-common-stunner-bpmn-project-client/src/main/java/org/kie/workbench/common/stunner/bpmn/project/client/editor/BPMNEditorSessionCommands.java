@@ -55,14 +55,14 @@ public class BPMNEditorSessionCommands extends EditorSessionCommands {
     }
 
     public GenerateProcessFormsSessionCommand getGenerateProcessFormsSessionCommand() {
-        return get(15);
-    }
-
-    public GenerateDiagramFormsSessionCommand getGenerateDiagramFormsSessionCommand() {
         return get(16);
     }
 
-    public GenerateSelectedFormsSessionCommand getGenerateSelectedFormsSessionCommand() {
+    public GenerateDiagramFormsSessionCommand getGenerateDiagramFormsSessionCommand() {
         return get(17);
+    }
+
+    public GenerateSelectedFormsSessionCommand getGenerateSelectedFormsSessionCommand() {
+        return get(18);
     }
 }

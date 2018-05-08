@@ -16,18 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
-import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
-import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.backend.vfs.Path;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -35,45 +28,18 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ExportToJpgSessionCommandTest {
-
-    private static final String FILE_NAME = "file-name1";
-
-    @Mock
-    private CanvasFileExport canvasFileExport;
-
-    @Mock
-    private ViewerSession session;
-
-    @Mock
-    private AbstractCanvasHandler canvasHandler;
-
-    @Mock
-    private Diagram diagram;
-
-    @Mock
-    private Metadata metadata;
-
-    @Mock
-    private Path path;
-
-    @Mock
-    private ClientSessionCommand.Callback callback;
+@RunWith(GwtMockitoTestRunner.class)
+public class ExportToJpgSessionCommandTest extends AbstractExportSessionCommandTest {
 
     private ExportToJpgSessionCommand tested;
 
     @Before
-    public void setup() throws Exception {
-        when(session.getCanvasHandler()).thenReturn(canvasHandler);
-        when(canvasHandler.getDiagram()).thenReturn(diagram);
-        when(diagram.getMetadata()).thenReturn(metadata);
-        when(metadata.getPath()).thenReturn(path);
-        when(path.getFileName()).thenReturn(FILE_NAME);
+    public void setup() {
+        super.setup();
         this.tested = new ExportToJpgSessionCommand(canvasFileExport);
         this.tested.bind(session);
+        setTimer(tested);
     }
 
     @Test

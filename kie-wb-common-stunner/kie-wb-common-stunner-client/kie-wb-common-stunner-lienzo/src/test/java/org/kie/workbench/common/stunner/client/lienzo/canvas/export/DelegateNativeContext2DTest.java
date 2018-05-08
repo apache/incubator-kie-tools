@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.export;
 
+import java.util.HashMap;
+import java.util.Optional;
+
 import com.ait.lienzo.client.core.Path2D;
 import com.ait.lienzo.client.core.types.LinearGradient;
 import com.ait.lienzo.client.core.types.PathPartEntryJSO;
@@ -31,6 +34,15 @@ import elemental2.dom.HTMLCanvasElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetAdapter;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
+import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
+import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.uberfire.ext.editor.commons.client.file.exports.svg.IContext2D;
@@ -47,6 +59,7 @@ import static org.mockito.Mockito.when;
 @RunWith(LienzoMockitoTestRunner.class)
 public class DelegateNativeContext2DTest {
 
+    public static final String NODE_UUID = UUID.uuid();
     private DelegateNativeContext2D delegateNativeContext2D;
 
     @Mock
@@ -65,12 +78,58 @@ public class DelegateNativeContext2DTest {
 
     private Element element;
 
+    @Mock
+    private AbstractCanvasHandler canvasHandler;
+
+    @Mock
+    private Diagram diagram;
+
+    @Mock
+    private Metadata metadata;
+
+    private final String DEF_SET_ID = "DEF_SET_ID";
+
+    @Mock
+    private DefinitionManager definitionManager;
+
+    @Mock
+    private TypeDefinitionSetRegistry definitionSets;
+
+    @Mock
+    private Object defSet;
+
+    @Mock
+    private AdapterManager adapters;
+
+    @Mock
+    private DefinitionSetAdapter<Object> definitionSetAdapter;
+
+    @Mock
+    private Index graphIndex;
+
+    @Mock
+    private org.kie.workbench.common.stunner.core.graph.Element node;
+
+    private final String SVG_NODE_ID = "node_id";
+
     @Before
     public void setUp() throws Exception {
         htmlElement = new HTMLCanvasElement();
         element = GWT.create(Element.class);
         when(nativeClassConverter.convert(any(Element.class), eq(HTMLCanvasElement.class))).thenReturn(htmlElement);
-        delegateNativeContext2D = new DelegateNativeContext2D(context, nativeClassConverter);
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(diagram.getMetadata()).thenReturn(metadata);
+        when(metadata.getDefinitionSetId()).thenReturn(DEF_SET_ID);
+        when(canvasHandler.getDefinitionManager()).thenReturn(definitionManager);
+        when(definitionManager.definitionSets()).thenReturn(definitionSets);
+        when(definitionSets.getDefinitionSetById(DEF_SET_ID)).thenReturn(defSet);
+        when(definitionManager.adapters()).thenReturn(adapters);
+        when(adapters.forDefinitionSet()).thenReturn(definitionSetAdapter);
+        when(definitionSetAdapter.getSvgNodeId(defSet)).thenReturn(Optional.of(SVG_NODE_ID));
+        when(canvasHandler.getGraphIndex()).thenReturn(graphIndex);
+        when(graphIndex.get(NODE_UUID)).thenReturn(node);
+
+        delegateNativeContext2D = new DelegateNativeContext2D(context, canvasHandler, nativeClassConverter);
     }
 
     @Test
@@ -80,8 +139,10 @@ public class DelegateNativeContext2DTest {
 
     @Test
     public void saveContainer() {
-        delegateNativeContext2D.saveContainer();
-        verify(context, times(1)).saveGroup();
+        delegateNativeContext2D.saveContainer(NODE_UUID);
+        verify(context, times(1)).saveGroup(new HashMap<String, String>() {{
+            put(SVG_NODE_ID, NODE_UUID);
+        }});
     }
 
     @Test
@@ -387,7 +448,6 @@ public class DelegateNativeContext2DTest {
         verify(context).setShadowBlur(Mockito.anyInt());
 
         delegateNativeContext2D.setShadow(null);
-
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -505,12 +565,12 @@ public class DelegateNativeContext2DTest {
     @Test
     public void drawImage2() {
         delegateNativeContext2D.drawImage(element, 1, 1, 1, 1);
-        verify(context, times(1)).drawImage(htmlElement, 1, 1, 1 ,1);
+        verify(context, times(1)).drawImage(htmlElement, 1, 1, 1, 1);
     }
 
     @Test
     public void drawImage3() {
         delegateNativeContext2D.drawImage(element, 1, 1, 1, 1, 1, 1, 1, 1);
-        verify(context, times(1)).drawImage(htmlElement, 1, 1, 1 ,1, 1, 1, 1, 1);
+        verify(context, times(1)).drawImage(htmlElement, 1, 1, 1, 1, 1, 1, 1, 1);
     }
 }

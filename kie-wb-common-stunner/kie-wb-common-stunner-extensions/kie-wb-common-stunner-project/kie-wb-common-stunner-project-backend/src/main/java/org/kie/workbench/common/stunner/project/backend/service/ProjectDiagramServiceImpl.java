@@ -176,6 +176,11 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
     }
 
     @Override
+    public Path saveOrUpdateSvg(Path diagramPath, String rawDiagramSvg) {
+        return controller.saveOrUpdateSvg(diagramPath, rawDiagramSvg);
+    }
+
+    @Override
     public boolean delete(final ProjectDiagram diagram) {
         return controller.delete(diagram);
     }

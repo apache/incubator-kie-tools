@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.ShapeSet;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.session.command.event.SaveDiagramSessionCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -32,6 +33,7 @@ import org.kie.workbench.common.stunner.core.service.DiagramLookupService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.mocks.EventSourceMock;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -44,6 +46,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public abstract class AbstractClientDiagramServiceTest<M extends Metadata, D extends Diagram<Graph, M>, S extends BaseDiagramService<M, D>, CS extends AbstractClientDiagramService<M, D, S>> {
 
+    private static final String RAW_DIAGRAM = "";
     @Mock
     protected ShapeManager shapeManager;
 
@@ -60,6 +63,9 @@ public abstract class AbstractClientDiagramServiceTest<M extends Metadata, D ext
     protected S diagramService;
 
     protected CS tested;
+
+    @Mock
+    protected EventSourceMock<SaveDiagramSessionCommandExecutedEvent> saveDiagramSessionCommandExecutedEventEvent;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -136,6 +142,14 @@ public abstract class AbstractClientDiagramServiceTest<M extends Metadata, D ext
                times(1)).onSuccess(eq(diagram));
         verify(callback,
                times(0)).onError(any(ClientRuntimeError.class));
+    }
+
+    @Test
+    public void testSaveOrUpdateSvg() {
+        final ServiceCallback<Path> callback = mock(ServiceCallback.class);
+
+        tested.saveOrUpdateSvg(path, RAW_DIAGRAM, callback);
+        verify(diagramService).saveOrUpdateSvg(path, RAW_DIAGRAM);
     }
 
     @Test

@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasExport;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
-import org.kie.workbench.common.stunner.core.client.service.ClientDiagramService;
+import org.kie.workbench.common.stunner.core.client.service.ClientDiagramServiceImpl;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
@@ -37,7 +37,7 @@ import org.uberfire.backend.vfs.Path;
 @ApplicationScoped
 public class ShowcaseDiagramService {
 
-    private final ClientDiagramService clientDiagramServices;
+    private final ClientDiagramServiceImpl clientDiagramServices;
     private final CanvasExport<AbstractCanvasHandler> canvasExport;
 
     protected ShowcaseDiagramService() {
@@ -46,7 +46,7 @@ public class ShowcaseDiagramService {
     }
 
     @Inject
-    public ShowcaseDiagramService(final ClientDiagramService clientDiagramServices,
+    public ShowcaseDiagramService(final ClientDiagramServiceImpl clientDiagramServices,
                                   final CanvasExport<AbstractCanvasHandler> canvasExport) {
         this.clientDiagramServices = clientDiagramServices;
         this.canvasExport = canvasExport;

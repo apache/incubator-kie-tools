@@ -28,6 +28,10 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.DefinitionSetResourceType;
+import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.definition.service.DefinitionSetService;
 import org.kie.workbench.common.stunner.core.definition.service.DiagramMarshaller;
 import org.kie.workbench.common.stunner.core.definition.service.DiagramMetadataMarshaller;
@@ -35,10 +39,13 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.registry.BackendRegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
+import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -90,6 +97,13 @@ public abstract class AbstractVFSDiagramServiceTest<M extends Metadata, D extend
 
     public static final String METADATA_MARSHALLED = "METADATA_MARSHALLED";
 
+    public static final String DEFINITION_SET = "DefinitionSet";
+
+    protected static final String DIAGRAM_UUID = UUID.uuid();
+
+    protected static final String DIAGRAM_SVG = "DIAGRAM_SVG";
+    public static final String DIAGRAM_FILE_ID = "diagram-id";
+
     @Mock
     protected DefinitionManager definitionManager;
 
@@ -126,6 +140,30 @@ public abstract class AbstractVFSDiagramServiceTest<M extends Metadata, D extend
 
     protected M metadata;
 
+    @Mock
+    protected Graph<DefinitionSet, Node> graph;
+
+    @Mock
+    protected DefinitionSet graphContent;
+
+    @Mock
+    protected DiagramFactory diagramFactory;
+
+    @Mock
+    protected AdapterManager adapters;
+
+    @Mock
+    protected DefinitionAdapter<Object> definitionAdapter;
+
+    @Mock
+    protected Object idProperty;
+
+    @Mock
+    protected Node<DefinitionSet, Edge> graphNode;
+
+    @Mock
+    protected PropertyAdapter<Object, Object> propertyAdapter;
+
     @Before
     public void setUp() throws IOException {
         when(resourceType.getPrefix()).thenReturn(RESOURCE_TYPE_PREFIX);
@@ -149,7 +187,28 @@ public abstract class AbstractVFSDiagramServiceTest<M extends Metadata, D extend
         when(diagramMarshaller.marshall(diagram)).thenReturn(DIAGRAM_MARSHALLED);
         when(metadataMarshaller.marshall(metadata)).thenReturn(METADATA_MARSHALLED);
 
+        when(diagramMarshaller.unmarshall(anyObject(),
+                                          anyObject())).thenReturn(graph);
+        when(graph.getContent()).thenReturn(graphContent);
+        when(graphContent.getDefinition()).thenReturn(DEFINITION_SET);
+
+        when(diagramFactory.build(eq(FILE_NAME),
+                                  any(Metadata.class),
+                                  eq(graph))).thenReturn(diagram);
+
+        when(definitionManager.adapters()).thenReturn(adapters);
+        when(adapters.forDefinition()).thenReturn(definitionAdapter);
+
+        when(definitionAdapter.getMetaProperty(PropertyMetaTypes.ID, DEFINITION_SET)).thenReturn(idProperty);
+        when(diagram.getGraph()).thenReturn(graph);
+        when(graph.getNode(DIAGRAM_UUID)).thenReturn(graphNode);
+        when(graphNode.getContent()).thenReturn(graphContent);
+        when(metadata.getCanvasRootUUID()).thenReturn(DIAGRAM_UUID);
+        when(adapters.forProperty()).thenReturn(propertyAdapter);
+        when(propertyAdapter.getValue(idProperty)).thenReturn(DIAGRAM_FILE_ID);
+
         diagramService = spy(createVFSDiagramService());
+        when(factoryRegistry.getDiagramFactory(DEFINITION_SET, getMetadataType())).thenReturn(diagramFactory);
     }
 
     public abstract AbstractVFSDiagramService<M, D> createVFSDiagramService();
@@ -191,22 +250,6 @@ public abstract class AbstractVFSDiagramServiceTest<M extends Metadata, D extend
     public void testGetDiagramByPath() throws IOException {
         final Path path = mockGetDiagramByPathObjects();
 
-        Graph<DefinitionSet, ?> graph = mock(Graph.class);
-        DefinitionSet graphContent = mock(DefinitionSet.class);
-        when(graph.getContent()).thenReturn(graphContent);
-        when(graphContent.getDefinition()).thenReturn("DefinitionSet");
-
-        when(diagramMarshaller.unmarshall(anyObject(),
-                                          anyObject())).thenReturn(graph);
-
-        DiagramFactory diagramFactory = mock(DiagramFactory.class);
-        when(factoryRegistry.getDiagramFactory("DefinitionSet",
-                                               getMetadataType())).thenReturn(diagramFactory);
-
-        when(diagramFactory.build(eq(FILE_NAME),
-                                  any(Metadata.class),
-                                  eq(graph))).thenReturn(diagram);
-
         Diagram result = diagramService.getDiagramByPath(path);
         assertEquals(diagram,
                      result);
@@ -215,7 +258,7 @@ public abstract class AbstractVFSDiagramServiceTest<M extends Metadata, D extend
     @Test
     @SuppressWarnings("unchecked")
     public void testGetDiagramByPathParseException() throws IOException {
-        final String processDefinition = "broken definition";
+        final String processDefinition = "broken DEFINITION";
         final Path path = mockGetDiagramByPathObjects();
         when(ioService.readAllString(Paths.convert(path))).thenReturn(processDefinition);
 
@@ -295,5 +338,16 @@ public abstract class AbstractVFSDiagramServiceTest<M extends Metadata, D extend
             verify(diagramService,
                    times(1)).getDiagramByPath(pair.getK1());
         });
+    }
+
+    @Test
+    public void testSaveOrUpdateSvg() {
+        final Path path = mockGetDiagramByPathObjects();
+
+        final Path svgPath = diagramService.saveOrUpdateSvg(path, DIAGRAM_SVG);
+        ArgumentCaptor<org.uberfire.java.nio.file.Path> svgPathCaptor = ArgumentCaptor.forClass(org.uberfire.java.nio.file.Path.class);
+        verify(ioService).write(svgPathCaptor.capture(), eq(DIAGRAM_SVG));
+        assertEquals(svgPath.getFileName(), svgPathCaptor.getValue().getFileName().toString());
+        assertEquals(DIAGRAM_FILE_ID + AbstractVFSDiagramService.SVG_SUFFIX, svgPath.getFileName());
     }
 }

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas;
 
+import java.util.Optional;
+
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.INativeContext2D;
 import com.ait.lienzo.client.core.shape.Layer;
@@ -28,8 +30,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.export.DelegateNativeContext2D;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.export.LienzoCanvasExport;
+import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetAdapter;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.ext.editor.commons.client.file.exports.svg.IContext2D;
@@ -67,6 +75,29 @@ public class LienzoCanvasExportTest {
 
     private LienzoCanvasExport tested;
 
+    @Mock
+    private Diagram diagram;
+
+    @Mock
+    private Metadata metadata;
+
+    private final String DEF_SET_ID = "DEF_SET_ID";
+
+    @Mock
+    private DefinitionManager definitionManager;
+
+    @Mock
+    private TypeDefinitionSetRegistry definitionSets;
+
+    @Mock
+    private Object defSet;
+
+    @Mock
+    private AdapterManager adapters;
+
+    @Mock
+    private DefinitionSetAdapter<Object> definitionSetAdapter;
+
     @Before
     public void setup() {
         when(canvasHandler.getCanvas()).thenReturn(canvas);
@@ -76,6 +107,16 @@ public class LienzoCanvasExportTest {
         when(layer.getWidth()).thenReturn(100);
         when(layer.getHeight()).thenReturn(200);
         when(scratchPad.getContext()).thenReturn(context2D);
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(diagram.getMetadata()).thenReturn(metadata);
+        when(metadata.getDefinitionSetId()).thenReturn(DEF_SET_ID);
+        when(canvasHandler.getDefinitionManager()).thenReturn(definitionManager);
+        when(definitionManager.definitionSets()).thenReturn(definitionSets);
+        when(definitionSets.getDefinitionSetById(DEF_SET_ID)).thenReturn(defSet);
+        when(definitionManager.adapters()).thenReturn(adapters);
+        when(adapters.forDefinitionSet()).thenReturn(definitionSetAdapter);
+        when(definitionSetAdapter.getSvgNodeId(defSet)).thenReturn(Optional.of("id"));
+
         this.tested = new LienzoCanvasExport();
     }
 
@@ -125,11 +166,12 @@ public class LienzoCanvasExportTest {
 
     @Test
     public void testToContext2D() {
-        IContext2D context2D = spy(tested.toContext2D(canvasHandler));
+        IContext2D iContext2D = spy(tested.toContext2D(canvasHandler));
         verify(canvas).getLayer();
         ArgumentCaptor<Context2D> context2DArgumentCaptor = ArgumentCaptor.forClass(Context2D.class);
         verify(layer).draw(context2DArgumentCaptor.capture());
-        INativeContext2D nativeContext = spy(context2DArgumentCaptor.getValue().getNativeContext()) ;
+        INativeContext2D nativeContext = spy(context2DArgumentCaptor.getValue().getNativeContext());
         assertTrue(nativeContext instanceof DelegateNativeContext2D);
+        verify(definitionSetAdapter).getSvgNodeId(defSet);
     }
 }

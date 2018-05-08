@@ -84,4 +84,9 @@ public class DelegateDiagramService implements DiagramService {
     public String getRawContent(Diagram<Graph, Metadata> diagram) {
         return projectDiagramService.getRawContent(convert(diagram));
     }
+
+    @Override
+    public Path saveOrUpdateSvg(Path diagramPath, String rawDiagramSvg) {
+        return projectDiagramService.saveOrUpdateSvg(diagramPath, rawDiagramSvg);
+    }
 }

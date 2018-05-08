@@ -80,6 +80,10 @@ public class CanvasFileExport {
         svgFileExport.export(canvasExport.toContext2D(canvasHandler), fullFileName);
     }
 
+    public String exportToSvg(final AbstractCanvasHandler canvasHandler) {
+        return canvasExport.toContext2D(canvasHandler).getSerializedSvg();
+    }
+
     public void exportToJpg(final AbstractCanvasHandler canvasHandler,
                             final String fileName) {
         exportImage(canvasHandler,

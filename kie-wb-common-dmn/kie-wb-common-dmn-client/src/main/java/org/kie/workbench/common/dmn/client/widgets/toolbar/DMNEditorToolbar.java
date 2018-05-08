@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToP
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ExportToPngToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.PasteToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.RedoToolbarCommand;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.command.SaveToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.SwitchGridToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.UndoToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.ValidateToolbarCommand;
@@ -66,7 +67,8 @@ public class DMNEditorToolbar
                 .register(ExportToPdfToolbarCommand.class)
                 .register(CopyToolbarCommand.class)
                 .register(CutToolbarCommand.class)
-                .register(PasteToolbarCommand.class);
+                .register(PasteToolbarCommand.class)
+                .register(SaveToolbarCommand.class);
     }
 
     public VisitGraphToolbarCommand getVisitGraphToolbarCommand() {
@@ -119,6 +121,9 @@ public class DMNEditorToolbar
 
     public PasteToolbarCommand getPasteToolbarCommand() {
         return (PasteToolbarCommand) toolbar.getCommand(12);
+    }
+    public SaveToolbarCommand getSaveToolbarCommand() {
+        return (SaveToolbarCommand) toolbar.getCommand(13);
     }
 
     @Override

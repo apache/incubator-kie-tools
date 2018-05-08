@@ -29,6 +29,7 @@ import javax.enterprise.inject.Instance;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.definition.service.DefinitionSetService;
 import org.kie.workbench.common.stunner.core.definition.service.DiagramMarshaller;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -36,6 +37,7 @@ import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
 import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.registry.BackendRegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.diagram.DiagramRegistry;
@@ -60,6 +62,7 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
 
     private static final Logger LOG =
             LoggerFactory.getLogger(AbstractVFSDiagramService.class.getName());
+    public static final String SVG_SUFFIX = "-svg.svg";
 
     private final DefinitionManager definitionManager;
     private final FactoryManager factoryManager;
@@ -198,6 +201,27 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
 
     public M saveOrUpdate(final D diagram) {
         return register(diagram);
+    }
+
+    @Override
+    public Path saveOrUpdateSvg(Path diagramPath, String rawDiagramSvg) {
+        final org.uberfire.java.nio.file.Path diagramFilePath = Paths.convert(diagramPath);
+        final String fileName = getDiagramSvgFileName(getDiagramByPath(diagramPath));
+        final org.uberfire.java.nio.file.Path svgPath = diagramFilePath.getParent().resolve(fileName);
+        LOG.info("Saving diagram SVG " + svgPath);
+        getIoService().write(svgPath, rawDiagramSvg);
+        return Paths.convert(svgPath);
+    }
+
+    private String getDiagramSvgFileName(Diagram diagram) {
+        final Object metaProperty = definitionManager.adapters()
+                .forDefinition()
+                .getMetaProperty(PropertyMetaTypes.ID,
+                                 ((Definition) diagram.getGraph()
+                                         .getNode(diagram.getMetadata().getCanvasRootUUID())
+                                         .getContent()).getDefinition());
+        final Object diagramFileId = definitionManager.adapters().forProperty().getValue(metaProperty);
+        return String.valueOf(diagramFileId).concat(SVG_SUFFIX);
     }
 
     public boolean delete(final D diagram) {

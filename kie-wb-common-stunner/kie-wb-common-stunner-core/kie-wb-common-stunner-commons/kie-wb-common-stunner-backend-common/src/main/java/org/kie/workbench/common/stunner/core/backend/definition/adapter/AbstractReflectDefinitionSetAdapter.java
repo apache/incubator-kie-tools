@@ -16,14 +16,20 @@
 package org.kie.workbench.common.stunner.core.backend.definition.adapter;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.annotation.DefinitionSet;
+import org.kie.workbench.common.stunner.core.definition.annotation.SvgNodeId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractReflectDefinitionSetAdapter<T> extends AbstractReflectAdapter<T>
         implements DefinitionSetAdapter<T> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractReflectDefinitionSetAdapter.class);
 
     protected Set<String> getAnnotatedDefinitions(final T definitionSet) {
         Set<String> result = null;
@@ -56,5 +62,16 @@ public abstract class AbstractReflectDefinitionSetAdapter<T> extends AbstractRef
     @Override
     public String getDomain(final T definitionSet) {
         return BindableAdapterUtils.getDefinitionSetDomain(definitionSet.getClass());
+    }
+
+    @Override
+    public Optional<String> getSvgNodeId(T definitionSet) {
+        try {
+            return Optional.ofNullable(getAnnotatedFieldValue(definitionSet,
+                                                              SvgNodeId.class));
+        } catch (Exception e) {
+            LOG.error("Error obtaining annotated SvgNodeId for DefinitionSet with id " + getId(definitionSet));
+        }
+        return Optional.empty();
     }
 }
