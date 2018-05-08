@@ -19,10 +19,16 @@ package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
+import com.ait.lienzo.client.core.shape.wires.MagnetManager;
+import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShapeView;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresShapeViewExt;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -34,9 +40,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
-import org.kie.workbench.common.stunner.core.client.shape.ShapeViewExtStub;
-import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
-import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
+import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ResizeEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ResizeHandler;
@@ -57,13 +61,14 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -77,7 +82,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(LienzoMockitoTestRunner.class)
 public class ResizeControlImplTest {
 
     private static final String ROOT_UUID = "root-uuid1";
@@ -100,8 +105,14 @@ public class ResizeControlImplTest {
     );
 
     private static final String DOCKED_NODE_UUID = UUID.uuid();
+    private static final String CONNECTOR_EDGE_UUID = UUID.uuid();
+    private static final String CONNECTOR_EDGE_TARGET_UUID = UUID.uuid();
     private static final Double SHAPE_X = 0d;
     private static final Double SHAPE_Y = 0d;
+    public static final double NEW_CONNECTION_X = 10d;
+    public static final double NEW_CONNECTION_Y = 20d;
+    public static final double NEW_CONNECTION_X_TARGET = 30d;
+    public static final double NEW_CONNECTION_Y_TARGET = 40d;
 
     @Mock
     private CanvasCommandManager<AbstractCanvasHandler> commandManager;
@@ -134,13 +145,7 @@ public class ResizeControlImplTest {
     private View elementContent;
 
     @Mock
-    private Shape<ShapeView> shape;
-
-    @Mock
-    private HasEventHandlers<ShapeViewExtStub, Object> shapeEventHandler;
-
-    @Mock
-    private HasControlPoints<ShapeViewExtStub> hasControlPoints;
+    private Shape<WiresShapeView> shape;
 
     @Mock
     private Object definition;
@@ -170,7 +175,9 @@ public class ResizeControlImplTest {
     private PropertyAdapter propertyAdapter;
 
     private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
-    private ShapeViewExtStub shapeView;
+
+    @Mock
+    private WiresShapeViewExt shapeView;
 
     private ResizeControlImpl tested;
 
@@ -186,12 +193,43 @@ public class ResizeControlImplTest {
     @Mock
     private ShapeView dockedShapeView;
 
+    @Mock
+    private Edge connectorEdge;
+
+    @Mock
+    private ViewConnector viewConnector;
+
+    @Mock
+    private ConnectorShape connectorShape;
+
+    @Mock
+    private MagnetManager.Magnets magnets;
+
+    @Mock
+    private WiresMagnet magnet;
+
+    private MagnetConnection magnetConnection;
+
+    @Mock
+    private Edge connectorEdgeTarget;
+
+    @Mock
+    private ViewConnector viewConnectorTarget;
+
+    @Mock
+    private ConnectorShape connectorShapeTarget;
+
+    @Mock
+    private WiresMagnet magnetTarget;
+
+    private MagnetConnection magnetConnectionTarget;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         this.canvasCommandFactory = spy(new DefaultCanvasCommandFactory(null, null));
-        this.shapeView = new ShapeViewExtStub(shapeEventHandler,
-                                              hasControlPoints);
+
+        when(shapeView.supports(ViewEventType.RESIZE)).thenReturn(true);
         when(canvasHandler.getDefinitionManager()).thenReturn(definitionManager);
         when(definitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.registry()).thenReturn(adapterRegistry);
@@ -224,9 +262,8 @@ public class ResizeControlImplTest {
         when(canvas.getShapes()).thenReturn(Collections.singletonList(shape));
         when(shape.getUUID()).thenReturn(ELEMENT_UUID);
         when(shape.getShapeView()).thenReturn(shapeView);
-        when(shapeEventHandler.supports(eq(ViewEventType.RESIZE))).thenReturn(true);
-
-        when(element.getOutEdges()).thenReturn(Arrays.asList(dockEdge));
+        when(element.getOutEdges()).thenReturn(Arrays.asList(dockEdge, connectorEdge));
+        when(element.getInEdges()).thenReturn(Arrays.asList(connectorEdgeTarget));
         when(dockEdge.getContent()).thenReturn(new Dock());
         when(dockEdge.getTargetNode()).thenReturn(dockedNode);
         when(dockedNode.getUUID()).thenReturn(DOCKED_NODE_UUID);
@@ -234,6 +271,27 @@ public class ResizeControlImplTest {
         when(dockedShape.getShapeView()).thenReturn(dockedShapeView);
         when(dockedShapeView.getShapeX()).thenReturn(SHAPE_X);
         when(dockedShapeView.getShapeY()).thenReturn(SHAPE_Y);
+
+        when(connectorEdge.getSourceNode()).thenReturn(element);
+        when(connectorEdge.getContent()).thenReturn(viewConnector);
+        when(connectorEdge.getUUID()).thenReturn(CONNECTOR_EDGE_UUID);
+        when(connectorEdgeTarget.getTargetNode()).thenReturn(element);
+        when(connectorEdgeTarget.getContent()).thenReturn(viewConnectorTarget);
+        when(connectorEdgeTarget.getUUID()).thenReturn(CONNECTOR_EDGE_TARGET_UUID);
+
+        magnetConnection = new MagnetConnection.Builder().atX(0).atY(0).magnet(MagnetConnection.MAGNET_CENTER).build();
+        magnetConnectionTarget = new MagnetConnection.Builder().atX(1).atY(1).magnet(1).build();
+        when(viewConnector.getSourceConnection()).thenReturn(Optional.of(magnetConnection));
+        when(viewConnectorTarget.getTargetConnection()).thenReturn(Optional.of(magnetConnectionTarget));
+        when(canvas.getShape(CONNECTOR_EDGE_UUID)).thenReturn(connectorShape);
+        when(canvas.getShape(CONNECTOR_EDGE_TARGET_UUID)).thenReturn(connectorShapeTarget);
+        when(shapeView.getMagnets()).thenReturn(magnets);
+        when(magnets.getMagnet(MagnetConnection.MAGNET_CENTER)).thenReturn(magnet);
+        when(magnets.getMagnet(1)).thenReturn(magnetTarget);
+        when(magnet.getX()).thenReturn(NEW_CONNECTION_X);
+        when(magnet.getY()).thenReturn(NEW_CONNECTION_Y);
+        when(magnetTarget.getX()).thenReturn(NEW_CONNECTION_X_TARGET);
+        when(magnetTarget.getY()).thenReturn(NEW_CONNECTION_Y_TARGET);
 
         this.tested = new ResizeControlImpl(canvasCommandFactory);
         tested.setCommandManagerProvider(() -> commandManager);
@@ -244,9 +302,9 @@ public class ResizeControlImplTest {
         tested.init(canvasHandler);
         assertFalse(tested.isRegistered(element));
         tested.register(element);
-        verify(shapeEventHandler,
+        verify(shapeView,
                times(1)).supports(eq(ViewEventType.RESIZE));
-        verify(shapeEventHandler,
+        verify(shapeView,
                times(1)).addHandler(eq(ViewEventType.RESIZE),
                                     any(ResizeHandler.class));
         assertTrue(tested.isRegistered(element));
@@ -258,7 +316,7 @@ public class ResizeControlImplTest {
         tested.init(canvasHandler);
         tested.register(element);
         tested.deregister(element);
-        verify(shapeEventHandler,
+        verify(shapeView,
                times(1)).removeHandler(any(ViewHandler.class));
         assertFalse(tested.isRegistered(element));
     }
@@ -271,13 +329,20 @@ public class ResizeControlImplTest {
         tested.init(canvasHandler);
         assertFalse(tested.isRegistered(element));
         tested.register(element);
-        verify(shapeEventHandler,
+        verify(shapeView,
                times(1)).supports(eq(ViewEventType.RESIZE));
         final ArgumentCaptor<ResizeHandler> resizeHandlerArgumentCaptor =
                 ArgumentCaptor.forClass(ResizeHandler.class);
-        verify(shapeEventHandler,
+        verify(shapeView,
                times(1)).addHandler(eq(ViewEventType.RESIZE),
                                     resizeHandlerArgumentCaptor.capture());
+
+        //assert initial connection position
+        assertEquals(magnetConnection.getLocation().getX(), 0, 0);
+        assertEquals(magnetConnection.getLocation().getY(), 0, 0);
+        assertEquals(magnetConnectionTarget.getLocation().getX(), 1, 0);
+        assertEquals(magnetConnectionTarget.getLocation().getY(), 1, 0);
+
         final ResizeHandler resizeHandler = resizeHandlerArgumentCaptor.getValue();
         final double x = 121.45d;
         final double y = 23.456d;
@@ -300,7 +365,7 @@ public class ResizeControlImplTest {
         assertTrue(command instanceof AbstractCompositeCommand);
         final List commands = ((AbstractCompositeCommand) command).getCommands();
         assertNotNull(commands);
-        assertEquals(5,
+        assertEquals(7,
                      commands.size());
         assertTrue(commands.get(0) instanceof UpdateElementPositionCommand);
         final UpdateElementPositionCommand positionCommand = (UpdateElementPositionCommand) commands.get(0);
@@ -339,5 +404,17 @@ public class ResizeControlImplTest {
         Point2D shapePoint = shapePoint2DArgumentCaptor.getValue();
         assertEquals(shapePoint.getX(), SHAPE_X, 0);
         assertEquals(shapePoint.getY(), SHAPE_Y, 0);
+
+        //test connections position on the node resize
+        //source connection
+        verify(canvasCommandFactory, times(1)).setSourceNode(element, connectorEdge, magnetConnection);
+        assertEquals(magnetConnection.getLocation().getX(), NEW_CONNECTION_X, 0);
+        assertEquals(magnetConnection.getLocation().getY(), NEW_CONNECTION_Y, 0);
+
+        //target connection
+        verify(canvasCommandFactory, times(1)).setTargetNode(element, connectorEdgeTarget, magnetConnectionTarget);
+        //assert new connection position after resize
+        assertEquals(magnetConnectionTarget.getLocation().getX(), NEW_CONNECTION_X_TARGET, 0);
+        assertEquals(magnetConnectionTarget.getLocation().getY(), NEW_CONNECTION_Y_TARGET, 0);
     }
 }

@@ -317,6 +317,23 @@ public class GraphUtils {
                 .collect(Collectors.toList());
     }
 
+    public static List<Edge<? extends ViewConnector<?>, Node>> getSourceConnections(final Node<?, ? extends Edge> element) {
+        Objects.requireNonNull(element.getOutEdges());
+        return getConnections(element.getOutEdges());
+    }
+
+    public static List<Edge<? extends ViewConnector<?>, Node>> getTargetConnections(final Node<?, ? extends Edge> element) {
+        Objects.requireNonNull(element.getInEdges());
+        return getConnections(element.getInEdges());
+    }
+
+    private static List<Edge<? extends ViewConnector<?>, Node>> getConnections(List<? extends Edge> edges) {
+        return edges.stream()
+                .filter(edge -> (edge.getContent() instanceof ViewConnector))
+                .map(edge -> (Edge<? extends ViewConnector<?>, Node>) edge)
+                .collect(Collectors.toList());
+    }
+
     public static boolean isDockedNode(final Node<?, ? extends Edge> element) {
         return Objects.nonNull(element.getInEdges()) ?
                 element.getInEdges()

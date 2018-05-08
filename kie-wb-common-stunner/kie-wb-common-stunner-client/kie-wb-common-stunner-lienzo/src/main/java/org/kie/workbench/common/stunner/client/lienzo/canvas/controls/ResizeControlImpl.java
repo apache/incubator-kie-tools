@@ -19,6 +19,9 @@ package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,6 +30,9 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
+import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
+import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
@@ -34,6 +40,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.Resiz
 import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasHandlerEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -59,8 +66,11 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.violations.BoundsExceededViolation;
 
@@ -281,14 +291,12 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
 
             //Updating Docked nodes position
             if (GraphUtils.hasDockedNodes(node)) {
-                GraphUtils.getDockedNodes(node)
-                        .stream()
-                        .forEach(docked -> {
-                            final Shape shape = canvasHandler.getCanvas().getShape(docked.getUUID());
-                            final double dockedX = shape.getShapeView().getShapeX();
-                            final double dockedY = shape.getShapeView().getShapeY();
-                            commandBuilder.addCommand(canvasCommandFactory.updatePosition(docked, new Point2D(dockedX, dockedY)));
-                        });
+                updateDockedNodesPosition(commandBuilder, node);
+            }
+
+            //Updating connection positions to the node
+            if (GraphUtils.hasConnections(node)) {
+                updateConnectionsPositions(commandBuilder, node);
             }
         }
 
@@ -300,6 +308,54 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
             element.getContent().setBounds(newBounds);
         }
         return resizeResults;
+    }
+
+    private void updateConnectionsPositions(final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder, final Node<View<?>, Edge> node) {
+        GraphUtils.getSourceConnections(node)
+                .forEach(edge -> edge.getContent()
+                        .getSourceConnection()
+                        .ifPresent(connection -> handleConnections(commandBuilder, node, edge, () -> connection, () -> canvasCommandFactory.setSourceNode(node, edge, connection)))
+                );
+
+        GraphUtils.getTargetConnections(node)
+                .forEach(edge -> edge.getContent()
+                        .getTargetConnection()
+                        .ifPresent(connection -> handleConnections(commandBuilder, node, edge, () -> connection, () -> canvasCommandFactory.setTargetNode(node, edge, connection))
+                        )
+                );
+    }
+
+    private void handleConnections(final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder,
+                                   final Node<View<?>, Edge> node, Edge<? extends ViewConnector<?>, Node> edge,
+                                   final Supplier<Connection> connecionSupplier,
+                                   final Supplier<CanvasCommand<AbstractCanvasHandler>> commandSupplier) {
+        final Connection connection = connecionSupplier.get();
+        if (Objects.isNull(connection) || !(connection instanceof MagnetConnection)) {
+            return;
+        }
+
+        final MagnetConnection magnetConnection = (MagnetConnection) connection;
+        magnetConnection.getMagnetIndex().ifPresent(index -> {
+            final Shape shape = canvasHandler.getCanvas().getShape(node.getUUID());
+            Optional.ofNullable(WiresUtils.isWiresShape(shape.getShapeView()) ? (WiresShape) shape.getShapeView() : null)
+                    .ifPresent(wiresShape -> {
+                        final WiresMagnet magnet = wiresShape.getMagnets().getMagnet(index);
+                        connection.getLocation().setX(magnet.getX());
+                        connection.getLocation().setY(magnet.getY());
+                        commandBuilder.addCommand(commandSupplier.get());
+                    });
+        });
+    }
+
+    private void updateDockedNodesPosition(CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder, Node<View<?>, Edge> node) {
+        GraphUtils.getDockedNodes(node)
+                .stream()
+                .forEach(docked -> {
+                    final Shape shape = canvasHandler.getCanvas().getShape(docked.getUUID());
+                    final double dockedX = shape.getShapeView().getShapeX();
+                    final double dockedY = shape.getShapeView().getShapeY();
+                    commandBuilder.addCommand(canvasCommandFactory.updatePosition(docked, new Point2D(dockedX, dockedY)));
+                });
     }
 
     /**
