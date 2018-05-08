@@ -19,8 +19,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
-  <distributable/>
-
   <filter>
     <filter-name>request-capture</filter-name>
     <filter-class>org.uberfire.ext.security.server.SecurityIntegrationFilter</filter-class>
@@ -83,7 +81,6 @@
     <url-pattern>*</url-pattern>
   </filter-mapping>
 
-
   <servlet>
     <servlet-name>LoginRedirectServlet</servlet-name>
     <servlet-class>org.uberfire.ext.security.server.LoginRedirectServlet</servlet-class>
@@ -105,7 +102,6 @@
       <form-error-page>/login.jsp?message=Login failed. Please try again.</form-error-page>
     </form-login-config>
   </login-config>
-
 
   <servlet>
     <servlet-name>ErraiServlet</servlet-name>
