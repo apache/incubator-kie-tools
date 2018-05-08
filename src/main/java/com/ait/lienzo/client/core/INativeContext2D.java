@@ -31,7 +31,7 @@ public interface INativeContext2D {
 
     void initDeviceRatio();
 
-    void saveContainer();
+    void saveContainer(String id);
 
     void restoreContainer();
 

@@ -486,7 +486,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
         }
         if (context.isDrag() || isVisible())
         {
-            context.saveContainer();
+            context.saveContainer(getID());
 
             final Transform xfrm = getPossibleNodeTransform();
 

@@ -62,8 +62,8 @@ public class Context2D
     /**
      * Save and push a new container context to the stack
      */
-    public void saveContainer(){
-        m_jso.saveContainer();
+    public void saveContainer(String id){
+        m_jso.saveContainer(id);
     }
 
     /**

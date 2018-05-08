@@ -124,7 +124,7 @@ public class NativeContext2D extends JavaScriptObject implements INativeContext2
 		return this;
     }-*/;
 
-    public final void saveContainer() {
+    public final void saveContainer(String id) {
         this.save();
     }
 
