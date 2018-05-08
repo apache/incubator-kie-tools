@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,6 +34,7 @@ import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
@@ -66,6 +68,9 @@ import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesLi
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
+import org.kie.workbench.common.stunner.project.editor.ProjectDiagramResource;
+import org.kie.workbench.common.stunner.project.editor.impl.ProjectDiagramResourceImpl;
+import org.kie.workbench.common.stunner.project.service.ProjectDiagramResourceService;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
@@ -81,6 +86,7 @@ import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
@@ -90,7 +96,7 @@ import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
-public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType> extends KieEditor<ProjectDiagram> {
+public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType> extends KieEditor<ProjectDiagramResource> {
 
     private static Logger LOGGER = Logger.getLogger(AbstractProjectDiagramEditor.class.getName());
     private static final String TITLE_FORMAT_TEMPLATE = "#title.#suffix - #type";
@@ -121,6 +127,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private final DiagramClientErrorHandler diagramClientErrorHandler;
     private final ClientTranslationService translationService;
     private final StunnerPreferencesRegistry stunnerPreferencesRegistry;
+    private final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller;
 
     private String title = "Project Diagram Editor";
 
@@ -145,7 +152,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                         final DiagramClientErrorHandler diagramClientErrorHandler,
                                         final ClientTranslationService translationService,
                                         final TextEditorView xmlEditorView,
-                                        final StunnerPreferencesRegistry stunnerPreferencesRegistry) {
+                                        final StunnerPreferencesRegistry stunnerPreferencesRegistry,
+                                        final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller) {
         super(view);
         this.placeManager = placeManager;
         this.errorPopupPresenter = errorPopupPresenter;
@@ -163,6 +171,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.translationService = translationService;
         this.xmlEditorView = xmlEditorView;
         this.stunnerPreferencesRegistry = stunnerPreferencesRegistry;
+        this.projectDiagramResourceServiceCaller = projectDiagramResourceServiceCaller;
     }
 
     protected abstract int getCanvasWidth();
@@ -221,6 +230,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     @SuppressWarnings("unchecked")
     protected ProjectDiagramEditorProxy makeStunnerEditorProxy() {
         final ProjectDiagramEditorProxy proxy = new ProjectDiagramEditorProxy();
+        proxy.setContentSupplier(() -> new ProjectDiagramResourceImpl(getDiagram()));
         proxy.setSaveAfterValidationConsumer((continueSaveOnceValid) -> {
             menuSessionItems
                     .getCommands()
@@ -294,6 +304,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     protected ProjectDiagramEditorProxy makeXmlEditorProxy() {
         final ProjectDiagramEditorProxy proxy = new ProjectDiagramEditorProxy();
+        proxy.setContentSupplier(() -> new ProjectDiagramResourceImpl(xmlEditorView.getContent()));
         proxy.setSaveAfterValidationConsumer(Command::execute);
         proxy.setSaveAfterUserConfirmationConsumer((commitMessage) -> {
             final ObservablePath diagramPath = versionRecordManager.getCurrentPath();
@@ -488,8 +499,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                     .addSave(versionRecordManager.newSaveMenuItem(this::saveAction))
                     .addCopy(versionRecordManager.getCurrentPath(),
                              assetUpdateValidator)
-                    .addRename(versionRecordManager.getPathToLatest(),
-                               assetUpdateValidator)
+                    .addRename(getSaveAndRename())
                     .addDelete(versionRecordManager.getPathToLatest(),
                                assetUpdateValidator);
         }
@@ -497,6 +507,30 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         fileMenuBuilder
                 .addNewTopLevelMenu(versionRecordManager.buildMenu())
                 .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
+    }
+
+    @Override
+    protected Command getSaveAndRename() {
+        return super.getSaveAndRename();
+    }
+
+    @Override
+    protected Caller<? extends SupportsSaveAndRename<ProjectDiagramResource, org.guvnor.common.services.shared.metadata.model.Metadata>> getSaveAndRenameServiceCaller() {
+        return projectDiagramResourceServiceCaller;
+    }
+
+    @Override
+    protected Supplier<ProjectDiagramResource> getContentSupplier() {
+        return () -> getEditorProxy().getContentSupplier().get();
+    }
+
+    protected ProjectDiagramEditorProxy getEditorProxy() {
+        return editorProxy;
+    }
+
+    @Override
+    protected Integer getCurrentContentHash() {
+        return getCurrentDiagramHash();
     }
 
     protected void doOpen() {

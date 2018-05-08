@@ -88,6 +88,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                                                  translationService,
                                                  xmlEditorView,
                                                  stunnerPreferencesRegistr,
+                                                 projectDiagramResourceServiceCaller,
                                                  decisionNavigatorDock) {
             {
                 fileMenuBuilder = DMNDiagramEditorTest.this.fileMenuBuilder;

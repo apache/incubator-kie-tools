@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.project.client.editor;
 
 import javax.enterprise.event.Event;
 
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
@@ -30,6 +31,7 @@ import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFoc
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
 import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesListener;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
+import org.kie.workbench.common.stunner.project.service.ProjectDiagramResourceService;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
@@ -57,7 +59,8 @@ class ProjectDiagramEditorStub extends AbstractProjectDiagramEditor<ClientResour
                                     final DiagramClientErrorHandler diagramClientErrorHandler,
                                     final ClientTranslationService translationService,
                                     final TextEditorView xmlEditorView,
-                                    final StunnerPreferencesRegistry stunnerPreferencesRegistry) {
+                                    final StunnerPreferencesRegistry stunnerPreferencesRegistry,
+                                    final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller) {
         super(view,
               placeManager,
               errorPopupPresenter,
@@ -74,7 +77,8 @@ class ProjectDiagramEditorStub extends AbstractProjectDiagramEditor<ClientResour
               diagramClientErrorHandler,
               translationService,
               xmlEditorView,
-              stunnerPreferencesRegistry);
+              stunnerPreferencesRegistry,
+              projectDiagramResourceServiceCaller);
     }
 
     @Override

@@ -28,6 +28,7 @@
   <inherits name="org.kie.workbench.common.services.datamodeller.DataModellerCore"/>
 
   <source path="diagram"/>
+  <source path="editor"/>
   <source path="factory"/>
   <source path="service"/>
 

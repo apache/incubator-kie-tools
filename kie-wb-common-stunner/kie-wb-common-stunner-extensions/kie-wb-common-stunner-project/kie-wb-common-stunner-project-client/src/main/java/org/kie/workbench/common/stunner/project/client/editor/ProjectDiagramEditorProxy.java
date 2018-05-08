@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.kie.workbench.common.stunner.project.editor.ProjectDiagramResource;
 import org.uberfire.mvp.Command;
 
 public class ProjectDiagramEditorProxy {
@@ -29,6 +30,7 @@ public class ProjectDiagramEditorProxy {
     private Optional<Consumer<String>> saveAfterUserConfirmationConsumer;
     private Optional<Consumer<String>> showNoChangesSinceLastSaveMessageConsumer;
     private Optional<Supplier<Integer>> hashCodeSupplier;
+    private Supplier<ProjectDiagramResource> contentSupplier = () -> null;
 
     public ProjectDiagramEditorProxy() {
         saveAfterValidationConsumer = Optional.empty();
@@ -67,5 +69,13 @@ public class ProjectDiagramEditorProxy {
 
     int getEditorHashCode() {
         return hashCodeSupplier.orElse(() -> 0).get();
+    }
+
+    public Supplier<ProjectDiagramResource> getContentSupplier() {
+        return contentSupplier;
+    }
+
+    public void setContentSupplier(final Supplier<ProjectDiagramResource> contentSupplier) {
+        this.contentSupplier = contentSupplier;
     }
 }

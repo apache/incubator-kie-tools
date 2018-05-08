@@ -22,6 +22,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,6 +57,7 @@ import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiag
 import org.kie.workbench.common.stunner.project.client.session.EditorSessionCommands;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
+import org.kie.workbench.common.stunner.project.service.ProjectDiagramResourceService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
@@ -221,6 +223,9 @@ public class ProjectDiagramEditorTest {
     @Mock
     private StunnerPreferencesRegistry stunnerPreferencesRegistr;
 
+    @Mock
+    private Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller;
+
     private ProjectDiagramEditorStub tested;
 
     @Before
@@ -288,7 +293,8 @@ public class ProjectDiagramEditorTest {
                                                    diagramClientErrorHandler,
                                                    translationService,
                                                    xmlEditorView,
-                                                   stunnerPreferencesRegistr
+                                                   stunnerPreferencesRegistr,
+                                                   projectDiagramResourceServiceCaller
         ) {
             {
                 overviewWidget = overviewWidgetMock;

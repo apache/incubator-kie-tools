@@ -138,6 +138,7 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                                                   diagramClientErrorHandler,
                                                   translationService,
                                                   stunnerPreferencesRegistr,
+                                                  projectDiagramResourceServiceCaller,
                                                   migrateDiagramEvent,
                                                   popupUtil,
                                                   xmlEditorView) {
