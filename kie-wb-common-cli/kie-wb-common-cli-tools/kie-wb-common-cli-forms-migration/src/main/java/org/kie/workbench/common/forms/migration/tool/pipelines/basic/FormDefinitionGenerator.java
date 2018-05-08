@@ -29,6 +29,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.TableCo
 import org.kie.workbench.common.forms.migration.legacy.model.Field;
 import org.kie.workbench.common.forms.migration.legacy.model.Form;
 import org.kie.workbench.common.forms.migration.tool.FormMigrationSummary;
+import org.kie.workbench.common.forms.migration.tool.Result;
 import org.kie.workbench.common.forms.migration.tool.pipelines.AbstractMigrationStep;
 import org.kie.workbench.common.forms.migration.tool.pipelines.MigrationContext;
 import org.kie.workbench.common.forms.migration.tool.pipelines.basic.impl.BPMNFormAdapter;
@@ -81,6 +82,7 @@ public class FormDefinitionGenerator extends AbstractMigrationStep {
 
     private void arrangeNestedForms(List<FormMigrationSummary> newForms, List<FormMigrationSummary> modelForms) {
         newForms.stream()
+                .filter(summary -> Result.SUCCESS.equals(summary.getResult()) && summary.getNewForm() != null)
                 .forEach(summary -> maybeArrangeNestedForms(summary, modelForms));
     }
 

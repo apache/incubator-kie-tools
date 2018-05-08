@@ -1,0 +1,28 @@
+<form id="1623240780">
+<property name="subject" value=""/>
+<property name="name" value="formWithoutProcess-taskform.form"/>
+<property name="displayMode" value="default"/>
+<property name="status" value="0"/>
+<field position="0" name="in_sub_comp_birthDate" type="InputDate" id="14381951">
+<property name="fieldName" value="in_sub_comp_birthDate"/>
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;birthDate (in_sub_comp)quot;"/>
+<property name="inputBinding" value="{in_sub_comp/birthDate}"/>
+<property name="outputBinding" value="{out_sub_comp/birthDate}"/>
+</field>
+<field position="1" name="in_sub_comp_d" type="InputTextInteger" id="987459935">
+<property name="fieldName" value="in_sub_comp_d"/>
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;d (in_sub_comp)quot;"/>
+<property name="inputBinding" value="{in_sub_comp/d}"/>
+<property name="outputBinding" value="{out_sub_comp/d}"/>
+</field>
+<field position="2" name="in_sub_comp_name" type="InputText" id="1228083711">
+<property name="fieldName" value="in_sub_comp_name"/>
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;name (in_sub_comp)quot;"/>
+<property name="inputBinding" value="{in_sub_comp/name}"/>
+<property name="outputBinding" value="{out_sub_comp/name}"/>
+</field>
+<dataHolder name="#FF8881" type="dataModelerEntry" outId="sub_comp" value="org.kie.test.SubComponent" id="sub_comp"/>
+</form>

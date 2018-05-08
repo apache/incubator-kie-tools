@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.migration.tool.pipelines.basic;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
@@ -26,8 +27,6 @@ import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMFormModel;
 import org.kie.workbench.common.forms.migration.legacy.model.Form;
 import org.kie.workbench.common.forms.migration.tool.FormMigrationSummary;
 import org.kie.workbench.common.forms.migration.tool.Resource;
-import org.kie.workbench.common.forms.migration.tool.bpmn.BPMNAnalyzer;
-import org.kie.workbench.common.forms.migration.tool.bpmn.BPMNProcess;
 import org.kie.workbench.common.forms.migration.tool.pipelines.MigrationContext;
 import org.kie.workbench.common.forms.migration.tool.pipelines.basic.impl.DataObjectFormAdapter;
 import org.kie.workbench.common.migration.cli.RealSystemAccess;
@@ -43,31 +42,31 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class FormDefinitionGeneratorForBPMNForWrongTaskFormNameTest extends AbstractFormDefinitionGeneratorTest {
+public class FormDefinitionGeneratorForFormsWithoutBPMNFileTest extends AbstractFormDefinitionGeneratorTest {
 
-    private static final String WRONG_PROCESS_FORM = "invoices.invoices.wrong-taskform.form";
+    private static final String FORM_WITHOUT_PROCESS_FORM = "formWithoutProcess-taskform.form";
 
-    private static final String WRONG_TASK_FORM = "wrong-taskform.form";
-
-    @Mock
-    private Path wrongProcessPath;
+    private static final String FORM_WITHOUT_TASK_FORM = "formWithoutTask-taskform.form";
 
     @Mock
-    private Path wrongTaskPath;
+    private Path formWithoutProcessPath;
 
-    private Form wrongProcessForm;
-    private Form wrongTaskForm;
+    @Mock
+    private Path formWithoutTaskPath;
+
+    private Form formWithoutProcess;
+    private Form formWithoutTask;
 
     @Override
     protected void doInit() throws Exception {
 
         List<FormMigrationSummary> summaries = new ArrayList<>();
 
-        initForm(form -> wrongProcessForm = form, BPMN_RESOURCES, WRONG_PROCESS_FORM, wrongProcessPath);
-        summaries.add(new FormMigrationSummary(new Resource<>(wrongProcessForm, wrongProcessPath)));
+        initForm(form -> formWithoutProcess = form, BPMN_RESOURCES, FORM_WITHOUT_PROCESS_FORM, formWithoutProcessPath);
+        summaries.add(new FormMigrationSummary(new Resource<>(formWithoutProcess, formWithoutProcessPath)));
 
-        initForm(form -> wrongTaskForm = form, BPMN_RESOURCES, WRONG_TASK_FORM, wrongTaskPath);
-        summaries.add(new FormMigrationSummary(new Resource<>(wrongTaskForm, wrongTaskPath)));
+        initForm(form -> formWithoutTask = form, BPMN_RESOURCES, FORM_WITHOUT_TASK_FORM, formWithoutTaskPath);
+        summaries.add(new FormMigrationSummary(new Resource<>(formWithoutTask, formWithoutTaskPath)));
 
         context = new MigrationContext(workspaceProject, weldContainer, migrationServicesCDIWrapper, new RealSystemAccess(), summaries);
 
@@ -76,9 +75,7 @@ public class FormDefinitionGeneratorForBPMNForWrongTaskFormNameTest extends Abst
 
     @Override
     protected List<JBPMFormModel> getProcessFormModels() {
-        BPMNAnalyzer analyzer = new BPMNAnalyzer();
-        BPMNProcess process = analyzer.read(this.getClass().getResourceAsStream(BPMN_RESOURCES + INVOICES_BPMN));
-        return process.getFormModels();
+        return Collections.emptyList();
     }
 
     @Test
