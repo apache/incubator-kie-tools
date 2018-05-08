@@ -16,6 +16,12 @@
 
 package org.uberfire.ext.editor.commons.client.file.exports.jso.svg;
 
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+
+import javax.management.Attribute;
+
 import elemental2.core.Array;
 import elemental2.dom.CanvasGradient;
 import elemental2.dom.Element;
@@ -27,6 +33,7 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import org.jboss.errai.codegen.Parameter;
 
 /**
  * This is a JsInterop class responsible to make the interface to the <b>canvas2svg</b> library,
@@ -193,12 +200,17 @@ class C2S {
 
     // -----------------------------JS overlay save/restore group -----------------------------
     @JsOverlay
-    public final void saveGroup() {
+    public final void saveGroup(Map<String, String> attributes) {
         Element group = this.__createElement("g");
         Element parent = this.__closestGroupOrSvg(null);
         this.__groupStack.push(parent);
         parent.appendChild(group);
         this.__currentElement = group;
+        //setting the group attributes
+        Optional.ofNullable(attributes).ifPresent(attr -> attr.entrySet()
+                .stream()
+                .filter(entry -> Objects.nonNull(entry.getValue()))
+                .forEach(entry -> group.setAttribute(entry.getKey(), entry.getValue())));
     }
 
     @JsOverlay

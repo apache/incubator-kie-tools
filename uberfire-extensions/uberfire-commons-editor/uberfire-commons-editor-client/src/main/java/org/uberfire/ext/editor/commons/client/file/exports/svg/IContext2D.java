@@ -16,6 +16,9 @@
 
 package org.uberfire.ext.editor.commons.client.file.exports.svg;
 
+import java.util.Map;
+import java.util.Optional;
+
 import elemental2.dom.CanvasGradient;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLCanvasElement;
@@ -61,7 +64,7 @@ public interface IContext2D {
 
     void setLineDashOffset(double offset);
 
-    void saveGroup();
+    void saveGroup(Map<String, String> attributes);
 
     void saveStyle();
 

@@ -16,6 +16,10 @@
 
 package org.uberfire.ext.editor.commons.client.file.exports.jso.svg;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import elemental2.core.Array;
@@ -28,6 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -166,8 +171,13 @@ public class C2SContext2DTest {
 
     @Test
     public void saveGroup() {
-        c2SContext2D.saveGroup();
-        verify(c2S).saveGroup();
+        final String key = "id";
+        final String value = "value";
+        final Map<String, String> id = new HashMap<String, String>(){{
+            put(key, value);
+        }};
+        c2SContext2D.saveGroup(id);
+        verify(c2S).saveGroup(id);
     }
 
     @Test
