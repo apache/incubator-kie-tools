@@ -21,8 +21,10 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.categories.Process;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.resource.DMNDefinitionSetResourceType;
 import org.kie.workbench.common.dmn.project.client.resources.DMNProjectImageResources;
+import org.kie.workbench.common.dmn.project.client.resources.i18n.DMNProjectClientConstants;
 import org.kie.workbench.common.stunner.project.client.type.AbstractStunnerClientResourceType;
 
 @ApplicationScoped
@@ -30,20 +32,33 @@ public class DMNDiagramResourceType extends AbstractStunnerClientResourceType<DM
 
     private static final Image ICON = new Image(DMNProjectImageResources.INSTANCE.dmnIcon());
 
+    private final TranslationService translationService;
+
     protected DMNDiagramResourceType() {
-        this(null,
-             null);
+        this(null, null, null);
     }
 
     @Inject
     public DMNDiagramResourceType(final DMNDefinitionSetResourceType definitionSetResourceType,
-                                  final Process category) {
-        super(definitionSetResourceType,
-              category);
+                                  final Process category,
+                                  final TranslationService translationService) {
+        super(definitionSetResourceType, category);
+
+        this.translationService = translationService;
     }
 
     @Override
     public IsWidget getIcon() {
         return ICON;
+    }
+
+    @Override
+    protected String getTranslatedShortName() {
+        return translationService.getTranslation(DMNProjectClientConstants.DMNDiagramResourceType);
+    }
+
+    @Override
+    protected String getTranslatedDescription() {
+        return translationService.getTranslation(DMNProjectClientConstants.DMNDiagramResourceTypeDescription);
     }
 }

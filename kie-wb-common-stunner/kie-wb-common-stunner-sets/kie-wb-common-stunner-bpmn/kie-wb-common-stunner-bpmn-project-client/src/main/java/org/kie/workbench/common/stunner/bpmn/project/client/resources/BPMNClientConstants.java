@@ -20,6 +20,10 @@ import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 
 public interface BPMNClientConstants {
 
+    String BPMNDiagramResourceTypeShortName = "BPMNDiagramResourceType.shortName";
+
+    String BPMNDiagramResourceTypeDescription = "BPMNDiagramResourceType.description";
+
     @TranslationKey(defaultValue = "Form Generation")
     String EditorFormGenerationTitle = "editor.forms.title";
 

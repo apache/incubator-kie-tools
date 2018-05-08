@@ -31,8 +31,8 @@ import org.uberfire.workbench.category.Category;
 public class BPMNDefinitionSetResourceType extends AbstractDefinitionSetResourceType {
 
     public static final String BPMN_EXTENSION = "bpmn";
-    private static final String NAME = "Business Process (Preview)";
-    private static final String DESCRIPTION = "Business Process (Preview)";
+    private static final String NAME = "Business Process";
+    private static final String DESCRIPTION = "Business Process";
 
     private Category category;
 

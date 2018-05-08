@@ -34,13 +34,29 @@ public abstract class AbstractStunnerClientResourceType<R extends DefinitionSetR
 
     @Override
     public String getShortName() {
+        String shortName = getTranslatedShortName();
+
+        if(shortName != null) {
+            return shortName;
+        }
+
         return getDefinitionSetResourceType().getShortName();
     }
 
     @Override
     public String getDescription() {
+        String description = getTranslatedDescription();
+
+        if(description != null) {
+            return description;
+        }
+
         return getDefinitionSetResourceType().getDescription();
     }
+
+    protected abstract String getTranslatedShortName();
+
+    protected abstract String getTranslatedDescription();
 
     @Override
     public String getPrefix() {

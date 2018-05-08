@@ -21,6 +21,8 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.categories.Process;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.stunner.bpmn.project.client.resources.BPMNClientConstants;
 import org.kie.workbench.common.stunner.bpmn.project.client.resources.BPMNProjectImageResources;
 import org.kie.workbench.common.stunner.bpmn.resource.BPMNDefinitionSetResourceType;
 import org.kie.workbench.common.stunner.project.client.type.AbstractStunnerClientResourceType;
@@ -31,16 +33,28 @@ public class BPMNDiagramResourceType extends AbstractStunnerClientResourceType<B
 
     private final Image ICON = newIcon();
 
+    private final TranslationService translationService;
+
     protected BPMNDiagramResourceType() {
-        this(null,
-             null);
+        this(null, null, null);
     }
 
     @Inject
     public BPMNDiagramResourceType(final BPMNDefinitionSetResourceType definitionSetResourceType,
-                                   final Process category) {
-        super(definitionSetResourceType,
-              category);
+                                   final Process category,
+                                   final TranslationService translationService) {
+        super(definitionSetResourceType, category);
+        this.translationService = translationService;
+    }
+
+    @Override
+    protected String getTranslatedShortName() {
+        return translationService.getTranslation(BPMNClientConstants.BPMNDiagramResourceTypeShortName);
+    }
+
+    @Override
+    protected String getTranslatedDescription() {
+        return translationService.getTranslation(BPMNClientConstants.BPMNDiagramResourceTypeDescription);
     }
 
     @Override

@@ -74,7 +74,7 @@ public class BPMNDiagramNewResourceHandler extends AbstractProjectDiagramNewReso
 
     @Override
     public String getDescription() {
-        return getBPMNDiagramResourceType().getDescription();
+        return getBPMNDiagramResourceType().getShortName();
     }
 
     @Override

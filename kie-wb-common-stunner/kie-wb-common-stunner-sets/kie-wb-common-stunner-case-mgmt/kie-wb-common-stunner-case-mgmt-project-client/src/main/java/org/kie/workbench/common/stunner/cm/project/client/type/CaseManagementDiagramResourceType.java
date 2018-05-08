@@ -22,7 +22,9 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.categories.Process;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementImageResources;
+import org.kie.workbench.common.stunner.cm.project.client.resources.i18n.CaseManagementProjectClientConstants;
 import org.kie.workbench.common.stunner.cm.resource.CaseManagementDefinitionSetResourceType;
 import org.kie.workbench.common.stunner.project.client.type.AbstractStunnerClientResourceType;
 
@@ -31,20 +33,32 @@ public class CaseManagementDiagramResourceType extends AbstractStunnerClientReso
 
     private static final Image ICON = new Image(CaseManagementImageResources.INSTANCE.cmicon());
 
+    private final TranslationService translationService;
+
     protected CaseManagementDiagramResourceType() {
-        this(null,
-             null);
+        this(null, null, null);
     }
 
     @Inject
     public CaseManagementDiagramResourceType(final CaseManagementDefinitionSetResourceType definitionSetResourceType,
-                                             final Process category) {
-        super(definitionSetResourceType,
-              category);
+                                             final Process category,
+                                             final TranslationService translationService) {
+        super(definitionSetResourceType, category);
+        this.translationService = translationService;
     }
 
     @Override
     public IsWidget getIcon() {
         return ICON;
+    }
+
+    @Override
+    protected String getTranslatedShortName() {
+        return translationService.getTranslation(CaseManagementProjectClientConstants.CaseManagementDiagramResourceTypeShortName);
+    }
+
+    @Override
+    protected String getTranslatedDescription() {
+        return translationService.getTranslation(CaseManagementProjectClientConstants.CaseManagementDiagramResourceTypeDescription);
     }
 }
