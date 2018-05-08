@@ -242,6 +242,11 @@
     .navbar-pf .navbar-nav.navbar-utility > li > a {
         height: 26px;
     }
+
+    /* Fix mega menu items center alignment in IE11 */
+    #mega-menu .nav-item-iconic {
+        height: 58px;
+    }
 }
 
 @media (max-width: 767px) {
