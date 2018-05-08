@@ -110,11 +110,13 @@ public class ActiveContextManager {
     }
 
     void refresh() {
-        refresh(new ProjectExplorerContentQuery(activeContextItems.getActiveProject().getRepository(),
-                                                activeContextItems.getActiveProject().getBranch(),
-                                                activeContextItems.getActiveModule(),
-                                                activeContextItems.getActivePackage(),
-                                                activeContextItems.getActiveFolderItem()));
+        if (activeContextItems.getActiveProject() != null) {
+            refresh(new ProjectExplorerContentQuery(activeContextItems.getActiveProject().getRepository(),
+                                                    activeContextItems.getActiveProject().getBranch(),
+                                                    activeContextItems.getActiveModule(),
+                                                    activeContextItems.getActivePackage(),
+                                                    activeContextItems.getActiveFolderItem()));
+        }
     }
 
     public void initActiveContext(final WorkspaceProjectContext context) {
