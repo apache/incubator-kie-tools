@@ -36,9 +36,9 @@ public class LibraryPreferences implements BasePreference<LibraryPreferences> {
 
     @Override
     public LibraryPreferences defaultValue(final LibraryPreferences defaultValue) {
-        defaultValue.organizationalUnitPreferences.name = "myteam";
+        defaultValue.organizationalUnitPreferences.name = "MySpace";
         defaultValue.organizationalUnitPreferences.owner = "admin";
-        defaultValue.organizationalUnitPreferences.groupId = "com.myteam";
+        defaultValue.organizationalUnitPreferences.groupId = "com.myspace";
         defaultValue.organizationalUnitPreferences.aliasInSingular = "";
         defaultValue.organizationalUnitPreferences.aliasInPlural = "";
 
