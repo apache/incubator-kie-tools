@@ -59,8 +59,9 @@ public class Button implements IsElement {
     public void setButtonStyleType(final ButtonStyleType type) {
         removeClass("btn");
         Stream.of(ButtonStyleType.values()).forEach(buttonStyleType -> removeClass(buttonStyleType.getCssClass()));
-        button.classList.add("btn",
-                             type.getCssClass());
+        addClass(button,
+                 "btn",
+                 type.getCssClass());
     }
 
     public void setEnabled(final boolean enabled) {
@@ -81,13 +82,23 @@ public class Button implements IsElement {
 
     public void addIcon(final String... classes) {
         final HTMLElement span = (HTMLElement) document.createElement("span");
-        span.classList.add(classes);
+        addClass(span,
+                 classes);
         button.appendChild(span);
     }
 
     @Override
     public HTMLElement getElement() {
         return button;
+    }
+
+    private void addClass(final HTMLElement element,
+                          final String... classes) {
+        for (String cssClass : classes) {
+            if (element.classList.contains(cssClass) == false) {
+                element.classList.add(cssClass);
+            }
+        }
     }
 
     private void removeClass(final String cssClass) {
