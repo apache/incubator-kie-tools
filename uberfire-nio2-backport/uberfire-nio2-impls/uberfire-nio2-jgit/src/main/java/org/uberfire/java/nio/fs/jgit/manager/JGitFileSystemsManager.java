@@ -176,7 +176,7 @@ public class JGitFileSystemsManager {
 
     private String extractFSNameFromRepo(Repository db) {
         final String fullRepoName = config.getGitReposParentDir().toPath().relativize(db.getDirectory().toPath()).toString();
-        return fullRepoName.substring(0, fullRepoName.indexOf(DOT_GIT_EXT));
+        return fullRepoName.substring(0, fullRepoName.indexOf(DOT_GIT_EXT)).replace('\\', '/');
     }
 
     Set<String> getClosedFileSystems() {
