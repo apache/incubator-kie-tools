@@ -17,14 +17,12 @@
 package org.kie.workbench.common.forms.migration.tool.pipelines.basic;
 
 import java.util.ArrayList;
-import java.util.Formatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
 import org.assertj.core.api.Assertions;
-import org.assertj.core.api.Condition;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.definition.CheckBoxFieldDefinition;
@@ -108,7 +106,7 @@ public class AllFieldTypesFormGenerationTest extends AbstractFormDefinitionGener
         initForm(form -> userForm = form, DATAOBJECTS_RESOURCES, ALL_FIELD_TYPES, userFormPath);
         summaries.add(new FormMigrationSummary(new Resource<>(userForm, userFormPath)));
 
-        context = new MigrationContext(workspaceProject, weldContainer, migrationServicesCDIWrapper, new RealSystemAccess(), summaries);
+        context = new MigrationContext(workspaceProject, weldContainer, formsMigrationServicesCDIWrapper, new RealSystemAccess(), summaries, migrationServicesCDIWrapper);
     }
 
     @Test

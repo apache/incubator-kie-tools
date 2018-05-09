@@ -71,7 +71,7 @@ public class BPMNFormAdapter extends AbstractFormAdapter {
                 if (file.isFile()) {
                     if (fileName.endsWith("." + FormsMigrationConstants.BPMN_EXTENSION) || fileName.endsWith("." + FormsMigrationConstants.BPMN2_EXTENSION)) {
                         try {
-                            BPMNProcess process = analyzer.read(migrationContext.getCDIWrapper().getIOService().newInputStream(visitedPath));
+                            BPMNProcess process = analyzer.read(migrationContext.getMigrationServicesCDIWrapper().getIOService().newInputStream(visitedPath));
                             if (process != null) {
                                 workspaceBPMNFormModels.addAll(process.getFormModels());
                             } else {

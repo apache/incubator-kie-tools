@@ -69,7 +69,7 @@ public class FormDefinitionGeneratorWithUnsupportedFieldsTest extends AbstractFo
         initForm(form -> userForm = form, DATAOBJECTS_RESOURCES, USER_WITH_UNSUPPORTED_FIELDS, userFormPath);
         summaries.add(new FormMigrationSummary(new Resource<>(userForm, userFormPath)));
 
-        context = new MigrationContext(workspaceProject, weldContainer, migrationServicesCDIWrapper, new RealSystemAccess(), summaries);
+        context = new MigrationContext(workspaceProject, weldContainer, formsMigrationServicesCDIWrapper, new RealSystemAccess(), summaries, migrationServicesCDIWrapper);
     }
 
     @Test

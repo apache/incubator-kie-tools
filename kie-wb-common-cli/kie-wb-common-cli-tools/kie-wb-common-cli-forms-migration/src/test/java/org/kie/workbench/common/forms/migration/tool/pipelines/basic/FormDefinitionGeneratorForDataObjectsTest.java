@@ -66,7 +66,7 @@ public class FormDefinitionGeneratorForDataObjectsTest extends AbstractFormDefin
         initForm(form -> invoiceForm = form, DATAOBJECTS_RESOURCES, INVOICE_FORM, invoiceFormPath);
         summaries.add(new FormMigrationSummary(new Resource<>(invoiceForm, invoiceFormPath)));
 
-        context = new MigrationContext(workspaceProject, weldContainer, migrationServicesCDIWrapper, new RealSystemAccess(), summaries);
+        context = new MigrationContext(workspaceProject, weldContainer, formsMigrationServicesCDIWrapper, new RealSystemAccess(), summaries, migrationServicesCDIWrapper);
     }
 
     @Test

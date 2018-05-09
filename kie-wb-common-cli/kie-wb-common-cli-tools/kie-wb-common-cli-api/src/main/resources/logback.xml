@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+
+  <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <!-- %l lowers performance -->
+      <!--<pattern>%d [%t] %-5p %l%n  %m%n</pattern>-->
+      <!--<pattern>%d [%t] %-5p %m%n</pattern>-->
+      <pattern>%d [%thread] %level %logger{35} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="fileAppender" class="ch.qos.logback.core.FileAppender">
+    <file>${user.dir}/migration_tool.log</file>
+    <append>true</append>
+    <encoder>
+      <pattern>%-5relative %-5level %logger{35} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+
+  <root level="INFO">
+    <appender-ref ref="fileAppender"/>
+  </root>
+
+</configuration>

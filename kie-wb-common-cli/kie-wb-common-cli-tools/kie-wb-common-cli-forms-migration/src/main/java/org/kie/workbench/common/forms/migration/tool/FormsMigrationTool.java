@@ -31,12 +31,13 @@ import org.jboss.weld.environment.se.WeldContainer;
 import org.kie.workbench.common.forms.migration.legacy.model.Form;
 import org.kie.workbench.common.forms.migration.legacy.services.FormSerializationManager;
 import org.kie.workbench.common.forms.migration.legacy.services.impl.FormSerializationManagerImpl;
-import org.kie.workbench.common.forms.migration.tool.cdi.MigrationServicesCDIWrapper;
+import org.kie.workbench.common.forms.migration.tool.cdi.FormsMigrationServicesCDIWrapper;
 import org.kie.workbench.common.forms.migration.tool.pipelines.MigrationContext;
 import org.kie.workbench.common.forms.migration.tool.pipelines.MigrationPipeline;
 import org.kie.workbench.common.forms.migration.tool.util.FormsMigrationConstants;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.migration.cli.MigrationConstants;
+import org.kie.workbench.common.migration.cli.MigrationServicesCDIWrapper;
 import org.kie.workbench.common.migration.cli.MigrationSetup;
 import org.kie.workbench.common.migration.cli.MigrationTool;
 import org.kie.workbench.common.migration.cli.SystemAccess;
@@ -56,7 +57,8 @@ public class FormsMigrationTool implements MigrationTool {
     private ToolConfig config;
     private Path niogitDir;
     private WeldContainer weldContainer;
-    private MigrationServicesCDIWrapper cdiWrapper;
+    private MigrationServicesCDIWrapper migrationServicesCDIWrapper;
+    private FormsMigrationServicesCDIWrapper formMigrationServicesCDIWrapper;
     private MigrationPipeline pipeline;
 
     @Override
@@ -93,7 +95,8 @@ public class FormsMigrationTool implements MigrationTool {
                 MigrationSetup.configureProperties(system,
                                                    niogitDir);
                 weldContainer = new Weld().initialize();
-                cdiWrapper = weldContainer.instance().select(MigrationServicesCDIWrapper.class).get();
+                migrationServicesCDIWrapper = weldContainer.instance().select(MigrationServicesCDIWrapper.class).get();
+                formMigrationServicesCDIWrapper = weldContainer.instance().select(FormsMigrationServicesCDIWrapper.class).get();
 
                 if (systemMigrationWasExecuted()) {
 
@@ -123,7 +126,7 @@ public class FormsMigrationTool implements MigrationTool {
             } finally {
                 if (weldContainer != null) {
                     try {
-                        cdiWrapper = null;
+                        migrationServicesCDIWrapper = null;
                         weldContainer.close();
                     } catch (Exception ex) {
 
@@ -148,7 +151,7 @@ public class FormsMigrationTool implements MigrationTool {
                 if (file.isFile()) {
                     if (fileName.endsWith("." + FormsMigrationConstants.LEGACY_FOMRS_EXTENSION)) {
                         try {
-                            Form legacyForm = legacyFormSerializer.loadFormFromXML(cdiWrapper.getIOService().readAllString(visitedPath));
+                            Form legacyForm = legacyFormSerializer.loadFormFromXML(migrationServicesCDIWrapper.getIOService().readAllString(visitedPath));
 
                             FormMigrationSummary summary = new FormMigrationSummary(new Resource<>(legacyForm, visitedVFSPath));
 
@@ -156,8 +159,8 @@ public class FormsMigrationTool implements MigrationTool {
                             String newFormFileName = fileName.substring(0, fileName.lastIndexOf(".") - 1) + FormsMigrationConstants.NEW_FOMRS_EXTENSION;
                             org.uberfire.java.nio.file.Path newFormPath = visitedPath.getParent().resolve(newFormFileName);
 
-                            if (cdiWrapper.getIOService().exists(newFormPath)) {
-                                Resource<FormDefinition> newFormResource = new Resource<>(cdiWrapper.getFormDefinitionSerializer().deserialize(cdiWrapper.getIOService().readAllString(newFormPath)), Paths.convert(newFormPath));
+                            if (migrationServicesCDIWrapper.getIOService().exists(newFormPath)) {
+                                Resource<FormDefinition> newFormResource = new Resource<>(formMigrationServicesCDIWrapper.getFormDefinitionSerializer().deserialize(migrationServicesCDIWrapper.getIOService().readAllString(newFormPath)), Paths.convert(newFormPath));
                                 summary.setNewFormResource(newFormResource);
                             }
 
@@ -175,7 +178,7 @@ public class FormsMigrationTool implements MigrationTool {
         system.console().format("\nProcessing module %s: %s forms found\n", workspaceProject.getName(), summaries.size());
 
         if(summaries.size() > 0) {
-            MigrationContext context = new MigrationContext(workspaceProject, weldContainer, cdiWrapper, system, summaries);
+            MigrationContext context = new MigrationContext(workspaceProject, weldContainer, formMigrationServicesCDIWrapper, system, summaries, migrationServicesCDIWrapper);
             pipeline.migrate(context);
         }
     }
@@ -190,8 +193,8 @@ public class FormsMigrationTool implements MigrationTool {
     }
 
     private boolean systemMigrationWasExecuted() {
-        final IOService systemIoService = cdiWrapper.getSystemIoService();
-        final Repository systemRepository = cdiWrapper.getSystemRepository();
+        final IOService systemIoService = migrationServicesCDIWrapper.getSystemIoService();
+        final Repository systemRepository = migrationServicesCDIWrapper.getSystemRepository();
         if (!systemIoService.exists(systemIoService.get(systemRepository.getUri()).resolve("spaces"))) {
             system.err().println(String.format("The SYSTEM CONFIGURATION DIRECTORY STRUCTURE MIGRATION must be ran before this one."));
             return false;

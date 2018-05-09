@@ -39,7 +39,7 @@ public abstract class AbstractMigrationStep implements MigrationStep {
     private void persist(MigrationContext migrationContext) {
         FormSerializationManager oldFormSerializer = new FormSerializationManagerImpl();
 
-        FormDefinitionSerializer formDefinitionSerializer = migrationContext.getCDIWrapper().getFormDefinitionSerializer();
+        FormDefinitionSerializer formDefinitionSerializer = migrationContext.getFormCDIWrapper().getFormDefinitionSerializer();
 
         Function<Resource<Form>, String> originaldFormSerializationFunction = formResource -> {
             Form originalForm = formResource.get();
@@ -62,7 +62,7 @@ public abstract class AbstractMigrationStep implements MigrationStep {
     }
 
     private void serializeResource(Path path, String content, MigrationContext context) {
-        context.getCDIWrapper().write(path, content, "Migration Step #" + getStep() + ": " + getName());
+        context.getMigrationServicesCDIWrapper().write(path, content, "Migration Step #" + getStep() + ": " + getName());
     }
 
     protected abstract void doExecute(MigrationContext migrationContext);

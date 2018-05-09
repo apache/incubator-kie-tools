@@ -41,7 +41,7 @@ import org.kie.workbench.common.forms.migration.legacy.model.Form;
 import org.kie.workbench.common.forms.migration.legacy.services.FormSerializationManager;
 import org.kie.workbench.common.forms.migration.legacy.services.impl.FormSerializationManagerImpl;
 import org.kie.workbench.common.forms.migration.tool.FormMigrationSummary;
-import org.kie.workbench.common.forms.migration.tool.cdi.MigrationServicesCDIWrapper;
+import org.kie.workbench.common.forms.migration.tool.cdi.FormsMigrationServicesCDIWrapper;
 import org.kie.workbench.common.forms.migration.tool.pipelines.MigrationContext;
 import org.kie.workbench.common.forms.migration.tool.pipelines.basic.impl.BPMNFormAdapter;
 import org.kie.workbench.common.forms.migration.tool.pipelines.basic.impl.DataObjectFormAdapter;
@@ -54,6 +54,7 @@ import org.kie.workbench.common.forms.services.backend.serialization.FormDefinit
 import org.kie.workbench.common.forms.services.backend.serialization.impl.FieldSerializer;
 import org.kie.workbench.common.forms.services.backend.serialization.impl.FormDefinitionSerializerImpl;
 import org.kie.workbench.common.forms.services.backend.serialization.impl.FormModelSerializer;
+import org.kie.workbench.common.migration.cli.MigrationServicesCDIWrapper;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
@@ -103,7 +104,11 @@ public abstract class AbstractFormDefinitionGeneratorTest {
     protected WeldContainer weldContainer;
 
     @Mock
+    protected FormsMigrationServicesCDIWrapper formsMigrationServicesCDIWrapper;
+
+    @Mock
     protected MigrationServicesCDIWrapper migrationServicesCDIWrapper;
+
 
     @Mock
     protected IOService ioService;
@@ -126,7 +131,7 @@ public abstract class AbstractFormDefinitionGeneratorTest {
         formDefinitionSerializer = new FormDefinitionSerializerImpl(new FieldSerializer(), new FormModelSerializer(), new TestMetaDataEntryManager());
 
         when(migrationServicesCDIWrapper.getIOService()).thenReturn(ioService);
-        when(migrationServicesCDIWrapper.getFormDefinitionSerializer()).thenReturn(formDefinitionSerializer);
+        when(formsMigrationServicesCDIWrapper.getFormDefinitionSerializer()).thenReturn(formDefinitionSerializer);
 
         simpleFileSystemProvider = new SimpleFileSystemProvider();
         simpleFileSystemProvider.forceAsDefault();

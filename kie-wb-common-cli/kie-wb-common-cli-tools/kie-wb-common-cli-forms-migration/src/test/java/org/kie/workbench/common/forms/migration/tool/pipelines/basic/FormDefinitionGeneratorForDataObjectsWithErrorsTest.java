@@ -71,7 +71,7 @@ public class FormDefinitionGeneratorForDataObjectsWithErrorsTest extends Abstrac
         initForm(form -> multipleDataHoldersForm = form, DATAOBJECTS_RESOURCES, USER_MULTIPLE_DATA_HOLDERS_FORM, multipleDataHoldersPath);
         summaries.add(new FormMigrationSummary(new Resource<>(multipleDataHoldersForm, multipleDataHoldersPath)));
 
-        context = new MigrationContext(workspaceProject, weldContainer, migrationServicesCDIWrapper, new RealSystemAccess(), summaries);
+        context = new MigrationContext(workspaceProject, weldContainer, formsMigrationServicesCDIWrapper, new RealSystemAccess(), summaries, migrationServicesCDIWrapper);
     }
 
     @Test

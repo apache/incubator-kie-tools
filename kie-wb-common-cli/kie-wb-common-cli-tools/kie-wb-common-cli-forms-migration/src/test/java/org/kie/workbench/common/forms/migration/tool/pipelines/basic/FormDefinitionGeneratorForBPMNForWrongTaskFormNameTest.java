@@ -69,7 +69,7 @@ public class FormDefinitionGeneratorForBPMNForWrongTaskFormNameTest extends Abst
         initForm(form -> wrongTaskForm = form, BPMN_RESOURCES, WRONG_TASK_FORM, wrongTaskPath);
         summaries.add(new FormMigrationSummary(new Resource<>(wrongTaskForm, wrongTaskPath)));
 
-        context = new MigrationContext(workspaceProject, weldContainer, migrationServicesCDIWrapper, new RealSystemAccess(), summaries);
+        context = new MigrationContext(workspaceProject, weldContainer, formsMigrationServicesCDIWrapper, new RealSystemAccess(), summaries, migrationServicesCDIWrapper);
 
         generator = new FormDefinitionGenerator(DataObjectFormAdapter::new, this::getBPMNAdapter);
     }

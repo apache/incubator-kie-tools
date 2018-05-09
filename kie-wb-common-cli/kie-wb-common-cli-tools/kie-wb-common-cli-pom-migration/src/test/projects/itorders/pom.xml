@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie.workbench.playground</groupId>
+    <artifactId>playground-parent</artifactId>
+    <version>${version.org.kie}</version>
+  </parent>
+  <artifactId>itorders</artifactId>  
+  <packaging>kjar</packaging>
+  <name>IT Orders</name>
+  <description>Case Management IT Orders project</description>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <extensions>true</extensions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

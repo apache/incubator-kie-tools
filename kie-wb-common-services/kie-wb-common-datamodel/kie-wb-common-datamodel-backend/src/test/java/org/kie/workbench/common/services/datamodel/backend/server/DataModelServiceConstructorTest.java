@@ -33,11 +33,13 @@ import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
 import org.guvnor.common.services.backend.metadata.MetadataServiceImpl;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.backend.util.CommentedOptionFactoryImpl;
+import org.guvnor.common.services.project.backend.server.DefaultPomEnhancer;
 import org.guvnor.common.services.project.backend.server.ModuleFinder;
 import org.guvnor.common.services.project.backend.server.ModuleRepositoriesContentHandler;
 import org.guvnor.common.services.project.backend.server.ModuleRepositoryResolverImpl;
 import org.guvnor.common.services.project.backend.server.ModuleResourcePathResolver;
 import org.guvnor.common.services.project.backend.server.POMServiceImpl;
+import org.guvnor.common.services.project.backend.server.PomEnhancer;
 import org.guvnor.common.services.project.backend.server.ProjectConfigurationContentHandler;
 import org.guvnor.common.services.project.backend.server.utils.POMContentHandler;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOModuleCacheEvent;
@@ -170,10 +172,12 @@ public class DataModelServiceConstructorTest {
 
         POMContentHandler pomContentHandler = new POMContentHandler();
         M2RepoServiceImpl m2RepoService = new M2RepoServiceImpl();
+        PomEnhancer pomEnhancer = new DefaultPomEnhancer();
         POMService pomService = new POMServiceImpl(ioService,
                                                    pomContentHandler,
                                                    m2RepoService,
-                                                   metadataService);
+                                                   metadataService,
+                                                   pomEnhancer);
         KModuleContentHandler moduleContentHandler = new KModuleContentHandler();
 
         CommentedOptionFactory commentedOptionFactory = new CommentedOptionFactoryImpl(sessionInfo);

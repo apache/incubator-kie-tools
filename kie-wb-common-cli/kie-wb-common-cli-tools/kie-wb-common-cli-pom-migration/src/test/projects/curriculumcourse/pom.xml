@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie.workbench.playground</groupId>
+    <artifactId>playground-parent</artifactId>
+    <version>${version.org.kie}</version>
+  </parent>
+  <artifactId>curriculumcourse</artifactId>
+  <packaging>kjar</packaging>
+  <name>Course Scheduling</name>
+  <description>University course scheduling using Planner. Assigns lectures to rooms.</description>
+  <dependencies>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-persistence-jaxb</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-maven-plugin</artifactId>
+        <version>${version.org.kie}</version>
+        <extensions>true</extensions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

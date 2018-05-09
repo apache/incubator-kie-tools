@@ -28,5 +28,6 @@ public class MigrationSetup {
         system.setProperty(JGitFileSystemProviderConfiguration.GIT_NIO_DIR_NAME, niogitDir.getFileName().toString());
         system.setProperty(JGitFileSystemProviderConfiguration.GIT_DAEMON_ENABLED, "false");
         system.setProperty(JGitFileSystemProviderConfiguration.GIT_SSH_ENABLED, "false");
+        system.setProperty("org.uberfire.watcher.autostart", "false");
     }
 }

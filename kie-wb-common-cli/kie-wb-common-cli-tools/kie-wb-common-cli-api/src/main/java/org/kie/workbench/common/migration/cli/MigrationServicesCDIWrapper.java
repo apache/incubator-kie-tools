@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.kie.workbench.common.forms.migration.tool.cdi;
+package org.kie.workbench.common.migration.cli;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
+import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.repositories.Repository;
-import org.kie.workbench.common.forms.services.backend.serialization.FormDefinitionSerializer;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -32,33 +31,29 @@ public class MigrationServicesCDIWrapper {
 
     private IOService ioService;
 
-    private FormDefinitionSerializer formDefinitionSerializer;
-
     private CommentedOptionFactory commentedOptionFactory;
 
     private Repository systemRepository;
 
     private IOService systemIoService;
 
+    private WorkspaceProjectService workspaceProjectService;
+
     @Inject
     public MigrationServicesCDIWrapper(final @Named("ioStrategy") IOService ioService,
-                                       final FormDefinitionSerializer formDefinitionSerializer,
                                        final CommentedOptionFactory commentedOptionFactory,
                                        final @Named("system") Repository systemRepository,
-                                       final @Named("configIO") IOService systemIoService) {
+                                       final @Named("configIO") IOService systemIoService,
+                                       final WorkspaceProjectService workspaceProjectService) {
         this.ioService = ioService;
-        this.formDefinitionSerializer = formDefinitionSerializer;
         this.commentedOptionFactory = commentedOptionFactory;
         this.systemRepository = systemRepository;
         this.systemIoService = systemIoService;
+        this.workspaceProjectService = workspaceProjectService;
     }
 
     public IOService getIOService() {
         return ioService;
-    }
-
-    public FormDefinitionSerializer getFormDefinitionSerializer() {
-        return formDefinitionSerializer;
     }
 
     public void write(Path path, String content, String comment) {
@@ -71,5 +66,9 @@ public class MigrationServicesCDIWrapper {
 
     public IOService getSystemIoService() {
         return systemIoService;
+    }
+
+    public WorkspaceProjectService getWorkspaceProjectService() {
+        return workspaceProjectService;
     }
 }

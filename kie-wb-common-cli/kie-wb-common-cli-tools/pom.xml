@@ -35,6 +35,7 @@
     <module>kie-wb-common-cli-project-migration</module>
     <module>kie-wb-common-cli-forms-migration</module>
     <module>kie-wb-common-cli-system-configuration-migration</module>
+    <module>kie-wb-common-cli-pom-migration</module>
   </modules>
 
 </project>

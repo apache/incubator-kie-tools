@@ -1,0 +1,10 @@
+{
+  "dependencies":[
+    {"groupId":"org.kie", "artifactId":"kie-api", "version":"${version.org.kie}", "scope":"provided"},
+    {"groupId":"org.kie", "artifactId":"kie-internal", "version":"${version.org.kie}", "scope":"provided"},
+    {"groupId":"org.optaplanner", "artifactId":"optaplanner-core", "version":"${version.org.kie}", "scope":"provided"},
+    {"groupId":"org.optaplanner", "artifactId":"optaplanner-persistence-jaxb", "version":"${version.org.kie}", "scope":"provided"},
+    {"groupId":"junit", "artifactId":"junit", "version":"4.12", "scope":"test"},
+    {"groupId":"com.thoughtworks.xstream", "artifactId":"xstream", "version":"1.4.10", "scope":"test"}
+  ]
+}

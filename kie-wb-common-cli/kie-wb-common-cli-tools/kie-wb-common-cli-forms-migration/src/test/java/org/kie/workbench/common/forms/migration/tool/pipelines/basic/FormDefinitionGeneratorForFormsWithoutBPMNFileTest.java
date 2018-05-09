@@ -68,7 +68,7 @@ public class FormDefinitionGeneratorForFormsWithoutBPMNFileTest extends Abstract
         initForm(form -> formWithoutTask = form, BPMN_RESOURCES, FORM_WITHOUT_TASK_FORM, formWithoutTaskPath);
         summaries.add(new FormMigrationSummary(new Resource<>(formWithoutTask, formWithoutTaskPath)));
 
-        context = new MigrationContext(workspaceProject, weldContainer, migrationServicesCDIWrapper, new RealSystemAccess(), summaries);
+        context = new MigrationContext(workspaceProject, weldContainer, formsMigrationServicesCDIWrapper, new RealSystemAccess(), summaries, migrationServicesCDIWrapper);
 
         generator = new FormDefinitionGenerator(DataObjectFormAdapter::new, this::getBPMNAdapter);
     }

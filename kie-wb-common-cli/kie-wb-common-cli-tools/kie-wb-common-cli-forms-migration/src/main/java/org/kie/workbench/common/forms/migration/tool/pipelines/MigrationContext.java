@@ -23,24 +23,27 @@ import java.util.List;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.kie.workbench.common.forms.migration.tool.FormMigrationSummary;
-import org.kie.workbench.common.forms.migration.tool.cdi.MigrationServicesCDIWrapper;
+import org.kie.workbench.common.forms.migration.tool.cdi.FormsMigrationServicesCDIWrapper;
+import org.kie.workbench.common.migration.cli.MigrationServicesCDIWrapper;
 import org.kie.workbench.common.migration.cli.SystemAccess;
 
 public class MigrationContext {
 
     private final WorkspaceProject workspaceProject;
     private final WeldContainer weldContainer;
-    private final MigrationServicesCDIWrapper cdiWrapper;
+    private final FormsMigrationServicesCDIWrapper formCdiWrapper;
+    private final MigrationServicesCDIWrapper migrationServicesCDIWrapper;
     private final SystemAccess system;
     private final List<FormMigrationSummary> summaries;
     private final List<FormMigrationSummary> extraSummaries = new ArrayList<>();
 
-    public MigrationContext(WorkspaceProject workspaceProject, WeldContainer weldContainer, MigrationServicesCDIWrapper ioServiceWrapper, SystemAccess system, List<FormMigrationSummary> summaries) {
+    public MigrationContext(WorkspaceProject workspaceProject, WeldContainer weldContainer, FormsMigrationServicesCDIWrapper formsMigrationServicesCDIWrapper, SystemAccess system, List<FormMigrationSummary> summaries, MigrationServicesCDIWrapper migrationServicesCDIWrapper) {
         this.workspaceProject = workspaceProject;
         this.weldContainer = weldContainer;
-        this.cdiWrapper = ioServiceWrapper;
+        this.formCdiWrapper = formsMigrationServicesCDIWrapper;
         this.system = system;
         this.summaries = summaries;
+        this.migrationServicesCDIWrapper = migrationServicesCDIWrapper;
     }
 
     public WorkspaceProject getWorkspaceProject() {
@@ -51,8 +54,12 @@ public class MigrationContext {
         return weldContainer;
     }
 
-    public MigrationServicesCDIWrapper getCDIWrapper() {
-        return cdiWrapper;
+    public FormsMigrationServicesCDIWrapper getFormCDIWrapper() {
+        return formCdiWrapper;
+    }
+
+    public MigrationServicesCDIWrapper getMigrationServicesCDIWrapper() {
+        return migrationServicesCDIWrapper;
     }
 
     public SystemAccess getSystem() {

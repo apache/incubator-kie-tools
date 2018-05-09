@@ -1,0 +1,52 @@
+{
+  "dependencies":[
+
+    {"groupId":"junit", "artifactId":"junit", "version":"4.12", "scope":"test"},
+    {"groupId":"com.thoughtworks.xstream", "artifactId":"xstream", "version":"4.12", "scope":"test"}
+
+  ],
+  "repositories":[
+
+    {
+      "id":"jboss-public-repository-group",
+      "name":"JBoss Public Repository Group",
+      "url":"http://repository.jboss.org/nexus/content/groups/public/",
+      "releasesEnabled":true,
+      "releasesUpdatePolicy":"never",
+      "snapshotEnabled":true,
+      "snapshotUpdatePolicy":"never"
+    },
+    {
+      "id":"kie-internal-staging-repository-group",
+      "name":"KIE Internal Staging Repositories",
+      "url":"https://origin-repository.jboss.org/nexus/content/groups/kie-internal-group",
+      "releasesEnabled":true,
+      "releasesUpdatePolicy":"never",
+      "snapshotEnabled":false,
+      "snapshotUpdatePolicy":"never"
+    }
+
+  ],
+  "pluginRepositories":[
+
+    {
+      "id":"jboss-public-repository-group",
+      "name":"JBoss Public Repository Group",
+      "url":"http://repository.jboss.org/nexus/content/groups/public/",
+      "releasesEnabled":true,
+      "releasesUpdatePolicy":"never",
+      "snapshotEnabled":true,
+      "snapshotUpdatePolicy":"never"
+    },
+    {
+      "id":"kie-internal-staging-repository-group",
+      "name":"KIE Internal Staging Repositories",
+      "url":"https://origin-repository.jboss.org/nexus/content/groups/kie-internal-group",
+      "releasesEnabled":true,
+      "releasesUpdatePolicy":"never",
+      "snapshotEnabled":false,
+      "snapshotUpdatePolicy":"never"
+    }
+
+  ]
+}
