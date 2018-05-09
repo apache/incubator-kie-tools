@@ -177,4 +177,30 @@ public class POMContentHandler {
 
         return to;
     }
+
+    public Model convert(final POM pom,
+                         final Model model) {
+        model.setName(pom.getName());
+        model.setDescription(pom.getDescription());
+        model.setArtifactId(pom.getGav().getArtifactId());
+        model.setModelVersion(pom.getModelVersion());
+        model.setUrl(pom.getUrl());
+
+        model.setGroupId(pom.getGav().getGroupId());
+        model.setVersion(pom.getGav().getVersion());
+
+        model.setPackaging(pom.getPackaging());
+
+        model.setParent(getParent(pom));
+        model.setBuild(getBuild(pom,
+                                model));
+        model.setModules(getModules(pom));
+        model.setRepositories(getRepositories(pom));
+
+        return model;
+    }
+
+    public Model convert(final POM pom) {
+        return convert(pom, new Model());
+    }
 }

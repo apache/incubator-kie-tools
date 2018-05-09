@@ -54,6 +54,9 @@ public class POMServiceImplLoadTest {
     @Mock
     MetadataService metadataService;
 
+    @Mock
+    PomEnhancer pomEnhancer;
+
     private POMService service;
 
     private IOService ioServiceSpy;
@@ -67,7 +70,8 @@ public class POMServiceImplLoadTest {
         service = new POMServiceImpl(ioServiceSpy,
                                      pomContentHandler,
                                      m2RepoService,
-                                     metadataService);
+                                     metadataService,
+                                     pomEnhancer);
     }
 
     @Test
