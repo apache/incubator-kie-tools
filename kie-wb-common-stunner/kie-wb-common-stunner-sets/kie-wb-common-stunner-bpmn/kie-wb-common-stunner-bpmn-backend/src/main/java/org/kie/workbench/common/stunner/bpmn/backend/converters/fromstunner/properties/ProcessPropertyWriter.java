@@ -38,6 +38,7 @@ import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BPMNShape;
+import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.impl.EStructuralFeatureImpl;
 import org.eclipse.emf.ecore.util.FeatureMap;
@@ -56,6 +57,7 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
     private static final String defaultRelationshipType = "BPSimData";
     private final Process process;
     private final BPMNDiagram bpmnDiagram;
+    private final BPMNPlane bpmnPlane;
     private Map<String, BasePropertyWriter> childElements = new HashMap<>();
     private Collection<ElementParameters> simulationParameters = new ArrayList<>();
 
@@ -66,7 +68,7 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
         this.bpmnDiagram = di.createBPMNDiagram();
         bpmnDiagram.setId(process.getId());
 
-        BPMNPlane bpmnPlane = di.createBPMNPlane();
+        this.bpmnPlane = di.createBPMNPlane();
         bpmnDiagram.setPlane(bpmnPlane);
     }
 
@@ -75,15 +77,25 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
     }
 
     public void addChildShape(BPMNShape shape) {
-        if (shape != null) {
-            bpmnDiagram.getPlane().getPlaneElement().add(shape);
+        if (shape == null) {
+            return;
         }
+        List<DiagramElement> planeElement = bpmnPlane.getPlaneElement();
+        if (planeElement.contains(shape)) {
+            throw new IllegalArgumentException("Cannot add the same shape twice: " + shape.getId());
+        }
+        planeElement.add(shape);
     }
 
     public void addChildEdge(BPMNEdge edge) {
-        if (edge != null) {
-            bpmnDiagram.getPlane().getPlaneElement().add(edge);
+        if (edge == null) {
+            return;
         }
+        List<DiagramElement> planeElement = bpmnPlane.getPlaneElement();
+        if (planeElement.contains(edge)) {
+            throw new IllegalArgumentException("Cannot add the same edge twice: " + edge.getId());
+        }
+        planeElement.add(edge);
     }
 
     public BPMNDiagram getBpmnDiagram() {
@@ -104,9 +116,6 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
         this.itemDefinitions.addAll(p.itemDefinitions);
         this.rootElements.addAll(p.rootElements);
         this.itemDefinitions.addAll(p.itemDefinitions);
-
-        addChildShape(p.getShape());
-        addChildEdge(p.getEdge());
 
         if (p instanceof SubProcessPropertyWriter) {
             Collection<BasePropertyWriter> childElements =

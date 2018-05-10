@@ -25,6 +25,7 @@ import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNShape;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Ids;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
@@ -50,6 +51,7 @@ public abstract class BasePropertyWriter {
 
     public void setBounds(Bounds rect) {
         this.shape = di.createBPMNShape();
+        shape.setId(Ids.bpmnShape(getId()));
         shape.setBpmnElement(baseElement);
 
         org.eclipse.dd.dc.Bounds bounds = dc.createBounds();

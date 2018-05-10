@@ -22,6 +22,7 @@ import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Ids;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.DiscreteConnection;
@@ -77,6 +78,7 @@ public class SequenceFlowPropertyWriter extends PropertyWriter {
 
     private void setWaypoints(ViewConnector<? extends BPMNViewDefinition> connector) {
         BPMNEdge bpmnEdge = di.createBPMNEdge();
+        bpmnEdge.setId(Ids.bpmnEdge(source.getShape().getId(), target.getShape().getId()));
         bpmnEdge.setBpmnElement(sequenceFlow);
 
         Point2D sourcePt = connector.getSourceConnection().get().getLocation();

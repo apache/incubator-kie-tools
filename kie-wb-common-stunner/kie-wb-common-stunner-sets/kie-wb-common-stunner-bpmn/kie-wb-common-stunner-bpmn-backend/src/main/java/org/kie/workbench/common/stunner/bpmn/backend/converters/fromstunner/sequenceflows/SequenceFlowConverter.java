@@ -82,8 +82,6 @@ public class SequenceFlowConverter {
             seq.setConditionExpression(formalExpression);
         }
 
-        process.addChildElement(p);
-        process.addChildEdge(p.getEdge());
         return Result.of(p);
     }
 }

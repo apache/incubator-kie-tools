@@ -52,4 +52,12 @@ public class Ids {
     public static String dataOutputItem(String parentId, String outputId) {
         return "_" + Ids.dataOutput(parentId, outputId) + "Item";
     }
+
+    public static String bpmnShape(String parentId) {
+        return "shape_" + parentId;
+    }
+
+    public static String bpmnEdge(String source, String target) {
+        return "edge_" + source + "_to_" + target;
+    }
 }
