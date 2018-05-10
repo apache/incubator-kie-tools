@@ -23,6 +23,9 @@ import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.Relationship;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.eclipse.emf.ecore.impl.EAttributeImpl;
+import org.eclipse.emf.ecore.impl.EStructuralFeatureImpl.SimpleFeatureMapEntry;
+import org.eclipse.emf.ecore.util.ExtendedMetaData;
 
 public class DefinitionsPropertyWriter {
 
@@ -30,6 +33,25 @@ public class DefinitionsPropertyWriter {
 
     public DefinitionsPropertyWriter(Definitions definitions) {
         this.definitions = definitions;
+        definitions.setTargetNamespace("http://www.omg.org/bpmn20");
+        setSchemaLocation(definitions);
+    }
+
+    private void setSchemaLocation(Definitions definitions) {
+        ExtendedMetaData metadata = ExtendedMetaData.INSTANCE;
+        EAttributeImpl extensionAttribute = (EAttributeImpl) metadata.demandFeature(
+                "xsi",
+                "schemaLocation",
+                false,
+                false);
+        SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(
+                extensionAttribute,
+                "http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd " +
+                        "http://www.jboss.org/drools drools.xsd " +
+                        "http://www.bpsim.org/schemas/1.0 bpsim.xsd " +
+                        "http://www.omg.org/spec/DD/20100524/DC DC.xsd " +
+                        "http://www.omg.org/spec/DD/20100524/DI DI.xsd ");
+        definitions.getAnyAttribute().add(extensionEntry);
     }
 
     public void setProcess(Process process) {
