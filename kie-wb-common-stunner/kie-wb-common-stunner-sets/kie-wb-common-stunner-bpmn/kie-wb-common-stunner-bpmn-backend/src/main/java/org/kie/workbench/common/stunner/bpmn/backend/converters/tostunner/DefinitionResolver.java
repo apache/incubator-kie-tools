@@ -42,12 +42,12 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * Because the Stunner model aggregates different aspects of a node,
  * while the Eclipse model keeps them in separate sections, we use this
  * object to access such aspects, namely
- * <p>
+ *
  * <ul>
  * <li>shapes</li>
  * <li>simulation parameters</li>
  * </ul>.
- * <p>
+ *
  * <em>signal</em> concern is due to a bug in current Eclipse BPMN2 implementation,
  * which is outdated w.r.t. upstream.
  */
@@ -86,7 +86,7 @@ public class DefinitionResolver {
      * Message, Error, Timer resolution, is that Message, Error, Timer
      * instances are usually attached to the events that refer them,
      * so that we can do:
-     * <p>
+     *
      * <code><pre>
      *     Message mySignal = myEvent.getMessageRef()
      * </pre></code>

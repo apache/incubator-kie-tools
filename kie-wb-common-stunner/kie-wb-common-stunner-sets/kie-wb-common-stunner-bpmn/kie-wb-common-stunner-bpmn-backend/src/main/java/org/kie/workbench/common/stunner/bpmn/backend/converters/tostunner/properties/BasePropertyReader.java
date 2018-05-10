@@ -131,5 +131,4 @@ public abstract class BasePropertyReader {
         org.eclipse.dd.dc.Bounds bounds = shape.getBounds();
         return new RectangleDimensionsSet((double) bounds.getWidth(), (double) bounds.getHeight());
     }
-
 }

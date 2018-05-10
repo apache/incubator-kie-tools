@@ -67,4 +67,8 @@ public class CatchEventPropertyWriter extends EventPropertyWriter {
     public void addEventDefinition(EventDefinition eventDefinition) {
         this.event.getEventDefinitions().add(eventDefinition);
     }
+
+    public void setCancelActivity(Boolean value) {
+        // this only makes sense for boundary events: ignore
+    }
 }

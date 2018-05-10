@@ -25,5 +25,4 @@ public class LanePropertyReader extends BasePropertyReader {
     public LanePropertyReader(Lane el, BPMNPlane plane, BPMNShape shape) {
         super(el, plane, shape);
     }
-
 }

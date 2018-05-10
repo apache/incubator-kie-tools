@@ -52,5 +52,4 @@ public class ThrowEventPropertyReader extends EventPropertyReader {
         result.addAll(eventDefinitionRefs);
         return result;
     }
-
 }

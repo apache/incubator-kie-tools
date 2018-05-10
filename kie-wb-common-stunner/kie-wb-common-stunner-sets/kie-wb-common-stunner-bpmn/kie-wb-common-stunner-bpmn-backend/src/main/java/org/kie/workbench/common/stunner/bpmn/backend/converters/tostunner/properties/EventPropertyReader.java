@@ -26,7 +26,6 @@ import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.SignalEventDefinition;
 import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.bpmn2.di.BPMNPlane;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
@@ -57,10 +56,6 @@ public abstract class EventPropertyReader extends FlowElementPropertyReader {
     }
 
     public abstract AssignmentsInfo getAssignmentsInfo();
-
-    public boolean isCancelActivity() {
-        return CustomAttribute.boundarycaForEvent.of(element).get();
-    }
 
     public TimerSettingsValue getTimerSettings(TimerEventDefinition eventDefinition) {
         TimerSettingsValue timerSettingsValue = new TimerSettings().getValue();

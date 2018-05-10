@@ -35,6 +35,11 @@ public class CatchEventPropertyReader extends EventPropertyReader {
         this.catchEvent = catchEvent;
     }
 
+    public boolean isCancelActivity() {
+        // return default value (only used in boundary)
+        return true;
+    }
+
     @Override
     public AssignmentsInfo getAssignmentsInfo() {
         return AssignmentsInfos.of(
@@ -53,5 +58,4 @@ public class CatchEventPropertyReader extends EventPropertyReader {
         result.addAll(eventDefinitionRefs);
         return result;
     }
-
 }

@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.Assignme
  * <p>
  * It has historically been represented through a delimited String.
  * The format of such a String follows the following EBNF:
- * <p>
+ *
  * <pre>
  * AssignmentInfoString ::= InputDeclarations ‘|’ OutputDeclarations ‘|’ Assignments
  * InputDeclarations ::= (Declaration (‘,’ Declaration)*)?
@@ -48,7 +48,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.Assignme
  * <p>
  * <p>
  * The input String follows the following rules:
- * <p>
+ *
  * <pre>
  * |      | in | inSet | out | outSet | assignments |
  * +------+----+-------+-----+--------+-------------+

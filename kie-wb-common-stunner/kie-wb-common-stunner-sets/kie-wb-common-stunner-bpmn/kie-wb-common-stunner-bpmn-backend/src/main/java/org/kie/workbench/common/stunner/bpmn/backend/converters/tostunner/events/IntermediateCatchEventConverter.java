@@ -33,7 +33,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.Match;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.CatchEventPropertyReader;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.EventPropertyReader;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.EventDefinitionReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
@@ -113,7 +113,7 @@ public class IntermediateCatchEventConverter {
         Node<View<IntermediateErrorEventCatching>, Edge> node = factoryManager.newNode(nodeId, IntermediateErrorEventCatching.class);
 
         IntermediateErrorEventCatching definition = node.getContent().getDefinition();
-        EventPropertyReader p = propertyReaderFactory.of(event);
+        CatchEventPropertyReader p = propertyReaderFactory.of(event);
 
         definition.setGeneral(new BPMNGeneralSet(
                 new Name(p.getName()),
@@ -126,7 +126,7 @@ public class IntermediateCatchEventConverter {
 
         definition.setExecutionSet(new CancellingErrorEventExecutionSet(
                 new CancelActivity(p.isCancelActivity()),
-                new ErrorRef(e.getErrorRef().getErrorCode())
+                new ErrorRef(EventDefinitionReader.errorRefOf(e))
         ));
 
         node.getContent().setBounds(p.getBounds());
@@ -143,7 +143,7 @@ public class IntermediateCatchEventConverter {
         Node<View<IntermediateSignalEventCatching>, Edge> node = factoryManager.newNode(nodeId, IntermediateSignalEventCatching.class);
 
         IntermediateSignalEventCatching definition = node.getContent().getDefinition();
-        EventPropertyReader p = propertyReaderFactory.of(event);
+        CatchEventPropertyReader p = propertyReaderFactory.of(event);
 
         definition.setGeneral(new BPMNGeneralSet(
                 new Name(p.getName()),
@@ -173,7 +173,7 @@ public class IntermediateCatchEventConverter {
         Node<View<IntermediateTimerEvent>, Edge> node = factoryManager.newNode(nodeId, IntermediateTimerEvent.class);
 
         IntermediateTimerEvent definition = node.getContent().getDefinition();
-        EventPropertyReader p = propertyReaderFactory.of(event);
+        CatchEventPropertyReader p = propertyReaderFactory.of(event);
 
         definition.setGeneral(new BPMNGeneralSet(
                 new Name(p.getName()),
@@ -199,7 +199,7 @@ public class IntermediateCatchEventConverter {
         Node<View<IntermediateMessageEventCatching>, Edge> node = factoryManager.newNode(nodeId, IntermediateMessageEventCatching.class);
 
         IntermediateMessageEventCatching definition = node.getContent().getDefinition();
-        EventPropertyReader p = propertyReaderFactory.of(event);
+        CatchEventPropertyReader p = propertyReaderFactory.of(event);
 
         definition.setGeneral(new BPMNGeneralSet(
                 new Name(p.getName()),
@@ -212,7 +212,7 @@ public class IntermediateCatchEventConverter {
 
         definition.setExecutionSet(new CancellingMessageEventExecutionSet(
                 new CancelActivity(p.isCancelActivity()),
-                new MessageRef(e.getMessageRef().getName())
+                new MessageRef(EventDefinitionReader.messageRefOf(e))
         ));
 
         node.getContent().setBounds(p.getBounds());

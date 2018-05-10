@@ -50,14 +50,6 @@ public abstract class StartEvent<T extends BaseStartEvent> extends BPMNDiagramMa
 
     protected DiagramMarshaller<Graph, Metadata, Diagram<Graph, Metadata>> marshaller = null;
 
-    @Parameterized.Parameters
-    public static List<Object[]> marshallers() {
-        return Arrays.asList(new Object[][]{
-                // New (un)marshaller is disabled for now due to found incompleteness
-                {OLD}, {NEW}
-        });
-    }
-
     StartEvent(Marshaller marshallerType) {
         super.init();
         switch (marshallerType) {
@@ -68,6 +60,14 @@ public abstract class StartEvent<T extends BaseStartEvent> extends BPMNDiagramMa
                 marshaller = newMarshaller;
                 break;
         }
+    }
+
+    @Parameterized.Parameters
+    public static List<Object[]> marshallers() {
+        return Arrays.asList(new Object[][]{
+                // New (un)marshaller is disabled for now due to found incompleteness
+                {OLD}, {NEW}
+        });
     }
 
     @Test

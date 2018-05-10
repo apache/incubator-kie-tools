@@ -30,5 +30,4 @@ public class GatewayPropertyReader extends FlowElementPropertyReader {
     public String getDefaultRoute() {
         return CustomAttribute.dg.of(element).get();
     }
-
 }

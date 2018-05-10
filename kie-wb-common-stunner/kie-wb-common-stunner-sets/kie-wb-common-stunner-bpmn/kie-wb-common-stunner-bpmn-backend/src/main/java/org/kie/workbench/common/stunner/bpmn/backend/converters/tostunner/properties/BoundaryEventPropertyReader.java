@@ -30,6 +30,7 @@ public class BoundaryEventPropertyReader extends CatchEventPropertyReader {
         super(el, plane, definitionResolver);
     }
 
+    @Override
     public boolean isCancelActivity() {
         return CustomAttribute.boundarycaForBoundaryEvent.of(element).get();
     }

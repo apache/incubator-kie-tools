@@ -31,7 +31,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
  * of a Stunner node.
  * <p>
  * Example usage:
- * <p>
+ *
  * <pre>
  *     // let be T1 a class, and let be T1a, T1b subclasses of T1
  *     // then, let be T2 a class, and let be T2a, T2b subclasses of T2

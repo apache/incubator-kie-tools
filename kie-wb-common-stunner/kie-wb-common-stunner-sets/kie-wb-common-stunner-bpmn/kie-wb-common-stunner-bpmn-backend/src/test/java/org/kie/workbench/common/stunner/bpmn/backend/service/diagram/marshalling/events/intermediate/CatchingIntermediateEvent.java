@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshallin
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -39,6 +38,7 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller.NEW;
 import static org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller.OLD;
 
 @RunWith(Parameterized.class)
@@ -50,14 +50,6 @@ public abstract class CatchingIntermediateEvent<T extends BaseCatchingIntermedia
     static final boolean HAS_NO_INCOME_EDGE = false;
 
     protected DiagramMarshaller<Graph, Metadata, Diagram<Graph, Metadata>> marshaller = null;
-
-    @Parameterized.Parameters
-    public static List<Object[]> marshallers() {
-        return Arrays.asList(new Object[][]{
-                // New (un)marshaller is disabled for now due to found incompleteness
-                {OLD}//, {NEW}
-        });
-    }
 
     CatchingIntermediateEvent(Marshaller marshallerType) {
         super.init();
@@ -71,7 +63,13 @@ public abstract class CatchingIntermediateEvent<T extends BaseCatchingIntermedia
         }
     }
 
-    @Ignore
+    @Parameterized.Parameters
+    public static List<Object[]> marshallers() {
+        return Arrays.asList(new Object[][]{
+                {OLD}, {NEW}
+        });
+    }
+
     @Test
     public void testMigration() throws Exception {
         Diagram<Graph, Metadata> oldDiagram = Unmarshalling.unmarshall(oldMarshaller, getBpmnCatchingIntermediateEventFilePath());

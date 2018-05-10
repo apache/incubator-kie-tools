@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventC
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.CancellingErrorEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.CancellingMessageEventExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.CancellingSignalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.CancellingTimerEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -54,23 +55,6 @@ public class IntermediateCatchEventConverter {
                 .apply(node).value();
     }
 
-    private PropertyWriter timerEvent(Node<View<IntermediateTimerEvent>, ?> n) {
-        CatchEventPropertyWriter p = createCatchEventPropertyWriter(n);
-        p.getFlowElement().setId(n.getUUID());
-
-        IntermediateTimerEvent definition = n.getContent().getDefinition();
-
-        BPMNGeneralSet general = definition.getGeneral();
-        p.setName(general.getName().getValue());
-        p.setDocumentation(general.getDocumentation().getValue());
-
-        CancellingTimerEventExecutionSet executionSet = definition.getExecutionSet();
-        p.addTimer(executionSet.getTimerSettings());
-
-        p.setBounds(n.getContent().getBounds());
-        return p;
-    }
-
     private PropertyWriter errorEvent(Node<View<IntermediateErrorEventCatching>, ?> n) {
         CatchEventPropertyWriter p = createCatchEventPropertyWriter(n);
         p.getFlowElement().setId(n.getUUID());
@@ -85,6 +69,7 @@ public class IntermediateCatchEventConverter {
                 definition.getDataIOSet().getAssignmentsinfo());
 
         CancellingErrorEventExecutionSet executionSet = definition.getExecutionSet();
+        p.setCancelActivity(executionSet.getCancelActivity().getValue());
         p.addError(executionSet.getErrorRef());
 
         p.setBounds(n.getContent().getBounds());
@@ -104,7 +89,27 @@ public class IntermediateCatchEventConverter {
         p.setAssignmentsInfo(
                 definition.getDataIOSet().getAssignmentsinfo());
 
+        CancellingSignalEventExecutionSet executionSet = definition.getExecutionSet();
+        p.setCancelActivity(executionSet.getCancelActivity().getValue());
         p.addSignal(definition.getExecutionSet().getSignalRef());
+
+        p.setBounds(n.getContent().getBounds());
+        return p;
+    }
+
+    private PropertyWriter timerEvent(Node<View<IntermediateTimerEvent>, ?> n) {
+        CatchEventPropertyWriter p = createCatchEventPropertyWriter(n);
+        p.getFlowElement().setId(n.getUUID());
+
+        IntermediateTimerEvent definition = n.getContent().getDefinition();
+
+        BPMNGeneralSet general = definition.getGeneral();
+        p.setName(general.getName().getValue());
+        p.setDocumentation(general.getDocumentation().getValue());
+
+        CancellingTimerEventExecutionSet executionSet = definition.getExecutionSet();
+        p.setCancelActivity(executionSet.getCancelActivity().getValue());
+        p.addTimer(executionSet.getTimerSettings());
 
         p.setBounds(n.getContent().getBounds());
         return p;
@@ -124,7 +129,7 @@ public class IntermediateCatchEventConverter {
                 definition.getDataIOSet().getAssignmentsinfo());
 
         CancellingMessageEventExecutionSet executionSet = definition.getExecutionSet();
-
+        p.setCancelActivity(executionSet.getCancelActivity().getValue());
         p.addMessage(executionSet.getMessageRef());
 
         p.setBounds(n.getContent().getBounds());
