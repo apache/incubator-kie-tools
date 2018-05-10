@@ -47,6 +47,7 @@ import org.kie.workbench.common.forms.migration.tool.pipelines.basic.impl.adapte
 import org.kie.workbench.common.forms.migration.tool.pipelines.basic.impl.adapters.fields.InputTextFieldAdapter;
 import org.kie.workbench.common.forms.migration.tool.pipelines.basic.impl.adapters.fields.IntegerTextFieldAdapter;
 import org.kie.workbench.common.forms.migration.tool.pipelines.basic.impl.adapters.fields.MultipleSubformFieldAdapter;
+import org.kie.workbench.common.forms.migration.tool.pipelines.basic.impl.adapters.fields.MultiplesValuesAdapter;
 import org.kie.workbench.common.forms.migration.tool.pipelines.basic.impl.adapters.fields.RadioGroupFieldAdapter;
 import org.kie.workbench.common.forms.migration.tool.pipelines.basic.impl.adapters.fields.SelectBoxFieldAdapter;
 import org.kie.workbench.common.forms.migration.tool.pipelines.basic.impl.adapters.fields.SubformFieldAdapter;
@@ -80,7 +81,7 @@ public abstract class AbstractFormAdapter implements FormAdapter {
         registerAdapter(new SubformFieldAdapter());
         registerAdapter(new MultipleSubformFieldAdapter());
         registerAdapter(new DecoratorFieldAdapter());
-        registerAdapter(new MultipleSubformFieldAdapter());
+        registerAdapter(new MultiplesValuesAdapter());
         registerAdapter(new DocumentFieldAdapter());
     }
 

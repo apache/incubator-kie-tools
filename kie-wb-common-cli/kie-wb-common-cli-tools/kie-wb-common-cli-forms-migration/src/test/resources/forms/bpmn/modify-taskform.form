@@ -1,52 +1,59 @@
-
 <form id="1854225253">
-<property name="name" value="modify-taskform.form"/>
-<property name="displayMode" value="default"/>
-<property name="status" value="0"/>
-<field position="0" name="invoice_user" type="Subform" id="1176319961">
-<property name="fieldRequired" value="false"/>
-<property name="groupWithPrevious" value="false"/>
-<property name="label" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;User Data:quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
-<property name="errorMessage" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
-<property name="title" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
-<property name="readonly" value="false"/>
-<property name="inputBinding" value="in_invoice/user"/>
-<property name="outputBinding" value="out_invoice/user"/>
-<property name="defaultSubform" value="user.form"/>
-<property name="fieldClass" value="java.lang.Object"/>
-</field>
-<field position="1" name="lines" type="MultipleSubform" id="779712524">
-<property name="fieldRequired" value="false"/>
-<property name="label" value="quot;SSClassquot;,quot;quot;quot;SSStylequot;,quot;quot;quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;Invoice Linesquot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
-<property name="errorMessage" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
-<property name="title" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
-<property name="readonly" value="false"/>
-<property name="inputBinding" value="in_invoice/lines"/>
-<property name="outputBinding" value="out_invoice/lines"/>
-<property name="defaultSubform" value="line.form"/>
-<property name="previewSubform" value="line.form"/>
-<property name="tableSubform" value="line.form"/>
-<property name="newItemText" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
-<property name="addItemText" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
-<property name="cancelItemText" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
-<property name="deleteItems" value="true"/>
-<property name="updateItems" value="true"/>
-<property name="visualizeItems" value="true"/>
-<property name="hideCreateItem" value="false"/>
-<property name="expanded" value="false"/>
-<property name="enableTableEnterData" value="false"/>
-<property name="fieldClass" value="java.util.List"/>
-</field>
-<field position="2" name="invoice_total" type="InputTextDouble" id="395970442">
-<property name="fieldRequired" value="false"/>
-<property name="label" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;Invoice Total:quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
-<property name="errorMessage" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
-<property name="title" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
-<property name="readonly" value="false"/>
-<property name="formula" value="={sum(lines/total)}"/>
-<property name="inputBinding" value="in_invoice/total"/>
-<property name="outputBinding" value="out_invoice/total"/>
-<property name="fieldClass" value="java.lang.Double"/>
-</field>
-<dataHolder inputId="in_invoice" name="#0000A0" type="dataModelerEntry" outId="out_invoice" value="org.jbpm.invoices.Invoice" id="invoice"/>
+  <property name="name" value="modify-taskform.form"/>
+  <property name="displayMode" value="default"/>
+  <property name="status" value="0"/>
+  <field position="0" name="invoice_user" type="Subform" id="1176319961">
+    <property name="fieldRequired" value="false"/>
+    <property name="groupWithPrevious" value="false"/>
+    <property name="label" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;User Data:quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
+    <property name="errorMessage" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
+    <property name="title" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
+    <property name="readonly" value="false"/>
+    <property name="inputBinding" value="in_invoice/user"/>
+    <property name="outputBinding" value="out_invoice/user"/>
+    <property name="defaultSubform" value="user.form"/>
+    <property name="fieldClass" value="java.lang.Object"/>
+  </field>
+  <field position="1" name="lines" type="MultipleSubform" id="779712524">
+    <property name="fieldRequired" value="false"/>
+    <property name="label" value="quot;SSClassquot;,quot;quot;quot;SSStylequot;,quot;quot;quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;Invoice Linesquot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
+    <property name="errorMessage" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
+    <property name="title" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
+    <property name="readonly" value="false"/>
+    <property name="inputBinding" value="in_invoice/lines"/>
+    <property name="outputBinding" value="out_invoice/lines"/>
+    <property name="defaultSubform" value="line.form"/>
+    <property name="previewSubform" value="line.form"/>
+    <property name="tableSubform" value="line.form"/>
+    <property name="newItemText" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
+    <property name="addItemText" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
+    <property name="cancelItemText" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
+    <property name="deleteItems" value="true"/>
+    <property name="updateItems" value="true"/>
+    <property name="visualizeItems" value="true"/>
+    <property name="hideCreateItem" value="false"/>
+    <property name="expanded" value="false"/>
+    <property name="enableTableEnterData" value="false"/>
+    <property name="fieldClass" value="java.util.List"/>
+  </field>
+  <field position="2" name="invoice_total" type="InputTextDouble" id="395970442">
+    <property name="fieldRequired" value="false"/>
+    <property name="label" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;Invoice Total:quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
+    <property name="errorMessage" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
+    <property name="title" value="quot;caquot;,quot;quot;quot;dequot;,quot;quot;quot;enquot;,quot;quot;quot;esquot;,quot;quot;quot;frquot;,quot;quot;quot;jaquot;,quot;quot;quot;ptquot;,quot;quot;quot;zhquot;,quot;quot;"/>
+    <property name="readonly" value="false"/>
+    <property name="formula" value="={sum(lines/total)}"/>
+    <property name="inputBinding" value="in_invoice/total"/>
+    <property name="outputBinding" value="out_invoice/total"/>
+    <property name="fieldClass" value="java.lang.Double"/>
+  </field>
+  <field position="3" name="invoice_list" bag-type="java.lang.Integer" type="MultipleInput" id="1329670040">
+    <property name="fieldRequired" value="false"/>
+    <property name="label" value="quot;enquot;,quot;List of Values:quot;"/>
+    <property name="readonly" value="false"/>
+    <property name="inputBinding" value="in_invoice/list"/>
+    <property name="outputBinding" value="out_invoice/list"/>
+    <property name="fieldClass" value="java.util.List"/>
+  </field>
+  <dataHolder inputId="in_invoice" name="#0000A0" type="dataModelerEntry" outId="out_invoice" value="org.jbpm.invoices.Invoice" id="invoice"/>
 </form>

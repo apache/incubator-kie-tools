@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.decimalBox.definition.DecimalBoxFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.lists.input.impl.IntegerMultipleInputFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMFormModel;
@@ -153,7 +154,7 @@ public class FormDefinitionGeneratorForBPMNWithComplexVariableTest extends Abstr
         Form originalForm = summary.getOriginalForm().get();
 
         Assertions.assertThat(originalForm.getFormFields())
-                .hasSize(4);
+                .hasSize(5);
 
         Field originalInvoiceUser = originalForm.getField(INVOICE_USER);
         Field originalLines = originalForm.getField(INVOICE_LINES);
@@ -250,7 +251,7 @@ public class FormDefinitionGeneratorForBPMNWithComplexVariableTest extends Abstr
 
         Assertions.assertThat(invoiceForm.getFields())
                 .isNotEmpty()
-                .hasSize(3);
+                .hasSize(4);
 
         IntStream indexStream = IntStream.range(0, invoiceForm.getFields().size());
 
@@ -260,7 +261,7 @@ public class FormDefinitionGeneratorForBPMNWithComplexVariableTest extends Abstr
 
         Assertions.assertThat(formLayout.getRows())
                 .isNotEmpty()
-                .hasSize(3);
+                .hasSize(4);
 
         indexStream.forEach(index -> {
             FieldDefinition fieldDefinition = invoiceForm.getFields().get(index);
@@ -274,6 +275,9 @@ public class FormDefinitionGeneratorForBPMNWithComplexVariableTest extends Abstr
                     break;
                 case 2:
                     checkFieldDefinition(fieldDefinition, "invoice_total", "Invoice Total:", "total", DecimalBoxFieldDefinition.class, invoiceForm, originalForm.getField(fieldDefinition.getName()));
+                    break;
+                case 3:
+                    checkFieldDefinition(fieldDefinition, "invoice_list", "List of Values:", "list", IntegerMultipleInputFieldDefinition.class, invoiceForm, originalForm.getField(fieldDefinition.getName()));
                     break;
             }
 
