@@ -23,7 +23,6 @@ import java.util.Set;
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
@@ -31,7 +30,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGen
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
-import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 public abstract class BaseConnector implements BPMNViewDefinition {
@@ -51,13 +49,9 @@ public abstract class BaseConnector implements BPMNViewDefinition {
     @PropertySet
     protected FontSet fontSet;
 
-    @NonPortable
-    static abstract class BaseConnectorBuilder<T extends BaseConnector> implements Builder<BaseConnector> {
-
-        public static final transient String COLOR = "#000000";
-        public static final transient String BORDER_COLOR = "#000000";
-        public static final Double BORDER_SIZE = 1d;
-    }
+    public static final transient String COLOR = "#000000";
+    public static final transient String BORDER_COLOR = "#000000";
+    public static final Double BORDER_SIZE = 1d;
 
     @Labels
     protected final Set<String> labels = new HashSet<String>() {{

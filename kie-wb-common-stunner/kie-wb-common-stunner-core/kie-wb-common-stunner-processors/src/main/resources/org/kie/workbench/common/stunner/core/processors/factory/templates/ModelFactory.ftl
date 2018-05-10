@@ -48,7 +48,7 @@ public class ${className} extends ${parentClassName}<Object> {
 
             if ( ${builder.className}.class.equals( clazz ) ) {
 
-                return new ${builder.methodName}().build();
+                return ${builder.methodName};
 
             }
 

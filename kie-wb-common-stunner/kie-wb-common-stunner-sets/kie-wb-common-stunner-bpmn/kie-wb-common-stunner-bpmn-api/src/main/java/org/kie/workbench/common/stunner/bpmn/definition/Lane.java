@@ -22,7 +22,6 @@ import java.util.Set;
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
@@ -37,7 +36,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
-import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -47,7 +45,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class, builder = Lane.LaneBuilder.class)
+@Definition(graphFactory = NodeFactory.class)
 @CanContain(roles = {"lane_child"})
 @FormDefinition(
         startElement = "general",
@@ -83,19 +81,11 @@ public class Lane implements BPMNViewDefinition {
         add("cm_nop");
     }};
 
-    @NonPortable
-    public static class LaneBuilder implements Builder<Lane> {
-
-        @Override
-        public Lane build() {
-            return new Lane(new BPMNGeneralSet("Lane"),
-                            new BackgroundSet(),
-                            new FontSet(),
-                            new RectangleDimensionsSet());
-        }
-    }
-
     public Lane() {
+        this(new BPMNGeneralSet("Lane"),
+             new BackgroundSet(),
+             new FontSet(),
+             new RectangleDimensionsSet());
     }
 
     public Lane(final @MapsTo("general") BPMNGeneralSet general,

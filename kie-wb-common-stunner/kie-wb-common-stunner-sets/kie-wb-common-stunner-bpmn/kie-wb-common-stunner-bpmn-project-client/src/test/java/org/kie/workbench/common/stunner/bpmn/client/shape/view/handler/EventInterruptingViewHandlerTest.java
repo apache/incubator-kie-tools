@@ -45,7 +45,7 @@ public class EventInterruptingViewHandlerTest extends EventViewHandlerTestBase {
     @Test
     @SuppressWarnings("unchecked")
     public void testHandleTimerIsNotInterrupting() {
-        final StartTimerEvent bean = new StartTimerEvent.StartTimerEventBuilder().build();
+        final StartTimerEvent bean = new StartTimerEvent();
         bean.getExecutionSet().getIsInterrupting().setValue(false);
         tested.handle(bean, view);
         verify(prim1).setAlpha(eq(0d));
@@ -55,7 +55,7 @@ public class EventInterruptingViewHandlerTest extends EventViewHandlerTestBase {
     @Test
     @SuppressWarnings("unchecked")
     public void testHandleTimerIsInterrupting() {
-        final StartTimerEvent bean = new StartTimerEvent.StartTimerEventBuilder().build();
+        final StartTimerEvent bean = new StartTimerEvent();
         bean.getExecutionSet().getIsInterrupting().setValue(true);
         tested.handle(bean, view);
         verify(prim1).setAlpha(eq(1d));
@@ -65,7 +65,7 @@ public class EventInterruptingViewHandlerTest extends EventViewHandlerTestBase {
     @Test
     @SuppressWarnings("unchecked")
     public void testHandleMessageEventIsNotInterrupting() {
-        final StartMessageEvent bean = new StartMessageEvent.StartMessageEventBuilder().build();
+        final StartMessageEvent bean = new StartMessageEvent();
         bean.getExecutionSet().getIsInterrupting().setValue(false);
         tested.handle(bean, view);
         verify(prim1).setAlpha(eq(0d));
@@ -75,7 +75,7 @@ public class EventInterruptingViewHandlerTest extends EventViewHandlerTestBase {
     @Test
     @SuppressWarnings("unchecked")
     public void testHandleMessageEventIsInterrupting() {
-        final StartMessageEvent bean = new StartMessageEvent.StartMessageEventBuilder().build();
+        final StartMessageEvent bean = new StartMessageEvent();
         bean.getExecutionSet().getIsInterrupting().setValue(true);
         tested.handle(bean, view);
         verify(prim1).setAlpha(eq(1d));
@@ -85,7 +85,7 @@ public class EventInterruptingViewHandlerTest extends EventViewHandlerTestBase {
     @Test
     @SuppressWarnings("unchecked")
     public void testHandleSignalEventIsNotInterrupting() {
-        final StartSignalEvent bean = new StartSignalEvent.StartSignalEventBuilder().build();
+        final StartSignalEvent bean = new StartSignalEvent();
         bean.getExecutionSet().getIsInterrupting().setValue(false);
         tested.handle(bean, view);
         verify(prim1).setAlpha(eq(0d));
@@ -95,7 +95,7 @@ public class EventInterruptingViewHandlerTest extends EventViewHandlerTestBase {
     @Test
     @SuppressWarnings("unchecked")
     public void testHandleSignalEventIsInterrupting() {
-        final StartSignalEvent bean = new StartSignalEvent.StartSignalEventBuilder().build();
+        final StartSignalEvent bean = new StartSignalEvent();
         bean.getExecutionSet().getIsInterrupting().setValue(true);
         tested.handle(bean, view);
         verify(prim1).setAlpha(eq(1d));

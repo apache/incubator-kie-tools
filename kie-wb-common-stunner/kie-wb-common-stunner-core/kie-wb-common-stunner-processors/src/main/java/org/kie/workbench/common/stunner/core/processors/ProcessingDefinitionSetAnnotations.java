@@ -21,11 +21,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.kie.workbench.common.stunner.core.processors.definition.TypeConstructor;
+
 public class ProcessingDefinitionSetAnnotations {
 
     private final Map<String, String> descriptionFieldNames = new HashMap<>();
     private final Set<String> definitionIds = new HashSet<>();
-    private final Map<String, String> builderFieldNames = new HashMap<>();
+    private final Map<String, TypeConstructor> builderFieldNames = new HashMap<>();
     private final Map<String, String> graphTypes = new HashMap<>();
     private final Map<String, String> qualifiers = new HashMap<>();
     private boolean hasShapeSet = false;
@@ -38,7 +40,7 @@ public class ProcessingDefinitionSetAnnotations {
         return definitionIds;
     }
 
-    public Map<String, String> getBuilderFieldNames() {
+    public Map<String, TypeConstructor> getBuilderFieldNames() {
         return builderFieldNames;
     }
 

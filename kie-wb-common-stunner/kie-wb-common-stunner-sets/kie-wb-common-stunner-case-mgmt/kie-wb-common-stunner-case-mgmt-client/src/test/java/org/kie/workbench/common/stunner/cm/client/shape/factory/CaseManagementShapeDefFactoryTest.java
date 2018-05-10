@@ -117,22 +117,22 @@ public class CaseManagementShapeDefFactoryTest {
         assertNotNull(nullShape);
         assertTrue(nullShape instanceof NullShape);
 
-        final Shape diagramShape = tested.newShape(new CaseManagementDiagram.CaseManagementDiagramBuilder().build(),
+        final Shape diagramShape = tested.newShape(new CaseManagementDiagram(),
                                                    new CaseManagementDiagramShapeDef());
         assertNotNull(diagramShape);
         assertTrue(diagramShape instanceof CMContainerShape);
 
-        final Shape subprocessShape = tested.newShape(new AdHocSubprocess.AdHocSubprocessBuilder().build(),
+        final Shape subprocessShape = tested.newShape(new AdHocSubprocess(),
                                                       new CaseManagementSubprocessShapeDef());
         assertNotNull(subprocessShape);
         assertTrue(subprocessShape instanceof CMContainerShape);
 
-        final Shape activityShape = tested.newShape(new UserTask.UserTaskBuilder().build(),
+        final Shape activityShape = tested.newShape(new UserTask(),
                                                     new CaseManagementTaskShapeDef());
         assertNotNull(activityShape);
         assertTrue(activityShape instanceof ActivityShape);
 
-        final Shape activityShape2 = tested.newShape(new ReusableSubprocess.ReusableSubprocessBuilder().build(),
+        final Shape activityShape2 = tested.newShape(new ReusableSubprocess(),
                                                      new CaseManagementReusableSubprocessTaskShapeDef());
         assertNotNull(activityShape2);
         assertTrue(activityShape2 instanceof ActivityShape);

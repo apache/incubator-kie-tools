@@ -94,7 +94,7 @@ public class UserTaskTest {
 
     @Test
     public void testUserTaskTaskNameValid() {
-        UserTask userTask = new UserTask.UserTaskBuilder().build();
+        UserTask userTask = new UserTask();
         userTask.getExecutionSet().setTaskName(new TaskName(TASK_NAME_VALID));
         Set<ConstraintViolation<UserTask>> violations = this.validator.validate(userTask);
         assertTrue(violations.isEmpty());
@@ -102,7 +102,7 @@ public class UserTaskTest {
 
     @Test
     public void testUserTaskTaskNameInvalid() {
-        UserTask userTask = new UserTask.UserTaskBuilder().build();
+        UserTask userTask = new UserTask();
         userTask.getExecutionSet().setTaskName(new TaskName(TASK_NAME_INVALID));
         Set<ConstraintViolation<UserTask>> violations = this.validator.validate(userTask);
         assertEquals(1,
@@ -111,7 +111,7 @@ public class UserTaskTest {
 
     @Test
     public void testUserTaskNameValid() {
-        UserTask userTask = new UserTask.UserTaskBuilder().build();
+        UserTask userTask = new UserTask();
         userTask.getGeneral().setName(new Name(TASK_NAME_VALID));
         Set<ConstraintViolation<UserTask>> violations = this.validator.validate(userTask);
         assertTrue(violations.isEmpty());
@@ -119,7 +119,7 @@ public class UserTaskTest {
 
     @Test
     public void testUserTaskNameEmpty() {
-        UserTask userTask = new UserTask.UserTaskBuilder().build();
+        UserTask userTask = new UserTask();
         userTask.getGeneral().setName(new Name(""));
         Set<ConstraintViolation<UserTask>> violations = this.validator.validate(userTask);
         assertTrue(violations.isEmpty());

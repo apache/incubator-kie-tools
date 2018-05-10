@@ -75,7 +75,7 @@ public class BPMNProjectDiagramFactoryTest {
 
     @Before
     public void setup() {
-        diagram = new BPMNDiagramImpl.BPMNDiagramBuilder().build();
+        diagram = new BPMNDiagramImpl();
         View<BPMNDiagram> diagramNodeContent = new ViewImpl<>(diagram,
                                                                          bounds);
         graphNodes.add(diagramNode);

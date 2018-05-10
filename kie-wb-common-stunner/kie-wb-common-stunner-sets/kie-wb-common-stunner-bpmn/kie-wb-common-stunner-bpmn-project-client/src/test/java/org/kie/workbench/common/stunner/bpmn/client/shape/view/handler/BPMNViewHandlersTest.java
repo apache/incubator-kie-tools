@@ -45,7 +45,7 @@ public class BPMNViewHandlersTest {
     public void testFontHandler() {
         final FontHandler<BPMNViewDefinition, ShapeView> fontHandler =
                 new BPMNShapeViewHandlers.FontHandlerBuilder<>().build();
-        final StartNoneEvent bean = new StartNoneEvent.StartNoneEventBuilder().build();
+        final StartNoneEvent bean = new StartNoneEvent();
         bean.getFontSet().getFontColor().setValue("fontColor");
         bean.getFontSet().getFontFamily().setValue("fontFamily");
         bean.getFontSet().getFontSize().setValue(12d);
@@ -64,7 +64,7 @@ public class BPMNViewHandlersTest {
     public void testViewHandler() {
         final ViewAttributesHandler<BPMNViewDefinition, ShapeView> fontHandler =
                 new BPMNShapeViewHandlers.ViewAttributesHandlerBuilder<>().build();
-        final StartNoneEvent bean = new StartNoneEvent.StartNoneEventBuilder().build();
+        final StartNoneEvent bean = new StartNoneEvent();
         bean.getBackgroundSet().getBgColor().setValue("bgColor");
         bean.getBackgroundSet().getBorderColor().setValue("borderColor");
         bean.getBackgroundSet().getBorderSize().setValue(5d);

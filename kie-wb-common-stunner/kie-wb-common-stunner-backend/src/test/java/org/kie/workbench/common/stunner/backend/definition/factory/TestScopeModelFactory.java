@@ -16,11 +16,14 @@
 
 package org.kie.workbench.common.stunner.backend.definition.factory;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.kie.workbench.common.stunner.core.backend.util.BackendBindableDefinitionUtils;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
+import org.kie.workbench.common.stunner.core.definition.builder.VoidBuilder;
 import org.kie.workbench.common.stunner.core.factory.definition.AbstractTypeDefinitionFactory;
 
 /**
@@ -34,42 +37,50 @@ public class TestScopeModelFactory extends AbstractTypeDefinitionFactory<Object>
         this.definitionSet = definitionSet;
     }
 
-    private static Set<Class<? extends Object>> getDefinitions(Object defSet) {
+    private static Set<Class<?>> getDefinitions(Object defSet) {
         return BackendBindableDefinitionUtils.getDefinitions(defSet);
     }
 
     @Override
-    public Set<Class<? extends Object>> getAcceptedClasses() {
+    public Set<Class<?>> getAcceptedClasses() {
         return getDefinitions(this.definitionSet);
     }
 
     @Override
-    public Object build(Class<? extends Object> clazz) {
-        Builder<?> builder = newDefinitionBuilder(clazz);
-        return builder.build();
+    public Object build(Class<?> clazz) {
+        return newDefinitionBuilder(clazz).get();
     }
 
-    private Builder<?> newDefinitionBuilder(Class<? extends Object> definitionClass) {
+    private Supplier<?> newDefinitionBuilder(Class<?> definitionClass) {
         Class<? extends Builder<?>> builderClass = getDefinitionBuilderClass(definitionClass);
         if (null != builderClass) {
-            try {
-                return builderClass.newInstance();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
+            // if there is a builder, then get the constructor for the builder
+            Builder<?> builder = getEmptyConstructor(builderClass).get();
+            // return the build method as a supplier
+            return builder::build;
+        } else {
+            return getEmptyConstructor(definitionClass);
         }
-        throw new RuntimeException("No annotated builder found for Definition [" + definitionClass.getName() + "]");
     }
 
-    private Class<? extends Builder<?>> getDefinitionBuilderClass(Class<? extends Object> definitionClass) {
-        if (null != definitionClass) {
-            Definition annotation = definitionClass.getAnnotation(Definition.class);
-            if (null != annotation) {
-                return annotation.builder();
-            }
+    private Class<? extends Builder<?>> getDefinitionBuilderClass(Class<?> definitionClass) {
+        Definition annotation = definitionClass.getAnnotation(Definition.class);
+        if (null != annotation && annotation.builder() != VoidBuilder.class) {
+            return annotation.builder();
         }
         return null;
+    }
+
+    /**
+     * wrap empty constructor into a Supplier, turning checked exceptions into runtime exceptions
+     */
+    private <T> Supplier<T> getEmptyConstructor(Class<T> definitionClass) {
+        return () -> {
+            try {
+                return definitionClass.getConstructor().newInstance();
+            } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+                throw new IllegalArgumentException("No constructor for type " + definitionClass, e);
+            }
+        };
     }
 }

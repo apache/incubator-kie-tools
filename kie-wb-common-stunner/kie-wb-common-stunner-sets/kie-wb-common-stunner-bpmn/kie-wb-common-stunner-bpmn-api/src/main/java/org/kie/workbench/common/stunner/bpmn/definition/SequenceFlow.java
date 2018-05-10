@@ -21,7 +21,6 @@ import java.util.Objects;
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
@@ -46,7 +45,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = EdgeFactory.class, builder = SequenceFlow.SequenceFlowBuilder.class)
+@Definition(graphFactory = EdgeFactory.class)
 // *** Connection rules for sequence flows ****
 @CanConnect(startRole = "sequence_start", endRole = "sequence_end")
 @CanConnect(startRole = "choreography_sequence_start", endRole = "choreography_sequence_end")
@@ -82,21 +81,13 @@ public class SequenceFlow extends BaseConnector {
     @Valid
     protected SequenceFlowExecutionSet executionSet;
 
-    @NonPortable
-    public static class SequenceFlowBuilder extends BaseConnectorBuilder<SequenceFlow> {
-
-        @Override
-        public SequenceFlow build() {
-            return new SequenceFlow(new BPMNGeneralSet(),
-                                    new SequenceFlowExecutionSet(),
-                                    new BackgroundSet(COLOR,
-                                                      BORDER_COLOR,
-                                                      BORDER_SIZE),
-                                    new FontSet());
-        }
-    }
-
     public SequenceFlow() {
+        this(new BPMNGeneralSet(),
+             new SequenceFlowExecutionSet(),
+             new BackgroundSet(COLOR,
+                               BORDER_COLOR,
+                               BORDER_SIZE),
+             new FontSet());
     }
 
     public SequenceFlow(final @MapsTo("general") BPMNGeneralSet general,

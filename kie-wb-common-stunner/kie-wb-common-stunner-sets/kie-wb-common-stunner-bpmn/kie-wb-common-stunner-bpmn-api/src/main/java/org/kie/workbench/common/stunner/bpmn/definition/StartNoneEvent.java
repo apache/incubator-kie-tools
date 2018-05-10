@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.bpmn.definition;
 import java.util.Objects;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
@@ -35,7 +34,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.Simu
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
-import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
@@ -44,7 +42,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class, builder = StartNoneEvent.StartNoneEventBuilder.class)
+@Definition(graphFactory = NodeFactory.class)
 @Morph(base = BaseStartEvent.class)
 @FormDefinition(
         startElement = "general",
@@ -56,21 +54,13 @@ public class StartNoneEvent extends BaseStartEvent {
     @Property
     private IsInterrupting isInterrupting = new IsInterrupting(true);
 
-    @NonPortable
-    public static class StartNoneEventBuilder implements Builder<StartNoneEvent> {
-
-        @Override
-        public StartNoneEvent build() {
-            return new StartNoneEvent(new BPMNGeneralSet(""),
-                                      new BackgroundSet(),
-                                      new FontSet(),
-                                      new CircleDimensionSet(new Radius()),
-                                      new SimulationAttributeSet(),
-                                      new IsInterrupting(true));
-        }
-    }
-
     public StartNoneEvent() {
+        this(new BPMNGeneralSet(""),
+             new BackgroundSet(),
+             new FontSet(),
+             new CircleDimensionSet(new Radius()),
+             new SimulationAttributeSet(),
+             new IsInterrupting(true));
     }
 
     public StartNoneEvent(final @MapsTo("general") BPMNGeneralSet general,

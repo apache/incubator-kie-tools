@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -41,7 +40,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = EdgeFactory.class, builder = Association.AssociationBuilder.class)
+@Definition(graphFactory = EdgeFactory.class)
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED, startElement = "id", defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)})
 @CanConnect(startRole = "business-knowledge-model", endRole = "text-annotation")
 @CanConnect(startRole = "decision", endRole = "text-annotation")
@@ -60,17 +59,9 @@ public class Association extends Artifact {
         add("association");
     }};
 
-    @NonPortable
-    public static class AssociationBuilder extends BaseNodeBuilder<Association> {
-
-        @Override
-        public Association build() {
-            return new Association(new Id(),
-                                   new org.kie.workbench.common.dmn.api.property.dmn.Description());
-        }
-    }
-
     public Association() {
+        this(new Id(),
+             new org.kie.workbench.common.dmn.api.property.dmn.Description());
     }
 
     public Association(final @MapsTo("id") Id id,

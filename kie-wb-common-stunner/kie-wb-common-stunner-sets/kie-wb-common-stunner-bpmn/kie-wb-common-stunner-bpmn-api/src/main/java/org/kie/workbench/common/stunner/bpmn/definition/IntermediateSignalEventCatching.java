@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.bpmn.definition;
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
@@ -36,7 +35,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGen
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
-import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
@@ -45,7 +43,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class, builder = IntermediateSignalEventCatching.IntermediateSignalEventCatchingBuilder.class)
+@Definition(graphFactory = NodeFactory.class)
 @Morph(base = BaseCatchingIntermediateEvent.class)
 @FormDefinition(
         startElement = "general",
@@ -64,21 +62,13 @@ public class IntermediateSignalEventCatching extends BaseCatchingIntermediateEve
     @Valid
     protected DataIOSet dataIOSet;
 
-    @NonPortable
-    public static class IntermediateSignalEventCatchingBuilder implements Builder<IntermediateSignalEventCatching> {
-
-        @Override
-        public IntermediateSignalEventCatching build() {
-            return new IntermediateSignalEventCatching(new BPMNGeneralSet(""),
-                                                       new BackgroundSet(),
-                                                       new FontSet(),
-                                                       new CircleDimensionSet(new Radius()),
-                                                       new DataIOSet(),
-                                                       new CancellingSignalEventExecutionSet());
-        }
-    }
-
     public IntermediateSignalEventCatching() {
+        this(new BPMNGeneralSet(""),
+             new BackgroundSet(),
+             new FontSet(),
+             new CircleDimensionSet(new Radius()),
+             new DataIOSet(),
+             new CancellingSignalEventExecutionSet());
     }
 
     public IntermediateSignalEventCatching(final @MapsTo("general") BPMNGeneralSet general,

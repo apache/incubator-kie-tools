@@ -77,7 +77,7 @@ public class StartNoneEventTest {
 
     @Test
     public void testStartNoneEventNameValid() {
-        StartNoneEvent startNoneEvent = new StartNoneEvent.StartNoneEventBuilder().build();
+        StartNoneEvent startNoneEvent = new StartNoneEvent();
         startNoneEvent.getGeneral().setName(new Name(NAME_VALID));
         Set<ConstraintViolation<StartNoneEvent>> violations = this.validator.validate(startNoneEvent);
         assertTrue(violations.isEmpty());
@@ -85,7 +85,7 @@ public class StartNoneEventTest {
 
     @Test
     public void testStartNoneEventNameEmpty() {
-        StartNoneEvent startNoneEvent = new StartNoneEvent.StartNoneEventBuilder().build();
+        StartNoneEvent startNoneEvent = new StartNoneEvent();
         startNoneEvent.getGeneral().setName(new Name(""));
         Set<ConstraintViolation<StartNoneEvent>> violations = this.validator.validate(startNoneEvent);
         assertTrue(violations.isEmpty());

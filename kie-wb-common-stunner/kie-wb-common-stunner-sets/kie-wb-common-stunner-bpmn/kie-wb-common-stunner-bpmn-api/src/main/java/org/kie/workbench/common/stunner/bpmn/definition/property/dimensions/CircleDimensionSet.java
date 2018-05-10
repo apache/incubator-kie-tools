@@ -48,6 +48,7 @@ public class CircleDimensionSet implements BPMNPropertySet {
     protected Radius radius;
 
     public CircleDimensionSet() {
+        this(new Radius());
     }
 
     public CircleDimensionSet(final @MapsTo("radius") Radius radius) {

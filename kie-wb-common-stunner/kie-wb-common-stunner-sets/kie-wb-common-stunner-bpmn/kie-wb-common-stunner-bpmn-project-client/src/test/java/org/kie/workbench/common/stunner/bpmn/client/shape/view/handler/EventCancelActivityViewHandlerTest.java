@@ -46,7 +46,7 @@ public class EventCancelActivityViewHandlerTest extends EventViewHandlerTestBase
     @SuppressWarnings("unchecked")
     public void testHandleTimerIsNotCancel() {
         final IntermediateTimerEvent bean =
-                new IntermediateTimerEvent.IntermediateTimerEventBuilder().build();
+                new IntermediateTimerEvent();
         bean.getExecutionSet().getCancelActivity().setValue(false);
         tested.handle(bean, view);
         verify(prim1).setAlpha(eq(0d));
@@ -57,7 +57,7 @@ public class EventCancelActivityViewHandlerTest extends EventViewHandlerTestBase
     @SuppressWarnings("unchecked")
     public void testHandleTimerIsCancel() {
         final IntermediateTimerEvent bean =
-                new IntermediateTimerEvent.IntermediateTimerEventBuilder().build();
+                new IntermediateTimerEvent();
 
         bean.getExecutionSet().getCancelActivity().setValue(true);
         tested.handle(bean, view);
@@ -70,7 +70,7 @@ public class EventCancelActivityViewHandlerTest extends EventViewHandlerTestBase
     @SuppressWarnings("unchecked")
     public void testHandleSignalIsNotCancel() {
         final IntermediateSignalEventCatching bean =
-                new IntermediateSignalEventCatching.IntermediateSignalEventCatchingBuilder().build();
+                new IntermediateSignalEventCatching();
 
         bean.getExecutionSet().getCancelActivity().setValue(false);
         tested.handle(bean, view);
@@ -83,7 +83,7 @@ public class EventCancelActivityViewHandlerTest extends EventViewHandlerTestBase
     @SuppressWarnings("unchecked")
     public void testHandleSignalIsCancel() {
         final IntermediateSignalEventCatching bean =
-                new IntermediateSignalEventCatching.IntermediateSignalEventCatchingBuilder().build();
+                new IntermediateSignalEventCatching();
 
         bean.getExecutionSet().getCancelActivity().setValue(true);
         tested.handle(bean, view);
@@ -96,7 +96,7 @@ public class EventCancelActivityViewHandlerTest extends EventViewHandlerTestBase
     @SuppressWarnings("unchecked")
     public void testHandleMessageIsNotCancel() {
         final IntermediateMessageEventCatching bean =
-                new IntermediateMessageEventCatching.IntermediateMessageEventCatchingBuilder().build();
+                new IntermediateMessageEventCatching();
 
         bean.getExecutionSet().getCancelActivity().setValue(false);
         tested.handle(bean, view);
@@ -109,7 +109,7 @@ public class EventCancelActivityViewHandlerTest extends EventViewHandlerTestBase
     @SuppressWarnings("unchecked")
     public void testHandleMessageIsCancel() {
         final IntermediateMessageEventCatching bean =
-                new IntermediateMessageEventCatching.IntermediateMessageEventCatchingBuilder().build();
+                new IntermediateMessageEventCatching();
 
         bean.getExecutionSet().getCancelActivity().setValue(true);
         tested.handle(bean, view);

@@ -46,7 +46,7 @@ public class InclusiveGatewayTest {
 
     @Test
     public void testInclusiveDatabasedGatewayNameValid() {
-        InclusiveGateway inclusiveGateway = new InclusiveGateway.InclusiveGatewayBuilder().build();
+        InclusiveGateway inclusiveGateway = new InclusiveGateway();
         inclusiveGateway.getGeneral().setName(new Name(NAME_VALID));
         Set<ConstraintViolation<InclusiveGateway>> violations = this.validator.validate(inclusiveGateway);
         assertTrue(violations.isEmpty());
@@ -54,7 +54,7 @@ public class InclusiveGatewayTest {
 
     @Test
     public void testInclusiveDatabasedGatewayNameEmpty() {
-        InclusiveGateway inclusiveGateway = new InclusiveGateway.InclusiveGatewayBuilder().build();
+        InclusiveGateway inclusiveGateway = new InclusiveGateway();
         inclusiveGateway.getGeneral().setName(new Name(NAME_VALID));
         Set<ConstraintViolation<InclusiveGateway>> violations = this.validator.validate(inclusiveGateway);
         assertTrue(violations.isEmpty());
@@ -62,7 +62,7 @@ public class InclusiveGatewayTest {
 
     @Test
     public void testInclusiveDatabasedGatewayExecutionSet() {
-        InclusiveGateway inclusiveGateway = new InclusiveGateway.InclusiveGatewayBuilder().build();
+        InclusiveGateway inclusiveGateway = new InclusiveGateway();
         inclusiveGateway.setExecutionSet(new GatewayExecutionSet());
         Set<ConstraintViolation<InclusiveGateway>> violations = this.validator.validate(inclusiveGateway);
         assertTrue(violations.isEmpty());
@@ -70,7 +70,7 @@ public class InclusiveGatewayTest {
 
     @Test
     public void testInclusiveDatabasedGatewayExecutionSetWithDefaultRoute() {
-        InclusiveGateway inclusiveGateway = new InclusiveGateway.InclusiveGatewayBuilder().build();
+        InclusiveGateway inclusiveGateway = new InclusiveGateway();
         inclusiveGateway.setExecutionSet(new GatewayExecutionSet(DEFAULT_ROUTE_VALID));
         Set<ConstraintViolation<InclusiveGateway>> violations = this.validator.validate(inclusiveGateway);
         assertTrue(violations.isEmpty());

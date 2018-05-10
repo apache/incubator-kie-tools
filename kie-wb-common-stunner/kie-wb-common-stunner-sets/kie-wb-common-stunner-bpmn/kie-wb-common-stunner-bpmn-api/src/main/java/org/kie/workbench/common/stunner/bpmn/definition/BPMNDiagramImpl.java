@@ -22,7 +22,6 @@ import java.util.Set;
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
@@ -38,7 +37,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
-import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -48,7 +46,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class, builder = BPMNDiagramImpl.BPMNDiagramBuilder.class)
+@Definition(graphFactory = NodeFactory.class)
 @CanContain(roles = {"all"})
 @FormDefinition(
         startElement = "diagramSet",
@@ -87,24 +85,16 @@ public class BPMNDiagramImpl implements BPMNDiagram {
         add("diagram");
     }};
 
-    @NonPortable
-    public static class BPMNDiagramBuilder implements Builder<BPMNDiagramImpl> {
-
-        public static final Double WIDTH = 950d;
-        public static final Double HEIGHT = 950d;
-
-        @Override
-        public BPMNDiagramImpl build() {
-            return new BPMNDiagramImpl(new DiagramSet(),
-                                       new ProcessData(),
-                                       new BackgroundSet(),
-                                       new FontSet(),
-                                       new RectangleDimensionsSet(WIDTH,
-                                                                  HEIGHT));
-        }
-    }
+    public static final Double WIDTH = 950d;
+    public static final Double HEIGHT = 950d;
 
     public BPMNDiagramImpl() {
+        this(new DiagramSet(),
+             new ProcessData(),
+             new BackgroundSet(),
+             new FontSet(),
+             new RectangleDimensionsSet(WIDTH,
+                                        HEIGHT));
     }
 
     public BPMNDiagramImpl(final @MapsTo("diagramSet") DiagramSet diagramSet,

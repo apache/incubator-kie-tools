@@ -24,6 +24,7 @@ import javax.annotation.processing.Messager;
 import org.kie.workbench.common.stunner.core.definition.DefinitionSetProxy;
 import org.kie.workbench.common.stunner.core.processors.AbstractAdapterGenerator;
 import org.kie.workbench.common.stunner.core.processors.ProcessingEntity;
+import org.kie.workbench.common.stunner.core.processors.definition.TypeConstructor;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 
 public class DefinitionSetProxyGenerator extends AbstractAdapterGenerator {
@@ -36,7 +37,7 @@ public class DefinitionSetProxyGenerator extends AbstractAdapterGenerator {
     public StringBuffer generate(final String packageName,
                                  final String className,
                                  final ProcessingEntity definitionSetProcessedEntity,
-                                 final Map<String, String> buildersMap,
+                                 final Map<String, TypeConstructor> buildersMap,
                                  final Messager messager) throws GenerationException {
         String defSetClassName = definitionSetProcessedEntity.getClassName();
         Map<String, Object> root = new HashMap<String, Object>();
@@ -52,10 +53,7 @@ public class DefinitionSetProxyGenerator extends AbstractAdapterGenerator {
                  defSetClassName);
         String builder = "new " + defSetClassName + "()";
         if (null != buildersMap && !buildersMap.isEmpty()) {
-            String builderClass = buildersMap.get(defSetClassName);
-            if (null != builderClass && builderClass.trim().length() > 0) {
-                builder = "new " + builderClass + "().build()";
-            }
+            builder = buildersMap.get(defSetClassName).toCode();
         }
 
         // Builder.

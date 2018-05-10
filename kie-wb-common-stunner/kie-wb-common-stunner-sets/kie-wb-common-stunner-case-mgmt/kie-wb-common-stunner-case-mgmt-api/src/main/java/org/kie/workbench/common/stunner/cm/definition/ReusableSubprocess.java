@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.cm.definition;
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
@@ -37,7 +36,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.Simu
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
@@ -46,7 +44,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class, builder = ReusableSubprocess.ReusableSubprocessBuilder.class)
+@Definition(graphFactory = NodeFactory.class)
 @FormDefinition(
         startElement = "general",
         policy = FieldPolicy.ONLY_MARKED,
@@ -72,24 +70,14 @@ public class ReusableSubprocess extends BaseSubprocess implements DataIOModel {
     @Valid
     protected DataIOSet dataIOSet;
 
-    @NonPortable
-    public static class ReusableSubprocessBuilder implements Builder<ReusableSubprocess> {
-
-        @Override
-        public ReusableSubprocess build() {
-            return new ReusableSubprocess(
-                    new BPMNGeneralSet("Subprocess"),
-                    new ReusableSubprocessTaskExecutionSet(),
-                    new DataIOSet(),
-                    new BackgroundSet(),
-                    new FontSet(),
-                    new RectangleDimensionsSet(),
-                    new SimulationSet());
-        }
-    }
-
     public ReusableSubprocess() {
-        super();
+        this(new BPMNGeneralSet("Subprocess"),
+             new ReusableSubprocessTaskExecutionSet(),
+             new DataIOSet(),
+             new BackgroundSet(),
+             new FontSet(),
+             new RectangleDimensionsSet(),
+             new SimulationSet());
     }
 
     public ReusableSubprocess(final @MapsTo("general") BPMNGeneralSet general,

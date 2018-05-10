@@ -21,7 +21,6 @@ import java.util.Objects;
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
@@ -38,7 +37,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGen
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
-import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
@@ -47,7 +45,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class, builder = IntermediateMessageEventCatching.IntermediateMessageEventCatchingBuilder.class)
+@Definition(graphFactory = NodeFactory.class)
 @Morph(base = BaseCatchingIntermediateEvent.class)
 @FormDefinition(
         startElement = "general",
@@ -67,6 +65,12 @@ public class IntermediateMessageEventCatching extends BaseCatchingIntermediateEv
     protected DataIOSet dataIOSet;
 
     public IntermediateMessageEventCatching() {
+        this(new BPMNGeneralSet(""),
+             new BackgroundSet(),
+             new FontSet(),
+             new CircleDimensionSet(new Radius()),
+             new DataIOSet(),
+             new CancellingMessageEventExecutionSet());
     }
 
     public IntermediateMessageEventCatching(final @MapsTo("general") BPMNGeneralSet general,
@@ -133,19 +137,5 @@ public class IntermediateMessageEventCatching extends BaseCatchingIntermediateEv
                     Objects.equals(labels, other.labels);
         }
         return false;
-    }
-
-    @NonPortable
-    public static class IntermediateMessageEventCatchingBuilder implements Builder<IntermediateMessageEventCatching> {
-
-        @Override
-        public IntermediateMessageEventCatching build() {
-            return new IntermediateMessageEventCatching(new BPMNGeneralSet(""),
-                                                        new BackgroundSet(),
-                                                        new FontSet(),
-                                                        new CircleDimensionSet(new Radius()),
-                                                        new DataIOSet(),
-                                                        new CancellingMessageEventExecutionSet());
-        }
     }
 }

@@ -21,7 +21,6 @@ import java.util.Set;
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
@@ -45,7 +44,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class, builder = InputData.InputDataBuilder.class)
+@Definition(graphFactory = NodeFactory.class)
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED, startElement = "id", defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)})
 public class InputData extends DRGElement implements DMNViewDefinition {
 
@@ -76,22 +75,14 @@ public class InputData extends DRGElement implements DMNViewDefinition {
     @Valid
     protected RectangleDimensionsSet dimensionsSet;
 
-    @NonPortable
-    public static class InputDataBuilder extends BaseNodeBuilder<InputData> {
-
-        @Override
-        public InputData build() {
-            return new InputData(new Id(),
-                                 new org.kie.workbench.common.dmn.api.property.dmn.Description(),
-                                 new Name(),
-                                 new InformationItem(),
-                                 new BackgroundSet(),
-                                 new FontSet(),
-                                 new RectangleDimensionsSet());
-        }
-    }
-
     public InputData() {
+        this(new Id(),
+             new org.kie.workbench.common.dmn.api.property.dmn.Description(),
+             new Name(),
+             new InformationItem(),
+             new BackgroundSet(),
+             new FontSet(),
+             new RectangleDimensionsSet());
     }
 
     public InputData(final @MapsTo("id") Id id,

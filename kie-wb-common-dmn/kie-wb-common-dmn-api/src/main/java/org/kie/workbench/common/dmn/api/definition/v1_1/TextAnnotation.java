@@ -21,7 +21,6 @@ import java.util.Set;
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
@@ -47,7 +46,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class, builder = TextAnnotation.TextAnnotationBuilder.class)
+@Definition(graphFactory = NodeFactory.class)
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED, startElement = "id", defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)})
 public class TextAnnotation extends Artifact implements DMNViewDefinition {
 
@@ -80,22 +79,14 @@ public class TextAnnotation extends Artifact implements DMNViewDefinition {
     @FormField(afterElement = "fontSet")
     protected RectangleDimensionsSet dimensionsSet;
 
-    @NonPortable
-    public static class TextAnnotationBuilder extends BaseNodeBuilder<TextAnnotation> {
-
-        @Override
-        public TextAnnotation build() {
-            return new TextAnnotation(new Id(),
-                                      new org.kie.workbench.common.dmn.api.property.dmn.Description(),
-                                      new Text(),
-                                      new TextFormat(),
-                                      new BackgroundSet(),
-                                      new FontSet(),
-                                      new RectangleDimensionsSet());
-        }
-    }
-
     public TextAnnotation() {
+        this(new Id(),
+             new org.kie.workbench.common.dmn.api.property.dmn.Description(),
+             new Text(),
+             new TextFormat(),
+             new BackgroundSet(),
+             new FontSet(),
+             new RectangleDimensionsSet());
     }
 
     public TextAnnotation(final @MapsTo("id") Id id,

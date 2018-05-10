@@ -108,7 +108,7 @@ public class SequenceFlowPriorityTest {
     @Test
     public void testSequenceFlowPriorityValid() {
         for (String test : PRIORITY_VALID) {
-            SequenceFlow sequenceFlow = new SequenceFlow.SequenceFlowBuilder().build();
+            SequenceFlow sequenceFlow = new SequenceFlow();
             sequenceFlow.getExecutionSet().setPriority(new Priority(test));
             Set<ConstraintViolation<SequenceFlow>> violations = this.validator.validate(sequenceFlow);
             assertTrue(violations.isEmpty());
@@ -118,7 +118,7 @@ public class SequenceFlowPriorityTest {
     @Test
     public void testSequenceFlowPriorityInvalid() {
         for (String test : PRIORITY_INVALID) {
-            SequenceFlow sequenceFlow = new SequenceFlow.SequenceFlowBuilder().build();
+            SequenceFlow sequenceFlow = new SequenceFlow();
             sequenceFlow.getExecutionSet().setPriority(new Priority(test));
             Set<ConstraintViolation<SequenceFlow>> violations = this.validator.validate(sequenceFlow);
             assertEquals(1,

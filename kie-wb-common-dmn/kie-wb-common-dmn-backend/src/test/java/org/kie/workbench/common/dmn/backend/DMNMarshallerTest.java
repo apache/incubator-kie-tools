@@ -205,7 +205,7 @@ public class DMNMarshallerTest {
                 // Please note this is different from the stunner jbpm test which this dmn test is based on
                 Graph graph = (Graph) dmnGraphFactory.build(uuid,
                                                             DMN_DEF_SET_ID);
-                DMNDiagram model = new DMNDiagram.DMNDiagramBuilder().build();
+                DMNDiagram model = new DMNDiagram();
                 Node node = viewNodeFactory.build(uuid,
                                                   model);
                 graph.addNode(node);

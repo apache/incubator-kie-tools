@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.bpmn.definition;
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
@@ -38,7 +37,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
-import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -48,7 +46,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class, builder = NoneTask.NoneTaskBuilder.class)
+@Definition(graphFactory = NodeFactory.class)
 @CanDock(roles = {"IntermediateEventOnActivityBoundary"})
 @Morph(base = BaseTask.class)
 @FormDefinition(
@@ -61,15 +59,6 @@ public class NoneTask extends BaseTask {
     @PropertySet
     @Valid
     protected EmptyTaskExecutionSet executionSet;
-
-    @NonPortable
-    public static class NoneTaskBuilder implements Builder<NoneTask> {
-
-        @Override
-        public NoneTask build() {
-            return new NoneTask();
-        }
-    }
 
     public NoneTask() {
         this(new TaskGeneralSet(new Name("Task"),

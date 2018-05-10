@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.definition;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
@@ -30,7 +29,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
-import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.SubFormFieldInitializer.COLLAPSIBLE_CONTAINER;
@@ -38,7 +36,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class, builder = EndNoneEvent.EndNoneEventBuilder.class)
+@Definition(graphFactory = NodeFactory.class)
 @Morph(base = BaseEndEvent.class)
 @FormDefinition(
         startElement = "general",
@@ -47,19 +45,11 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 )
 public class EndNoneEvent extends BaseEndEvent {
 
-    @NonPortable
-    public static class EndNoneEventBuilder implements Builder<EndNoneEvent> {
-
-        @Override
-        public EndNoneEvent build() {
-            return new EndNoneEvent(new BPMNGeneralSet(""),
-                                    new BackgroundSet(),
-                                    new FontSet(),
-                                    new CircleDimensionSet(new Radius()));
-        }
-    }
-
     public EndNoneEvent() {
+        this(new BPMNGeneralSet(""),
+             new BackgroundSet(),
+             new FontSet(),
+             new CircleDimensionSet(new Radius()));
     }
 
     public EndNoneEvent(final @MapsTo("general") BPMNGeneralSet general,

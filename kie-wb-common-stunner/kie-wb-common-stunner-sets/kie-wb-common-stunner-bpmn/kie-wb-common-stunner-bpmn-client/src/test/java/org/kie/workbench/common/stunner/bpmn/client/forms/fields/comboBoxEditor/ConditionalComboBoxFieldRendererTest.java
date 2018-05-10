@@ -92,7 +92,7 @@ public class ConditionalComboBoxFieldRendererTest {
   public void init() throws Exception {
     resetMocks();
 
-    EmbeddedSubprocess embeddedSubprocess = new EmbeddedSubprocess.EmbeddedSubprocessBuilder().build();
+    EmbeddedSubprocess embeddedSubprocess = new EmbeddedSubprocess();
     OnEntryAction onEntryAction = embeddedSubprocess.getExecutionSet().getOnEntryAction();
     OnExitAction onExitAction = embeddedSubprocess.getExecutionSet().getOnExitAction();
 
@@ -137,7 +137,7 @@ public class ConditionalComboBoxFieldRendererTest {
   public void initWithDefinitionSet() throws Exception {
     resetMocks();
 
-    SequenceFlow sequenceFlow = new SequenceFlow.SequenceFlowBuilder().build();
+    SequenceFlow sequenceFlow = new SequenceFlow();
     SequenceFlowExecutionSet sequenceFlowExecutionSet = sequenceFlow.getExecutionSet();
     ConditionExpression conditionExpression = sequenceFlowExecutionSet.getConditionExpression();
 

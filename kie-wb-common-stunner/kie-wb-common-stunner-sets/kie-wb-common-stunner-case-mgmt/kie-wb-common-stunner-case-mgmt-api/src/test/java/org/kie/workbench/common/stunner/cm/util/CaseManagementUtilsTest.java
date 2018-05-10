@@ -45,7 +45,7 @@ public class CaseManagementUtilsTest {
         final Graph graph = new GraphImpl<>("uuid",
                                             new GraphNodeStoreImpl());
         final Node node = new NodeImpl<Definition>("node-uuid");
-        final CaseManagementDiagram content = new CaseManagementDiagram.CaseManagementDiagramBuilder().build();
+        final CaseManagementDiagram content = new CaseManagementDiagram();
         node.setContent(new DefinitionImpl<>(content));
 
         graph.addNode(node);

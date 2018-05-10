@@ -21,7 +21,6 @@ import java.util.Objects;
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
@@ -38,7 +37,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.variables.Proce
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
-import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
@@ -49,7 +47,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class, builder = EventSubprocess.EventSubprocessBuilder.class)
+@Definition(graphFactory = NodeFactory.class)
 @Morph(base = BaseSubprocess.class)
 @CanContain(roles = {"all"})
 @CanDock(roles = {"IntermediateEventOnSubprocessBoundary"})
@@ -72,7 +70,13 @@ public class EventSubprocess extends BaseSubprocess {
     private ProcessData processData;
 
     public EventSubprocess() {
-        super();
+        this(new BPMNGeneralSet("Event Sub-process"),
+             new BackgroundSet(),
+             new FontSet(),
+             new RectangleDimensionsSet(),
+             new SimulationSet(),
+             new EventSubprocessExecutionSet(),
+             new ProcessData());
     }
 
     public EventSubprocess(final @MapsTo("general") BPMNGeneralSet general,
@@ -132,21 +136,5 @@ public class EventSubprocess extends BaseSubprocess {
                     Objects.equals(labels, other.labels);
         }
         return false;
-    }
-
-    @NonPortable
-    public static class EventSubprocessBuilder implements Builder<EventSubprocess> {
-
-        @Override
-        public EventSubprocess build() {
-            return new EventSubprocess(
-                    new BPMNGeneralSet("Event Sub-process"),
-                    new BackgroundSet(),
-                    new FontSet(),
-                    new RectangleDimensionsSet(),
-                    new SimulationSet(),
-                    new EventSubprocessExecutionSet(),
-                    new ProcessData());
-        }
     }
 }

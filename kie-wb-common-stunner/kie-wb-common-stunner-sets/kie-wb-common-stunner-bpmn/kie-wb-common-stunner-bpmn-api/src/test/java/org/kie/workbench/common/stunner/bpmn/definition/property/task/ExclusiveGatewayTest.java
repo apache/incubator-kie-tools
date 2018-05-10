@@ -46,7 +46,7 @@ public class ExclusiveGatewayTest {
 
     @Test
     public void testExclusiveDatabasedGatewayNameValid() {
-        ExclusiveGateway exclusiveGateway = new ExclusiveGateway.ExclusiveGatewayBuilder().build();
+        ExclusiveGateway exclusiveGateway = new ExclusiveGateway();
         exclusiveGateway.getGeneral().setName(new Name(NAME_VALID));
         Set<ConstraintViolation<ExclusiveGateway>> violations = this.validator.validate(exclusiveGateway);
         assertTrue(violations.isEmpty());
@@ -54,7 +54,7 @@ public class ExclusiveGatewayTest {
 
     @Test
     public void testExclusiveDatabasedGatewayNameEmpty() {
-        ExclusiveGateway exclusiveGateway = new ExclusiveGateway.ExclusiveGatewayBuilder().build();
+        ExclusiveGateway exclusiveGateway = new ExclusiveGateway();
         exclusiveGateway.getGeneral().setName(new Name(""));
         Set<ConstraintViolation<ExclusiveGateway>> violations = this.validator.validate(exclusiveGateway);
         assertTrue(violations.isEmpty());
@@ -62,7 +62,7 @@ public class ExclusiveGatewayTest {
 
     @Test
     public void testExclusiveDatabasedGatewayExecutionSet() {
-        ExclusiveGateway exclusiveGateway = new ExclusiveGateway.ExclusiveGatewayBuilder().build();
+        ExclusiveGateway exclusiveGateway = new ExclusiveGateway();
         exclusiveGateway.setExecutionSet(new GatewayExecutionSet());
         Set<ConstraintViolation<ExclusiveGateway>> violations = this.validator.validate(exclusiveGateway);
         assertTrue(violations.isEmpty());
@@ -70,7 +70,7 @@ public class ExclusiveGatewayTest {
 
     @Test
     public void testExclusiveDatabasedGatewayExecutionSetWithDefaultRoute() {
-        ExclusiveGateway exclusiveGateway = new ExclusiveGateway.ExclusiveGatewayBuilder().build();
+        ExclusiveGateway exclusiveGateway = new ExclusiveGateway();
         exclusiveGateway.setExecutionSet(new GatewayExecutionSet(DEFAULT_ROUTE_VALID));
         Set<ConstraintViolation<ExclusiveGateway>> violations = this.validator.validate(exclusiveGateway);
         assertTrue(violations.isEmpty());

@@ -21,7 +21,6 @@ import java.util.Set;
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
@@ -40,7 +39,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
-import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -50,7 +48,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class, builder = CaseManagementDiagram.CaseManagementDiagramBuilder.class)
+@Definition(graphFactory = NodeFactory.class)
 @CanContain(roles = {"cm_stage", "cm_nop"})
 @FormDefinition(
         startElement = "diagramSet",
@@ -93,20 +91,12 @@ public class CaseManagementDiagram implements BPMNDiagram {
         add("diagram");
     }};
 
-    @NonPortable
-    public static class CaseManagementDiagramBuilder implements Builder<CaseManagementDiagram> {
-
-        @Override
-        public CaseManagementDiagram build() {
-            return new CaseManagementDiagram(new DiagramSet(""),
-                                             new ProcessData(),
-                                             new BackgroundSet(),
-                                             new FontSet(),
-                                             new RectangleDimensionsSet());
-        }
-    }
-
     public CaseManagementDiagram() {
+        this(new DiagramSet(""),
+             new ProcessData(),
+             new BackgroundSet(),
+             new FontSet(),
+             new RectangleDimensionsSet());
     }
 
     public CaseManagementDiagram(final @MapsTo("diagramSet") DiagramSet diagramSet,

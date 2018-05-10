@@ -184,98 +184,98 @@ public class CaseManagementShapeFactoryTest {
 
     @Test
     public void checkCMDiagram() {
-        assertShapeConstruction(new CaseManagementDiagram.CaseManagementDiagramBuilder().build(),
+        assertShapeConstruction(new CaseManagementDiagram(),
                                 (shape) -> {
                                     assertNotNull(shape.getShapeView());
                                     assertTrue(shape instanceof CMContainerShape);
                                     assertTrue(shape.getShapeView() instanceof DiagramView);
                                     assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof CaseManagementDiagramShapeDef);
                                 });
-        assertShapeGlyph(new CaseManagementDiagram.CaseManagementDiagramBuilder().build());
+        assertShapeGlyph(new CaseManagementDiagram());
     }
 
     @Test
     public void checkLane() {
-        assertShapeConstruction(new Lane.LaneBuilder().build(),
+        assertShapeConstruction(new Lane(),
                                 nullAssertions);
-        assertShapeGlyph(new Lane.LaneBuilder().build());
+        assertShapeGlyph(new Lane());
     }
 
     @Test
     public void checkNoneTask() {
-        assertShapeConstruction(new NoneTask.NoneTaskBuilder().build(),
+        assertShapeConstruction(new NoneTask(),
                                 activityAssertions);
-        assertShapeGlyph(new NoneTask.NoneTaskBuilder().build());
+        assertShapeGlyph(new NoneTask());
     }
 
     @Test
     public void checkUserTask() {
-        assertShapeConstruction(new UserTask.UserTaskBuilder().build(),
+        assertShapeConstruction(new UserTask(),
                                 activityAssertions);
-        assertShapeGlyph(new UserTask.UserTaskBuilder().build());
+        assertShapeGlyph(new UserTask());
     }
 
     @Test
     public void checkBusinessRuleTask() {
-        assertShapeConstruction(new BusinessRuleTask.BusinessRuleTaskBuilder().build(),
+        assertShapeConstruction(new BusinessRuleTask(),
                                 activityAssertions);
-        assertShapeGlyph(new BusinessRuleTask.BusinessRuleTaskBuilder().build());
+        assertShapeGlyph(new BusinessRuleTask());
     }
 
     @Test
     public void checkStartNoneEvent() {
-        assertShapeConstruction(new StartNoneEvent.StartNoneEventBuilder().build(),
+        assertShapeConstruction(new StartNoneEvent(),
                                 nullAssertions);
-        assertShapeGlyph(new StartNoneEvent.StartNoneEventBuilder().build());
+        assertShapeGlyph(new StartNoneEvent());
     }
 
     @Test
     public void checkEndNoneEvent() {
-        assertShapeConstruction(new EndNoneEvent.EndNoneEventBuilder().build(),
+        assertShapeConstruction(new EndNoneEvent(),
                                 nullAssertions);
-        assertShapeGlyph(new EndNoneEvent.EndNoneEventBuilder().build());
+        assertShapeGlyph(new EndNoneEvent());
     }
 
     @Test
     public void checkEndTerminateEvent() {
-        assertShapeConstruction(new EndTerminateEvent.EndTerminateEventBuilder().build(),
+        assertShapeConstruction(new EndTerminateEvent(),
                                 nullAssertions);
-        assertShapeGlyph(new EndTerminateEvent.EndTerminateEventBuilder().build());
+        assertShapeGlyph(new EndTerminateEvent());
     }
 
     @Test
     public void checkParallelGateway() {
-        assertShapeConstruction(new ParallelGateway.ParallelGatewayBuilder().build(),
+        assertShapeConstruction(new ParallelGateway(),
                                 nullAssertions);
-        assertShapeGlyph(new ParallelGateway.ParallelGatewayBuilder().build());
+        assertShapeGlyph(new ParallelGateway());
     }
 
     @Test
     public void checkExclusiveDatabasedGateway() {
-        assertShapeConstruction(new ExclusiveGateway.ExclusiveGatewayBuilder().build(),
+        assertShapeConstruction(new ExclusiveGateway(),
                                 nullAssertions);
-        assertShapeGlyph(new ExclusiveGateway.ExclusiveGatewayBuilder().build());
+        assertShapeGlyph(new ExclusiveGateway());
     }
 
     @Test
     public void checkAdHocSubprocess() {
-        assertShapeConstruction(new AdHocSubprocess.AdHocSubprocessBuilder().build(),
+        assertShapeConstruction(new AdHocSubprocess(),
                                 stageAssertions);
-        assertShapeGlyph(new AdHocSubprocess.AdHocSubprocessBuilder().build());
+        assertShapeGlyph(new AdHocSubprocess());
     }
 
     @Test
     public void checkReusableSubprocess() {
-        assertShapeConstruction(new ReusableSubprocess.ReusableSubprocessBuilder().build(),
+        assertShapeConstruction(new ReusableSubprocess(),
                                 reusableSubprocessActivityAssertions);
-        assertShapeGlyph(new ReusableSubprocess.ReusableSubprocessBuilder().build());
+        assertShapeGlyph(new ReusableSubprocess());
     }
 
     @Test
     public void checkSequenceFlow() {
-        assertShapeConstruction(new SequenceFlow.SequenceFlowBuilder().build(),
+        assertShapeConstruction(new SequenceFlow(),
                                 connectorAssertions);
-        assertShapeGlyph(new SequenceFlow.SequenceFlowBuilder().build());
+        assertShapeGlyph(new SequenceFlow());
     }
 
     @SuppressWarnings("unchecked")

@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.kie.workbench.common.stunner.core.processors.definition.TypeConstructor;
+
 public class ProcessingDefinitionAnnotations {
 
     private final Map<String, String> baseTypes = new HashMap<>();
@@ -31,7 +33,7 @@ public class ProcessingDefinitionAnnotations {
     private final Map<String, String> titleFieldNames = new HashMap<>();
     private final Map<String, String> categoryFieldNames = new HashMap<>();
     private final Map<String, String> descriptionFieldNames = new HashMap<>();
-    private final Map<String, String> builderFieldNames = new HashMap<>();
+    private final Map<String, TypeConstructor> builderFieldNames = new HashMap<>();
     private final Map<String, String[]> shapeDefs = new HashMap<>();
 
     public Map<String, String> getBaseTypes() {
@@ -70,7 +72,7 @@ public class ProcessingDefinitionAnnotations {
         return descriptionFieldNames;
     }
 
-    public Map<String, String> getBuilderFieldNames() {
+    public Map<String, TypeConstructor> getBuilderFieldNames() {
         return builderFieldNames;
     }
 

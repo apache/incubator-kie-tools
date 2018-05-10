@@ -32,5 +32,6 @@ public @interface Definition {
 
     Class<? extends ElementFactory> graphFactory();
 
+    @Deprecated
     Class<? extends Builder<?>> builder() default VoidBuilder.class;
 }

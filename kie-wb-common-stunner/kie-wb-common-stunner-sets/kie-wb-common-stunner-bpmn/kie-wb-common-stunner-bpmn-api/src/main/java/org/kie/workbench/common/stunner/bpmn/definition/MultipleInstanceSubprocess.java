@@ -21,7 +21,6 @@ import java.util.Objects;
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
@@ -38,7 +37,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.variables.Proce
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
-import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
@@ -51,7 +49,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @Bindable
 @CanContain(roles = {"all"})
 @CanDock(roles = {"IntermediateEventOnSubprocessBoundary"})
-@Definition(graphFactory = NodeFactory.class, builder = MultipleInstanceSubprocess.MultipleInstanceSubprocessBuilder.class)
+@Definition(graphFactory = NodeFactory.class)
 @Morph(base = BaseSubprocess.class)
 
 @FormDefinition(
@@ -76,6 +74,13 @@ public class MultipleInstanceSubprocess extends BaseSubprocess {
     private ProcessData processData;
 
     public MultipleInstanceSubprocess() {
+        this(new BPMNGeneralSet("Multiple Instance Sub-process"),
+             new BackgroundSet(),
+             new FontSet(),
+             new RectangleDimensionsSet(),
+             new SimulationSet(),
+             new MultipleInstanceSubprocessTaskExecutionSet(),
+             new ProcessData());
     }
 
     public MultipleInstanceSubprocess(final @MapsTo("general") BPMNGeneralSet general,
@@ -84,8 +89,7 @@ public class MultipleInstanceSubprocess extends BaseSubprocess {
                                       final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
                                       final @MapsTo("simulationSet") SimulationSet simulationSet,
                                       final @MapsTo("executionSet") MultipleInstanceSubprocessTaskExecutionSet executionSet,
-                                      final @MapsTo("processData") ProcessData processData
-    ) {
+                                      final @MapsTo("processData") ProcessData processData) {
         super(general,
               backgroundSet,
               fontSet,
@@ -129,21 +133,5 @@ public class MultipleInstanceSubprocess extends BaseSubprocess {
                     Objects.equals(labels, other.labels);
         }
         return false;
-    }
-
-    @NonPortable
-    public static class MultipleInstanceSubprocessBuilder implements Builder<MultipleInstanceSubprocess> {
-
-        @Override
-        public MultipleInstanceSubprocess build() {
-            return new MultipleInstanceSubprocess(
-                    new BPMNGeneralSet("Multiple Instance Sub-process"),
-                    new BackgroundSet(),
-                    new FontSet(),
-                    new RectangleDimensionsSet(),
-                    new SimulationSet(),
-                    new MultipleInstanceSubprocessTaskExecutionSet(),
-                    new ProcessData());
-        }
     }
 }

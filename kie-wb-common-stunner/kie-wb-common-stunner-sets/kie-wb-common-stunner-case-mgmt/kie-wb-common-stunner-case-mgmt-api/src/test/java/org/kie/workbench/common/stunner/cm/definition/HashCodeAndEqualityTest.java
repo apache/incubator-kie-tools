@@ -26,10 +26,8 @@ public class HashCodeAndEqualityTest {
 
     @Test
     public void testCaseManagementDiagramEquals() {
-        CaseManagementDiagram.CaseManagementDiagramBuilder builder = new CaseManagementDiagram.CaseManagementDiagramBuilder();
-        CaseManagementDiagram a = builder.build();
-        builder = new CaseManagementDiagram.CaseManagementDiagramBuilder();
-        CaseManagementDiagram b = builder.build();
+        CaseManagementDiagram a = new CaseManagementDiagram();
+        CaseManagementDiagram b = new CaseManagementDiagram();
         assertEquals(a,
                      b);
         assertFalse(a.equals(19));
@@ -38,19 +36,15 @@ public class HashCodeAndEqualityTest {
 
     @Test
     public void testCaseManagementDiagramHashCode() {
-        CaseManagementDiagram.CaseManagementDiagramBuilder builder = new CaseManagementDiagram.CaseManagementDiagramBuilder();
-        CaseManagementDiagram a = builder.build();
-        builder = new CaseManagementDiagram.CaseManagementDiagramBuilder();
-        CaseManagementDiagram b = builder.build();
+        CaseManagementDiagram a = new CaseManagementDiagram();
+        CaseManagementDiagram b = new CaseManagementDiagram();
         assertTrue(a.hashCode() == b.hashCode());
     }
 
     @Test
     public void testReusableSubprocessEquals() {
-        ReusableSubprocess.ReusableSubprocessBuilder builder = new ReusableSubprocess.ReusableSubprocessBuilder();
-        ReusableSubprocess a = builder.build();
-        builder = new ReusableSubprocess.ReusableSubprocessBuilder();
-        ReusableSubprocess b = builder.build();
+        ReusableSubprocess a = new ReusableSubprocess();
+        ReusableSubprocess b = new ReusableSubprocess();
         assertFalse(a.equals(19));
         assertFalse(a.equals(null));
         assertEquals(a,
@@ -59,10 +53,8 @@ public class HashCodeAndEqualityTest {
 
     @Test
     public void testReusableSubprocessHashCode() {
-        ReusableSubprocess.ReusableSubprocessBuilder builder = new ReusableSubprocess.ReusableSubprocessBuilder();
-        ReusableSubprocess a = builder.build();
-        builder = new ReusableSubprocess.ReusableSubprocessBuilder();
-        ReusableSubprocess b = builder.build();
+        ReusableSubprocess a = new ReusableSubprocess();
+        ReusableSubprocess b = new ReusableSubprocess();
         assertTrue(a.hashCode() - b.hashCode() == 0);
     }
 }

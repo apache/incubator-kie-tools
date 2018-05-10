@@ -58,7 +58,7 @@ public class BPMNDiagramTest {
     }
 
     public BPMNDiagramImpl createValidBpmnDiagram() {
-        BPMNDiagramImpl BPMNDiagramImpl = new BPMNDiagramImpl.BPMNDiagramBuilder().build();
+        BPMNDiagramImpl BPMNDiagramImpl = new BPMNDiagramImpl();
         DiagramSet diagramSet = BPMNDiagramImpl.getDiagramSet();
         diagramSet.setName(new Name(NAME_VALID));
         diagramSet.setId(new Id(ID_VALID));

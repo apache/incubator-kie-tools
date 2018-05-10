@@ -21,7 +21,6 @@ import java.util.Objects;
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
@@ -39,7 +38,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.variables.Proce
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
-import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
@@ -50,7 +48,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class, builder = EmbeddedSubprocess.EmbeddedSubprocessBuilder.class)
+@Definition(graphFactory = NodeFactory.class)
 @Morph(base = BaseSubprocess.class)
 @CanContain(roles = {"all"})
 @CanDock(roles = {"IntermediateEventOnSubprocessBoundary"})
@@ -60,23 +58,6 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)}
 )
 public class EmbeddedSubprocess extends BaseSubprocess implements DataIOModel {
-
-    @NonPortable
-    public static class EmbeddedSubprocessBuilder implements Builder<EmbeddedSubprocess> {
-
-        // TODO: It should use #FAFAFA as bg_color, rather than other subprocesses...
-        @Override
-        public EmbeddedSubprocess build() {
-            return new EmbeddedSubprocess(
-                    new BPMNGeneralSet("Sub-process"),
-                    new BackgroundSet(),
-                    new FontSet(),
-                    new RectangleDimensionsSet(),
-                    new SimulationSet(),
-                    new EmbeddedSubprocessExecutionSet(),
-                    new ProcessData());
-        }
-    }
 
     @PropertySet
     @FormField(afterElement = "general")
@@ -89,7 +70,14 @@ public class EmbeddedSubprocess extends BaseSubprocess implements DataIOModel {
     private ProcessData processData;
 
     public EmbeddedSubprocess() {
-        super();
+        this(
+                new BPMNGeneralSet("Sub-process"),
+                new BackgroundSet(),
+                new FontSet(),
+                new RectangleDimensionsSet(),
+                new SimulationSet(),
+                new EmbeddedSubprocessExecutionSet(),
+                new ProcessData());
     }
 
     public EmbeddedSubprocess(final @MapsTo("general") BPMNGeneralSet general,

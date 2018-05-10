@@ -18,7 +18,6 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.rules.AcyclicDirectedGraphRule;
@@ -39,7 +38,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = EdgeFactory.class, builder = InformationRequirement.InformationRequirementBuilder.class)
+@Definition(graphFactory = EdgeFactory.class)
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED, defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)})
 @CanConnect(startRole = "decision", endRole = "decision")
 @CanConnect(startRole = "input-data", endRole = "decision")
@@ -56,13 +55,7 @@ public class InformationRequirement extends DMNModelInstrumentedBase {
         add("information-requirement");
     }};
 
-    @NonPortable
-    public static class InformationRequirementBuilder extends BaseNodeBuilder<InformationRequirement> {
-
-        @Override
-        public InformationRequirement build() {
-            return new InformationRequirement();
-        }
+    public InformationRequirement() {
     }
 
     // -----------------------

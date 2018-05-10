@@ -18,7 +18,6 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.rules.AcyclicDirectedGraphRule;
@@ -39,7 +38,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = EdgeFactory.class, builder = KnowledgeRequirement.KnowledgeRequirementBuilder.class)
+@Definition(graphFactory = EdgeFactory.class)
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED, defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)})
 @CanConnect(startRole = "business-knowledge-model", endRole = "decision")
 @CanConnect(startRole = "business-knowledge-model", endRole = "business-knowledge-model")
@@ -56,13 +55,7 @@ public class KnowledgeRequirement extends DMNModelInstrumentedBase {
         add("knowledge-requirement");
     }};
 
-    @NonPortable
-    public static class KnowledgeRequirementBuilder extends BaseNodeBuilder<KnowledgeRequirement> {
-
-        @Override
-        public KnowledgeRequirement build() {
-            return new KnowledgeRequirement();
-        }
+    public KnowledgeRequirement() {
     }
 
     // -----------------------
