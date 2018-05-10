@@ -81,6 +81,11 @@ public class SessionScreenViewImpl implements SessionScreenView {
                                                                    Style.Unit.PX);
     }
 
+    @Override
+    public void clear() {
+        this.screenViewPanel.clear();
+    }
+
     private SessionScreenView setScreenView(final IsWidget view) {
         this.screenViewPanel.clear();
         this.screenViewPanel.add(view);

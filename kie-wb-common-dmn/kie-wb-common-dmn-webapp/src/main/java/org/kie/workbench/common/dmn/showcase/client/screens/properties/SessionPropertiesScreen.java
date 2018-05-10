@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.showcase.client.screens.BaseSessionScreen;
 import org.kie.workbench.common.dmn.showcase.client.screens.SessionScreenView;
 import org.kie.workbench.common.stunner.forms.client.widgets.FormPropertiesWidget;
@@ -38,7 +39,8 @@ public class SessionPropertiesScreen extends BaseSessionScreen {
     public static final String TITLE = "Properties";
 
     private SessionScreenView view;
-    private FormPropertiesWidget formPropertiesWidget;
+    private ManagedInstance<FormPropertiesWidget> formPropertiesWidgets;
+    private FormPropertiesWidget widget;
 
     public SessionPropertiesScreen() {
         //CDI proxy
@@ -46,9 +48,9 @@ public class SessionPropertiesScreen extends BaseSessionScreen {
 
     @Inject
     public SessionPropertiesScreen(final SessionScreenView view,
-                                   final FormPropertiesWidget formPropertiesWidget) {
+                                   final ManagedInstance<FormPropertiesWidget> formPropertiesWidgets) {
         this.view = view;
-        this.formPropertiesWidget = formPropertiesWidget;
+        this.formPropertiesWidgets = formPropertiesWidgets;
     }
 
     @PostConstruct
@@ -78,11 +80,18 @@ public class SessionPropertiesScreen extends BaseSessionScreen {
 
     @Override
     protected void doOpenDiagram() {
-        view.showScreenView(ElementWrapperWidget.getWidget(formPropertiesWidget.getElement()));
+        widget = formPropertiesWidgets.get();
+        view.showScreenView(ElementWrapperWidget.getWidget(widget.getElement()));
+        widget.bind(getSession()).show();
     }
 
     @Override
     protected void doCloseSession() {
-        view.showEmptySession();
+        view.clear();
+        if (null != widget) {
+            widget.destroy();
+            widget = null;
+        }
+        formPropertiesWidgets.destroyAll();
     }
 }
