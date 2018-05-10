@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
-import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.svg.client.shape.factory.SVGShapeViewResources;
@@ -43,8 +43,8 @@ public class TaskShapeDef extends BaseDimensionedShapeDef
                     .put(ScriptTask.class, BPMNSVGViewFactory::scriptTask)
                     .put(BusinessRuleTask.class, BPMNSVGViewFactory::businessRuleTask);
 
-    public static final Map<Class<? extends BaseTask>, SvgDataUriGlyph> GLYPHS =
-            new HashMap<Class<? extends BaseTask>, SvgDataUriGlyph>() {{
+    public static final Map<Class<? extends BaseTask>, ImageDataUriGlyph> GLYPHS =
+            new HashMap<Class<? extends BaseTask>, ImageDataUriGlyph>() {{
                 put(NoneTask.class, BPMNSVGGlyphFactory.NONE_TASK_GLYPH);
                 put(UserTask.class, BPMNSVGGlyphFactory.USER_TASK_GLYPH);
                 put(ScriptTask.class, BPMNSVGGlyphFactory.SCRIPT_TASK_GLYPH);

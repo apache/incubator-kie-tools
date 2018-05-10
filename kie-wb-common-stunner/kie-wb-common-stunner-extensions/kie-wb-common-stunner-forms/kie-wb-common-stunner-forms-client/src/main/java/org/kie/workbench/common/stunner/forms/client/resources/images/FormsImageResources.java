@@ -18,13 +18,12 @@ package org.kie.workbench.common.stunner.forms.client.resources.images;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundleWithLookup;
-import com.google.gwt.resources.client.DataResource;
+import com.google.gwt.resources.client.ImageResource;
 
 public interface FormsImageResources extends ClientBundleWithLookup {
 
     public static final FormsImageResources INSTANCE = GWT.create(FormsImageResources.class);
 
-    @Source("form.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource form();
+    @Source("form.png")
+    ImageResource form();
 }

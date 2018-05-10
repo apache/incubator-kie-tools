@@ -72,160 +72,124 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     DataResource categoryServiceTasks();
 
     // ******* Task *******
-    @ClientBundle.Source("images/icons/task/task.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource task();
+    @ClientBundle.Source("images/icons/task/task.png")
+    ImageResource task();
 
-    @ClientBundle.Source("images/icons/task/task-user.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource taskUser();
+    @ClientBundle.Source("images/icons/task/task-user.png")
+    ImageResource taskUser();
 
-    @ClientBundle.Source("images/icons/task/task-script.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource taskScript();
+    @ClientBundle.Source("images/icons/task/task-script.png")
+    ImageResource taskScript();
 
-    @ClientBundle.Source("images/icons/task/task-business-rule.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource taskBusinessRule();
+    @ClientBundle.Source("images/icons/task/task-business-rule.png")
+    ImageResource taskBusinessRule();
 
-    @ClientBundle.Source("images/icons/task/task-manual.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource taskManual();
+    @ClientBundle.Source("images/icons/task/task-manual.png")
+    ImageResource taskManual();
 
-    @ClientBundle.Source("images/icons/task/task-service.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource taskService();
+    @ClientBundle.Source("images/icons/task/task-service.png")
+    ImageResource taskService();
 
     // ******* Event *******
-    @ClientBundle.Source("images/icons/event/event-end.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventEnd();
+    @ClientBundle.Source("images/icons/event/event-end.png")
+    ImageResource eventEnd();
 
-    @ClientBundle.Source("images/icons/event/event-end-none.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventEndNone();
+    @ClientBundle.Source("images/icons/event/event-end-none.png")
+    ImageResource eventEndNone();
 
-    @ClientBundle.Source("images/icons/event/event-end-signal.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventEndSignal();
+    @ClientBundle.Source("images/icons/event/event-end-signal.png")
+    ImageResource eventEndSignal();
 
-    @ClientBundle.Source("images/icons/event/event-end-message.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventEndMessage();
+    @ClientBundle.Source("images/icons/event/event-end-message.png")
+    ImageResource eventEndMessage();
 
-    @ClientBundle.Source("images/icons/event/event-end-terminate.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventEndTerminate();
+    @ClientBundle.Source("images/icons/event/event-end-terminate.png")
+    ImageResource eventEndTerminate();
 
-    @ClientBundle.Source("images/icons/event/event-end-error.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventEndError();
+    @ClientBundle.Source("images/icons/event/event-end-error.png")
+    ImageResource eventEndError();
 
-    @ClientBundle.Source("images/icons/event/event-intermediate-message.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventIntermediateMessage();
+    @ClientBundle.Source("images/icons/event/event-intermediate-message.png")
+    ImageResource eventIntermediateMessage();
 
-    @ClientBundle.Source("images/icons/event/event-intermediate-error.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventIntermediateError();
+    @ClientBundle.Source("images/icons/event/event-intermediate-error.png")
+    ImageResource eventIntermediateError();
 
-    @ClientBundle.Source("images/icons/event/event-intermediate-timer.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventIntermediateTimer();
+    @ClientBundle.Source("images/icons/event/event-intermediate-timer.png")
+    ImageResource eventIntermediateTimer();
 
-    @ClientBundle.Source("images/icons/event/event-intermediate-signal.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventIntermediateSignal();
+    @ClientBundle.Source("images/icons/event/event-intermediate-signal.png")
+    ImageResource eventIntermediateSignal();
 
-    @ClientBundle.Source("images/icons/event/event-intermediate-signal-throwing.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventIntermediateSignalThrowing();
+    @ClientBundle.Source("images/icons/event/event-intermediate-signal-throwing.png")
+    ImageResource eventIntermediateSignalThrowing();
 
-    @ClientBundle.Source("images/icons/event/event-intermediate-message-throwing.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventIntermediateMessageThrowing();
+    @ClientBundle.Source("images/icons/event/event-intermediate-message-throwing.png")
+    ImageResource eventIntermediateMessageThrowing();
 
-    @ClientBundle.Source("images/icons/event/event-start-none.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventStartNone();
+    @ClientBundle.Source("images/icons/event/event-start-none.png")
+    ImageResource eventStartNone();
 
-    @ClientBundle.Source("images/icons/event/event-start-error.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventStartError();
+    @ClientBundle.Source("images/icons/event/event-start-error.png")
+    ImageResource eventStartError();
 
-    @ClientBundle.Source("images/icons/event/event-start-signal.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventStartSignal();
+    @ClientBundle.Source("images/icons/event/event-start-signal.png")
+    ImageResource eventStartSignal();
 
-    @ClientBundle.Source("images/icons/event/event-start-message.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventStartMessage();
+    @ClientBundle.Source("images/icons/event/event-start-message.png")
+    ImageResource eventStartMessage();
 
-    @ClientBundle.Source("images/icons/event/event-start-timer.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource eventStartTimer();
+    @ClientBundle.Source("images/icons/event/event-start-timer.png")
+    ImageResource eventStartTimer();
 
     // ******* Gateway *******
-    @ClientBundle.Source("images/icons/gateway/parallel-event.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource gatewayParallelEvent();
+    @ClientBundle.Source("images/icons/gateway/parallel-event.png")
+    ImageResource gatewayParallelEvent();
 
-    @ClientBundle.Source("images/icons/gateway/parallel-multiple.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource gatewayParallelMultiple();
+    @ClientBundle.Source("images/icons/gateway/parallel-multiple.png")
+    ImageResource gatewayParallelMultiple();
 
-    @ClientBundle.Source("images/icons/gateway/exclusive.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource gatewayExclusive();
+    @ClientBundle.Source("images/icons/gateway/exclusive.png")
+    ImageResource gatewayExclusive();
 
-    @ClientBundle.Source("images/icons/gateway/complex.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource gatewayComplex();
+    @ClientBundle.Source("images/icons/gateway/complex.png")
+    ImageResource gatewayComplex();
 
-    @ClientBundle.Source("images/icons/gateway/event.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource gatewayEvent();
+    @ClientBundle.Source("images/icons/gateway/event.png")
+    ImageResource gatewayEvent();
 
-    @ClientBundle.Source("images/icons/gateway/inclusive.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource gatewayInclusive();
+    @ClientBundle.Source("images/icons/gateway/inclusive.png")
+    ImageResource gatewayInclusive();
 
     // ******* Containers *******
 
-    @ClientBundle.Source("images/icons/lane_icon.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource lane();
+    @ClientBundle.Source("images/icons/lane_icon.png")
+    ImageResource lane();
 
     // ******* Subprocesses *******
     @ClientBundle.Source("images/icons/subprocess/subprocess.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource subProcess();
 
-    @ClientBundle.Source("images/icons/subprocess/subprocess-reusable.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource subProcessReusable();
+    @ClientBundle.Source("images/icons/subprocess/subprocess-reusable.png")
+    ImageResource subProcessReusable();
 
-    @ClientBundle.Source("images/icons/subprocess/subprocess-adhoc.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource subProcessAdHoc();
+    @ClientBundle.Source("images/icons/subprocess/subprocess-adhoc.png")
+    ImageResource subProcessAdHoc();
 
-    @ClientBundle.Source("images/icons/subprocess/subprocess-event.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource subProcessEvent();
+    @ClientBundle.Source("images/icons/subprocess/subprocess-event.png")
+    ImageResource subProcessEvent();
 
-    @ClientBundle.Source("images/icons/subprocess/subprocess-embedded.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource subProcessEmbedded();
+    @ClientBundle.Source("images/icons/subprocess/subprocess-embedded.png")
+    ImageResource subProcessEmbedded();
 
-    @ClientBundle.Source("images/icons/subprocess/subprocess-multiple-instance.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource subProcessMultipleInstance();
+    @ClientBundle.Source("images/icons/subprocess/subprocess-multiple-instance.png")
+    ImageResource subProcessMultipleInstance();
 
     // ******* Connectors *******
 
-    @ClientBundle.Source("images/icons/connectors/sequence.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource sequenceFlow();
+    @ClientBundle.Source("images/icons/connectors/sequence.png")
+    ImageResource sequenceFlow();
 
     // ******* Misc *******
 

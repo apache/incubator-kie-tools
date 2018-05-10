@@ -25,7 +25,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.BaseGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.InclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
-import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.svg.client.shape.factory.SVGShapeViewResources;
@@ -43,8 +42,8 @@ public class GatewayShapeDef
                     .put(InclusiveGateway.class,
                          BPMNSVGViewFactory::inclusiveGateway);
 
-    public static final Map<Class<? extends BaseGateway>, SvgDataUriGlyph> GLYPHS =
-            new HashMap<Class<? extends BaseGateway>, SvgDataUriGlyph>() {{
+    public static final Map<Class<? extends BaseGateway>, Glyph> GLYPHS =
+            new HashMap<Class<? extends BaseGateway>, Glyph>() {{
                 put(ParallelGateway.class,
                     BPMNSVGGlyphFactory.PARALLEL_MULTIPLE_GATEWAY_GLYPH);
                 put(ExclusiveGateway.class,

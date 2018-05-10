@@ -16,117 +16,65 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.resources;
 
-import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
 
 public interface BPMNSVGGlyphFactory {
 
-    SvgDataUriGlyph NONE_TASK_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.task().getSafeUri());
+    ImageDataUriGlyph NONE_TASK_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.task().getSafeUri());
 
-    SvgDataUriGlyph USER_TASK_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.taskUser().getSafeUri());
+    ImageDataUriGlyph USER_TASK_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.taskUser().getSafeUri());
 
-    SvgDataUriGlyph SCRIPT_TASK_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.taskScript().getSafeUri());
+    ImageDataUriGlyph SCRIPT_TASK_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.taskScript().getSafeUri());
 
-    SvgDataUriGlyph BUSINESS_RULE_TASK_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.taskBusinessRule().getSafeUri());
+    ImageDataUriGlyph BUSINESS_RULE_TASK_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.taskBusinessRule().getSafeUri());
 
-    SvgDataUriGlyph PARALLEL_MULTIPLE_GATEWAY_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.gatewayParallelMultiple().getSafeUri());
+    ImageDataUriGlyph PARALLEL_MULTIPLE_GATEWAY_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.gatewayParallelMultiple().getSafeUri());
 
-    SvgDataUriGlyph EXCLUSIVE_GATEWAY_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.gatewayExclusive().getSafeUri());
+    ImageDataUriGlyph EXCLUSIVE_GATEWAY_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.gatewayExclusive().getSafeUri());
 
-    SvgDataUriGlyph INCLUSIVE_GATEWAY_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.gatewayInclusive().getSafeUri());
+    ImageDataUriGlyph INCLUSIVE_GATEWAY_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.gatewayInclusive().getSafeUri());
 
-    SvgDataUriGlyph START_NONE_EVENT_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.eventStartNone().getSafeUri());
+    ImageDataUriGlyph START_NONE_EVENT_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.eventStartNone().getSafeUri());
 
-    SvgDataUriGlyph START_SIGNAL_EVENT_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.eventStartSignal().getSafeUri());
+    ImageDataUriGlyph START_SIGNAL_EVENT_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.eventStartSignal().getSafeUri());
 
-    SvgDataUriGlyph START_TIMER_EVENT_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.eventStartTimer().getSafeUri());
+    ImageDataUriGlyph START_TIMER_EVENT_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.eventStartTimer().getSafeUri());
 
-    SvgDataUriGlyph START_MESSAGE_EVENT_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.eventStartMessage().getSafeUri());
+    ImageDataUriGlyph START_MESSAGE_EVENT_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.eventStartMessage().getSafeUri());
 
-    SvgDataUriGlyph START_ERROR_EVENT_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.eventStartError().getSafeUri());
+    ImageDataUriGlyph START_ERROR_EVENT_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.eventStartError().getSafeUri());
 
-    SvgDataUriGlyph END_NONE_EVENT_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.eventEndNone().getSafeUri());
+    ImageDataUriGlyph END_NONE_EVENT_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.eventEndNone().getSafeUri());
 
-    SvgDataUriGlyph END_SIGNAL_EVENT_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.eventEndSignal().getSafeUri());
+    ImageDataUriGlyph END_SIGNAL_EVENT_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.eventEndSignal().getSafeUri());
 
-    SvgDataUriGlyph END_MESSAGE_EVENT_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.eventEndMessage().getSafeUri());
+    ImageDataUriGlyph END_MESSAGE_EVENT_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.eventEndMessage().getSafeUri());
 
-    SvgDataUriGlyph END_TERMINATE_EVENT_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.eventEndTerminate().getSafeUri());
+    ImageDataUriGlyph END_TERMINATE_EVENT_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.eventEndTerminate().getSafeUri());
 
-    SvgDataUriGlyph END_ERROR_EVENT_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.eventEndError().getSafeUri());
+    ImageDataUriGlyph END_ERROR_EVENT_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.eventEndError().getSafeUri());
 
-    SvgDataUriGlyph INTERMEDIATE_MESSAGE_EVENT_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.eventIntermediateMessage().getSafeUri());
+    ImageDataUriGlyph INTERMEDIATE_MESSAGE_EVENT_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.eventIntermediateMessage().getSafeUri());
 
-    SvgDataUriGlyph INTERMEDIATE_SIGNAL_EVENT_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.eventIntermediateSignal().getSafeUri());
+    ImageDataUriGlyph INTERMEDIATE_SIGNAL_EVENT_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.eventIntermediateSignal().getSafeUri());
 
-    SvgDataUriGlyph INTERMEDIATE_TIMER_EVENT_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.eventIntermediateTimer().getSafeUri());
+    ImageDataUriGlyph INTERMEDIATE_TIMER_EVENT_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.eventIntermediateTimer().getSafeUri());
 
-    SvgDataUriGlyph INTERMEDIATE_ERROR_EVENT_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.eventIntermediateError().getSafeUri());
+    ImageDataUriGlyph INTERMEDIATE_ERROR_EVENT_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.eventIntermediateError().getSafeUri());
 
-    SvgDataUriGlyph INTERMEDIATE_SIGNAL_EVENT_THROWING_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.eventIntermediateSignalThrowing().getSafeUri());
+    ImageDataUriGlyph INTERMEDIATE_SIGNAL_EVENT_THROWING_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.eventIntermediateSignalThrowing().getSafeUri());
 
-    SvgDataUriGlyph INTERMEDIATE_MESSAGE_EVENT_THROWING_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.eventIntermediateMessageThrowing().getSafeUri());
+    ImageDataUriGlyph INTERMEDIATE_MESSAGE_EVENT_THROWING_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.eventIntermediateMessageThrowing().getSafeUri());
 
-    SvgDataUriGlyph LANE_GLYPH =
-            SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.lane().getSafeUri());
+    ImageDataUriGlyph LANE_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.lane().getSafeUri());
 
-    SvgDataUriGlyph REUSABLE_SUBPROCESS_GLYPH =
-            SvgDataUriGlyph.Builder
-                    .create()
-                    .setUri(BPMNImageResources.INSTANCE.subProcess().getSafeUri())
-                    .addUri("subProcessReusable",
-                            BPMNImageResources.INSTANCE.subProcessReusable().getSafeUri())
-                    .build("subProcessReusable");
+    ImageDataUriGlyph REUSABLE_SUBPROCESS_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.subProcessReusable().getSafeUri());
 
-    SvgDataUriGlyph EMBEDDED_SUBPROCESS_GLYPH =
-            SvgDataUriGlyph.Builder
-                    .create()
-                    .setUri(BPMNImageResources.INSTANCE.subProcess().getSafeUri())
-                    .addUri("subProcessEmbedded",
-                            BPMNImageResources.INSTANCE.subProcessEmbedded().getSafeUri())
-                    .build("subProcessEmbedded");
+    ImageDataUriGlyph EMBEDDED_SUBPROCESS_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.subProcessEmbedded().getSafeUri());
 
-    SvgDataUriGlyph ADHOC_SUBPROCESS_GLYPH =
-            SvgDataUriGlyph.Builder
-                    .create()
-                    .setUri(BPMNImageResources.INSTANCE.subProcess().getSafeUri())
-                    .addUri("subProcessAdHoc",
-                            BPMNImageResources.INSTANCE.subProcessAdHoc().getSafeUri())
-                    .build("subProcessAdHoc");
+    ImageDataUriGlyph ADHOC_SUBPROCESS_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.subProcessAdHoc().getSafeUri());
 
-    SvgDataUriGlyph EVENT_SUBPROCESS_GLYPH =
-            SvgDataUriGlyph.Builder
-                    .create()
-                    .setUri(BPMNImageResources.INSTANCE.subProcessEvent().getSafeUri())
-                    .build("subProcessEvent");
+    ImageDataUriGlyph EVENT_SUBPROCESS_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.subProcessEvent().getSafeUri());
 
-    SvgDataUriGlyph MULTIPLE_INSTANCE_SUBPROCESS_GLYPH =
-            SvgDataUriGlyph.Builder
-                    .create()
-                    .setUri(BPMNImageResources.INSTANCE.subProcess().getSafeUri())
-                    .addUri("subProcessMultipleInstance",
-                            BPMNImageResources.INSTANCE.subProcessMultipleInstance().getSafeUri())
-                    .build("subProcessMultipleInstance");
+    ImageDataUriGlyph MULTIPLE_INSTANCE_SUBPROCESS_GLYPH = ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.subProcessMultipleInstance().getSafeUri());
 }

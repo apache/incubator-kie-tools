@@ -27,7 +27,7 @@ public final class CaseManagementTaskShapeDef
 
     @Override
     public SafeUri getIconUri(final Class<? extends BaseTask> task) {
-        return TaskShapeDef.GLYPHS.get(task).getSvg();
+        return TaskShapeDef.GLYPHS.get(task).getUri();
     }
 
     @Override

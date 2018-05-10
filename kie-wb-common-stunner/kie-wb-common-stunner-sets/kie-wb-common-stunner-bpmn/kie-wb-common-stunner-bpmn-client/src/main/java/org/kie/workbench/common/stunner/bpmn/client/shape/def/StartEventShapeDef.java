@@ -29,7 +29,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
-import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.CompositeShapeViewHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
@@ -55,8 +54,8 @@ public class StartEventShapeDef
                     .put(StartErrorEvent.class,
                          BPMNSVGViewFactory::startErrorEvent);
 
-    public static final Map<Class<? extends BaseStartEvent>, SvgDataUriGlyph> GLYPHS =
-            new HashMap<Class<? extends BaseStartEvent>, SvgDataUriGlyph>() {{
+    public static final Map<Class<? extends BaseStartEvent>, Glyph> GLYPHS =
+            new HashMap<Class<? extends BaseStartEvent>, Glyph>() {{
                 put(StartNoneEvent.class,
                     BPMNSVGGlyphFactory.START_NONE_EVENT_GLYPH);
                 put(StartTimerEvent.class,

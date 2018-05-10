@@ -20,24 +20,23 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ClientBundleWithLookup;
 import com.google.gwt.resources.client.DataResource;
+import com.google.gwt.resources.client.ImageResource;
 
 public interface StunnerCommonImageResources extends ClientBundleWithLookup {
 
-    public static final StunnerCommonImageResources INSTANCE = GWT.create(StunnerCommonImageResources.class);
+    StunnerCommonImageResources INSTANCE = GWT.create(StunnerCommonImageResources.class);
 
     @ClientBundle.Source("images/check.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource check();
 
-    @ClientBundle.Source("images/delete.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource delete();
+    @ClientBundle.Source("images/delete.png")
+    ImageResource delete();
 
     @ClientBundle.Source("images/edit.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource edit();
 
-    @ClientBundle.Source("images/gears.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource gears();
+    @ClientBundle.Source("images/gears.png")
+    ImageResource gears();
 }

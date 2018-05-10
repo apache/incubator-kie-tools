@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.client.lienzo.components.glyph.LienzoGly
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolbox;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.MorphActionsToolbox;
 import org.kie.workbench.common.stunner.core.client.resources.StunnerCommonImageResources;
-import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
 import org.kie.workbench.common.stunner.lienzo.toolbox.ToolboxVisibilityExecutors;
 import org.kie.workbench.common.stunner.lienzo.toolbox.grid.FixedLayoutGrid;
 import org.kie.workbench.common.stunner.lienzo.toolbox.grid.Point2DGrid;
@@ -51,8 +51,8 @@ public class MorphActionsToolboxView
     static final Direction TOOLTIP_AT = Direction.SOUTH;
     static final Direction TOOLTIP_TOWARDS = Direction.SOUTH;
 
-    private static final SvgDataUriGlyph MORPH_BUTTON_GLYPH =
-            SvgDataUriGlyph.Builder.build(StunnerCommonImageResources.INSTANCE.gears().getSafeUri());
+    private static final ImageDataUriGlyph MORPH_BUTTON_GLYPH =
+            ImageDataUriGlyph.create(StunnerCommonImageResources.INSTANCE.gears().getSafeUri());
 
     private ButtonGridItem gridItem;
 

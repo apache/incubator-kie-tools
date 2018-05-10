@@ -25,7 +25,7 @@ import java.util.function.Predicate;
 
 import org.kie.workbench.common.stunner.core.client.components.palette.AbstractPaletteDefinitionBuilder.ItemMessageProvider;
 import org.kie.workbench.common.stunner.core.client.resources.StunnerCommonImageResources;
-import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
@@ -155,7 +155,7 @@ public class DefaultPaletteDefinitionProviders {
     }
 
     public static final Function<String, Glyph> DEFAULT_CATEGORY_GLYPH_PROVIDER =
-            category -> SvgDataUriGlyph.Builder.build(StunnerCommonImageResources.INSTANCE.gears().getSafeUri());
+            category -> ImageDataUriGlyph.create(StunnerCommonImageResources.INSTANCE.gears().getSafeUri());
 
     /**
      * The attributes holder for rendering a category in the palette.

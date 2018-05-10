@@ -28,7 +28,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.MultipleInstanceSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
-import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
@@ -47,8 +46,8 @@ public class SubprocessShapeDef extends BaseDimensionedShapeDef
                     .put(AdHocSubprocess.class, BPMNSVGViewFactory::adHocSubProcess)
                     .put(MultipleInstanceSubprocess.class, BPMNSVGViewFactory::multipleInstanceSubProcess);
 
-    public static final Map<Class<? extends BaseSubprocess>, SvgDataUriGlyph> GLYPHS =
-            new HashMap<Class<? extends BaseSubprocess>, SvgDataUriGlyph>() {{
+    public static final Map<Class<? extends BaseSubprocess>, Glyph> GLYPHS =
+            new HashMap<Class<? extends BaseSubprocess>, Glyph>() {{
                 put(ReusableSubprocess.class, BPMNSVGGlyphFactory.REUSABLE_SUBPROCESS_GLYPH);
                 put(EmbeddedSubprocess.class, BPMNSVGGlyphFactory.EMBEDDED_SUBPROCESS_GLYPH);
                 put(EventSubprocess.class, BPMNSVGGlyphFactory.EVENT_SUBPROCESS_GLYPH);
