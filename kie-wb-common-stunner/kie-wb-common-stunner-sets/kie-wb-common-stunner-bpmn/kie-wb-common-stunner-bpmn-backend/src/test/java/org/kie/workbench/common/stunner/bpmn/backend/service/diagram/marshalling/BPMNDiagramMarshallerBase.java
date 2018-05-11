@@ -50,6 +50,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.ScriptTypeListTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.ScriptTypeTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.StringTypeSerializer;
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.TaskTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.TimerSettingsTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.VariablesTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.MockApplicationFactoryManager;
@@ -249,6 +250,8 @@ public abstract class BPMNDiagramMarshallerBase {
         TimerSettingsTypeSerializer timerSettingsTypeSerializer = new TimerSettingsTypeSerializer();
         ScriptTypeTypeSerializer scriptTypeTypeSerializer = new ScriptTypeTypeSerializer();
         ScriptTypeListTypeSerializer scriptTypeListTypeSerializer = new ScriptTypeListTypeSerializer();
+        TaskTypeSerializer taskTypeSerializer = new TaskTypeSerializer(definitionUtils1,
+                                                                       enumTypeSerializer);
         List<Bpmn2OryxPropertySerializer<?>> propertySerializers = new LinkedList<>();
         propertySerializers.add(stringTypeSerializer);
         propertySerializers.add(booleanTypeSerializer);
@@ -261,6 +264,7 @@ public abstract class BPMNDiagramMarshallerBase {
         propertySerializers.add(timerSettingsTypeSerializer);
         propertySerializers.add(scriptTypeTypeSerializer);
         propertySerializers.add(scriptTypeListTypeSerializer);
+        propertySerializers.add(taskTypeSerializer);
         Bpmn2OryxPropertyManager oryxPropertyManager = new Bpmn2OryxPropertyManager(propertySerializers);
         Bpmn2OryxManager oryxManager = new Bpmn2OryxManager(oryxIdMappings,
                                                             oryxPropertyManager);

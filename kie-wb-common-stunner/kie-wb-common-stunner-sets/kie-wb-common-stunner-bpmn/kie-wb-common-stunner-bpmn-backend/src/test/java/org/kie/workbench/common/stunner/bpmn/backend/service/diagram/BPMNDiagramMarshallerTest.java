@@ -442,6 +442,7 @@ public class BPMNDiagramMarshallerTest {
         when(adapterRegistry.getMorphAdapter(eq(NoneTask.class))).thenReturn(morphAdapter);
         when(adapterRegistry.getMorphAdapter(eq(ScriptTask.class))).thenReturn(morphAdapter);
         when(adapterRegistry.getMorphAdapter(eq(BusinessRuleTask.class))).thenReturn(morphAdapter);
+        when(adapterRegistry.getMorphAdapter(eq(ServiceTask.class))).thenReturn(morphAdapter);
         GraphIndexBuilder<?> indexBuilder = new MapIndexBuilder();
         when(rulesManager.evaluate(any(RuleSet.class),
                                    any(RuleEvaluationContext.class))).thenReturn(new DefaultRuleViolations());
@@ -1147,19 +1148,8 @@ public class BPMNDiagramMarshallerTest {
                       6);
         assertEquals("UserGroups",
                      diagram.getMetadata().getTitle());
-        UserTaskExecutionSet executionSet = null;
-        Iterator<Element> it = nodesIterator(diagram);
-        while (it.hasNext()) {
-            Element element = it.next();
-            if (element.getContent() instanceof View) {
-                Object oDefinition = ((View) element.getContent()).getDefinition();
-                if (oDefinition instanceof UserTask) {
-                    UserTask userTask = (UserTask) oDefinition;
-                    executionSet = userTask.getExecutionSet();
-                    break;
-                }
-            }
-        }
+        UserTask userTask = findContent(diagram, UserTask.class);
+        UserTaskExecutionSet executionSet = userTask.getExecutionSet();
         assertEquals("user,user1",
                      executionSet.getActors().getValue());
         assertEquals("admin,kiemgmt",
@@ -1174,19 +1164,9 @@ public class BPMNDiagramMarshallerTest {
                       4);
         assertEquals("MyBP",
                      diagram.getMetadata().getTitle());
-        UserTaskExecutionSet userTaskExecutionSet = null;
-        Iterator<Element> it = nodesIterator(diagram);
-        while (it.hasNext()) {
-            Element element = it.next();
-            if (element.getContent() instanceof View) {
-                Object oDefinition = ((View) element.getContent()).getDefinition();
-                if (oDefinition instanceof UserTask) {
-                    UserTask userTask = (UserTask) oDefinition;
-                    userTaskExecutionSet = userTask.getExecutionSet();
-                    break;
-                }
-            }
-        }
+        UserTask userTask = findContent(diagram, UserTask.class);
+        UserTaskExecutionSet userTaskExecutionSet = userTask.getExecutionSet();
+
         assertEquals("MyUserTask",
                      userTaskExecutionSet.getTaskName().getValue());
         assertEquals("true",
@@ -1232,19 +1212,8 @@ public class BPMNDiagramMarshallerTest {
         assertEquals("SimulationProperties",
                      diagram.getMetadata().getTitle());
 
-        SimulationSet simulationSet = null;
-        Iterator<Element> it = nodesIterator(diagram);
-        while (it.hasNext()) {
-            Element element = it.next();
-            if (element.getContent() instanceof View) {
-                Object oDefinition = ((View) element.getContent()).getDefinition();
-                if (oDefinition instanceof UserTask) {
-                    UserTask userTask = (UserTask) oDefinition;
-                    simulationSet = userTask.getSimulationSet();
-                    break;
-                }
-            }
-        }
+        UserTask userTask = findContent(diagram, UserTask.class);
+        SimulationSet simulationSet = userTask.getSimulationSet();
 
         assertEquals(Double.valueOf(111),
                      simulationSet.getQuantity().getValue());
@@ -1574,18 +1543,8 @@ public class BPMNDiagramMarshallerTest {
     @Test
     public void testUnmarshallReusableSubprocess() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_REUSABLE_SUBPROCESS);
-        ReusableSubprocess reusableSubprocess = null;
-        Iterator<Element> it = nodesIterator(diagram);
-        while (it.hasNext()) {
-            Element element = it.next();
-            if (element.getContent() instanceof View) {
-                Object oDefinition = ((View) element.getContent()).getDefinition();
-                if (oDefinition instanceof ReusableSubprocess) {
-                    reusableSubprocess = (ReusableSubprocess) oDefinition;
-                    break;
-                }
-            }
-        }
+        ReusableSubprocess reusableSubprocess = findContent(diagram, ReusableSubprocess.class);
+
         assertNotNull(reusableSubprocess);
         assertNotNull(reusableSubprocess.getExecutionSet());
         assertNotNull(reusableSubprocess.getExecutionSet().getCalledElement());
@@ -1616,18 +1575,7 @@ public class BPMNDiagramMarshallerTest {
     @Test
     public void testUnmarshallAddHocSubprocess() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ADHOC_SUBPROCESS);
-        AdHocSubprocess adHocSubprocess = null;
-        Iterator<Element> it = nodesIterator(diagram);
-        while (it.hasNext()) {
-            Element element = it.next();
-            if (element.getContent() instanceof View) {
-                Object oDefinition = ((View) element.getContent()).getDefinition();
-                if (oDefinition instanceof AdHocSubprocess) {
-                    adHocSubprocess = (AdHocSubprocess) oDefinition;
-                    break;
-                }
-            }
-        }
+        AdHocSubprocess adHocSubprocess = findContent(diagram, AdHocSubprocess.class);
 
         assertNotNull(adHocSubprocess);
 
@@ -1958,21 +1906,6 @@ public class BPMNDiagramMarshallerTest {
             for (Edge edge : edges) {
                 if (edge.getContent() instanceof ViewConnector) {
                     return (ViewConnector) edge.getContent();
-                }
-            }
-        }
-        return null;
-    }
-
-    private Element findElementByContentType(Diagram<Graph, Metadata> diagram,
-                                             Class contentClass) {
-        Iterator<Element> it = nodesIterator(diagram);
-        while (it.hasNext()) {
-            Element element = it.next();
-            if (element.getContent() instanceof View) {
-                Object oDefinition = ((View) element.getContent()).getDefinition();
-                if (contentClass.isInstance(oDefinition)) {
-                    return element;
                 }
             }
         }
@@ -2973,6 +2906,59 @@ public class BPMNDiagramMarshallerTest {
         testMagnetsInLane(diagram2);
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshallWorkItems() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_SERVICE_TASKS);
+        assertDiagram(diagram,
+                      5);
+        // Email service task assertions.
+        Node<? extends Definition, ?> emailNode = diagram.getGraph().getNode("_277CE006-5E6E-4960-A68C-CC8A5347C33F");
+        assertTrue(emailNode.getContent().getDefinition() instanceof ServiceTask);
+        ServiceTask email = (ServiceTask) emailNode.getContent().getDefinition();
+        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getName(),
+                     email.getName());
+        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getCategory(),
+                     email.getCategory());
+        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getDefaultHandler(),
+                     email.getDefaultHandler());
+        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getDescription(),
+                     email.getDescription());
+        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getDisplayName(),
+                     email.getGeneral().getName().getValue());
+        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getDocumentation(),
+                     email.getGeneral().getDocumentation().getValue());
+        // Log service task assertions.
+        Node<? extends Definition, ?> logNode = diagram.getGraph().getNode("_A940748F-A658-4FB8-84FD-B69F4B7A9205");
+        assertTrue(logNode.getContent().getDefinition() instanceof ServiceTask);
+        ServiceTask log = (ServiceTask) logNode.getContent().getDefinition();
+        assertEquals(WorkItemDefinitionMockRegistry.LOG.getName(),
+                     log.getName());
+        assertEquals(WorkItemDefinitionMockRegistry.LOG.getCategory(),
+                     log.getCategory());
+        assertEquals(WorkItemDefinitionMockRegistry.LOG.getDefaultHandler(),
+                     log.getDefaultHandler());
+        assertEquals(WorkItemDefinitionMockRegistry.LOG.getDescription(),
+                     log.getDescription());
+        assertEquals(WorkItemDefinitionMockRegistry.LOG.getDisplayName(),
+                     log.getGeneral().getName().getValue());
+        assertEquals(WorkItemDefinitionMockRegistry.LOG.getDocumentation(),
+                     log.getGeneral().getDocumentation().getValue());
+    }
+
+    @Test
+    public void testMarshallWorkItems() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_SERVICE_TASKS);
+        String result = tested.marshall(diagram);
+        System.out.println(result);
+        assertDiagram(result,
+                      1,
+                      4,
+                      3);
+        assertTrue(result.contains("drools:taskName=\"Email\""));
+        assertTrue(result.contains("drools:taskName=\"Log\""));
+    }
+
     private void assertDiagram(String result,
                                int diagramCount,
                                int nodeCount,
@@ -3245,56 +3231,34 @@ public class BPMNDiagramMarshallerTest {
         return null;
     }
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testUnmarshallWorkItems() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_SERVICE_TASKS);
-        assertDiagram(diagram,
-                      5);
-        // Email service task assertions.
-        Node<? extends Definition, ?> emailNode = diagram.getGraph().getNode("_277CE006-5E6E-4960-A68C-CC8A5347C33F");
-        assertTrue(emailNode.getContent().getDefinition() instanceof ServiceTask);
-        ServiceTask email = (ServiceTask) emailNode.getContent().getDefinition();
-        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getName(),
-                     email.getName());
-        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getCategory(),
-                     email.getCategory());
-        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getDefaultHandler(),
-                     email.getDefaultHandler());
-        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getDescription(),
-                     email.getDescription());
-        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getDisplayName(),
-                     email.getGeneral().getName().getValue());
-        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getDocumentation(),
-                     email.getGeneral().getDocumentation().getValue());
-        // Log service task assertions.
-        Node<? extends Definition, ?> logNode = diagram.getGraph().getNode("_A940748F-A658-4FB8-84FD-B69F4B7A9205");
-        assertTrue(logNode.getContent().getDefinition() instanceof ServiceTask);
-        ServiceTask log = (ServiceTask) logNode.getContent().getDefinition();
-        assertEquals(WorkItemDefinitionMockRegistry.LOG.getName(),
-                     log.getName());
-        assertEquals(WorkItemDefinitionMockRegistry.LOG.getCategory(),
-                     log.getCategory());
-        assertEquals(WorkItemDefinitionMockRegistry.LOG.getDefaultHandler(),
-                     log.getDefaultHandler());
-        assertEquals(WorkItemDefinitionMockRegistry.LOG.getDescription(),
-                     log.getDescription());
-        assertEquals(WorkItemDefinitionMockRegistry.LOG.getDisplayName(),
-                     log.getGeneral().getName().getValue());
-        assertEquals(WorkItemDefinitionMockRegistry.LOG.getDocumentation(),
-                     log.getGeneral().getDocumentation().getValue());
+    private Element findElementByContentType(Diagram<Graph, Metadata> diagram,
+                                             Class contentClass) {
+        Iterator<Element> it = nodesIterator(diagram);
+        while (it.hasNext()) {
+            Element element = it.next();
+            if (element.getContent() instanceof View) {
+                Object oDefinition = ((View) element.getContent()).getDefinition();
+                if (contentClass.isInstance(oDefinition)) {
+                    return element;
+                }
+            }
+        }
+        return null;
     }
 
-    @Test
-    public void testMarshallWorkItems() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_SERVICE_TASKS);
-        String result = tested.marshall(diagram);
-        System.out.println(result);
-        assertDiagram(result,
-                      1,
-                      4,
-                      3);
-        assertTrue(result.contains("drools:taskName=\"Email\""));
-        assertTrue(result.contains("drools:taskName=\"Log\""));
+    private <T> T findContent(final Diagram<Graph, Metadata> diagram,
+                              final Class<T> aClass) {
+        Iterator<Element> it = nodesIterator(diagram);
+        while (it.hasNext()) {
+            Element element = it.next();
+            if (element.getContent() instanceof View) {
+                Object oDefinition = ((View) element.getContent()).getDefinition();
+                if (aClass.isInstance(oDefinition)) {
+                    return (T) oDefinition;
+                }
+            }
+        }
+
+        return null;
     }
 }

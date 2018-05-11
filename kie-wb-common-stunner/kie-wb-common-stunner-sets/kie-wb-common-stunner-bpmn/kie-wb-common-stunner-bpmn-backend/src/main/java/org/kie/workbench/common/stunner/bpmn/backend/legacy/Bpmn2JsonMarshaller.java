@@ -234,8 +234,8 @@ import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonProp
 /**
  * @author Antoine Toulme
  * @author Surdilovic
- *         <p>
- *         a classLoader to transform BPMN 2.0 elements into JSON format.
+ * <p>
+ * a classLoader to transform BPMN 2.0 elements into JSON format.
  */
 public class Bpmn2JsonMarshaller {
 
