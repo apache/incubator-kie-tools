@@ -48,11 +48,11 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
 
     private ImageElement               m_jsimg;
 
-    private final ScratchPad           m_normalImage = new ScratchPad(0, 0);
+    private final ScratchPad           m_normalImage;
 
-    private final ScratchPad           m_filterImage = new ScratchPad(0, 0);
+    private final ScratchPad           m_filterImage;
 
-    private final ScratchPad           m_selectImage = new ScratchPad(0, 0);
+    private final ScratchPad           m_selectImage;
 
     private int                        m_clip_xpos;
 
@@ -91,7 +91,21 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
      */
     public ImageProxy(final T image)
     {
+        this(image,
+             new ScratchPad(0, 0),
+             new ScratchPad(0, 0),
+             new ScratchPad(0, 0));
+    }
+
+    ImageProxy(final T image,
+               final ScratchPad normalImage,
+               final ScratchPad filterImage,
+               final ScratchPad selectionImage)
+    {
         m_image = image;
+        m_normalImage = normalImage;
+        m_filterImage = filterImage;
+        m_selectImage = selectionImage;
     }
 
     public final void load(final String url)
@@ -682,17 +696,21 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
 
     public void destroy()
     {
-        RootPanel.get().remove(m_img);
-        m_img.removeFromParent();
+        destroy(m_img);
+        m_img = null;
+    }
+
+    void destroy(final Image image)
+    {
+        RootPanel.get().remove(image);
+        image.removeFromParent();
         m_image.removeFromParent();
-        m_jsimg.removeFromParent();
         m_normalImage.clear();
         m_filterImage.clear();
         m_selectImage.clear();
         m_filters.clearFilters();
         m_handler = null;
         m_obounds = null;
-        m_img = null;
         m_jsimg = null;
     }
 
