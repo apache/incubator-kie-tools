@@ -16,7 +16,6 @@
 
 package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl;
 
-import java.util.Collections;
 import java.util.List;
 
 import com.ait.lienzo.client.core.shape.Group;
@@ -73,8 +72,6 @@ public abstract class BaseGridRendererTest {
 
     protected GridColumn<String> column;
 
-    protected SelectionsTransformer selectionsTransformer;
-
     protected GridRendererTheme theme = new BlueTheme();
 
     protected BaseGridRenderer renderer;
@@ -85,9 +82,7 @@ public abstract class BaseGridRendererTest {
         final BaseGridRenderer wrapped = new BaseGridRenderer(theme);
         this.renderer = spy(wrapped);
 
-        this.column = new StringPopupColumn(new BaseHeaderMetaData("title"),
-                                            columnRenderer,
-                                            100.0);
+        this.column = makeGridColumn(100.0);
 
         this.model = new BaseGridData();
         this.model.appendColumn(column);
@@ -95,15 +90,26 @@ public abstract class BaseGridRendererTest {
         this.model.appendRow(new BaseGridRow());
         this.model.appendRow(new BaseGridRow());
 
-        this.selectionsTransformer = new DefaultSelectionsTransformer(model,
-                                                                      Collections.singletonList(column));
+        setupSelectionContext();
 
-        when(context.getBlockColumns()).thenReturn(Collections.singletonList(column));
-        when(context.getTransformer()).thenReturn(selectionsTransformer);
         doCallRealMethod().when(rendererHelper).getWidth(anyList());
 
         when(rc.getGroup()).thenReturn(parent);
         when(rc.isSelectionLayer()).thenReturn(isSelectionLayer());
+    }
+
+    protected GridColumn<String> makeGridColumn(final double width) {
+        return new StringPopupColumn(new BaseHeaderMetaData("title"),
+                                     columnRenderer,
+                                     width);
+    }
+
+    protected void setupSelectionContext() {
+        final SelectionsTransformer selectionsTransformer = new DefaultSelectionsTransformer(model,
+                                                                                             model.getColumns());
+
+        when(context.getBlockColumns()).thenReturn(model.getColumns());
+        when(context.getTransformer()).thenReturn(selectionsTransformer);
     }
 
     protected abstract boolean isSelectionLayer();

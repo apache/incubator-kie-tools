@@ -48,7 +48,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyList;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
@@ -102,7 +104,8 @@ public class BaseGridRendererNonSelectionLayerTest extends BaseGridRendererTest 
                                    1,
                                    3,
                                    1,
-                                   2);
+                                   2,
+                                   column.getWidth());
     }
 
     @Test
@@ -112,7 +115,51 @@ public class BaseGridRendererNonSelectionLayerTest extends BaseGridRendererTest 
                                    1,
                                    3,
                                    0,
-                                   2);
+                                   2,
+                                   column.getWidth());
+    }
+
+    @Test
+    public void checkSelectedCellsWithHiddenColumnSingleColumn() {
+        column.setVisible(false);
+        checkRenderedSelectedCells(0,
+                                   0,
+                                   1,
+                                   3,
+                                   0,
+                                   2,
+                                   0.0);
+    }
+
+    @Test
+    public void checkSelectedCellsWithHiddenColumnMultipleColumns() {
+        final GridColumn<String> column2 = makeGridColumn(200.0);
+        this.model.appendColumn(column2);
+        setupSelectionContext();
+
+        checkRenderedSelectedCells(0,
+                                   0,
+                                   2,
+                                   1,
+                                   0,
+                                   0,
+                                   column.getWidth() + column2.getWidth());
+    }
+
+    @Test
+    public void checkSelectedCellsWithHiddenColumnMultipleColumnsFirstHidden() {
+        final GridColumn<String> column2 = makeGridColumn(200.0);
+        this.model.appendColumn(column2);
+        this.column.setVisible(false);
+        setupSelectionContext();
+
+        checkRenderedSelectedCells(0,
+                                   0,
+                                   2,
+                                   1,
+                                   0,
+                                   0,
+                                   column2.getWidth());
     }
 
     @Test
@@ -225,18 +272,26 @@ public class BaseGridRendererNonSelectionLayerTest extends BaseGridRendererTest 
                                 HEIGHT);
     }
 
+    @SuppressWarnings("unchecked")
     private void checkRenderedSelectedCells(final int selectionRowIndex,
                                             final int selectionColumnIndex,
                                             final int selectionColumnCount,
                                             final int selectionRowCount,
                                             final int minVisibleRowIndex,
-                                            final int maxVisibleRowIndex) {
+                                            final int maxVisibleRowIndex,
+                                            final double expectedSelectionWidth) {
         this.model.selectCells(selectionRowIndex,
                                selectionColumnIndex,
                                selectionColumnCount,
                                selectionRowCount);
         when(context.getMinVisibleRowIndex()).thenReturn(minVisibleRowIndex);
         when(context.getMaxVisibleRowIndex()).thenReturn(maxVisibleRowIndex);
+
+        final double[] actualSelectionWidth = new double[]{0.0};
+        doAnswer((i) -> {
+            actualSelectionWidth[0] = (double) i.callRealMethod();
+            return actualSelectionWidth[0];
+        }).when(renderer).getSelectedRangeWidth(anyList(), anyInt(), any(SelectedRange.class));
 
         renderer.renderSelectedCells(model,
                                      context,
@@ -250,7 +305,7 @@ public class BaseGridRendererNonSelectionLayerTest extends BaseGridRendererTest 
 
         final List<GridColumn<?>> columns = columnsCaptor.getValue();
         assertNotNull(columns);
-        assertEquals(1,
+        assertEquals(selectionColumnCount,
                      columns.size());
         assertEquals(column,
                      columns.get(0));
@@ -265,6 +320,10 @@ public class BaseGridRendererNonSelectionLayerTest extends BaseGridRendererTest 
                      selectedRange.getWidth());
         assertEquals(maxVisibleRowIndex - minVisibleRowIndex + 1,
                      selectedRange.getHeight());
+
+        assertEquals(expectedSelectionWidth,
+                     actualSelectionWidth[0],
+                     0.0);
     }
 
     @SafeVarargs

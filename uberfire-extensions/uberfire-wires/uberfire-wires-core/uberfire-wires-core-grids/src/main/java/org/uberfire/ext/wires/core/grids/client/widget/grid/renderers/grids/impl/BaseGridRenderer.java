@@ -198,19 +198,22 @@ public class BaseGridRenderer implements GridRenderer {
         return cellSelector;
     }
 
-    private double getSelectedRangeWidth(final List<GridColumn<?>> blockColumns,
-                                         final int minVisibleUiColumnIndex,
-                                         final SelectedRange selectedRange) {
+    double getSelectedRangeWidth(final List<GridColumn<?>> blockColumns,
+                                 final int minVisibleUiColumnIndex,
+                                 final SelectedRange selectedRange) {
         double width = 0;
         for (int columnIndex = 0; columnIndex < selectedRange.getWidth(); columnIndex++) {
             final int relativeColumnIndex = columnIndex + selectedRange.getUiColumnIndex() - minVisibleUiColumnIndex;
-            width = width + blockColumns.get(relativeColumnIndex).getWidth();
+            final GridColumn<?> uiColumn = blockColumns.get(relativeColumnIndex);
+            if (uiColumn.isVisible()) {
+                width = width + uiColumn.getWidth();
+            }
         }
         return width;
     }
 
-    private double getSelectedRangeHeight(final GridData model,
-                                          final SelectedRange selectedRange) {
+    double getSelectedRangeHeight(final GridData model,
+                                  final SelectedRange selectedRange) {
         double height = 0;
         for (int rowIndex = 0; rowIndex < selectedRange.getHeight(); rowIndex++) {
             height = height + model.getRow(selectedRange.getUiRowIndex() + rowIndex).getHeight();
