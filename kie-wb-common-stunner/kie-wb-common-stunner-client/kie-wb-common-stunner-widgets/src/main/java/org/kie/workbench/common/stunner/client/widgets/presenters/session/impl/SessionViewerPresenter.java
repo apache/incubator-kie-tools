@@ -35,7 +35,7 @@ import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.ViewerToolbar;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -67,7 +67,7 @@ public class SessionViewerPresenter<S extends ViewerSession>
                                   final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEvent,
                                   final NotificationsObserver notificationsObserver,
                                   final Event<SessionFocusedEvent> sessionFocusedEvent,
-                                  final StunnerPreferencesRegistry stunnerPreferencesRegistry,
+                                  final StunnerPreferencesRegistries preferencesRegistries,
                                   final View view) {
         super(definitionUtils,
               sessionManager,
@@ -75,7 +75,7 @@ public class SessionViewerPresenter<S extends ViewerSession>
               null,
               notificationsObserver,
               sessionFocusedEvent,
-              stunnerPreferencesRegistry);
+              preferencesRegistries);
         this.viewer = viewer;
         this.toolbars = toolbars;
         this.sessionDiagramOpenedEvent = sessionDiagramOpenedEvent;

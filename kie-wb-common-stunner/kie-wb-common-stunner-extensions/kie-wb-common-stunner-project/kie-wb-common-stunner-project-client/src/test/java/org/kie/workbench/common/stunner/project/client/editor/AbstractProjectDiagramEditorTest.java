@@ -42,7 +42,6 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.S
 import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
@@ -54,7 +53,6 @@ import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.preferences.StunnerDiagramEditorPreferences;
-import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.core.validation.Violation;
@@ -218,13 +216,7 @@ public class AbstractProjectDiagramEditorTest {
     protected TextEditorView xmlEditorView;
 
     @Mock
-    protected StunnerPreferencesRegistry stunnerPreferencesRegistr;
-
-    @Mock
     protected Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller;
-
-    @Mock
-    protected StunnerPreferences stunnerPreferences;
 
     @Mock
     protected StunnerDiagramEditorPreferences diagramEditorPreferences;
@@ -253,7 +245,6 @@ public class AbstractProjectDiagramEditorTest {
         when(sessionEditorPresenter.withToolbar(anyBoolean())).thenReturn(sessionEditorPresenter);
         when(sessionEditorPresenter.withPalette(anyBoolean())).thenReturn(sessionEditorPresenter);
         when(sessionEditorPresenter.displayNotifications(any(Predicate.class))).thenReturn(sessionEditorPresenter);
-        when(sessionEditorPresenter.withPreferences(any(StunnerPreferences.class))).thenReturn(sessionEditorPresenter);
         when(sessionEditorPresenter.getView()).thenReturn(sessionPresenterView);
         doAnswer(invocation -> {
             Diagram diagram1 = (Diagram) invocation.getArguments()[0];
@@ -268,7 +259,6 @@ public class AbstractProjectDiagramEditorTest {
         when(sessionViewerPresenter.withToolbar(anyBoolean())).thenReturn(sessionViewerPresenter);
         when(sessionViewerPresenter.withPalette(anyBoolean())).thenReturn(sessionViewerPresenter);
         when(sessionViewerPresenter.displayNotifications(any(Predicate.class))).thenReturn(sessionViewerPresenter);
-        when(sessionViewerPresenter.withPreferences(any(StunnerPreferences.class))).thenReturn(sessionViewerPresenter);
         when(sessionViewerPresenter.getView()).thenReturn(sessionPresenterView);
         doAnswer(invocation -> {
             Diagram diagram1 = (Diagram) invocation.getArguments()[0];
@@ -283,8 +273,6 @@ public class AbstractProjectDiagramEditorTest {
         when(getMenuSessionItems().setErrorConsumer(any(Consumer.class))).thenReturn(getMenuSessionItems());
         when(getMenuSessionItems().setLoadingCompleted(any(Command.class))).thenReturn(getMenuSessionItems());
         when(getMenuSessionItems().setLoadingStarts(any(Command.class))).thenReturn(getMenuSessionItems());
-        when(stunnerPreferencesRegistr.get()).thenReturn(stunnerPreferences);
-        when(stunnerPreferences.getDiagramEditorPreferences()).thenReturn(diagramEditorPreferences);
         when(diagramEditorPreferences.getCanvasWidth()).thenReturn(CANVAS_WIDTH);
         when(diagramEditorPreferences.getCanvasHeight()).thenReturn(CANVAS_HEIGHT);
         resourceType = mockResourceType();
@@ -325,7 +313,6 @@ public class AbstractProjectDiagramEditorTest {
                                                                             diagramClientErrorHandler,
                                                                             translationService,
                                                                             xmlEditorView,
-                                                                            stunnerPreferencesRegistr,
                                                                             projectDiagramResourceServiceCaller) {
             {
                 fileMenuBuilder = AbstractProjectDiagramEditorTest.this.fileMenuBuilder;

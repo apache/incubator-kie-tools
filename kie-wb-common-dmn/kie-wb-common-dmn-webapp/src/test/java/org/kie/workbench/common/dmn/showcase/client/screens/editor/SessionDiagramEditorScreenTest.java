@@ -30,11 +30,9 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.S
 import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenPanelView;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -76,12 +74,6 @@ public class SessionDiagramEditorScreenTest {
     @Captor
     private ArgumentCaptor<Consumer<EditorSession>> clientFullSessionConsumer;
 
-    @Mock
-    private StunnerPreferencesRegistry stunnerPreferencesRegistry;
-
-    @Mock
-    private StunnerPreferences stunnerPreferences;
-
     private SessionDiagramEditorScreen editor;
 
     @Before
@@ -89,7 +81,6 @@ public class SessionDiagramEditorScreenTest {
 
         doReturn(presenter).when(presenter).withToolbar(anyBoolean());
         doReturn(presenter).when(presenter).withPalette(anyBoolean());
-        doReturn(presenter).when(presenter).withPreferences(any(StunnerPreferences.class));
         doReturn(presenter).when(presenter).displayNotifications(any());
         doReturn(session).when(presenter).getInstance();
         doReturn(session).when(sessionManager).getCurrentSession();
@@ -119,8 +110,7 @@ public class SessionDiagramEditorScreenTest {
                                                     screenPanelView,
                                                     null,
                                                     expressionEditor,
-                                                    decisionNavigatorDock,
-                                                    stunnerPreferencesRegistry));
+                                                    decisionNavigatorDock));
     }
 
     @Test
@@ -138,7 +128,6 @@ public class SessionDiagramEditorScreenTest {
         final Metadata metadata = mock(Metadata.class);
 
         when(diagram.getMetadata()).thenReturn(metadata);
-        when(stunnerPreferencesRegistry.get()).thenReturn(stunnerPreferences);
 
         editor.open(diagram, callback);
 

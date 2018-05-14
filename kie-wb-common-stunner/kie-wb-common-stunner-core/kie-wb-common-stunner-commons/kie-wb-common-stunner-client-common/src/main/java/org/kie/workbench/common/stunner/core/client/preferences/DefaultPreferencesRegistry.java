@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.client.preferences.impl;
+package org.kie.workbench.common.stunner.core.client.preferences;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Default;
 
-import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 
 @ApplicationScoped
-public class StunnerPreferencesRegistryImpl
-        implements StunnerPreferencesRegistry {
+@Default
+public class DefaultPreferencesRegistry
+        extends StunnerPreferencesRegistryHolder {
 
     private StunnerPreferences preferences;
 
@@ -33,7 +34,7 @@ public class StunnerPreferencesRegistryImpl
     }
 
     @Override
-    public void register(final StunnerPreferences preferences) {
+    public void set(final StunnerPreferences preferences) {
         this.preferences = preferences;
     }
 }

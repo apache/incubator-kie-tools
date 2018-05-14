@@ -37,7 +37,6 @@ import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenPanel
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
@@ -89,7 +88,6 @@ public class SessionDiagramEditorScreen {
     private final MenuDevCommandsBuilder menuDevCommandsBuilder;
     private final ScreenPanelView screenPanelView;
     private final ScreenErrorView screenErrorView;
-    private final StunnerPreferencesRegistry stunnerPreferencesRegistry;
 
     private PlaceRequest placeRequest;
     private String title = "Authoring Screen";
@@ -103,8 +101,7 @@ public class SessionDiagramEditorScreen {
                                       final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
                                       final MenuDevCommandsBuilder menuDevCommandsBuilder,
                                       final ScreenPanelView screenPanelView,
-                                      final ScreenErrorView screenErrorView,
-                                      final StunnerPreferencesRegistry stunnerPreferencesRegistry) {
+                                      final ScreenErrorView screenErrorView) {
         this.definitionManager = definitionManager;
         this.clientFactoryServices = clientFactoryServices;
         this.diagramService = diagramService;
@@ -113,7 +110,6 @@ public class SessionDiagramEditorScreen {
         this.menuDevCommandsBuilder = menuDevCommandsBuilder;
         this.screenPanelView = screenPanelView;
         this.screenErrorView = screenErrorView;
-        this.stunnerPreferencesRegistry = stunnerPreferencesRegistry;
     }
 
     @PostConstruct
@@ -248,7 +244,6 @@ public class SessionDiagramEditorScreen {
                 .withToolbar(true)
                 .withPalette(true)
                 .displayNotifications(type -> true)
-                .withPreferences(stunnerPreferencesRegistry.get())
                 .open(diagram,
                       new ScreenPresenterCallback(callback));
     }

@@ -43,6 +43,7 @@ import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPa
 import org.kie.workbench.common.stunner.core.client.components.palette.PaletteItemMouseEvent;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMinimizedEvent;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
@@ -62,13 +63,13 @@ public class BS3PaletteWidgetImpl
 
     private final ClientFactoryService clientFactoryServices;
     private final ShapeGlyphDragHandler shapeGlyphDragHandler;
+    private final StunnerPreferencesRegistries preferencesRegistries;
     private final ManagedInstance<DefinitionPaletteCategoryWidget> categoryWidgetInstances;
     private final ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgetInstances;
     private Consumer<PaletteIDefinitionItemEvent> itemDropCallback;
     private Consumer<PaletteIDefinitionItemEvent> itemDragStartCallback;
     private Consumer<PaletteIDefinitionItemEvent> itemDragUpdateCallback;
     private Map<String, DefinitionPaletteCategoryWidget> categoryWidgets = new HashMap<>();
-    private StunnerPreferences preferences;
 
     private BS3PaletteWidgetView view;
 
@@ -77,12 +78,14 @@ public class BS3PaletteWidgetImpl
                                 final ClientFactoryService clientFactoryServices,
                                 final BS3PaletteWidgetView view,
                                 final ShapeGlyphDragHandler shapeGlyphDragHandler,
+                                final StunnerPreferencesRegistries preferencesRegistries,
                                 final ManagedInstance<DefinitionPaletteCategoryWidget> categoryWidgetInstance,
                                 final ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgets) {
         super(shapeManager);
         this.clientFactoryServices = clientFactoryServices;
         this.view = view;
         this.shapeGlyphDragHandler = shapeGlyphDragHandler;
+        this.preferencesRegistries = preferencesRegistries;
         this.categoryWidgetInstances = categoryWidgetInstance;
         this.definitionPaletteItemWidgetInstances = definitionPaletteItemWidgets;
     }
@@ -96,22 +99,6 @@ public class BS3PaletteWidgetImpl
         view.init(this);
         view.setShapeGlyphDragHandler(shapeGlyphDragHandler);
         view.showEmptyView(true);
-    }
-
-    @Override
-    public void setPreferences(StunnerPreferences preferences) {
-        this.preferences = preferences;
-        if (preferences != null) {
-            setHideCategoryPanel(isHideCategoryPanel());
-        }
-    }
-
-    private boolean isHideCategoryPanel() {
-        return preferences != null && preferences.getDiagramEditorPreferences().isAutoHidePalettePanel();
-    }
-
-    private void setHideCategoryPanel(boolean hide) {
-        categoryWidgets.values().forEach(widget -> widget.setAutoHidePanel(hide));
     }
 
     @Override
@@ -205,12 +192,15 @@ public class BS3PaletteWidgetImpl
     @SuppressWarnings("unchecked")
     protected AbstractPalette<DefaultPaletteDefinition> bind() {
         if (null != paletteDefinition) {
+            final StunnerPreferences preferences = preferencesRegistries.get(paletteDefinition.getDefinitionSetId());
+            final boolean autoHidePanel = preferences.getDiagramEditorPreferences().isAutoHidePalettePanel();
             paletteDefinition.getItems().forEach(item -> {
                 BS3PaletteWidgetPresenter widget;
                 if (item instanceof DefaultPaletteCategory) {
                     DefinitionPaletteCategoryWidget categoryWidget = newDefinitionPaletteCategoryWidget();
                     categoryWidget.setOnOpenCallback(category -> onOpenCategory(category.getId()));
                     categoryWidget.setOnCloseCallback(category -> onCloseCategory(category.getId()));
+                    categoryWidget.setAutoHidePanel(autoHidePanel);
                     categoryWidgets.put(item.getId(),
                                         categoryWidget);
                     widget = categoryWidget;
@@ -225,7 +215,6 @@ public class BS3PaletteWidgetImpl
                                   itemMouseEventHandler);
                 view.add(widget);
             });
-            setHideCategoryPanel(isHideCategoryPanel());
         }
         return this;
     }

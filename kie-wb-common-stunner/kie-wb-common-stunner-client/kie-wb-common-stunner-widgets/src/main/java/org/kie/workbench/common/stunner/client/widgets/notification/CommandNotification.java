@@ -79,9 +79,8 @@ public final class CommandNotification
 
         private static String getErrorMessage(final ClientTranslationService translationService,
                                               final CommandResult<CanvasViolation> result) {
-            return NotificationMessageUtils.getCanvasValidationsErrorMessage(translationService,
-                                                                             CoreTranslationMessages.COMMAND_FAILED,
-                                                                             result.getViolations());
+            return CoreTranslationMessages.getCanvasCommandValidationsErrorMessage(translationService,
+                                                                                   result.getViolations());
         }
 
         private static Notification.Type getNotificationType(final CommandResult<CanvasViolation> result) {

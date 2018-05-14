@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPa
 import org.kie.workbench.common.stunner.core.client.components.palette.PaletteItemMouseEvent;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMinimizedEvent;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.preferences.StunnerDiagramEditorPreferences;
@@ -44,6 +45,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
@@ -93,6 +95,9 @@ public class BS3PaletteWidgetImplTest {
     private DefaultPaletteDefinition paletteDefinition;
 
     @Mock
+    private StunnerPreferencesRegistries preferencesRegistries;
+
+    @Mock
     private StunnerPreferences stunnerPreferences;
 
     @Mock
@@ -106,12 +111,14 @@ public class BS3PaletteWidgetImplTest {
         when(shapeSet.getShapeFactory()).thenReturn(shapeFactory);
         when(stunnerPreferences.getDiagramEditorPreferences()).thenReturn(diagramEditorPreferences);
 
+        when(preferencesRegistries.get(anyString())).thenReturn(stunnerPreferences);
         createdCategoryWidgets.clear();
         createdItemWidgets.clear();
         this.palette = new BS3PaletteWidgetImpl(shapeManager,
                                                 clientFactoryServices,
                                                 view,
                                                 shapeGlyphDragHandler,
+                                                preferencesRegistries,
                                                 categoryWidgetInstance,
                                                 definitionPaletteItemWidgets) {
             @Override
@@ -189,7 +196,6 @@ public class BS3PaletteWidgetImplTest {
         items.addAll(mockSimpleItems(SIMPLE_ITEMS_COUNT));
         when(paletteDefinition.getItems()).thenReturn(items);
 
-        palette.setPreferences(stunnerPreferences);
         palette.bind(paletteDefinition);
 
         verify(categoryWidgetInstance,
@@ -238,26 +244,13 @@ public class BS3PaletteWidgetImplTest {
         items.addAll(mockCategoryItems(CATEGORY_ITEMS_COUNT));
         items.addAll(mockSimpleItems(SIMPLE_ITEMS_COUNT));
         when(paletteDefinition.getItems()).thenReturn(items);
+        when(diagramEditorPreferences.isAutoHidePalettePanel()).thenReturn(true);
 
         palette.bind(paletteDefinition);
 
-        //initial initialization set the values to false
         createdCategoryWidgets.forEach(categoryWidget -> verify(categoryWidget,
-                                                                times(1)).setAutoHidePanel(false));
-
+                                                                times(1)).setAutoHidePanel(eq(true)));
         when(paletteDefinition.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
-
-        when(diagramEditorPreferences.isAutoHidePalettePanel()).thenReturn(true);
-        palette.setPreferences(stunnerPreferences);
-        //now the value must have been set to true
-        createdCategoryWidgets.forEach(categoryWidget -> verify(categoryWidget,
-                                                                times(1)).setAutoHidePanel(false));
-
-        when(diagramEditorPreferences.isAutoHidePalettePanel()).thenReturn(false);
-        palette.setPreferences(stunnerPreferences);
-        //now the value must have been set to false again. (a false was already set)
-        createdCategoryWidgets.forEach(categoryWidget -> verify(categoryWidget,
-                                                                times(2)).setAutoHidePanel(false));
     }
 
     private List<DefaultPaletteItem> mockSimpleItems(int size) {

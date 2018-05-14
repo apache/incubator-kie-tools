@@ -39,16 +39,4 @@ public class StunnerPreferences implements BasePreference<StunnerPreferences>,
     public StunnerDiagramEditorPreferences getDiagramEditorPreferences() {
         return diagramEditorPreferences;
     }
-
-    public void setDiagramEditorPreferences(StunnerDiagramEditorPreferences diagramEditorPreferences) {
-        this.diagramEditorPreferences = diagramEditorPreferences;
-    }
-
-    public Object clone() {
-        StunnerPreferences clone = new StunnerPreferences();
-        if (this.getDiagramEditorPreferences() != null) {
-            clone.setDiagramEditorPreferences((StunnerDiagramEditorPreferences) this.getDiagramEditorPreferences().clone());
-        }
-        return clone;
-    }
 }

@@ -19,7 +19,10 @@ package org.kie.workbench.common.stunner.cm.client.canvas.controls.builder;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.AbstractElementBuilderControl;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationMessages;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CaseManagementElementBuilderControlTest extends BaseCaseManagementBuilderControlTest {
@@ -36,6 +39,7 @@ public class CaseManagementElementBuilderControlTest extends BaseCaseManagementB
                                                        clientFactoryServices,
                                                        ruleManager,
                                                        canvasCommandFactory,
+                                                       mock(ClientTranslationMessages.class),
                                                        graphBoundsIndexer);
     }
 }

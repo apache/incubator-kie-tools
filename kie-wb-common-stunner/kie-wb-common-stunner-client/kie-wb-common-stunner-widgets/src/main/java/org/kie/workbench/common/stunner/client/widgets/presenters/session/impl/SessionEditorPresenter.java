@@ -38,7 +38,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMinimizedEvent;
-import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -72,7 +72,7 @@ public class SessionEditorPresenter<S extends EditorSession>
                                   final DefaultPaletteFactory<AbstractCanvasHandler> paletteWidgetFactory,
                                   final NotificationsObserver notificationsObserver,
                                   final Event<SessionFocusedEvent> sessionFocusedEvent,
-                                  final StunnerPreferencesRegistry stunnerPreferencesRegistry,
+                                  final StunnerPreferencesRegistries preferencesRegistries,
                                   final View view) {
         super(definitionUtils,
               sessionManager,
@@ -80,7 +80,7 @@ public class SessionEditorPresenter<S extends EditorSession>
               paletteWidgetFactory,
               notificationsObserver,
               sessionFocusedEvent,
-              stunnerPreferencesRegistry);
+              preferencesRegistries);
         this.sessionDiagramOpenedEvent = sessionDiagramOpenedEvent;
         this.editor = editor;
         this.toolbars = toolbars;

@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElement
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.AbstractElementBuilderControl.ParentAssignment;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationMessages;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
@@ -65,6 +66,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -168,7 +170,12 @@ public class ElementBuilderControlImplTest {
         when(canvasCommandFactory.updatePosition(eq(node), any())).thenReturn(updateDockPositionCommand);
         when(canvasCommandFactory.addChildNode(any(), eq(node), eq(SHAPE_SET_ID))).thenReturn(addChildCommand);
         when(canvasCommandFactory.addNode(eq(node), eq(SHAPE_SET_ID))).thenReturn(addNodeCommand);
-        elementBuilderControl = new ElementBuilderControlImpl(clientDefinitionManager, clientFactoryServices, ruleManager, canvasCommandFactory, graphBoundsIndexer);
+        elementBuilderControl = new ElementBuilderControlImpl(clientDefinitionManager,
+                                                              clientFactoryServices,
+                                                              ruleManager,
+                                                              canvasCommandFactory,
+                                                              mock(ClientTranslationMessages.class),
+                                                              graphBoundsIndexer);
         elementBuilderControl.init(canvasHandler);
     }
 

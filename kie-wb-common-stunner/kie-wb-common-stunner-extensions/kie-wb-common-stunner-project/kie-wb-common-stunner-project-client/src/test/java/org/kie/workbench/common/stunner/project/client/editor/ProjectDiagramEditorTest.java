@@ -244,7 +244,6 @@ public class ProjectDiagramEditorTest {
         when(sessionEditorPresenter.withToolbar(anyBoolean())).thenReturn(sessionEditorPresenter);
         when(sessionEditorPresenter.withPalette(anyBoolean())).thenReturn(sessionEditorPresenter);
         when(sessionEditorPresenter.displayNotifications(any())).thenReturn(sessionEditorPresenter);
-        when(sessionEditorPresenter.withPreferences((any(StunnerPreferences.class)))).thenReturn(sessionEditorPresenter);
         when(sessionEditorPresenter.getView()).thenReturn(presenterView);
         doAnswer(new Answer() {
             @Override
@@ -293,7 +292,6 @@ public class ProjectDiagramEditorTest {
                                                    diagramClientErrorHandler,
                                                    translationService,
                                                    xmlEditorView,
-                                                   stunnerPreferencesRegistr,
                                                    projectDiagramResourceServiceCaller
         ) {
             {

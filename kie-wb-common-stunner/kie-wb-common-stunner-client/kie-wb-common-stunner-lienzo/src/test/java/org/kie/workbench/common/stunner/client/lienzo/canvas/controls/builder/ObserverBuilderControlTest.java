@@ -40,6 +40,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationMessages;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
@@ -184,7 +185,13 @@ public class ObserverBuilderControlTest {
         when(shapeManager.getShapeSet(anyString())).thenReturn(shapeSet);
         when(shapeManager.getDefaultShapeSet(anyString())).thenReturn(shapeSet);
 
-        tested = new ObserverBuilderControl(clientDefinitionManager, clientFactoryServices, ruleManager, canvasCommandFactory, graphBoundsIndexer, mock(Event.class));
+        tested = new ObserverBuilderControl(clientDefinitionManager,
+                                            clientFactoryServices,
+                                            ruleManager,
+                                            canvasCommandFactory,
+                                            mock(ClientTranslationMessages.class),
+                                            graphBoundsIndexer,
+                                            mock(Event.class));
 
         Diagram diagram = mock(Diagram.class);
         Metadata metadata = mock(Metadata.class);

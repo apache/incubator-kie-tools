@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.client.widgets.notification;
+package org.kie.workbench.common.stunner.core.i18n;
 
 import java.util.Collections;
 
@@ -26,8 +26,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.core.validation.ModelBeanViolation;
@@ -37,24 +35,24 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.kie.workbench.common.stunner.client.widgets.notification.NotificationMessageUtils.CLOSE_BRA;
-import static org.kie.workbench.common.stunner.client.widgets.notification.NotificationMessageUtils.CLOSE_COMMENT;
-import static org.kie.workbench.common.stunner.client.widgets.notification.NotificationMessageUtils.COLON;
-import static org.kie.workbench.common.stunner.client.widgets.notification.NotificationMessageUtils.OPEN_BRA;
-import static org.kie.workbench.common.stunner.client.widgets.notification.NotificationMessageUtils.OPEN_COMMENT;
+import static org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages.CLOSE_BRA;
+import static org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages.CLOSE_COMMENT;
+import static org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages.COLON;
+import static org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages.OPEN_BRA;
+import static org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages.OPEN_COMMENT;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class NotificationMessageUtilsTest {
+public class CoreTranslationMessagesTest {
 
     public static final String HTML_NEW_LINE = "<br>";
     public static final String HTML_OPEN_COMMENT = "&#39;";
     public static final String HTML_CLOSE_COMMENT = "&#39; ";
 
     @Mock
-    ClientTranslationService translationService;
+    StunnerTranslationService translationService;
 
     @Before
     public void setup() {
@@ -72,8 +70,8 @@ public class NotificationMessageUtilsTest {
         when(rootViolation.getPropertyPath()).thenReturn(propertyPath);
         when(rootViolation.getMessage()).thenReturn("message1");
         final ModelBeanViolation violation = ModelBeanViolationImpl.Builder.build(rootViolation);
-        final String message = NotificationMessageUtils.getBeanValidationMessage(translationService,
-                                                                                 violation);
+        final String message = CoreTranslationMessages.getBeanValidationMessage(translationService,
+                                                                                violation);
         assertEquals("(WARNING) " + OPEN_COMMENT + "path1" + CLOSE_COMMENT + "message1",
                      message);
     }
@@ -83,8 +81,8 @@ public class NotificationMessageUtilsTest {
         final RuleViolation ruleViolation = mock(RuleViolation.class);
         when(ruleViolation.getViolationType()).thenReturn(Violation.Type.WARNING);
         when(translationService.getViolationMessage(eq(ruleViolation))).thenReturn("rv1");
-        final String message = NotificationMessageUtils.getRuleValidationMessage(translationService,
-                                                                                 ruleViolation);
+        final String message = CoreTranslationMessages.getRuleValidationMessage(translationService,
+                                                                                ruleViolation);
         assertEquals("(WARNING) " + "rv1",
                      message);
     }
@@ -101,9 +99,9 @@ public class NotificationMessageUtilsTest {
         final Iterable<CanvasViolation> violations = Collections.singletonList(canvasViolation);
         when(translationService.getValue(eq("aKey"))).thenReturn("aValue");
         when(translationService.getViolationMessage(eq(canvasViolation))).thenReturn("cv1");
-        String message = NotificationMessageUtils.getCanvasValidationsErrorMessage(translationService,
-                                                                                   "aKey",
-                                                                                   violations);
+        String message = CoreTranslationMessages.getCanvasValidationsErrorMessage(translationService,
+                                                                                  "aKey",
+                                                                                  violations);
         message = new SafeHtmlBuilder().appendEscapedLines(message).toSafeHtml().asString();
         assertEquals("aValue." + HTML_NEW_LINE + "R" + COLON + HTML_NEW_LINE +
                              OPEN_BRA + "1" + CLOSE_BRA + "(ERROR) "
@@ -128,9 +126,9 @@ public class NotificationMessageUtilsTest {
         when(ruleViolation.getViolationType()).thenReturn(Violation.Type.WARNING);
         when(translationService.getViolationMessage(eq(ruleViolation))).thenReturn("rv1");
         when(translationService.getValue(eq("aKey"))).thenReturn("aValue");
-        String message = NotificationMessageUtils.getDiagramValidationsErrorMessage(translationService,
-                                                                                    "aKey",
-                                                                                    Collections.singleton(diagramViolation));
+        String message = CoreTranslationMessages.getDiagramValidationsErrorMessage(translationService,
+                                                                                   "aKey",
+                                                                                   Collections.singleton(diagramViolation));
         message = new SafeHtmlBuilder().appendEscapedLines(message).toSafeHtml().asString();
         assertEquals("aValue." + HTML_NEW_LINE + "R" + COLON + HTML_NEW_LINE +
                              OPEN_BRA + "E" + COLON + "uuid1" + CLOSE_BRA + HTML_NEW_LINE +

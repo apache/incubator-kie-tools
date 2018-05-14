@@ -20,9 +20,12 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.AbstractElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationMessages;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
+
+import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CaseManagementObserverBuilderControlTest extends BaseCaseManagementBuilderControlTest {
@@ -42,6 +45,7 @@ public class CaseManagementObserverBuilderControlTest extends BaseCaseManagement
                                                         clientFactoryServices,
                                                         ruleManager,
                                                         canvasCommandFactory,
+                                                        mock(ClientTranslationMessages.class),
                                                         graphBoundsIndexer,
                                                         selectionEvent);
     }

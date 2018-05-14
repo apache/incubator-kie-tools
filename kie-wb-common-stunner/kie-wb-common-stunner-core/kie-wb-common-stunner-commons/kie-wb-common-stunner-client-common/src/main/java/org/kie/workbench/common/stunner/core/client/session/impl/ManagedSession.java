@@ -36,9 +36,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasShapeListener;
-import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistryLoader;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.mvp.Command;
 
@@ -55,8 +54,7 @@ public class ManagedSession
     private final ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances;
     private final ManagedInstance<CanvasControl<AbstractCanvas>> canvasControlInstances;
     private final ManagedInstance<CanvasControl<AbstractCanvasHandler>> canvasHandlerControlInstances;
-    private final StunnerPreferences stunnerPreferences;
-    private final StunnerPreferencesRegistry stunnerPreferencesRegistry;
+    private final StunnerPreferencesRegistryLoader preferencesRegistryLoader;
 
     // Session's state.
     private AbstractCanvas canvas;
@@ -78,16 +76,14 @@ public class ManagedSession
                           final @Any ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances,
                           final @Any ManagedInstance<CanvasControl<AbstractCanvas>> canvasControlInstances,
                           final @Any ManagedInstance<CanvasControl<AbstractCanvasHandler>> canvasHandlerControlInstances,
-                          final StunnerPreferences stunnerPreferences,
-                          final StunnerPreferencesRegistry stunnerPreferencesRegistry) {
+                          final StunnerPreferencesRegistryLoader preferencesRegistryLoader) {
         super();
         this.definitionUtils = definitionUtils;
         this.canvasInstances = canvasInstances;
         this.canvasHandlerInstances = canvasHandlerInstances;
         this.canvasControlInstances = canvasControlInstances;
         this.canvasHandlerControlInstances = canvasHandlerControlInstances;
-        this.stunnerPreferences = stunnerPreferences;
-        this.stunnerPreferencesRegistry = stunnerPreferencesRegistry;
+        this.preferencesRegistryLoader = preferencesRegistryLoader;
         this.canvasControlRegistrationEntries = new LinkedList<>();
         this.canvasHandlerControlRegistrationEntries = new LinkedList<>();
         this.canvasControls = new LinkedList<>();
@@ -169,18 +165,16 @@ public class ManagedSession
                                                                                           entry,
                                                                                           qualifier)));
         // Load the preferences.
-        stunnerPreferences.load(currentPreferences -> {
-                                    stunnerPreferencesRegistry.register(currentPreferences);
-                                    callback.execute();
-                                },
-                                throwable -> {
-                                    if (LogConfiguration.loggingIsEnabled()) {
-                                        LOGGER.log(Level.SEVERE,
-                                                   "An error was produced during StunnerPreferences initialization.",
-                                                   throwable);
-                                    }
-                                    throw new RuntimeException(throwable);
-                                });
+        preferencesRegistryLoader.load(metadata.getDefinitionSetId(),
+                                       prefs -> callback.execute(),
+                                       throwable -> {
+                                           if (LogConfiguration.loggingIsEnabled()) {
+                                               LOGGER.log(Level.SEVERE,
+                                                          "An error was produced during StunnerPreferences initialization.",
+                                                          throwable);
+                                           }
+                                           throw new RuntimeException(throwable);
+                                       });
     }
 
     @Override

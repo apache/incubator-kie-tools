@@ -24,7 +24,6 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.S
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
@@ -59,7 +58,6 @@ class ProjectDiagramEditorStub extends AbstractProjectDiagramEditor<ClientResour
                                     final DiagramClientErrorHandler diagramClientErrorHandler,
                                     final ClientTranslationService translationService,
                                     final TextEditorView xmlEditorView,
-                                    final StunnerPreferencesRegistry stunnerPreferencesRegistry,
                                     final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller) {
         super(view,
               placeManager,
@@ -77,7 +75,6 @@ class ProjectDiagramEditorStub extends AbstractProjectDiagramEditor<ClientResour
               diagramClientErrorHandler,
               translationService,
               xmlEditorView,
-              stunnerPreferencesRegistry,
               projectDiagramResourceServiceCaller);
     }
 

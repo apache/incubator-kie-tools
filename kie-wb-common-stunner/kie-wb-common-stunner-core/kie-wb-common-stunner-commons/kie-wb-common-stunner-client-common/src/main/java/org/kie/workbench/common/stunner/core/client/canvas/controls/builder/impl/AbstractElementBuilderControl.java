@@ -36,11 +36,14 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationMessages;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -72,6 +75,7 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
     private final ClientDefinitionManager clientDefinitionManager;
     private final ClientFactoryService clientFactoryServices;
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+    private final ClientTranslationMessages translationMessages;
     private final RuleManager ruleManager;
     private final GraphBoundsIndexer graphBoundsIndexer;
     private RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
@@ -80,11 +84,13 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
                                          final ClientFactoryService clientFactoryServices,
                                          final RuleManager ruleManager,
                                          final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                                         final ClientTranslationMessages translationMessages,
                                          final GraphBoundsIndexer graphBoundsIndexer) {
         this.clientDefinitionManager = clientDefinitionManager;
         this.clientFactoryServices = clientFactoryServices;
         this.ruleManager = ruleManager;
         this.canvasCommandFactory = canvasCommandFactory;
+        this.translationMessages = translationMessages;
         this.graphBoundsIndexer = graphBoundsIndexer;
     }
 
@@ -188,11 +194,18 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
                         @Override
                         public void onComplete(final String uuid,
                                                final List<Command<AbstractCanvasHandler, CanvasViolation>> commands) {
-                            getCommandManager().execute(canvasHandler,
-                                                        new CompositeCommand.Builder()
-                                                                .addCommands(commands)
-                                                                .build());
-                            buildCallback.onSuccess(uuid);
+                            final CommandResult<CanvasViolation> result =
+                                    getCommandManager().execute(canvasHandler,
+                                                                new CompositeCommand.Builder()
+                                                                        .addCommands(commands)
+                                                                        .build());
+                            if (!CommandUtils.isError(result)) {
+                                buildCallback.onSuccess(uuid);
+                            } else {
+                                final String message =
+                                        translationMessages.getCanvasCommandValidationsErrorMessage(result.getViolations());
+                                buildCallback.onError(new ClientRuntimeError(message));
+                            }
                             // Notify processing ends.
                             fireProcessingCompleted();
                         }

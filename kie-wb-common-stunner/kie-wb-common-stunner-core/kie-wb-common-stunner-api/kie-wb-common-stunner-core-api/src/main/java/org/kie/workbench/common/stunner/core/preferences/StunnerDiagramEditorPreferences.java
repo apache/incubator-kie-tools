@@ -66,12 +66,4 @@ public class StunnerDiagramEditorPreferences implements BasePreference<StunnerDi
     public void setCanvasHeight(int canvasHeight) {
         this.canvasHeight = canvasHeight;
     }
-
-    public Object clone() {
-        StunnerDiagramEditorPreferences clone = new StunnerDiagramEditorPreferences();
-        clone.setAutoHidePalettePanel(this.isAutoHidePalettePanel());
-        clone.setCanvasWidth(this.getCanvasWidth());
-        clone.setCanvasHeight(this.getCanvasHeight());
-        return clone;
-    }
 }

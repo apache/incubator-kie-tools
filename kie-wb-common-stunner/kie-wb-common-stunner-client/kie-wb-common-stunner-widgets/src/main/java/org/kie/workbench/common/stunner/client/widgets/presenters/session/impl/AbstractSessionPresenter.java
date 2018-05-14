@@ -36,7 +36,7 @@ import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.palette.PaletteDefinition;
-import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
@@ -56,14 +56,13 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     private final SessionPresenter.View view;
     private final NotificationsObserver notificationsObserver;
     private final Event<SessionFocusedEvent> sessionFocusedEvent;
-    private final StunnerPreferencesRegistry stunnerPreferencesRegistry;
+    private final StunnerPreferencesRegistries preferencesRegistries;
 
     private D diagram;
     private Toolbar<S> toolbar;
     private PaletteWidget<PaletteDefinition> palette;
     private boolean hasToolbar = false;
     private boolean hasPalette = false;
-    private StunnerPreferences preferences;
     private Optional<Predicate<Notification.Type>> typePredicate;
 
     @SuppressWarnings("unchecked")
@@ -73,14 +72,14 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
                                        final DefaultPaletteFactory<H> paletteFactory,
                                        final NotificationsObserver notificationsObserver,
                                        final Event<SessionFocusedEvent> sessionFocusedEvent,
-                                       final StunnerPreferencesRegistry stunnerPreferencesRegistry) {
+                                       final StunnerPreferencesRegistries preferencesRegistries) {
         this.definitionUtils = definitionUtils;
         this.sessionManager = sessionManager;
         this.paletteFactory = paletteFactory;
         this.notificationsObserver = notificationsObserver;
         this.sessionFocusedEvent = sessionFocusedEvent;
         this.view = view;
-        this.stunnerPreferencesRegistry = stunnerPreferencesRegistry;
+        this.preferencesRegistries = preferencesRegistries;
         this.hasToolbar = true;
         this.hasPalette = true;
         this.typePredicate = Optional.empty();
@@ -175,12 +174,6 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     }
 
     @Override
-    public SessionPresenter<S, H, D> withPreferences(final StunnerPreferences preferences) {
-        this.preferences = preferences;
-        return this;
-    }
-
-    @Override
     public SessionPresenter<S, H, D> displayNotifications(final Predicate<Notification.Type> typePredicate) {
         this.typePredicate = Optional.of(typePredicate);
         return this;
@@ -262,8 +255,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
 
     protected void beforeOpen(final S item) {
         getView().showLoading(true);
-        setCanvasSize(diagram,
-                      stunnerPreferencesRegistry.get());
+        setCanvasSize(diagram);
     }
 
     @SuppressWarnings("unchecked")
@@ -277,7 +269,6 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         if (hasPalette) {
             palette = (PaletteWidget<PaletteDefinition>) initPalette(session);
             if (null != palette) {
-                palette.setPreferences(preferences);
                 getView().setPaletteWidget(palette);
             }
         }
@@ -387,8 +378,9 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     }
 
     // This is a temporal solution. This will change once taking the "infinite" canvas approach.
-    private void setCanvasSize(final Diagram diagram,
-                               final StunnerPreferences preferences) {
+    private void setCanvasSize(final Diagram diagram) {
+        final String definitionSetId = diagram.getMetadata().getDefinitionSetId();
+        final StunnerPreferences preferences = preferencesRegistries.get(definitionSetId);
         ((DefinitionSet) diagram.getGraph().getContent())
                 .setBounds(BoundsImpl.build(0,
                                             0,

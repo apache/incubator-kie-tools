@@ -14,35 +14,28 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.client;
+package org.kie.workbench.common.stunner.core.client.preferences;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.client.preferences.impl.StunnerPreferencesRegistryImpl;
 import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 
-@RunWith(MockitoJUnitRunner.class)
-public class StunnerPreferencesRegistryImplTest {
+public class DefaultPreferencesRegistryTest {
 
-    private StunnerPreferencesRegistryImpl preferencesRegistry;
+    private DefaultPreferencesRegistry tested;
 
     @Before
-    public void setUp() {
-        preferencesRegistry = new StunnerPreferencesRegistryImpl();
+    public void setUp() throws Exception {
+        tested = new DefaultPreferencesRegistry();
     }
 
     @Test
-    public void testRegister() {
-        StunnerPreferences stunnerPreferences = mock(StunnerPreferences.class);
-        assertNull(preferencesRegistry.get());
-        preferencesRegistry.register(stunnerPreferences);
-        assertEquals(stunnerPreferences,
-                     preferencesRegistry.get());
+    public void testIt() {
+        final StunnerPreferences preferences = mock(StunnerPreferences.class);
+        tested.set(preferences);
+        assertEquals(preferences, tested.get());
     }
 }

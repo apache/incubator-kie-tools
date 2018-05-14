@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.Element;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.ElementBuilderControlImpl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationMessages;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -44,6 +45,7 @@ public class CaseManagementElementBuilderControl extends ElementBuilderControlIm
              null,
              null,
              null,
+             null,
              null);
     }
 
@@ -52,11 +54,13 @@ public class CaseManagementElementBuilderControl extends ElementBuilderControlIm
                                                final ClientFactoryService clientFactoryServices,
                                                final RuleManager ruleManager,
                                                final @CaseManagementEditor CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                                               final ClientTranslationMessages translationMessages,
                                                final GraphBoundsIndexer graphBoundsIndexer) {
         super(clientDefinitionManager,
               clientFactoryServices,
               ruleManager,
               canvasCommandFactory,
+              translationMessages,
               graphBoundsIndexer);
     }
 

@@ -30,7 +30,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.palette.PaletteDefinition;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 
 /**
  * A session's presenter type for generic client session instances.
@@ -104,8 +103,6 @@ public interface SessionPresenter<S extends ClientSession, H extends CanvasHandl
     SessionPresenter<S, H, D> withToolbar(final boolean hasToolbar);
 
     SessionPresenter<S, H, D> withPalette(final boolean hasPalette);
-
-    SessionPresenter<S, H, D> withPreferences(final StunnerPreferences preferences);
 
     SessionPresenter<S, H, D> displayNotifications(final Predicate<Notification.Type> typePredicate);
 

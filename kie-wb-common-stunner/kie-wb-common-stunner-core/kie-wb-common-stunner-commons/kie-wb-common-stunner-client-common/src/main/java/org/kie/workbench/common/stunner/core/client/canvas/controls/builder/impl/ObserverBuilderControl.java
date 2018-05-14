@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.requ
 import org.kie.workbench.common.stunner.core.client.canvas.controls.event.BuildCanvasShapeEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationMessages;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
@@ -56,12 +57,14 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
                                   final ClientFactoryService clientFactoryServices,
                                   final RuleManager ruleManager,
                                   final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                                  final ClientTranslationMessages translationMessages,
                                   final GraphBoundsIndexer graphBoundsIndexer,
                                   final Event<CanvasSelectionEvent> canvasSelectionEvent) {
         super(clientDefinitionManager,
               clientFactoryServices,
               ruleManager,
               canvasCommandFactory,
+              translationMessages,
               graphBoundsIndexer);
         this.canvasSelectionEvent = canvasSelectionEvent;
     }
@@ -93,7 +96,7 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
 
                                                       @Override
                                                       public void onError(final ClientRuntimeError error) {
-                                                          LOGGER.log(Level.SEVERE,
+                                                          LOGGER.log(Level.WARNING,
                                                                      error.toString());
                                                       }
                                                   });

@@ -87,7 +87,6 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                                                  diagramClientErrorHandler,
                                                  translationService,
                                                  xmlEditorView,
-                                                 stunnerPreferencesRegistr,
                                                  projectDiagramResourceServiceCaller,
                                                  decisionNavigatorDock) {
             {

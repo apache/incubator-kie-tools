@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.ObserverBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationMessages;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -47,6 +48,7 @@ public class CaseManagementObserverBuilderControl extends ObserverBuilderControl
              null,
              null,
              null,
+             null,
              null);
     }
 
@@ -55,12 +57,14 @@ public class CaseManagementObserverBuilderControl extends ObserverBuilderControl
                                                 final ClientFactoryService clientFactoryServices,
                                                 final RuleManager ruleManager,
                                                 final @CaseManagementEditor CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                                                final ClientTranslationMessages translationMessages,
                                                 final GraphBoundsIndexer graphBoundsIndexer,
                                                 final Event<CanvasSelectionEvent> selectionEvent) {
         super(clientDefinitionManager,
               clientFactoryServices,
               ruleManager,
               canvasCommandFactory,
+              translationMessages,
               graphBoundsIndexer,
               selectionEvent);
     }

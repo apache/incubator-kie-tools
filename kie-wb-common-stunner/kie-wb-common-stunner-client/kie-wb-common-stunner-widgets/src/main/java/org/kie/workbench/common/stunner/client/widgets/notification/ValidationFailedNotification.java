@@ -55,7 +55,7 @@ public final class ValidationFailedNotification extends AbstractNotification<Col
             final Violation.Type type = ValidationUtils.getMaxSeverity(errors);
             return new ValidationFailedNotification(errors,
                                                     context,
-                                                    NotificationMessageUtils.getDiagramValidationsErrorMessage(
+                                                    CoreTranslationMessages.getDiagramValidationsErrorMessage(
                                                             translationService,
                                                             CoreTranslationMessages.VALIDATION_FAILED,
                                                             errors

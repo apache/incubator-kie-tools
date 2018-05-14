@@ -32,7 +32,6 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.S
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
@@ -92,7 +91,6 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
                              final ProjectMessagesListener projectMessagesListener,
                              final DiagramClientErrorHandler diagramClientErrorHandler,
                              final ClientTranslationService translationService,
-                             final StunnerPreferencesRegistry stunnerPreferencesRegistry,
                              final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller,
                              final Event<BPMNMigrateDiagramEvent> migrateDiagramEvent,
                              final PopupUtil popupUtil,
@@ -113,7 +111,6 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
               diagramClientErrorHandler,
               translationService,
               xmlEditorView,
-              stunnerPreferencesRegistry,
               projectDiagramResourceServiceCaller);
         this.migrateDiagramEvent = migrateDiagramEvent;
         this.popupUtil = popupUtil;

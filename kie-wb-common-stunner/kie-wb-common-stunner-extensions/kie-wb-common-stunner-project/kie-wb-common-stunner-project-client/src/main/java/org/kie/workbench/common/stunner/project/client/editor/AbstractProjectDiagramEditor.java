@@ -43,7 +43,6 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.S
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
@@ -55,7 +54,6 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
@@ -126,7 +124,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private Optional<SessionViewerPresenter<ViewerSession>> viewerSessionPresenter = Optional.empty();
     private final DiagramClientErrorHandler diagramClientErrorHandler;
     private final ClientTranslationService translationService;
-    private final StunnerPreferencesRegistry stunnerPreferencesRegistry;
     private final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller;
 
     private String title = "Project Diagram Editor";
@@ -152,7 +149,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                         final DiagramClientErrorHandler diagramClientErrorHandler,
                                         final ClientTranslationService translationService,
                                         final TextEditorView xmlEditorView,
-                                        final StunnerPreferencesRegistry stunnerPreferencesRegistry,
                                         final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller) {
         super(view);
         this.placeManager = placeManager;
@@ -170,7 +166,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.onDiagramLostFocusEvent = onDiagramLostFocusEvent;
         this.translationService = translationService;
         this.xmlEditorView = xmlEditorView;
-        this.stunnerPreferencesRegistry = stunnerPreferencesRegistry;
         this.projectDiagramResourceServiceCaller = projectDiagramResourceServiceCaller;
     }
 
@@ -403,17 +398,12 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         /* Override this method to trigger some action after a Diagram is loaded. */
     }
 
-    protected StunnerPreferences getStunnerPreferences() {
-        return stunnerPreferencesRegistry.get();
-    }
-
     protected SessionEditorPresenter<EditorSession> newSessionEditorPresenter() {
         final SessionEditorPresenter<EditorSession> presenter =
                 (SessionEditorPresenter<EditorSession>) editorSessionPresenterInstances.get()
                         .withToolbar(false)
                         .withPalette(true)
-                        .displayNotifications(type -> true)
-                        .withPreferences(getStunnerPreferences());
+                        .displayNotifications(type -> true);
         getView().setWidget(presenter.getView());
         return presenter;
     }
@@ -423,7 +413,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                 (SessionViewerPresenter<ViewerSession>) viewerSessionPresenterInstances.get()
                         .withToolbar(false)
                         .withPalette(false)
-                        .withPreferences(getStunnerPreferences())
                         .displayNotifications(type -> true);
         getView().setWidget(presenter.getView());
         return presenter;
