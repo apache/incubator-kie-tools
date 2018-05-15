@@ -73,6 +73,7 @@ import org.mockito.Mock;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -280,7 +281,7 @@ public class ResizeControlImplTest {
         when(connectorEdgeTarget.getUUID()).thenReturn(CONNECTOR_EDGE_TARGET_UUID);
 
         magnetConnection = new MagnetConnection.Builder().atX(0).atY(0).magnet(MagnetConnection.MAGNET_CENTER).build();
-        magnetConnectionTarget = new MagnetConnection.Builder().atX(1).atY(1).magnet(1).build();
+        magnetConnectionTarget = new MagnetConnection.Builder().magnet(1).build();
         when(viewConnector.getSourceConnection()).thenReturn(Optional.of(magnetConnection));
         when(viewConnectorTarget.getTargetConnection()).thenReturn(Optional.of(magnetConnectionTarget));
         when(canvas.getShape(CONNECTOR_EDGE_UUID)).thenReturn(connectorShape);
@@ -340,8 +341,7 @@ public class ResizeControlImplTest {
         //assert initial connection position
         assertEquals(magnetConnection.getLocation().getX(), 0, 0);
         assertEquals(magnetConnection.getLocation().getY(), 0, 0);
-        assertEquals(magnetConnectionTarget.getLocation().getX(), 1, 0);
-        assertEquals(magnetConnectionTarget.getLocation().getY(), 1, 0);
+        assertNull(magnetConnectionTarget.getLocation());
 
         final ResizeHandler resizeHandler = resizeHandlerArgumentCaptor.getValue();
         final double x = 121.45d;

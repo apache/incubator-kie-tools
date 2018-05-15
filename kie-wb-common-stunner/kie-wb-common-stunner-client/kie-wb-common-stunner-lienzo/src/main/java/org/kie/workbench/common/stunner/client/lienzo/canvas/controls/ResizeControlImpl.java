@@ -70,7 +70,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.violations.BoundsExceededViolation;
 
@@ -314,22 +313,22 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
         GraphUtils.getSourceConnections(node)
                 .forEach(edge -> edge.getContent()
                         .getSourceConnection()
-                        .ifPresent(connection -> handleConnections(commandBuilder, node, edge, () -> connection, () -> canvasCommandFactory.setSourceNode(node, edge, connection)))
+                        .ifPresent(connection -> handleConnections(commandBuilder, node, () -> connection, () -> canvasCommandFactory.setSourceNode(node, edge, connection)))
                 );
 
         GraphUtils.getTargetConnections(node)
                 .forEach(edge -> edge.getContent()
                         .getTargetConnection()
-                        .ifPresent(connection -> handleConnections(commandBuilder, node, edge, () -> connection, () -> canvasCommandFactory.setTargetNode(node, edge, connection))
+                        .ifPresent(connection -> handleConnections(commandBuilder, node, () -> connection, () -> canvasCommandFactory.setTargetNode(node, edge, connection))
                         )
                 );
     }
 
     private void handleConnections(final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder,
-                                   final Node<View<?>, Edge> node, Edge<? extends ViewConnector<?>, Node> edge,
-                                   final Supplier<Connection> connecionSupplier,
+                                   final Node<View<?>, Edge> node,
+                                   final Supplier<Connection> connectionSupplier,
                                    final Supplier<CanvasCommand<AbstractCanvasHandler>> commandSupplier) {
-        final Connection connection = connecionSupplier.get();
+        final Connection connection = connectionSupplier.get();
         if (Objects.isNull(connection) || !(connection instanceof MagnetConnection)) {
             return;
         }
@@ -340,8 +339,7 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
             Optional.ofNullable(WiresUtils.isWiresShape(shape.getShapeView()) ? (WiresShape) shape.getShapeView() : null)
                     .ifPresent(wiresShape -> {
                         final WiresMagnet magnet = wiresShape.getMagnets().getMagnet(index);
-                        connection.getLocation().setX(magnet.getX());
-                        connection.getLocation().setY(magnet.getY());
+                        magnetConnection.setLocation(new Point2D(magnet.getX(), magnet.getY()));
                         commandBuilder.addCommand(commandSupplier.get());
                     });
         });
