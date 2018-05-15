@@ -27,32 +27,32 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class CatchingIntermediateSignalEventTest extends CatchingIntermediateEvent<IntermediateSignalEventCatching> {
+public class BoundaryCatchingIntermediateSignalEventTest extends BoundaryCatchingIntermediateEvent<IntermediateSignalEventCatching> {
 
-    private static final String BPMN_CATCHING_INTERMEDIATE_EVENT_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/catchingIntermediateSignalEvents.bpmn";
+    private static final String BPMN_CATCHING_INTERMEDIATE_EVENT_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/boundarySignalEvents.bpmn";
 
-    private static final String EMPTY_TOP_LEVEL_EVENT_ID = "061A48FF-5BDC-4A9F-B4A4-1379FBBB23C5";
-    private static final String FILLED_TOP_LEVEL_EVENT_ID = "A45D6C7A-24BE-46AA-A6B9-25C480F7FFB5";
-    private static final String EMPTY_SUBPROCESS_LEVEL_EVENT_ID = "FFA6848C-267E-46FA-806B-DF1F38BA3A3B";
-    private static final String FILLED_SUBPROCESS_LEVEL_EVENT_ID = "85C587F5-5C3A-4F48-B21B-887CF19FF3F2";
+    private static final String EMPTY_TOP_LEVEL_EVENT_ID = "_53B585C7-7515-4842-9312-29C830D8FE8C";
+    private static final String FILLED_TOP_LEVEL_EVENT_ID = "_7DA9CD2F-8A42-41FA-AB34-4FBD0688E095";
+    private static final String EMPTY_SUBPROCESS_LEVEL_EVENT_ID = "_E852903C-50C5-4969-9C55-DE998FA5300B";
+    private static final String FILLED_SUBPROCESS_LEVEL_EVENT_ID = "_0541428C-F510-4AC3-AC4A-27DBAC940406";
 
-    private static final String EMPTY_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID = "3DC11DED-4E87-4ECD-B2DA-F8AAB279C372";
-    private static final String FILLED_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID = "A1A7E835-EBDA-4727-AAA9-7E230541B0F8";
-    private static final String EMPTY_WITH_INCOME_TOP_LEVEL_EVENT_ID = "C9F04A4E-107B-41B0-8A38-2CA7CD8D327C";
-    private static final String FILLED_WITH_INCOME_TOP_LEVEL_EVENT_ID = "4257742E-5360-4D20-968A-FE14E68D9991";
+    private static final String EMPTY_WITH_OUTGOING_EDGE_TOP_LEVEL_EVENT_ID = "_B6249505-965A-4F69-9C15-154D12C0CF3D";
+    private static final String FILLED_WITH_OUTGOING_EDGE_TOP_LEVEL_EVENT_ID = "_2DFEFD1C-3E0D-4BCB-A250-C7BDAB741B55";
+    private static final String EMPTY_WITH_OUTGOING_EDGE_SUBPROCESS_LEVEL_EVENT_ID = "_4F8B8564-5EA5-494D-9E86-3154F1C0D7C8";
+    private static final String FILLED_WITH_OUTGOING_EDGE_SUBPROCESS_LEVEL_EVENT_ID = "_73B535D0-C805-4F76-B00E-22D6DEE29C8F";
 
-    private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 23;
+    private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 31;
 
-    public CatchingIntermediateSignalEventTest(Marshaller marshallerType) {
+    public BoundaryCatchingIntermediateSignalEventTest(Marshaller marshallerType) {
         super(marshallerType);
     }
 
     @Test
     @Override
     public void testUnmarshallTopLevelEventFilledProperties() throws Exception {
-        final String EVENT_NAME = "signal name ~`!@#$%^&*()_+=-{}|\\][:\";'?><,./";
-        final String EVENT_DOCUMENTATION = "signal documentation\n ~`!@#$%^&*()_+=-{}|\\][:\";'?><,./";
-        final String EVENT_REF = "signal1";
+        final String EVENT_NAME = "Boundary signal01 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String EVENT_DOCUMENTATION = "signal01 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String EVENT_REF = "signal01";
         final String EVENT_DATA_OUTPUT = "||signal01:String||[dout]signal01->processGlobalVar";
 
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_CATCHING_INTERMEDIATE_EVENT_FILE_PATH);
@@ -61,7 +61,7 @@ public class CatchingIntermediateSignalEventTest extends CatchingIntermediateEve
         IntermediateSignalEventCatching filledTopEvent = getCatchingIntermediateNodeById(diagram,
                                                                                          FILLED_TOP_LEVEL_EVENT_ID,
                                                                                          HAS_NO_INCOME_EDGE,
-                                                                                         HAS_OUTGOING_EDGE);
+                                                                                         HAS_NO_OUTGOING_EDGE);
         assertGeneralSet(filledTopEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
         assertSignalEventExecutionSet(filledTopEvent.getExecutionSet(), EVENT_REF, CANCELLING);
         assertDataIOSet(filledTopEvent.getDataIOSet(), EVENT_DATA_OUTPUT);
@@ -76,18 +76,18 @@ public class CatchingIntermediateSignalEventTest extends CatchingIntermediateEve
         IntermediateSignalEventCatching emptyTopEvent = getCatchingIntermediateNodeById(diagram,
                                                                                         EMPTY_TOP_LEVEL_EVENT_ID,
                                                                                         HAS_NO_INCOME_EDGE,
-                                                                                        HAS_OUTGOING_EDGE);
+                                                                                        HAS_NO_OUTGOING_EDGE);
         assertGeneralSet(emptyTopEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertSignalEventExecutionSet(emptyTopEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING);
+        assertSignalEventExecutionSet(emptyTopEvent.getExecutionSet(), EMPTY_VALUE, NON_CANCELLING);
         assertDataIOSet(emptyTopEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
     @Test
     @Override
     public void testUnmarshallSubprocessLevelEventFilledProperties() throws Exception {
-        final String EVENT_NAME = "signal name ~`!@#$%^&*()_+=-{}|\\][:\";'?><,./";
-        final String EVENT_DOCUMENTATION = "signal documentation\n ~`!@#$%^&*()_+=-{}|\\][:\";'?><,./";
-        final String EVENT_REF = "signal3";
+        final String EVENT_NAME = "Boundary signal03 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String EVENT_DOCUMENTATION = "signal03 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String EVENT_REF = "signal03";
         final String EVENT_DATA_OUTPUT = "||signal03:String||[dout]signal03->processGlobalVar";
 
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_CATCHING_INTERMEDIATE_EVENT_FILE_PATH);
@@ -96,7 +96,7 @@ public class CatchingIntermediateSignalEventTest extends CatchingIntermediateEve
         IntermediateSignalEventCatching filledSubprocessEvent = getCatchingIntermediateNodeById(diagram,
                                                                                                 FILLED_SUBPROCESS_LEVEL_EVENT_ID,
                                                                                                 HAS_NO_INCOME_EDGE,
-                                                                                                HAS_OUTGOING_EDGE);
+                                                                                                HAS_NO_OUTGOING_EDGE);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
         assertSignalEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, CANCELLING);
         assertDataIOSet(filledSubprocessEvent.getDataIOSet(), EVENT_DATA_OUTPUT);
@@ -111,26 +111,26 @@ public class CatchingIntermediateSignalEventTest extends CatchingIntermediateEve
         IntermediateSignalEventCatching emptySubprocessEvent = getCatchingIntermediateNodeById(diagram,
                                                                                                EMPTY_SUBPROCESS_LEVEL_EVENT_ID,
                                                                                                HAS_NO_INCOME_EDGE,
-                                                                                               HAS_OUTGOING_EDGE);
+                                                                                               HAS_NO_OUTGOING_EDGE);
         assertGeneralSet(emptySubprocessEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertSignalEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING);
+        assertSignalEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE, NON_CANCELLING);
         assertDataIOSet(emptySubprocessEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
     @Test
     @Override
     public void testUnmarshallTopLevelEventWithEdgesFilledProperties() throws Exception {
-        final String EVENT_NAME = "signal name ~`!@#$%^&*()_+=-{}|\\][:\";'?><,./";
-        final String EVENT_DOCUMENTATION = "signal documentation\n ~`!@#$%^&*()_+=-{}|\\][:\";'?><,./";
-        final String EVENT_REF = "signal2";
+        final String EVENT_NAME = "Boundary signal02 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String EVENT_DOCUMENTATION = "signal02 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String EVENT_REF = "signal02";
         final String EVENT_DATA_OUTPUT = "||signal02:String||[dout]signal02->processGlobalVar";
 
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_CATCHING_INTERMEDIATE_EVENT_FILE_PATH);
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateSignalEventCatching filledSubprocessEvent = getCatchingIntermediateNodeById(diagram,
-                                                                                                FILLED_WITH_INCOME_TOP_LEVEL_EVENT_ID,
-                                                                                                HAS_INCOME_EDGE,
+                                                                                                FILLED_WITH_OUTGOING_EDGE_TOP_LEVEL_EVENT_ID,
+                                                                                                HAS_NO_INCOME_EDGE,
                                                                                                 HAS_OUTGOING_EDGE);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
         assertSignalEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, CANCELLING);
@@ -144,11 +144,11 @@ public class CatchingIntermediateSignalEventTest extends CatchingIntermediateEve
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateSignalEventCatching emptyEvent = getCatchingIntermediateNodeById(diagram,
-                                                                                     EMPTY_WITH_INCOME_TOP_LEVEL_EVENT_ID,
-                                                                                     HAS_INCOME_EDGE,
+                                                                                     EMPTY_WITH_OUTGOING_EDGE_TOP_LEVEL_EVENT_ID,
+                                                                                     HAS_NO_INCOME_EDGE,
                                                                                      HAS_OUTGOING_EDGE);
         assertGeneralSet(emptyEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertSignalEventExecutionSet(emptyEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING);
+        assertSignalEventExecutionSet(emptyEvent.getExecutionSet(), EMPTY_VALUE, NON_CANCELLING);
         assertDataIOSet(emptyEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
@@ -159,28 +159,28 @@ public class CatchingIntermediateSignalEventTest extends CatchingIntermediateEve
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateSignalEventCatching emptySubprocessEvent = getCatchingIntermediateNodeById(diagram,
-                                                                                               EMPTY_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID,
-                                                                                               HAS_INCOME_EDGE,
+                                                                                               EMPTY_WITH_OUTGOING_EDGE_SUBPROCESS_LEVEL_EVENT_ID,
+                                                                                               HAS_NO_INCOME_EDGE,
                                                                                                HAS_OUTGOING_EDGE);
         assertGeneralSet(emptySubprocessEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertSignalEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING);
+        assertSignalEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE, NON_CANCELLING);
         assertDataIOSet(emptySubprocessEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
     @Test
     @Override
     public void testUnmarshallSubprocessLevelEventWithEdgesFilledProperties() throws Exception {
-        final String EVENT_NAME = "signal name ~`!@#$%^&*()_+=-{}|\\][:\";'?><,./";
-        final String EVENT_DOCUMENTATION = "signal documentation\n ~`!@#$%^&*()_+=-{}|\\][:\";'?><,./";
-        final String EVENT_REF = "signal4";
+        final String EVENT_NAME = "Boundary signal04 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String EVENT_DOCUMENTATION = "signal04 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String EVENT_REF = "signal04";
         final String EVENT_DATA_OUTPUT = "||signal04:String||[dout]signal04->processGlobalVar";
 
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_CATCHING_INTERMEDIATE_EVENT_FILE_PATH);
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateSignalEventCatching filledSubprocessEvent = getCatchingIntermediateNodeById(diagram,
-                                                                                                FILLED_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID,
-                                                                                                HAS_INCOME_EDGE,
+                                                                                                FILLED_WITH_OUTGOING_EDGE_SUBPROCESS_LEVEL_EVENT_ID,
+                                                                                                HAS_NO_INCOME_EDGE,
                                                                                                 HAS_OUTGOING_EDGE);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
         assertSignalEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, CANCELLING);
@@ -219,22 +219,22 @@ public class CatchingIntermediateSignalEventTest extends CatchingIntermediateEve
 
     @Override
     String getFilledTopLevelEventWithEdgesId() {
-        return FILLED_WITH_INCOME_TOP_LEVEL_EVENT_ID;
+        return FILLED_WITH_OUTGOING_EDGE_TOP_LEVEL_EVENT_ID;
     }
 
     @Override
     String getEmptyTopLevelEventWithEdgesId() {
-        return EMPTY_WITH_INCOME_TOP_LEVEL_EVENT_ID;
+        return EMPTY_WITH_OUTGOING_EDGE_TOP_LEVEL_EVENT_ID;
     }
 
     @Override
     String getFilledSubprocessLevelEventWithEdgesId() {
-        return FILLED_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID;
+        return FILLED_WITH_OUTGOING_EDGE_SUBPROCESS_LEVEL_EVENT_ID;
     }
 
     @Override
     String getEmptySubprocessLevelEventWithEdgesId() {
-        return EMPTY_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID;
+        return EMPTY_WITH_OUTGOING_EDGE_SUBPROCESS_LEVEL_EVENT_ID;
     }
 
     private void assertSignalEventExecutionSet(CancellingSignalEventExecutionSet executionSet, String eventName, boolean isCancelling) {
