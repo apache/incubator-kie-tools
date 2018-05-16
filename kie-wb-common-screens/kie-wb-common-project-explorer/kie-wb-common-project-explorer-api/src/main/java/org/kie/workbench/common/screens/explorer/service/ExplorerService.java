@@ -60,4 +60,6 @@ public interface ExplorerService {
                   final String newFileName,
                   final Path targetDirectory,
                   final String commitMessage);
+
+    WorkspaceProject resolveProject(final String path);
 }

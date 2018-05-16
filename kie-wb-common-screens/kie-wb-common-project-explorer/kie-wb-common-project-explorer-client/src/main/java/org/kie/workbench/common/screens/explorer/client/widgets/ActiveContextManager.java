@@ -15,10 +15,12 @@
  */
 package org.kie.workbench.common.screens.explorer.client.widgets;
 
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.repositories.Branch;
@@ -38,6 +40,8 @@ public class ActiveContextManager {
     private ActiveContextOptions activeOptions;
     private Caller<ExplorerService> explorerService;
 
+    private Event<WorkspaceProjectContextChangeEvent> contextChangeEvent;
+
     private View view;
 
     private RemoteCallback<ProjectExplorerContent> contentCallback;
@@ -48,10 +52,12 @@ public class ActiveContextManager {
     @Inject
     public ActiveContextManager(final ActiveContextItems activeContextItems,
                                 final ActiveContextOptions activeOptions,
-                                final Caller<ExplorerService> explorerService) {
+                                final Caller<ExplorerService> explorerService,
+                                final Event<WorkspaceProjectContextChangeEvent> contextChangeEvent) {
         this.activeContextItems = activeContextItems;
         this.activeOptions = activeOptions;
         this.explorerService = explorerService;
+        this.contextChangeEvent = contextChangeEvent;
     }
 
     public void init(final View view,
@@ -63,9 +69,24 @@ public class ActiveContextManager {
     public void initActiveContext(final String path) {
         view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
 
-        explorerService.call(contentCallback,
-                             new HasBusyIndicatorDefaultErrorCallback(view)).getContent(path,
-                                                                                        activeOptions.getOptions());
+        explorerService.call(new RemoteCallback<WorkspaceProject>() {
+            @Override
+            public void callback(final WorkspaceProject workspaceProject) {
+                explorerService.call(new RemoteCallback<ProjectExplorerContent>() {
+                                         @Override
+                                         public void callback(final ProjectExplorerContent projectExplorerContent) {
+                                             if (workspaceProject != null) {
+                                                 WorkspaceProjectContextChangeEvent t = new WorkspaceProjectContextChangeEvent(workspaceProject,
+                                                                                                                               workspaceProject.getMainModule());
+                                                 contextChangeEvent.fire(t);
+                                             }
+                                             contentCallback.callback(projectExplorerContent);
+                                         }
+                                     },
+                                     new HasBusyIndicatorDefaultErrorCallback(view)).getContent(path,
+                                                                                                activeOptions.getOptions());
+            }
+        }).resolveProject(path);
     }
 
     public void initActiveContext(final Repository repository,
@@ -121,8 +142,8 @@ public class ActiveContextManager {
 
     public void initActiveContext(final WorkspaceProjectContext context) {
         WorkspaceProject activeProject = context
-                                                .getActiveWorkspaceProject()
-                                                .orElseThrow(() -> new IllegalStateException("Cannot initialize active context without an active project."));
+                .getActiveWorkspaceProject()
+                .orElseThrow(() -> new IllegalStateException("Cannot initialize active context without an active project."));
         initActiveContext(activeProject.getRepository(),
                           activeProject.getBranch(),
                           /*

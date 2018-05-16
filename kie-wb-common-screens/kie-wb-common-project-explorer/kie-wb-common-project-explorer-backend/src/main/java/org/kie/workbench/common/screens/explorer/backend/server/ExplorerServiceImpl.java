@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -32,6 +33,7 @@ import org.guvnor.common.services.project.events.RenameModuleEvent;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
@@ -111,6 +113,9 @@ public class ExplorerServiceImpl
     private CopyService copyService;
 
     @Inject
+    private WorkspaceProjectService projectService;
+
+    @Inject
     //@AppResourcesAuthz
     private AuthorizationManager authorizationManager;
 
@@ -120,16 +125,13 @@ public class ExplorerServiceImpl
 
     private XStream xs;
 
-    // Boilerplate sacrifice for Weld
     public ExplorerServiceImpl() {
         xs = XStreamUtils.createTrustingXStream();
     }
 
-    public ExplorerServiceImpl(final IOService ioService,
-                               final KieModuleService moduleService) {
-        this();
-        this.ioService = ioService;
-        this.moduleService = moduleService;
+    @Override
+    public WorkspaceProject resolveProject(final String path) {
+        return projectService.resolveProject(Paths.convert(ioService.get(URI.create(path.trim()))));
     }
 
     @Override
