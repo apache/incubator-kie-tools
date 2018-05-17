@@ -34,7 +34,7 @@ public class FormModelHandlerManagerImpl implements FormModelHandlerManager {
 
     @Inject
     public FormModelHandlerManagerImpl(Instance<FormModelHandler<? extends FormModel>> instances) {
-        for(FormModelHandler handler : instances) {
+        for (FormModelHandler handler : instances) {
             handlers.put(handler.getModelType(), handler);
         }
     }

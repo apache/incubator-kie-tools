@@ -52,6 +52,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
@@ -70,6 +71,7 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
     private VFSFormFinderService vfsFormFinderService;
     private DeleteService deleteService;
     private RenameService renameService;
+    private CopyService copyService;
     private Logger log = LoggerFactory.getLogger(FormEditorServiceImpl.class);
     private IOService ioService;
     private SessionInfo sessionInfo;
@@ -87,7 +89,8 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
                                  VFSFormFinderService vfsFormFinderService,
                                  DeleteService deleteService,
                                  CommentedOptionFactory commentedOptionFactory,
-                                 RenameService renameService) {
+                                 RenameService renameService,
+                                 CopyService copyService) {
         this.ioService = ioService;
         this.sessionInfo = sessionInfo;
         this.resourceOpenedEvent = resourceOpenedEvent;
@@ -99,6 +102,7 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
         this.commentedOptionFactory = commentedOptionFactory;
         this.deleteService = deleteService;
         this.renameService = renameService;
+        this.copyService = copyService;
     }
 
     @Override
@@ -174,24 +178,28 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
                                      FormModelerContent content,
                                      Metadata metadata) {
 
-        FormModelerContent contentToSave = content;
-        if (!saveBeforeRenaming) {
-            contentToSave = constructContent(path,
-                                             content.getOverview());
+        if (saveBeforeRenaming) {
+            save(path, content, metadata, commitMessage);
         }
 
-        contentToSave.getDefinition().setName(newFileName);
+        renameService.rename(path, newFileName, commitMessage);
 
-        save(path,
-             contentToSave,
-             metadata,
-             commitMessage);
+        return content;
+    }
 
-        renameService.rename(path,
-                             newFileName,
-                             commitMessage);
+    @Override
+    public void copy(Path path,
+                     String newFileName,
+                     String commitMessage,
+                     boolean saveBeforeCopying,
+                     FormModelerContent content,
+                     Metadata metadata) {
 
-        return contentToSave;
+        if (saveBeforeCopying) {
+            save(path, content, metadata, commitMessage);
+        }
+
+        copyService.copy(path, newFileName, commitMessage);
     }
 
     @Override
@@ -242,7 +250,6 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
                     }
                 }
             }
-
         } catch (Exception e) {
             String shortMessage = "Impossible to load the form due to an error on server. Try closing the form and reopen it again and if the problem persists check with your administrator.";
             StringWriter writer = new StringWriter();

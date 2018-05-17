@@ -52,8 +52,8 @@ import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.verification.VerificationMode;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
@@ -132,6 +132,9 @@ public class FormEditorServiceImplTest {
     private RenameService renameService;
 
     @Mock
+    private CopyService copyService;
+
+    @Mock
     private CommentedOptionFactory commentedOptionFactory;
 
     private FormEditorServiceImpl formEditorService;
@@ -151,8 +154,8 @@ public class FormEditorServiceImplTest {
         modelHandlerManager = spy(new FormModelHandlerManagerImpl(instances));
 
         formDefinitionSerializer = spy(new FormDefinitionSerializerImpl(new FieldSerializer(),
-                                                                    new FormModelSerializer(),
-                                                                    new TestMetaDataEntryManager()));
+                                                                        new FormModelSerializer(),
+                                                                        new TestMetaDataEntryManager()));
 
         formEditorService = spy(new FormEditorServiceImpl(ioService,
                                                           sessionInfo,
@@ -164,7 +167,8 @@ public class FormEditorServiceImplTest {
                                                           vfsFormFinderService,
                                                           deleteService,
                                                           commentedOptionFactory,
-                                                          renameService));
+                                                          renameService,
+                                                          copyService));
 
         when(path.toURI()).thenReturn("default:///src/main/resources/test.frm");
         when(moduleService.resolveModule(any())).thenReturn(module);
@@ -247,17 +251,38 @@ public class FormEditorServiceImplTest {
     private void testRename(boolean saveBeforeRenaming) {
         FormModelerContent content = mock(FormModelerContent.class);
         doReturn(path).when(formEditorService).save(any(Path.class), any(FormModelerContent.class), any(Metadata.class), anyString());
-        doReturn(content).when(formEditorService).constructContent(any(Path.class), any(Overview.class));
+
         when(content.getDefinition()).thenReturn(mock(FormDefinition.class));
         Metadata metadata = mock(Metadata.class);
 
         FormModelerContent resultContent = formEditorService.rename(path, NEW_FORM_NAME, COMMIT_COMMENT, saveBeforeRenaming, content, metadata);
 
         assertSame(content, resultContent);
-        VerificationMode constructContentCalls = saveBeforeRenaming ? never() : times(1);
-        verify(formEditorService, constructContentCalls).constructContent(eq(path), any(Overview.class));
-        verify(formEditorService).save(eq(path), eq(content), eq(metadata), eq(COMMIT_COMMENT));
+        verify(formEditorService, saveBeforeRenaming ? times(1) : never()).save(eq(path), eq(content), eq(metadata), eq(COMMIT_COMMENT));
         verify(renameService).rename(eq(path), eq(NEW_FORM_NAME), eq(COMMIT_COMMENT));
+    }
+
+    @Test
+    public void testCopyAndSave() {
+        testCopy(true);
+    }
+
+    @Test
+    public void testCopyWithoutSaving() {
+        testCopy(false);
+    }
+
+    private void testCopy(boolean saveBeforeCopy) {
+        FormModelerContent content = mock(FormModelerContent.class);
+        doReturn(path).when(formEditorService).save(any(Path.class), any(FormModelerContent.class), any(Metadata.class), anyString());
+
+        when(content.getDefinition()).thenReturn(mock(FormDefinition.class));
+        Metadata metadata = mock(Metadata.class);
+
+        formEditorService.copy(path, NEW_FORM_NAME, COMMIT_COMMENT, saveBeforeCopy, content, metadata);
+
+        verify(formEditorService, saveBeforeCopy ? times(1) : never()).save(eq(path), eq(content), eq(metadata), eq(COMMIT_COMMENT));
+        verify(copyService).copy(eq(path), eq(NEW_FORM_NAME), eq(COMMIT_COMMENT));
     }
 
     @Test

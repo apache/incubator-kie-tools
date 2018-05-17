@@ -54,12 +54,12 @@ import org.kie.workbench.common.workbench.client.events.LayoutEditorFocusEvent;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpView;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.commons.ToggleCommentPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
-import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentPalette;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditor;
@@ -165,6 +165,9 @@ public class FormEditorPresenterAbstractTest {
     protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
 
     @Mock
+    protected CopyPopUpPresenter copyPopUpPresenter;
+
+    @Mock
     protected MenuItem alertsButtonMenuItem;
 
     @Mock
@@ -233,13 +236,15 @@ public class FormEditorPresenterAbstractTest {
         when(layoutEditorMock.getLayout()).thenReturn(new LayoutTemplate());
 
         when(menuBuilderMock.addSave(any(MenuItem.class))).thenReturn(menuBuilderMock);
-        when(menuBuilderMock.addCopy(any(ObservablePath.class),
-                                     any(DefaultFileNameValidator.class))).thenReturn(menuBuilderMock);
-        when(menuBuilderMock.addRename(any(ObservablePath.class),
-                                       any(DefaultFileNameValidator.class))).thenReturn(menuBuilderMock);
+
+        when(menuBuilderMock.addCopy(any(Command.class))).thenReturn(menuBuilderMock);
+
         when(menuBuilderMock.addRename(any(Command.class))).thenReturn(menuBuilderMock);
+
         when(menuBuilderMock.addDelete(any(ObservablePath.class))).thenReturn(menuBuilderMock);
+
         when(menuBuilderMock.addNewTopLevelMenu(any(MenuItem.class))).thenReturn(menuBuilderMock);
+
         when(menuBuilderMock.build()).thenReturn(mock(Menus.class));
 
         when(versionRecordManager.getCurrentPath()).thenReturn(path);
@@ -285,6 +290,7 @@ public class FormEditorPresenterAbstractTest {
                 renamePopUpPresenter = FormEditorPresenterAbstractTest.this.renamePopUpPresenter;
                 alertsButtonMenuItemBuilder = FormEditorPresenterAbstractTest.this.alertsButtonMenuItemBuilder;
                 formEditorContext = mock(FormEditorContext.class);
+                copyPopUpPresenter = FormEditorPresenterAbstractTest.this.copyPopUpPresenter;
             }
 
             @Override

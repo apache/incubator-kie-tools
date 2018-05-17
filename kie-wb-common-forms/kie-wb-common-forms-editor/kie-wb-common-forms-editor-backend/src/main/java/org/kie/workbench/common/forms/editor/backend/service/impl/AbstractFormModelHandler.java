@@ -139,7 +139,7 @@ public abstract class AbstractFormModelHandler<F extends FormModel> implements F
 
     protected String getMessage(ResourceBundle bundle, String key, String[] params) {
         String message = bundle.getString(key);
-        if(params != null && params.length > 0) {
+        if (params != null && params.length > 0) {
             message = MessageFormat.format(message, params);
         }
         return message;

@@ -462,8 +462,7 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
         loadContent();
 
         verify(menuBuilderMock).addSave(any(MenuItem.class));
-        verify(menuBuilderMock).addCopy(any(Path.class),
-                                        any(AssetUpdateValidator.class));
+        verify(menuBuilderMock).addCopy(any(Command.class));
         verify(menuBuilderMock).addRename(any(Command.class));
         verify(menuBuilderMock).addDelete(any(Command.class));
         verify(menuBuilderMock).addNewTopLevelMenu(alertsButtonMenuItem);
@@ -598,6 +597,50 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
 
         if (dirty) {
             presenterSpy.rename(saving);
+        }
+        return presenterSpy;
+    }
+
+    @Test
+    public void testSafeCopyDirtySaving() {
+        FormEditorPresenter presenterSpy = triggerSafeCopy(true, true);
+
+        verify(view).showSavePopup(any(Path.class), any(Command.class), any(Command.class));
+
+        verify(presenterSpy).copy(eq(true));
+    }
+
+    @Test
+    public void testSafeCopyDirtyNotSaving() {
+        FormEditorPresenter presenterSpy = triggerSafeCopy(true, false);
+
+        verify(view).showSavePopup(any(Path.class), any(Command.class), any(Command.class));
+
+        verify(presenterSpy).copy(eq(false));
+    }
+
+    @Test
+    public void testSafeCopyNotDirty() {
+        FormEditorPresenter presenterSpy = triggerSafeCopy(false, false);
+
+        verify(view, never()).showSavePopup(any(Path.class), any(Command.class), any(Command.class));
+
+        verify(presenterSpy).copy(eq(false));
+    }
+
+    private FormEditorPresenter triggerSafeCopy(boolean dirty, boolean saving) {
+        loadContent();
+
+        FormEditorPresenter presenterSpy = spy(presenter);
+
+        doNothing().when(presenterSpy).copy(anyBoolean());
+
+        doReturn(dirty).when(presenterSpy).isDirty(anyInt());
+
+        presenterSpy.safeCopy();
+
+        if (dirty) {
+            presenterSpy.copy(saving);
         }
         return presenterSpy;
     }

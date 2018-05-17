@@ -24,6 +24,7 @@ import org.kie.workbench.common.forms.editor.model.FormModelerContentError;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
@@ -74,7 +75,7 @@ public class FormEditorPresenterModelErrors extends FormEditorPresenterAbstractT
         verify(editorHelper).initHelper(content);
 
         verify(view).init(presenter);
-        verify(errorMessageDisplayer).show(MODEL_ERROR_MESSAGE, MODEL_ERROR_MESSAGE, DATA_OBJECT, any());
+        verify(errorMessageDisplayer).show(eq(MODEL_ERROR_MESSAGE), eq(MODEL_ERROR_MESSAGE), eq(DATA_OBJECT), any());
 
         verify(layoutEditorMock).clear();
         verify(layoutEditorMock).init(anyString(), anyString(), anyString(), any());
@@ -97,7 +98,7 @@ public class FormEditorPresenterModelErrors extends FormEditorPresenterAbstractT
         verify(editorHelper).initHelper(content);
 
         verify(view).init(presenter);
-        verify(errorMessageDisplayer).show(UNEXPECTED_ERROR_MESSAGE, UNEXPECTED_ERROR_MESSAGE, null, any());
+        verify(errorMessageDisplayer).show(eq(UNEXPECTED_ERROR_MESSAGE), eq(UNEXPECTED_ERROR_MESSAGE), eq(null), any());
 
         verify(layoutEditorMock, never()).clear();
         verify(layoutEditorMock, never()).init(anyString(), anyString(), anyString(), any());

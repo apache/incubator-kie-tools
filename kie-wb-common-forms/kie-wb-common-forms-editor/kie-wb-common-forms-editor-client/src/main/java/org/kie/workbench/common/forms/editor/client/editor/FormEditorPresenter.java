@@ -57,6 +57,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
+import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.ComponentRemovedEvent;
@@ -64,6 +65,7 @@ import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentPalette;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditor;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent;
+import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.lifecycle.OnFocus;
@@ -197,13 +199,13 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
             errorMessageDisplayer.enableContinue(content.getDefinition() != null);
         }
 
-        if (content.getDefinition() != null){
+        if (content.getDefinition() != null) {
             loadEditor(content);
         }
     }
 
     private void loadEditor(FormModelerContent content) {
-        if(content.getDefinition() != null) {
+        if (content.getDefinition() != null) {
             if (content.getDefinition().getLayoutTemplate() == null) {
                 content.getDefinition().setLayoutTemplate(new LayoutTemplate());
             }
@@ -285,8 +287,7 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
         if (canUpdateProject()) {
             fileMenuBuilder
                     .addSave(versionRecordManager.newSaveMenuItem(() -> saveAction()))
-                    .addCopy(versionRecordManager.getCurrentPath(),
-                             assetUpdateValidator)
+                    .addCopy(this::safeCopy)
                     .addRename(this::safeRename)
                     .addDelete(this::safeDelete);
         }
@@ -299,6 +300,62 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
                                  synchronizeFormLayout();
                                  IOC.getBeanManager().lookupBean( PreviewFormPresenter.class ).newInstance().preview( getRenderingContext() );
                              } )*/
+    }
+
+    protected void safeCopy() {
+        if (this.isDirty(editorHelper.getContent().getDefinition().hashCode())) {
+
+            view.showSavePopup(versionRecordManager.getCurrentPath(),
+                               () -> copy(true),
+                               () -> copy(false));
+        } else {
+            copy(false);
+        }
+    }
+
+    public void copy(boolean save) {
+        if (save) {
+            synchronizeFormLayout();
+        }
+        copyPopUpPresenter.show(versionRecordManager.getPathToLatest(), assetUpdateValidator, getCopyCommand(save));
+    }
+
+    protected CommandWithFileNameAndCommitMessage getCopyCommand(boolean save) {
+        return details -> copyCommand(details, save);
+    }
+
+    protected void copyCommand(FileNameAndCommitMessage details, boolean save) {
+        view.showBusyIndicator(org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Copying());
+
+        editorService.call(getCopySuccessCallback(copyPopUpPresenter.getView()),
+                           getCopyErrorCallback(copyPopUpPresenter.getView())).copy(versionRecordManager.getPathToLatest(),
+                                                                                    details.getNewFileName(),
+                                                                                    details.getCommitMessage(),
+                                                                                    save,
+                                                                                    editorHelper.getContent(),
+                                                                                    metadata);
+    }
+
+    private RemoteCallback<Path> getCopySuccessCallback(final CopyPopUpPresenter.View copyPopupView) {
+        return response -> {
+            copyPopupView.hide();
+            view.hideBusyIndicator();
+            notification.fire(new NotificationEvent(org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemCopiedSuccessfully(),
+                                                    NotificationEvent.NotificationType.SUCCESS));
+        };
+    }
+
+    protected DefaultErrorCallback getCopyErrorCallback(final CopyPopUpPresenter.View copyPopupView) {
+        return new DefaultErrorCallback() {
+
+            @Override
+            public boolean error(final Message message,
+                                 final Throwable throwable) {
+                copyPopupView.hide();
+                return super.error(message,
+                                   throwable);
+            }
+        };
     }
 
     protected void safeRename() {
@@ -323,8 +380,7 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
     }
 
     protected CommandWithFileNameAndCommitMessage getRenameCommand(boolean save) {
-        return details -> renameCommand(details,
-                                        save);
+        return details -> renameCommand(details, save);
     }
 
     protected void renameCommand(FileNameAndCommitMessage details,
