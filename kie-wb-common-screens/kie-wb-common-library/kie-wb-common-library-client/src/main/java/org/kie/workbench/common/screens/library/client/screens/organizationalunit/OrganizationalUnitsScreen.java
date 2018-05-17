@@ -129,19 +129,17 @@ public class OrganizationalUnitsScreen {
     }
 
     void setupOrganizationalUnits() {
-        if (organizationalUnitController.canReadOrgUnits()) {
-            view.showBusyIndicator();
-            libraryService.call((List<OrganizationalUnit> allOrganizationalUnits) -> {
-                organizationalUnits = allOrganizationalUnits;
-                if (allOrganizationalUnits.isEmpty()) {
-                    view.showNoOrganizationalUnits(emptyOrganizationalUnitsScreen.getView().getElement());
-                } else {
-                    refresh();
-                }
-                setupView();
-                view.hideBusyIndicator();
-            }).getOrganizationalUnits();
-        }
+        view.showBusyIndicator();
+        libraryService.call((List<OrganizationalUnit> allOrganizationalUnits) -> {
+            organizationalUnits = allOrganizationalUnits;
+            if (allOrganizationalUnits.isEmpty()) {
+                view.showNoOrganizationalUnits(emptyOrganizationalUnitsScreen.getView().getElement());
+            } else {
+                refresh();
+            }
+            setupView();
+            view.hideBusyIndicator();
+        }).getOrganizationalUnits();
     }
 
     public void refresh() {

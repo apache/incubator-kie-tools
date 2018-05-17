@@ -137,15 +137,14 @@ public class OrganizationalUnitsScreenTest {
     }
 
     @Test
-    public void initWithoutReadOrgUnitsPermissionTest() {
+    public void initWithoutReadAllOrgUnitsPermissionTest() {
         doReturn(false).when(organizationalUnitController).canReadOrgUnits();
 
         presenter.init();
 
+        verify(view).clearOrganizationalUnits();
         verify(view,
-               never()).clearOrganizationalUnits();
-        verify(view,
-               never()).addOrganizationalUnit(any());
+               times(3)).addOrganizationalUnit(any());
     }
 
     @Test
