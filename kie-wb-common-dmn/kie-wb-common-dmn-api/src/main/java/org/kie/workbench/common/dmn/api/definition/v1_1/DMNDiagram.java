@@ -26,12 +26,14 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.font.FontSet;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
@@ -68,6 +70,9 @@ public class DMNDiagram extends DMNModelInstrumentedBase implements DMNViewDefin
 
     protected Definitions definitions;
 
+    @Property
+    protected Id id;
+
     @PropertySet
     @FormField
     @Valid
@@ -82,20 +87,31 @@ public class DMNDiagram extends DMNModelInstrumentedBase implements DMNViewDefin
     protected RectangleDimensionsSet dimensionsSet;
 
     public DMNDiagram() {
-        this(new Definitions(),
+        this(new Id(),
+             new Definitions(),
              new BackgroundSet(),
              new FontSet(),
              new RectangleDimensionsSet());
     }
 
-    public DMNDiagram(final @MapsTo("definitions") Definitions definitions,
+    public DMNDiagram(final @MapsTo("id") Id id,
+                      final @MapsTo("definitions") Definitions definitions,
                       final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                       final @MapsTo("fontSet") FontSet fontSet,
                       final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
+        this.id = id;
         this.definitions = definitions;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
+    }
+
+    public Id getId() {
+        return id;
+    }
+
+    public void setId(final Id id) {
+        this.id = id;
     }
 
     public Definitions getDefinitions() {

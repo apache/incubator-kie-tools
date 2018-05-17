@@ -2,5 +2,5 @@
 <svg version="1.1" id="inputData" xmlns="http://www.w3.org/2000/svg"
 		 x="0px" y="0px" width="110px" height="60px" viewBox="0 0 110 60"
 		 style="enable-background:new 0 0 110 60;" xml:space="preserve">
-	<path class="inputData" d="M0 25 A25 25 0,0,1 25 0 L75 0 A25 25 0,0,1 100 25 A25 25 0,0,1 75 50 L25 50 A25 25 0,0,1 0 25 Z" />
+	<path class="inputData" d="M0 25 C0,12.5 12.5,0 25,0 L75 0 C87.5,0 100,12.5 100,25 C100,37.5 87.5,50 75,50 L25 50 C12.5,50 0,37.5 0,25 Z" />
 </svg>

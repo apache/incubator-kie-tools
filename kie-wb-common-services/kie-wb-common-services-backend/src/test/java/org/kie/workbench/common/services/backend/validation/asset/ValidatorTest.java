@@ -30,9 +30,7 @@ import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.test.TestFileSystem;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -52,20 +50,10 @@ public class ValidatorTest {
     private DefaultGenericKieValidator validator;
     private ValidatorBuildService validatorBuildService;
 
-    @BeforeClass
-    public static void disableGitDaemonAndSsh() {
-        System.setProperty(JGitFileSystemProviderConfiguration.GIT_DAEMON_ENABLED, "false");
-        System.setProperty(JGitFileSystemProviderConfiguration.GIT_SSH_ENABLED, "false");
-    }
-
-    @AfterClass
-    public static void clearSystemProperties() {
-        System.clearProperty(JGitFileSystemProviderConfiguration.GIT_DAEMON_ENABLED);
-        System.clearProperty(JGitFileSystemProviderConfiguration.GIT_SSH_ENABLED);
-    }
-
     @Before
     public void setUp() throws Exception {
+        disableGitDaemonAndSsh();
+
         fileSystemTestingUtils.setup();
         testFileSystem = new TestFileSystem();
         validatorBuildService = testFileSystem.getReference(ValidatorBuildService.class);
@@ -76,6 +64,18 @@ public class ValidatorTest {
     public void tearDown() {
         testFileSystem.tearDown();
         fileSystemTestingUtils.cleanup();
+
+        clearSystemProperties();
+    }
+
+    private void disableGitDaemonAndSsh() {
+        System.setProperty(JGitFileSystemProviderConfiguration.GIT_DAEMON_ENABLED, "false");
+        System.setProperty(JGitFileSystemProviderConfiguration.GIT_SSH_ENABLED, "false");
+    }
+
+    private void clearSystemProperties() {
+        System.clearProperty(JGitFileSystemProviderConfiguration.GIT_DAEMON_ENABLED);
+        System.clearProperty(JGitFileSystemProviderConfiguration.GIT_SSH_ENABLED);
     }
 
     @Test
