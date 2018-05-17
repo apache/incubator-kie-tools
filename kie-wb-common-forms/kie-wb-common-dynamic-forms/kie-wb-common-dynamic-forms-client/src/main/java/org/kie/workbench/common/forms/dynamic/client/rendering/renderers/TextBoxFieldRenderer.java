@@ -50,13 +50,13 @@ public class TextBoxFieldRenderer extends FieldRenderer<TextBoxBaseDefinition, D
         } else {
             String inputId = generateUniqueId();
             textBox = new TextBox();
+            textBox.setName(fieldNS);
             textBox.setId(inputId);
             textBox.setPlaceholder(field.getPlaceHolder());
             textBox.setMaxLength(field.getMaxLength());
             textBox.setEnabled(!field.getReadOnly());
-            formGroup.render(inputId,
-                             textBox,
-                             field);
+
+            formGroup.render(inputId, textBox, field);
         }
 
         return formGroup;

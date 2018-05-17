@@ -52,13 +52,13 @@ public class TextAreaFieldRenderer extends FieldRenderer<TextAreaFieldDefinition
 
             textArea = new TextArea();
             textArea.setId(inputId);
+            textArea.setName(fieldNS);
             textArea.setPlaceholder(field.getPlaceHolder());
             textArea.setVisibleLines(field.getRows());
             textArea.setEnabled(!field.getReadOnly());
             textArea.setVisibleLines(field.getRows());
-            formGroup.render(inputId,
-                             textArea,
-                             field);
+
+            formGroup.render(inputId, textArea, field);
         }
 
         return formGroup;

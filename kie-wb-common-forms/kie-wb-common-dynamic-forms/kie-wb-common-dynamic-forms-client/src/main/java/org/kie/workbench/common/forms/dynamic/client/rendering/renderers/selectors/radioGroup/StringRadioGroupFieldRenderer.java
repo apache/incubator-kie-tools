@@ -34,6 +34,6 @@ public class StringRadioGroupFieldRenderer
 
     @Override
     protected RadioGroupBase<String> getRadioGroup() {
-        return new StringRadioGroup(field.getName());
+        return new StringRadioGroup(fieldNS);
     }
 }

@@ -76,7 +76,7 @@ public class MapModelBindingHelperTest {
 
         helper.initialize();
 
-        context = new MapModelRenderingContext();
+        context = new MapModelRenderingContext("");
 
         context.setRootForm(employeeForm);
         context.getAvailableForms().put(addressForm.getId(),

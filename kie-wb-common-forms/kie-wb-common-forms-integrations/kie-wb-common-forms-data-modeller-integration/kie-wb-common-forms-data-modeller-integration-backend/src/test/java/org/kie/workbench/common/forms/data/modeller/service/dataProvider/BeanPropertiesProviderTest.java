@@ -68,7 +68,7 @@ public class BeanPropertiesProviderTest extends AbstractDataObjectFinderTest {
 
         currentEditedMeta = new TableColumnMeta();
 
-        context = new FormEditorRenderingContext(path);
+        context = new FormEditorRenderingContext("", path);
 
         context.setModel(currentEditedMeta);
     }
@@ -115,7 +115,7 @@ public class BeanPropertiesProviderTest extends AbstractDataObjectFinderTest {
 
         field.setStandaloneClassName(TYPE_NAME);
 
-        parentContext = new FormEditorRenderingContext(path);
+        parentContext = new FormEditorRenderingContext("", path);
 
         parentContext.setModel(field);
 

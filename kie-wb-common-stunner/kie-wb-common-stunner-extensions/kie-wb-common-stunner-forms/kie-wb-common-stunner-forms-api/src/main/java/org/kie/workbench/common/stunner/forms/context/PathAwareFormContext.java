@@ -45,6 +45,11 @@ public class PathAwareFormContext<T> implements FormRenderingContext<T>,
     }
 
     @Override
+    public String getNamespace() {
+        return wrapped.getNamespace();
+    }
+
+    @Override
     public FormDefinition getRootForm() {
         return wrapped.getRootForm();
     }
@@ -90,12 +95,9 @@ public class PathAwareFormContext<T> implements FormRenderingContext<T>,
     }
 
     @Override
-    public FormRenderingContext getCopyFor(final String formKey,
-                                           final T model) {
-        final FormRenderingContext<?> wrappedCopy = wrapped.getCopyFor(formKey,
-                                                                       model);
-        return new PathAwareFormContext<>(wrappedCopy,
-                                          path);
+    public FormRenderingContext getCopyFor(final String namespace, final String formKey, final T model) {
+        final FormRenderingContext<?> wrappedCopy = wrapped.getCopyFor(namespace, formKey, model);
+        return new PathAwareFormContext<>(wrappedCopy, path);
     }
 
     @Override

@@ -64,6 +64,7 @@ public class DatePickerFieldRenderer extends FieldRenderer<DatePickerFieldDefini
         if (field.getShowTime()) {
             DateTimePicker box = new DateTimePicker();
             box.setId(inputId);
+            box.setName(fieldNS);
             box.setPlaceholder(field.getPlaceHolder());
             box.setEnabled(!field.getReadOnly());
             box.setAutoClose(true);
@@ -75,6 +76,7 @@ public class DatePickerFieldRenderer extends FieldRenderer<DatePickerFieldDefini
 
         DatePicker box = new DatePicker();
         box.setId(inputId);
+        box.setName(fieldNS);
         box.setPlaceholder(field.getPlaceHolder());
         box.setEnabled(!field.getReadOnly());
         box.setAutoClose(true);

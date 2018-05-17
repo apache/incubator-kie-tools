@@ -43,7 +43,7 @@ public class PreviewFormPresenter implements IsWidget {
 
     public void preview(FormRenderingContext context) {
 
-        MapModelRenderingContext mapContext = new MapModelRenderingContext();
+        MapModelRenderingContext mapContext = new MapModelRenderingContext("edit");
         mapContext.getAvailableForms().putAll(context.getAvailableForms());
         mapContext.setRootForm(context.getRootForm());
         mapContext.setModel(new HashMap<>());

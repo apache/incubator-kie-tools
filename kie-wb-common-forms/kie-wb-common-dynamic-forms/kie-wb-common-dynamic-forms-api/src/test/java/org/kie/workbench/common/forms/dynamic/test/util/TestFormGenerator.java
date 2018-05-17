@@ -48,7 +48,7 @@ public class TestFormGenerator {
 
     public static StaticModelFormRenderingContext getContextForEmployee(Employee employee) {
         FormDefinition form = getEmployeeForm();
-        StaticModelFormRenderingContext context = new StaticModelFormRenderingContext();
+        StaticModelFormRenderingContext context = new StaticModelFormRenderingContext("");
         context.setRootForm(form);
         context.setModel(employee);
         context.getAvailableForms().put(form.getId(),

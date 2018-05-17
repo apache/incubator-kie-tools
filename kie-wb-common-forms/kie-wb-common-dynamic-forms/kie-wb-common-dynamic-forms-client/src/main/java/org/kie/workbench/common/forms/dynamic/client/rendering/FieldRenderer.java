@@ -38,6 +38,7 @@ import org.kie.workbench.common.forms.processing.engine.handling.FormField;
 public abstract class FieldRenderer<F extends FieldDefinition, FORM_GROUP extends FormGroup> {
 
     protected FormRenderingContext renderingContext;
+    protected String fieldNS;
     protected F field;
     protected FormFieldImpl formField = null;
     protected List<FieldChangeListener> fieldChangeListeners = new ArrayList<>();
@@ -48,10 +49,10 @@ public abstract class FieldRenderer<F extends FieldDefinition, FORM_GROUP extend
     @Inject
     private ConfigErrorDisplayer errorDisplayer;
 
-    public void init(FormRenderingContext renderingContext,
-                     F field) {
+    public void init(FormRenderingContext renderingContext, F field) {
         this.renderingContext = renderingContext;
         this.field = field;
+        this.fieldNS = renderingContext.getNamespace() + FormRenderingContext.NAMESPACE_SEPARATOR + field.getName();
         fieldChangeListeners.clear();
     }
 

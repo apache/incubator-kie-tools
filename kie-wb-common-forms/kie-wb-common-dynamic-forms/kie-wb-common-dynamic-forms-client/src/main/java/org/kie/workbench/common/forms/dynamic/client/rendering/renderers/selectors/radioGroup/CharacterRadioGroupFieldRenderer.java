@@ -35,7 +35,7 @@ public class CharacterRadioGroupFieldRenderer
 
     @Override
     protected RadioGroupBase<Character> getRadioGroup() {
-        return new CharacterRadioGroup(field.getName());
+        return new CharacterRadioGroup(fieldNS);
     }
 
     @Override

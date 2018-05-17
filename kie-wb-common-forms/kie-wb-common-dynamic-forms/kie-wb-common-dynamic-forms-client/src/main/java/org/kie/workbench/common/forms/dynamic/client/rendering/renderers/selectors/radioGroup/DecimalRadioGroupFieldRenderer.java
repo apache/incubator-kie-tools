@@ -34,6 +34,6 @@ public class DecimalRadioGroupFieldRenderer
 
     @Override
     protected RadioGroupBase<Double> getRadioGroup() {
-        return new DecimalRadioGroup(field.getName());
+        return new DecimalRadioGroup(fieldNS);
     }
 }

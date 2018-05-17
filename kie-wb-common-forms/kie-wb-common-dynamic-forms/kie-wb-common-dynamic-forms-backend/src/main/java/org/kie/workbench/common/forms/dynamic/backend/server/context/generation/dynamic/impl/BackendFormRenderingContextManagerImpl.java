@@ -65,7 +65,7 @@ public class BackendFormRenderingContextManagerImpl implements BackendFormRender
                                                        Map<String, String> params,
                                                        FormDefinition... nestedForms) {
 
-        MapModelRenderingContext clientRenderingContext = new MapModelRenderingContext();
+        MapModelRenderingContext clientRenderingContext = new MapModelRenderingContext(String.valueOf(System.currentTimeMillis()));
 
         clientRenderingContext.setRootForm(rootForm);
 

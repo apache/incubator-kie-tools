@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.dynamic.service.shared.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.forms.dynamic.service.shared.AbstractFormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.validation.DynamicModelConstraints;
@@ -34,9 +35,13 @@ public class MapModelRenderingContext extends AbstractFormRenderingContext<Map<S
 
     public Map<String, DynamicModelConstraints> modelValidations = new HashMap<>();
 
+    public MapModelRenderingContext(@MapsTo("namespace") String namespace) {
+        super(namespace);
+    }
+
     @Override
-    protected MapModelRenderingContext getNewInstance() {
-        MapModelRenderingContext copy = new MapModelRenderingContext();
+    protected AbstractFormRenderingContext<Map<String, Object>> getNewInstance(String namespace) {
+        MapModelRenderingContext copy = new MapModelRenderingContext(namespace);
         copy.setModelValidations(modelValidations);
         return copy;
     }

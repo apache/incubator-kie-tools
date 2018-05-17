@@ -16,14 +16,19 @@
 
 package org.kie.workbench.common.forms.dynamic.service.shared.impl;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.forms.dynamic.service.shared.AbstractFormRenderingContext;
 
 @Portable
 public class StaticModelFormRenderingContext extends AbstractFormRenderingContext<Object> {
 
+    public StaticModelFormRenderingContext(@MapsTo("namespace") String namespace) {
+        super(namespace);
+    }
+
     @Override
-    protected AbstractFormRenderingContext getNewInstance() {
-        return new StaticModelFormRenderingContext();
+    protected StaticModelFormRenderingContext getNewInstance(String namespace) {
+        return new StaticModelFormRenderingContext(namespace);
     }
 }

@@ -27,8 +27,8 @@ public class FormEditorRenderingContext extends AbstractFormRenderingContext<Fie
 
     private Path formPath;
 
-    public FormEditorRenderingContext(@MapsTo("formPath") Path formPath) {
-        super();
+    public FormEditorRenderingContext(@MapsTo("namespace") String namespace, @MapsTo("formPath") Path formPath) {
+        super(namespace);
         this.formPath = formPath;
     }
 
@@ -41,7 +41,7 @@ public class FormEditorRenderingContext extends AbstractFormRenderingContext<Fie
     }
 
     @Override
-    protected AbstractFormRenderingContext getNewInstance() {
-        return new FormEditorRenderingContext(formPath);
+    protected FormEditorRenderingContext getNewInstance(String namespace) {
+        return new FormEditorRenderingContext(namespace, formPath);
     }
 }

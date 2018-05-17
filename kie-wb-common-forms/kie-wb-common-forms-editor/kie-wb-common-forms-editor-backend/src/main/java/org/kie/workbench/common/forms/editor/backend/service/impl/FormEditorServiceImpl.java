@@ -265,9 +265,9 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
         return formModelConent;
     }
 
-    protected FormEditorRenderingContext createRenderingContext(FormDefinition form,
-                                                                Path formPath) {
-        FormEditorRenderingContext context = new FormEditorRenderingContext(formPath);
+    protected FormEditorRenderingContext createRenderingContext(FormDefinition form, Path formPath) {
+
+        FormEditorRenderingContext context = new FormEditorRenderingContext("edition", formPath);
         context.setRootForm(form);
 
         List<FormDefinition> allForms = vfsFormFinderService.findAllForms(formPath);

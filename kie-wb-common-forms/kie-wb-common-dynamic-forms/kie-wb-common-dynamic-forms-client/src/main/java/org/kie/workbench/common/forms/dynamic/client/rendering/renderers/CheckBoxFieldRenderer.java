@@ -38,6 +38,7 @@ public class CheckBoxFieldRenderer extends FieldRenderer<CheckBoxFieldDefinition
     @Override
     protected FormGroup getFormGroup(RenderMode renderMode) {
         checkbox = new SimpleCheckBox();
+        checkbox.setName(fieldNS);
         checkbox.setEnabled(!field.getReadOnly() && renderingContext.getRenderMode().equals(RenderMode.EDIT_MODE));
 
         CheckBoxFormGroup formGroup = formGroupsInstance.get();

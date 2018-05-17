@@ -34,6 +34,6 @@ public class IntegerRadioGroupFieldRenderer
 
     @Override
     protected RadioGroupBase<Long> getRadioGroup() {
-        return new IntegerRadioGroup(field.getName());
+        return new IntegerRadioGroup(fieldNS);
     }
 }

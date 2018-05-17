@@ -20,8 +20,12 @@ import org.kie.workbench.common.forms.dynamic.service.shared.AbstractFormRenderi
 
 public class TestFormRenderingContext extends AbstractFormRenderingContext {
 
+    public TestFormRenderingContext(String namespace) {
+        super(namespace);
+    }
+
     @Override
-    protected AbstractFormRenderingContext getNewInstance() {
-        return new TestFormRenderingContext();
+    protected AbstractFormRenderingContext getNewInstance(String namespace) {
+        return new TestFormRenderingContext(namespace);
     }
 }

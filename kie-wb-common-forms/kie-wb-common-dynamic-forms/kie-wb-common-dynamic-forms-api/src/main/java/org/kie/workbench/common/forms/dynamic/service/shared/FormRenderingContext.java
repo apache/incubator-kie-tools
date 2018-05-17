@@ -22,6 +22,10 @@ import org.kie.workbench.common.forms.model.FormDefinition;
 
 public interface FormRenderingContext<T> {
 
+    String NAMESPACE_SEPARATOR = ".";
+
+    String getNamespace();
+
     FormDefinition getRootForm();
 
     void setRootForm(FormDefinition rootForm);
@@ -40,6 +44,5 @@ public interface FormRenderingContext<T> {
 
     Map<String, FormDefinition> getAvailableForms();
 
-    FormRenderingContext getCopyFor(String formKey,
-                                    T model);
+    FormRenderingContext getCopyFor(String namespace, String formKey, T model);
 }

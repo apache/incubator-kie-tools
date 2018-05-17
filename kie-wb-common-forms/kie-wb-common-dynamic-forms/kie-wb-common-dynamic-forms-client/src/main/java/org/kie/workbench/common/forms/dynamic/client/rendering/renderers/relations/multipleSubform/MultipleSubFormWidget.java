@@ -54,6 +54,9 @@ import org.uberfire.ext.widgets.table.client.ColumnMeta;
 public class MultipleSubFormWidget extends Composite implements TakesValue<List<Object>>,
                                                                 IsNestedModel {
 
+    public static final String CREATION_NAMESPACE = "#create";
+    public static final String EDITION_NAMESPACE = "#edit";
+
     public static final int PAGE_SIZE = 5;
 
     @Inject
@@ -189,8 +192,10 @@ public class MultipleSubFormWidget extends Composite implements TakesValue<List<
 
                     BindableProxy<?> proxy = bindingHelper.getNewProxy();
 
-                    formRenderer.render(renderingContext.getCopyFor(field.getCreationForm(),
-                                                                    proxy));
+                    String namespace = renderingContext.getNamespace() + FormRenderingContext.NAMESPACE_SEPARATOR + CREATION_NAMESPACE;
+
+                    formRenderer.render(renderingContext.getCopyFor(namespace, field.getCreationForm(), proxy));
+
                     return formRenderer;
                 }
 
@@ -203,8 +208,9 @@ public class MultipleSubFormWidget extends Composite implements TakesValue<List<
 
                     BindableProxy editionProxy = bindingHelper.getProxyForModel(instanceProxy.deepUnwrap());
 
-                    formRenderer.render(renderingContext.getCopyFor(field.getEditionForm(),
-                                                                    editionProxy));
+                    String namespace = renderingContext.getNamespace() + FormRenderingContext.NAMESPACE_SEPARATOR + EDITION_NAMESPACE;
+
+                    formRenderer.render(renderingContext.getCopyFor(namespace, field.getEditionForm(), editionProxy));
                     return formRenderer;
                 }
 

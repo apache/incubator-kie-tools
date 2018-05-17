@@ -23,6 +23,8 @@ import org.kie.workbench.common.forms.model.FormDefinition;
 
 public abstract class AbstractFormRenderingContext<T> implements FormRenderingContext<T> {
 
+    protected String namespace;
+
     protected Map<String, FormDefinition> availableForms = new HashMap<String, FormDefinition>();
 
     protected String rootFormId;
@@ -32,6 +34,10 @@ public abstract class AbstractFormRenderingContext<T> implements FormRenderingCo
     protected FormRenderingContext parentContext;
 
     protected RenderMode renderMode = RenderMode.EDIT_MODE;
+
+    public AbstractFormRenderingContext(String namespace) {
+        this.namespace = namespace;
+    }
 
     @Override
     public FormDefinition getRootForm() {
@@ -43,6 +49,11 @@ public abstract class AbstractFormRenderingContext<T> implements FormRenderingCo
         this.rootFormId = rootForm.getId();
         availableForms.put(rootFormId,
                            rootForm);
+    }
+
+    @Override
+    public String getNamespace() {
+        return namespace;
     }
 
     @Override
@@ -80,15 +91,14 @@ public abstract class AbstractFormRenderingContext<T> implements FormRenderingCo
         return availableForms;
     }
 
-    protected abstract AbstractFormRenderingContext<T> getNewInstance();
+    protected abstract AbstractFormRenderingContext<T> getNewInstance(String namespace);
 
     @Override
-    public FormRenderingContext getCopyFor(String formKey,
-                                           T model) {
+    public FormRenderingContext getCopyFor(String namespace, String formKey, T model) {
         if (formKey == null || formKey.isEmpty()) {
             return null;
         }
-        AbstractFormRenderingContext copy = getNewInstance();
+        AbstractFormRenderingContext copy = getNewInstance(namespace);
         copy.setRenderMode(renderMode);
         copy.setRootForm(availableForms.get(formKey));
         copy.setModel(model);

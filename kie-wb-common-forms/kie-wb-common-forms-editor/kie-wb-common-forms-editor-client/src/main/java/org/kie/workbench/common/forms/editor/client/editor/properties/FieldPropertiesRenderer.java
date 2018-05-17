@@ -98,7 +98,7 @@ public class FieldPropertiesRenderer implements IsWidget {
     protected void render() {
         FormRenderingContext context = dynamicFormModelGenerator.getContextForModel(fieldCopy);
         if (context != null) {
-            FormEditorRenderingContext renderingContext = new FormEditorRenderingContext(helper.getPath());
+            FormEditorRenderingContext renderingContext = new FormEditorRenderingContext("properties", helper.getPath());
             renderingContext.setRootForm(context.getRootForm());
             renderingContext.getAvailableForms().putAll(context.getAvailableForms());
             renderingContext.setModel(fieldCopy);
