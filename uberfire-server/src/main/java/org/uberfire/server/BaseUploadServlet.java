@@ -18,6 +18,7 @@ package org.uberfire.server;
 
 import java.io.IOException;
 import java.util.Iterator;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -64,14 +65,19 @@ public abstract class BaseUploadServlet extends BaseFilteredServlet {
     protected void writeFile(final IOService ioService,
                              final Path path,
                              final FileItem uploadedItem) throws IOException {
-        if (!ioService.exists(path)) {
-            ioService.createFile(path);
+        try {
+            ioService.startBatch(path.getFileSystem());
+
+            if (!ioService.exists(path)) {
+                ioService.createFile(path);
+            }
+
+            ioService.write(path,
+                            IOUtils.toByteArray(uploadedItem.getInputStream()));
+        } finally {
+            uploadedItem.getInputStream().close();
+            ioService.endBatch();
         }
-
-        ioService.write(path,
-                        IOUtils.toByteArray(uploadedItem.getInputStream()));
-
-        uploadedItem.getInputStream().close();
     }
 
     protected void logError(Throwable e) {

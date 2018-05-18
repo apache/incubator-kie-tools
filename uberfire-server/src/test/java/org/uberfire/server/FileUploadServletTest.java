@@ -22,22 +22,30 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URI;
+
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.server.util.FileServletUtil;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FileUploadServletTest {
@@ -49,7 +57,6 @@ public class FileUploadServletTest {
 
     private static final String TEST_ROOT_PATH = "default://master@test-repository/test-project/src/main/resources/test";
     private static final String TEST_ROOT_PATH_WITH_SPACES = "default://master@mtest-repository/my test project/src/main/resources/test";
-
 
     private static final String BOUNDARY = "---------------------------9051914041544843365972754266";
     private static final String BOUNDARY_DELIMITER = "--";
@@ -69,8 +76,20 @@ public class FileUploadServletTest {
     @Mock
     private IOService ioService;
 
+    @Mock
+    private Path path;
+
+    @Mock
+    private FileSystem fileSystem;
+
     @InjectMocks
     private FileUploadServlet uploadServlet;
+
+    @Before
+    public void setup() {
+        when(ioService.get(any(URI.class))).thenReturn(path);
+        when(path.getFileSystem()).thenReturn(fileSystem);
+    }
 
     /**
      * Tests the uploading of a file given the following parameters:
@@ -89,7 +108,6 @@ public class FileUploadServletTest {
         doUploadTestByNameAndFolder(targetFileName,
                                     TEST_ROOT_PATH,
                                     fileContent);
-
     }
 
     /**
@@ -164,9 +182,6 @@ public class FileUploadServletTest {
 
         doUploadTestByPath(targetPath,
                            fileContent);
-
-
-
     }
 
     /**
@@ -184,8 +199,6 @@ public class FileUploadServletTest {
 
         doUploadTestByPath(targetPathWithSpaces,
                            fileContent);
-
-
     }
 
     /**
@@ -203,7 +216,6 @@ public class FileUploadServletTest {
 
         doUploadTestByPath(targetPath,
                            fileContent);
-
     }
 
     /**
@@ -266,12 +278,16 @@ public class FileUploadServletTest {
         URI expectedURI = new URI(targetFolderName.replaceAll("\\s", "%20") + "/" + FileServletUtil.encodeFileName(targetFileName));
 
         verify(ioService,
+               times(1)).startBatch(eq(fileSystem));
+        verify(ioService,
                times(1)).get(eq(expectedURI));
         verify(ioService,
                times(1)).exists(any(Path.class));
         verify(ioService,
                times(1)).write(any(Path.class),
                                eq(fileContent.getBytes()));
+        verify(ioService,
+               times(1)).endBatch();
 
         printWriter.flush();
         assertEquals("OK",
@@ -315,12 +331,16 @@ public class FileUploadServletTest {
         URI expectedURI = new URI(FileServletUtil.encodeFileNamePart(targetPath));
 
         verify(ioService,
+               times(1)).startBatch(eq(fileSystem));
+        verify(ioService,
                times(1)).get(eq(expectedURI));
         verify(ioService,
                times(1)).exists(any(Path.class));
         verify(ioService,
                times(1)).write(any(Path.class),
                                eq(fileContent.getBytes()));
+        verify(ioService,
+               times(1)).endBatch();
 
         printWriter.flush();
         assertEquals("OK",
