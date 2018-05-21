@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.shape.wires.suite;
 
+import com.ait.lienzo.client.core.shape.wires.WiresConnectorTest;
 import com.ait.lienzo.client.core.shape.wires.WiresContainerTest;
 import com.ait.lienzo.client.core.shape.wires.WiresManagerTest;
 import com.ait.lienzo.client.core.shape.wires.WiresShapeControlHandleListTest;
@@ -47,7 +48,8 @@ import org.junit.runners.Suite;
         WiresShapeControlHandleListTest.class,
         WiresShapeHandlerImplTest.class,
         WiresShapeLocationControlImplTest.class,
-        WiresShapeTest.class
+        WiresShapeTest.class,
+        WiresConnectorTest.class
 })
 public class WiresTestSuite {
 
