@@ -694,31 +694,33 @@ public class WiresConnector
         return magnets;
     }
 
-    private WiresMagnet[] getMagnets(WiresShape headS, int headMagnetIndex, WiresShape tailS, int tailMagnetIndex)
+    WiresMagnet[] getMagnets(WiresShape headS, int headMagnetIndex, WiresShape tailS, int tailMagnetIndex)
     {
         // ony set the side if it's auto connect, else null
 
         // it uses 9, as center is 0
         int[] headMappng = null;
         int[] tailMappng = null;
-        if (headS!=null)
+        final boolean hasHeadMagnets = null != headS && null != headS.getMagnets();
+        final boolean hasTailMagnets = null != tailS && null != tailS.getMagnets();
+        if (hasHeadMagnets)
         {
             headMappng = headS.getMagnets().size() == 9 ? MagnetManager.EIGHT_CARDINALS_MAPPING : MagnetManager.FOUR_CARDINALS_MAPPING;
         }
-        if (tailS!=null)
+        if (hasTailMagnets)
         {
             tailMappng = tailS.getMagnets().size() == 9 ? MagnetManager.EIGHT_CARDINALS_MAPPING : MagnetManager.FOUR_CARDINALS_MAPPING;
         }
 
         WiresMagnet headM = null;
-        if ( headS != null && getHeadConnection().isAutoConnection())
+        if ( hasHeadMagnets && getHeadConnection().isAutoConnection())
         {
            headM = headS.getMagnets().getMagnet(headMappng[headMagnetIndex]);
         }
 
 
         WiresMagnet tailM = null;
-        if ( tailS != null && getTailConnection().isAutoConnection())
+        if ( hasTailMagnets && getTailConnection().isAutoConnection())
         {
             tailM = tailS.getMagnets().getMagnet(tailMappng[tailMagnetIndex]);
         }
