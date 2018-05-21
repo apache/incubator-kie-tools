@@ -17,6 +17,8 @@
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -100,20 +102,23 @@ public final class DeleteElementsCommand extends AbstractGraphCompositeCommand {
             }
         } else {
             // Collect the edges to remove.
-            elements.stream()
+            final List<Element> edges = elements.stream()
                     .filter(e -> null != e.asEdge())
-                    .collect(Collectors.toList())
-                    .forEach(edge -> {
-                        commands.add(new DeleteConnectorCommand((Edge<? extends View, Node>) edge));
-                        callback.onDeleteEdge((Edge<? extends View, Node>) edge);
-                    });
+                    .collect(Collectors.toList());
+            final Set<String> edgeIds = edges.stream()
+                    .map(Element::getUUID)
+                    .collect(Collectors.toSet());
+            edges.forEach(edge -> {
+                commands.add(new DeleteConnectorCommand((Edge<? extends View, Node>) edge));
+                callback.onDeleteEdge((Edge<? extends View, Node>) edge);
+            });
             // Collect the nodes to remove.
             elements.stream()
                     .filter(e -> null != e.asNode())
                     .collect(Collectors.toList())
                     .forEach(e -> {
                         final Node<?, Edge> node = (Node<?, Edge>) e;
-                        final SafeDeleteNodeCommand.Options options = SafeDeleteNodeCommand.Options.skipCandidateConnectors();
+                        final SafeDeleteNodeCommand.Options options = SafeDeleteNodeCommand.Options.exclude(edgeIds);
                         commands.add(new SafeDeleteNodeCommand(node,
                                                                callback.onDeleteNode(node, options),
                                                                options));

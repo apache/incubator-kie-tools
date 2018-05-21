@@ -23,7 +23,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
@@ -61,29 +60,33 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
     @Portable
     public static final class Options {
 
-        private final boolean deleteCandidateConnectors;
         private final boolean shortcutCandidateConnectors;
+        private final Set<String> exclusions;
 
         public static Options defaults() {
-            return new Options(true, true);
+            return new Options(true, new HashSet<>());
         }
 
-        public static Options skipCandidateConnectors() {
-            return new Options(false, false);
+        public static Options doNotShortcutConnector() {
+            return new Options(false, new HashSet<>());
         }
 
-        public Options(final @MapsTo("deleteCandidateConnectors") boolean deleteCandidateConnectors,
-                       final @MapsTo("shortcutCandidateConnectors") boolean shortcutCandidateConnectors) {
-            this.deleteCandidateConnectors = deleteCandidateConnectors;
+        public static Options exclude(final Set<String> ids) {
+            return new Options(false, ids);
+        }
+
+        public Options(final @MapsTo("shortcutCandidateConnectors") boolean shortcutCandidateConnectors,
+                       final @MapsTo("exclusions") Set<String> exclusions) {
             this.shortcutCandidateConnectors = shortcutCandidateConnectors;
-        }
-
-        public boolean isDeleteCandidateConnectors() {
-            return deleteCandidateConnectors;
+            this.exclusions = exclusions;
         }
 
         public boolean isShortcutCandidateConnectors() {
             return shortcutCandidateConnectors;
+        }
+
+        public Set<String> getExclusions() {
+            return exclusions;
         }
     }
 
@@ -149,15 +152,13 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
                     }
 
                     @Override
-                    public void deleteConnector(final Edge<? extends View<?>, Node> edge) {
-                        doDeleteConnector(edge);
+                    public boolean deleteConnector(final Edge<? extends View<?>, Node> edge) {
+                        return doDeleteConnector(edge);
                     }
 
                     @Override
                     public void removeChild(final Element<?> parent,
                                             final Node<?, Edge> candidate) {
-                        log("RemoveChildCommand [parent=" + parent.getUUID() +
-                                    ", candidate=" + candidate.getUUID() + "]");
                         addCommand(new RemoveChildCommand((Node<?, Edge>) parent,
                                                           candidate));
                         safeDeleteCallback.ifPresent(c -> c.removeChild(parent,
@@ -167,8 +168,6 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
                     @Override
                     public void removeDock(final Node<?, Edge> parent,
                                            final Node<?, Edge> candidate) {
-                        log("UnDockNodeCommand [parent=" + parent.getUUID() +
-                                    ", candidate=" + candidate.getUUID() + "]");
                         addCommand(new UnDockNodeCommand(parent,
                                                          candidate));
                         safeDeleteCallback.ifPresent(c -> c.removeDock(parent,
@@ -183,38 +182,29 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
                     }
 
                     @Override
-                    public void deleteNode(final Node<?, Edge> node) {
-                        log("DeregisterNodeCommand [node=" + node.getUUID() + "]");
-                        addCommand(new DeregisterNodeCommand(node));
-                        safeDeleteCallback.ifPresent(c -> c.deleteNode(node));
-
-                        node.getInEdges()
-                                .stream()
-                                .filter(edge -> edge.getContent() instanceof ViewConnector)
-                                .forEach(edge -> RemoveTargetConnection(edge));
-
-                        node.getOutEdges()
-                                .stream()
-                                .filter(edge -> edge.getContent() instanceof ViewConnector)
-                                .forEach(edge -> RemoveSourceConnection(edge));
+                    public boolean deleteNode(final Node<?, Edge> node) {
+                        if (!isElementExcluded(node)) {
+                            addCommand(new DeregisterNodeCommand(node));
+                            safeDeleteCallback.ifPresent(c -> c.deleteNode(node));
+                            return true;
+                        }
+                        return false;
                     }
 
                     private void processCandidateConnectors() {
-                        if (options.isDeleteCandidateConnectors()) {
-                            if (options.isShortcutCandidateConnectors() &&
-                                    hasSingleIncomingEdge()
-                                            .and(hasSingleOutgoingEdge())
-                                            .test(candidate)) {
-                                final Edge<? extends ViewConnector<?>, Node> in = getViewConnector().apply(candidate.getInEdges());
-                                final Edge<? extends ViewConnector<?>, Node> out = getViewConnector().apply(candidate.getOutEdges());
-                                shortcut(in,
-                                         out);
-                            } else {
-                                Stream.concat(candidate.getInEdges().stream(),
-                                              candidate.getOutEdges().stream())
-                                        .filter(e -> e.getContent() instanceof ViewConnector)
-                                        .forEach(this::deleteConnector);
-                            }
+                        if (options.isShortcutCandidateConnectors() &&
+                                hasSingleIncomingEdge()
+                                        .and(hasSingleOutgoingEdge())
+                                        .test(candidate)) {
+                            final Edge<? extends ViewConnector<?>, Node> in = getViewConnector().apply(candidate.getInEdges());
+                            final Edge<? extends ViewConnector<?>, Node> out = getViewConnector().apply(candidate.getOutEdges());
+                            shortcut(in,
+                                     out);
+                        } else {
+                            Stream.concat(candidate.getInEdges().stream(),
+                                          candidate.getOutEdges().stream())
+                                    .filter(e -> e.getContent() instanceof ViewConnector)
+                                    .forEach(this::deleteConnector);
                         }
                     }
 
@@ -231,31 +221,22 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
                                                                               in));
                     }
 
-                    private void doDeleteConnector(final Edge<? extends View<?>, Node> edge) {
-                        if (!processedConnectors.contains(edge.getUUID())) {
-                            log("IN DoDeleteConnector [edge=" + edge.getUUID() + "]");
+                    private boolean doDeleteConnector(final Edge<? extends View<?>, Node> edge) {
+                        if (!isElementExcluded(edge) && !processedConnectors.contains(edge.getUUID())) {
                             addCommand(new DeleteConnectorCommand(edge));
                             safeDeleteCallback.ifPresent(c -> c.deleteConnector(edge));
                             processedConnectors.add(edge.getUUID());
+                            return true;
                         }
+                        return false;
                     }
                 });
 
         return this;
     }
 
-    private void RemoveTargetConnection(Edge edge) {
-        ViewConnector<?> connector = (ViewConnector<?>)edge.getContent();
-        addCommand(new SetConnectionTargetNodeCommand(null,
-                                                      edge,
-                                                      connector.getTargetConnection().orElse(null)));
-    }
-
-    private void RemoveSourceConnection(Edge edge) {
-        ViewConnector<?> connector = (ViewConnector<?>)edge.getContent();
-        addCommand(new SetConnectionSourceNodeCommand(null,
-                                                      edge,
-                                                      connector.getSourceConnection().orElse(null)));
+    private boolean isElementExcluded(final Element<?> e) {
+        return !options.getExclusions().isEmpty() && options.getExclusions().contains(e.getUUID());
     }
 
     @Override
@@ -302,6 +283,10 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
         return node;
     }
 
+    public Options getOptions() {
+        return options;
+    }
+
     private boolean hasRules(final GraphCommandExecutionContext context) {
         return null != context.getRuleManager();
     }
@@ -332,10 +317,5 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
     @Override
     public String toString() {
         return "SafeDeleteNodeCommand [candidate=" + candidateUUID + "]";
-    }
-
-    private void log(final String message) {
-        LOGGER.log(Level.FINE,
-                   message);
     }
 }

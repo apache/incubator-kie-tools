@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -51,6 +52,10 @@ public class DeleteElementsCommandTest {
     private Diagram diagram;
     @Mock
     private Metadata metadata;
+    @Mock
+    private ConnectorShape edge1Shape;
+    @Mock
+    private ConnectorShape edge2Shape;
 
     private TestingGraphInstanceBuilder.TestGraph2 graphHolder;
     private DeleteElementsCommand tested;
@@ -61,6 +66,8 @@ public class DeleteElementsCommandTest {
         this.graphHolder = TestingGraphInstanceBuilder.newGraph2(graphHandler);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
+        when(canvas.getShape(eq(graphHolder.edge1.getUUID()))).thenReturn(edge1Shape);
+        when(canvas.getShape(eq(graphHolder.edge2.getUUID()))).thenReturn(edge2Shape);
         when(canvasHandler.getGraphIndex()).thenReturn(graphHandler.graphIndex);
         when(canvasHandler.getGraphExecutionContext()).thenReturn(graphHandler.graphCommandExecutionContext);
         when(diagram.getMetadata()).thenReturn(metadata);
@@ -86,5 +93,8 @@ public class DeleteElementsCommandTest {
         verify(canvasHandler, times(2)).removeChild(eq(graphHolder.parentNode),
                                                     eq(graphHolder.endNode));
         verify(canvasHandler, times(1)).deregister(eq(graphHolder.endNode));
+        // Ensure the connectors are removed just once.
+        verify(canvasHandler, times(1)).deregister(eq(graphHolder.edge1));
+        verify(canvasHandler, times(1)).deregister(eq(graphHolder.edge2));
     }
 }

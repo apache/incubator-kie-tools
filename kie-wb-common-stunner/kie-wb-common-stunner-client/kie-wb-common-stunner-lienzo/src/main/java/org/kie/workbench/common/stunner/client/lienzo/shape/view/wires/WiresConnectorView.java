@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -160,14 +161,13 @@ public class WiresConnectorView<T> extends WiresConnector
                      final Connection headConnection,
                      final ShapeView tailShapeView,
                      final Connection tailConnection) {
-        final WiresShape headWiresShape = (WiresShape) headShapeView;
-        final WiresShape tailWiresShape = (WiresShape) tailShapeView;
-
-        return connect(headWiresShape.getMagnets(),
-                       headWiresShape.getGroup().getComputedLocation(),
+        final Optional<WiresShape> headWiresShape = Optional.ofNullable((WiresShape) headShapeView);
+        final Optional<WiresShape> tailWiresShape = Optional.ofNullable((WiresShape) tailShapeView);
+        return connect(headWiresShape.map(WiresShape::getMagnets).orElse(null),
+                       headWiresShape.map(s -> s.getGroup().getComputedLocation()).orElse(null),
                        headConnection,
-                       tailWiresShape.getMagnets(),
-                       tailWiresShape.getGroup().getComputedLocation(),
+                       tailWiresShape.map(WiresShape::getMagnets).orElse(null),
+                       tailWiresShape.map(s -> s.getGroup().getComputedLocation()).orElse(null),
                        tailConnection);
     }
 
@@ -183,12 +183,14 @@ public class WiresConnectorView<T> extends WiresConnector
                          headMagnets,
                          headAbsoluteLoc,
                          isAuto -> getHeadConnection().setAutoConnection(isAuto),
+                         this::applyHeadLocation,
                          this::applyHeadMagnet);
         // Update tail connection.
         updateConnection(tailConnection,
                          tailMagnets,
                          tailAbsoluteLoc,
                          isAuto -> getTailConnection().setAutoConnection(isAuto),
+                         this::applyTailLocation,
                          this::applyTailMagnet);
         return cast();
     }
@@ -413,6 +415,16 @@ public class WiresConnectorView<T> extends WiresConnector
         this.connectorControl = null;
     }
 
+    private WiresConnector applyHeadLocation(final Point2D location) {
+        getHeadConnection().move(location.getX(), location.getY());
+        return this;
+    }
+
+    private WiresConnector applyTailLocation(final Point2D location) {
+        getTailConnection().move(location.getX(), location.getY());
+        return this;
+    }
+
     private WiresConnector applyHeadMagnet(final WiresMagnet headMagnet) {
         ifNotSpecialConnection(getHeadConnection(),
                                headMagnet,
@@ -429,33 +441,43 @@ public class WiresConnectorView<T> extends WiresConnector
 
     private static void updateConnection(final Connection connection,
                                          final MagnetManager.Magnets magnets,
-                                         final com.ait.lienzo.client.core.types.Point2D abeLocation,
+                                         final com.ait.lienzo.client.core.types.Point2D absLocation,
                                          final Consumer<Boolean> isAutoConnectionConsumer,
+                                         final Consumer<Point2D> locationConsumer,
                                          final Consumer<WiresMagnet> magnetConsumer) {
         final WiresMagnet[] magnet = new WiresMagnet[]{null};
         final boolean[] auto = new boolean[]{false};
+        Optional<Point2D> connectionLoc = Optional.empty();
         if (null != connection) {
             final DiscreteConnection dc = connection instanceof DiscreteConnection ?
                     (DiscreteConnection) connection : null;
-            if (null != dc) {
+            if (null != dc && null != magnets) {
                 // Obtain the magnet index and auto flag, if the connection is a discrete type and it has been already set.
                 dc.getMagnetIndex().ifPresent(index -> magnet[0] = magnets.getMagnet(index));
                 auto[0] = dc.isAuto();
             }
             // If still no magnet found from the connection's cache, figure it out as by the connection's location.
-            if (null == magnet[0]) {
+            if (null == magnet[0] && null != absLocation) {
                 magnet[0] = getMagnetForConnection(connection,
                                                    magnets,
-                                                   abeLocation);
+                                                   absLocation);
                 // Update the discrete connection magnet cached index, if possible.
                 if (null != dc) {
                     dc.setIndex(magnet[0].getIndex());
                 }
             }
+            if (null != connection.getLocation()) {
+                connectionLoc = Optional.of(Point2D.create(connection.getLocation().getX(),
+                                                           connection.getLocation().getY()));
+            }
         }
         // Call the magnet and auto connection consumers to assign the new values.
         isAutoConnectionConsumer.accept(auto[0]);
         magnetConsumer.accept(magnet[0]);
+        // When no magnet is present, use the connection's location, if any.
+        if (null == magnet[0]) {
+            connectionLoc.ifPresent(locationConsumer::accept);
+        }
     }
 
     private static WiresMagnet getMagnetForConnection(final Connection connection,

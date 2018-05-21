@@ -23,6 +23,7 @@ import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
 import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -384,8 +385,8 @@ public class ConnectionAcceptorControlImplTest {
         when(wiresMagnet.getY()).thenReturn(543d);
         when(wiresMagnet.getIndex()).thenReturn(7);
         MagnetConnection c2 =
-                ConnectionAcceptorControlImpl.createConnection(wiresConnection,
-                                                               wiresMagnet);
+                (MagnetConnection) ConnectionAcceptorControlImpl.createConnection(wiresConnection,
+                                                                                  wiresMagnet);
         assertEquals(122,
                      c2.getLocation().getX(),
                      0);
@@ -396,10 +397,14 @@ public class ConnectionAcceptorControlImplTest {
                      c2.getMagnetIndex().getAsInt());
         assertTrue(c2.isAuto());
 
+        // Asset connections to concrete locations, when no concrete magnets assigned.
+        when(wiresConnection.getPoint()).thenReturn(new Point2D(122d, 543d));
+        final Connection pointConnection = ConnectionAcceptorControlImpl.createConnection(wiresConnection, null);
+        assertEquals(122d, pointConnection.getLocation().getX(), 0);
+        assertEquals(543d, pointConnection.getLocation().getY(), 0);
+
         // Connections (view magnets) can be nullified.
         assertNull(ConnectionAcceptorControlImpl.createConnection(null));
-        assertNull(ConnectionAcceptorControlImpl.createConnection(wiresConnection,
-                                                                  null));
         assertNull(ConnectionAcceptorControlImpl.createConnection(null,
                                                                   null));
     }

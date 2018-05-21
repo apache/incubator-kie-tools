@@ -83,14 +83,12 @@ public class DeleteNodeCommand extends AbstractCanvasGraphCommand {
 
         @Override
         public void deleteCandidateConnector(final Edge<? extends View<?>, Node> connector) {
-            if (options.isDeleteCandidateConnectors()) {
-                doDeleteConnector(connector);
-            }
+            doDeleteConnector(connector);
         }
 
         @Override
-        public void deleteConnector(final Edge<? extends View<?>, Node> connector) {
-            doDeleteConnector(connector);
+        public boolean deleteConnector(final Edge<? extends View<?>, Node> connector) {
+            return doDeleteConnector(connector);
         }
 
         @Override
@@ -118,8 +116,8 @@ public class DeleteNodeCommand extends AbstractCanvasGraphCommand {
         }
 
         @Override
-        public void deleteNode(final Node<?, Edge> node) {
-            doDeleteNode(node);
+        public boolean deleteNode(final Node<?, Edge> node) {
+            return doDeleteNode(node);
         }
 
         public CompositeCommand<AbstractCanvasHandler, CanvasViolation> getCommand() {
@@ -130,12 +128,20 @@ public class DeleteNodeCommand extends AbstractCanvasGraphCommand {
             return options;
         }
 
-        private void doDeleteNode(final Node<?, Edge> node) {
-            getCommand().addCommand(new DeleteCanvasNodeCommand(node));
+        private boolean doDeleteNode(final Node<?, Edge> node) {
+            if (!options.getExclusions().contains(node.getUUID())) {
+                getCommand().addCommand(new DeleteCanvasNodeCommand(node));
+                return true;
+            }
+            return false;
         }
 
-        private void doDeleteConnector(final Edge<? extends View<?>, Node> connector) {
-            getCommand().addCommand(new DeleteCanvasConnectorCommand(connector));
+        private boolean doDeleteConnector(final Edge<? extends View<?>, Node> connector) {
+            if (!options.getExclusions().contains(connector.getUUID())) {
+                getCommand().addCommand(new DeleteCanvasConnectorCommand(connector));
+                return true;
+            }
+            return false;
         }
     }
 }

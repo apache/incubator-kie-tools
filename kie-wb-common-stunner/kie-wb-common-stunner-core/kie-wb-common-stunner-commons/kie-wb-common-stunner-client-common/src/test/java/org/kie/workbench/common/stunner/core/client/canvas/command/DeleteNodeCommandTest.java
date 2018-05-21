@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.junit.Before;
@@ -31,6 +32,7 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.AbstractCompositeCommand;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCommand;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -145,6 +147,37 @@ public class DeleteNodeCommandTest {
         assertNotNull(c6);
         assertEquals(graphHolder.intermNode,
                      c6.getCandidate());
+        assertEquals(CommandResult.Type.INFO,
+                     result.getType());
+    }
+
+    @Test
+    public void exclusionsTestCanvasCommands() {
+        final SafeDeleteNodeCommand.Options options = SafeDeleteNodeCommand.Options.exclude(new HashSet<String>() {{
+            add(graphHolder.edge2.getUUID());
+        }});
+        this.tested = new DeleteNodeCommand(graphHolder.intermNode,
+                                            options);
+        final CommandResult<CanvasViolation> result = tested.allow(canvasHandler);
+        final AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation> compositeCommand = tested.getCommand();
+        assertNotNull(compositeCommand);
+        assertTrue(3 == compositeCommand.size());
+        final List<Command<AbstractCanvasHandler, CanvasViolation>> commands = compositeCommand.getCommands();
+        assertNotNull(commands);
+        final RemoveCanvasChildCommand c0 = (RemoveCanvasChildCommand) commands.get(0);
+        assertNotNull(c0);
+        assertEquals(graphHolder.parentNode,
+                     c0.getParent());
+        assertEquals(graphHolder.intermNode,
+                     c0.getChild());
+        final DeleteCanvasConnectorCommand c1 = (DeleteCanvasConnectorCommand) commands.get(1);
+        assertNotNull(c1);
+        assertEquals(graphHolder.edge1,
+                     c1.getCandidate());
+        final DeleteCanvasNodeCommand c2 = (DeleteCanvasNodeCommand) commands.get(2);
+        assertNotNull(c2);
+        assertEquals(graphHolder.intermNode,
+                     c2.getCandidate());
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
     }

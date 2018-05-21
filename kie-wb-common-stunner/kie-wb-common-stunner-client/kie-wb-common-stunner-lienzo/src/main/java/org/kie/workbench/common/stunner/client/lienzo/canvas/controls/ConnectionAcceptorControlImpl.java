@@ -46,6 +46,8 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2DConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 @Dependent
@@ -289,15 +291,21 @@ public class ConnectionAcceptorControlImpl
         }
     }
 
-    public static MagnetConnection createConnection(final WiresConnection wiresConnection,
-                                                    final WiresMagnet wiresMagnet) {
-        return null != wiresMagnet ? new MagnetConnection.Builder()
+    public static Connection createConnection(final WiresConnection wiresConnection,
+                                              final WiresMagnet wiresMagnet) {
+        if (null == wiresMagnet && null == wiresConnection) {
+            return null;
+        }
+        if (null == wiresMagnet) {
+            return Point2DConnection.at(Point2D.create(wiresConnection.getPoint().getX(),
+                                                       wiresConnection.getPoint().getY()));
+        }
+        return new MagnetConnection.Builder()
                 .atX(wiresMagnet.getX())
                 .atY(wiresMagnet.getY())
                 .auto(null != wiresConnection && wiresConnection.isAutoConnection())
                 .magnet(wiresMagnet.getIndex())
-                .build() :
-                null;
+                .build();
     }
 
     @SuppressWarnings("unchecked")

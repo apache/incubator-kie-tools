@@ -72,13 +72,11 @@ public class ConnectorShape<W, D extends ShapeViewDef<W, V>, V extends ShapeView
         final ViewConnector connectionContent = element.getContent();
         final Connection sourceConnection = (Connection) connectionContent.getSourceConnection().orElse(null);
         final Connection targetConnection = (Connection) connectionContent.getTargetConnection().orElse(null);
-        if (null != source && null != target) {
-            IsConnector shapeView = (IsConnector) getShapeView();
-            shapeView.connect(source,
-                              sourceConnection,
-                              target,
-                              targetConnection);
-        }
+        final IsConnector shapeView = (IsConnector) getShapeView();
+        shapeView.connect(source,
+                          sourceConnection,
+                          target,
+                          targetConnection);
     }
 
     public List<ControlPoint> addControlPoints(ControlPoint... controlPoints) {

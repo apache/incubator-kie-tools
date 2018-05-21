@@ -35,6 +35,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -98,5 +99,8 @@ public class DeleteElementsCommandTest extends AbstractGraphCommandTest {
         assertEquals(source, deleteSourceNodeCommand.getNode());
         SafeDeleteNodeCommand deleteTargetNodeCommand = (SafeDeleteNodeCommand) commands.get(2);
         assertEquals(target, deleteTargetNodeCommand.getNode());
+        // Finally assert that the edge is not being removed several times, as it's being excluded on the rest of commands.
+        assertTrue(deleteSourceNodeCommand.getOptions().getExclusions().contains(EDGE_UUID));
+        assertTrue(deleteTargetNodeCommand.getOptions().getExclusions().contains(EDGE_UUID));
     }
 }

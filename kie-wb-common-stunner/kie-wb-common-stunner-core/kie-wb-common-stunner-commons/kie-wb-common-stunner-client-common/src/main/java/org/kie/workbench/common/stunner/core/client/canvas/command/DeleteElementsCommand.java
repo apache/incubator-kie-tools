@@ -70,7 +70,16 @@ public class DeleteElementsCommand extends AbstractCanvasGraphCommand {
         public SafeDeleteNodeCommand.SafeDeleteNodeCommandCallback onDeleteNode(final Node<?, Edge> node,
                                                                                 final SafeDeleteNodeCommand.Options options) {
             final DeleteNodeCommand.CanvasDeleteProcessor processor
-                    = new DeleteNodeCommand.CanvasDeleteProcessor(options);
+                    = new DeleteNodeCommand.CanvasDeleteProcessor(options) {
+                @Override
+                public boolean deleteConnector(final Edge<? extends View<?>, Node> connector) {
+                    if (super.deleteConnector(connector)) {
+                        options.getExclusions().add(connector.getUUID());
+                        return true;
+                    }
+                    return false;
+                }
+            };
             getCommand().addCommand(processor.getCommand());
             return processor;
         }

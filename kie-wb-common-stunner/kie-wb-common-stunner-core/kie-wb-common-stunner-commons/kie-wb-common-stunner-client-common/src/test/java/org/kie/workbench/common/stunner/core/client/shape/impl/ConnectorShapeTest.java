@@ -30,7 +30,6 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
@@ -49,6 +48,8 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ConnectorShapeTest {
+
+    private static BoundsImpl BOUNDS = BoundsImpl.build(0d, 0d, 15d, 40d);
 
     @Mock
     private ShapeViewDef shapeDef;
@@ -91,13 +92,7 @@ public class ConnectorShapeTest {
         final Object def = mock(Object.class);
         final Edge<ViewConnector<Object>, Node> edge = new EdgeImpl<>("uuid1");
         final ViewConnectorImpl<Object> content =
-                new ViewConnectorImpl<>(def,
-                                        new BoundsImpl(
-                                                new BoundImpl(0d,
-                                                              0d),
-                                                new BoundImpl(15d,
-                                                              40d)
-                                        ));
+                new ViewConnectorImpl<>(def, BOUNDS);
         Connection sourceConnection = mock(Connection.class);
         Connection targetConnection = mock(Connection.class);
         content.setSourceConnection(sourceConnection);
@@ -113,6 +108,29 @@ public class ConnectorShapeTest {
                times(1)).connect(eq(source),
                                  eq(sourceConnection),
                                  eq(target),
+                                 eq(targetConnection));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testApplyConnectionsEvenNoSourceOrTarget() {
+        final Object def = mock(Object.class);
+        final Edge<ViewConnector<Object>, Node> edge = new EdgeImpl<>("uuid1");
+        final ViewConnectorImpl<Object> content =
+                new ViewConnectorImpl<>(def, BOUNDS);
+        Connection sourceConnection = mock(Connection.class);
+        Connection targetConnection = mock(Connection.class);
+        content.setSourceConnection(sourceConnection);
+        content.setTargetConnection(targetConnection);
+        edge.setContent(content);
+        tested.applyConnections(edge,
+                                null,
+                                null,
+                                MutationContext.STATIC);
+        verify(((IsConnector) shapeView),
+               times(1)).connect(eq(null),
+                                 eq(sourceConnection),
+                                 eq(null),
                                  eq(targetConnection));
     }
 }

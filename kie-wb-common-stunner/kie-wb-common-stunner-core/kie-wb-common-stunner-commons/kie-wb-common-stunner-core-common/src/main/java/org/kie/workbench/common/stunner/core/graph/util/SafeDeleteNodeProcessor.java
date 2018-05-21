@@ -43,7 +43,7 @@ public class SafeDeleteNodeProcessor {
 
         void deleteCandidateConnector(final Edge<? extends View<?>, Node> edge);
 
-        void deleteConnector(final Edge<? extends View<?>, Node> edge);
+        boolean deleteConnector(final Edge<? extends View<?>, Node> edge);
 
         void removeChild(final Element<?> parent,
                          final Node<?, Edge> candidate);
@@ -53,7 +53,7 @@ public class SafeDeleteNodeProcessor {
 
         void deleteCandidateNode(final Node<?, Edge> node);
 
-        void deleteNode(final Node<?, Edge> node);
+        boolean deleteNode(final Node<?, Edge> node);
     }
 
     private final Set<String> processedConnectors = new HashSet<String>();

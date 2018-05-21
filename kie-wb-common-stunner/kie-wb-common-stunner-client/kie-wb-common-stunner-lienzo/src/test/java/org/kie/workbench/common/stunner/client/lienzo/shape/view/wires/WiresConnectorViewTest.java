@@ -44,6 +44,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPointImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2DConnection;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
@@ -381,6 +382,43 @@ public class WiresConnectorViewTest {
                times(1)).setAutoConnection(eq(false));
         verify(tailWiresConnection,
                times(1)).setMagnet(eq(tailMagnet2));
+    }
+
+    @Test
+    public void testConnectByPoints() {
+        // Create the candidate connections based on some locations.
+        final Point2DConnection headConnection =
+                Point2DConnection.at(org.kie.workbench.common.stunner.core.graph.content.view.Point2D.create(13d, 56.6d));
+        final Point2DConnection tailConnection =
+                Point2DConnection.at(org.kie.workbench.common.stunner.core.graph.content.view.Point2D.create(88.4d, 1.2d));
+
+        // Mocks both source/target actual connections.
+        WiresConnection headWiresConnection = mock(WiresConnection.class);
+        WiresConnection tailWiresConnection = mock(WiresConnection.class);
+        tested.setHeadConnection(headWiresConnection);
+        tested.setTailConnection(tailWiresConnection);
+
+        // Perform the connection.
+        tested.connect(null,
+                       null,
+                       headConnection,
+                       null,
+                       null,
+                       tailConnection);
+
+        // Verify it moves each connection to the right location, also settings null magnets.
+        verify(headWiresConnection,
+               times(1)).move(eq(13d), eq(56.6d));
+        verify(headWiresConnection,
+               times(1)).setAutoConnection(eq(false));
+        verify(headWiresConnection,
+               times(1)).setMagnet(eq(null));
+        verify(tailWiresConnection,
+               times(1)).move(eq(88.4d), eq(1.2d));
+        verify(tailWiresConnection,
+               times(1)).setAutoConnection(eq(false));
+        verify(tailWiresConnection,
+               times(1)).setMagnet(eq(null));
     }
 
     @Test
