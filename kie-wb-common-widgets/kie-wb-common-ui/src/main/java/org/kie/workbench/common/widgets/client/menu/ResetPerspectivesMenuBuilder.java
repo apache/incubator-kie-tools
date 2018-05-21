@@ -51,31 +51,34 @@ public class ResetPerspectivesMenuBuilder implements MenuFactory.CustomMenuBuild
     private AnchorListItem link = new AnchorListItem();
 
     public ResetPerspectivesMenuBuilder() {
-        link.setIcon( IconType.MEDKIT );
-        link.setTitle( CommonConstants.INSTANCE.ResetPerspectivesTooltip() );
-        link.addClickHandler( new ClickHandler() {
+        link.setIcon(IconType.MEDKIT);
+
+        link.getWidget(0).setStyleName("nav-item-iconic"); // Fix for IE11
+
+        link.setTitle(CommonConstants.INSTANCE.ResetPerspectivesTooltip());
+        link.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent event ) {
-                if ( Window.confirm( CommonConstants.INSTANCE.PromptResetPerspectives() ) ) {
+            public void onClick(ClickEvent event) {
+                if (Window.confirm(CommonConstants.INSTANCE.PromptResetPerspectives())) {
                     final PerspectiveActivity currentPerspective = perspectiveManager.getCurrentPerspective();
-                    perspectiveManager.removePerspectiveStates( new Command() {
+                    perspectiveManager.removePerspectiveStates(new Command() {
                         @Override
                         public void execute() {
-                            if ( currentPerspective != null ) {
+                            if (currentPerspective != null) {
                                 //Use ForcedPlaceRequest to force re-loading of the current Perspective
-                                final PlaceRequest pr = new ForcedPlaceRequest( currentPerspective.getIdentifier(),
-                                                                                currentPerspective.getPlace().getParameters() );
-                                placeManager.goTo( pr );
+                                final PlaceRequest pr = new ForcedPlaceRequest(currentPerspective.getIdentifier(),
+                                                                               currentPerspective.getPlace().getParameters());
+                                placeManager.goTo(pr);
                             }
                         }
-                    } );
+                    });
                 }
             }
-        } );
+        });
     }
 
     @Override
-    public void push( final MenuFactory.CustomMenuBuilder element ) {
+    public void push(final MenuFactory.CustomMenuBuilder element) {
         //Do nothing
     }
 
