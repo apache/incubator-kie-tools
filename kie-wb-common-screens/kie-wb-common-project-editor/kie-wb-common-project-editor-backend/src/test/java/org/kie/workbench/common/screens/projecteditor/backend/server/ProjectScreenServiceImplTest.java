@@ -16,11 +16,13 @@
 
 package org.kie.workbench.common.screens.projecteditor.backend.server;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
+import org.guvnor.common.services.project.backend.server.WorkspaceProjectServiceImpl;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.MavenRepositorySource;
@@ -75,6 +77,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
@@ -163,7 +166,7 @@ public class ProjectScreenServiceImplTest {
     private MetadataService metadataService;
 
     @Mock
-    private WorkspaceProjectService projectService;
+    private WorkspaceProjectServiceImpl projectService;
 
     private ProjectScreenService service;
     private ProjectScreenModelLoader loader;
@@ -791,6 +794,11 @@ public class ProjectScreenServiceImplTest {
 
     @Test
     public void testCopy() throws Exception {
+        when(projectService.createFreshProjectName(any(),
+                                                   any())).thenCallRealMethod();
+        doReturn(Arrays.asList(mock(WorkspaceProject.class))).when(projectService).getAllWorkspaceProjectsByName(any(),
+                                                                                                                 eq("newName"));
+
         final WorkspaceProject project = mock(WorkspaceProject.class);
         final OrganizationalUnit ou = mock(OrganizationalUnit.class);
         final Path projectRoot = mock(Path.class);
@@ -824,7 +832,7 @@ public class ProjectScreenServiceImplTest {
                                 eq(true));
 
         final POM updatedPom = pomArgumentCaptor.getValue();
-        assertEquals("newName", updatedPom.getName());
+        assertEquals("newName [1]", updatedPom.getName());
         assertEquals("newName", updatedPom.getGav().getArtifactId());
     }
 

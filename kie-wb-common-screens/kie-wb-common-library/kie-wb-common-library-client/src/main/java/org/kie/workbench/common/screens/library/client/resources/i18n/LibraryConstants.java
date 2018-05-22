@@ -457,4 +457,7 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String InvalidProjectName = "InvalidProjectName";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DuplicatedProjectName = "DuplicatedProjectName";
 }

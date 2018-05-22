@@ -108,6 +108,9 @@ public class ProjectScreenServiceImpl
     public void copy(final WorkspaceProject project,
                      final String newName) {
 
+        String newUniqueName = projectService.createFreshProjectName(project.getOrganizationalUnit(),
+                                                                     newName);
+
         final Repository copy = repositoryCopier.copy(project.getOrganizationalUnit(),
                                                       newName,
                                                       project.getRootPath());
@@ -120,7 +123,7 @@ public class ProjectScreenServiceImpl
         final POM pom = pomService.load(newPomPath);
 
         if (pom != null) {
-            pom.setName(newName);
+            pom.setName(newUniqueName);
             pom.getGav().setArtifactId(newName);
 
             pomService.save(newPomPath,

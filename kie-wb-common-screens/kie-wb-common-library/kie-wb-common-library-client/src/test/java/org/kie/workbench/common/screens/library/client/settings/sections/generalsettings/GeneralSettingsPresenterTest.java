@@ -3,7 +3,11 @@ package org.kie.workbench.common.screens.library.client.settings.sections.genera
 import org.guvnor.common.services.project.client.preferences.ProjectScopedResolutionStrategySupplier;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.preferences.GAVPreferences;
+import org.guvnor.common.services.project.service.WorkspaceProjectService;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.jboss.errai.common.client.api.Caller;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.client.settings.SettingsSectionChange;
 import org.kie.workbench.common.screens.library.client.settings.generalsettings.GitUrlsPresenter;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.MenuItem;
+import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.mockito.Mock;
@@ -45,6 +50,10 @@ public class GeneralSettingsPresenterTest {
     private ValidationService validationService;
 
     @Mock
+    private WorkspaceProjectService projectService;
+    private Caller<WorkspaceProjectService> projectServiceCaller;
+
+    @Mock
     private EventSourceMock<SettingsSectionChange<ProjectScreenModel>> settingsSectionChangeEvent;
 
     @Mock
@@ -56,18 +65,33 @@ public class GeneralSettingsPresenterTest {
     @Mock
     private GitUrlsPresenter gitUrlsPresenter;
 
+    @Mock
+    private LibraryPlaces libraryPlaces;
+
+    @Mock
+    private WorkspaceProject project;
+
+    @Mock
+    private OrganizationalUnit space;
+
     private Promises promises = new SyncPromises();
 
     @Before
     public void before() {
+        projectServiceCaller = new CallerMock<>(projectService);
         generalSettingsPresenter = spy(new GeneralSettingsPresenter(view,
                                                                     promises,
                                                                     menuItem,
                                                                     new CallerMock<>(validationService),
+                                                                    projectServiceCaller,
                                                                     settingsSectionChangeEvent,
                                                                     gavPreferences,
                                                                     projectScopedResolutionStrategySupplier,
-                                                                    gitUrlsPresenter));
+                                                                    gitUrlsPresenter,
+                                                                    libraryPlaces));
+
+        doReturn(space).when(project).getOrganizationalUnit();
+        doReturn(project).when(libraryPlaces).getActiveWorkspaceContext();
     }
 
     @Test
@@ -186,6 +210,7 @@ public class GeneralSettingsPresenterTest {
 
         doReturn("EmptyNameMessage").when(view).getEmptyNameMessage();
         doReturn("InvalidNameMessage").when(view).getInvalidNameMessage();
+        doReturn("DuplicatedProjectNameMessage").when(view).getDuplicatedProjectNameMessage();
 
         doReturn("EmptyGroupIdMessage").when(view).getEmptyGroupIdMessage();
         doReturn("InvalidGroupIdMessage").when(view).getInvalidGroupIdMessage();
@@ -200,6 +225,7 @@ public class GeneralSettingsPresenterTest {
         doReturn(true).when(validationService).validateGroupId(eq("GroupId"));
         doReturn(true).when(validationService).validateArtifactId(eq("ArtifactId"));
         doReturn(true).when(validationService).validateGAVVersion(eq("Version"));
+        doReturn(true).when(projectService).spaceHasNoProjectsWithName(any(), eq("Name"));
 
         generalSettingsPresenter.validate().catch_(i -> {
             Assert.fail("Promise should've been resolved!");
@@ -213,6 +239,11 @@ public class GeneralSettingsPresenterTest {
         verify(generalSettingsPresenter).executeValidation(any(),
                                                            eq("InvalidNameMessage"));
         verify(validationService).isProjectNameValid(eq("Name"));
+        verify(generalSettingsPresenter).executeValidation(eq(projectServiceCaller),
+                                                           any(),
+                                                           eq("DuplicatedProjectNameMessage"));
+        verify(projectService).spaceHasNoProjectsWithName(any(),
+                                                          eq("Name"));
 
         verify(generalSettingsPresenter).validateStringIsNotEmpty(eq("GroupId"),
                                                                   eq("EmptyGroupIdMessage"));

@@ -274,6 +274,11 @@ public class GeneralSettingsView implements GeneralSettingsPresenter.View {
     }
 
     @Override
+    public String getDuplicatedProjectNameMessage() {
+        return translationService.format(LibraryConstants.DuplicatedProjectName);
+    }
+
+    @Override
     public String getTitle() {
         return title.textContent;
     }

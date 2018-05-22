@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.library.client.settings.sections.generalsettings;
 
+import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -25,13 +26,16 @@ import javax.inject.Inject;
 import elemental2.promise.Promise;
 import org.guvnor.common.services.project.client.preferences.ProjectScopedResolutionStrategySupplier;
 import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.preferences.GAVPreferences;
+import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.screens.library.client.settings.SettingsSectionChange;
 import org.kie.workbench.common.screens.library.client.settings.generalsettings.GitUrlsPresenter;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.MenuItem;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.Section;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.SectionView;
+import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.uberfire.client.promise.Promises;
@@ -89,15 +93,19 @@ public class GeneralSettingsPresenter extends Section<ProjectScreenModel> {
         String getEmptyVersionMessage();
 
         String getInvalidVersionMessage();
+
+        String getDuplicatedProjectNameMessage();
     }
 
 
 
     private final View view;
     private final Caller<ValidationService> validationService;
+    private final Caller<WorkspaceProjectService> projectService;
     private final GAVPreferences gavPreferences;
     private final ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier;
     private final GitUrlsPresenter gitUrlsPresenter;
+    private final LibraryPlaces libraryPlaces;
 
     POM pom;
 
@@ -106,17 +114,21 @@ public class GeneralSettingsPresenter extends Section<ProjectScreenModel> {
                                     final Promises promises,
                                     final MenuItem<ProjectScreenModel> menuItem,
                                     final Caller<ValidationService> validationService,
+                                    final Caller<WorkspaceProjectService> projectService,
                                     final Event<SettingsSectionChange<ProjectScreenModel>> settingsSectionChangeEvent,
                                     final GAVPreferences gavPreferences,
                                     final ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier,
-                                    final GitUrlsPresenter gitUrlsPresenter) {
+                                    final GitUrlsPresenter gitUrlsPresenter,
+                                    final LibraryPlaces libraryPlaces) {
 
         super(settingsSectionChangeEvent, menuItem, promises);
         this.view = view;
         this.validationService = validationService;
+        this.projectService = projectService;
         this.gavPreferences = gavPreferences;
         this.projectScopedResolutionStrategySupplier = projectScopedResolutionStrategySupplier;
         this.gitUrlsPresenter = gitUrlsPresenter;
+        this.libraryPlaces = libraryPlaces;
     }
 
     // Save
@@ -154,6 +166,10 @@ public class GeneralSettingsPresenter extends Section<ProjectScreenModel> {
 
                 validateStringIsNotEmpty(pom.getName(), view.getEmptyNameMessage())
                         .then(o -> executeValidation(s -> s.isProjectNameValid(pom.getName()), view.getInvalidNameMessage()))
+                        .then(o -> executeValidation(projectService,
+                                                     s -> s.spaceHasNoProjectsWithName(libraryPlaces.getActiveWorkspaceContext().getOrganizationalUnit(),
+                                                                                       pom.getName()),
+                                                     view.getDuplicatedProjectNameMessage()))
                         .catch_(this::showErrorAndReject),
 
                 validateStringIsNotEmpty(pom.getGav().getGroupId(), view.getEmptyGroupIdMessage())
@@ -192,12 +208,21 @@ public class GeneralSettingsPresenter extends Section<ProjectScreenModel> {
         });
     }
 
+    <T> Promise<Boolean> executeValidation(final Caller<T> caller,
+                                           final Function<T, Boolean> call,
+                                           final String errorMessage) {
+
+        return promises
+                .promisify(caller, call)
+                .then(valid -> valid ? promises.resolve(true) : promises.reject(errorMessage));
+    }
+
     Promise<Boolean> executeValidation(final Function<ValidationService, Boolean> call,
                                        final String errorMessage) {
 
-        return promises
-                .promisify(validationService, call)
-                .then(valid -> valid ? promises.resolve(true) : promises.reject(errorMessage));
+        return executeValidation(validationService,
+                                 call,
+                                 errorMessage);
     }
 
     void setVersion(final String version) {
