@@ -32,6 +32,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandlerManager;
@@ -303,6 +304,7 @@ public class FormEditorServiceImplTest {
 
         assertNotNull(content);
         assertNull(content.getError());
+        assertEquals(RenderMode.READ_ONLY_MODE, content.getRenderingContext().getRenderMode());
     }
 
     @Test

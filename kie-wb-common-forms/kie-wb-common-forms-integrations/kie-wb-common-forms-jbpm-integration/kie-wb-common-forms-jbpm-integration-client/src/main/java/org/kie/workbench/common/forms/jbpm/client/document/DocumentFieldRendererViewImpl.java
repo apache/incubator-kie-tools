@@ -22,9 +22,6 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -44,6 +41,7 @@ import org.uberfire.ext.widgets.common.client.common.FileUploadFormEncoder;
 
 @Templated
 public class DocumentFieldRendererViewImpl extends Composite implements DocumentFieldRendererView {
+
     public static String UPLOAD_FILE_SERVLET_URL_PATTERN = "documentUploadServlet";
 
     public final String SIZE_UNITS[] = new String[]{"bytes", "Kb", "Mb"};
@@ -51,9 +49,6 @@ public class DocumentFieldRendererViewImpl extends Composite implements Document
     @Inject
     @DataField
     protected FlowPanel linkContainer;
-
-    @DataField
-    protected DivElement inputContainer = Document.get().createDivElement();
 
     @DataField
     protected Form documentForm = GWT.create(Form.class);
@@ -96,11 +91,7 @@ public class DocumentFieldRendererViewImpl extends Composite implements Document
 
     @Override
     public void setReadOnly(boolean readOnly) {
-        if (readOnly) {
-            inputContainer.getStyle().setDisplay(Style.Display.NONE);
-        } else {
-            inputContainer.getStyle().setDisplay(Style.Display.BLOCK);
-        }
+        uploader.setEnabled(!readOnly);
     }
 
     @Override
