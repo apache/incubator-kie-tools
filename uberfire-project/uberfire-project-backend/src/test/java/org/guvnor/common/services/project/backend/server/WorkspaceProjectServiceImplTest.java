@@ -194,6 +194,22 @@ public class WorkspaceProjectServiceImplTest {
     }
 
     @Test
+    public void spaceHasProjectsWithName() throws Exception {
+        final boolean hasNoProjects = workspaceProjectService.spaceHasNoProjectsWithName(ou1,
+                                                                                         "repository-with-same-alias");
+
+        assertFalse(hasNoProjects);
+    }
+
+    @Test
+    public void spaceHasNoProjectsWithName() throws Exception {
+        final boolean hasNoProjects = workspaceProjectService.spaceHasNoProjectsWithName(ou1,
+                                                                                         "other-project");
+
+        assertTrue(hasNoProjects);
+    }
+
+    @Test
     public void noProjects() throws Exception {
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
         doReturn("myOU").when(organizationalUnit).getName();

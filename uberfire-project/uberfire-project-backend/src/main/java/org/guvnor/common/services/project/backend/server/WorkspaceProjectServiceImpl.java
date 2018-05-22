@@ -110,6 +110,12 @@ public class WorkspaceProjectServiceImpl
     }
 
     @Override
+    public boolean spaceHasNoProjectsWithName(final OrganizationalUnit organizationalUnit,
+                                              final String name) {
+        return getAllWorkspaceProjectsByName(organizationalUnit, name).isEmpty();
+    }
+
+    @Override
     public WorkspaceProject newProject(final OrganizationalUnit organizationalUnit,
                                        final POM pom) {
         return newProject(organizationalUnit,
