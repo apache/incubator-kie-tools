@@ -542,7 +542,7 @@ public class Bpmn2JsonUnmarshaller {
                         if (sourceBounds != null) {
                             Point first = edgePoints.get(0);
                             first.setX(first.getX() + getBoundsForElement(container,
-                                                                          plane).getX() + (sourceBounds.getWidth() / 2));
+                                                                          plane).getX());
                             first.setY(first.getY() + getBoundsForElement(container,
                                                                           plane).getY());
                         }
@@ -555,7 +555,7 @@ public class Bpmn2JsonUnmarshaller {
                         if (targetBounds != null) {
                             Point last = edgePoints.get(edgePoints.size() - 1);
                             last.setX(last.getX() + getBoundsForElement(container,
-                                                                        plane).getX() - (targetBounds.getWidth() / 2));
+                                                                        plane).getX());
                             last.setY(last.getY() + getBoundsForElement(container,
                                                                         plane).getY());
                         }
