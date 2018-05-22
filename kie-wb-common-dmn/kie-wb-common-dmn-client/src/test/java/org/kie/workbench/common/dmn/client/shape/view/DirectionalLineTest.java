@@ -70,11 +70,23 @@ public class DirectionalLineTest {
     }
 
     @Test
-    public void testStkipParse() throws Exception {
+    public void testSkipParse() throws Exception {
         final Attributes attr = mock(Attributes.class);
         final Point2DArray points = new Point2DArray();
         when(attr.getControlPoints()).thenReturn(points);
         final boolean parsed = tested.parse(attr);
         assertFalse(parsed);
+    }
+
+    @Test
+    public void testAdjustPoint() {
+        final double X = 100d;
+        final double Y = 200d;
+        final double DELTA_X = 5d;
+        final double DELTA_Y = 10d;
+        //DeltaX and DeltaY are unused by IDirectionalMultiPointShape.adjustPoint(..) for DM
+        final Point2D p = tested.adjustPoint(X, Y, DELTA_X, DELTA_Y);
+        assertEquals(X, p.getX(), 0d);
+        assertEquals(Y, p.getY(), 0d);
     }
 }

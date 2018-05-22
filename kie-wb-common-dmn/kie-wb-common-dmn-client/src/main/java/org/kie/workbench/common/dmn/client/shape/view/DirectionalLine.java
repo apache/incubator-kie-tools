@@ -68,6 +68,16 @@ public class DirectionalLine extends AbstractDirectionalMultiPointShape<Directio
     }
 
     @Override
+    @SuppressWarnings("unused")
+    public Point2D adjustPoint(final double x,
+                               final double y,
+                               final double deltaX,
+                               final double deltaY) {
+        //DeltaX and DeltaY are not used by DM.
+        return new Point2D(x, y);
+    }
+
+    @Override
     public boolean isControlPointShape() {
         return false;
     }
