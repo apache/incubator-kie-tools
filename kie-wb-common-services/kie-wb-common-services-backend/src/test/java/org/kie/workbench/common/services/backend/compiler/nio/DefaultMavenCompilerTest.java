@@ -81,7 +81,6 @@ public class DefaultMavenCompilerTest {
 
     @Test
     public void buildWithCloneTest() throws Exception {
-
         final String repoName = "myrepo";
         final JGitFileSystem fs = (JGitFileSystem) ioService.newFileSystem(URI.create("git://" + repoName),
                                                                            new HashMap<String, Object>() {{
@@ -184,7 +183,7 @@ public class DefaultMavenCompilerTest {
         Path tmpCloned = Files.createDirectories(Paths.get(tmpRootCloned.toString(),
                                                            ".clone"));
 
-        final Git cloned = Git.cloneRepository().setURI("git://localhost:9418/repo").setBare(false).setDirectory(tmpCloned.toFile()).call();
+        final Git cloned = Git.cloneRepository().setURI(origin.getGit().getRepository().getDirectory().toURI().toString()).setBare(false).setDirectory(tmpCloned.toFile()).call();
 
         assertNotNull(cloned);
 
@@ -301,7 +300,6 @@ public class DefaultMavenCompilerTest {
         assertTrue(res.isSuccessful());
     }
 
-    //
     @Test
     public void buildWithAllDecoratorsTest() throws Exception {
         String alternateSettingsAbsPath = new File("src/test/settings.xml").getAbsolutePath();
@@ -342,7 +340,7 @@ public class DefaultMavenCompilerTest {
         Path tmpCloned = Files.createDirectories(Paths.get(tmpRootCloned.toString(),
                                                            ".clone.git"));
 
-        final Git cloned = Git.cloneRepository().setURI("git://localhost:9418/repo").setBare(false).setDirectory(tmpCloned.toFile()).call();
+        final Git cloned = Git.cloneRepository().setURI(origin.getGit().getRepository().getDirectory().toURI().toString()).setBare(false).setDirectory(tmpCloned.toFile()).call();
 
         assertNotNull(cloned);
 

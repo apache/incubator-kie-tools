@@ -72,7 +72,7 @@ public abstract class BaseIndexingTest<T extends ResourceTypeDefinition> extends
                                "false");
             System.setProperty("org.uberfire.sys.repo.monitor.disabled",
                                "true");
-            System.out.println(".niogit: " + path);
+            logger.debug(".niogit: " + path);
 
             final URI newRepo = URI.create("git://" + repositoryName);
 
@@ -111,6 +111,8 @@ public abstract class BaseIndexingTest<T extends ResourceTypeDefinition> extends
     public void dispose() {
         super.dispose();
         created = false;
+        System.clearProperty("org.uberfire.nio.git.ssh.enabled");
+        System.clearProperty("org.uberfire.nio.git.daemon.enabled");
     }
 
     protected abstract String getRepositoryName();

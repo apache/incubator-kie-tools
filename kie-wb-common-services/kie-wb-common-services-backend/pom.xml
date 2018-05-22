@@ -44,7 +44,6 @@
         <configuration>
           <systemPropertyVariables>
             <apple.awt.UIElement>true</apple.awt.UIElement>
-            <org.uberfire.nio.git.daemon.enabled>true</org.uberfire.nio.git.daemon.enabled>
           </systemPropertyVariables>
         </configuration>
       </plugin>

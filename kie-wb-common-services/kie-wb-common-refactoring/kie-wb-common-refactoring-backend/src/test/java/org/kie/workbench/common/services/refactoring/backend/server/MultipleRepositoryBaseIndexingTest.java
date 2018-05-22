@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import org.junit.After;
 import org.junit.Before;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
@@ -37,8 +38,12 @@ public abstract class MultipleRepositoryBaseIndexingTest<T extends ResourceTypeD
     public void setup() throws IOException {
         if ( !created ) {
             final String path = createTempDirectory().getAbsolutePath();
-            System.setProperty( "org.uberfire.nio.git.dir",
-                                path );
+            System.setProperty("org.uberfire.nio.git.dir",
+                               path);
+            System.setProperty("org.uberfire.nio.git.daemon.enabled",
+                               "false");
+            System.setProperty("org.uberfire.nio.git.ssh.enabled",
+                               "false");
             logger.debug( ".niogit: " + path );
 
             for ( String repositoryName : getRepositoryNames() ) {
@@ -65,6 +70,13 @@ public abstract class MultipleRepositoryBaseIndexingTest<T extends ResourceTypeD
             }
 
         }
+    }
+
+    @After
+    public void dispose() {
+        super.dispose();
+        System.clearProperty("org.uberfire.nio.git.ssh.enabled");
+        System.clearProperty("org.uberfire.nio.git.daemon.enabled");
     }
 
     protected abstract String[] getRepositoryNames();
