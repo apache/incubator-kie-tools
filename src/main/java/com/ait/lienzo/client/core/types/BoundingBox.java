@@ -202,12 +202,12 @@ public final class BoundingBox
 
     public final double getMinX()
     {
-        return getX();
+        return m_jso.getMinX();
     }
 
     public final double getMaxX()
     {
-        return  getX() + getWidth();
+        return m_jso.getMaxX();
     }
 
     public final double getMinY()
@@ -217,7 +217,7 @@ public final class BoundingBox
 
     public final double getMaxY()
     {
-        return getY() + getHeight();
+        return m_jso.getMaxY();
     }
 
     public final boolean intersects(BoundingBox other)

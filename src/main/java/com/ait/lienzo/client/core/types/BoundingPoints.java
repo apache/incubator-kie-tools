@@ -21,6 +21,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
+import com.ait.tooling.nativetools.client.util.Console;
+
 public final class BoundingPoints implements Iterable<Point2D>
 {
     private final Point2DArray m_array = new Point2DArray();
@@ -35,13 +37,40 @@ public final class BoundingPoints implements Iterable<Point2D>
 
         double h = bbox.getHeight();
 
-        m_array.push(new Point2D(x + 0, y + 0));
+        double x0;
+        double y0;
+        double x1;
+        double y1;
 
-        m_array.push(new Point2D(x + w, y + 0));
+        if (bbox.getMaxX() > bbox.getMinX())
+        {
+            x0 = x + 0;
+            x1 = x + w;
+        }
+        else
+        {
+            x0 = x + 0;
+            x1 = x - w;
+        }
 
-        m_array.push(new Point2D(x + w, y + h));
+        if (bbox.getMaxY() > bbox.getMinY())
+        {
+            y0 = y + 0;
+            y1 = y + h;
+        }
+        else
+        {
+            y0 = y + 0;
+            y1 = y - h;
+        }
 
-        m_array.push(new Point2D(x + 0, y + h));
+        m_array.push(new Point2D(x0, y0));
+
+        m_array.push(new Point2D(x1, y0));
+
+        m_array.push(new Point2D(x1, y1));
+
+        m_array.push(new Point2D(x0, y1));
     }
 
     public final Point2DArray getArray()

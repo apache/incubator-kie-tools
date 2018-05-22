@@ -414,10 +414,27 @@ public final class PathPartList
                     m_box.add(oldx = p.get(0), oldy = p.get(1));
                     break;
                 case PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE:
-                    m_box.add(Geometry.getBoundingBoxOfCurve(new Point2DArray(new Point2D(oldx, oldy), new Point2D(p.get(0), p.get(1)), new Point2D(p.get(2), p.get(3)), new Point2D(oldx = p.get(4), oldy = p.get(5)))));
+                {
+                    final double x0 = oldx;
+                    final double y0 = oldy;
+
+                    final double x1 = p.get(0);
+                    final double y1 = p.get(1);
+
+                    final double x2 = p.get(2);
+                    final double y2 = p.get(3);
+
+                    final double x3 = p.get(4);
+                    final double y3 = p.get(5);
+
+                    final double[] xvals = new double[]{x0, x1, x2, x3};
+                    final double[] yvals = new double[]{y0, y1, y2, y3};
+
+                    m_box.add(Geometry.getBoundingBoxOfCubicCurve(xvals, yvals));
                     break;
+                }
                 case PathPartEntryJSO.QUADRATIC_CURVETO_ABSOLUTE:
-                    m_box.add(Geometry.getBoundingBoxOfCurve(new Point2DArray(new Point2D(oldx, oldy), new Point2D(p.get(0), p.get(1)), new Point2D(oldx = p.get(2), oldy = p.get(3)))));
+                    m_box.add(Geometry.getBoundingBoxForQuadraticCurve(new Point2DArray(new Point2D(oldx, oldy), new Point2D(p.get(0), p.get(1)), new Point2D(oldx = p.get(2), oldy = p.get(3)))));
                     break;
                 case PathPartEntryJSO.ARCTO_ABSOLUTE:
                     double cx = p.get(0);
