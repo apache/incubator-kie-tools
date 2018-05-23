@@ -93,12 +93,12 @@ public class ModuleServiceMock
     }
 
     @Override
-    public MockModule newModule(Path repositoryRoot, POM pom, String baseURL) {
+    public MockModule newModule(Path repositoryRoot, POM pom) {
         return null;
     }
 
     @Override
-    public MockModule newModule(Path repositoryRoot, POM pom, String baseURL, DeploymentMode mode) {
+    public MockModule newModule(Path repositoryRoot, POM pom, DeploymentMode mode) {
         return null;
     }
 

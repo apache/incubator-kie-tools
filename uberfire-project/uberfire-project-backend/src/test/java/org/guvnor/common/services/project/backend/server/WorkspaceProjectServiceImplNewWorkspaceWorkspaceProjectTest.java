@@ -117,7 +117,6 @@ public class WorkspaceProjectServiceImplNewWorkspaceWorkspaceProjectTest {
 
         doReturn(module).when(moduleService).newModule(eq(repositoryRoot),
                                                        eq(pom),
-                                                       eq(""),
                                                        eq(DeploymentMode.VALIDATED));
 
         final WorkspaceProject workspaceProject = workspaceProjectService.newProject(ou,
@@ -131,7 +130,6 @@ public class WorkspaceProjectServiceImplNewWorkspaceWorkspaceProjectTest {
 
         doReturn(module).when(moduleService).newModule(eq(repositoryRoot),
                                                        eq(pom),
-                                                       eq(""),
                                                        eq(DeploymentMode.VALIDATED));
 
         final WorkspaceProject workspaceProject = workspaceProjectService.newProject(ou,
@@ -145,7 +143,6 @@ public class WorkspaceProjectServiceImplNewWorkspaceWorkspaceProjectTest {
     public void newProjectForced() throws Exception {
         doReturn(module).when(moduleService).newModule(eq(repositoryRoot),
                                                        eq(pom),
-                                                       eq(""),
                                                        eq(DeploymentMode.FORCED));
 
         final WorkspaceProject workspaceProject = workspaceProjectService.newProject(ou,

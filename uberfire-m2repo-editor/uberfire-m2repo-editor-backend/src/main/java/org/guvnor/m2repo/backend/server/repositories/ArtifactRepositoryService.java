@@ -33,6 +33,7 @@ public class ArtifactRepositoryService {
     public static final String WORKSPACE_M2_REPO_NAME = "workspace-m2-repo";
     public static final String DISTRIBUTION_MANAGEMENT_REPO_NAME = "distribution-management-repo";
     public static final String ORG_GUVNOR_M2REPO_DIR_PROPERTY = "org.guvnor.m2repo.dir";
+    public static final String GLOBAL_M2_REPO_URL = "org.appformer.m2repo.url";
 
     private List<ArtifactRepository> repositories;
 

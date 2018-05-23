@@ -146,7 +146,8 @@ public class M2MavenRepositoryServiceImplTest {
         repo.init();
 
         //Create a shell M2RepoService and set the M2Repository
-        service = new M2RepoServiceImpl(this.repo);
+        service = new M2RepoServiceImpl(mock(Logger.class),
+                                        this.repo);
         java.lang.reflect.Field repositoryField = M2RepoServiceImpl.class.getDeclaredField("repository");
         repositoryField.setAccessible(true);
         repositoryField.set(service,
@@ -377,7 +378,8 @@ public class M2MavenRepositoryServiceImplTest {
         when(mockRepo.getM2RepositoryDir(any())).thenReturn(repo.getM2RepositoryDir(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME));
 
         // Create a shell M2RepoService with injected mock M2Repository
-        M2RepoServiceImpl m2service = new M2RepoServiceImpl(mockRepo);
+        M2RepoServiceImpl m2service = new M2RepoServiceImpl(mock(Logger.class),
+                                                            mockRepo);
 
         // Verify PageResponse
         JarListPageRequest request = new JarListPageRequest(PAGE_START,

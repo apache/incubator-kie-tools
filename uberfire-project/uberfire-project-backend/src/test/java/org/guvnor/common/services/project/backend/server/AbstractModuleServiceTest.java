@@ -94,15 +94,13 @@ public class AbstractModuleServiceTest {
 
             @Override
             public Module newModule(final org.uberfire.backend.vfs.Path repositoryRoot,
-                                    final POM pom,
-                                    final String baseURL) {
+                                    final POM pom) {
                 return null;
             }
 
             @Override
             public Module newModule(final org.uberfire.backend.vfs.Path repositoryRoot,
                                     final POM pom,
-                                    final String baseURL,
                                     final DeploymentMode mode) {
                 return null;
             }

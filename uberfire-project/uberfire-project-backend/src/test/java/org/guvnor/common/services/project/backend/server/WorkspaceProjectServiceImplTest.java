@@ -285,7 +285,6 @@ public class WorkspaceProjectServiceImplTest {
 
         when(this.moduleService.newModule(any(),
                                           any(),
-                                          any(),
                                           any()))
                 .thenThrow(new RuntimeException("Expected error"));
 

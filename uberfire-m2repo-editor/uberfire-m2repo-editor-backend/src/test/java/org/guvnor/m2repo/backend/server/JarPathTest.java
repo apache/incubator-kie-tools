@@ -24,6 +24,7 @@ import org.guvnor.m2repo.backend.server.repositories.ArtifactRepositoryService;
 import org.guvnor.m2repo.preferences.ArtifactRepositoryPreference;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
 import org.uberfire.backend.server.cdi.workspace.WorkspaceNameResolver;
 import org.uberfire.mocks.MockInstanceImpl;
 
@@ -56,7 +57,8 @@ public class JarPathTest {
 
     @Test
     public void testLinuxPathSeparators() {
-        final M2RepoServiceImpl service = new M2RepoServiceImpl(this.repository);
+        final M2RepoServiceImpl service = new M2RepoServiceImpl(mock(Logger.class),
+                                                                this.repository);
         final String jarPath = service.getJarPath(repository.getM2RepositoryDir(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME) + "/a/b/c",
                                                   "/");
         assertEquals("a/b/c",
@@ -65,7 +67,8 @@ public class JarPathTest {
 
     @Test
     public void testWindowsPathSeparators() {
-        final M2RepoServiceImpl service = new M2RepoServiceImpl(this.repository);
+        final M2RepoServiceImpl service = new M2RepoServiceImpl(mock(Logger.class),
+                                                                this.repository);
         final String jarPath = service.getJarPath(repository.getM2RepositoryDir(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME) + "\\a\\b\\c",
                                                   "\\");
         assertEquals("a/b/c",

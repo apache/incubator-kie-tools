@@ -36,24 +36,20 @@ public interface ModuleServiceCore<T> {
      * Creates a new module to the given path.
      * @param repositoryRoot
      * @param pom
-     * @param baseURL the base URL where the Guvnor is hosted in web container
      * @return
      */
     T newModule(final Path repositoryRoot,
-                final POM pom,
-                final String baseURL);
+                final POM pom);
 
     /**
      * Creates a new module to the given path.
      * @param repositoryRoot
      * @param pom
-     * @param baseURL the base URL where the Guvnor is hosted in web container
      * @param mode Should creation check for the existence of other Artifacts with the same GAV
      * @return
      */
     T newModule(final Path repositoryRoot,
                 final POM pom,
-                final String baseURL,
                 final DeploymentMode mode);
 
     /**

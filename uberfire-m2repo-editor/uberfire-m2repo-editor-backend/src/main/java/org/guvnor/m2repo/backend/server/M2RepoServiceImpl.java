@@ -20,6 +20,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,6 +29,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -39,6 +42,7 @@ import org.guvnor.m2repo.model.JarListPageRequest;
 import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.slf4j.Logger;
 import org.uberfire.paging.PageResponse;
 
 @Service
@@ -48,14 +52,22 @@ import org.uberfire.paging.PageResponse;
 public class M2RepoServiceImpl implements M2RepoService,
                                           ExtendedM2RepoService {
 
+    private Logger logger;
+
     private GuvnorM2Repository repository;
 
     public M2RepoServiceImpl() {
     }
 
     @Inject
-    public M2RepoServiceImpl(GuvnorM2Repository repository) {
+    public M2RepoServiceImpl(final Logger logger,
+                             GuvnorM2Repository repository) {
+        this.logger = logger;
         this.repository = repository;
+
+        if (!isURLValid()) {
+            logger.error(String.format("The property %s is not correctly set. The workbench will use a direct file path to the m2 repository and this should only be used when test the workbench.", ArtifactRepositoryService.GLOBAL_M2_REPO_URL));
+        }
     }
 
     @Override
@@ -232,21 +244,27 @@ public class M2RepoServiceImpl implements M2RepoService,
     }
 
     /**
-     * @param baseURL the base URL where Guvnor M2 repo is hosted in web container. return a Guvnor M2 repo
-     * URL point to local file system if baseURL is not available.
+     * URL point to local file system if URL property is not available.
      * @return String
      */
     @Override
-    public String getRepositoryURL(final String baseURL) {
-        if (baseURL == null || baseURL.isEmpty()) {
-            return repository.getRepositoryURL(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME);
+    public String getRepositoryURL() {
+        if (isURLValid()) {
+            return System.getProperty(ArtifactRepositoryService.GLOBAL_M2_REPO_URL);
         } else {
-            if (baseURL.endsWith("/")) {
-                return baseURL + "maven2/";
-            } else {
-                return baseURL + "/maven2/";
-            }
+            return repository.getRepositoryURL(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME);
         }
+    }
+
+    private boolean isURLValid() {
+        final String urlProperty = System.getProperty(ArtifactRepositoryService.GLOBAL_M2_REPO_URL);
+        try {
+            new URL(urlProperty);
+        } catch (MalformedURLException e) {
+            logger.warn(String.format("The url %s is not valid. Using the default.", urlProperty));
+            return false;
+        }
+        return true;
     }
 
     /**

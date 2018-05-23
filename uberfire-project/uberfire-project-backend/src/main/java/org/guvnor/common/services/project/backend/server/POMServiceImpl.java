@@ -82,11 +82,10 @@ public class POMServiceImpl
 
     @Override
     public Path create(final Path projectRoot,
-                       final String repositoryWebBaseURL,
                        final POM pomModel) {
         org.uberfire.java.nio.file.Path pathToPOMXML = null;
         try {
-            pomModel.addRepository(getRepository(repositoryWebBaseURL));
+            pomModel.addRepository(getRepository());
             final org.uberfire.java.nio.file.Path nioRoot = Paths.convert(projectRoot);
             pathToPOMXML = nioRoot.resolve("pom.xml");
 
@@ -102,11 +101,11 @@ public class POMServiceImpl
         }
     }
 
-    private MavenRepository getRepository(final String baseURL) {
+    private MavenRepository getRepository() {
         final MavenRepository mavenRepository = new MavenRepository();
         mavenRepository.setId("guvnor-m2-repo");
         mavenRepository.setName("Guvnor M2 Repo");
-        mavenRepository.setUrl(m2RepoService.getRepositoryURL(baseURL));
+        mavenRepository.setUrl(m2RepoService.getRepositoryURL());
         return mavenRepository;
     }
 

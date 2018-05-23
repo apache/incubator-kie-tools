@@ -89,7 +89,6 @@ public class POMServiceImplCreateTest {
         final Path path = testFileSystem.createTempDirectory("/MyTestProject");
 
         service.create(path,
-                       "baseurl?",
                        new POM());
 
         ArgumentCaptor<org.uberfire.java.nio.file.Path> pathArgumentCaptor = ArgumentCaptor.forClass(org.uberfire.java.nio.file.Path.class);

@@ -147,7 +147,6 @@ public class WorkspaceProjectServiceImpl
 
             final Module module = moduleService.newModule(repository.getDefaultBranch().get().getPath(),
                                                           pom,
-                                                          "",
                                                           mode);
 
             final WorkspaceProject workspaceProject = new WorkspaceProject(organizationalUnit,

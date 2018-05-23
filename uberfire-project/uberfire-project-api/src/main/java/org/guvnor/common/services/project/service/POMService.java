@@ -28,12 +28,10 @@ public interface POMService extends SupportsRead<POM>,
 
     /**
      * @param projectRoot Root of the project
-     * @param repositoryWebBaseURL The web-context of the webapp
      * @param pom Model for the pom.xml
      * @return
      */
     Path create(final Path projectRoot,
-                final String repositoryWebBaseURL,
                 final POM pom);
 
     Path save(final Path path,
