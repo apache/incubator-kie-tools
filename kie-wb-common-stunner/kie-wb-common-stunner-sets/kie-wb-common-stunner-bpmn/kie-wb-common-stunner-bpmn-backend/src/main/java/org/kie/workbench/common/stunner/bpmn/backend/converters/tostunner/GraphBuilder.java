@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashSet;
-import java.util.Objects;
+import java.util.List;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.core.graph.command.EmptyRulesCommandExec
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AddChildNodeCommand;
+import org.kie.workbench.common.stunner.core.graph.command.impl.AddControlPointCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AddDockedNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AddNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
@@ -45,6 +46,8 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPointImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.map.MapIndexBuilder;
@@ -201,32 +204,24 @@ public class GraphBuilder {
             Edge<? extends View<?>, Node> edge,
             Node source,
             Connection sourceConnection,
+            List<Point2D> controlPoints,
             Node target,
             Connection targetConnection) {
         SetConnectionSourceNodeCommand setSourceNode =
                 commandFactory.setSourceNode(source, edge, sourceConnection);
+
+        ControlPoint[] cps = new ControlPoint[controlPoints.size()];
+        for (int i = 0; i < cps.length; i++) {
+            cps[i] = new ControlPointImpl(controlPoints.get(i), i+1);
+        }
+        AddControlPointCommand addControlPoint = commandFactory.addControlPoint(edge, cps);
 
         SetConnectionTargetNodeCommand setTargetNode =
                 commandFactory.setTargetNode(target, edge, targetConnection);
 
         execute(setSourceNode);
         execute(setTargetNode);
-    }
-
-    private void addEdge(
-            Edge<? extends View<?>, Node> edge,
-            String sourceId,
-            Connection sourceConnection,
-            String targetId,
-            Connection targetConnection) {
-
-        Node source = executionContext.getGraphIndex().getNode(sourceId);
-        Node target = executionContext.getGraphIndex().getNode(targetId);
-
-        Objects.requireNonNull(source);
-        Objects.requireNonNull(target);
-
-        addEdge(edge, source, sourceConnection, target, targetConnection);
+        execute(addControlPoint);
     }
 
     private void setBounds(String elementId, int x1, int y1, int x2, int y2) {
@@ -252,6 +247,7 @@ public class GraphBuilder {
                         addEdge(e.getEdge(),
                                 e.getSource().value(),
                                 e.getSourceConnection(),
+                                e.getControlPoints(),
                                 e.getTarget().value(),
                                 e.getTargetConnection())
                 )

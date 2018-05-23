@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.SequenceFlow;
-import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.Point;
@@ -80,31 +80,30 @@ public class SequenceFlowPropertyReader extends BasePropertyReader {
 
     public Connection getSourceConnection() {
         Point2D sourcePosition = getSourcePosition(element.getId(), getSourceId());
-        return MagnetConnection.Builder.at(sourcePosition.getX(), sourcePosition.getY()).setAuto(isAutoConnectionSource());
+        return MagnetConnection.Builder
+                .at(sourcePosition.getX(), sourcePosition.getY())
+                .setAuto(isAutoConnectionSource());
     }
 
     public Connection getTargetConnection() {
         Point2D targetPosition = getTargetPosition(element.getId(), getTargetId());
-        return MagnetConnection.Builder.at(targetPosition.getX(), targetPosition.getY()).setAuto(isAutoConnectionTarget());
+        return MagnetConnection.Builder
+                .at(targetPosition.getX(), targetPosition.getY())
+                .setAuto(isAutoConnectionTarget());
     }
 
     private Point2D getSourcePosition(String edgeId, String sourceId) {
-        BPMNEdge bpmnEdge = definitionResolver.getEdge(edgeId).get();
         Bounds sourceBounds = definitionResolver.getShape(sourceId).getBounds();
-        List<Point> waypoint = bpmnEdge.getWaypoint();
+        List<Point> waypoint = definitionResolver.getEdge(edgeId).getWaypoint();
+
         return waypoint.isEmpty() ?
                 sourcePosition(sourceBounds)
                 : offsetPosition(sourceBounds, waypoint.get(0));
     }
 
     private Point2D getTargetPosition(String edgeId, String targetId) {
-        BPMNEdge bpmnEdge = definitionResolver.getEdge(edgeId).get();
         Bounds targetBounds = definitionResolver.getShape(targetId).getBounds();
-        List<Point> waypoint = bpmnEdge.getWaypoint();
-
-        if (waypoint.size() > 2) {
-            logger.warn("Waypoints should be either 0 or 2. Unexpected size: " + waypoint.size());
-        }
+        List<Point> waypoint = definitionResolver.getEdge(edgeId).getWaypoint();
 
         return waypoint.isEmpty() ?
                 targetPosition(targetBounds)
@@ -124,5 +123,17 @@ public class SequenceFlowPropertyReader extends BasePropertyReader {
     private Point2D targetPosition(Bounds targetBounds) {
         return Point2D.create(0,
                               targetBounds.getHeight() / 2);
+    }
+
+    public List<Point2D> getControlPoints() {
+        List<Point> waypoint = definitionResolver.getEdge(element.getId()).getWaypoint();
+        List<Point2D> result = new ArrayList<>();
+        if (waypoint.size() > 2) {
+            List<Point> points = waypoint.subList(1, waypoint.size() - 1);
+            for (Point p : points) {
+                result.add(Point2D.create(p.getX(), p.getY()));
+            }
+        }
+        return result;
     }
 }

@@ -45,8 +45,8 @@ public class SequenceFlowConverter {
     }
 
     public Result<SequenceFlowPropertyWriter> toFlowElement(Edge<?, ?> edge, ElementContainer process) {
-        ViewConnector<SequenceFlow> content = (ViewConnector<SequenceFlow>) edge.getContent();
-        SequenceFlow definition = content.getDefinition();
+        ViewConnector<SequenceFlow> connector = (ViewConnector<SequenceFlow>) edge.getContent();
+        SequenceFlow definition = connector.getDefinition();
         org.eclipse.bpmn2.SequenceFlow seq = bpmn2.createSequenceFlow();
         SequenceFlowPropertyWriter p = propertyWriterFactory.of(seq);
 
@@ -67,7 +67,7 @@ public class SequenceFlowConverter {
         seq.setId(edge.getUUID());
         seq.setName(definition.getGeneral().getName().getValue());
 
-        p.setConnection(content);
+        p.setConnection(connector);
 
         SequenceFlowExecutionSet executionSet = definition.getExecutionSet();
         ScriptTypeValue scriptTypeValue = executionSet.getConditionExpression().getValue();

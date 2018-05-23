@@ -168,11 +168,11 @@ public class DefinitionResolver {
                 .findFirst().orElse(null);
     }
 
-    public Optional<BPMNEdge> getEdge(String elementId) {
+    public BPMNEdge getEdge(String elementId) {
         return plane.getPlaneElement().stream()
                 .filter(dia -> dia instanceof BPMNEdge)
                 .map(edge -> (BPMNEdge) edge)
                 .filter(edge -> edge.getBpmnElement().getId().equals(elementId))
-                .findFirst();
+                .findFirst().get();
     }
 }

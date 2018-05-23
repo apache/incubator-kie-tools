@@ -16,15 +16,18 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
-import java.util.Optional;
+import java.util.List;
 
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.di.BPMNEdge;
+import org.eclipse.dd.dc.Bounds;
+import org.eclipse.dd.dc.Point;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Ids;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.DiscreteConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
@@ -54,14 +57,15 @@ public class SequenceFlowPropertyWriter extends PropertyWriter {
         CustomElement.autoConnectionTarget.of(sequenceFlow).set(c.isAuto());
     }
 
-    public void setConnection(ViewConnector<? extends BPMNViewDefinition> content) {
-        Optional<Connection> sourceConnection = content.getSourceConnection();
-        setAutoConnectionSource(sourceConnection.get());
+    public void setConnection(ViewConnector<? extends BPMNViewDefinition> connector) {
+        Connection sourceConnection = connector.getSourceConnection().get();
+        Connection targetConnection = connector.getTargetConnection().get();
 
-        Optional<Connection> targetConnection = content.getTargetConnection();
-        setAutoConnectionTarget(targetConnection.get());
+        setAutoConnectionSource(sourceConnection);
+        setAutoConnectionTarget(targetConnection);
 
-        setWaypoints(content);
+        List<ControlPoint> controlPoints = connector.getControlPoints();
+        setWaypoints(sourceConnection, controlPoints, targetConnection);
     }
 
     public void setSource(BasePropertyWriter pSrc) {
@@ -76,30 +80,61 @@ public class SequenceFlowPropertyWriter extends PropertyWriter {
         pTgt.setSource(this);
     }
 
-    private void setWaypoints(ViewConnector<? extends BPMNViewDefinition> connector) {
+    private void setWaypoints(Connection sourceConnection, List<ControlPoint> mid, Connection targetConnection) {
         BPMNEdge bpmnEdge = di.createBPMNEdge();
         bpmnEdge.setId(Ids.bpmnEdge(source.getShape().getId(), target.getShape().getId()));
         bpmnEdge.setBpmnElement(sequenceFlow);
 
-        Point2D sourcePt = connector.getSourceConnection().get().getLocation();
-        Point2D targetPt = connector.getTargetConnection().get().getLocation();
+        Point2D sourcePt = getSourceLocation(sourceConnection);
+        Point2D targetPt = getTargetLocation(targetConnection);
 
-        org.eclipse.dd.dc.Point sourcePoint = dc.createPoint();
-        sourcePoint.setX(
-                source.getShape().getBounds().getX() + (float) sourcePt.getX());
-        sourcePoint.setY(
-                source.getShape().getBounds().getY() + (float) sourcePt.getY());
+        org.eclipse.dd.dc.Point sourcePoint = pointOf(
+                source.getShape().getBounds().getX() + sourcePt.getX(),
+                source.getShape().getBounds().getY() + sourcePt.getY());
 
-        org.eclipse.dd.dc.Point targetPoint = dc.createPoint();
-        targetPoint.setX(
-                target.getShape().getBounds().getX() + (float) targetPt.getX());
-        targetPoint.setY(
-                target.getShape().getBounds().getY() + (float) targetPt.getY());
+        org.eclipse.dd.dc.Point targetPoint = pointOf(
+                target.getShape().getBounds().getX() + targetPt.getX(),
+                target.getShape().getBounds().getY() + targetPt.getY());
 
-        bpmnEdge.getWaypoint().add(sourcePoint);
-        bpmnEdge.getWaypoint().add(targetPoint);
+        List<Point> waypoints = bpmnEdge.getWaypoint();
+        waypoints.add(sourcePoint);
+
+        mid.stream()
+                .map(pt -> pointOf(
+                        pt.getLocation().getX(),
+                        pt.getLocation().getY()))
+                .forEach(waypoints::add);
+
+        waypoints.add(targetPoint);
 
         this.bpmnEdge = bpmnEdge;
+    }
+
+    private Point2D getSourceLocation(Connection sourceConnection) {
+        Point2D location = sourceConnection.getLocation();
+        if (location == null) {
+            location = getDefaultLocation(source.getShape().getBounds());
+        }
+        return location;
+    }
+
+    private Point2D getTargetLocation(Connection targetConnection) {
+        Point2D location = targetConnection.getLocation();
+        if (location == null) {
+            location = getDefaultLocation(target.getShape().getBounds());
+        }
+        return location;
+    }
+
+    private Point2D getDefaultLocation(Bounds bounds) {
+        return Point2D.create(bounds.getWidth() / 2, bounds.getHeight() / 2);
+    }
+
+    private org.eclipse.dd.dc.Point pointOf(double x, double y) {
+        org.eclipse.dd.dc.Point pt = dc.createPoint();
+        pt.setX((float) x);
+        pt.setY((float) y);
+        return pt;
     }
 
     public BPMNEdge getEdge() {
