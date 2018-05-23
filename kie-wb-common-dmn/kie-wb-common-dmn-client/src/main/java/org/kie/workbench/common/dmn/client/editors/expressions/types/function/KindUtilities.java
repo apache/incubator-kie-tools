@@ -18,7 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
 import java.util.Map;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
@@ -33,7 +33,7 @@ public class KindUtilities {
                                final FunctionDefinition.Kind kind) {
         final Map<String, String> nsContext = function.getNsContext();
         nsContext.put(FunctionDefinition.DROOLS_PREFIX,
-                      DMNModelInstrumentedBase.URI_KIE);
+                      Namespace.KIE.getUri());
         final Map<QName, String> attributes = function.getAdditionalAttributes();
         attributes.put(FunctionDefinition.KIND_QNAME,
                        kind.code());

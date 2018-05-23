@@ -18,7 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,7 +63,7 @@ public class KindUtilitiesTest {
         KindUtilities.setKind(function,
                               kind);
 
-        assertThat(function.getNsContext().get(FunctionDefinition.DROOLS_PREFIX)).isEqualTo(DMNModelInstrumentedBase.URI_KIE);
+        assertThat(function.getNsContext().get(FunctionDefinition.DROOLS_PREFIX)).isEqualTo(Namespace.KIE.getUri());
         assertThat(function.getAdditionalAttributes().get(FunctionDefinition.KIND_QNAME)).isEqualTo(kind.code());
     }
 }

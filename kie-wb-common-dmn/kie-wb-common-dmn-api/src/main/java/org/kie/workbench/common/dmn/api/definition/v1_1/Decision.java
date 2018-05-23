@@ -63,14 +63,17 @@ public class Decision extends DRGElement implements HasExpression,
 
     @Property
     @FormField(afterElement = "name")
+    @Valid
     protected Question question;
 
     @Property
     @FormField(afterElement = "question")
+    @Valid
     protected AllowedAnswers allowedAnswers;
 
     @PropertySet
     @FormField(afterElement = "allowedAnswers")
+    @Valid
     protected InformationItem variable;
 
     protected Expression expression;

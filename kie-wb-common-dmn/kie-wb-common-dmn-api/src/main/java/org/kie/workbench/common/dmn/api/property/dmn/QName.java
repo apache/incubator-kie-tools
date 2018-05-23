@@ -16,34 +16,17 @@
 package org.kie.workbench.common.dmn.api.property.dmn;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace;
 import org.kie.workbench.common.dmn.api.property.DMNProperty;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldReadOnly;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18nMode;
-import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.ReadOnly;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 
 @Portable
-@Bindable
-@Property
-@FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
 public class QName implements DMNProperty {
 
     public static final String NULL_NS_URI = "";
 
     public static final String DEFAULT_NS_PREFIX = "";
-
-    @ReadOnly
-    @FieldReadOnly
-    public static final Boolean readOnly = true;
-
-    @Value
-    @FieldValue
-    private String value;
 
     private String namespaceURI;
 
@@ -52,9 +35,8 @@ public class QName implements DMNProperty {
     private String prefix;
 
     public QName() {
-        this(NULL_NS_URI,
-             "string",
-             "feel");
+        this(Namespace.FEEL.getUri(),
+             BuiltInType.STRING.getName());
     }
 
     public QName(final String namespaceURI,
@@ -74,22 +56,6 @@ public class QName implements DMNProperty {
         }
         this.localPart = PortablePreconditions.checkNotNull("localPart", localPart);
         this.prefix = PortablePreconditions.checkNotNull("prefix", prefix);
-
-        //For now we simply store the String representation of the QName
-        //This will change when we add support for Data Types.
-        this.value = getStringRepresentation();
-    }
-
-    public boolean isReadOnly() {
-        return readOnly;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(final String value) {
-        this.value = value;
     }
 
     public String getNamespaceURI() {
@@ -104,17 +70,16 @@ public class QName implements DMNProperty {
         return prefix;
     }
 
-    private String getStringRepresentation() {
-        if (namespaceURI.equals(NULL_NS_URI)) {
+    /**
+     * See {@link javax.xml.namespace.QName#toString()}
+     */
+    @Override
+    public String toString() {
+        if (namespaceURI.equals(QName.NULL_NS_URI)) {
             return localPart;
         } else {
             return "{" + namespaceURI + "}" + localPart;
         }
-    }
-
-    @Override
-    public String toString() {
-        return getStringRepresentation();
     }
 
     /**

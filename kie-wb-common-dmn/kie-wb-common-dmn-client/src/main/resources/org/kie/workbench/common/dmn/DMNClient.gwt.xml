@@ -27,6 +27,8 @@
 
   <inherits name="org.uberfire.ext.wires.core.grids.WiresCoreGrids"/>
 
+  <inherits name="org.gwtbootstrap3.extras.select.SelectNoResources"/>
+
   <source path="client"/>
 
 </module>

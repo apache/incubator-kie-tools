@@ -32,7 +32,7 @@ public class FunctionDefinition extends Expression implements HasExpression {
 
     public static final String KIND_LOCAL_PART = "kind";
 
-    public static final QName KIND_QNAME = new QName(DMNModelInstrumentedBase.URI_KIE,
+    public static final QName KIND_QNAME = new QName(Namespace.KIE.getUri(),
                                                      KIND_LOCAL_PART);
 
     private Expression expression;

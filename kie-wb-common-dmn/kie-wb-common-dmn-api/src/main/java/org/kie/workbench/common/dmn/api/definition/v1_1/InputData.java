@@ -58,6 +58,7 @@ public class InputData extends DRGElement implements DMNViewDefinition {
 
     @PropertySet
     @FormField(afterElement = "name")
+    @Valid
     protected InformationItem variable;
 
     @PropertySet

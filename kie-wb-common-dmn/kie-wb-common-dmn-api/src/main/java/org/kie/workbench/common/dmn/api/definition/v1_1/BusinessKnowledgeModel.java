@@ -58,6 +58,7 @@ public class BusinessKnowledgeModel extends DRGElement implements DMNViewDefinit
 
     @PropertySet
     @FormField(afterElement = "name")
+    @Valid
     protected InformationItem variable;
 
     protected FunctionDefinition encapsulatedLogic;

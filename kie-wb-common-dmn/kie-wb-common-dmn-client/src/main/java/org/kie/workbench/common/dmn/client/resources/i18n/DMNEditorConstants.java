@@ -138,4 +138,7 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String DecisionNavigatorBaseItemFactory_NoName = "DecisionNavigatorBaseItemFactory.NoName";
+
+    @TranslationKey(defaultValue = "")
+    public static final String TypePickerWidget_Choose = "TypePickerWidget.Choose";
 }
