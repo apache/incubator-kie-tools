@@ -81,6 +81,10 @@ public class Context2D
         m_jso.save();
     }
 
+    public void save(String id){
+        m_jso.save(id);
+    }
+
     /**
      * Restore the saved context state (i.e style, fill, stroke...) by popping from the stack
      */

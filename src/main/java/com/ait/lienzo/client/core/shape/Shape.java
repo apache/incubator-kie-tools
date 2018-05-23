@@ -317,7 +317,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
             {
                 return false;
             }
-            context.save();
+            context.save(getID());
 
             if (attr.hasShadow())
             {
@@ -450,7 +450,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
             {
                 return false;
             }
-            context.save();
+            context.save(getID());
 
             if (attr.hasShadow())
             {
@@ -571,7 +571,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         }
         else
         {
-            context.save();
+            context.save(getID());
 
             context.setGlobalAlpha(alpha);
         }
