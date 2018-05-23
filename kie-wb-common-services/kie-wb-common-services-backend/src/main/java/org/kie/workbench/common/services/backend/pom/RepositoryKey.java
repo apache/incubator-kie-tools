@@ -17,20 +17,20 @@ package org.kie.workbench.common.services.backend.pom;
 
 import java.util.Objects;
 
-import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Repository;
 import org.kie.soup.commons.validation.PortablePreconditions;
 
-public class DependencyKey {
+public class RepositoryKey {
 
-    private Dependency dependency;
+    private Repository repository;
 
-    public DependencyKey(Dependency dep) {
-        PortablePreconditions.checkNotNull("DependencyKey", dep);
-        this.dependency = dep;
+    public RepositoryKey(Repository repo) {
+        PortablePreconditions.checkNotNull("RepositoryKey", repo);
+        this.repository = repo;
     }
 
-    public Dependency getDependency() {
-        return dependency;
+    public Repository getRepository() {
+        return repository;
     }
 
     @Override
@@ -41,23 +41,22 @@ public class DependencyKey {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof DependencyKey)) {
+        if (!(o instanceof RepositoryKey)) {
             return false;
         }
-        DependencyKey that = (DependencyKey) o;
-        return Objects.equals(getDependency().getGroupId(), that.getDependency().getGroupId())
-                && Objects.equals(getDependency().getArtifactId(), that.getDependency().getArtifactId());
+        RepositoryKey that = (RepositoryKey) o;
+        return Objects.equals(repository, that.repository);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(dependency.getGroupId(), dependency.getArtifactId());
+        return Objects.hash(repository);
     }
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("DependencyKey{");
-        sb.append("dependency=").append(dependency);
+        final StringBuilder sb = new StringBuilder("RepositoryKey{");
+        sb.append("repository=").append(repository);
         sb.append('}');
         return sb.toString();
     }

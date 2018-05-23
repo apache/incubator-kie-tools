@@ -5,8 +5,8 @@
     {"groupId":"com.thoughtworks.xstream", "artifactId":"xstream", "version":"4.12", "scope":"test"}
 
   ],
-  "repositories-add":[
 
+  "repositories-add":[
     {
       "id":"jboss-public-repository-group",
       "name":"JBoss Public Repository Group",
@@ -25,11 +25,19 @@
       "snapshotEnabled":false,
       "snapshotUpdatePolicy":"never"
     }
-
   ],
 
-  "repositories-remove":[],
-  "repositories-update-urls":[],
+  "repositories-remove":[
+    {
+      "id":"productization-repository", "url":"http://download.lab.bos.redhat.com/brewroot/repos/jb-ip-6.1-build/latest/maven/"
+    }
+  ],
+
+  "repositories-update-urls":[
+    {
+      "id":"guvnor-m2-repo", "url":"http://127.0.0.1:8080/business-central/maven3/"
+    }
+  ],
 
   "pluginRepositories-add":[
 

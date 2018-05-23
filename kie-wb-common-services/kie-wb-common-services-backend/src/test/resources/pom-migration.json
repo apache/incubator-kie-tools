@@ -5,7 +5,7 @@
     {"groupId":"com.thoughtworks.xstream", "artifactId":"xstream", "version":"4.12", "scope":"test"}
 
   ],
-  "repositories":[
+  "repositories-add":[
 
     {
       "id":"jboss-public-repository-group",
@@ -27,7 +27,16 @@
     }
 
   ],
-  "pluginRepositories":[
+
+  "repositories-remove":[],
+
+  "repositories-update-urls":[
+    {
+      "id":"guvnor-m2-repo", "url":"http://127.0.0.1:8080/business-central/maven3/"
+    }
+  ],
+
+  "pluginRepositories-add":[
 
     {
       "id":"jboss-public-repository-group",
@@ -48,5 +57,9 @@
       "snapshotUpdatePolicy":"never"
     }
 
-  ]
+  ],
+
+  "pluginRepositories-remove":[],
+
+  "pluginRepositories-update-urls":[]
 }

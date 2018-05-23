@@ -19,15 +19,14 @@ import java.util.List;
 import java.util.Objects;
 
 import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Repository;
 
 public class JSONDTO {
 
     private List<Dependency> dependencies;
-    private List<Repository> repositories;
-    private List<Repository> pluginRepositories;
+    private List<RepositoryKey> repositories;
+    private List<RepositoryKey> pluginRepositories;
 
-    public JSONDTO(List<Dependency> dependencies, List<Repository> respositories, List<Repository> pluginRepositories) {
+    public JSONDTO(List<Dependency> dependencies, List<RepositoryKey> respositories, List<RepositoryKey> pluginRepositories) {
         this.dependencies = dependencies;
         this.repositories = respositories;
         this.pluginRepositories = pluginRepositories;
@@ -37,11 +36,11 @@ public class JSONDTO {
         return dependencies;
     }
 
-    public List<Repository> getRepositories() {
+    public List<RepositoryKey> getRepositories() {
         return repositories;
     }
 
-    public List<Repository> getPluginRepositories() {
+    public List<RepositoryKey> getPluginRepositories() {
         return pluginRepositories;
     }
 

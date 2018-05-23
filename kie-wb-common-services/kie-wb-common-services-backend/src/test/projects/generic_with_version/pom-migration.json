@@ -5,7 +5,7 @@
     {"groupId":"com.thoughtworks.xstream", "artifactId":"xstream", "version":"4.12", "scope":"test"}
 
   ],
-  "repositories":[
+  "repositories-add":[
 
     {
       "id":"jboss-public-repository-group",
@@ -27,7 +27,9 @@
     }
 
   ],
-  "pluginRepositories":[
+  "repositories-remove":[],
+  "repositories-update-urls":[],
+  "pluginRepositories-add":[
 
     {
       "id":"jboss-public-repository-group",
@@ -48,5 +50,7 @@
       "snapshotUpdatePolicy":"never"
     }
 
-  ]
+  ],
+  "pluginRepositories-remove":[],
+  "pluginRepositories-update-urls":[]
 }
