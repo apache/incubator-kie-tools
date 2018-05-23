@@ -46,9 +46,24 @@ public class LienzoPanel implements IsWidget {
     private final Event<KeyUpEvent> keyUpEvent;
     private final Event<CanvasMouseDownEvent> mouseDownEvent;
     private final Event<CanvasMouseUpEvent> mouseUpEvent;
+
     private View view;
 
+    protected View getView() {
+        return view;
+    }
+
+    private boolean focused;
+
+    protected boolean isFocused() {
+        return focused;
+    }
+
     private boolean listening;
+
+    protected boolean isListening() {
+        return listening;
+    }
 
     @Inject
     public LienzoPanel(final Event<KeyPressEvent> keyPressEvent,
@@ -61,6 +76,7 @@ public class LienzoPanel implements IsWidget {
         this.keyUpEvent = keyUpEvent;
         this.mouseDownEvent = mouseDownEvent;
         this.mouseUpEvent = mouseUpEvent;
+        this.focused = false;
         this.listening = false;
     }
 
@@ -84,9 +100,18 @@ public class LienzoPanel implements IsWidget {
     }
 
     public void destroy() {
+        this.focused = false;
         this.listening = false;
         view.destroy();
         view = null;
+    }
+
+    void onFocus() {
+        focused = true;
+    }
+
+    void onBlur() {
+        focused = false;
     }
 
     void onMouseDown() {
@@ -110,7 +135,7 @@ public class LienzoPanel implements IsWidget {
     }
 
     void onKeyPress(final int unicodeChar) {
-        if (listening) {
+        if (focused && listening) {
             final KeyboardEvent.Key key = getKey(unicodeChar);
             if (null != key) {
                 keyPressEvent.fire(new KeyPressEvent(key));
@@ -119,7 +144,7 @@ public class LienzoPanel implements IsWidget {
     }
 
     void onKeyDown(final int unicodeChar) {
-        if (listening) {
+        if (focused && listening) {
             final KeyboardEvent.Key key = getKey(unicodeChar);
             if (null != key) {
                 keyDownEvent.fire(new KeyDownEvent(key));
@@ -128,7 +153,7 @@ public class LienzoPanel implements IsWidget {
     }
 
     void onKeyUp(final int unicodeChar) {
-        if (listening) {
+        if (focused && listening) {
             final KeyboardEvent.Key key = getKey(unicodeChar);
             if (null != key) {
                 keyUpEvent.fire(new KeyUpEvent(key));
