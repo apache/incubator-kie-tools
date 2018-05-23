@@ -98,7 +98,7 @@ public class SaveDiagramSessionCommand extends AbstractClientSessionCommand<Edit
                         LOGGER.severe("Error saving diagram SVG " + error.getMessage());
                     }
                 });
-            }, 150);
+            }, 300);
         }
     }
 

@@ -566,4 +566,14 @@ public class WiresConnectorView<T> extends WiresConnector
     private AbstractDirectionalMultiPointShape<?> getDirectionalLine() {
         return (AbstractDirectionalMultiPointShape<?>) getLine();
     }
+
+    @Override
+    public Object getUserData() {
+        return getDirectionalLine().getUserData();
+    }
+
+    @Override
+    public void setUserData(Object userData) {
+        getDirectionalLine().setUserData(userData);
+    }
 }

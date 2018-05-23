@@ -24,6 +24,7 @@ public class SVGPrimitive<T extends IPrimitive<?>> {
     private final T primitive;
     private final boolean scalable;
     private final LayoutContainer.Layout layout;
+    private final String primitiveId;
 
     public SVGPrimitive(T primitive,
                         boolean scalable,
@@ -31,6 +32,7 @@ public class SVGPrimitive<T extends IPrimitive<?>> {
         this.primitive = primitive;
         this.scalable = scalable;
         this.layout = layout;
+        this.primitiveId = primitive.getID();
     }
 
     public boolean isScalable() {
@@ -51,5 +53,9 @@ public class SVGPrimitive<T extends IPrimitive<?>> {
 
     public void destroy() {
         primitive.removeFromParent();
+    }
+
+    public String getPrimitiveId() {
+        return primitiveId;
     }
 }

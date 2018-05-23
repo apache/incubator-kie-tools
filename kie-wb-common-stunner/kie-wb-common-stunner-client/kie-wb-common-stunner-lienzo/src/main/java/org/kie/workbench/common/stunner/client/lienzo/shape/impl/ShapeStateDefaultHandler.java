@@ -23,6 +23,7 @@ import java.util.function.Supplier;
 import com.ait.lienzo.client.core.types.Shadow;
 import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
+import org.kie.workbench.common.stunner.client.lienzo.util.ShapeViewUserDataEncoder;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateAttributeHandler;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateAttributeHandler.ShapeStateAttributes;
@@ -53,11 +54,19 @@ public class ShapeStateDefaultHandler
         }
     }
 
+    public enum ShapeType {
+        BACKGROUND,
+        BORDER,
+        CONTAINER
+    }
+
     private static final Shadow SHADOW_HIGHLIGHT = new Shadow(ColorName.BLACK.getColor().setA(0.40), 10, 0, 0);
     private static final Shadow SHADOW_SELECTED = new Shadow(ColorName.BLACK.getColor().setA(0.40), 5, 2, 2);
 
     private final ShapeStateAttributeAnimationHandler<LienzoShapeView<?>> handler;
     private Supplier<LienzoShapeView<?>> backgroundShapeSupplier;
+    private Supplier<LienzoShapeView<?>> borderShapeSupplier;
+    private ShapeViewUserDataEncoder shapeViewDataEncoder;
 
     public ShapeStateDefaultHandler() {
         this(new ShapeStateAttributeAnimationHandler<>());
@@ -65,21 +74,32 @@ public class ShapeStateDefaultHandler
 
     ShapeStateDefaultHandler(final ShapeStateAttributeAnimationHandler<LienzoShapeView<?>> handler) {
         this.handler = handler.onComplete(this::applyShadow);
+        this.shapeViewDataEncoder = ShapeViewUserDataEncoder.get();
         setRenderType(RenderType.STROKE);
     }
 
     public ShapeStateDefaultHandler setRenderType(final RenderType renderType) {
         handler.getAttributesHandler().useAttributes(renderType.stateAttributesProvider);
+        shapeViewDataEncoder.applyShapeViewRenderType(borderShapeSupplier, renderType);
         return this;
     }
 
     public ShapeStateDefaultHandler setBorderShape(final Supplier<LienzoShapeView<?>> shapeSupplier) {
         handler.getAttributesHandler().setView(shapeSupplier);
+        borderShapeSupplier = shapeSupplier;
+        shapeViewDataEncoder.applyShapeViewType(shapeSupplier, ShapeType.BORDER);
         return this;
     }
 
     public ShapeStateDefaultHandler setBackgroundShape(final Supplier<LienzoShapeView<?>> shapeSupplier) {
         backgroundShapeSupplier = shapeSupplier;
+        shapeViewDataEncoder.applyShapeViewType(shapeSupplier, ShapeType.BACKGROUND);
+        return this;
+    }
+
+    //TODO: this should be called on the SVGShapeView when a subprocess is identified
+    public ShapeStateDefaultHandler setContainerShape(final Supplier<LienzoShapeView<?>> shapeSupplier) {
+        shapeViewDataEncoder.applyShapeViewType(shapeSupplier, ShapeType.CONTAINER);
         return this;
     }
 

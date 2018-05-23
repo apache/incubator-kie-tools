@@ -22,7 +22,9 @@
      x="0" y="0"
      width="653px" height="253px"
      viewBox="-1.5 -1.5 653 253">
-  <rect class="subProcess" x="0" y="0" width="650px" height="250px" rx="2" ry="2"/>
+  <rect  id="subProcess-background" class="subProcess_background" x="0" y="0" width="650px" height="250px" rx="2" ry="2"/>
+  <rect id="subProcess-border" class="subProcess_border" stunner:shape-state="stroke" x="0" y="0" width="650px" height="250px" rx="2" ry="2"/>
+
   <g class="subProcess_group_adHoc" stunner:layout="BOTTOM" stunner:transform="non-scalable" transform="translate(300,220) scale(0.05,0.05)">
     <path class="subProcess_adHoc_icon" d="M421.5,159.5c-15.9-3.1-31.4,6.3-36.4,21.3l0,0l0.1-0.3c0,0.1-4.3,11.8-14.9,22.9c-13,13.6-29.2,20.2-49.6,20.2
 	c-24.1,0-48.9-23-75.1-47.4c-32.3-30-68.8-64.1-117.4-64.1c-29.5,0-71.2,12.8-102.9,73.6C8.7,217.6,2.3,249.2,2,250.6v0.1

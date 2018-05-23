@@ -18,7 +18,9 @@
 <svg id="subProcess" version="1.1" xmlns="http://www.w3.org/2000/svg"
      xmlns:stunner="http://kiegroup.org/2017/stunner"
      x="0" y="0" width="650px" height="250px" viewBox="0 0 650 250">
-  <rect class="subProcess" x="0" y="0" width="650px" height="250px" rx="5" ry="5" />
+  <rect id="subProcess-background" class="subProcess_background" x="0" y="0" width="650px" height="250px" rx="5" ry="5" />
+  <rect  id="subProcess-border" class="subProcess_border" stunner:shape-state="stroke" x="0" y="0" width="650px" height="250px" rx="5" ry="5" />
+
   <g class="subProcess_group_multipleInstance" stunner:layout="BOTTOM" stunner:transform="non-scalable" transform="translate(300,220) scale(0.05,0.05)">
     <path class="subProcess_multipleInstance_icon" d="M92,44v424c0,6.6-5.4,12-12,12H48c-6.6,0-12-5.4-12-12V44c0-6.6,5.4-12,12-12h32C86.6,32,92,37.4,92,44z M252,44v424
       c0,6.6-5.4,12-12,12h-32c-6.6,0-12-5.4-12-12V44c0-6.6,5.4-12,12-12h32C246.6,32,252,37.4,252,44z M412,44v424c0,6.6-5.4,12-12,12

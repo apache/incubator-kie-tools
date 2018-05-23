@@ -49,7 +49,7 @@ public abstract class AbstractExportSessionCommand extends AbstractClientSession
             final String fileName = getFileName();
             export(fileName);
             callback.onSuccess();
-        }, 150);
+        }, 300);
     }
 
     private void executeWithDelay(Runnable executeFunction, int delayMillis) {

@@ -142,6 +142,7 @@ public class DelegateNativeContext2DTest {
         delegateNativeContext2D.saveContainer(NODE_UUID);
         verify(context, times(1)).saveGroup(new HashMap<String, String>() {{
             put(SVG_NODE_ID, NODE_UUID);
+            put(DelegateNativeContext2D.DEFAULT_NODE_ID, NODE_UUID);
         }});
     }
 

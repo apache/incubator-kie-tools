@@ -20,9 +20,10 @@ import java.util.Optional;
 
 public interface ShapeDefinition<V> extends PrimitiveDefinition<V> {
 
-    public enum ShapeStateDefinition {
+    enum ShapeStateDefinition {
         STROKE,
-        FILL;
+        FILL,
+        CONTAINER
     }
 
     Optional<ShapeStateDefinition> getStateDefinition();

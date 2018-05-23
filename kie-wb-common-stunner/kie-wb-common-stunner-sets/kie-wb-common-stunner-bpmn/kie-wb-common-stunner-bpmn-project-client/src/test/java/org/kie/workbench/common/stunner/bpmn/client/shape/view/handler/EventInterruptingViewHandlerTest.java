@@ -37,8 +37,8 @@ public class EventInterruptingViewHandlerTest extends EventViewHandlerTestBase {
     @SuppressWarnings("unchecked")
     public void init() {
         super.init();
-        when(child1.getId()).thenReturn(EventInterruptingViewHandler.ID_START);
-        when(child2.getId()).thenReturn(EventInterruptingViewHandler.ID_START_NON_INTERRUPTING);
+        when(child1.getPrimitiveId()).thenReturn(EventInterruptingViewHandler.ID_START);
+        when(child2.getPrimitiveId()).thenReturn(EventInterruptingViewHandler.ID_START_NON_INTERRUPTING);
         tested = new EventInterruptingViewHandler();
     }
 

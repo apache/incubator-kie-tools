@@ -73,7 +73,7 @@ public class SVGViewUtils {
             return getPrimitive((SVGContainer) primitive,
                                 id);
         }
-        return id.equals(primitive.getId()) ?
+        return id.equals(primitive.getPrimitiveId()) ?
                 primitive :
                 null;
     }

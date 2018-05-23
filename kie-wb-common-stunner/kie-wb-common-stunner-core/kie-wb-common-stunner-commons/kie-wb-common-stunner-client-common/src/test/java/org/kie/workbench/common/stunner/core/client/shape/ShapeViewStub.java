@@ -154,4 +154,14 @@ public class ShapeViewStub implements ShapeView<Object> {
     public void destroy() {
 
     }
+
+    @Override
+    public Object getUserData() {
+        return null;
+    }
+
+    @Override
+    public void setUserData(Object userData) {
+
+    }
 }

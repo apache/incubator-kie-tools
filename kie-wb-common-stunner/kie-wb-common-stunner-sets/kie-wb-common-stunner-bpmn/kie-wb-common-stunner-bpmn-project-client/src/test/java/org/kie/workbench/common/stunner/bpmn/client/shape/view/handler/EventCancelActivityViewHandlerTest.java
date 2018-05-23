@@ -37,8 +37,8 @@ public class EventCancelActivityViewHandlerTest extends EventViewHandlerTestBase
     @SuppressWarnings("unchecked")
     public void init() {
         super.init();
-        when(child1.getId()).thenReturn(EventCancelActivityViewHandler.ID_INTERMEDIATE);
-        when(child2.getId()).thenReturn(EventCancelActivityViewHandler.ID_INTERMEDIATE_NON_INTERRUPTING);
+        when(child1.getPrimitiveId()).thenReturn(EventCancelActivityViewHandler.ID_INTERMEDIATE);
+        when(child2.getPrimitiveId()).thenReturn(EventCancelActivityViewHandler.ID_INTERMEDIATE_NON_INTERRUPTING);
         tested = new EventCancelActivityViewHandler();
     }
 

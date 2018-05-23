@@ -211,4 +211,14 @@ public final class SVGPrimitiveShape
         get().setShadow(null);
         return this;
     }
+
+    @Override
+    public Object getUserData() {
+        return get().getUserData();
+    }
+
+    @Override
+    public void setUserData(Object userData) {
+        get().setUserData(userData);
+    }
 }

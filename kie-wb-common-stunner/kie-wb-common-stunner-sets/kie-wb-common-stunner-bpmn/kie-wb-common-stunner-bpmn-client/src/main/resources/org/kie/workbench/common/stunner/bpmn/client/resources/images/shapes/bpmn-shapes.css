@@ -73,16 +73,23 @@
      fill: #ec7a08;
 }
 
-.lane {
+.lane_background {
     fill: #f2f2f2;
+}
+
+.lane_border {
     stroke: #000000;
     stroke-width: 0.5px;
 }
 
-.task {
-    fill: white;
+.task_border {
     stroke: black;
     stroke-width: 1.5px;
+}
+
+.task_background {
+    fill: white;
+    stroke: none;
 }
 
 .task_group_user {
@@ -390,10 +397,13 @@
     fill: #a30000;
 }
 
-.subProcess {
-    fill: #FFFFFF; /*this affects only the reusable subprocess*/
+.subProcess_border {
     stroke: #393f44; /*this affects the reusable, ad hoc, and embedded subprocesses*/
     stroke-width: 1.5px; /*this affects the adhoc and embedded subprocesses but not the collapsed one*/
+}
+
+.subProcess_background {
+    fill: #FFFFFF; /*this affects only the reusable subprocess*/
 }
 
 .subProcess_group_reusable {
@@ -414,11 +424,14 @@
     stroke-width: 1.5px;
 }
 
-.subProcess_event {
-    stroke-dasharray: 2,2;
-    stroke-width: 2px;
+.subProcess_event_background {
     opacity: 1;
     fill: #fafafa;
+}
+
+.subProcess_event_border {
+    stroke-dasharray: 2,2;
+    stroke-width: 2px;
     stroke: #393f44;
 }
 

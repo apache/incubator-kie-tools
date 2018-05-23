@@ -164,4 +164,8 @@ public interface ShapeView<T> {
      * removes it from the tree.
      */
     void destroy();
+
+    Object getUserData();
+
+    void setUserData(Object userData);
 }

@@ -24,7 +24,9 @@
      x=".75" y=".75"
      width="153px" height="101px"
      viewBox="-1.5 -1.5 153 101">
-  <rect class="subProcess" x="0" y="0" width="150px" height="98px" rx="2" ry="2"/>
+  <rect id="subProcess-background" class="subProcess_background" x="0" y="0" width="150px" height="98px" rx="2" ry="2"/>
+  <rect id="subProcess-border" class="subProcess_border" stunner:shape-state="stroke" x="0" y="0" width="150px" height="98px" rx="2" ry="2"/>
+
   <g class="subProcess_group_reusable" stunner:transform="non-scalable" stunner:layout="BOTTOM"  transform="translate(0,0) scale(1,1)">
     <rect class="subProcess_reusable_boundingbox" x="63" y="66" width="25px" height="25px"/>
     <path class="subProcess_reusable_icon"

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.svg.gen.translator.impl;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -182,10 +183,20 @@ public abstract class AbstractSVGPrimitiveTranslator<E extends Element, O extend
 
     protected static String getId(final Element element) {
         String id = element.getAttribute(ID);
-        if (isEmpty(id)) {
-            id = "prim_" + UUID.uuid(4);
-            element.setAttribute(ID, id);
+        Element parent = null;
+        if (Objects.nonNull(element.getParentNode()) && element.getParentNode() instanceof Element) {
+            parent = (Element) element.getParentNode();
         }
+
+        if (!isEmpty(id)) {
+            return id;
+        }
+
+        id = (Objects.isNull(parent) ?
+                "prim_" + UUID.uuid(4) :
+                parent.getAttribute(ID) + "_" + element.getAttribute(ID) + "_" + UUID.uuid(4));
+
+        element.setAttribute(ID, id);
         //return SVGModelUtils.toValidJavaId(id);
         return id;
     }

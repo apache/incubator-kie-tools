@@ -41,7 +41,7 @@ import org.uberfire.ext.editor.commons.client.file.exports.svg.IContext2D;
 
 public class DelegateNativeContext2D implements INativeContext2D {
 
-    private static final String DEFAULT_NODE_ID = "id";
+    protected static final String DEFAULT_NODE_ID = "id";
 
     interface Converter {
 
@@ -82,7 +82,10 @@ public class DelegateNativeContext2D implements INativeContext2D {
     public void saveContainer(String id) {
         context.saveGroup(new HashMap<String, String>() {{
             //setting the node id in case it exists on graph
-            Optional.ofNullable(canvasHandler.getGraphIndex().get(id)).ifPresent(node -> put(svgNodeId, id));
+            Optional.ofNullable(canvasHandler.getGraphIndex().get(id)).ifPresent(node -> {
+                put(DEFAULT_NODE_ID, id);
+                put(svgNodeId, id);
+            });
         }});
     }
 
@@ -93,6 +96,14 @@ public class DelegateNativeContext2D implements INativeContext2D {
 
     public void save() {
         context.saveStyle();
+    }
+
+    public void save(String id) {
+        context.saveStyle();
+        context.addAttributes(new HashMap<String, String>() {{
+            //setting the node id in case it exists on graph
+            Optional.ofNullable(id).ifPresent(node -> put(DEFAULT_NODE_ID, id));
+        }});
     }
 
     public void restore() {

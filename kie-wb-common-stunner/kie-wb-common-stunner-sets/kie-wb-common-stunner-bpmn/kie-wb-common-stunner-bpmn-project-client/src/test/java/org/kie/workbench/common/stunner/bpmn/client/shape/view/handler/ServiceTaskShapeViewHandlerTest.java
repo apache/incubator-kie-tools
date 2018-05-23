@@ -74,6 +74,7 @@ public class ServiceTaskShapeViewHandlerTest {
         when(view.getChildren()).thenReturn(Collections.singletonList(imageSvgPrimitive));
         when(imageSvgPrimitive.getId()).thenReturn(ServiceTaskShapeViewHandler.WID_ICON_ID);
         when(imageSvgPrimitive.get()).thenReturn(imagePrimitive);
+        when(imageSvgPrimitive.getPrimitiveId()).thenReturn(ServiceTaskShapeViewHandler.WID_ICON_ID);
         when(imagePrimitive.getID()).thenReturn(ServiceTaskShapeViewHandler.WID_ICON_ID);
         when(imagePrimitive.getImageProxy()).thenReturn(imageProxy);
         this.tested = new ServiceTaskShapeViewHandler(() -> registry);

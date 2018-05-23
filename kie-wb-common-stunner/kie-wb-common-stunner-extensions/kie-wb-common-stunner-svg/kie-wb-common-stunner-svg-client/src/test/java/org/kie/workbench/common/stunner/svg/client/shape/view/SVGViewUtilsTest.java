@@ -59,8 +59,8 @@ public class SVGViewUtilsTest {
 
     @Before
     public void setup() throws Exception {
-        when(primitive1.getId()).thenReturn("p1");
-        when(primitive2.getId()).thenReturn("p2");
+        when(primitive1.getPrimitiveId()).thenReturn("p1");
+        when(primitive2.getPrimitiveId()).thenReturn("p2");
         when(primitive1.get()).thenReturn(p1);
         when(primitive2.get()).thenReturn(p2);
         when(svgShape.getChildren()).thenReturn(Arrays.asList(primitive1, primitive2));

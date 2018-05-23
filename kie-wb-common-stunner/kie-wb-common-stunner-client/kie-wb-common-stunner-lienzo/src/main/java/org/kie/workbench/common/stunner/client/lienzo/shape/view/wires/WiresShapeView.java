@@ -32,6 +32,7 @@ import com.ait.lienzo.client.core.types.Shadow;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
+import org.kie.workbench.common.stunner.client.lienzo.util.ShapeViewUserDataEncoder;
 import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasDragBounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
@@ -62,6 +63,7 @@ public class WiresShapeView<T>
     @Override
     public T setUUID(final String uuid) {
         this.uuid = uuid;
+        ShapeViewUserDataEncoder.get().setShapeViewChildrenIds(uuid, getGroup());
         WiresUtils.assertShapeUUID(this.getGroup(),
                                    uuid);
         return cast();
@@ -293,5 +295,15 @@ public class WiresShapeView<T>
     public T removeShadow() {
         getShape().setShadow(null);
         return cast();
+    }
+
+    @Override
+    public Object getUserData() {
+        return getShape().getUserData();
+    }
+
+    @Override
+    public void setUserData(Object userData) {
+        getShape().setUserData(userData);
     }
 }

@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.shape.impl;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -105,7 +106,7 @@ public class ShapeStateAttributeHandler<V extends ShapeView>
     }
 
     public V getShapeView() {
-        return view.get();
+        return Objects.nonNull(view) ? view.get() : null;
     }
 
     public enum ShapeStateAttribute {
