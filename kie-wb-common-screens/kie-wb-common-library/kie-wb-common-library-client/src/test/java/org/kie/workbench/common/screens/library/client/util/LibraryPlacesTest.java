@@ -81,7 +81,6 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
-import org.uberfire.workbench.events.ResourceCopiedEvent;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
@@ -887,19 +886,5 @@ public class LibraryPlacesTest {
                              any(),
                              any(),
                              any());
-    }
-
-    @Test
-    public void testOnResourceCopiedEvent() {
-
-        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
-
-        Path path = mock(Path.class);
-        ResourceCopiedEvent event = mock(ResourceCopiedEvent.class);
-        when(event.getDestinationPath()).thenReturn(path);
-
-        this.libraryPlaces.onResourceCopiedEvent(event);
-
-        verify(this.libraryPlaces).goToAsset(path);
     }
 }
