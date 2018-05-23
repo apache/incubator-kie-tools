@@ -24,7 +24,8 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.library.client.settings.util.select.KieSelectElement.Option;
+import org.kie.workbench.common.widgets.client.widget.KieSelectElement;
+import org.kie.workbench.common.widgets.client.widget.KieSelectElement.Option;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 

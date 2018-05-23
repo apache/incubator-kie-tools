@@ -22,10 +22,10 @@ import javax.inject.Inject;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.item.KnowledgeBaseItemPresenter;
-import org.kie.workbench.common.screens.library.client.settings.util.list.ListPresenter;
 import org.kie.workbench.common.screens.library.client.settings.util.modal.Elemental2Modal;
 import org.kie.workbench.common.services.shared.kmodule.KBaseModel;
 import org.kie.workbench.common.services.shared.kmodule.KSessionModel;
+import org.kie.workbench.common.widgets.client.widget.ListPresenter;
 
 @Dependent
 public class KnowledgeSessionsModal extends Elemental2Modal<KnowledgeSessionsModal.View> {

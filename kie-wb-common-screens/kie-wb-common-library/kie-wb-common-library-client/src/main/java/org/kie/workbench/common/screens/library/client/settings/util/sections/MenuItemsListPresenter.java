@@ -20,7 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.screens.library.client.settings.util.list.ListPresenter;
+import org.kie.workbench.common.widgets.client.widget.ListPresenter;
 
 @Dependent
 public class MenuItemsListPresenter<T> extends ListPresenter<Section<T>, MenuItem<T>> {

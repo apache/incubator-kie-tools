@@ -28,7 +28,7 @@ public interface KSessionSelectorView
     void setSelected(final String kbase,
                      final String ksession);
 
-    void addKBase(final String name);
+    void addKBases(final String... names);
 
     void setKSessions(final List<String> ksessions);
 
@@ -36,5 +36,4 @@ public interface KSessionSelectorView
 
     String getSelectedKSessionName();
 
-    void clear();
 }

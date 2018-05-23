@@ -34,8 +34,14 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class KSessionSelectorTest {
@@ -95,19 +101,6 @@ public class KSessionSelectorTest {
     }
 
     @Test
-    public void clearPreviousSetUp() throws
-            Exception {
-        selector.init(path,
-                      "first");
-        verify(view).clear();
-
-        selector.init(path,
-                      "second");
-        verify(view,
-               times(2)).clear();
-    }
-
-    @Test
     public void testSetKBaseAndKSession() throws Exception {
 
         selector.init(path,
@@ -127,8 +120,9 @@ public class KSessionSelectorTest {
     public void testKBaseAndKSessionNotPreviouslySet() throws Exception {
         selector.init(path,
                       null);
-
-        verify(view).addKBase("kbase1");
+        verify(view).addKBases("kbase1",
+                               "kbase2",
+                               "kbase3");
 
         ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass(List.class);
         verify(view).setKSessions(listArgumentCaptor.capture());
@@ -148,7 +142,7 @@ public class KSessionSelectorTest {
         selector.init(path,
                       null);
 
-        verify(view).addKBase("defaultKieBase");
+        verify(view).addKBases("defaultKieBase");
 
         ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass(List.class);
         verify(view).setKSessions(listArgumentCaptor.capture());
@@ -170,10 +164,7 @@ public class KSessionSelectorTest {
         selector.init(path,
                       "ksessionThatHasBeenRemovedFromKModuleXML");
 
-        verify(view).addKBase("kbase1");
-        verify(view).addKBase("kbase2");
-        verify(view).addKBase("kbase3");
-        verify(view).addKBase("---");
+        verify(view).addKBases("kbase1", "kbase2", "kbase3", "---");
 
         ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass(List.class);
         verify(view).setKSessions(listArgumentCaptor.capture());
@@ -199,8 +190,7 @@ public class KSessionSelectorTest {
         selector.init(path,
                       "ksessionThatHasBeenRemovedFromKModuleXML");
 
-        verify(view).addKBase("defaultKieBase");
-        verify(view).addKBase("---");
+        verify(view).addKBases("defaultKieBase", "---");
 
         ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass(List.class);
         verify(view).setKSessions(listArgumentCaptor.capture());

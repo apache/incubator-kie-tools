@@ -21,8 +21,8 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.item.KnowledgeBaseItemPresenter;
-import org.kie.workbench.common.screens.library.client.settings.util.list.ListItemPresenter;
-import org.kie.workbench.common.screens.library.client.settings.util.list.ListItemView;
+import org.kie.workbench.common.widgets.client.widget.ListItemPresenter;
+import org.kie.workbench.common.widgets.client.widget.ListItemView;
 
 @Dependent
 public class PackageItemPresenter extends ListItemPresenter<String, KnowledgeBaseItemPresenter, PackageItemPresenter.View> {

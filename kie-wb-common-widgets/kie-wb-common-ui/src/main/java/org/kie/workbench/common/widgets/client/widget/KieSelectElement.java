@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright (C) 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.library.client.settings.util.select;
+package org.kie.workbench.common.widgets.client.widget;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -27,8 +27,6 @@ import elemental2.dom.Element;
 import elemental2.dom.HTMLSelectElement;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.screens.library.client.settings.util.list.ListItemPresenter;
-import org.kie.workbench.common.screens.library.client.settings.util.list.ListPresenter;
 import org.uberfire.client.mvp.UberElemental;
 
 @Dependent

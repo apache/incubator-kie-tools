@@ -17,7 +17,10 @@
 package org.kie.workbench.common.widgets.client.widget;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -96,23 +99,28 @@ public class KSessionSelector
     }
 
     private void initKBases(final String currentKSession) {
-        view.clear();
+
+        final ArrayList<String> kbaseNames = new ArrayList<>();
 
         if (kmodule.getKBases().isEmpty()) {
             addMockKBaseModel(DEFAULT_KIE_BASE,
                               DEFAULT_KIE_SESSION);
-            view.addKBase(DEFAULT_KIE_BASE);
+            kbaseNames.add(DEFAULT_KIE_BASE);
         } else {
             for (KBaseModel kBase : kmodule.getKBases().values()) {
-                view.addKBase(kBase.getName());
+                kbaseNames.add(kBase.getName());
             }
         }
+
+        Collections.sort(kbaseNames, (first, other) -> first.compareToIgnoreCase(other));
+
         if (isNotNullOrEmpty(currentKSession) && !kmoduleContainsCurrentKSession(currentKSession)) {
             addMockKBaseModel(NON_EXISTING_KBASE,
                               currentKSession);
-            view.addKBase(NON_EXISTING_KBASE);
+            kbaseNames.add(NON_EXISTING_KBASE);
             view.showWarningSelectedKSessionDoesNotExist();
         }
+        view.addKBases(kbaseNames.toArray(new String[kbaseNames.size()]));
     }
 
     private void addMockKBaseModel(final String kbaseName,

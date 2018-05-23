@@ -21,8 +21,8 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.ModuleRepositories;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
-import org.kie.workbench.common.screens.library.client.settings.util.list.ListItemPresenter;
-import org.kie.workbench.common.screens.library.client.settings.util.list.ListItemView;
+import org.kie.workbench.common.widgets.client.widget.ListItemPresenter;
+import org.kie.workbench.common.widgets.client.widget.ListItemView;
 
 @Dependent
 public class ValidationItemPresenter extends ListItemPresenter<ModuleRepositories.ModuleRepository, ValidationPresenter, ValidationItemPresenter.View> {

@@ -21,8 +21,8 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.screens.datamodeller.model.persistence.Property;
 import org.kie.workbench.common.screens.library.client.settings.sections.persistence.PersistencePresenter;
-import org.kie.workbench.common.screens.library.client.settings.util.list.ListItemPresenter;
-import org.kie.workbench.common.screens.library.client.settings.util.list.ListItemView;
+import org.kie.workbench.common.widgets.client.widget.ListItemPresenter;
+import org.kie.workbench.common.widgets.client.widget.ListItemView;
 
 @Dependent
 public class PropertiesItemPresenter extends ListItemPresenter<Property, PersistencePresenter, PropertiesItemPresenter.View> {

@@ -28,12 +28,12 @@ import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.item.knowledgesessions.listener.ListenerListItemPresenter;
 import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.item.knowledgesessions.workitemhandler.WorkItemHandlerListItemPresenter;
 import org.kie.workbench.common.screens.library.client.settings.util.select.KieEnumSelectElement;
-import org.kie.workbench.common.screens.library.client.settings.util.list.ListItemPresenter;
-import org.kie.workbench.common.screens.library.client.settings.util.list.ListPresenter;
-import org.kie.workbench.common.screens.library.client.settings.util.list.ListItemView;
 import org.kie.workbench.common.services.shared.kmodule.ClockTypeOption;
 import org.kie.workbench.common.services.shared.kmodule.KSessionModel;
 import org.kie.workbench.common.services.shared.kmodule.ListenerModel;
+import org.kie.workbench.common.widgets.client.widget.ListItemPresenter;
+import org.kie.workbench.common.widgets.client.widget.ListItemView;
+import org.kie.workbench.common.widgets.client.widget.ListPresenter;
 
 public class KnowledgeSessionListItemPresenter extends ListItemPresenter<KSessionModel, KnowledgeSessionsModal, KnowledgeSessionListItemPresenter.View> {
 

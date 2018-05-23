@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import elemental2.dom.Element;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.widgets.client.widget.KieSelectElement;
 
 import static java.util.stream.Collectors.toList;
 

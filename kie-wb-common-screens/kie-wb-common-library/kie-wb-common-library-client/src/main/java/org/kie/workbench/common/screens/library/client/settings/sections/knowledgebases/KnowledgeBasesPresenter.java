@@ -32,11 +32,11 @@ import org.kie.workbench.common.screens.library.client.settings.sections.knowled
 import org.kie.workbench.common.screens.library.client.settings.util.sections.MenuItem;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.Section;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.SectionView;
-import org.kie.workbench.common.screens.library.client.settings.util.list.ListPresenter;
 import org.kie.workbench.common.screens.library.client.settings.util.modal.single.AddSingleValueModal;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.services.shared.kmodule.KBaseModel;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
+import org.kie.workbench.common.widgets.client.widget.ListPresenter;
 import org.uberfire.client.promise.Promises;
 
 import static java.util.Comparator.comparing;

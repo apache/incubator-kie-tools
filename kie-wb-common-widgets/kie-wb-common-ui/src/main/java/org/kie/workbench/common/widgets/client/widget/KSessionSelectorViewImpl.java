@@ -16,33 +16,39 @@
 
 package org.kie.workbench.common.widgets.client.widget;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
+
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import org.jboss.errai.common.client.dom.Document;
-import org.jboss.errai.common.client.dom.Label;
-import org.jboss.errai.common.client.dom.Option;
-import org.jboss.errai.common.client.dom.Select;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLDocument;
+import elemental2.dom.HTMLLabelElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+
+import static java.util.stream.Collectors.toList;
 
 @Templated
 public class KSessionSelectorViewImpl implements KSessionSelectorView {
 
-    Document document;
+    HTMLDocument document;
 
-    @DataField("kbaseSelect")
-    Select kbaseSelect;
+    @DataField("kbaseSelectContainer")
+    HTMLDivElement kbaseSelectContainer;
+
+    KieSelectElement kbaseSelect;
 
     @Inject
-    @DataField("ksessionSelect")
-    Select ksessionSelect;
+    @DataField("ksessionSelectContainer")
+    HTMLDivElement ksessionSelectContainer;
+
+    KieSelectElement ksessionSelect;
 
     @Inject
     @DataField("warningLabel")
-    Label warningLabel;
+    HTMLLabelElement warningLabel;
 
     private KSessionSelector presenter;
 
@@ -50,11 +56,15 @@ public class KSessionSelectorViewImpl implements KSessionSelectorView {
     }
 
     @Inject
-    public KSessionSelectorViewImpl(final Document document,
-                                    final Select kbaseSelect,
-                                    final Select ksessionSelect,
-                                    final Label warningLabel) {
+    public KSessionSelectorViewImpl(final HTMLDocument document,
+                                    final HTMLDivElement kbaseSelectContainer,
+                                    final HTMLDivElement ksessionSelectContainer,
+                                    final KieSelectElement kbaseSelect,
+                                    final KieSelectElement ksessionSelect,
+                                    final HTMLLabelElement warningLabel) {
         this.document = document;
+        this.kbaseSelectContainer = kbaseSelectContainer;
+        this.ksessionSelectContainer = ksessionSelectContainer;
         this.kbaseSelect = kbaseSelect;
         this.ksessionSelect = ksessionSelect;
         this.warningLabel = warningLabel;
@@ -75,54 +85,44 @@ public class KSessionSelectorViewImpl implements KSessionSelectorView {
     }
 
     @Override
-    public void addKBase(final String name) {
-        kbaseSelect.add(createOption(name));
+    public void addKBases(final String... names) {
+
+        kbaseSelect.setup(kbaseSelectContainer,
+                          buildOptions(names),
+                          names[0],
+                          new Consumer<String>() {
+                              @Override
+                              public void accept(String s) {
+                                  presenter.onKBaseSelected(s);
+                              }
+                          });
+    }
+
+    List<KieSelectElement.Option> buildOptions(final String[] values) {
+        return Arrays.stream(values).map(this::newOption).collect(toList());
+    }
+
+    KieSelectElement.Option newOption(final String e) {
+        return new KieSelectElement.Option(e, e);
     }
 
     @Override
     public void setKSessions(final List<String> ksessions) {
-        removeChildren(ksessionSelect);
-        for (String ksession : ksessions) {
-            ksessionSelect.add(createOption(ksession));
-        }
-    }
-
-    private Option createOption(final String value) {
-        Option option = (Option) document.createElement("option");
-        option.setText(value);
-        return option;
-    }
-
-    private void removeChildren(final Select select) {
-        while (select.hasChildNodes()) {
-            select.removeChild(select.getLastChild());
-        }
+        String[] names = ksessions.toArray(new String[ksessions.size()]);
+        ksessionSelect.setup(ksessionSelectContainer,
+                             buildOptions(names),
+                             names[0],
+                             s -> onSelectionChange());
     }
 
     @Override
     public void showWarningSelectedKSessionDoesNotExist() {
-        warningLabel.setHidden(false);
-    }
-
-    @Override
-    public void clear() {
-        removeChildren(kbaseSelect);
-        removeChildren(ksessionSelect);
+        warningLabel.style.setProperty("visibility", "visible");
     }
 
     @Override
     public String getSelectedKSessionName() {
         return ksessionSelect.getValue();
-    }
-
-    @EventHandler("kbaseSelect")
-    public void onKBaseChange(final ChangeEvent event) {
-        presenter.onKBaseSelected(kbaseSelect.getValue());
-    }
-
-    @EventHandler("ksessionSelect")
-    public void onKSessionSelected(final ChangeEvent event) {
-        onSelectionChange();
     }
 
     void onSelectionChange() {

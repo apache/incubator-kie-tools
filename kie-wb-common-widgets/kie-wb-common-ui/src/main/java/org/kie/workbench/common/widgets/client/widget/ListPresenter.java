@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright (C) 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.library.client.settings.util.list;
+package org.kie.workbench.common.widgets.client.widget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,16 +90,16 @@ public abstract class ListPresenter<T, P extends ListItemPresenter<T, ?, ?>> {
         handleTable();
     }
 
-    protected void addToListElement(final T o) {
+    public void addToListElement(final T o) {
         addPresenter(newPresenterFor(o));
     }
 
-    protected void addPresenter(final P presenter) {
+    public void addPresenter(final P presenter) {
         presenters.add(presenter);
         listElement.appendChild(presenter.getView().getElement());
     }
 
-    protected P newPresenterFor(final T o) {
+    public P newPresenterFor(final T o) {
         final P listItemPresenter = this.itemPresenters.get();
         listItemPresenter.setListPresenter(this);
         itemPresenterConfigurator.accept(o, listItemPresenter);

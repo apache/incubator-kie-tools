@@ -17,30 +17,32 @@
 package org.kie.workbench.common.widgets.client.widget;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.common.client.dom.Document;
-import org.jboss.errai.common.client.dom.Label;
-import org.jboss.errai.common.client.dom.Select;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLDocument;
+import elemental2.dom.HTMLLabelElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class KSessionSelectorViewImplTest {
 
     @Mock
-    private Document document;
+    private HTMLDocument document;
 
     @Mock
-    private Select kBaseSelect;
+    private HTMLDivElement kBaseSelect;
 
     @Mock
-    private Select kSessionSelect;
+    private HTMLDivElement kSessionSelect;
 
     @Mock
-    private Label warningLabel;
+    private HTMLLabelElement warningLabel;
 
     @Mock
     private KSessionSelector presenter;
@@ -52,6 +54,8 @@ public class KSessionSelectorViewImplTest {
         kSessionSelectorView = spy(new KSessionSelectorViewImpl(document,
                                                                 kBaseSelect,
                                                                 kSessionSelect,
+                                                                mock(KieSelectElement.class),
+                                                                mock(KieSelectElement.class),
                                                                 warningLabel));
         kSessionSelectorView.setPresenter(presenter);
     }
@@ -60,13 +64,6 @@ public class KSessionSelectorViewImplTest {
     public void testSetSelected() throws Exception {
         kSessionSelectorView.setSelected("kbaseName",
                                          "ksessionName");
-
-        verify(kSessionSelectorView).onSelectionChange();
-    }
-
-    @Test
-    public void testName() throws Exception {
-        kSessionSelectorView.onKSessionSelected(null);
 
         verify(kSessionSelectorView).onSelectionChange();
     }
