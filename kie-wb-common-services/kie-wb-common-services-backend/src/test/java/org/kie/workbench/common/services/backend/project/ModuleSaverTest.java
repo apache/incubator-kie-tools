@@ -180,7 +180,6 @@ public class ModuleSaverTest
         final POM newPOM = mock(POM.class);
 
         final Repository repository = mock(Repository.class);
-        final String baseURL = "/";
 
         final File test = File.createTempFile("test",
                                               Long.toString(System.nanoTime()));
@@ -208,8 +207,7 @@ public class ModuleSaverTest
 
         try {
             saver.save(Paths.convert(moduleNioPath),
-                       newPOM,
-                       baseURL);
+                       newPOM);
         } catch (FileAlreadyExistsException e) {
             fileExistsException = e;
         }
@@ -259,7 +257,6 @@ public class ModuleSaverTest
 
     protected void runProjecCreationTest(final POM pom) throws IOException {
         final Repository repository = mock(Repository.class);
-        final String baseURL = "/";
 
         final File test = File.createTempFile("test",
                                               Long.toString(System.nanoTime()));
@@ -287,8 +284,7 @@ public class ModuleSaverTest
         });
 
         Module module = saver.save(repositoryRootPath,
-                                   pom,
-                                   baseURL);
+                                   pom);
 
         assertEquals(4,
                      directories.size());

@@ -85,14 +85,13 @@ public class ModuleSaver {
     }
 
     public KieModule save(final Path repositoryRoot,
-                          final POM pom,
-                          final String baseUrl) {
+                          final POM pom) {
         try {
             ioService.startBatch(Paths.convert(repositoryRoot).getFileSystem(),
                                  commentedOptionFactory.makeCommentedOption("New module [" + pom.getName() + "]"));
 
             KieModule kieModule = new NewModuleCreator(pom,
-                                                       repositoryRoot).create(baseUrl);
+                                                       repositoryRoot).create();
 
             newModuleEvent.fire(new NewModuleEvent(kieModule,
                                                    safeSessionInfo.getId(),
@@ -119,14 +118,14 @@ public class ModuleSaver {
             simpleModuleInstance = resourceResolver.simpleModuleInstance(Paths.convert(moduleRoot));
         }
 
-        public KieModule create(final String baseUrl) {
+        public KieModule create() {
 
-            createModule(baseUrl);
+            createModule();
 
             return resourceResolver.resolveModule(moduleRoot);
         }
 
-        private void createModule(final String baseUrl) {
+        private void createModule() {
 
             //check if the module already exists.
             checkIfExists();
@@ -136,7 +135,6 @@ public class ModuleSaver {
 
             //Create POM.xml
             pomService.create(moduleRoot,
-                              baseUrl,
                               pom);
 
             //Create Maven module structure

@@ -52,7 +52,7 @@ public abstract class BuilderTestBase {
                                                                                                ExtendedM2RepoService.class,
                                                                                                cc);
 
-        String m2RepoURL = m2RepoService.getRepositoryURL(null);
+        String m2RepoURL = m2RepoService.getRepositoryURL();
 
         //Deploy a 1.0 version of guvnor-m2repo-dependency-example1-snapshot kjar
         GAV gav = new GAV("org.kie.workbench.common.services.builder.tests",

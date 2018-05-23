@@ -92,25 +92,21 @@ public class KieModuleServiceImpl
 
     @Override
     public KieModule newModule(final Path repositoryPath,
-                               final POM pom,
-                               final String baseUrl) {
+                               final POM pom) {
         return newModule(repositoryPath,
                          pom,
-                         baseUrl,
                          DeploymentMode.VALIDATED);
     }
 
     @Override
     public KieModule newModule(final Path repositoryPath,
                                final POM pom,
-                               final String baseUrl,
                                final DeploymentMode mode) {
         if (DeploymentMode.VALIDATED.equals(mode)) {
             checkRepositories(pom);
         }
         return moduleSaver.save(repositoryPath,
-                                pom,
-                                baseUrl);
+                                pom);
     }
 
     private void checkRepositories(final POM pom) {

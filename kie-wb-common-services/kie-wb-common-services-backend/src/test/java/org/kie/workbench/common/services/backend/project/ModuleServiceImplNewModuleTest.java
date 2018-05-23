@@ -118,17 +118,14 @@ public class ModuleServiceImplNewModuleTest {
         final Path masterBranchRoot = mock(Path.class);
         doReturn(Optional.of(new Branch("master", masterBranchRoot))).when(repository).getDefaultBranch();
         final POM pom = new POM();
-        final String baseURL = "/";
 
         final KieModule expected = new KieModule();
 
         when(saver.save(masterBranchRoot,
-                        pom,
-                        baseURL)).thenReturn(expected);
+                        pom)).thenReturn(expected);
 
         final Module project = moduleService.newModule(masterBranchRoot,
-                                                       pom,
-                                                       baseURL);
+                                                       pom);
 
         assertEquals(expected,
                      project);
@@ -140,7 +137,6 @@ public class ModuleServiceImplNewModuleTest {
         final Path masterBranchRoot = mock(Path.class);
         doReturn(Optional.of(new Branch("master", masterBranchRoot))).when(repository).getDefaultBranch();
         final POM pom = new POM();
-        final String baseURL = "/";
 
         final KieModule expected = new KieModule();
 
@@ -150,12 +146,10 @@ public class ModuleServiceImplNewModuleTest {
                                             MavenRepositorySource.SETTINGS));
         }});
         when(saver.save(masterBranchRoot,
-                        pom,
-                        baseURL)).thenReturn(expected);
+                        pom)).thenReturn(expected);
 
         moduleService.newModule(masterBranchRoot,
-                                pom,
-                                baseURL);
+                                pom);
     }
 
     @Test()
@@ -164,7 +158,6 @@ public class ModuleServiceImplNewModuleTest {
         final Path masterBranchRoot = mock(Path.class);
         doReturn(Optional.of(new Branch("master", masterBranchRoot))).when(repository).getDefaultBranch();
         final POM pom = new POM();
-        final String baseURL = "/";
 
         final KieModule expected = new KieModule();
 
@@ -174,13 +167,11 @@ public class ModuleServiceImplNewModuleTest {
                                             MavenRepositorySource.SETTINGS));
         }});
         when(saver.save(masterBranchRoot,
-                        pom,
-                        baseURL)).thenReturn(expected);
+                        pom)).thenReturn(expected);
 
         try {
             moduleService.newModule(masterBranchRoot,
                                     pom,
-                                    baseURL,
                                     DeploymentMode.FORCED);
         } catch (GAVAlreadyExistsException e) {
             fail("Unexpected exception thrown: " + e.getMessage());
@@ -224,8 +215,7 @@ public class ModuleServiceImplNewModuleTest {
 
         verify(moduleServiceSpy,
                times(0)).newModule(any(Path.class),
-                                   any(POM.class),
-                                   any(String.class));
+                                   any(POM.class));
         verify(moduleFactory,
                times(1)).simpleModuleInstance(any(org.uberfire.java.nio.file.Path.class));
     }
