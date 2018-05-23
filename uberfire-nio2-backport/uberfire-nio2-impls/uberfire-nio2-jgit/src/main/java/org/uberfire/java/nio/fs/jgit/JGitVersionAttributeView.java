@@ -32,6 +32,7 @@ import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileTime;
+import org.uberfire.java.nio.fs.jgit.util.model.CommitHistory;
 import org.uberfire.java.nio.fs.jgit.util.model.PathInfo;
 import org.uberfire.java.nio.fs.jgit.util.model.PathType;
 
@@ -76,8 +77,9 @@ public class JGitVersionAttributeView extends VersionAttributeView<JGitPathImpl>
 
         if (refId != null) {
             try {
-                for (final RevCommit commit : fs.getGit().listCommits(refId,
-                                                                      pathInfo.getPath())) {
+                final CommitHistory history = fs.getGit().listCommits(refId, pathInfo.getPath());
+                for (final RevCommit commit : history.getCommits()) {
+                    final String recordPath = history.trackedFileNameChangeFor(commit.getId());
                     records.add(new VersionRecord() {
                         @Override
                         public String id() {
@@ -107,7 +109,7 @@ public class JGitVersionAttributeView extends VersionAttributeView<JGitPathImpl>
                         @Override
                         public String uri() {
                             return fs.getPath(commit.name(),
-                                              path).toUri().toString();
+                                              recordPath).toUri().toString();
                         }
                     });
                 }

@@ -19,10 +19,8 @@ package org.uberfire.java.nio.fs.jgit;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
@@ -46,14 +44,12 @@ import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.junit.Test;
 import org.uberfire.java.nio.fs.jgit.util.Git;
-import org.uberfire.java.nio.fs.jgit.util.commands.Commit;
 import org.uberfire.java.nio.fs.jgit.util.commands.CreateRepository;
 import org.uberfire.java.nio.fs.jgit.util.commands.ListRefs;
 import org.uberfire.java.nio.fs.jgit.util.commands.SubdirectoryClone;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -306,20 +302,6 @@ public class JGitSubdirectoryCloneTest extends AbstractTestInfra {
         return new CreateRepository(gitSource).execute().get();
     }
 
-    private void commit(final Git origin, String branchName, String message, TestFile... testFiles) throws IOException {
-        final Map<String, File> data = Arrays.stream(testFiles)
-                                             .collect(toMap(f -> f.path, f -> tmpFile(f.content)));
-        new Commit(origin,
-                   branchName,
-                   "name",
-                   "name@example.com",
-                   message,
-                   null,
-                   null,
-                   false,
-                   data).execute();
-    }
-
     /*
      * Unfortunately there is no easier way to write a commit with multiple parents.
      */
@@ -386,28 +368,5 @@ public class JGitSubdirectoryCloneTest extends AbstractTestInfra {
                 ent.setObjectId(blobId);
             }
         });
-    }
-
-    private File tmpFile(final String content) {
-        try {
-            return tempFile(content);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static TestFile content(final String path, final String content) {
-        return new TestFile(path, content);
-    }
-
-    private static class TestFile {
-
-        final String path;
-        final String content;
-
-        TestFile(final String path, final String content) {
-            this.path = path;
-            this.content = content;
-        }
     }
 }

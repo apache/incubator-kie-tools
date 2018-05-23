@@ -43,6 +43,7 @@ import org.uberfire.java.nio.fs.jgit.util.commands.CreateRepository;
 import org.uberfire.java.nio.fs.jgit.util.commands.Fork;
 import org.uberfire.java.nio.fs.jgit.util.commands.SubdirectoryClone;
 import org.uberfire.java.nio.fs.jgit.util.model.CommitContent;
+import org.uberfire.java.nio.fs.jgit.util.model.CommitHistory;
 import org.uberfire.java.nio.fs.jgit.util.model.CommitInfo;
 import org.uberfire.java.nio.fs.jgit.util.model.PathInfo;
 
@@ -118,8 +119,8 @@ public interface Git {
 
     RevCommit getLastCommit(final Ref ref) throws IOException;
 
-    List<RevCommit> listCommits(final Ref ref,
-                                final String path) throws IOException, GitAPIException;
+    CommitHistory listCommits(final Ref ref,
+                              final String path) throws IOException, GitAPIException;
 
     List<RevCommit> listCommits(final ObjectId startRange,
                                 final ObjectId endRange);

@@ -82,6 +82,7 @@ import org.uberfire.java.nio.fs.jgit.util.commands.Squash;
 import org.uberfire.java.nio.fs.jgit.util.commands.SyncRemote;
 import org.uberfire.java.nio.fs.jgit.util.commands.UpdateRemoteConfig;
 import org.uberfire.java.nio.fs.jgit.util.model.CommitContent;
+import org.uberfire.java.nio.fs.jgit.util.model.CommitHistory;
 import org.uberfire.java.nio.fs.jgit.util.model.CommitInfo;
 import org.uberfire.java.nio.fs.jgit.util.model.PathInfo;
 
@@ -187,8 +188,8 @@ public class GitImpl implements Git {
     }
 
     @Override
-    public List<RevCommit> listCommits(final Ref ref,
-                                       final String path) throws IOException, GitAPIException {
+    public CommitHistory listCommits(final Ref ref,
+                                     final String path) throws IOException, GitAPIException {
         return new ListCommits(this,
                                ref,
                                path).execute();
@@ -200,7 +201,8 @@ public class GitImpl implements Git {
         return retryIfNeeded(RuntimeException.class,
                              () -> new ListCommits(this,
                                                    startRange,
-                                                   endRange).execute());
+                                                   endRange).execute()
+                                                            .getCommits());
     }
 
     @Override

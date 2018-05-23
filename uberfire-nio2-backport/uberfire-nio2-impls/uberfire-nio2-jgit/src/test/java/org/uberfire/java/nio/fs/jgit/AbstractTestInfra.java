@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.net.ServerSocket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -45,13 +46,26 @@ import org.uberfire.java.nio.fs.jgit.util.commands.Commit;
 import org.uberfire.java.nio.fs.jgit.util.model.CommitInfo;
 import org.uberfire.java.nio.fs.jgit.util.model.DefaultCommitContent;
 
+import static java.util.stream.Collectors.toMap;
+
 public abstract class AbstractTestInfra {
+
+    static class TestFile {
+
+        final String path;
+        final String content;
+
+        TestFile(final String path, final String content) {
+            this.path = path;
+            this.content = content;
+        }
+    }
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractTestInfra.class);
 
     protected static final Map<String, Object> EMPTY_ENV = Collections.emptyMap();
 
-    private static final List<File> tempFiles = new ArrayList<File>();
+    private static final List<File> tempFiles = new ArrayList<>();
 
     protected JGitFileSystemProvider provider;
 
@@ -65,7 +79,7 @@ public abstract class AbstractTestInfra {
      * override this method and provide own map of preferences.
      */
     public Map<String, String> getGitPreferences() {
-        Map<String, String> gitPrefs = new HashMap<String, String>();
+        Map<String, String> gitPrefs = new HashMap<>();
         // disable the daemons by default as they not needed in most of the cases
         gitPrefs.put("org.uberfire.nio.git.daemon.enabled",
                      "false");
@@ -146,7 +160,7 @@ public abstract class AbstractTestInfra {
         return temp;
     }
 
-    public File tempFile(final String content) throws IOException {
+    public static File tempFile(final String content) throws IOException {
         final File file = File.createTempFile("bar",
                                               "foo");
         final OutputStream out = new FileOutputStream(file);
@@ -199,5 +213,31 @@ public abstract class AbstractTestInfra {
         IOUtils.copy(stream,
                      writer);
         return writer.toString().getBytes();
+    }
+
+    static void commit(final Git origin, final String branchName, final String message, final TestFile... testFiles) throws IOException {
+        final Map<String, File> data = Arrays.stream(testFiles)
+                                             .collect(toMap(f -> f.path, f -> tmpFile(f.content)));
+        new Commit(origin,
+                   branchName,
+                   "name",
+                   "name@example.com",
+                   message,
+                   null,
+                   null,
+                   false,
+                   data).execute();
+    }
+
+    public static File tmpFile(final String content) {
+        try {
+            return tempFile(content);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static TestFile content(final String path, final String content) {
+        return new TestFile(path, content);
     }
 }
