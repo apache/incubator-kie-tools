@@ -64,6 +64,8 @@ public interface IContext2D {
 
     void setLineDashOffset(double offset);
 
+    void addAttributes(Map<String, String> attributes);
+
     void saveGroup(Map<String, String> attributes);
 
     void saveStyle();

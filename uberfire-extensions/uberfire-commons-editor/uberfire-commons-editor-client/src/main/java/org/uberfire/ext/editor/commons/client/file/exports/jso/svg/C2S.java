@@ -207,18 +207,15 @@ class C2S {
         parent.appendChild(group);
         this.__currentElement = group;
         //setting the group attributes
-        Optional.ofNullable(attributes).ifPresent(attr -> attr.entrySet()
-                .stream()
-                .filter(entry -> Objects.nonNull(entry.getValue()))
-                .forEach(entry -> group.setAttribute(entry.getKey(), entry.getValue())));
+        addAttributes(attributes);
     }
 
     @JsOverlay
     public final void restoreGroup() {
-        this.__currentElement = (Node) this.__groupStack.pop();
+        this.__currentElement = (Element) this.__groupStack.pop();
         //Clearing canvas will make the poped group invalid, currentElement is set to the root group node.
         if (this.__currentElement == null) {
-            this.__currentElement = this.__root.childNodes.item(1);
+            this.__currentElement = (Element) this.__root.childNodes.item(1);
         }
     }
 
@@ -232,6 +229,14 @@ class C2S {
         this.__currentElementsToStyle = null;
         Object state = this.__stack.pop();
         this.__applyStyleState(state);
+    }
+
+    @JsOverlay
+    public final void addAttributes(Map<String, String> attributes) {
+        Optional.ofNullable(attributes).ifPresent(attr -> attr.entrySet()
+                .stream()
+                .filter(entry -> Objects.nonNull(entry.getValue()))
+                .forEach(entry -> this.__currentElement.setAttribute(entry.getKey(), entry.getValue())));
     }
 
     public final native Element __createElement(String elementName);
@@ -249,7 +254,7 @@ class C2S {
     public Array __stack;
 
     @JsProperty
-    public Node __currentElement;
+    public Element __currentElement;
 
     @JsProperty
     public Node __root;

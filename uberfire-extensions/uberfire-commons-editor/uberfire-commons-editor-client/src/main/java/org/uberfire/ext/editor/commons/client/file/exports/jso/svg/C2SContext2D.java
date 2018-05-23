@@ -111,6 +111,10 @@ public class C2SContext2D implements IContext2D {
         delegate.setLineDashOffset(offset);
     }
 
+    public void addAttributes(Map<String, String> attributes) {
+        delegate.addAttributes(attributes);
+    }
+
     public void saveGroup(Map<String, String> attributes) {
         delegate.saveGroup(attributes);
     }
