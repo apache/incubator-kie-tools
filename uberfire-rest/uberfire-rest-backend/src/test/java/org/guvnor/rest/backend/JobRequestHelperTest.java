@@ -18,6 +18,7 @@ package org.guvnor.rest.backend;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
+
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.model.Module;
@@ -27,10 +28,14 @@ import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.shared.test.Failure;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.guvnor.common.services.shared.test.TestService;
+import org.guvnor.rest.client.CloneProjectRequest;
 import org.guvnor.rest.client.JobResult;
 import org.guvnor.rest.client.JobStatus;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,10 +49,13 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.spaces.Space;
 import org.uberfire.spaces.SpacesAPI;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JobRequestHelperTest {
@@ -70,6 +78,8 @@ public class JobRequestHelperTest {
     private WorkspaceProject workspaceProject;
     @Mock
     private SpacesAPI spaces;
+    @Mock
+    private OrganizationalUnitService organizationalUnitService;
     private Space space = new Space("space");
 
     @Before
@@ -77,6 +87,31 @@ public class JobRequestHelperTest {
         when(workspaceProjectService.resolveProject(eq(space), eq("project"))).thenReturn(workspaceProject);
         when(repositoryService.getRepositoryFromSpace(eq(space), eq("repositoryAlias"))).thenReturn(repository);
         when(spaces.getSpace(eq("space"))).thenReturn(space);
+    }
+
+    @Captor
+    ArgumentCaptor<RepositoryEnvironmentConfigurations> repositoryEnvironmentConfigurationsCaptor;
+
+    @Test
+    public void cloneProject() throws Exception {
+
+        doReturn(mock(OrganizationalUnit.class)).when(organizationalUnitService).getOrganizationalUnit("space");
+
+        final CloneProjectRequest cloneProjectRequest = new CloneProjectRequest();
+        cloneProjectRequest.setName("myName");
+        helper.cloneProject("jobId",
+                            "space",
+                            cloneProjectRequest);
+
+        verify(repositoryService).createRepository(
+                any(),
+                eq("git"),
+                eq("myName"),
+                repositoryEnvironmentConfigurationsCaptor.capture()
+        );
+        RepositoryEnvironmentConfigurations config = repositoryEnvironmentConfigurationsCaptor.getValue();
+        assertEquals(false, config.getMirror());
+        assertEquals(false, config.getInit());
     }
 
     @Test

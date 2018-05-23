@@ -115,6 +115,9 @@ public class JobRequestHelper {
         if (cloneProjectRequest.getPassword() != null && !"".equals(cloneProjectRequest.getPassword())) {
             configuration.setPassword(cloneProjectRequest.getPassword());
         }
+
+        configuration.setInit(false);
+        configuration.setMirror(false);
         configuration.setOrigin(cloneProjectRequest.getGitURL());
 
         org.guvnor.structure.repositories.Repository newlyCreatedRepo = repositoryService.createRepository(

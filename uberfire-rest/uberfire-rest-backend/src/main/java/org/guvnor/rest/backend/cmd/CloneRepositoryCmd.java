@@ -45,11 +45,19 @@ public class CloneRepositoryCmd extends AbstractJobCommand {
                                          jobRequest.getSpaceName(),
                                          jobRequest.getCloneProjectRequest());
         } finally {
-            JobStatus status = result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
-            logger.debug("----cloneProject--- , repository name: {} [{}]",
+            logger.debug("----cloneProject--- , repository name: {} [{}] [{}]",
                          jobRequest.getCloneProjectRequest().getName(),
-                         status);
+                         getJobStatus(result),
+                         getResult(result));
         }
         return result;
+    }
+
+    private String getResult(JobResult result) {
+        return result != null ? result.getResult() : "";
+    }
+
+    private JobStatus getJobStatus(JobResult result) {
+        return result != null ? result.getStatus() : JobStatus.SERVER_ERROR;
     }
 }
