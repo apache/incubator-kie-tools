@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -123,7 +124,7 @@ public class ListBarWidgetImpl
     @UiField
     PanelBody content;
     WorkbenchPanelPresenter presenter;
-    LinkedHashSet<PartDefinition> parts = new LinkedHashSet<>();
+    LinkedList<PartDefinition> parts = new LinkedList<>();
     Pair<PartDefinition, FlowPanel> currentPart;
     @Inject
     private AuthorizationManager authzManager;
@@ -220,7 +221,7 @@ public class ListBarWidgetImpl
             return;
         }
 
-        parts.add(partDefinition);
+        parts.addFirst(partDefinition);
 
         final FlowPanel panel = new FlowPanel();
         setupCSSLocators(view,
@@ -273,7 +274,7 @@ public class ListBarWidgetImpl
             if (currentPart.getK1().equals(part)) {
                 return true;
             }
-            parts.add(currentPart.getK1());
+            parts.addFirst(currentPart.getK1());
             panelManager.onPartHidden(currentPart.getK1());
             currentPart.getK2().getElement().getStyle().setDisplay(NONE);
         }
@@ -383,12 +384,14 @@ public class ListBarWidgetImpl
 
     @Override
     public Collection<PartDefinition> getParts() {
-        List<PartDefinition> allParts = new ArrayList<>();
         if (currentPart == null) {
             return parts;
         }
-        allParts.add(currentPart.getK1());
+
+        LinkedList<PartDefinition> allParts = new LinkedList<>();
         allParts.addAll(parts);
+        allParts.addFirst(currentPart.getK1());
+
         return Collections.unmodifiableList(allParts);
     }
 

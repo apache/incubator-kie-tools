@@ -16,7 +16,9 @@
 
 package org.uberfire.client.views.pfly.listbar;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.dom.client.Style;
@@ -164,6 +166,9 @@ public class ListBarWidgetImplTest {
         final WorkbenchPartPresenter presenter = getWorkbenchPartPresenter(part);
         final WorkbenchPartPresenter.View view = getWorkbenchPartView(presenter);
 
+        listBar.parts.add(getPartDefinition(false,
+                                            true));
+
         listBar.addPart(view);
 
         verify(listBar,
@@ -171,6 +176,9 @@ public class ListBarWidgetImplTest {
         verify(listBar.titleDropDown).addPart(view);
         verify(listBar).setupCSSLocators(any(),
                                          any());
+
+        assertSame(part,
+                   listBar.parts.getFirst());
     }
 
     @Test
@@ -240,16 +248,25 @@ public class ListBarWidgetImplTest {
 
     @Test
     public void selectExistentSelectablePartTest() {
-        final PartDefinition part = getPartDefinition(true,
-                                                      true);
+        final PartDefinition currentPart = getPartDefinition(false,
+                                                             false);
+        listBar.currentPart = Pair.newPair(currentPart,
+                                           new FlowPanel());
 
-        final boolean selected = listBar.selectPart(part);
+        final PartDefinition selectedPart = getPartDefinition(true,
+                                                              true);
+
+        final boolean selected = listBar.selectPart(selectedPart);
 
         assertTrue(selected);
-        verify(listBar.titleDropDown).selectPart(part);
+        verify(listBar.titleDropDown).selectPart(selectedPart);
         verify(listBar).setupContextMenu();
         verify(listBar.header).setVisible(true);
         verify(listBar).resizePanelBody();
+
+        assertEquals(1, listBar.parts.size());
+        assertSame(currentPart, listBar.parts.getFirst());
+        assertSame(selectedPart, listBar.currentPart.getK1());
     }
 
     @Test
@@ -442,5 +459,22 @@ public class ListBarWidgetImplTest {
 
         verify(listBar.content.getElement().getStyle()).setProperty("height",
                                                                     "calc(100% - 10px)");
+    }
+
+    @Test
+    public void getPartsTest() {
+        listBar.currentPart = Pair.newPair(getPartDefinition(false,
+                                                             false),
+                                           null);
+        listBar.parts = new LinkedList<>();
+        listBar.parts.add(getPartDefinition(false,
+                                            false));
+
+        final List<PartDefinition> parts = (List<PartDefinition>) listBar.getParts();
+
+        assertSame(listBar.currentPart.getK1(),
+                   parts.get(0));
+        assertSame(listBar.parts.get(0),
+                   parts.get(1));
     }
 }
