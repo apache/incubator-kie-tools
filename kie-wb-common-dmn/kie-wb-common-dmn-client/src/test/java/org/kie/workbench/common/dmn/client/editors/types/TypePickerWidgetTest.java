@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import com.google.gwt.thirdparty.guava.common.collect.Ordering;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.gwtbootstrap3.client.ui.Button;
@@ -33,6 +34,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
@@ -40,6 +42,7 @@ import org.kie.workbench.common.dmn.client.property.dmn.QNameFieldConverter;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
@@ -48,7 +51,9 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -125,11 +130,16 @@ public class TypePickerWidgetTest {
     }
 
     @Test
-    public void testSetDMNModel() {
+    public void testSetDMNModel_BasicInitialisation() {
         picker.setDMNModel(dmnModel);
 
         verify(qNameFieldConverter).setDMNModel(eq(dmnModel));
         verify(typeSelector).clear();
+    }
+
+    @Test
+    public void testSetDMNModel_BuiltInTypes() {
+        picker.setDMNModel(dmnModel);
 
         final BuiltInType[] bits = BuiltInType.values();
         verify(picker, times(bits.length)).makeTypeSelector(builtInTypeCaptor.capture());
@@ -137,16 +147,54 @@ public class TypePickerWidgetTest {
         //Checks all BuiltInTypes were handled by makeTypeSelector(BuiltInType)
         final List<BuiltInType> builtInTypes = new ArrayList<>(Arrays.asList(bits));
         assertFalse(builtInTypes.isEmpty());
-        builtInTypes.removeAll(builtInTypeCaptor.getAllValues());
+        final List<BuiltInType> builtInTypesAddedToWidget = builtInTypeCaptor.getAllValues();
+        builtInTypes.removeAll(builtInTypesAddedToWidget);
         assertTrue(builtInTypes.isEmpty());
+
+        //Check the items were sorted correctly
+        assertTrue(Ordering.from(TypePickerWidget.BUILT_IN_TYPE_COMPARATOR).isOrdered(builtInTypesAddedToWidget));
+    }
+
+    @Test
+    public void testSetDMNModel_ItemDefinitions() {
+        definitions.getItemDefinition().add(new ItemDefinition() {{
+            setName(new Name("user_defined_data_type"));
+        }});
+
+        picker.setDMNModel(dmnModel);
 
         final List<ItemDefinition> itemDefinitions = definitions.getItemDefinition();
         verify(picker, times(itemDefinitions.size())).makeTypeSelector(itemDefinitionCaptor.capture());
 
         //Checks all ItemDefinitions were handled by makeTypeSelector(ItemDefinition)
         assertFalse(itemDefinitions.isEmpty());
-        itemDefinitions.removeAll(itemDefinitionCaptor.getAllValues());
+        final List<ItemDefinition> itemDefinitionsAddedToWidget = itemDefinitionCaptor.getAllValues();
+        itemDefinitions.removeAll(itemDefinitionsAddedToWidget);
         assertTrue(itemDefinitions.isEmpty());
+
+        //Check the items were sorted correctly
+        assertTrue(Ordering.from(TypePickerWidget.ITEM_DEFINITION_COMPARATOR).isOrdered(itemDefinitionsAddedToWidget));
+    }
+
+    @Test
+    public void testSetDMNModel_NoItemDefinitions() {
+        definitions.getItemDefinition().clear();
+
+        picker.setDMNModel(dmnModel);
+
+        verify(picker, never()).addDivider();
+        verify(picker, never()).makeTypeSelector(any(ItemDefinition.class));
+    }
+
+    @Test
+    public void testSetDMNModel_Divider() {
+        final InOrder order = inOrder(picker);
+
+        picker.setDMNModel(dmnModel);
+
+        order.verify(picker, atLeastOnce()).makeTypeSelector(any(BuiltInType.class));
+        order.verify(picker).addDivider();
+        order.verify(picker, atLeastOnce()).makeTypeSelector(any(ItemDefinition.class));
     }
 
     @Test
