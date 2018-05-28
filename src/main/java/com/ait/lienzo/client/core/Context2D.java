@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core;
 
+import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.types.ImageDataPixelColor;
@@ -46,7 +47,7 @@ public class Context2D
 
     public Context2D(final CanvasElement element)
     {
-        this(NativeContext2D.make(element));
+        this(NativeContext2D.make(element, LienzoCore.get().isHidpiEnabled()));
     }
 
     public Context2D(final INativeContext2D jso)

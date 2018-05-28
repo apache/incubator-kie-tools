@@ -85,6 +85,8 @@ public final class LienzoCore
 
     private boolean                        m_nativeLineDashExamine          = false;
 
+    private boolean                        m_hidpiEnabled                   = false;
+
     private Cursor                         m_normal_cursor                  = Cursor.DEFAULT;
 
     private Cursor                         m_select_cursor                  = Cursor.CROSSHAIR;
@@ -515,6 +517,14 @@ public final class LienzoCore
             return m_deviceScale;
         }
         return (m_deviceScale = getDevicePixelRatio() / getBackingStorePixelRatio());
+    }
+
+    public boolean isHidpiEnabled() {
+        return m_hidpiEnabled;
+    }
+
+    public boolean setHidpiEnabled(boolean hidpiEnabled) {
+        return m_hidpiEnabled;
     }
 
     private final boolean examineNativeLineDashSupported()
