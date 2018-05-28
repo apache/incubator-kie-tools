@@ -23,6 +23,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.forms.client.widgets.container.displayer.FormDisplayer;
@@ -75,41 +76,49 @@ public class FormsContainerTest {
 
     @Test
     public void testFirstRender() {
-        testRender(getNode(FIRST_ELEMENT_UID), 1, 1);
+        //arbitrary render mode
+        RenderMode renderMode = RenderMode.EDIT_MODE;
+        testRender(getNode(FIRST_ELEMENT_UID), 1, 1, renderMode);
     }
 
     @Test
     public void testSecondRender() {
-        testRender(getNode(FIRST_ELEMENT_UID), 1, 1);
+        //arbitrary render mode
+        RenderMode renderMode = RenderMode.EDIT_MODE;
+        testRender(getNode(FIRST_ELEMENT_UID), 1, 1, renderMode);
 
-        testRender(getNode(SECOND_ELEMENT_UID), 2, 1);
+        testRender(getNode(SECOND_ELEMENT_UID), 2, 1, renderMode);
     }
 
     @Test
     public void testRenderExistingNode() {
+        //arbitrary render mode
+        RenderMode renderMode = RenderMode.EDIT_MODE;
         NodeImpl firstNode = getNode(FIRST_ELEMENT_UID);
 
-        FormDisplayer firstDisplayer = testRender(firstNode, 1, 1);
+        FormDisplayer firstDisplayer = testRender(firstNode, 1, 1, renderMode);
 
         NodeImpl secondNode = getNode(SECOND_ELEMENT_UID);
 
-        FormDisplayer secondDisplayer = testRender(secondNode, 2, 1);
+        FormDisplayer secondDisplayer = testRender(secondNode, 2, 1, renderMode);
 
-        formsContainer.render(GRAPH_UID, firstNode, path, fieldChangeHandler);
+        formsContainer.render(GRAPH_UID, firstNode, path, fieldChangeHandler, renderMode);
 
         verify(displayersInstance, times(2)).get();
 
         verify(secondDisplayer, times(2)).hide();
 
         verify(firstDisplayer, times(2)).show();
-        verify(firstDisplayer, times(2)).render(firstNode, path, fieldChangeHandler);
+        verify(firstDisplayer, times(2)).render(firstNode, path, fieldChangeHandler, renderMode);
     }
 
     @Test
     public void testDestroyDiagramDisplayers() {
-        FormDisplayer firstDisplayer = testRender(getNode(FIRST_ELEMENT_UID), 1, 1);
+        //arbitrary render mode
+        RenderMode renderMode = RenderMode.EDIT_MODE;
+        FormDisplayer firstDisplayer = testRender(getNode(FIRST_ELEMENT_UID), 1, 1, renderMode);
 
-        FormDisplayer secondDisplayer = testRender(getNode(SECOND_ELEMENT_UID), 2, 1);
+        FormDisplayer secondDisplayer = testRender(getNode(SECOND_ELEMENT_UID), 2, 1, renderMode);
 
         formsContainer.clearDiagramDisplayers(GRAPH_UID);
 
@@ -124,13 +133,15 @@ public class FormsContainerTest {
 
     @Test
     public void testDestroyOneDisplayer() {
+        //arbitrary render mode
+        RenderMode renderMode = RenderMode.EDIT_MODE;
         NodeImpl firstNode = getNode(FIRST_ELEMENT_UID);
 
-        FormDisplayer firstDisplayer = testRender(firstNode, 1, 1);
+        FormDisplayer firstDisplayer = testRender(firstNode, 1, 1, renderMode);
 
         NodeImpl secondNode = getNode(SECOND_ELEMENT_UID);
 
-        FormDisplayer secondDisplayer = testRender(secondNode, 2, 1);
+        FormDisplayer secondDisplayer = testRender(secondNode, 2, 1, renderMode);
 
         formsContainer.clearFormDisplayer(GRAPH_UID, FIRST_ELEMENT_UID);
 
@@ -151,9 +162,11 @@ public class FormsContainerTest {
 
     @Test
     public void testDestroyAllDisplayers() {
-        testRender(getNode(FIRST_ELEMENT_UID), 1, 1);
+        //arbitrary render mode
+        RenderMode renderMode = RenderMode.EDIT_MODE;
+        testRender(getNode(FIRST_ELEMENT_UID), 1, 1, renderMode);
 
-        testRender(getNode(SECOND_ELEMENT_UID), 2, 1);
+        testRender(getNode(SECOND_ELEMENT_UID), 2, 1, renderMode);
 
         formsContainer.destroyAll();
 
@@ -161,9 +174,9 @@ public class FormsContainerTest {
         verify(displayersInstance, times(1)).destroyAll();
     }
 
-    private FormDisplayer testRender(NodeImpl node, int expectedDisplayers, int currentDisplayerRender) {
+    private FormDisplayer testRender(NodeImpl node, int expectedDisplayers, int currentDisplayerRender, RenderMode renderMode) {
 
-        formsContainer.render(GRAPH_UID, node, path, fieldChangeHandler);
+        formsContainer.render(GRAPH_UID, node, path, fieldChangeHandler, renderMode);
 
         verify(displayersInstance, times(expectedDisplayers)).get();
 
@@ -171,7 +184,7 @@ public class FormsContainerTest {
 
         FormDisplayer displayer = activeDisplayers.get(expectedDisplayers - 1);
 
-        verify(displayer, times(currentDisplayerRender)).render(node, path, fieldChangeHandler);
+        verify(displayer, times(currentDisplayerRender)).render(node, path, fieldChangeHandler, renderMode);
 
         verify(displayer, times(currentDisplayerRender)).hide();
         verify(view, times(currentDisplayerRender)).addDisplayer(displayer);

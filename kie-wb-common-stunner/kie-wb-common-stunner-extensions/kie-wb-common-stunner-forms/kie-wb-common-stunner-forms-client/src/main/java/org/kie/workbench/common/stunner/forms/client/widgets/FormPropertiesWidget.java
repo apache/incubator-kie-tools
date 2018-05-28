@@ -28,7 +28,9 @@ import javax.inject.Inject;
 import com.google.gwt.logging.client.LogConfiguration;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
@@ -141,6 +143,8 @@ public class FormPropertiesWidget implements IsElement,
         final String uuid = element.getUUID();
         final Diagram<?, ?> diagram = formSessionHandler.getDiagram();
         final Object definition = element.getContent().getDefinition();
+        final RenderMode renderMode = formSessionHandler.getSession() instanceof EditorSession ? RenderMode.EDIT_MODE : RenderMode.READ_ONLY_MODE;
+
         formsContainer.render(graphUuid, element, diagram.getMetadata().getPath(), (fieldName, newValue) -> {
             try {
                 formSessionHandler.executeUpdateProperty(element, fieldName, newValue);
@@ -153,7 +157,7 @@ public class FormPropertiesWidget implements IsElement,
                     callback.execute();
                 }
             }
-        });
+        }, renderMode);
         final String name = definitionUtils.getName(definition);
         propertiesOpenedEvent.fire(new FormPropertiesOpened(formSessionHandler.getSession(), uuid, name));
     }

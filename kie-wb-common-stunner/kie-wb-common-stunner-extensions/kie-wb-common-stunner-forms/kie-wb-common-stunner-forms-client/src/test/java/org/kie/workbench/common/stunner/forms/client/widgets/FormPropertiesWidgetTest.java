@@ -139,7 +139,7 @@ public class FormPropertiesWidgetTest {
         verify(formsCanvasSessionHandler).bind(session);
         verify(formsCanvasSessionHandler).show(callback);
 
-        verify(formsContainer, never()).render(anyString(), any(), any(), any());
+        verify(formsContainer, never()).render(anyString(), any(), any(), any(), any());
     }
 
     /**

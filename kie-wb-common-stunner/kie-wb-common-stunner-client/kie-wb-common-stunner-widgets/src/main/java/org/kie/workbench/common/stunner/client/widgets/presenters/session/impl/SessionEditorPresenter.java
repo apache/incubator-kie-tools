@@ -39,6 +39,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMinimizedEvent;
 import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -121,5 +122,10 @@ public class SessionEditorPresenter<S extends EditorSession>
     @Override
     public SessionDiagramEditor<S> getDisplayer() {
         return editor;
+    }
+
+    @Override
+    protected Class<? extends AbstractSession> getSessionType() {
+        return EditorSession.class;
     }
 }

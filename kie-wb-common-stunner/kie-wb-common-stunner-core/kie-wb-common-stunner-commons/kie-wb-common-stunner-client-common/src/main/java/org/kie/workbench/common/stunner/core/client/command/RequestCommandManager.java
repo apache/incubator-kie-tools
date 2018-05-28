@@ -235,8 +235,10 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
 
     private void clear() {
         setDelegateListener(null);
-        commands.clear();
-        commands = null;
+        if (commands != null) {
+            commands.clear();
+            commands = null;
+        }
         roolback = false;
     }
 }

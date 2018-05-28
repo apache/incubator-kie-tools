@@ -26,7 +26,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.nestedForm.collapse.CollapsibleFormGroup;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
+import org.kie.workbench.common.forms.dynamic.service.shared.impl.StaticModelFormRenderingContext;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.Form;
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
@@ -39,6 +41,7 @@ import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -97,6 +100,9 @@ public class FormDisplayerTest {
     @Mock
     private CollapsibleFormGroup containerField2;
 
+    @Mock
+    private StaticModelFormRenderingContext renderingContext;
+
     private int renderedCount = 0;
 
     private FormDisplayer displayer;
@@ -133,6 +139,7 @@ public class FormDisplayerTest {
                 .render(any());
 
         when(formRenderer.getCurrentForm()).thenReturn(form);
+        when(dynamicFormModelGenerator.getContextForModel(any(), anyVararg())).thenReturn(renderingContext);
 
         displayer = new FormDisplayer(view, formRenderer, dynamicFormModelGenerator);
     }
@@ -164,50 +171,56 @@ public class FormDisplayerTest {
 
     @Test
     public void testRenderElement() {
-        testRender(1, 1, 1, 0, 1);
+        //arbitrary render mode
+        RenderMode renderMode = RenderMode.EDIT_MODE;
+        testRender(1, 1, 1, 0, 1, renderMode);
     }
 
     @Test
     public void testRenderElementForSecondTime() {
-
+        //arbitrary render mode
+        RenderMode renderMode = RenderMode.EDIT_MODE;
         // Rendering form for first time
-        testRender(1, 1, 1, 0, 1);
+        testRender(1, 1, 1, 0, 1, renderMode);
 
         when(formRenderer.isInitialized()).thenReturn(true);
         when(formRenderer.isValid()).thenReturn(true);
 
         // Rendering for second time, checks are the same but the view.show() that must be called twice
-        testRender(2, 2, 2, 1, 2);
+        testRender(2, 2, 2, 1, 2, renderMode);
     }
 
     @Test
     public void testRenderElementForSecondTimeWithDefinitionChange() {
-
-        testRender(1, 1, 1, 0, 1);
+        //arbitrary render mode
+        RenderMode renderMode = RenderMode.EDIT_MODE;
+        testRender(1, 1, 1, 0, 1, renderMode);
 
         SecondDefinition newDefinition = new SecondDefinition();
         when(nodeContent.getDefinition()).thenReturn(newDefinition);
         when(formRenderer.isInitialized()).thenReturn(true);
 
-        testRender(2, 2, 2, 1, 2);
+        testRender(2, 2, 2, 1, 2, renderMode);
     }
 
     @Test
     public void testRenderElementForSecondTimeWithValidationFailure() {
-
+        //arbitrary render mode
+        RenderMode renderMode = RenderMode.EDIT_MODE;
         // Rendering form for first time
-        testRender(1, 1, 1, 0, 1);
+        testRender(1, 1, 1, 0, 1, renderMode);
 
         when(formRenderer.isInitialized()).thenReturn(true);
         when(formRenderer.isValid()).thenReturn(false);
 
         // Rendering for second time, checks are the same but the view.show() that must be called twice
-        testRender(2, 2, 2, 1, 2);
+        testRender(2, 2, 2, 1, 2, renderMode);
     }
 
     @Test
     public void testRenderAndCollapsableStatus() {
-
+        //arbitrary render mode
+        RenderMode renderMode = RenderMode.EDIT_MODE;
         when(formRenderer.getCurrentForm()).thenAnswer(invocationOnMock -> {
             if (renderedCount > 0) {
                 return form;
@@ -215,7 +228,7 @@ public class FormDisplayerTest {
             return null;
         });
 
-        testRender(1, 1, 1, 0, 1);
+        testRender(1, 1, 1, 0, 1, renderMode);
 
         verify(containerField1).expand();
         verify(containerField2, never()).expand();
@@ -226,20 +239,21 @@ public class FormDisplayerTest {
         when(containerField1.isExpanded()).thenReturn(false);
         when(containerField2.isExpanded()).thenReturn(true);
 
-        testRender(2, 2, 2, 1, 2);
+        testRender(2, 2, 2, 1, 2, renderMode);
 
         verify(containerField1, times(1)).expand();
         verify(containerField2, times(1)).expand();
     }
 
-    private void testRender(int renderingTimes, int initializedTimes, int newContextTimes, int boundTimes, int viewTimes) {
-        displayer.render(node, path, fieldChangeHandler);
+    private void testRender(int renderingTimes, int initializedTimes, int newContextTimes, int boundTimes, int viewTimes, RenderMode renderMode) {
+        displayer.render(node, path, fieldChangeHandler, renderMode);
 
         verify(formRenderer, times(initializedTimes)).isInitialized();
         verify(formRenderer, times(boundTimes)).unBind();
         verify(dynamicFormModelGenerator, times(newContextTimes)).getContextForModel(elementDefinition);
         verify(formRenderer, times(renderingTimes)).render(any(PathAwareFormContext.class));
         verify(formRenderer, times(renderingTimes)).addFieldChangeHandler(fieldChangeHandler);
+        verify(renderingContext, times(renderingTimes)).setRenderMode(renderMode);
 
         verify(view, times(viewTimes)).show();
     }

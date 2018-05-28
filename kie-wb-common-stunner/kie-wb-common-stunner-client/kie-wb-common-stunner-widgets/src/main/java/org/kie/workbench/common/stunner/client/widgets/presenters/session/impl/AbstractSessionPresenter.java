@@ -39,7 +39,6 @@ import org.kie.workbench.common.stunner.core.client.components.palette.PaletteDe
 import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
@@ -87,6 +86,8 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
 
     public abstract E getDisplayer();
 
+    protected abstract Class<? extends AbstractSession> getSessionType();
+
     protected abstract Toolbar<S> newToolbar(Annotation qualifier);
 
     protected abstract void destroyToolbarInstace(Toolbar<S> toolbar);
@@ -100,7 +101,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         notificationsObserver.onValidationSuccess(this::showNotificationMessage);
         notificationsObserver.onValidationFailed(this::showValidationError);
         sessionManager.newSession(diagram.getMetadata(),
-                                  EditorSession.class,
+                                  getSessionType(),
                                   session -> open((S) session,
                                                   callback));
     }

@@ -23,6 +23,7 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasDiagramValidator;
@@ -57,6 +58,11 @@ public class ValidateSessionCommand extends AbstractClientSessionCommand<EditorS
         validator.validate(canvasHandler,
                            elementViolations -> fireCallback(elementViolations,
                                                              callback));
+    }
+
+    @Override
+    public boolean accepts(final ClientSession session) {
+        return session instanceof EditorSession;
     }
 
     @SuppressWarnings("unchecked")

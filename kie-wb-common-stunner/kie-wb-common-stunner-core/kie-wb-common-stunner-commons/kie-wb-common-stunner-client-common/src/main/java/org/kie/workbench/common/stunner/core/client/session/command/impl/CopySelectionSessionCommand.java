@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.registration.Ca
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
@@ -63,6 +64,11 @@ public class CopySelectionSessionCommand extends AbstractSelectionAwareSessionCo
         super.bind(session);
         session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
         this.clipboardControl = session.getClipboardControl();
+    }
+
+    @Override
+    public boolean accepts(final ClientSession session) {
+        return session instanceof EditorSession;
     }
 
     protected void onKeyDownEvent(final Key... keys) {

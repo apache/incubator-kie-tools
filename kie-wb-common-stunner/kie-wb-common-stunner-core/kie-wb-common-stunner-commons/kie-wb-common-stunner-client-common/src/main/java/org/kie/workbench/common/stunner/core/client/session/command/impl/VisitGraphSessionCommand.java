@@ -40,4 +40,9 @@ public class VisitGraphSessionCommand extends AbstractClientSessionCommand<Clien
         new CanvasHighlightVisitor().run(getSession().getCanvasHandler(),
                                          callback::onSuccess);
     }
+
+    @Override
+    public boolean accepts(final ClientSession session) {
+        return true;
+    }
 }

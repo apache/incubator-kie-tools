@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.session.command.impl;
 import com.google.gwt.user.client.Timer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
@@ -35,6 +36,11 @@ public abstract class AbstractExportSessionCommand extends AbstractClientSession
     }
 
     protected abstract void export(final String fileName);
+
+    @Override
+    public boolean accepts(final ClientSession session) {
+        return true;
+    }
 
     @Override
     public <T> void execute(final Callback<T> callback) {

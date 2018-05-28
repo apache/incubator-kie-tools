@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.registration.Ca
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -41,7 +42,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
         implements SelectionControl<H, Element>,
                    CanvasRegistationControl<H, Element>,
-                   CanvasControl.SessionAware<EditorSession> {
+                   CanvasControl.SessionAware<ClientSession> {
 
     private final Event<CanvasSelectionEvent> canvasSelectionEvent;
     private Event<CanvasClearSelectionEvent> canvasClearSelectionEvent;
@@ -167,9 +168,11 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
     }
 
     @Override
-    public void bind(final EditorSession session) {
-        session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
-        selectionControl.setReadonly(false);
+    public void bind(final ClientSession session) {
+        if (session instanceof EditorSession) {
+            ((EditorSession)session).getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
+            selectionControl.setReadonly(false);
+        }
     }
 
     protected MapSelectionControl<H> getSelectionControl() {

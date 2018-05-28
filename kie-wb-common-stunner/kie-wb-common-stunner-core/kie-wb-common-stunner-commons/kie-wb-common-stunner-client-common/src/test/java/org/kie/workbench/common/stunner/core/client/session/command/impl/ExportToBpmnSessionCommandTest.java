@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.service.ClientDiagramService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
+import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
@@ -102,5 +103,10 @@ public class ExportToBpmnSessionCommandTest extends AbstractExportSessionCommand
                                anyObject());
         verify(errorPopupPresenter,
                times(1)).showMessage(ERROR);
+    }
+
+    @Override
+    protected AbstractClientSessionCommand getCommand() {
+        return command;
     }
 }

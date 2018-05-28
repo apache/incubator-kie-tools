@@ -21,15 +21,18 @@ import java.util.function.Consumer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MultipleSelection;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -43,6 +46,9 @@ public class DefaultViewerSessionTest {
     @Mock
     private ManagedSession managedSession;
 
+    @Mock
+    private CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
+
     private DefaultViewerSession tested;
 
     @Before
@@ -54,7 +60,7 @@ public class DefaultViewerSessionTest {
         when(managedSession.onCanvasHandlerControlDestroyed(any(Consumer.class))).thenReturn(managedSession);
         when(managedSession.registerCanvasControl(any(Class.class))).thenReturn(managedSession);
         when(managedSession.registerCanvasHandlerControl(any(Class.class))).thenReturn(managedSession);
-        tested = new DefaultViewerSession(managedSession);
+        tested = new DefaultViewerSession(managedSession, canvasCommandManager);
     }
 
     @Test
@@ -65,6 +71,7 @@ public class DefaultViewerSessionTest {
         verify(managedSession, times(1)).onCanvasControlDestroyed(any(Consumer.class));
         verify(managedSession, times(1)).onCanvasHandlerControlRegistered(any(Consumer.class));
         verify(managedSession, times(1)).onCanvasHandlerControlDestroyed(any(Consumer.class));
+        assertEquals(canvasCommandManager, tested.getCommandManager());
     }
 
     @Test

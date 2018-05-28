@@ -90,6 +90,11 @@ public class AbstractSelectionAwareSessionCommandTest {
             public void execute(Callback callback) {
 
             }
+
+            @Override
+            public boolean accepts(ClientSession session) {
+                return true;
+            }
         });
         command.bind(clientSession);
     }

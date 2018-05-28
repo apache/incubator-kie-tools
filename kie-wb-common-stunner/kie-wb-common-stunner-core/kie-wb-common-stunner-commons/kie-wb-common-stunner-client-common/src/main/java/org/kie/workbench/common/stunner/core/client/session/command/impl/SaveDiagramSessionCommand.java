@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport
 import org.kie.workbench.common.stunner.core.client.service.ClientDiagramService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.event.SaveDiagramSessionCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
@@ -67,6 +68,11 @@ public class SaveDiagramSessionCommand extends AbstractClientSessionCommand<Edit
     @SuppressWarnings("unchecked")
     public <V> void execute(final Callback<V> callback) {
         //TODO: call the diagram client and remove the logic from Editor Screens
+    }
+
+    @Override
+    public boolean accepts(final ClientSession session) {
+        return session instanceof EditorSession;
     }
 
     protected void onSaveDiagram(@Observes SaveDiagramSessionCommandExecutedEvent event) {

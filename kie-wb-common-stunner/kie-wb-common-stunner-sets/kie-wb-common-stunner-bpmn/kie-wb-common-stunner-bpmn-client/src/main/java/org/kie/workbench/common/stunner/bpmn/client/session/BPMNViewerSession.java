@@ -21,6 +21,8 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientRegistry;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.impl.DefaultViewerSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ManagedSession;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -35,8 +37,9 @@ public class BPMNViewerSession
 
     @Inject
     public BPMNViewerSession(final ManagedSession session,
+                             final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
                              final WorkItemDefinitionClientRegistry workItemDefinitionService) {
-        super(session);
+        super(session, canvasCommandManager);
         this.workItemDefinitionService = workItemDefinitionService;
     }
 

@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
@@ -70,6 +71,11 @@ public class ClearSessionCommand extends AbstractClientSessionCommand<EditorSess
     @Override
     public void bind(final EditorSession session) {
         super.bind(session);
+    }
+
+    @Override
+    public boolean accepts(final ClientSession session) {
+        return session instanceof EditorSession;
     }
 
     @Override

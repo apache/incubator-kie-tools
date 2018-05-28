@@ -131,6 +131,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private final TextEditorView xmlEditorView;
 
     protected ProjectDiagramEditorProxy editorProxy = ProjectDiagramEditorProxy.NULL_EDITOR;
+    private boolean menuBarInitialzed = false;
 
     @Inject
     public AbstractProjectDiagramEditor(final View view,
@@ -481,21 +482,23 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     @Override
     protected void makeMenuBar() {
-        menuSessionItems.populateMenu(fileMenuBuilder);
-        makeAdditionalStunnerMenus(fileMenuBuilder);
-        if (canUpdateProject()) {
+        if (!menuBarInitialzed) {
+            menuSessionItems.populateMenu(fileMenuBuilder);
+            makeAdditionalStunnerMenus(fileMenuBuilder);
+            if (canUpdateProject()) {
+                fileMenuBuilder
+                        .addSave(versionRecordManager.newSaveMenuItem(this::saveAction))
+                        .addCopy(versionRecordManager.getCurrentPath(),
+                                 assetUpdateValidator)
+                        .addRename(getSaveAndRename())
+                        .addDelete(versionRecordManager.getPathToLatest(),
+                                   assetUpdateValidator);
+            }
             fileMenuBuilder
-                    .addSave(versionRecordManager.newSaveMenuItem(this::saveAction))
-                    .addCopy(versionRecordManager.getCurrentPath(),
-                             assetUpdateValidator)
-                    .addRename(getSaveAndRename())
-                    .addDelete(versionRecordManager.getPathToLatest(),
-                               assetUpdateValidator);
+                    .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                    .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
+            menuBarInitialzed = true;
         }
-
-        fileMenuBuilder
-                .addNewTopLevelMenu(versionRecordManager.buildMenu())
-                .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
     }
 
     @Override
@@ -538,6 +541,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     }
 
     protected void doClose() {
+        menuItems.clear();
         menuSessionItems.destroy();
         destroySession();
     }
@@ -598,7 +602,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     }
 
     protected void destroySession() {
-        menuItems.clear();
         //Release existing SessionPresenter
         editorSessionPresenter.ifPresent(session -> {
             session.destroy();

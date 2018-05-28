@@ -106,6 +106,11 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<E
         this.copySelectionSessionCommand.bind(session);
     }
 
+    @Override
+    public boolean accepts(final ClientSession session) {
+        return session instanceof EditorSession;
+    }
+
     void onKeyDownEvent(final Key... keys) {
         if (isEnabled()) {
             handleCtrlV(keys);

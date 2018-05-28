@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -55,5 +56,10 @@ public class ExportToSvgSessionCommandTest extends AbstractExportSessionCommandT
                                                       anyString());
         verify(canvasFileExport, never()).exportToPng(any(AbstractCanvasHandler.class),
                                                       anyString());
+    }
+
+    @Override
+    protected AbstractClientSessionCommand getCommand() {
+        return tested;
     }
 }

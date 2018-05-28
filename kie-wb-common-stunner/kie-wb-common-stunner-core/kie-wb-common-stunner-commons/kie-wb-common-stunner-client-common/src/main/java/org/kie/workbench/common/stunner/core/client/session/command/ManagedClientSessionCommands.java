@@ -75,8 +75,9 @@ public class ManagedClientSessionCommands {
                                                           type,
                                                           qualifier))
                         .collect(Collectors.toList());
+        clearCommands();
         commands.addAll(instances);
-        commands.forEach(c -> c.bind(session));
+        commands.forEach(c -> safeBind(c, session));
     }
 
     @SuppressWarnings("unchecked")
@@ -95,9 +96,28 @@ public class ManagedClientSessionCommands {
 
     @PreDestroy
     public void destroy() {
-        commands.forEach(ClientSessionCommand::destroy);
-        commands.clear();
+        clearCommands();
         types.clear();
         sessionCommands.destroyAll();
+    }
+
+    private void clearCommands() {
+        commands.forEach(ClientSessionCommand::destroy);
+        commands.clear();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void safeBind(final ClientSessionCommand command,
+                          final ClientSession session) {
+        if (command instanceof AbstractClientSessionCommand) {
+            final AbstractClientSessionCommand abstractCommand = (AbstractClientSessionCommand) command;
+            if (abstractCommand.accepts(session)) {
+                abstractCommand.bind(session);
+            } else {
+                abstractCommand.enable(false);
+            }
+        } else {
+            command.bind(session);
+        }
     }
 }

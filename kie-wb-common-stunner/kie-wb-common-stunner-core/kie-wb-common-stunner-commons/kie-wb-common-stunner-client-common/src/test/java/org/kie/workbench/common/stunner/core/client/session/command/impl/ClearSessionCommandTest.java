@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.mockito.ArgumentCaptor;
@@ -33,6 +34,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -128,5 +132,11 @@ public class ClearSessionCommandTest {
                times(1)).onError(commandResult);
         verify(commandExecutedEvent,
                never()).fire(commandExecutedEventCaptor.capture());
+    }
+
+    @Test
+    public void testAcceptsSession() {
+        assertTrue(command.accepts(mock(EditorSession.class)));
+        assertFalse(command.accepts(mock(ViewerSession.class)));
     }
 }

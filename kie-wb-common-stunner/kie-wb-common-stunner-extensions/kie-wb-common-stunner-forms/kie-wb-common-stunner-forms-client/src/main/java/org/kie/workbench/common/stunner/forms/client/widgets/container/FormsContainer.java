@@ -30,6 +30,7 @@ import javax.inject.Inject;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
@@ -55,11 +56,11 @@ public class FormsContainer implements IsElement {
         this.formDisplayers = new HashMap<>();
     }
 
-    public void render(final String graphUuid, final Element<? extends Definition<?>> element, final Path diagramPath, final FieldChangeHandler changeHandler) {
+    public void render(final String graphUuid, final Element<? extends Definition<?>> element, final Path diagramPath, final FieldChangeHandler changeHandler, final RenderMode renderMode) {
 
         FormDisplayer displayer = getDisplayer(graphUuid, element);
 
-        displayer.render(element, diagramPath, changeHandler);
+        displayer.render(element, diagramPath, changeHandler, renderMode);
 
         if (null != currentDisplayer && !displayer.equals(currentDisplayer)) {
             currentDisplayer.hide();

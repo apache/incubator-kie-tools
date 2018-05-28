@@ -71,7 +71,9 @@ public abstract class AbstractCanvasViewer<T, H extends AbstractCanvasHandler, V
     }
 
     protected void destroyInstances() {
-        getHandler().destroy();
+        if (getHandler() != null) {
+            getHandler().destroy();
+        }
         getView().clear();
     }
 

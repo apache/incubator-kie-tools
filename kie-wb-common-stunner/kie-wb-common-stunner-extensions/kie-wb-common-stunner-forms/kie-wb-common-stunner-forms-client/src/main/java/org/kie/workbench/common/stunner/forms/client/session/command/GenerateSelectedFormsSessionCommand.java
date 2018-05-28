@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -83,6 +84,11 @@ public class GenerateSelectedFormsSessionCommand extends AbstractClientSessionCo
         } else {
             formGenerationNotifier.showNotification(translationService.getValue(FormsClientConstants.FormsNoItemsSelectedForGeneration));
         }
+    }
+
+    @Override
+    public boolean accepts(final ClientSession session) {
+        return session instanceof EditorSession;
     }
 
     @SuppressWarnings("unchecked")

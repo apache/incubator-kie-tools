@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandListener;
 import org.kie.workbench.common.stunner.core.command.CommandManager;
@@ -174,14 +175,18 @@ public abstract class AbstractSessionCommandManager
 
     @SuppressWarnings("unchecked")
     protected CommandManager<AbstractCanvasHandler, CanvasViolation> setDelegateListener(final CommandListener<AbstractCanvasHandler, CanvasViolation> listener) {
-        final EditorSession session = getFullSession();
-        if (null != session) {
-            final CanvasCommandManager<AbstractCanvasHandler> commandManager = session.getCommandManager();
+        final ClientSession<AbstractCanvas, AbstractCanvasHandler> session = getCurrentSession();
+        CanvasCommandManager<AbstractCanvasHandler> commandManager = null;
+        if (session instanceof EditorSession) {
+            commandManager = ((EditorSession) session).getCommandManager();
+        } else if (session instanceof ViewerSession) {
+            commandManager = ((ViewerSession) session).getCommandManager();
+        }
+        if (commandManager != null) {
             final HasCommandListener<CommandListener<AbstractCanvasHandler, CanvasViolation>> hasCommandListener =
                     (HasCommandListener<CommandListener<AbstractCanvasHandler, CanvasViolation>>) commandManager;
             hasCommandListener.setCommandListener(listener);
-            return commandManager;
         }
-        return null;
+        return commandManager;
     }
 }

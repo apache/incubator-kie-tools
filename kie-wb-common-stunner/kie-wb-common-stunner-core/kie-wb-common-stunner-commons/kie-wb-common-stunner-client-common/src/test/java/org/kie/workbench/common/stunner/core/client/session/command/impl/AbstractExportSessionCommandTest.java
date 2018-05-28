@@ -17,9 +17,12 @@
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
+import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.client.util.TimerUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -27,6 +30,8 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public abstract class AbstractExportSessionCommandTest {
@@ -70,5 +75,13 @@ public abstract class AbstractExportSessionCommandTest {
                 executeFunction.run();
             }
         });
+    }
+
+    protected abstract AbstractClientSessionCommand getCommand();
+
+    @Test
+    public void testAcceptsSession() {
+        assertTrue(getCommand().accepts(mock(EditorSession.class)));
+        assertTrue(getCommand().accepts(mock(ViewerSession.class)));
     }
 }

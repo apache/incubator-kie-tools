@@ -27,9 +27,9 @@ import javax.inject.Inject;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.kie.workbench.common.stunner.client.widgets.event.SessionDiagramOpenedEvent;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
 import org.kie.workbench.common.stunner.forms.client.widgets.FormPropertiesWidget;
 import org.kie.workbench.common.stunner.project.client.view.ProjectScreenView;
@@ -65,6 +65,7 @@ public class ProjectDiagramPropertiesScreen {
     private PlaceRequest placeRequest;
     private ClientSession session;
     private String title = "Properties";
+    private boolean open = false;
 
     protected ProjectDiagramPropertiesScreen() {
         this(null,
@@ -98,6 +99,7 @@ public class ProjectDiagramPropertiesScreen {
     public void onOpen() {
         log(Level.FINE,
             "Opening ProjectDiagramPropertiesScreen.");
+        open = true;
         final ClientSession current = clientSessionManager.getCurrentSession();
         handleSession(current);
     }
@@ -106,6 +108,7 @@ public class ProjectDiagramPropertiesScreen {
     public void onClose() {
         log(Level.FINE,
             "Closing ProjectDiagramPropertiesScreen.");
+        open = false;
         destroy();
     }
 
@@ -115,20 +118,13 @@ public class ProjectDiagramPropertiesScreen {
         view.showLoading();
         if (null != session) {
             this.session = session;
-            try {
-                final EditorSession fullSession = (EditorSession) session;
-                // Show the loading view.
-                view.showLoading();
-                // Open the forms properties widget for the current session.
-                formPropertiesWidget
-                        .bind(fullSession)
-                        .show(view::hideLoading);
-                done = true;
-            } catch (ClassCastException e) {
-                // No writteable session. Do not show properties until read mode available.
-                log(Level.FINE,
-                    "Session discarded for opening as not instance of full session.");
-            }
+            // Show the loading view.
+            view.showLoading();
+            // Open the forms properties widget for the current session.
+            formPropertiesWidget
+                    .bind(session)
+                    .show(view::hideLoading);
+            done = true;
         }
         if (!done) {
             formPropertiesWidget.unbind();
@@ -166,6 +162,14 @@ public class ProjectDiagramPropertiesScreen {
     void onFormPropertiesOpened(final @Observes FormPropertiesOpened propertiesOpened) {
         if (null != session && session.equals(propertiesOpened.getSession())) {
             updateTitle(propertiesOpened.getName());
+        }
+    }
+
+    void onSessionOpened(final @Observes SessionDiagramOpenedEvent event) {
+        if (open && !event.getSession().equals(session)) {
+            log(Level.FINE,
+                "ProjectDiagramPropertiesScreen -> Current Session Changed.");
+            handleSession(clientSessionManager.getCurrentSession());
         }
     }
 

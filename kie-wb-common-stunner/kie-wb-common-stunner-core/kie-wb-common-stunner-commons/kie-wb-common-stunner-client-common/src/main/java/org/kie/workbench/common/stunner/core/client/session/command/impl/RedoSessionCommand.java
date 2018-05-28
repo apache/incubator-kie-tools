@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasU
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
@@ -62,6 +63,11 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<EditorSessi
     public void bind(final EditorSession session) {
         super.bind(session);
         session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
+    }
+
+    @Override
+    public boolean accepts(final ClientSession session) {
+        return session instanceof EditorSession;
     }
 
     void onKeyDownEvent(final KeyboardEvent.Key... keys) {

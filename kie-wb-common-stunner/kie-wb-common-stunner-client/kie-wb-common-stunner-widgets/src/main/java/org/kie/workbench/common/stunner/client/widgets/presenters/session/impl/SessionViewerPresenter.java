@@ -36,6 +36,7 @@ import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.ViewerToolba
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -93,6 +94,11 @@ public class SessionViewerPresenter<S extends ViewerSession>
     @Override
     public SessionDiagramViewer<S> getDisplayer() {
         return viewer;
+    }
+
+    @Override
+    protected Class<? extends AbstractSession> getSessionType() {
+        return ViewerSession.class;
     }
 
     @Override

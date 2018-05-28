@@ -21,6 +21,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
 public abstract class ViewerSession
@@ -29,6 +30,8 @@ public abstract class ViewerSession
     public ViewerSession() {
         super();
     }
+
+    public abstract CanvasCommandManager<AbstractCanvasHandler> getCommandManager();
 
     public abstract ZoomControl<AbstractCanvas> getZoomControl();
 

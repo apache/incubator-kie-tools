@@ -43,6 +43,8 @@ public abstract class AbstractClientSessionCommand<S extends ClientSession> impl
         this.session = session;
     }
 
+    public abstract boolean accepts(final ClientSession session);
+
     @Override
     public ClientSessionCommand<S> listen(final Command statusCallback) {
         this.statusCallback = statusCallback;
@@ -81,6 +83,11 @@ public abstract class AbstractClientSessionCommand<S extends ClientSession> impl
 
     protected void setEnabled(final boolean enabled) {
         this.enabled = enabled;
+    }
+
+    protected void enable(final boolean enable) {
+        setEnabled(enable);
+        fire();
     }
 
     protected void fire() {

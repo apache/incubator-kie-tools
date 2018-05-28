@@ -18,15 +18,21 @@ package org.kie.workbench.common.stunner.forms.client.session.command;
 
 import java.util.function.Consumer;
 
+import org.junit.Test;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.forms.client.gen.ClientFormGenerationManager;
 import org.kie.workbench.common.stunner.forms.service.FormGenerationService;
 import org.mockito.Mock;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public abstract class AbstractFormsSessionCommandTest {
@@ -57,4 +63,12 @@ public abstract class AbstractFormsSessionCommandTest {
             return null;
         }).when(formGenerationManager).call(any(Consumer.class));
     }
+
+    @Test
+    public void testAcceptsSession() {
+        assertTrue(getCommand().accepts(mock(EditorSession.class)));
+        assertFalse(getCommand().accepts(mock(ViewerSession.class)));
+    }
+
+    protected abstract AbstractClientSessionCommand getCommand();
 }

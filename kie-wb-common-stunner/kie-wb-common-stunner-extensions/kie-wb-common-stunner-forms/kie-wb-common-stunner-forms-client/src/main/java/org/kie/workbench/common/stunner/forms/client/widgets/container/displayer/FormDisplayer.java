@@ -36,6 +36,7 @@ import org.kie.workbench.common.forms.adf.engine.shared.FormElementFilter;
 import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.nestedForm.collapse.CollapsibleFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.StaticModelFormRenderingContext;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
@@ -70,18 +71,18 @@ public class FormDisplayer implements FormDisplayerView.Presenter,
         view.init(this);
     }
 
-    public void render(final Element<? extends Definition<?>> element, final Path diagramPath, final FieldChangeHandler changeHandler) {
+    public void render(final Element<? extends Definition<?>> element, final Path diagramPath, final FieldChangeHandler changeHandler, final RenderMode renderMode) {
 
         final Object definition = element.getContent().getDefinition();
 
         LOGGER.fine("Rendering form for element: " + element.getUUID());
 
-        doRender(element, definition, diagramPath, changeHandler);
+        doRender(element, definition, diagramPath, changeHandler, renderMode);
 
         show();
     }
 
-    private void doRender(Element<? extends Definition<?>> element, Object definition, Path diagramPath, FieldChangeHandler changeHandler) {
+    private void doRender(Element<? extends Definition<?>> element, Object definition, Path diagramPath, FieldChangeHandler changeHandler, RenderMode renderMode) {
 
         final List<String> previousExpandedCollapses = new ArrayList<>();
 
@@ -105,6 +106,7 @@ public class FormDisplayer implements FormDisplayerView.Presenter,
         final BindableProxy<?> proxy = (BindableProxy<?>) BindableProxyFactory.getBindableProxy(definition);
         final StaticModelFormRenderingContext generatedCtx = modelGenerator.getContextForModel(proxy.deepUnwrap(), filters.stream().toArray(FormElementFilter[]::new));
         final FormRenderingContext<?> pathAwareCtx = new PathAwareFormContext<>(generatedCtx, diagramPath);
+        pathAwareCtx.setRenderMode(renderMode);
 
         renderer.render(pathAwareCtx);
 

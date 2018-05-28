@@ -20,10 +20,12 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SingleSelection;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.impl.DefaultViewerSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ManagedSession;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -35,8 +37,9 @@ public class CaseManagementViewerSession
         extends DefaultViewerSession {
 
     @Inject
-    public CaseManagementViewerSession(final ManagedSession session) {
-        super(session);
+    public CaseManagementViewerSession(final ManagedSession session,
+                                       final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager) {
+        super(session, canvasCommandManager);
     }
 
     @Override

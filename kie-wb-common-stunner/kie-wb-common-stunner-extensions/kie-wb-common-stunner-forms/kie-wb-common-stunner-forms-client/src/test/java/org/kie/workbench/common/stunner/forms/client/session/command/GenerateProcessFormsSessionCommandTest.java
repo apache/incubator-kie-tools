@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.forms.client.session.command;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -51,5 +52,10 @@ public class GenerateProcessFormsSessionCommandTest
         verify(formGenerationService, times(1)).generateProcessForm(eq(diagram));
         verify(callback, times(1)).onSuccess();
         verify(callback, never()).onError(anyObject());
+    }
+
+    @Override
+    protected AbstractClientSessionCommand getCommand() {
+        return tested;
     }
 }

@@ -19,6 +19,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasGrid;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 
@@ -44,6 +45,11 @@ public class SwitchGridSessionCommand extends AbstractClientSessionCommand<Edito
     public void bind(final EditorSession session) {
         super.bind(session);
         resetGrid();
+    }
+
+    @Override
+    public boolean accepts(final ClientSession session) {
+        return session instanceof EditorSession;
     }
 
     @Override

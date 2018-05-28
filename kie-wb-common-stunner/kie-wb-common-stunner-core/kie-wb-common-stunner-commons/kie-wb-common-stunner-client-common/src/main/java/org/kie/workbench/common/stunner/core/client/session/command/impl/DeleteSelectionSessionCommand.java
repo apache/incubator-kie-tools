@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -78,6 +79,11 @@ public class DeleteSelectionSessionCommand extends AbstractSelectionAwareSession
     public void bind(final EditorSession session) {
         super.bind(session);
         session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
+    }
+
+    @Override
+    public boolean accepts(final ClientSession session) {
+        return session instanceof EditorSession;
     }
 
     @Override

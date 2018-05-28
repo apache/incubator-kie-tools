@@ -24,6 +24,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementsClearEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.Mock;
@@ -31,6 +33,7 @@ import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -106,5 +109,11 @@ public abstract class BaseSessionCommandKeyboardSelectionAwareTest extends BaseS
         assertFalse(command.isEnabled());
         verify(statusCallback,
                times(1)).execute();
+    }
+
+    @Test
+    public void testAcceptsSession() {
+        assertTrue(command.accepts(mock(EditorSession.class)));
+        assertFalse(command.accepts(mock(ViewerSession.class)));
     }
 }
