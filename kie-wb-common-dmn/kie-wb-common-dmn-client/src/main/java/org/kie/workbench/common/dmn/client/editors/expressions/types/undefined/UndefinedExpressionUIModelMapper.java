@@ -75,7 +75,10 @@ public class UndefinedExpressionUIModelMapper extends BaseUIModelMapper<Expressi
                            final Supplier<Optional<GridCellValue<?>>> cell) {
         cell.get().ifPresent(v -> {
             final ExpressionCellValue ecv = (ExpressionCellValue) v;
-            ecv.getValue().ifPresent(beg -> hasExpression.setExpression((Expression) beg.getExpression().orElse(null)));
+            ecv.getValue().ifPresent(beg -> {
+                hasExpression.setExpression((Expression) beg.getExpression().orElse(null));
+                beg.getExpression().ifPresent(e -> ((Expression) e).setParent(hasExpression.asDMNModelInstrumentedBase()));
+            });
         });
     }
 }

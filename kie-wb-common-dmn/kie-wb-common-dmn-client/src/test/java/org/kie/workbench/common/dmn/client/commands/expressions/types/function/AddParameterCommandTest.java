@@ -87,6 +87,9 @@ public class AddParameterCommandTest {
 
         assertFormalParameters(2,
                                otherParameter, parameter);
+
+        assertEquals(function,
+                     parameter.getParent());
     }
 
     @Test
@@ -98,6 +101,9 @@ public class AddParameterCommandTest {
 
         assertFormalParameters(1,
                                parameter);
+
+        assertEquals(function,
+                     parameter.getParent());
     }
 
     @Test

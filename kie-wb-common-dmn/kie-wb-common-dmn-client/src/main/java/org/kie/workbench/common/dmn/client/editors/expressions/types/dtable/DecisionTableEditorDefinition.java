@@ -139,6 +139,14 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
 
         dtable.getRule().add(dr);
 
+        //Setup parent relationships
+        ic.setParent(dtable);
+        oc.setParent(dtable);
+        dr.setParent(dtable);
+        le.setParent(ic);
+        drut.setParent(dr);
+        drle.setParent(dr);
+
         return Optional.of(dtable);
     }
 

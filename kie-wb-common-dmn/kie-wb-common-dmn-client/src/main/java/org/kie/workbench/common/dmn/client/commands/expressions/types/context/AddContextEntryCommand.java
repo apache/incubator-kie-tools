@@ -77,6 +77,8 @@ public class AddContextEntryCommand extends AbstractCanvasGraphCommand implement
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
                 context.getContextEntry().add(uiRowIndex,
                                               contextEntry);
+                contextEntry.setParent(context);
+                contextEntry.getVariable().setParent(contextEntry);
 
                 return GraphCommandResultBuilder.SUCCESS;
             }

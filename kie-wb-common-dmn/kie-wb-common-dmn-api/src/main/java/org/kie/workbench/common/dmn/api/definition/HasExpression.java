@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.dmn.api.definition;
 
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 
 public interface HasExpression {
@@ -22,4 +23,6 @@ public interface HasExpression {
     Expression getExpression();
 
     void setExpression(final Expression expression);
+
+    DMNModelInstrumentedBase asDMNModelInstrumentedBase();
 }

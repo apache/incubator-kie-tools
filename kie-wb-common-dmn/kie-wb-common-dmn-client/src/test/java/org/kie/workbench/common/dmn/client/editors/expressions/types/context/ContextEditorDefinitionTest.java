@@ -148,6 +148,13 @@ public class ContextEditorDefinitionTest {
 
         assertNull(model.getContextEntry().get(1).getVariable());
         assertTrue(model.getContextEntry().get(1).getExpression() instanceof LiteralExpression);
+
+        model.getContextEntry().forEach(ce -> assertEquals(model, ce.getParent()));
+
+        assertEquals(model.getContextEntry().get(0),
+                     model.getContextEntry().get(0).getVariable().getParent());
+        assertEquals(model.getContextEntry().get(1),
+                     model.getContextEntry().get(1).getExpression().getParent());
     }
 
     @Test

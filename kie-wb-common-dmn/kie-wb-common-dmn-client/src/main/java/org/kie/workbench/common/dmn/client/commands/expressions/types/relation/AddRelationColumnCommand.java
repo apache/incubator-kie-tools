@@ -80,9 +80,11 @@ public class AddRelationColumnCommand extends AbstractCanvasGraphCommand impleme
                                          informationItem);
                 relation.getRow().forEach(row -> {
                     final LiteralExpression le = new LiteralExpression();
-                    row.getExpression().add(iiIndex,
-                                            le);
+                    row.getExpression().add(iiIndex, le);
+                    le.setParent(row);
                 });
+
+                informationItem.setParent(relation);
 
                 return GraphCommandResultBuilder.SUCCESS;
             }

@@ -133,12 +133,19 @@ public class AddInputClauseCommandTest {
         assertEquals(1, dtable.getInput().size());
 
         // first rule
-        assertEquals(1, dtable.getRule().get(0).getInputEntry().size());
-        assertEquals(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE, dtable.getRule().get(0).getInputEntry().get(0).getText());
+        final List<UnaryTests> inputEntriesRuleOne = dtable.getRule().get(0).getInputEntry();
+        assertEquals(1, inputEntriesRuleOne.size());
+        assertEquals(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE, inputEntriesRuleOne.get(0).getText());
+        assertEquals(dtable.getRule().get(0), inputEntriesRuleOne.get(0).getParent());
 
         // second rule
-        assertEquals(1, dtable.getRule().get(1).getInputEntry().size());
-        assertEquals(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE, dtable.getRule().get(1).getInputEntry().get(0).getText());
+        final List<UnaryTests> inputEntriesRuleTwo = dtable.getRule().get(1).getInputEntry();
+        assertEquals(1, inputEntriesRuleTwo.size());
+        assertEquals(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE, inputEntriesRuleTwo.get(0).getText());
+        assertEquals(dtable.getRule().get(1), inputEntriesRuleTwo.get(0).getParent());
+
+        assertEquals(dtable,
+                     inputClause.getParent());
     }
 
     @Test
@@ -163,14 +170,21 @@ public class AddInputClauseCommandTest {
         assertEquals(2, dtable.getInput().size());
 
         // first rule
-        assertEquals(2, dtable.getRule().get(0).getInputEntry().size());
-        assertEquals(ruleOneOldInput, dtable.getRule().get(0).getInputEntry().get(1).getText());
-        assertEquals(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE, dtable.getRule().get(0).getInputEntry().get(0).getText());
+        final List<UnaryTests> inputEntriesRuleOne = dtable.getRule().get(0).getInputEntry();
+        assertEquals(2, inputEntriesRuleOne.size());
+        assertEquals(ruleOneOldInput, inputEntriesRuleOne.get(1).getText());
+        assertEquals(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE, inputEntriesRuleOne.get(0).getText());
+        assertEquals(dtable.getRule().get(0), inputEntriesRuleOne.get(0).getParent());
 
         // second rule
-        assertEquals(2, dtable.getRule().get(1).getInputEntry().size());
-        assertEquals(ruleTwoOldInput, dtable.getRule().get(1).getInputEntry().get(1).getText());
-        assertEquals(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE, dtable.getRule().get(1).getInputEntry().get(0).getText());
+        final List<UnaryTests> inputEntriesRuleTwo = dtable.getRule().get(1).getInputEntry();
+        assertEquals(2, inputEntriesRuleTwo.size());
+        assertEquals(ruleTwoOldInput, inputEntriesRuleTwo.get(1).getText());
+        assertEquals(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE, inputEntriesRuleTwo.get(0).getText());
+        assertEquals(dtable.getRule().get(1), inputEntriesRuleTwo.get(0).getParent());
+
+        assertEquals(dtable,
+                     inputClause.getParent());
     }
 
     @Test
@@ -197,10 +211,14 @@ public class AddInputClauseCommandTest {
         final List<UnaryTests> ruleInputs = dtable.getRule().get(0).getInputEntry();
 
         // first rule
-        assertEquals(3, dtable.getRule().get(0).getInputEntry().size());
+        assertEquals(3, ruleInputs.size());
         assertEquals(ruleInputOne, ruleInputs.get(0).getText());
         assertEquals(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE, ruleInputs.get(1).getText());
+        assertEquals(dtable.getRule().get(0), ruleInputs.get(1).getParent());
         assertEquals(ruleInputTwo, ruleInputs.get(2).getText());
+
+        assertEquals(dtable,
+                     inputClause.getParent());
     }
 
     @Test(expected = ArrayIndexOutOfBoundsException.class)

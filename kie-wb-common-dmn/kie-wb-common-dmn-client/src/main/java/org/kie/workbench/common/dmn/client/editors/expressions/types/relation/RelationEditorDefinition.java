@@ -92,9 +92,16 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
         final Relation relation = new Relation();
         final InformationItem column = new InformationItem();
         final org.kie.workbench.common.dmn.api.definition.v1_1.List row = new org.kie.workbench.common.dmn.api.definition.v1_1.List();
-        row.getExpression().add(new LiteralExpression());
+        final LiteralExpression literalExpression = new LiteralExpression();
+        row.getExpression().add(literalExpression);
         relation.getColumn().add(column);
         relation.getRow().add(row);
+
+        //Setup parent relationships
+        column.setParent(relation);
+        row.setParent(relation);
+        literalExpression.setParent(row);
+
         return Optional.of(relation);
     }
 

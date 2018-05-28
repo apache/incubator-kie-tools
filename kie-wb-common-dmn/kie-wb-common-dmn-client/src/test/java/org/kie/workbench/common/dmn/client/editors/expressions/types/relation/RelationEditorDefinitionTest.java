@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
@@ -45,7 +46,9 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 
@@ -123,11 +126,21 @@ public class RelationEditorDefinitionTest {
         final Optional<Relation> oModel = definition.getModelClass();
         assertThat(oModel).isPresent();
 
-        assertNotNull(oModel.get().getRow());
-        assertNotNull(oModel.get().getRow().get(0).getExpression().get(0));
-        assertNotNull(oModel.get().getColumn());
+        final Relation model = oModel.get();
 
-        assertNotNull(oModel.get().getRow().get(0).getId());
+        assertNotNull(model.getRow());
+        assertNotNull(model.getRow().get(0).getExpression().get(0));
+        assertTrue(model.getRow().get(0).getExpression().get(0) instanceof LiteralExpression);
+        assertNotNull(model.getColumn());
+
+        assertNotNull(model.getRow().get(0).getId());
+
+        assertEquals(model,
+                     model.getRow().get(0).getParent());
+        assertEquals(model,
+                     model.getColumn().get(0).getParent());
+        assertEquals(model.getRow().get(0),
+                     model.getRow().get(0).getExpression().get(0).getParent());
     }
 
     @Test

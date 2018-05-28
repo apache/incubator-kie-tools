@@ -41,4 +41,9 @@ public class ContextEntry extends DMNModelInstrumentedBase implements HasExpress
     public void setExpression(final Expression value) {
         this.expression = value;
     }
+
+    @Override
+    public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
+        return this;
+    }
 }

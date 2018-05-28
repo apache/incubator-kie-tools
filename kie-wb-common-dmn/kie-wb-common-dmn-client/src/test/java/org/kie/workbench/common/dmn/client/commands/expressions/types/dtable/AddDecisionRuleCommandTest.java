@@ -154,6 +154,9 @@ public class AddDecisionRuleCommandTest {
         assertTrue(rule.getDescription() != null);
         assertTrue(rule.getDescription().getValue() != null);
         assertFalse(rule.getDescription().getValue().isEmpty());
+
+        assertEquals(dtable,
+                     rule.getParent());
     }
 
     @Test
@@ -180,7 +183,11 @@ public class AddDecisionRuleCommandTest {
         for (int inputIndex = 0; inputIndex < inputsCount; inputIndex++) {
             assertTrue(rule.getInputEntry().get(inputIndex).getText() != null);
             assertFalse(rule.getInputEntry().get(inputIndex).getText().isEmpty());
+            assertEquals(rule, rule.getInputEntry().get(inputIndex).getParent());
         }
+
+        assertEquals(dtable,
+                     rule.getParent());
     }
 
     @Test
@@ -207,7 +214,11 @@ public class AddDecisionRuleCommandTest {
         for (int outputIndex = 0; outputIndex < outputsCount; outputIndex++) {
             assertTrue(rule.getOutputEntry().get(outputIndex).getText() != null);
             assertFalse(rule.getOutputEntry().get(outputIndex).getText().isEmpty());
+            assertEquals(rule, rule.getOutputEntry().get(outputIndex).getParent());
         }
+
+        assertEquals(dtable,
+                     rule.getParent());
     }
 
     @Test

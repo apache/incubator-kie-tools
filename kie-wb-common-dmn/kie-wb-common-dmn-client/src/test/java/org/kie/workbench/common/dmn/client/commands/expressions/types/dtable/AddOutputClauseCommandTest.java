@@ -149,12 +149,58 @@ public class AddOutputClauseCommandTest {
         assertEquals(1, dtable.getOutput().size());
 
         // first rule
-        assertEquals(1, dtable.getRule().get(0).getOutputEntry().size());
-        assertEquals(AddOutputClauseCommand.OUTPUT_CLAUSE_DEFAULT_VALUE, dtable.getRule().get(0).getOutputEntry().get(0).getText());
+        final List<LiteralExpression> outputEntriesRuleOne = dtable.getRule().get(0).getOutputEntry();
+        assertEquals(1, outputEntriesRuleOne.size());
+        assertEquals(AddOutputClauseCommand.OUTPUT_CLAUSE_DEFAULT_VALUE, outputEntriesRuleOne.get(0).getText());
+        assertEquals(dtable.getRule().get(0), outputEntriesRuleOne.get(0).getParent());
 
         // second rule
-        assertEquals(1, dtable.getRule().get(1).getOutputEntry().size());
-        assertEquals(AddOutputClauseCommand.OUTPUT_CLAUSE_DEFAULT_VALUE, dtable.getRule().get(1).getOutputEntry().get(0).getText());
+        final List<LiteralExpression> outputEntriesRuleTwo = dtable.getRule().get(1).getOutputEntry();
+        assertEquals(1, outputEntriesRuleTwo.size());
+        assertEquals(AddOutputClauseCommand.OUTPUT_CLAUSE_DEFAULT_VALUE, outputEntriesRuleTwo.get(0).getText());
+        assertEquals(dtable.getRule().get(1), outputEntriesRuleTwo.get(0).getParent());
+
+        assertEquals(dtable,
+                     outputClause.getParent());
+    }
+
+    @Test
+    public void testGraphCommandExecuteExistingNotAffected() throws Exception {
+        makeCommand(DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
+
+        final String ruleOneOldOutput = "old rule 1";
+        final String ruleTwoOldOutput = "old rule 2";
+
+        dtable.getOutput().add(new OutputClause());
+        addRuleWithOutputClauseValues(ruleOneOldOutput);
+        addRuleWithOutputClauseValues(ruleTwoOldOutput);
+
+        assertEquals(1, dtable.getOutput().size());
+
+        //Graph command will insert new OutputClause at index 0 of the OutputEntries
+        final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
+
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.execute(graphCommandExecutionContext));
+
+        assertEquals(2, dtable.getOutput().size());
+
+        // first rule
+        final List<LiteralExpression> outputEntriesRuleOne = dtable.getRule().get(0).getOutputEntry();
+        assertEquals(2, outputEntriesRuleOne.size());
+        assertEquals(ruleOneOldOutput, outputEntriesRuleOne.get(1).getText());
+        assertEquals(AddOutputClauseCommand.OUTPUT_CLAUSE_DEFAULT_VALUE, outputEntriesRuleOne.get(0).getText());
+        assertEquals(dtable.getRule().get(0), outputEntriesRuleOne.get(0).getParent());
+
+        // second rule
+        final List<LiteralExpression> outputEntriesRuleTwo = dtable.getRule().get(1).getOutputEntry();
+        assertEquals(2, outputEntriesRuleTwo.size());
+        assertEquals(ruleTwoOldOutput, outputEntriesRuleTwo.get(1).getText());
+        assertEquals(AddOutputClauseCommand.OUTPUT_CLAUSE_DEFAULT_VALUE, outputEntriesRuleTwo.get(0).getText());
+        assertEquals(dtable.getRule().get(1), outputEntriesRuleTwo.get(0).getParent());
+
+        assertEquals(dtable,
+                     outputClause.getParent());
     }
 
     @Test
@@ -181,42 +227,14 @@ public class AddOutputClauseCommandTest {
         final List<LiteralExpression> ruleOutputs = dtable.getRule().get(0).getOutputEntry();
 
         // first rule
-        assertEquals(3, dtable.getRule().get(0).getOutputEntry().size());
+        assertEquals(3, ruleOutputs.size());
         assertEquals(ruleOutputOne, ruleOutputs.get(0).getText());
         assertEquals(AddOutputClauseCommand.OUTPUT_CLAUSE_DEFAULT_VALUE, ruleOutputs.get(1).getText());
+        assertEquals(dtable.getRule().get(0), ruleOutputs.get(1).getParent());
         assertEquals(ruleOutputTwo, ruleOutputs.get(2).getText());
-    }
 
-    @Test
-    public void testGraphCommandExecuteExistingNotAffected() throws Exception {
-        makeCommand(DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
-
-        final String ruleOneOldOutput = "old rule 1";
-        final String ruleTwoOldOutput = "old rule 2";
-
-        dtable.getOutput().add(new OutputClause());
-        addRuleWithOutputClauseValues(ruleOneOldOutput);
-        addRuleWithOutputClauseValues(ruleTwoOldOutput);
-
-        assertEquals(1, dtable.getOutput().size());
-
-        //Graph command will insert new OutputClause at index 0 of the OutputEntries
-        final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
-
-        assertEquals(GraphCommandResultBuilder.SUCCESS,
-                     graphCommand.execute(graphCommandExecutionContext));
-
-        assertEquals(2, dtable.getOutput().size());
-
-        // first rule
-        assertEquals(2, dtable.getRule().get(0).getOutputEntry().size());
-        assertEquals(ruleOneOldOutput, dtable.getRule().get(0).getOutputEntry().get(1).getText());
-        assertEquals(AddOutputClauseCommand.OUTPUT_CLAUSE_DEFAULT_VALUE, dtable.getRule().get(0).getOutputEntry().get(0).getText());
-
-        // second rule
-        assertEquals(2, dtable.getRule().get(1).getOutputEntry().size());
-        assertEquals(ruleTwoOldOutput, dtable.getRule().get(1).getOutputEntry().get(1).getText());
-        assertEquals(AddOutputClauseCommand.OUTPUT_CLAUSE_DEFAULT_VALUE, dtable.getRule().get(1).getOutputEntry().get(0).getText());
+        assertEquals(dtable,
+                     outputClause.getParent());
     }
 
     @Test(expected = ArrayIndexOutOfBoundsException.class)

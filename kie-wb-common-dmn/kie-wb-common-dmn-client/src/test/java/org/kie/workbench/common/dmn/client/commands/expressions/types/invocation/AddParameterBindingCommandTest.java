@@ -197,6 +197,11 @@ public class AddParameterBindingCommandTest {
                      c.execute(gce));
 
         assertBindingDefinitions(otherBinding, binding);
+
+        assertEquals(invocation,
+                     binding.getParent());
+        assertEquals(binding,
+                     binding.getParameter().getParent());
     }
 
     @Test
@@ -214,6 +219,11 @@ public class AddParameterBindingCommandTest {
                      c.execute(gce));
 
         assertBindingDefinitions(binding, firstBinding, secondBinding);
+
+        assertEquals(invocation,
+                     binding.getParent());
+        assertEquals(binding,
+                     binding.getParameter().getParent());
     }
 
     @Test
@@ -231,6 +241,11 @@ public class AddParameterBindingCommandTest {
                      c.execute(gce));
 
         assertBindingDefinitions(firstBinding, binding, secondBinding);
+
+        assertEquals(invocation,
+                     binding.getParent());
+        assertEquals(binding,
+                     binding.getParameter().getParent());
     }
 
     @Test
@@ -243,6 +258,11 @@ public class AddParameterBindingCommandTest {
                      c.execute(gce));
 
         assertBindingDefinitions(binding);
+
+        assertEquals(invocation,
+                     binding.getParent());
+        assertEquals(binding,
+                     binding.getParameter().getParent());
     }
 
     @Test

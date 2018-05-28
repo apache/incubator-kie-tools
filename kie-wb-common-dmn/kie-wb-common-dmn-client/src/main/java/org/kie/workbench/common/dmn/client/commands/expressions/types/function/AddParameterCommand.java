@@ -59,6 +59,8 @@ public class AddParameterCommand extends AbstractCanvasGraphCommand implements V
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
                 function.getFormalParameter().add(parameter);
 
+                parameter.setParent(function);
+
                 return GraphCommandResultBuilder.SUCCESS;
             }
 

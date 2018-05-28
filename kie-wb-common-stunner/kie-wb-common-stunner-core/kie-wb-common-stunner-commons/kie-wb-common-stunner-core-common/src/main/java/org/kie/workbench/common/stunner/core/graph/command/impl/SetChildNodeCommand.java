@@ -39,7 +39,7 @@ import org.kie.workbench.common.stunner.core.util.UUID;
  * Both nodes must already be crated and present on the graph storage.
  */
 @Portable
-public final class SetChildNodeCommand extends AbstractGraphCommand {
+public class SetChildNodeCommand extends AbstractGraphCommand {
 
     private final String parentUUID;
     private final String candidateUUID;
@@ -111,7 +111,7 @@ public final class SetChildNodeCommand extends AbstractGraphCommand {
     }
 
     @SuppressWarnings("unchecked")
-    private Node<?, Edge> getParent(final GraphCommandExecutionContext context) {
+    protected Node<?, Edge> getParent(final GraphCommandExecutionContext context) {
         if (null == parent) {
             parent = getNodeNotNull(context,
                                     parentUUID);
@@ -120,7 +120,7 @@ public final class SetChildNodeCommand extends AbstractGraphCommand {
     }
 
     @SuppressWarnings("unchecked")
-    private Node<?, Edge> getCandidate(final GraphCommandExecutionContext context) {
+    protected Node<?, Edge> getCandidate(final GraphCommandExecutionContext context) {
         if (null == candidate) {
             candidate = getNodeNotNull(context,
                                        candidateUUID);

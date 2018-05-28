@@ -75,10 +75,16 @@ public class SetCellValueCommand extends AbstractCanvasGraphCommand implements V
             }
 
             @Override
+            @SuppressWarnings("unchecked")
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
                 uiModelMapper.get().toDMNModel(cellTuple.getRowIndex(),
                                                cellTuple.getColumnIndex(),
                                                () -> Optional.of(cellTuple.getValue()));
+
+                // The parent of the Expression represented by the ExpressionCellValue
+                // is set by UndefinedExpressionUIModelMapper instead of this Command
+                // for simplicity.
+
                 return GraphCommandResultBuilder.SUCCESS;
             }
 

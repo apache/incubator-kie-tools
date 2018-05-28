@@ -203,6 +203,11 @@ public class AddContextEntryCommandTest {
                      context.getContextEntry().get(0));
         assertEquals(defaultResultContextEntry,
                      context.getContextEntry().get(1));
+
+        assertEquals(context,
+                     contextEntry.getParent());
+        assertEquals(contextEntry,
+                     contextEntry.getVariable().getParent());
     }
 
     @Test
@@ -228,6 +233,11 @@ public class AddContextEntryCommandTest {
                      context.getContextEntry().get(1));
         assertEquals(defaultResultContextEntry,
                      context.getContextEntry().get(2));
+
+        assertEquals(context,
+                     contextEntry.getParent());
+        assertEquals(contextEntry,
+                     contextEntry.getVariable().getParent());
     }
 
     @Test

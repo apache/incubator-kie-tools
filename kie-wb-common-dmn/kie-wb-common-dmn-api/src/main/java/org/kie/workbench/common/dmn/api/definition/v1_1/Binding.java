@@ -41,4 +41,9 @@ public class Binding extends DMNModelInstrumentedBase implements HasExpression {
     public void setExpression(final Expression value) {
         this.expression = value;
     }
+
+    @Override
+    public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
+        return this;
+    }
 }

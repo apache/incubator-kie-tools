@@ -81,7 +81,10 @@ public class AddRelationRowCommand extends AbstractCanvasGraphCommand implements
                 relation.getColumn().forEach(ii -> {
                     final LiteralExpression le = new LiteralExpression();
                     row.getExpression().add(le);
+                    le.setParent(row);
                 });
+
+                row.setParent(relation);
 
                 return GraphCommandResultBuilder.SUCCESS;
             }

@@ -77,14 +77,26 @@ public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
     protected AddChildNodeCommand initialize(final GraphCommandExecutionContext context) {
         super.initialize(context);
         final Node<?, Edge> parent = getParent(context);
-        this.addCommand(new RegisterNodeCommand(candidate));
-        this.addCommand(new SetChildNodeCommand(parent,
-                                                candidate));
+        this.addCommand(getRegisterNodeCommand(candidate));
+        this.addCommand(getSetChildNodeCommand(parent, candidate));
         if (null != location) {
-            this.addCommand(new UpdateElementPositionCommand(candidate,
-                                                             location));
+            this.addCommand(getUpdateElementPositionCommand(candidate, location));
         }
         return this;
+    }
+
+    protected RegisterNodeCommand getRegisterNodeCommand(final Node candidate) {
+        return new RegisterNodeCommand(candidate);
+    }
+
+    protected SetChildNodeCommand getSetChildNodeCommand(final Node<?, Edge> parent,
+                                                         final Node candidate) {
+        return new SetChildNodeCommand(parent, candidate);
+    }
+
+    protected UpdateElementPositionCommand getUpdateElementPositionCommand(final Node candidate,
+                                                                           final Point2D location) {
+        return new UpdateElementPositionCommand(candidate, location);
     }
 
     @Override

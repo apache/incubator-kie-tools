@@ -61,6 +61,11 @@ public class Invocation extends Expression implements HasExpression {
         this.expression = value;
     }
 
+    @Override
+    public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
+        return this;
+    }
+
     public List<Binding> getBinding() {
         if (binding == null) {
             binding = new ArrayList<>();

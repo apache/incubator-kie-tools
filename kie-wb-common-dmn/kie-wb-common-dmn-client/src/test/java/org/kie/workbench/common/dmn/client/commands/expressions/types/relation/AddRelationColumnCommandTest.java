@@ -137,6 +137,11 @@ public class AddRelationColumnCommandTest {
         assertEquals(1,
                      relation.getRow().get(0).getExpression().size());
         assertTrue(relation.getRow().get(0).getExpression().get(0) instanceof LiteralExpression);
+
+        assertEquals(relation,
+                     informationItem.getParent());
+        assertEquals(relation.getRow().get(0),
+                     relation.getRow().get(0).getExpression().get(0).getParent());
     }
 
     @Test
@@ -167,6 +172,11 @@ public class AddRelationColumnCommandTest {
         assertTrue(relation.getRow().get(0).getExpression().get(0) instanceof LiteralExpression);
         assertEquals(existingLiteralExpression,
                      relation.getRow().get(0).getExpression().get(1));
+
+        assertEquals(relation,
+                     informationItem.getParent());
+        assertEquals(relation.getRow().get(0),
+                     relation.getRow().get(0).getExpression().get(0).getParent());
     }
 
     @Test
@@ -208,6 +218,11 @@ public class AddRelationColumnCommandTest {
         assertTrue(relation.getRow().get(0).getExpression().get(1) instanceof LiteralExpression);
         assertEquals(existingLiteralExpressionLast,
                      relation.getRow().get(0).getExpression().get(2));
+
+        assertEquals(relation,
+                     informationItem.getParent());
+        assertEquals(relation.getRow().get(0),
+                     relation.getRow().get(0).getExpression().get(1).getParent());
     }
 
     @Test
@@ -222,6 +237,9 @@ public class AddRelationColumnCommandTest {
                      relation.getColumn().get(0));
         assertEquals(0,
                      relation.getRow().size());
+
+        assertEquals(relation,
+                     informationItem.getParent());
     }
 
     @Test

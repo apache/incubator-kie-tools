@@ -78,6 +78,9 @@ public class AddParameterBindingCommand extends AbstractCanvasGraphCommand imple
                 invocation.getBinding().add(uiRowIndex,
                                             binding);
 
+                binding.setParent(invocation);
+                binding.getParameter().setParent(binding);
+
                 return GraphCommandResultBuilder.SUCCESS;
             }
 

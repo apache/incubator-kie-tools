@@ -157,6 +157,14 @@ public class DecisionTableEditorDefinitionTest {
         assertThat(rule.getOutputEntry().get(0)).isInstanceOf(LiteralExpression.class);
 
         assertThat(rule.getDescription()).isNotNull();
+
+        assertThat(input.get(0).getParent()).isEqualTo(model);
+        assertThat(input.get(0).getInputExpression().getParent()).isEqualTo(input.get(0));
+        assertThat(output.get(0).getParent()).isEqualTo(model);
+
+        assertThat(rule.getParent()).isEqualTo(model);
+        assertThat(rule.getInputEntry().get(0).getParent()).isEqualTo(rule);
+        assertThat(rule.getOutputEntry().get(0).getParent()).isEqualTo(rule);
     }
 
     @Test

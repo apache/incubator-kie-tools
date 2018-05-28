@@ -83,7 +83,10 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
                     final UnaryTests ut = new UnaryTests();
                     ut.setText(INPUT_CLAUSE_DEFAULT_VALUE);
                     rule.getInputEntry().add(clauseIndex, ut);
+                    ut.setParent(rule);
                 });
+
+                inputClause.setParent(dtable);
 
                 return GraphCommandResultBuilder.SUCCESS;
             }

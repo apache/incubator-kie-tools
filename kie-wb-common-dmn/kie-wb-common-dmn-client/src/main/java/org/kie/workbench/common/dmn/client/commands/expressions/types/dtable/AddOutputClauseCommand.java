@@ -84,7 +84,10 @@ public class AddOutputClauseCommand extends AbstractCanvasGraphCommand implement
                     final LiteralExpression le = new LiteralExpression();
                     le.setText(OUTPUT_CLAUSE_DEFAULT_VALUE);
                     rule.getOutputEntry().add(clauseIndex, le);
+                    le.setParent(rule);
                 });
+
+                outputClause.setParent(dtable);
 
                 return GraphCommandResultBuilder.SUCCESS;
             }

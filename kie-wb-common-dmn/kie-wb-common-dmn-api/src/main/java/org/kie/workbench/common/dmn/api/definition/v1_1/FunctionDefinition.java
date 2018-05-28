@@ -70,6 +70,11 @@ public class FunctionDefinition extends Expression implements HasExpression {
         this.expression = expression;
     }
 
+    @Override
+    public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
+        return this;
+    }
+
     public List<InformationItem> getFormalParameter() {
         if (formalParameter == null) {
             formalParameter = new ArrayList<>();

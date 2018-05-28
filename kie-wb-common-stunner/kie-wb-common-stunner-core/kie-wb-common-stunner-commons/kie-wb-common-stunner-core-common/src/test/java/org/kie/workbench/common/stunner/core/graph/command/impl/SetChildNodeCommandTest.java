@@ -47,12 +47,12 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class SetChildNodeCommandTest extends AbstractGraphCommandTest {
 
-    private static final String PARENT_UUID = "parentUUID";
-    private static final String CANDIDATE_UUID = "candidateUUID";
+    protected static final String PARENT_UUID = "parentUUID";
+    protected static final String CANDIDATE_UUID = "candidateUUID";
 
-    private Node parent;
-    private Node candidate;
-    private SetChildNodeCommand tested;
+    protected Node parent;
+    protected Node candidate;
+    protected SetChildNodeCommand tested;
 
     @Before
     public void setup() throws Exception {
@@ -62,8 +62,11 @@ public class SetChildNodeCommandTest extends AbstractGraphCommandTest {
         this.candidate = mockNode(CANDIDATE_UUID);
         when(graphIndex.getNode(eq(PARENT_UUID))).thenReturn(parent);
         when(graphIndex.getNode(eq(CANDIDATE_UUID))).thenReturn(candidate);
-        this.tested = new SetChildNodeCommand(PARENT_UUID,
-                                              CANDIDATE_UUID);
+        this.tested = makeSetChildNodeCommand();
+    }
+
+    protected SetChildNodeCommand makeSetChildNodeCommand() {
+        return new SetChildNodeCommand(PARENT_UUID, CANDIDATE_UUID);
     }
 
     @Test

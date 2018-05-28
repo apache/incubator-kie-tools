@@ -99,13 +99,22 @@ public class ContextEditorDefinition extends BaseEditorDefinition<Context, Conte
         //Add one ContextEntry for the User to start with
         final Context context = new Context();
         final ContextEntry contextEntry = new ContextEntry();
-        contextEntry.setVariable(new InformationItem());
+        final InformationItem informationItem = new InformationItem();
+        contextEntry.setVariable(informationItem);
         context.getContextEntry().add(contextEntry);
 
         //Add (default) "result" entry
         final ContextEntry resultEntry = new ContextEntry();
-        resultEntry.setExpression(new LiteralExpression());
+        final LiteralExpression literalExpression = new LiteralExpression();
+        resultEntry.setExpression(literalExpression);
         context.getContextEntry().add(resultEntry);
+
+        //Setup parent relationships
+        contextEntry.setParent(context);
+        informationItem.setParent(contextEntry);
+        resultEntry.setParent(context);
+        literalExpression.setParent(resultEntry);
+
         return Optional.of(context);
     }
 

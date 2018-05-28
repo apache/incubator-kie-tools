@@ -57,7 +57,7 @@ public class DMNFlowActionsToolboxFactory
     public DMNFlowActionsToolboxFactory(final DefinitionUtils definitionUtils,
                                         final CommonLookups commonLookups,
                                         final @Any ManagedInstance<CreateConnectorAction> createConnectorActions,
-                                        final @Any ManagedInstance<CreateNodeAction> createNodeActions,
+                                        final @Any @DMNFlowActionsToolbox ManagedInstance<CreateNodeAction> createNodeActions,
                                         final @Any @FlowActionsToolbox ManagedInstance<ActionsToolboxView> views) {
         this.definitionUtils = definitionUtils;
         this.commonLookups = commonLookups;

@@ -201,4 +201,9 @@ public class Decision extends DRGElement implements HasExpression,
     public void setExpression(final Expression expression) {
         this.expression = expression;
     }
+
+    @Override
+    public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
+        return this;
+    }
 }
