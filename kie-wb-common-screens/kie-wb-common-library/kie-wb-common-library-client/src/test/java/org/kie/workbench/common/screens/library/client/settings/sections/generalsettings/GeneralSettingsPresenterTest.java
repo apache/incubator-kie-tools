@@ -225,7 +225,9 @@ public class GeneralSettingsPresenterTest {
         doReturn(true).when(validationService).validateGroupId(eq("GroupId"));
         doReturn(true).when(validationService).validateArtifactId(eq("ArtifactId"));
         doReturn(true).when(validationService).validateGAVVersion(eq("Version"));
-        doReturn(true).when(projectService).spaceHasNoProjectsWithName(any(), eq("Name"));
+        doReturn(true).when(projectService).spaceHasNoProjectsWithName(any(),
+                                                                       eq("Name"),
+                                                                       eq(project));
 
         generalSettingsPresenter.validate().catch_(i -> {
             Assert.fail("Promise should've been resolved!");
@@ -243,7 +245,8 @@ public class GeneralSettingsPresenterTest {
                                                            any(),
                                                            eq("DuplicatedProjectNameMessage"));
         verify(projectService).spaceHasNoProjectsWithName(any(),
-                                                          eq("Name"));
+                                                          eq("Name"),
+                                                          eq(project));
 
         verify(generalSettingsPresenter).validateStringIsNotEmpty(eq("GroupId"),
                                                                   eq("EmptyGroupIdMessage"));

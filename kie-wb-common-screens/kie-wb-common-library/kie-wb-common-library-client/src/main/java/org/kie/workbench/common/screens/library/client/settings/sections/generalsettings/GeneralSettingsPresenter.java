@@ -168,7 +168,8 @@ public class GeneralSettingsPresenter extends Section<ProjectScreenModel> {
                         .then(o -> executeValidation(s -> s.isProjectNameValid(pom.getName()), view.getInvalidNameMessage()))
                         .then(o -> executeValidation(projectService,
                                                      s -> s.spaceHasNoProjectsWithName(libraryPlaces.getActiveWorkspaceContext().getOrganizationalUnit(),
-                                                                                       pom.getName()),
+                                                                                       pom.getName(),
+                                                                                       libraryPlaces.getActiveWorkspaceContext()),
                                                      view.getDuplicatedProjectNameMessage()))
                         .catch_(this::showErrorAndReject),
 
