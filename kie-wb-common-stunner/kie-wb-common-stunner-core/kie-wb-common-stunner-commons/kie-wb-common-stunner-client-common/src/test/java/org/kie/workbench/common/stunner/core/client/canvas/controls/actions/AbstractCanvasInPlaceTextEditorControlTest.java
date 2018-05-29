@@ -78,6 +78,10 @@ public abstract class AbstractCanvasInPlaceTextEditorControlTest<C extends Abstr
 
     private static final double Y = 20.0;
 
+    private static final double OFFSET_X = 30.0;
+
+    private static final double OFFSET_Y = 40.0;
+
     @Mock
     protected FloatingView<IsWidget> floatingView;
 
@@ -165,6 +169,8 @@ public abstract class AbstractCanvasInPlaceTextEditorControlTest<C extends Abstr
         when(floatingView.setOffsetX(anyDouble())).thenReturn(floatingView);
         when(floatingView.setOffsetY(anyDouble())).thenReturn(floatingView);
         when(textEditorBox.getElement()).thenReturn(textEditBoxElement);
+        when(textEditorBox.getDisplayOffsetX()).thenReturn(OFFSET_X);
+        when(textEditorBox.getDisplayOffsetY()).thenReturn(OFFSET_Y);
         when(element.getUUID()).thenReturn(UUID);
         when(element.getContent()).thenReturn(shapeView);
         when(shapeView.getBounds()).thenReturn(shapeViewBounds);
@@ -411,8 +417,8 @@ public abstract class AbstractCanvasInPlaceTextEditorControlTest<C extends Abstr
 
         verify(floatingView).setX(eq(X));
         verify(floatingView).setY(eq(Y));
-        verify(floatingView).setOffsetX(eq(-textEditorBox.getDisplayOffsetX()));
-        verify(floatingView).setOffsetY(eq(-textEditorBox.getDisplayOffsetY()));
+        verify(floatingView).setOffsetX(eq(-OFFSET_X));
+        verify(floatingView).setOffsetY(eq(-OFFSET_Y));
         verify(floatingView).show();
     }
 
