@@ -25,6 +25,7 @@ import java.util.Set;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,6 +36,10 @@ import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.common.TileWidget;
+import org.kie.workbench.common.screens.library.client.widgets.example.ExampleProjectWidget;
+import org.kie.workbench.common.screens.library.client.widgets.example.errors.ExampleProjectErrorPresenter;
+import org.kie.workbench.common.screens.library.client.widgets.example.errors.ExampleProjectOkPresenter;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
@@ -45,10 +50,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.jgroups.util.Util.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ExampleImportPresenterTest {
@@ -64,7 +66,7 @@ public class ExampleImportPresenterTest {
     private Caller<LibraryService> libraryServiceCaller;
 
     @Mock
-    private ManagedInstance<TileWidget> tileWidgets;
+    private ManagedInstance<ExampleProjectWidget> tileWidgets;
 
     @Mock
     private ExamplesService examplesService;
@@ -76,7 +78,13 @@ public class ExampleImportPresenterTest {
     @Mock
     private EventSourceMock<WorkspaceProjectContextChangeEvent> projectContextChangeEvent;
 
-    private TileWidget tileWidget;
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private ExampleProjectOkPresenter exampleProjectOkPresenter;
+
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private ExampleProjectErrorPresenter exampleProjectErrorPresenter;
+
+    private ExampleProjectWidget tileWidget;
 
     private ImportPresenter importPresenter;
 
@@ -84,7 +92,9 @@ public class ExampleImportPresenterTest {
     public void setup() {
         libraryServiceCaller = new CallerMock<>(libraryService);
         examplesServiceCaller = new CallerMock<>(examplesService);
-        tileWidget = spy(new TileWidget(mock(TileWidget.View.class)));
+        tileWidget = spy(new ExampleProjectWidget(mock(ExampleProjectWidget.View.class),
+                                                  exampleProjectOkPresenter,
+                                                  exampleProjectErrorPresenter));
 
         doReturn(tileWidget).when(tileWidgets).get();
 
@@ -95,7 +105,8 @@ public class ExampleImportPresenterTest {
                                                                   examplesServiceCaller,
                                                                   mock(WorkspaceProjectContext.class),
                                                                   notificationEvent,
-                                                                  projectContextChangeEvent);
+                                                                  projectContextChangeEvent,
+                                                                  new Elemental2DomUtil());
     }
 
     @Test
@@ -104,7 +115,7 @@ public class ExampleImportPresenterTest {
         params.put("repositoryUrl",
                    "repoUrl");
         importPresenter.onStartup(new DefaultPlaceRequest(LibraryPlaces.PROJECT_SCREEN,
-                                                                        params));
+                                                          params));
 
         verify(view).hideBusyIndicator();
         verify(notificationEvent).fire(any());
@@ -132,8 +143,8 @@ public class ExampleImportPresenterTest {
         params.put("repositoryUrl",
                    "repoUrl");
         importPresenter.onStartup(new DefaultPlaceRequest(LibraryPlaces.PROJECT_SCREEN,
-                                                                        params));
-        final List<TileWidget> filteredProjects = importPresenter.filterProjects("a");
+                                                          params));
+        final List<ExampleProjectWidget> filteredProjects = importPresenter.filterProjects("a");
 
         assertEquals(2,
                      filteredProjects.size());

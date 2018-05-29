@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -60,9 +61,12 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
 import org.kie.workbench.common.screens.examples.model.ExampleProject;
+import org.kie.workbench.common.screens.examples.model.ExampleProjectError;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ExamplesMetaData;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
+import org.kie.workbench.common.screens.examples.validation.ExampleProjectValidator;
+import org.kie.workbench.common.screens.examples.validation.ExampleProjectValidators;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
@@ -73,6 +77,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
 
+import static java.util.stream.Collectors.toList;
 import static org.guvnor.structure.repositories.EnvironmentParameters.MIRROR;
 import static org.guvnor.structure.repositories.EnvironmentParameters.SCHEME;
 import static org.guvnor.structure.server.config.ConfigType.REPOSITORY;
@@ -98,6 +103,7 @@ public class ExamplesServiceImpl implements ExamplesService {
     private MetadataService metadataService;
     private ExampleRepository playgroundRepository;
     private ProjectScreenService projectScreenService;
+    private ExampleProjectValidators validators;
 
     public ExamplesServiceImpl() {
         //Zero-parameter Constructor for CDI proxies
@@ -113,7 +119,8 @@ public class ExamplesServiceImpl implements ExamplesService {
                                final WorkspaceProjectService projectService,
                                final MetadataService metadataService,
                                final Event<NewProjectEvent> newProjectEvent,
-                               final ProjectScreenService projectScreenService) {
+                               final ProjectScreenService projectScreenService,
+                               final ExampleProjectValidators validators) {
         this.ioService = ioService;
         this.configurationFactory = configurationFactory;
         this.repositoryFactory = repositoryFactory;
@@ -124,6 +131,7 @@ public class ExamplesServiceImpl implements ExamplesService {
         this.metadataService = metadataService;
         this.newProjectEvent = newProjectEvent;
         this.projectScreenService = projectScreenService;
+        this.validators = validators;
     }
 
     @PostConstruct
@@ -233,7 +241,30 @@ public class ExamplesServiceImpl implements ExamplesService {
         }
 
         final Set<Module> modules = moduleService.getAllModules(gitRepository.getBranch("master").get());
-        return convert(modules);
+        Set<ExampleProject> exampleProjects = convert(modules);
+        return validateProjects(exampleProjects);
+    }
+
+    private Set<ExampleProject> validateProjects(Set<ExampleProject> exampleProjects) {
+        return exampleProjects
+                .stream()
+                .map(exampleProject -> {
+                    List<ExampleProjectError> errors = getValidators().stream()
+                            .map(exampleProjectValidation -> exampleProjectValidation.validate(exampleProject))
+                            .filter(Optional::isPresent)
+                            .map(Optional::get)
+                            .collect(toList());
+                    return new ExampleProject(exampleProject.getRoot(),
+                                              exampleProject.getName(),
+                                              exampleProject.getDescription(),
+                                              exampleProject.getTags(),
+                                              errors);
+                })
+                .collect(Collectors.toSet());
+    }
+
+    protected List<ExampleProjectValidator> getValidators() {
+        return this.validators.getValidators();
     }
 
     Repository resolveGitRepository(final ExampleRepository exampleRepository) {

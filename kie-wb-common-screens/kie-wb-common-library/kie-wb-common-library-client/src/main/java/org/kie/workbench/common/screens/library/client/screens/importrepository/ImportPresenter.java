@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.kie.workbench.common.screens.library.client.screens.importrepository;
 
@@ -24,10 +24,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Produces;
 
+import jsinterop.base.Js;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.WorkspaceProject;
@@ -37,13 +37,14 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
 import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
-import org.kie.workbench.common.screens.library.client.widgets.common.TileWidget;
+import org.kie.workbench.common.screens.library.client.widgets.example.ExampleProjectWidget;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
@@ -64,56 +65,64 @@ public abstract class ImportPresenter {
         private ExamplesImportPresenter(View view,
                                         LibraryPlaces libraryPlaces,
                                         Caller<LibraryService> libraryService,
-                                        ManagedInstance<TileWidget> tileWidgets,
+                                        ManagedInstance<ExampleProjectWidget> tileWidgets,
                                         Caller<ExamplesService> examplesService,
                                         WorkspaceProjectContext projectContext,
                                         Event<NotificationEvent> notificationEvent,
-                                        Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent) {
+                                        Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent,
+                                        Elemental2DomUtil elemental2DomUtil) {
             super(view,
                   libraryPlaces,
                   libraryService,
                   tileWidgets,
                   projectContext,
                   notificationEvent,
-                  projectContextChangeEvent);
+                  projectContextChangeEvent,
+                  elemental2DomUtil);
             this.examplesService = examplesService;
         }
 
         @Override
-        protected void loadProjects(PlaceRequest placeRequest, RemoteCallback<Set<ExampleProject>> callback) {
+        protected void loadProjects(PlaceRequest placeRequest,
+                                    RemoteCallback<Set<ExampleProject>> callback) {
             view.showBusyIndicator(view.getLoadingMessage());
-            libraryService.call(callback, loadingErrorCallback()).getExampleProjects();
+            libraryService.call(callback,
+                                loadingErrorCallback()).getExampleProjects();
         }
 
         @Override
         protected void importProjects(List<ExampleProject> projects,
                                       RemoteCallback<WorkspaceProjectContextChangeEvent> callback,
                                       ErrorCallback<Message> errorCallback) {
-            examplesService.call(callback, errorCallback).setupExamples(new ExampleOrganizationalUnit(activeOrganizationalUnit().getName()),
-                                                                        projects);
+            examplesService.call(callback,
+                                 errorCallback).setupExamples(new ExampleOrganizationalUnit(activeOrganizationalUnit().getName()),
+                                                              projects);
         }
     }
 
     private static final class ExternalImportPresenter extends ImportPresenter {
 
         private ExternalImportPresenter(View view,
-                                       LibraryPlaces libraryPlaces,
-                                       Caller<LibraryService> libraryService,
-                                       ManagedInstance<TileWidget> tileWidgets,
-                                       WorkspaceProjectContext projectContext,
-                                       Event<NotificationEvent> notificationEvent,
-                                       Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent) {
+                                        LibraryPlaces libraryPlaces,
+                                        Caller<LibraryService> libraryService,
+                                        ManagedInstance<ExampleProjectWidget> tileWidgets,
+                                        WorkspaceProjectContext projectContext,
+                                        Event<NotificationEvent> notificationEvent,
+                                        Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent,
+                                        Elemental2DomUtil elemental2DomUtil) {
             super(view,
                   libraryPlaces,
                   libraryService,
                   tileWidgets,
                   projectContext,
                   notificationEvent,
-                  projectContextChangeEvent);
+                  projectContextChangeEvent,
+                  elemental2DomUtil);
         }
 
         @Override
-        protected void loadProjects(PlaceRequest placeRequest, RemoteCallback<Set<ExampleProject>> callback) {
+        protected void loadProjects(PlaceRequest placeRequest,
+                                    RemoteCallback<Set<ExampleProject>> callback) {
             // Projects are loaded by CDI event that calls setupEvents. Nothing to do here.
         }
 
@@ -123,15 +132,17 @@ public abstract class ImportPresenter {
                                       ErrorCallback<Message> errorCallback) {
             final OrganizationalUnit activeOU = activeOrganizationalUnit();
             libraryService.call((List<WorkspaceProject> importedProjects) -> {
-                if (importedProjects.size() == 1) {
-                    final WorkspaceProject importedProject = importedProjects.get(0);
-                    callback.callback(new WorkspaceProjectContextChangeEvent(importedProject, importedProject.getMainModule()));
-                } else {
-                    callback.callback(new WorkspaceProjectContextChangeEvent(activeOU));
-                }
-            }, errorCallback).importProjects(activeOU, projects);
+                                    if (importedProjects.size() == 1) {
+                                        final WorkspaceProject importedProject = importedProjects.get(0);
+                                        callback.callback(new WorkspaceProjectContextChangeEvent(importedProject,
+                                                                                                 importedProject.getMainModule()));
+                                    } else {
+                                        callback.callback(new WorkspaceProjectContextChangeEvent(activeOU));
+                                    }
+                                },
+                                errorCallback).importProjects(activeOU,
+                                                              projects);
         }
-
     }
 
     public interface View extends UberElement<ImportPresenter>,
@@ -158,15 +169,17 @@ public abstract class ImportPresenter {
         String getImportProjectsSuccessMessage();
     }
 
-    @Produces @Source(EXAMPLE)
+    @Produces
+    @Source(EXAMPLE)
     public static ImportPresenter examplesImportPresenter(final View view,
                                                           final LibraryPlaces libraryPlaces,
                                                           final Caller<LibraryService> libraryService,
-                                                          final ManagedInstance<TileWidget> tileWidgets,
+                                                          final ManagedInstance<ExampleProjectWidget> tileWidgets,
                                                           final Caller<ExamplesService> examplesService,
                                                           final WorkspaceProjectContext projectContext,
                                                           final Event<NotificationEvent> notificationEvent,
-                                                          final Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent) {
+                                                          final Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent,
+                                                          final Elemental2DomUtil elemental2DomUtil) {
         return new ExamplesImportPresenter(view,
                                            libraryPlaces,
                                            libraryService,
@@ -174,24 +187,28 @@ public abstract class ImportPresenter {
                                            examplesService,
                                            projectContext,
                                            notificationEvent,
-                                           projectContextChangeEvent);
+                                           projectContextChangeEvent,
+                                           elemental2DomUtil);
     }
 
-    @Produces @Source(EXTERNAL)
+    @Produces
+    @Source(EXTERNAL)
     public static ImportPresenter externalImportPresenter(final View view,
                                                           final LibraryPlaces libraryPlaces,
                                                           final Caller<LibraryService> libraryService,
-                                                          final ManagedInstance<TileWidget> tileWidgets,
+                                                          final ManagedInstance<ExampleProjectWidget> tileWidgets,
                                                           final WorkspaceProjectContext projectContext,
                                                           final Event<NotificationEvent> notificationEvent,
-                                                          final Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent) {
+                                                          final Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent,
+                                                          final Elemental2DomUtil elemental2DomUtil) {
         return new ExternalImportPresenter(view,
                                            libraryPlaces,
                                            libraryService,
                                            tileWidgets,
                                            projectContext,
                                            notificationEvent,
-                                           projectContextChangeEvent);
+                                           projectContextChangeEvent,
+                                           elemental2DomUtil);
     }
 
     protected final View view;
@@ -200,22 +217,24 @@ public abstract class ImportPresenter {
 
     protected final Caller<LibraryService> libraryService;
 
-    protected final ManagedInstance<TileWidget> tileWidgets;
+    protected final ManagedInstance<ExampleProjectWidget> tileWidgets;
 
     protected final WorkspaceProjectContext projectContext;
     protected final Event<NotificationEvent> notificationEvent;
 
     protected final Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent;
+    protected final Elemental2DomUtil elemental2DomUtil;
 
-    protected Map<ExampleProject, TileWidget> projectWidgetsByName;
+    protected Map<ExampleProject, ExampleProjectWidget> projectWidgetsByName;
 
     public ImportPresenter(final View view,
                            final LibraryPlaces libraryPlaces,
                            final Caller<LibraryService> libraryService,
-                           final ManagedInstance<TileWidget> tileWidgets,
+                           final ManagedInstance<ExampleProjectWidget> tileWidgets,
                            final WorkspaceProjectContext projectContext,
                            final Event<NotificationEvent> notificationEvent,
-                           final Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent) {
+                           final Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent,
+                           final Elemental2DomUtil elemental2DomUtil) {
         this.view = view;
         this.libraryPlaces = libraryPlaces;
         this.libraryService = libraryService;
@@ -223,6 +242,7 @@ public abstract class ImportPresenter {
         this.projectContext = projectContext;
         this.notificationEvent = notificationEvent;
         this.projectContextChangeEvent = projectContextChangeEvent;
+        this.elemental2DomUtil = elemental2DomUtil;
     }
 
     public void onStartup(final PlaceRequest placeRequest) {
@@ -232,13 +252,15 @@ public abstract class ImportPresenter {
                                                        view.getTrySamplesLabel());
         view.setTitle(title);
 
-        loadProjects(placeRequest, projects -> {
-                                 view.hideBusyIndicator();
-                                 setupProjects(projects);
-                             });
+        loadProjects(placeRequest,
+                     projects -> {
+                         view.hideBusyIndicator();
+                         setupProjects(projects);
+                     });
     }
 
-    protected abstract void loadProjects(final PlaceRequest placeRequest, final RemoteCallback<Set<ExampleProject>> callback);
+    protected abstract void loadProjects(final PlaceRequest placeRequest,
+                                         final RemoteCallback<Set<ExampleProject>> callback);
 
     protected abstract void importProjects(List<ExampleProject> projects,
                                            RemoteCallback<WorkspaceProjectContextChangeEvent> callback,
@@ -269,7 +291,7 @@ public abstract class ImportPresenter {
 
         projectWidgetsByName = new HashMap<>();
         projects.forEach(project -> {
-            TileWidget projectWidget = createProjectWidget(project);
+            ExampleProjectWidget projectWidget = createProjectWidget(project);
             projectWidgetsByName.put(project,
                                      projectWidget);
         });
@@ -277,13 +299,9 @@ public abstract class ImportPresenter {
         updateView(projectWidgetsByName.values());
     }
 
-    private TileWidget createProjectWidget(final ExampleProject project) {
-        TileWidget tileWidget = tileWidgets.get();
-        tileWidget.init(project.getName(),
-                        project.getDescription(),
-                        null,
-                        null,
-                        selectCommand(tileWidget));
+    private ExampleProjectWidget createProjectWidget(final ExampleProject project) {
+        ExampleProjectWidget tileWidget = tileWidgets.get();
+        tileWidget.init(project);
         return tileWidget;
     }
 
@@ -293,27 +311,27 @@ public abstract class ImportPresenter {
         libraryPlaces.goToLibrary();
     }
 
-    private void updateView(final Collection<TileWidget> projectWidgets) {
+    private void updateView(final Collection<ExampleProjectWidget> projectWidgets) {
         view.clearProjects();
-        final List<TileWidget> sortedProjectWidgets = sortProjectWidgets(projectWidgets);
+        final List<ExampleProjectWidget> sortedProjectWidgets = sortProjectWidgets(projectWidgets);
         sortedProjectWidgets.stream().forEach(projectWidget -> {
-            view.addProject(projectWidget.getView().getElement());
+            view.addProject(elemental2DomUtil.asHTMLElement(projectWidget.getView().getElement()));
         });
     }
 
-    private List<TileWidget> sortProjectWidgets(final Collection<TileWidget> projectWidgets) {
-        final List<TileWidget> sortedProjectWidgets = new ArrayList<>(projectWidgets);
+    private List<ExampleProjectWidget> sortProjectWidgets(final Collection<ExampleProjectWidget> projectWidgets) {
+        final List<ExampleProjectWidget> sortedProjectWidgets = new ArrayList<>(projectWidgets);
         Collections.sort(sortedProjectWidgets,
-                         Comparator.comparing(o -> o.getLabel().toUpperCase()));
+                         Comparator.comparing(o -> o.getName().toUpperCase()));
         return sortedProjectWidgets;
     }
 
-    private Command selectCommand(final TileWidget tileWidget) {
+    private Command selectCommand(final ExampleProjectWidget tileWidget) {
         return () -> tileWidget.setSelected(!tileWidget.isSelected());
     }
 
-    public List<TileWidget> filterProjects(final String filter) {
-        List<TileWidget> filteredProjectWidgets = projectWidgetsByName.entrySet().stream()
+    public List<ExampleProjectWidget> filterProjects(final String filter) {
+        List<ExampleProjectWidget> filteredProjectWidgets = projectWidgetsByName.entrySet().stream()
                 .filter(p -> p.getKey().getName().toUpperCase().contains(filter.toUpperCase()))
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
@@ -336,16 +354,18 @@ public abstract class ImportPresenter {
         }
 
         view.showBusyIndicator(view.getImportingMessage());
-        importProjects(projects, event -> {
-            view.hideBusyIndicator();
-            notificationEvent.fire(new NotificationEvent(view.getImportProjectsSuccessMessage(),
-                                                         NotificationEvent.NotificationType.SUCCESS));
-            projectContextChangeEvent.fire(event);
-            // In this case we've imported multiple projects, so just go to the space screen.
-            if (event.getWorkspaceProject() == null) {
-                libraryPlaces.goToLibrary();
-            }
-        }, new HasBusyIndicatorDefaultErrorCallback(view));
+        importProjects(projects,
+                       event -> {
+                           view.hideBusyIndicator();
+                           notificationEvent.fire(new NotificationEvent(view.getImportProjectsSuccessMessage(),
+                                                                        NotificationEvent.NotificationType.SUCCESS));
+                           projectContextChangeEvent.fire(event);
+                           // In this case we've imported multiple projects, so just go to the space screen.
+                           if (event.getWorkspaceProject() == null) {
+                               libraryPlaces.goToLibrary();
+                           }
+                       },
+                       new HasBusyIndicatorDefaultErrorCallback(view));
     }
 
     public void cancel() {
@@ -358,6 +378,6 @@ public abstract class ImportPresenter {
 
     protected OrganizationalUnit activeOrganizationalUnit() {
         return projectContext.getActiveOrganizationalUnit()
-                             .orElseThrow(() -> new IllegalStateException("Cannot setup examples without an active organizational unit."));
+                .orElseThrow(() -> new IllegalStateException("Cannot setup examples without an active organizational unit."));
     }
 }

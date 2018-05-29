@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.examples.backend.server;
 
+import java.util.ArrayList;
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.events.NewProjectEvent;
@@ -34,6 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
+import org.kie.workbench.common.screens.examples.validation.ExampleProjectValidators;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
@@ -49,6 +51,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ExamplesServiceImplCheckNoIndexConfigTest {
@@ -90,6 +93,9 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
     @Mock
     private SessionInfo sessionInfo;
 
+    @Mock
+    private ExampleProjectValidators validators;
+
     private ExamplesServiceImpl service;
 
     @Before
@@ -103,7 +109,10 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
                                               projectService,
                                               metadataService,
                                               newProjectEvent,
-                                              projectScreenService));
+                                              projectScreenService,
+                                              validators));
+
+        when(validators.getValidators()).thenReturn(new ArrayList<>());
     }
 
     @Test
@@ -119,6 +128,7 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
         final ConfigItem item = configGroup.getConfigItem(EnvironmentParameters.AVOID_INDEX);
         assertNotNull(item);
 
-        assertEquals("true", item.getValue());
+        assertEquals("true",
+                     item.getValue());
     }
 }

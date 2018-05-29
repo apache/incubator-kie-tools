@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.examples.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -29,15 +30,29 @@ public class ExampleProject {
     private String name;
     private String description;
     private List<String> tags;
+    private List<ExampleProjectError> errors;
 
-    public ExampleProject( final @MapsTo("root") Path root,
-                           final @MapsTo("name") String name,
-                           final @MapsTo("description") String description,
-                           final @MapsTo("tags") List<String> tags ) {
+    public ExampleProject(final @MapsTo("root") Path root,
+                          final @MapsTo("name") String name,
+                          final @MapsTo("description") String description,
+                          final @MapsTo("tags") List<String> tags,
+                          final @MapsTo("errors") List<ExampleProjectError> errors) {
         this.root = root;
         this.name = name;
         this.description = description;
         this.tags = tags;
+        this.errors = errors;
+    }
+
+    public ExampleProject(Path root,
+                          String name,
+                          String description,
+                          List<String> tags) {
+        this(root,
+             name,
+             description,
+             tags,
+             new ArrayList<>());
     }
 
     public Path getRoot() {
@@ -57,27 +72,26 @@ public class ExampleProject {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof ExampleProject ) ) {
+        if (!(o instanceof ExampleProject)) {
             return false;
         }
 
         ExampleProject that = (ExampleProject) o;
 
-        if ( !root.equals( that.root ) ) {
+        if (!root.equals(that.root)) {
             return false;
         }
-        if ( !name.equals( that.name ) ) {
+        if (!name.equals(that.name)) {
             return false;
         }
-        if ( !description.equals( that.description ) ) {
+        if (!description.equals(that.description)) {
             return false;
         }
-        return !( tags != null ? !tags.equals( that.tags ) : that.tags != null );
-
+        return !(tags != null ? !tags.equals(that.tags) : that.tags != null);
     }
 
     @Override
@@ -85,10 +99,14 @@ public class ExampleProject {
         int result = root.hashCode();
         result = 31 * result + name.hashCode();
         result = ~~result;
-        result = 31 * result + ( tags != null ? tags.hashCode() : 0 );
+        result = 31 * result + (tags != null ? tags.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( description != null ? description.hashCode() : 0 );
+        result = 31 * result + (description != null ? description.hashCode() : 0);
         result = ~~result;
         return result;
+    }
+
+    public List<ExampleProjectError> getErrors() {
+        return errors;
     }
 }

@@ -45,6 +45,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
 import org.kie.workbench.common.screens.examples.model.ExampleProject;
+import org.kie.workbench.common.screens.examples.validation.ExampleProjectValidators;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.services.shared.project.KieModule;
@@ -126,6 +127,9 @@ public class ExamplesServiceImplRepositoryNamesTest {
     @Captor
     private ArgumentCaptor<ProjectScreenModel> modelCapture;
 
+    @Mock
+    private ExampleProjectValidators validators;
+
     @Before
     public void setup() {
         service = spy(new ExamplesServiceImpl(ioService,
@@ -137,7 +141,11 @@ public class ExamplesServiceImplRepositoryNamesTest {
                                               projectService,
                                               metadataService,
                                               newProjectEvent,
-                                              projectScreenService));
+                                              projectScreenService,
+                                              validators));
+
+        when(validators.getValidators()).thenReturn(new ArrayList<>());
+
         when(ouService.getOrganizationalUnits()).thenReturn(new HashSet<OrganizationalUnit>() {{
             add(new OrganizationalUnitImpl("ou1Name",
                                            "ou1Owner",

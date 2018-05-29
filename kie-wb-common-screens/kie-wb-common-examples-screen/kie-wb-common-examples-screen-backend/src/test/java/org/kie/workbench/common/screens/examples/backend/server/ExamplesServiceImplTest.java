@@ -55,6 +55,7 @@ import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit
 import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ExamplesMetaData;
+import org.kie.workbench.common.screens.examples.validation.ExampleProjectValidators;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
@@ -131,10 +132,14 @@ public class ExamplesServiceImplTest {
     @Mock
     private ProjectScreenService projectScreenService;
 
+    @Mock
+    private ExampleProjectValidators validators;
+
     private ExamplesServiceImpl service;
 
     @Before
     public void setup() {
+
         service = spy(new ExamplesServiceImpl(ioService,
                                               configurationFactory,
                                               repositoryFactory,
@@ -144,7 +149,11 @@ public class ExamplesServiceImplTest {
                                               projectService,
                                               metadataService,
                                               newProjectEvent,
-                                              projectScreenService));
+                                              projectScreenService,
+                                              validators));
+
+        when(this.validators.getValidators()).thenReturn(new ArrayList<>());
+
         when(ouService.getOrganizationalUnits()).thenReturn(new HashSet<OrganizationalUnit>() {{
             add(new OrganizationalUnitImpl("ou1Name",
                                            "ou1Owner",
