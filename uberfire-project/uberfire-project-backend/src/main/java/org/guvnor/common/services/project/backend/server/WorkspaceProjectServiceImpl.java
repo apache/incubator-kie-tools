@@ -111,8 +111,10 @@ public class WorkspaceProjectServiceImpl
 
     @Override
     public boolean spaceHasNoProjectsWithName(final OrganizationalUnit organizationalUnit,
-                                              final String name) {
-        return getAllWorkspaceProjectsByName(organizationalUnit, name).isEmpty();
+                                              final String name,
+                                              final WorkspaceProject projectToIgnore) {
+        return getAllWorkspaceProjectsByName(organizationalUnit, name)
+                .stream().noneMatch(p -> !p.getEncodedIdentifier().equals(projectToIgnore.getEncodedIdentifier()));
     }
 
     @Override

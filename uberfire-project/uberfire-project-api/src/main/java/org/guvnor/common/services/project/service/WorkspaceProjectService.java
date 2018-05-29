@@ -38,7 +38,8 @@ public interface WorkspaceProjectService {
                                                                final String name);
 
     boolean spaceHasNoProjectsWithName(final OrganizationalUnit organizationalUnit,
-                                       final String name);
+                                       final String name,
+                                       final WorkspaceProject projectToIgnore);
 
     WorkspaceProject newProject(final OrganizationalUnit organizationalUnit,
                                 final POM pom);

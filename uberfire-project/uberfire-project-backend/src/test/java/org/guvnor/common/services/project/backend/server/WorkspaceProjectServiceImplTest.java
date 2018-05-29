@@ -128,10 +128,13 @@ public class WorkspaceProjectServiceImplTest {
 
         doReturn(Optional.of(mock(Branch.class))).when(repository1).getDefaultBranch();
         doReturn("repository1").when(repository1).getAlias();
+        doReturn("space1/repository1").when(repository1).getIdentifier();
         doReturn(Optional.of(mock(Branch.class))).when(repository2).getDefaultBranch();
         doReturn("repository-with-same-alias").when(repository2).getAlias();
+        doReturn("space1/repository-with-same-alias").when(repository2).getIdentifier();
         doReturn(Optional.of(mock(Branch.class))).when(repository3).getDefaultBranch();
         doReturn("repository-with-same-alias").when(repository3).getAlias();
+        doReturn("space2/repository-with-same-alias").when(repository3).getIdentifier();
 
         allRepositories = new ArrayList<>();
         allRepositories.add(repository1);
@@ -196,7 +199,11 @@ public class WorkspaceProjectServiceImplTest {
     @Test
     public void spaceHasProjectsWithName() throws Exception {
         final boolean hasNoProjects = workspaceProjectService.spaceHasNoProjectsWithName(ou1,
-                                                                                         "repository-with-same-alias");
+                                                                                         "repository1",
+                                                                                         new WorkspaceProject(ou1,
+                                                                                                              repository2,
+                                                                                                              repository2.getDefaultBranch().get(),
+                                                                                                              null));
 
         assertFalse(hasNoProjects);
     }
@@ -204,7 +211,23 @@ public class WorkspaceProjectServiceImplTest {
     @Test
     public void spaceHasNoProjectsWithName() throws Exception {
         final boolean hasNoProjects = workspaceProjectService.spaceHasNoProjectsWithName(ou1,
-                                                                                         "other-project");
+                                                                                         "other-project",
+                                                                                         new WorkspaceProject(ou1,
+                                                                                                              repository1,
+                                                                                                              repository1.getDefaultBranch().get(),
+                                                                                                              null));
+
+        assertTrue(hasNoProjects);
+    }
+
+    @Test
+    public void spaceHasProjectsWithNameSameProject() throws Exception {
+        final boolean hasNoProjects = workspaceProjectService.spaceHasNoProjectsWithName(ou1,
+                                                                                         "repository1",
+                                                                                         new WorkspaceProject(ou1,
+                                                                                                              repository1,
+                                                                                                              repository1.getDefaultBranch().get(),
+                                                                                                              null));
 
         assertTrue(hasNoProjects);
     }
