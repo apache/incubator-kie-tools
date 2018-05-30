@@ -27,8 +27,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SVGShapeViewResourceTest {
@@ -36,11 +38,15 @@ public class SVGShapeViewResourceTest {
     @Mock
     private Function<SVGShapeViewResource.Arguments, SVGShapeView> builderFunction;
 
+    @Mock
+    private SVGShapeView view;
+
     private SVGShapeViewResource tested;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
+        when(builderFunction.apply(any(SVGShapeViewResource.Arguments.class))).thenReturn(view);
         tested = new SVGShapeViewResource(builderFunction);
     }
 
@@ -54,6 +60,7 @@ public class SVGShapeViewResourceTest {
         assertEquals(100d, arguments.width, 0d);
         assertEquals(222d, arguments.heigth, 0d);
         assertTrue(arguments.resizable);
+        verify(view, times(1)).refresh();
     }
 
     @Test
@@ -64,5 +71,6 @@ public class SVGShapeViewResourceTest {
                times(1)).apply(argumentCaptor.capture());
         final SVGShapeViewResource.Arguments arguments = argumentCaptor.getValue();
         assertTrue(arguments.resizable);
+        verify(view, times(1)).refresh();
     }
 }

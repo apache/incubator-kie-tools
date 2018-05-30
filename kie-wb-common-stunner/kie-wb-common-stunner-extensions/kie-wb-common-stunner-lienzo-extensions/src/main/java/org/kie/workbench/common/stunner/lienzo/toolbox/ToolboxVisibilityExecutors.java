@@ -30,8 +30,8 @@ import org.uberfire.mvp.Command;
 
 public class ToolboxVisibilityExecutors {
 
-    private static final double ANIMATION_SCALE_DELAY_MILLIS = 150;
-    private static final double ANIMATION_ALPHA_DELAY_MILLIS = 150;
+    private static final double ANIMATION_SCALE_DELAY_MILLIS = 50;
+    private static final double ANIMATION_ALPHA_DELAY_MILLIS = 50;
 
     public static AnimatedAlphaGroupExecutor alpha(final double targetAlphaValue) {
         return new AnimatedAlphaGroupExecutor(targetAlphaValue);

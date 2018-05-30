@@ -30,8 +30,6 @@ private SVGShapeView ${name}View(final double width, final double height, final 
     view.getShapeStateHandler().setBorderShape(() -> SVGViewUtils.getVisibleShape(${stateViewIds}));
     view.getShapeStateHandler().setRenderType(${stateViewPolicy});
 
-    view.refresh();
-
     return view;
 }
 

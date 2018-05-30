@@ -22,10 +22,12 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
@@ -124,9 +126,42 @@ public class WiresScalableContainerTest {
                times(1)).setX(eq(x));
         verify(tranformableContainer,
                times(1)).setY(eq(y));
+        ArgumentCaptor<Point2D> scaleRatioCaptor = ArgumentCaptor.forClass(Point2D.class);
         verify(tranformableContainer,
-               times(1)).setScale(eq(newSize / BB_WIDTH),
-                                  eq(newSize / BB_HEIGHT));
+               times(1)).setScale(scaleRatioCaptor.capture());
+        Point2D scaleRatio = scaleRatioCaptor.getValue();
+        assertEquals(newSize / BB_WIDTH, scaleRatio.getX(), 0);
+        assertEquals(newSize / BB_HEIGHT, scaleRatio.getY(), 0);
+    }
+
+    @Test
+    public void testScaleTwiceSoCatchingRatio() {
+        final WiresScalableContainer wsc = tested.addScalable(nonScalablePrimitive);
+        final double newSize = 403.5d;
+        final double x = 12;
+        final double y = 20.5d;
+        tested.scaleTo(x,
+                       y,
+                       newSize,
+                       newSize);
+        tested.scaleTo(x,
+                       y,
+                       newSize,
+                       newSize);
+        assertEquals(tested,
+                     wsc);
+        verify(tranformableContainer,
+               times(1)).add(eq(nonScalablePrimitive));
+        verify(tranformableContainer,
+               times(1)).setX(eq(x));
+        verify(tranformableContainer,
+               times(1)).setY(eq(y));
+        ArgumentCaptor<Point2D> scaleRatioCaptor = ArgumentCaptor.forClass(Point2D.class);
+        verify(tranformableContainer,
+               times(1)).setScale(scaleRatioCaptor.capture());
+        Point2D scaleRatio = scaleRatioCaptor.getValue();
+        assertEquals(newSize / BB_WIDTH, scaleRatio.getX(), 0);
+        assertEquals(newSize / BB_HEIGHT, scaleRatio.getY(), 0);
     }
 
     @Test
@@ -158,9 +193,12 @@ public class WiresScalableContainerTest {
                times(1)).setX(eq(x));
         verify(tranformableContainer,
                times(1)).setY(eq(y));
+        ArgumentCaptor<Point2D> scaleRatioCaptor = ArgumentCaptor.forClass(Point2D.class);
         verify(tranformableContainer,
-               times(1)).setScale(eq(newSize / BB_WIDTH),
-                                  eq(newSize / BB_HEIGHT));
+               times(1)).setScale(scaleRatioCaptor.capture());
+        Point2D scaleRatio = scaleRatioCaptor.getValue();
+        assertEquals(newSize / BB_WIDTH, scaleRatio.getX(), 0);
+        assertEquals(newSize / BB_HEIGHT, scaleRatio.getY(), 0);
     }
 
     @Test

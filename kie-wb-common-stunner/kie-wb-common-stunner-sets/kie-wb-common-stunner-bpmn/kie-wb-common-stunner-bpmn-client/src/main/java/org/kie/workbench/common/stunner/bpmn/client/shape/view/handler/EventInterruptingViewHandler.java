@@ -29,7 +29,6 @@ public class EventInterruptingViewHandler
 
     // The id for the circle to change in the SVG file.
     static final String ID_START = "start";
-    static final String ID_START_NON_INTERRUPTING = "start-noninterrupting";
 
     @Override
     public void handle(final BaseStartEvent bean,
@@ -43,11 +42,13 @@ public class EventInterruptingViewHandler
             isInterrupting = ((StartSignalEvent) bean).getExecutionSet().getIsInterrupting().getValue();
         }
         if (null != isInterrupting) {
-            final String visibleId = isInterrupting ? ID_START : ID_START_NON_INTERRUPTING;
-            final String nonVisibleId = !isInterrupting ? ID_START : ID_START_NON_INTERRUPTING;
-            SVGViewUtils.switchVisibility(view,
-                                          visibleId,
-                                          nonVisibleId);
+            // Interrupting -> Normal
+            // NO Interrupting -> dash
+            final double fillAlpha = isInterrupting ? 1 : 0;
+            final double strokeAlpha = isInterrupting ? 0 : 1;
+            SVGViewUtils.getPrimitive(view,
+                                      ID_START)
+                    .ifPresent(p -> p.get().setFillAlpha(fillAlpha).setStrokeAlpha(strokeAlpha));
         }
     }
 }

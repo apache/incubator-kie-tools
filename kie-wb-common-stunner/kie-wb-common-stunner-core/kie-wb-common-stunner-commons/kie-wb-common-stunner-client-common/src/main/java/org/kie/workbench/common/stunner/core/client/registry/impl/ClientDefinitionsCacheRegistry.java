@@ -18,15 +18,12 @@ package org.kie.workbench.common.stunner.core.client.registry.impl;
 
 import java.util.HashMap;
 
-import javax.annotation.PreDestroy;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.core.api.FactoryManager;
-import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.registry.impl.DefaultDefinitionsCacheRegistry;
-import org.kie.workbench.common.stunner.core.registry.impl.DefinitionMapRegistry;
 import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 
 @ApplicationScoped
@@ -40,22 +37,18 @@ public class ClientDefinitionsCacheRegistry {
     }
 
     @Inject
-    public ClientDefinitionsCacheRegistry(final FactoryManager factoryManager,
-                                          final AdapterManager adapterManager) {
-        this.definitionsCacheRegistry =
-                new DefaultDefinitionsCacheRegistry(factoryManager::newDefinition,
-                                                    factoryManager::newDefinition,
-                                                    DefinitionMapRegistry.build(adapterManager,
-                                                                                new HashMap<>()));
+    public ClientDefinitionsCacheRegistry(final DefaultDefinitionsCacheRegistry definitionsCacheRegistry) {
+        this.definitionsCacheRegistry = definitionsCacheRegistry;
+    }
+
+    @PostConstruct
+    public void init() {
+        definitionsCacheRegistry.useStorage(HashMap::new);
     }
 
     @Produces
+    @ApplicationScoped
     public DefinitionsCacheRegistry getRegistry() {
         return definitionsCacheRegistry;
-    }
-
-    @PreDestroy
-    public void destroy() {
-        definitionsCacheRegistry.destroy();
     }
 }

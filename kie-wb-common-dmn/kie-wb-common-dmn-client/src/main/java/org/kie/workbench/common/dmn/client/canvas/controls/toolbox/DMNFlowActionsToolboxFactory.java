@@ -26,7 +26,6 @@ import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.AbstractActionsToolboxFactory;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxView;
@@ -34,33 +33,30 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.C
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.CreateNodeAction;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.FlowActionsToolbox;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ToolboxAction;
+import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ToolboxDomainLookups;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.core.lookup.util.CommonLookups;
-import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.lookup.domain.CommonDomainLookups;
 
 @Dependent
 @DMNFlowActionsToolbox
 public class DMNFlowActionsToolboxFactory
         extends AbstractActionsToolboxFactory {
 
-    private final DefinitionUtils definitionUtils;
-    private final CommonLookups commonLookups;
+    private final ToolboxDomainLookups toolboxDomainLookups;
     private final ManagedInstance<CreateConnectorAction> createConnectorActions;
     private final ManagedInstance<CreateNodeAction> createNodeActions;
     private final ManagedInstance<ActionsToolboxView> views;
 
     @Inject
-    public DMNFlowActionsToolboxFactory(final DefinitionUtils definitionUtils,
-                                        final CommonLookups commonLookups,
+    public DMNFlowActionsToolboxFactory(final ToolboxDomainLookups toolboxDomainLookups,
                                         final @Any ManagedInstance<CreateConnectorAction> createConnectorActions,
                                         final @Any @DMNFlowActionsToolbox ManagedInstance<CreateNodeAction> createNodeActions,
                                         final @Any @FlowActionsToolbox ManagedInstance<ActionsToolboxView> views) {
-        this.definitionUtils = definitionUtils;
-        this.commonLookups = commonLookups;
+        this.toolboxDomainLookups = toolboxDomainLookups;
         this.createConnectorActions = createConnectorActions;
         this.createNodeActions = createNodeActions;
         this.views = views;
@@ -79,27 +75,21 @@ public class DMNFlowActionsToolboxFactory
         final Node<Definition<Object>, Edge> node = (Node<Definition<Object>, Edge>) element;
         final Diagram diagram = canvasHandler.getDiagram();
         final String defSetId = diagram.getMetadata().getDefinitionSetId();
-
+        final CommonDomainLookups lookup = toolboxDomainLookups.get(defSetId);
         // Look for the allowed connectors present in the Definition Set.
-        final Set<String> allowedConnectorIds = commonLookups.getAllowedConnectors(defSetId,
-                                                                                   node,
-                                                                                   0,
-                                                                                   10);
+        final Set<String> allowedConnectorIds = lookup.lookupTargetConnectors(node);
         for (final String allowedConnectorId : allowedConnectorIds) {
             // Append a new action for each connector.
             actions.add(createConnectorActions.get()
                                 .setEdgeId(allowedConnectorId));
             // Append a new action for each candidate target node (as from the current connector).
-            commonLookups
-                    .getAllowedTargetDefinitions(defSetId,
-                                                 diagram.getGraph(),
-                                                 node,
-                                                 allowedConnectorId,
-                                                 0,
-                                                 10)
-                    .forEach(def -> actions.add(createNodeActions.get()
-                                                        .setEdgeId(allowedConnectorId)
-                                                        .setNodeId(getDefinitionId(def))));
+            final Set<String> defIds = lookup
+                    .lookupTargetNodes(diagram.getGraph(),
+                                       node,
+                                       allowedConnectorId);
+            defIds.forEach(definitionId -> actions.add(createNodeActions.get()
+                                                               .setEdgeId(allowedConnectorId)
+                                                               .setNodeId(definitionId)));
         }
         return actions;
     }
@@ -109,13 +99,5 @@ public class DMNFlowActionsToolboxFactory
         createConnectorActions.destroyAll();
         createNodeActions.destroyAll();
         views.destroyAll();
-    }
-
-    private String getDefinitionId(final Object def) {
-        return getDefinitionManager().adapters().forDefinition().getId(def);
-    }
-
-    private DefinitionManager getDefinitionManager() {
-        return definitionUtils.getDefinitionManager();
     }
 }

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.lookup.definition;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -64,7 +65,7 @@ public class DefinitionLookupManagerImpl
             final Set<String> defs = definitionManager.adapters().forDefinitionSet().getDefinitions(defSet);
             return new LinkedList<>(defs);
         }
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

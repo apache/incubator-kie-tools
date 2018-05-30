@@ -37,4 +37,6 @@ public interface RuleHandlerRegistry extends DynamicRegistry<RuleEvaluationHandl
      * Returns the rule extension handler by its type.
      */
     <T extends RuleExtensionHandler> T getExtensionHandler(final Class<T> type);
+
+    void clear();
 }

@@ -25,7 +25,7 @@ import org.uberfire.mvp.Command;
 public abstract class AbstractFocusableGroupItem<T extends AbstractFocusableGroupItem>
         extends AbstractGroupItem<T> {
 
-    private final static int FOCUS_DELAY_MILLIS = 100;
+    private final static int FOCUS_DELAY_MILLIS = 50;
     static final double ALPHA_FOCUSED = 1d;
     static final double ALPHA_UNFOCUSED = 0.75d;
 

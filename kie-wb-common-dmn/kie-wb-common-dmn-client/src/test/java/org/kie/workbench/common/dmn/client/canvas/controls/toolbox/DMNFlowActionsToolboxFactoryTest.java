@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.A
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxView;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.CreateConnectorAction;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.CreateNodeAction;
+import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ToolboxDomainLookups;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
@@ -41,8 +42,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.lookup.util.CommonLookups;
-import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.lookup.domain.CommonDomainLookups;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -50,7 +50,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -65,9 +64,6 @@ public class DMNFlowActionsToolboxFactoryTest {
     private static final String E_UUID = "e1";
 
     @Mock
-    private DefinitionUtils definitionUtils;
-
-    @Mock
     private DefinitionManager definitionManager;
 
     @Mock
@@ -77,7 +73,10 @@ public class DMNFlowActionsToolboxFactoryTest {
     private DefinitionAdapter definitionAdapter;
 
     @Mock
-    private CommonLookups commonLookups;
+    private ToolboxDomainLookups toolboxLookups;
+
+    @Mock
+    private CommonDomainLookups domainLookups;
 
     @Mock
     private CreateConnectorAction createConnectorActionInstance;
@@ -114,7 +113,6 @@ public class DMNFlowActionsToolboxFactoryTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        when(definitionUtils.getDefinitionManager()).thenReturn(definitionManager);
         when(definitionManager.adapters()).thenReturn(adapters);
         when(adapters.forDefinition()).thenReturn(definitionAdapter);
         when(definitionAdapter.getId(eq(allowedNodeDefinition))).thenReturn(NODE_ID);
@@ -129,23 +127,15 @@ public class DMNFlowActionsToolboxFactoryTest {
         when(metadata.getDefinitionSetId()).thenReturn(DS_ID);
         when(element.getUUID()).thenReturn(E_UUID);
         when(element.asNode()).thenReturn(element);
-        when(commonLookups.getAllowedConnectors(eq(DS_ID),
-                                                eq(element),
-                                                anyInt(),
-                                                anyInt()))
+        when(toolboxLookups.get(anyString())).thenReturn(domainLookups);
+        when(domainLookups.lookupTargetConnectors(eq(element)))
                 .thenReturn(Collections.singleton(EDGE_ID));
-        when(definitionUtils.getDefaultConnectorId(eq(DS_ID)))
-                .thenReturn(EDGE_ID);
-        when(commonLookups.getAllowedTargetDefinitions(eq(DS_ID),
-                                                       eq(graph),
-                                                       eq(element),
-                                                       eq(EDGE_ID),
-                                                       anyInt(),
-                                                       anyInt()))
-                .thenReturn(Collections.singleton(allowedNodeDefinition));
+        when(domainLookups.lookupTargetNodes(eq(graph),
+                                             eq(element),
+                                             eq(EDGE_ID)))
+                .thenReturn(Collections.singleton(NODE_ID));
         view = new ManagedInstanceStub<>(viewInstance);
-        this.tested = new DMNFlowActionsToolboxFactory(definitionUtils,
-                                                       commonLookups,
+        this.tested = new DMNFlowActionsToolboxFactory(toolboxLookups,
                                                        createConnectorAction,
                                                        createNodeAction,
                                                        view);

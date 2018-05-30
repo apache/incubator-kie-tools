@@ -38,7 +38,6 @@ public class EventInterruptingViewHandlerTest extends EventViewHandlerTestBase {
     public void init() {
         super.init();
         when(child1.getPrimitiveId()).thenReturn(EventInterruptingViewHandler.ID_START);
-        when(child2.getPrimitiveId()).thenReturn(EventInterruptingViewHandler.ID_START_NON_INTERRUPTING);
         tested = new EventInterruptingViewHandler();
     }
 
@@ -48,8 +47,8 @@ public class EventInterruptingViewHandlerTest extends EventViewHandlerTestBase {
         final StartTimerEvent bean = new StartTimerEvent();
         bean.getExecutionSet().getIsInterrupting().setValue(false);
         tested.handle(bean, view);
-        verify(prim1).setAlpha(eq(0d));
-        verify(prim2).setAlpha(eq(1d));
+        verify(prim1).setFillAlpha(eq(0d));
+        verify(prim1).setStrokeAlpha(eq(1d));
     }
 
     @Test
@@ -58,8 +57,8 @@ public class EventInterruptingViewHandlerTest extends EventViewHandlerTestBase {
         final StartTimerEvent bean = new StartTimerEvent();
         bean.getExecutionSet().getIsInterrupting().setValue(true);
         tested.handle(bean, view);
-        verify(prim1).setAlpha(eq(1d));
-        verify(prim2).setAlpha(eq(0d));
+        verify(prim1).setFillAlpha(eq(1d));
+        verify(prim1).setStrokeAlpha(eq(0d));
     }
 
     @Test
@@ -68,8 +67,8 @@ public class EventInterruptingViewHandlerTest extends EventViewHandlerTestBase {
         final StartMessageEvent bean = new StartMessageEvent();
         bean.getExecutionSet().getIsInterrupting().setValue(false);
         tested.handle(bean, view);
-        verify(prim1).setAlpha(eq(0d));
-        verify(prim2).setAlpha(eq(1d));
+        verify(prim1).setFillAlpha(eq(0d));
+        verify(prim1).setStrokeAlpha(eq(1d));
     }
 
     @Test
@@ -78,8 +77,8 @@ public class EventInterruptingViewHandlerTest extends EventViewHandlerTestBase {
         final StartMessageEvent bean = new StartMessageEvent();
         bean.getExecutionSet().getIsInterrupting().setValue(true);
         tested.handle(bean, view);
-        verify(prim1).setAlpha(eq(1d));
-        verify(prim2).setAlpha(eq(0d));
+        verify(prim1).setFillAlpha(eq(1d));
+        verify(prim1).setStrokeAlpha(eq(0d));
     }
 
     @Test
@@ -88,8 +87,8 @@ public class EventInterruptingViewHandlerTest extends EventViewHandlerTestBase {
         final StartSignalEvent bean = new StartSignalEvent();
         bean.getExecutionSet().getIsInterrupting().setValue(false);
         tested.handle(bean, view);
-        verify(prim1).setAlpha(eq(0d));
-        verify(prim2).setAlpha(eq(1d));
+        verify(prim1).setFillAlpha(eq(0d));
+        verify(prim1).setStrokeAlpha(eq(1d));
     }
 
     @Test
@@ -98,7 +97,7 @@ public class EventInterruptingViewHandlerTest extends EventViewHandlerTestBase {
         final StartSignalEvent bean = new StartSignalEvent();
         bean.getExecutionSet().getIsInterrupting().setValue(true);
         tested.handle(bean, view);
-        verify(prim1).setAlpha(eq(1d));
-        verify(prim2).setAlpha(eq(0d));
+        verify(prim1).setFillAlpha(eq(1d));
+        verify(prim1).setStrokeAlpha(eq(0d));
     }
 }

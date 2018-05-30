@@ -71,11 +71,10 @@ public class DecoratedShapeView<T extends WiresShapeViewExt>
         this.scalableContainer = scalableContainer;
         theShape.setFillBoundsForSelection(true);
         scalableContainer.addScalable(theShape);
-        resize(0,
-               0,
-               width,
-               height,
-               false);
+        resizeDecorator(0,
+                        0,
+                        width,
+                        height);
     }
 
     @Override
@@ -150,24 +149,15 @@ public class DecoratedShapeView<T extends WiresShapeViewExt>
         super.destroy();
     }
 
-    void resize(final double x,
-                final double y,
-                final double width,
-                final double height,
-                final boolean refresh) {
+    void resizeDecorator(final double x,
+                         final double y,
+                         final double width,
+                         final double height) {
         setupDecorator(getPath(),
                        x,
                        y,
                        width,
                        height);
-        scalableContainer
-                .scaleTo(x,
-                         y,
-                         width,
-                         height);
-        if (refresh) {
-            refresh();
-        }
     }
 
     private final class DecoratedWiresShapeControlHandleList extends WiresShapeControlHandleList {
@@ -198,11 +188,10 @@ public class DecoratedShapeView<T extends WiresShapeViewExt>
                               final double height,
                               final boolean refresh) {
             // First let's resize the scalable container.
-            DecoratedShapeView.this.resize(null != x ? x : 0,
-                                           null != y ? y : 0,
-                                           width,
-                                           height,
-                                           false);
+            DecoratedShapeView.this.resizeDecorator(null != x ? x : 0,
+                                                    null != y ? y : 0,
+                                                    width,
+                                                    height);
             // Delegate the resize operation to the parent class.
             super.resize(x,
                          y,

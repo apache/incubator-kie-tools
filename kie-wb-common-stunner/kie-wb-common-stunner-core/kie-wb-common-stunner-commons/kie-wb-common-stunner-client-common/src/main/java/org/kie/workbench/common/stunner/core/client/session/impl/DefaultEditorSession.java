@@ -49,6 +49,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.Request;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -65,6 +66,7 @@ public class DefaultEditorSession
     private final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final SessionCommandManager<AbstractCanvasHandler> requestCommandManager;
+    private final StunnerPreferencesRegistry stunnerPreferencesRegistry;
     private final CommandRegistry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
 
     @Inject
@@ -72,12 +74,14 @@ public class DefaultEditorSession
                                 final RegistryFactory registryFactory,
                                 final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
                                 final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                final @Request SessionCommandManager<AbstractCanvasHandler> requestCommandManager) {
+                                final @Request SessionCommandManager<AbstractCanvasHandler> requestCommandManager,
+                                final StunnerPreferencesRegistry stunnerPreferencesRegistry) {
         this.session = session;
         this.commandRegistry = registryFactory.newCommandRegistry();
         this.sessionCommandManager = sessionCommandManager;
         this.requestCommandManager = requestCommandManager;
         this.canvasCommandManager = canvasCommandManager;
+        this.stunnerPreferencesRegistry = stunnerPreferencesRegistry;
     }
 
     @PostConstruct
@@ -156,42 +160,42 @@ public class DefaultEditorSession
 
     @Override
     public ZoomControl<AbstractCanvas> getZoomControl() {
-        return getCanvasControl(0);
+        return (ZoomControl<AbstractCanvas>) session.getCanvasControl(ZoomControl.class);
     }
 
     @Override
     public PanControl<AbstractCanvas> getPanControl() {
-        return getCanvasControl(1);
+        return (PanControl<AbstractCanvas>) session.getCanvasControl(PanControl.class);
     }
 
     @Override
     public KeyboardControl<AbstractCanvas, ClientSession> getKeyboardControl() {
-        return getCanvasControl(2);
+        return (KeyboardControl<AbstractCanvas, ClientSession>) session.getCanvasControl(KeyboardControl.class);
     }
 
     @Override
     public ClipboardControl<Element, AbstractCanvas, ClientSession> getClipboardControl() {
-        return getCanvasControl(3);
+        return (ClipboardControl<Element, AbstractCanvas, ClientSession>) session.getCanvasControl(ClipboardControl.class);
     }
 
     @Override
     public SelectionControl<AbstractCanvasHandler, Element> getSelectionControl() {
-        return getCanvasHandlerControl(0);
+        return (SelectionControl<AbstractCanvasHandler, Element>) session.getCanvasHandlerControl(SelectionControl.class);
     }
 
     @Override
     public ConnectionAcceptorControl<AbstractCanvasHandler> getConnectionAcceptorControl() {
-        return getCanvasHandlerControl(2);
+        return (ConnectionAcceptorControl<AbstractCanvasHandler>) session.getCanvasHandlerControl(ConnectionAcceptorControl.class);
     }
 
     @Override
     public ContainmentAcceptorControl<AbstractCanvasHandler> getContainmentAcceptorControl() {
-        return getCanvasHandlerControl(3);
+        return (ContainmentAcceptorControl<AbstractCanvasHandler>) session.getCanvasHandlerControl(ContainmentAcceptorControl.class);
     }
 
     @Override
     public DockingAcceptorControl<AbstractCanvasHandler> getDockingAcceptorControl() {
-        return getCanvasHandlerControl(4);
+        return (DockingAcceptorControl<AbstractCanvasHandler>) session.getCanvasHandlerControl(DockingAcceptorControl.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -208,19 +212,5 @@ public class DefaultEditorSession
             }
         }
         onControlRegistered(control);
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> T getCanvasControl(final int index) {
-        return session.getCanvasControls().size() > index ?
-                (T) session.getCanvasControls().get(index) :
-                null;
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> T getCanvasHandlerControl(final int index) {
-        return session.getCanvasHandlerControls().size() > index ?
-                (T) session.getCanvasHandlerControls().get(index) :
-                null;
     }
 }

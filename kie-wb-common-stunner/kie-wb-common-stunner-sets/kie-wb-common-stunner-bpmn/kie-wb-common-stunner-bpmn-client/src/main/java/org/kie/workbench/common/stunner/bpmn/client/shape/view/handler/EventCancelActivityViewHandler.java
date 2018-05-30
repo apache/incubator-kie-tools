@@ -29,7 +29,6 @@ public class EventCancelActivityViewHandler
 
     // The id for the circle to change in the SVG file.
     static final String ID_INTERMEDIATE = "intermediate";
-    static final String ID_INTERMEDIATE_NON_INTERRUPTING = "intermediate-noninterrupting";
 
     @Override
     public void handle(final BaseCatchingIntermediateEvent bean,
@@ -43,11 +42,13 @@ public class EventCancelActivityViewHandler
             isCancelActivity = ((IntermediateMessageEventCatching) bean).getExecutionSet().getCancelActivity().getValue();
         }
         if (null != isCancelActivity) {
-            final String visibleId = isCancelActivity ? ID_INTERMEDIATE : ID_INTERMEDIATE_NON_INTERRUPTING;
-            final String nonVisibleId = !isCancelActivity ? ID_INTERMEDIATE : ID_INTERMEDIATE_NON_INTERRUPTING;
-            SVGViewUtils.switchVisibility(view,
-                                          visibleId,
-                                          nonVisibleId);
+            // Cancel -> Normal
+            // NO Cancel -> dash
+            final double fillAlpha = isCancelActivity ? 1 : 0;
+            final double strokeAlpha = isCancelActivity ? 0 : 1;
+            SVGViewUtils.getPrimitive(view,
+                                      ID_INTERMEDIATE)
+                    .ifPresent(p -> p.get().setFillAlpha(fillAlpha).setStrokeAlpha(strokeAlpha));
         }
     }
 }

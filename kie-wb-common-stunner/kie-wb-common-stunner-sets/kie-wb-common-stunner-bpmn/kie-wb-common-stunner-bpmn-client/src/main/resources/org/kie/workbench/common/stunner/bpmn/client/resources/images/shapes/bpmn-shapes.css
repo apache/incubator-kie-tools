@@ -137,12 +137,10 @@
 }
 
 #event-background,
-#event-type #intermediate-noninterrupting,
 #event-type #intermediate,
 #event-type #end,
 #event-type #end_1_,
 #event-type #start,
-#event-type #start-noninterrupting,
 #event-subtypes #cancel-throwing,
 #event-subtypes #cancel-catching,
 #event-subtypes #compensation-throwing,
@@ -183,11 +181,13 @@
 }
 #startSignalEvent #start {
     opacity: 1;
+    fill-opacity: 1;
     fill: #4aa241;
-}
-#startSignalEvent #start-noninterrupting {
-    opacity: 0.01; /*Forcing to generate this element for further use, it depends on the runtime value for the "is interrupting" property. */
-    fill: #4aa241;
+    stroke-opacity: 0;
+    stroke-dasharray: 15, 15;
+    stroke-width: 5px;
+    stroke: #4aa241;
+
 }
 #startSignalEvent #signal-catching {
     opacity: 1;
@@ -200,11 +200,13 @@
 }
 #startMessageEvent #start {
     opacity: 1;
+    fill-opacity: 1;
     fill: #4aa241;
-}
-#startMessageEvent #start-noninterrupting {
-    opacity: 0.01; /*Forcing to generate this element for further use, it depends on the runtime value for the "is interrupting" property. */
-    fill: #4aa241;
+    stroke-opacity: 0;
+    stroke-dasharray: 15, 15;
+    stroke-width: 5px;
+    stroke: #4aa241;
+
 }
 #startMessageEvent #message-catching {
     opacity: 1;
@@ -217,11 +219,13 @@
 }
 #startTimerEvent #start {
     opacity: 1;
+    fill-opacity: 1;
     fill: #4aa241;
-}
-#startTimerEvent #start-noninterrupting {
-    opacity: 0.01; /*Forcing to generate this element for further use, it depends on the runtime value for the "is interrupting" property. */
-    fill: #4aa241;
+    stroke-opacity: 0;
+    stroke-dasharray: 15, 15;
+    stroke-width: 5px;
+    stroke: #4aa241;
+
 }
 #startTimerEvent #wait {
     opacity: 1;
@@ -247,11 +251,13 @@
 }
 #intermediateTimerEvent #intermediate {
     opacity: 1;
+    fill-opacity: 1;
     fill: #e5a000;
-}
-#intermediateTimerEvent #intermediate-noninterrupting {
-    opacity: 0.01; /*Forcing to generate this element for further use, it depends on the runtime value for the "is interrupting" property. */
-    fill: #e5a000;
+    stroke-opacity: 0;
+    stroke-dasharray: 15, 15;
+    stroke-width: 5px;
+    stroke: #e5a000;
+
 }
 #intermediateTimerEvent #wait {
     opacity: 1;
@@ -264,11 +270,13 @@
 }
 #intermediateSignalCatchingEvent #intermediate {
     opacity: 1;
+    fill-opacity: 1;
     fill: #e5a000;
-}
-#intermediateSignalCatchingEvent #intermediate-noninterrupting {
-    opacity: 0.01; /*Forcing to generate this element for further use, it depends on the runtime value for the "is interrupting" property. */
-    fill: #e5a000;
+    stroke-opacity: 0;
+    stroke-dasharray: 15, 15;
+    stroke-width: 5px;
+    stroke: #e5a000;
+
 }
 #intermediateSignalCatchingEvent #signal-catching {
     opacity: 1;
@@ -281,11 +289,12 @@
 }
 #intermediateMessageCatchingEvent #intermediate {
     opacity: 1;
+    fill-opacity: 1;
     fill: #e5a000;
-}
-#intermediateMessageCatchingEvent #intermediate-noninterrupting {
-    opacity: 0.01; /*Forcing to generate this element for further use, it depends on the runtime value for the "is interrupting" property. */
-    fill: #e5a000;
+    stroke-opacity: 0;
+    stroke-dasharray: 15, 15;
+    stroke-width: 5px;
+    stroke: #e5a000;
 }
 #intermediateMessageCatchingEvent #message-catching {
     opacity: 1;
@@ -369,7 +378,6 @@
     opacity: 1;
     fill: #a30000;
 }
-
 
 #endTerminateEvent #event-background {
     opacity: 1;

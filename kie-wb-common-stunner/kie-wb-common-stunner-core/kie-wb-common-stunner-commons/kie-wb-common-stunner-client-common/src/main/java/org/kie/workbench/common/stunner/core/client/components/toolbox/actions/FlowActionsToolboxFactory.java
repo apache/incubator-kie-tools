@@ -33,7 +33,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.core.lookup.util.CommonLookups;
+import org.kie.workbench.common.stunner.core.lookup.domain.CommonDomainLookups;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.mvp.Command;
 
@@ -56,7 +56,7 @@ public class FlowActionsToolboxFactory
         extends AbstractActionsToolboxFactory {
 
     private final DefinitionUtils definitionUtils;
-    private final CommonLookups commonLookups;
+    private final ToolboxDomainLookups toolboxDomainLookups;
     private final Supplier<CreateConnectorAction> createConnectorActions;
     private final Command createConnectorActionsDestroyer;
     private final Supplier<CreateNodeAction> createNodeActions;
@@ -66,12 +66,12 @@ public class FlowActionsToolboxFactory
 
     @Inject
     public FlowActionsToolboxFactory(final DefinitionUtils definitionUtils,
-                                     final CommonLookups commonLookups,
+                                     final ToolboxDomainLookups toolboxDomainLookups,
                                      final @Any ManagedInstance<CreateConnectorAction> createConnectorActions,
                                      final @Any ManagedInstance<CreateNodeAction> createNodeActions,
                                      final @Any @FlowActionsToolbox ManagedInstance<ActionsToolboxView> views) {
         this(definitionUtils,
-             commonLookups,
+             toolboxDomainLookups,
              createConnectorActions::get,
              createConnectorActions::destroyAll,
              createNodeActions::get,
@@ -81,7 +81,7 @@ public class FlowActionsToolboxFactory
     }
 
     FlowActionsToolboxFactory(final DefinitionUtils definitionUtils,
-                              final CommonLookups commonLookups,
+                              final ToolboxDomainLookups toolboxDomainLookups,
                               final Supplier<CreateConnectorAction> createConnectorActions,
                               final Command createConnectorActionsDestroyer,
                               final Supplier<CreateNodeAction> createNodeActions,
@@ -89,7 +89,7 @@ public class FlowActionsToolboxFactory
                               final Supplier<ActionsToolboxView> views,
                               final Command viewsDestroyer) {
         this.definitionUtils = definitionUtils;
-        this.commonLookups = commonLookups;
+        this.toolboxDomainLookups = toolboxDomainLookups;
         this.createConnectorActions = createConnectorActions;
         this.createConnectorActionsDestroyer = createConnectorActionsDestroyer;
         this.createNodeActions = createNodeActions;
@@ -107,16 +107,14 @@ public class FlowActionsToolboxFactory
     @SuppressWarnings("unchecked")
     public Collection<ToolboxAction<AbstractCanvasHandler>> getActions(final AbstractCanvasHandler canvasHandler,
                                                                        final Element<?> element) {
-        final Set<ToolboxAction<AbstractCanvasHandler>> actions = new LinkedHashSet<>();
-        final Node<Definition<Object>, Edge> node = (Node<Definition<Object>, Edge>) element;
         final Diagram diagram = canvasHandler.getDiagram();
         final String defSetId = diagram.getMetadata().getDefinitionSetId();
+        final Set<ToolboxAction<AbstractCanvasHandler>> actions = new LinkedHashSet<>();
+        final Node<Definition<Object>, Edge> node = (Node<Definition<Object>, Edge>) element;
         // Look for the default connector type and create a button for it.
-        commonLookups
-                .getAllowedConnectors(defSetId,
-                                      node,
-                                      0,
-                                      10)
+        final CommonDomainLookups lookup = toolboxDomainLookups.get(defSetId);
+        lookup
+                .lookupTargetConnectors(node)
                 .forEach(connectorDefId -> actions.add(createConnectorActions.get()
                                                                .setEdgeId(connectorDefId)));
 
@@ -126,16 +124,13 @@ public class FlowActionsToolboxFactory
         // create an action for each morph target.
         final String defaultConnectorId = definitionUtils.getDefaultConnectorId(defSetId);
         if (null != defaultConnectorId) {
-            commonLookups
-                    .getAllowedMorphDefaultDefinitions(defSetId,
-                                                       diagram.getGraph(),
-                                                       node,
-                                                       defaultConnectorId,
-                                                       0,
-                                                       10)
-                    .forEach(defId -> actions.add(createNodeActions.get()
-                                                          .setEdgeId(defaultConnectorId)
-                                                          .setNodeId(defId.toString())));
+            final Set<String> targets = lookup.lookupTargetNodes(diagram.getGraph(),
+                                                                 node,
+                                                                 defaultConnectorId);
+            final Set<String> morphTargets = lookup.lookupMorphBaseDefinitions(targets);
+            morphTargets.forEach(defId -> actions.add(createNodeActions.get()
+                                                              .setEdgeId(defaultConnectorId)
+                                                              .setNodeId(defId)));
         }
         return actions;
     }

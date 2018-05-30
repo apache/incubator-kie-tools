@@ -34,16 +34,16 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.lookup.util.CommonLookups;
+import org.kie.workbench.common.stunner.core.lookup.domain.CommonDomainLookups;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anySet;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -61,7 +61,10 @@ public class FlowActionsToolboxFactoryTest {
     private DefinitionUtils definitionUtils;
 
     @Mock
-    private CommonLookups commonLookups;
+    private ToolboxDomainLookups toolboxLookups;
+
+    @Mock
+    private CommonDomainLookups domainLookups;
 
     @Mock
     private CreateConnectorAction createConnectorAction;
@@ -110,22 +113,19 @@ public class FlowActionsToolboxFactoryTest {
         when(metadata.getDefinitionSetId()).thenReturn(DS_ID);
         when(element.getUUID()).thenReturn(E_UUID);
         when(element.asNode()).thenReturn(element);
-        when(commonLookups.getAllowedConnectors(eq(DS_ID),
-                                                eq(element),
-                                                anyInt(),
-                                                anyInt()))
-                .thenReturn(Collections.singleton(EDGE_ID));
         when(definitionUtils.getDefaultConnectorId(eq(DS_ID)))
                 .thenReturn(EDGE_ID);
-        when(commonLookups.getAllowedMorphDefaultDefinitions(eq(DS_ID),
-                                                             eq(graph),
-                                                             eq(element),
-                                                             eq(EDGE_ID),
-                                                             anyInt(),
-                                                             anyInt()))
+        when(toolboxLookups.get(anyString())).thenReturn(domainLookups);
+        when(domainLookups.lookupTargetConnectors(eq(element)))
+                .thenReturn(Collections.singleton(EDGE_ID));
+        when(domainLookups.lookupTargetNodes(eq(graph),
+                                             eq(element),
+                                             eq(EDGE_ID)))
+                .thenReturn(Collections.singleton(NODE_ID));
+        when(domainLookups.lookupMorphBaseDefinitions(anySet()))
                 .thenReturn(Collections.singleton(NODE_ID));
         this.tested = new FlowActionsToolboxFactory(definitionUtils,
-                                                    commonLookups,
+                                                    toolboxLookups,
                                                     () -> createConnectorAction,
                                                     createConnectorActionDestroyer,
                                                     () -> createNodeAction,

@@ -103,16 +103,16 @@ public class DefaultViewerSession
 
     @Override
     public ZoomControl<AbstractCanvas> getZoomControl() {
-        return (ZoomControl<AbstractCanvas>) session.getCanvasControls().get(0);
+        return (ZoomControl<AbstractCanvas>) session.getCanvasControl(ZoomControl.class);
     }
 
     @Override
     public PanControl<AbstractCanvas> getPanControl() {
-        return (PanControl<AbstractCanvas>) session.getCanvasControls().get(1);
+        return (PanControl<AbstractCanvas>) session.getCanvasControl(PanControl.class);
     }
 
     @Override
     public SelectionControl<AbstractCanvasHandler, Element> getSelectionControl() {
-        return (SelectionControl<AbstractCanvasHandler, Element>) session.getCanvasHandlerControls().get(0);
+        return (SelectionControl<AbstractCanvasHandler, Element>) session.getCanvasHandlerControl(SelectionControl.class);
     }
 }

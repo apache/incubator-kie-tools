@@ -42,6 +42,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomCon
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.Request;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.impl.DefaultEditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ManagedSession;
@@ -59,12 +60,14 @@ public class CaseManagementEditorSession
                                        final RegistryFactory registryFactory,
                                        final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
                                        final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                       final @Request SessionCommandManager<AbstractCanvasHandler> requestCommandManager) {
+                                       final @Request SessionCommandManager<AbstractCanvasHandler> requestCommandManager,
+                                       final StunnerPreferencesRegistry stunnerPreferencesRegistry) {
         super(session,
               registryFactory,
               canvasCommandManager,
               sessionCommandManager,
-              requestCommandManager);
+              requestCommandManager,
+              stunnerPreferencesRegistry);
     }
 
     @Override

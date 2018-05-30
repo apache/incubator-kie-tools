@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 @Portable
 public class DefaultRuleViolations implements RuleViolations {
 
-    private List<RuleViolation> violations = new LinkedList<RuleViolation>();
+    private final List<RuleViolation> violations = new LinkedList<RuleViolation>();
 
     public DefaultRuleViolations addViolations(final RuleViolations violations) {
         if (null != violations) {

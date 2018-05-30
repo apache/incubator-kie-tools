@@ -39,7 +39,7 @@ public class RuleSetImpl implements RuleSet {
     }
 
     @Override
-    public Iterable<Rule> getRules() {
+    public Collection<Rule> getRules() {
         return rules;
     }
 }

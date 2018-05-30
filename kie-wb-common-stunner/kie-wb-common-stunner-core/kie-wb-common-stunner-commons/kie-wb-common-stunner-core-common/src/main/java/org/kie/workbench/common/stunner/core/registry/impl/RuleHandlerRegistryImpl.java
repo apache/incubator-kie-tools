@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.core.registry.rule.RuleHandlerRegistry;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationHandler;
 import org.kie.workbench.common.stunner.core.rule.ext.RuleExtensionHandler;
 
-class RuleHandlerRegistryImpl implements RuleHandlerRegistry {
+public class RuleHandlerRegistryImpl implements RuleHandlerRegistry {
 
     private final Map<Class<?>, List<RuleEvaluationHandler>> handlers = new HashMap<>(15);
     private final Map<Class<?>, RuleExtensionHandler> extensionHandlers = new LinkedHashMap<>();
@@ -50,6 +50,12 @@ class RuleHandlerRegistryImpl implements RuleHandlerRegistry {
     @SuppressWarnings("unchecked")
     public <T extends RuleExtensionHandler> T getExtensionHandler(final Class<T> contextType) {
         return (T) extensionHandlers.get(contextType);
+    }
+
+    @Override
+    public void clear() {
+        handlers.clear();
+        extensionHandlers.clear();
     }
 
     @Override

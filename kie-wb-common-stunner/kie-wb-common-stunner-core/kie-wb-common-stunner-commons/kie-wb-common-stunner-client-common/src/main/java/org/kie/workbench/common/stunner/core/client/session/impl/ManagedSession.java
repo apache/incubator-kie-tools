@@ -20,6 +20,7 @@ import java.lang.annotation.Annotation;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -61,8 +62,11 @@ public class ManagedSession
     private AbstractCanvasHandler canvasHandler;
     private final List<ControlRegistrationEntry<AbstractCanvas>> canvasControlRegistrationEntries;
     private final List<ControlRegistrationEntry<AbstractCanvasHandler>> canvasHandlerControlRegistrationEntries;
+    private final List<Class<? extends CanvasControl>> canvasControlTypes;
     private final List<CanvasControl<AbstractCanvas>> canvasControls;
+    private final List<Class<? extends CanvasControl>> canvasHandlerControlTypes;
     private final List<CanvasControl<AbstractCanvasHandler>> canvasHandlerControls;
+    private Predicate<Class<? extends CanvasControl>> controlActivePredicate;
     private CanvasShapeListener shapeListener;
     private CanvasElementListener elementListener;
     private Consumer<CanvasControl<AbstractCanvas>> canvasControlRegistered;
@@ -87,7 +91,9 @@ public class ManagedSession
         this.canvasControlRegistrationEntries = new LinkedList<>();
         this.canvasHandlerControlRegistrationEntries = new LinkedList<>();
         this.canvasControls = new LinkedList<>();
+        this.canvasControlTypes = new LinkedList<>();
         this.canvasHandlerControls = new LinkedList<>();
+        this.canvasHandlerControlTypes = new LinkedList<>();
         this.canvasControlRegistered = c -> {
         };
         this.canvasHandlerControlRegistered = c -> {
@@ -96,6 +102,7 @@ public class ManagedSession
         };
         this.canvasHandlerControlDestroyed = c -> {
         };
+        this.controlActivePredicate = type -> true;
     }
 
     @SuppressWarnings("unchecked")
@@ -126,6 +133,11 @@ public class ManagedSession
         return this;
     }
 
+    public ManagedSession isControlActive(final Predicate<Class<? extends CanvasControl>> predicate) {
+        this.controlActivePredicate = predicate;
+        return this;
+    }
+
     public ManagedSession onCanvasControlRegistered(final Consumer<CanvasControl<AbstractCanvas>> c) {
         this.canvasControlRegistered = c;
         return this;
@@ -152,21 +164,21 @@ public class ManagedSession
         if (null != canvas) {
             throw new IllegalStateException("Session is already loaded!");
         }
-        // Obtain the right qualified types.
-        final Annotation qualifier = definitionUtils.getQualifier(metadata.getDefinitionSetId());
-        canvas = lookup(canvasInstances, qualifier);
-        canvasHandler = lookup(canvasHandlerInstances, qualifier);
-        canvasControlRegistrationEntries
-                .forEach(entry -> registerCanvasControl(lookupCanvasControl(canvasControlInstances,
-                                                                            entry,
-                                                                            qualifier)));
-        canvasHandlerControlRegistrationEntries
-                .forEach(entry -> registerCanvasHandlerControl(lookupCanvasHandlerControl(canvasHandlerControlInstances,
-                                                                                          entry,
-                                                                                          qualifier)));
         // Load the preferences.
         preferencesRegistryLoader.load(metadata.getDefinitionSetId(),
-                                       prefs -> callback.execute(),
+                                       prefs -> {
+                                           // Obtain the right qualified types.
+                                           final Annotation qualifier = definitionUtils.getQualifier(metadata.getDefinitionSetId());
+                                           canvas = lookup(canvasInstances, qualifier);
+                                           canvasHandler = lookup(canvasHandlerInstances, qualifier);
+                                           canvasControlRegistrationEntries
+                                                   .forEach(entry -> registerCanvasControlEntry(entry,
+                                                                                                qualifier));
+                                           canvasHandlerControlRegistrationEntries
+                                                   .forEach(entry -> registerCanvasHandlerControlEntry(entry,
+                                                                                                       qualifier));
+                                           callback.execute();
+                                       },
                                        throwable -> {
                                            if (LogConfiguration.loggingIsEnabled()) {
                                                LOGGER.log(Level.SEVERE,
@@ -194,8 +206,10 @@ public class ManagedSession
         // Destroy controls.
         canvasControls.forEach(this::destroyCanvasControl);
         canvasControls.clear();
+        canvasControlTypes.clear();
         canvasHandlerControls.forEach(this::destroyCanvasHandlerControl);
         canvasHandlerControls.clear();
+        canvasHandlerControlTypes.clear();
         canvasControlInstances.destroyAll();
         canvasHandlerControlInstances.destroyAll();
         // Destroy canvas.
@@ -222,12 +236,20 @@ public class ManagedSession
         return canvasHandler;
     }
 
-    public List<CanvasControl<AbstractCanvas>> getCanvasControls() {
-        return canvasControls;
+    public CanvasControl<AbstractCanvas> getCanvasControl(final Class<? extends CanvasControl> type) {
+        final int i = canvasControlTypes.indexOf(type);
+        if (i > -1) {
+            return canvasControls.get(i);
+        }
+        return null;
     }
 
-    public List<CanvasControl<AbstractCanvasHandler>> getCanvasHandlerControls() {
-        return canvasHandlerControls;
+    public CanvasControl<AbstractCanvasHandler> getCanvasHandlerControl(final Class<? extends CanvasControl> type) {
+        final int i = canvasHandlerControlTypes.indexOf(type);
+        if (i > -1) {
+            return canvasHandlerControls.get(i);
+        }
+        return null;
     }
 
     public static Annotation buildQualifier(final Class<? extends Annotation> type) {
@@ -254,12 +276,36 @@ public class ManagedSession
         canvasHandlerControls.forEach(c -> c.init(canvasHandler));
     }
 
-    private void registerCanvasControl(final CanvasControl<AbstractCanvas> control) {
+    private void registerCanvasControlEntry(final ControlRegistrationEntry<AbstractCanvas> entry,
+                                            final Annotation qualifier) {
+        if (isControlActive(entry.type)) {
+            registerCanvasControl(entry,
+                                  lookupCanvasControl(canvasControlInstances,
+                                                      entry,
+                                                      qualifier));
+        }
+    }
+
+    private void registerCanvasControl(final ControlRegistrationEntry<AbstractCanvas> entry,
+                                       final CanvasControl<AbstractCanvas> control) {
+        canvasControlTypes.add(entry.type);
         canvasControls.add(control);
         canvasControlRegistered.accept(control);
     }
 
-    private void registerCanvasHandlerControl(final CanvasControl<AbstractCanvasHandler> control) {
+    private void registerCanvasHandlerControlEntry(final ControlRegistrationEntry<AbstractCanvasHandler> entry,
+                                                   final Annotation qualifier) {
+        if (isControlActive(entry.type)) {
+            registerCanvasHandlerControl(entry,
+                                         lookupCanvasHandlerControl(canvasHandlerControlInstances,
+                                                                    entry,
+                                                                    qualifier));
+        }
+    }
+
+    private void registerCanvasHandlerControl(final ControlRegistrationEntry<AbstractCanvasHandler> entry,
+                                              final CanvasControl<AbstractCanvasHandler> control) {
+        canvasHandlerControlTypes.add(entry.type);
         canvasHandlerControls.add(control);
         canvasHandlerControlRegistered.accept(control);
     }
@@ -310,6 +356,18 @@ public class ManagedSession
                         instance.select(entry.type,
                                         DefinitionManager.DEFAULT_QUALIFIER).get()) :
                 i.get();
+    }
+
+    private boolean isControlActive(final Class<? extends CanvasControl> type) {
+        return controlActivePredicate.test(type);
+    }
+
+    List<CanvasControl<AbstractCanvas>> getCanvasControls() {
+        return canvasControls;
+    }
+
+    List<CanvasControl<AbstractCanvasHandler>> getCanvasHandlerControls() {
+        return canvasHandlerControls;
     }
 
     private static class ControlRegistrationEntry<T> {

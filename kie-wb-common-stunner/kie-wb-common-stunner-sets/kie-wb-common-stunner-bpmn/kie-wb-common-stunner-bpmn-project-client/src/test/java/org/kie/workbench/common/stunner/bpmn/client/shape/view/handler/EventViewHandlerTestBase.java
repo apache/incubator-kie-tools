@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitive;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 import org.mockito.Mock;
 
+import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Mockito.when;
 
 public abstract class EventViewHandlerTestBase {
@@ -34,17 +35,25 @@ public abstract class EventViewHandlerTestBase {
     protected SVGPrimitive child1;
 
     @Mock
-    protected IPrimitive<?> prim1;
+    protected IPrimitive prim1;
 
     @Mock
     protected SVGPrimitive child2;
 
     @Mock
-    protected IPrimitive<?> prim2;
+    protected IPrimitive prim2;
 
     public void init() {
         when(view.getChildren()).thenReturn(Arrays.asList(child1, child2));
+        when(child1.getId()).thenReturn("child1");
         when(child1.get()).thenReturn(prim1);
+        when(child2.getId()).thenReturn("child2");
         when(child2.get()).thenReturn(prim2);
+        when(prim1.setAlpha(anyDouble())).thenReturn(prim1);
+        when(prim1.setStrokeAlpha(anyDouble())).thenReturn(prim1);
+        when(prim1.setFillAlpha(anyDouble())).thenReturn(prim1);
+        when(prim2.setAlpha(anyDouble())).thenReturn(prim2);
+        when(prim2.setStrokeAlpha(anyDouble())).thenReturn(prim2);
+        when(prim2.setFillAlpha(anyDouble())).thenReturn(prim2);
     }
 }

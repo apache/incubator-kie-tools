@@ -20,18 +20,21 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.Specializes;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
+import org.kie.workbench.common.stunner.core.registry.rule.RuleHandlerRegistry;
+import org.kie.workbench.common.stunner.core.rule.CachedRuleManager;
 import org.kie.workbench.common.stunner.core.rule.Rule;
+import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationHandler;
-import org.kie.workbench.common.stunner.core.rule.RuleManagerImpl;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
+import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 
-@Specializes
 @ApplicationScoped
-public class BackendRuleManager extends RuleManagerImpl {
+public class BackendRuleManager implements RuleManager {
 
+    private final CachedRuleManager ruleManager;
     private final Instance<RuleEvaluationHandler<? extends Rule, ?>> ruleEvaluationHandlerInstances;
 
     protected BackendRuleManager() {
@@ -40,14 +43,26 @@ public class BackendRuleManager extends RuleManagerImpl {
     }
 
     @Inject
-    public BackendRuleManager(final RegistryFactory registryFactory,
+    public BackendRuleManager(final CachedRuleManager ruleManager,
                               final @Any Instance<RuleEvaluationHandler<? extends Rule, ?>> ruleEvaluationHandlerInstances) {
-        super(registryFactory);
+        this.ruleManager = ruleManager;
         this.ruleEvaluationHandlerInstances = ruleEvaluationHandlerInstances;
     }
 
     @PostConstruct
     public void init() {
         ruleEvaluationHandlerInstances.forEach(registry()::register);
+    }
+
+    @Override
+    public RuleHandlerRegistry registry() {
+        return ruleManager.registry();
+    }
+
+    @Override
+    public RuleViolations evaluate(final RuleSet ruleSet,
+                                   final RuleEvaluationContext context) {
+        return ruleManager.evaluate(ruleSet,
+                                    context);
     }
 }

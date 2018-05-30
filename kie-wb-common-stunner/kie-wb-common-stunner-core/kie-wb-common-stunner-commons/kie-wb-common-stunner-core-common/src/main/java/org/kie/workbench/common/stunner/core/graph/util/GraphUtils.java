@@ -98,19 +98,14 @@ public class GraphUtils {
     public static int countEdges(final DefinitionManager definitionManager,
                                  final String edgeId,
                                  final List<? extends Edge> edges) {
-        final int[] count = {0};
-        if (null != edgeId
-                && null != edges
-                && !edges.isEmpty()) {
-            edges.stream().forEach(edge -> {
-                final String eId = getElementDefinitionId(definitionManager,
-                                                          edge);
-                if (null != eId && edgeId.equals(eId)) {
-                    count[0]++;
-                }
-            });
+        if (null == edges) {
+            return 0;
         }
-        return count[0];
+
+        return (int) edges.stream()
+                .map(edge -> getElementDefinitionId(definitionManager, edge))
+                .filter(edgeId::equals)
+                .count();
     }
 
     /**

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.rule;
 
+import java.util.Collection;
+
 /**
  * A rule set provides several rule instances
  * logically grouped to achieve some semantics.
@@ -31,5 +33,5 @@ public interface RuleSet {
     /**
      * Returns the rule instances for this rule set.
      */
-    Iterable<Rule> getRules();
+    Collection<Rule> getRules();
 }

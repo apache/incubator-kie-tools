@@ -24,18 +24,27 @@ import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 
 public class WiresScalableContainer extends WiresLayoutContainer {
 
     private final NFastArrayList<IPrimitive<?>> scalableChildren = new NFastArrayList<>();
     private Group transformableContainer;
+    private Point2D scaleRatio;
+    private boolean scaleRequired;
 
     public WiresScalableContainer() {
+        this(null);
     }
 
     WiresScalableContainer(final Group transformableContainer) {
         this.transformableContainer = transformableContainer;
+    }
+
+    public WiresScalableContainer setScaleRatio(final Point2D scaleRatio) {
+        this.scaleRatio = scaleRatio;
+        return this;
     }
 
     private boolean isScalable(final IPrimitive<?> child) {
@@ -69,7 +78,20 @@ public class WiresScalableContainer extends WiresLayoutContainer {
                 addChild(transformableContainer);
             }
             transformableContainer.add(child);
+            scaleRatio = null;
         }
+        scaleRequired = true;
+        return this;
+    }
+
+    @Override
+    public WiresLayoutContainer setSize(final double width,
+                                        final double height) {
+        if (getWidth() != width || getHeight() != height) {
+            scaleRatio = null;
+            scaleRequired = true;
+        }
+        super.setSize(width, height);
         return this;
     }
 
@@ -86,19 +108,30 @@ public class WiresScalableContainer extends WiresLayoutContainer {
                         final double y,
                         final double width,
                         final double height) {
-        if (null != transformableContainer) {
-            final BoundingBox bb = transformableContainer.getBoundingBox();
-            final double sx = width / bb.getWidth();
-            final double sy = height / bb.getHeight();
-            transformableContainer.setX(x).setY(y).setScale(sx, sy);
-        }
-        for (int i = 0; i < scalableChildren.size(); i++) {
-            final IPrimitive<?> child = scalableChildren.get(i);
-            scaleChildTo(child,
-                         x,
-                         y,
-                         width,
-                         height);
+        if (scaleRequired) {
+            if (null != transformableContainer) {
+                transformableContainer
+                        .setX(x)
+                        .setY(y);
+                if (null == scaleRatio) {
+                    // GWT.log("CALCULATING SCALE RATIO...");
+                    final BoundingBox bb = transformableContainer.getBoundingBox();
+                    final double sx = width / bb.getWidth();
+                    final double sy = height / bb.getHeight();
+                    scaleRatio = new Point2D(sx, sy);
+                    // GWT.log("SCALE RATIO VALUES [" + scaleRatio + "]");
+                    transformableContainer.setScale(scaleRatio);
+                }
+            }
+            for (int i = 0; i < scalableChildren.size(); i++) {
+                final IPrimitive<?> child = scalableChildren.get(i);
+                scaleChildTo(child,
+                             x,
+                             y,
+                             width,
+                             height);
+            }
+            scaleRequired = false;
         }
     }
 

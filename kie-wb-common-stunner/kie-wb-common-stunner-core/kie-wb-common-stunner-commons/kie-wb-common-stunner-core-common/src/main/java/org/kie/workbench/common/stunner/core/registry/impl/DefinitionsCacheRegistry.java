@@ -16,9 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.registry.impl;
 
+import java.util.Set;
+
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionRegistry;
 
 public interface DefinitionsCacheRegistry
         extends TypeDefinitionRegistry<Object> {
 
+    Set<String> getLabels(String id);
 }

@@ -38,7 +38,6 @@ public class EventCancelActivityViewHandlerTest extends EventViewHandlerTestBase
     public void init() {
         super.init();
         when(child1.getPrimitiveId()).thenReturn(EventCancelActivityViewHandler.ID_INTERMEDIATE);
-        when(child2.getPrimitiveId()).thenReturn(EventCancelActivityViewHandler.ID_INTERMEDIATE_NON_INTERRUPTING);
         tested = new EventCancelActivityViewHandler();
     }
 
@@ -49,8 +48,8 @@ public class EventCancelActivityViewHandlerTest extends EventViewHandlerTestBase
                 new IntermediateTimerEvent();
         bean.getExecutionSet().getCancelActivity().setValue(false);
         tested.handle(bean, view);
-        verify(prim1).setAlpha(eq(0d));
-        verify(prim2).setAlpha(eq(1d));
+        verify(prim1).setFillAlpha(eq(0d));
+        verify(prim1).setStrokeAlpha(eq(1d));
     }
 
     @Test
@@ -62,8 +61,8 @@ public class EventCancelActivityViewHandlerTest extends EventViewHandlerTestBase
         bean.getExecutionSet().getCancelActivity().setValue(true);
         tested.handle(bean, view);
 
-        verify(prim1).setAlpha(eq(1d));
-        verify(prim2).setAlpha(eq(0d));
+        verify(prim1).setFillAlpha(eq(1d));
+        verify(prim1).setStrokeAlpha(eq(0d));
     }
 
     @Test
@@ -75,8 +74,8 @@ public class EventCancelActivityViewHandlerTest extends EventViewHandlerTestBase
         bean.getExecutionSet().getCancelActivity().setValue(false);
         tested.handle(bean, view);
 
-        verify(prim1).setAlpha(eq(0d));
-        verify(prim2).setAlpha(eq(1d));
+        verify(prim1).setFillAlpha(eq(0d));
+        verify(prim1).setStrokeAlpha(eq(1d));
     }
 
     @Test
@@ -88,8 +87,8 @@ public class EventCancelActivityViewHandlerTest extends EventViewHandlerTestBase
         bean.getExecutionSet().getCancelActivity().setValue(true);
         tested.handle(bean, view);
 
-        verify(prim1).setAlpha(eq(1d));
-        verify(prim2).setAlpha(eq(0d));
+        verify(prim1).setFillAlpha(eq(1d));
+        verify(prim1).setStrokeAlpha(eq(0d));
     }
 
     @Test
@@ -101,8 +100,8 @@ public class EventCancelActivityViewHandlerTest extends EventViewHandlerTestBase
         bean.getExecutionSet().getCancelActivity().setValue(false);
         tested.handle(bean, view);
 
-        verify(prim1).setAlpha(eq(0d));
-        verify(prim2).setAlpha(eq(1d));
+        verify(prim1).setFillAlpha(eq(0d));
+        verify(prim1).setStrokeAlpha(eq(1d));
     }
 
     @Test
@@ -114,7 +113,7 @@ public class EventCancelActivityViewHandlerTest extends EventViewHandlerTestBase
         bean.getExecutionSet().getCancelActivity().setValue(true);
         tested.handle(bean, view);
 
-        verify(prim1).setAlpha(eq(1d));
-        verify(prim2).setAlpha(eq(0d));
+        verify(prim1).setFillAlpha(eq(1d));
+        verify(prim1).setStrokeAlpha(eq(0d));
     }
 }

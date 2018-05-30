@@ -126,6 +126,16 @@ public class RuleManagerImplTest {
     }
 
     @Test
+    public void testEmptyRules() {
+        ruleSet = new EmptyRuleSet();
+        final RuleViolations result = tested.evaluate(ruleSet,
+                                                      ruleEvaluationContext);
+        assertNotNull(result);
+        final Collection<RuleViolation> violations = (Collection<RuleViolation>) result.violations();
+        assertTrue(violations.isEmpty());
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
     public void testDefaultPolicyAccept() {
         when(registry.getExtensionHandler(any(Class.class))).thenReturn(null);
