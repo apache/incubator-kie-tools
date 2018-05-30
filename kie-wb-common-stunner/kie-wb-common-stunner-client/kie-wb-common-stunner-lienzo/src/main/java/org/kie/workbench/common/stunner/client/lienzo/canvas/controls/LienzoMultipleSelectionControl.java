@@ -47,7 +47,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.AbstractSelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MapSelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MultipleSelection;
-import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasDrawnEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.ShapeLocationsChangedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
@@ -189,11 +188,10 @@ public final class LienzoMultipleSelectionControl<H extends AbstractCanvasHandle
         return getWiresManager().getSelectionManager();
     }
 
-    void onCanvasDrawn(final @Observes CanvasDrawnEvent event) {
+    void onCanvasSelection(final @Observes CanvasSelectionEvent event) {
         checkNotNull("event",
                      event);
-        if (null != getCanvasHandler() &&
-                getCanvasHandler().getCanvas().equals(event.getCanvas())) {
+        if (Objects.equals(getCanvasHandler(), event.getCanvasHandler())) {
             selectionShapeProvider.moveShapeToTop();
         }
     }

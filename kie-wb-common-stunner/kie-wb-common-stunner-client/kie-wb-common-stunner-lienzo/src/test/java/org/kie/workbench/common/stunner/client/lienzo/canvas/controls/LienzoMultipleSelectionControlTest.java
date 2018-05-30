@@ -43,7 +43,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MapSelectionControl;
-import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasDrawnEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.ShapeLocationsChangedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
@@ -346,7 +345,7 @@ public class LienzoMultipleSelectionControlTest {
                                                       clearSelectionEvent,
                                                       ssp);
         tested.init(canvasHandler);
-        tested.onCanvasDrawn(new CanvasDrawnEvent(canvas));
+        tested.onCanvasSelection(new CanvasSelectionEvent(canvasHandler, Collections.emptyList()));
         verify(ssp, times(1)).moveShapeToTop();
     }
 

@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.select;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -132,6 +131,13 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
                 .collect(Collectors.toList());
     }
 
+    private Collection<String> getUnselectedItems() {
+        return items.entrySet().stream()
+                .filter(entry -> !entry.getValue())
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
+
     @Override
     public SelectionControl<H, Element> clearSelection() {
         return clearSelection(true);
@@ -148,9 +154,8 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
     public SelectionControl<H, Element> select(final Collection<String> uuids) {
         uuids.stream()
                 .filter(itemsRegistered())
-                .forEach(uuid -> items.put(uuid,
-                                           true));
-        updateViewShapesState();
+                .forEach(uuid -> items.put(uuid, true));
+        updateViewShapesState(getSelectedItems());
         fireSelectedItemsEvent();
         return this;
     }
@@ -158,9 +163,8 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
     public SelectionControl<H, Element> deselect(final Collection<String> uuids) {
         uuids.stream()
                 .filter(itemsRegistered())
-                .forEach(uuid -> items.put(uuid,
-                                           false));
-        updateViewShapesState();
+                .forEach(uuid -> items.put(uuid, false));
+        updateViewShapesState(getUnselectedItems());
         return this;
     }
 
@@ -180,18 +184,20 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
     }
 
     @SuppressWarnings("unchecked")
-    private void updateViewShapesState() {
-        final List<Shape> shapes = getCanvas().getShapes();
-        for (final Shape shape : shapes) {
-            final boolean isSelected = isSelected(shape.getUUID());
-            if (isSelected && isReadonly()) {
-                shape.applyState(ShapeState.HIGHLIGHT);
-            } else if (isSelected) {
-                shape.applyState(ShapeState.SELECTED);
-            } else {
-                shape.applyState(ShapeState.NONE);
-            }
-        }
+    private void updateViewShapesState(Collection<String> uuids) {
+        uuids.stream()
+                .map(uuid -> getCanvas().getShape(uuid))
+                .forEach(shape -> {
+                    final boolean isSelected = isSelected(shape.getUUID());
+                    if (isSelected && isReadonly()) {
+                        shape.applyState(ShapeState.HIGHLIGHT);
+                    } else if (isSelected) {
+                        shape.applyState(ShapeState.SELECTED);
+                    } else {
+                        shape.applyState(ShapeState.NONE);
+                    }
+                });
+
         // Batch a show operation.
         getCanvas().draw();
     }

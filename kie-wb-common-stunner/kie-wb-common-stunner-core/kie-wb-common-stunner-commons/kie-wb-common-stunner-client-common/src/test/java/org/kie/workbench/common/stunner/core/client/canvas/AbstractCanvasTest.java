@@ -183,7 +183,7 @@ public class AbstractCanvasTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testDeleteShape() {
-        tested.shapes.add(parentShape);
+        tested.shapes.put(parentShape.getUUID(), parentShape);
         tested.deleteShape(parentShape);
         verify(canvasView,
                times(1)).removeShape(eq(parentShapeView));
@@ -201,8 +201,8 @@ public class AbstractCanvasTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testClear() {
-        tested.shapes.add(parentShape);
-        tested.shapes.add(childShape);
+        tested.shapes.put(parentShape.getUUID(), parentShape);
+        tested.shapes.put(childShape.getUUID(), childShape);
         tested.clear();
         verify(canvasView,
                times(1)).removeShape(eq(parentShapeView));
@@ -216,8 +216,8 @@ public class AbstractCanvasTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testDestroy() {
-        tested.shapes.add(parentShape);
-        tested.shapes.add(childShape);
+        tested.shapes.put(parentShape.getUUID(), parentShape);
+        tested.shapes.put(childShape.getUUID(), childShape);
         tested.destroy();
         verify(canvasView,
                times(1)).removeShape(eq(parentShapeView));

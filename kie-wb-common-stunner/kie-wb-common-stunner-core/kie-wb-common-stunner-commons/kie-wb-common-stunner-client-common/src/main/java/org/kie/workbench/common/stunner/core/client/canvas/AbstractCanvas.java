@@ -16,11 +16,14 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.enterprise.event.Event;
 
@@ -118,7 +121,7 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
     protected Event<CanvasDrawnEvent> canvasDrawnEvent;
     protected Event<CanvasFocusedEvent> canvasFocusedEvent;
 
-    protected final List<Shape> shapes = new ArrayList<Shape>();
+    protected final Map<String, Shape> shapes = new HashMap<>();
     protected final List<CanvasShapeListener> listeners = new LinkedList<>();
     private final CanvasLoadingObserver loadingObserver = new CanvasLoadingObserver();
     private final String uuid;
@@ -170,19 +173,12 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
     public abstract void deleteControl(final IsWidget controlView);
 
     @Override
-    public List<Shape> getShapes() {
-        return shapes;
+    public Collection<Shape> getShapes() {
+        return shapes.values();
     }
 
     public Shape getShape(final String uuid) {
-        if (null != shapes) {
-            for (final Shape shape : shapes) {
-                if (shape.getUUID().equals(uuid)) {
-                    return shape;
-                }
-            }
-        }
-        return null;
+        return shapes.get(uuid);
     }
 
     @SuppressWarnings("unchecked")
@@ -227,13 +223,12 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
 
     @Override
     public Canvas addShape(final Shape shape) {
-        if (!shapes.contains(shape)) {
+        shapes.computeIfAbsent(shape.getUUID(), (v) -> {
             addTransientShape(shape);
-            shapes.add(shape);
             fireCanvasShapeAdded(shape);
-            canvasShapeAddedEvent.fire(new CanvasShapeAddedEvent(this,
-                                                                 shape));
-        }
+            canvasShapeAddedEvent.fire(new CanvasShapeAddedEvent(this, shape));
+            return shape;
+        });
         return this;
     }
 
@@ -274,7 +269,7 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
     public Canvas deleteShape(final Shape shape) {
         deleteTransientShape(shape);
         fireCanvasShapeRemoved(shape);
-        shapes.remove(shape);
+        shapes.remove(shape.getUUID());
         canvasShapeRemovedEvent.fire(new CanvasShapeRemovedEvent(this,
                                                                  shape));
         return this;
@@ -299,7 +294,7 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
 
     private AbstractCanvas clear(final boolean fireEvents) {
         if (!shapes.isEmpty()) {
-            new LinkedList<>(shapes).stream().forEach(this::deleteShape);
+            shapes.values().stream().collect(Collectors.toList()).forEach(this::deleteShape);
             shapes.clear();
         }
         fireCanvasClear();
@@ -357,7 +352,6 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
     }
 
     protected void afterDrawCanvas() {
-        canvasDrawnEvent.fire(new CanvasDrawnEvent(this));
     }
 
     @Override
