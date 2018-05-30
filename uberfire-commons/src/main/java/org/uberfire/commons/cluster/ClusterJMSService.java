@@ -67,17 +67,23 @@ public class ClusterJMSService implements ClusterService {
                     factory = createJNDIConnectionFactory(context);
                     break;
                 default:
-                    factory = null;
+                    throw new RuntimeException("Error setting the cluster mode (should be defined as REMOTE or JNDI");
             }
-            if (factory != null) {
+            if (thereIsNoCredentials(jmsUserName, jmsPassword)) {
+                connection = factory.createConnection();
+            } else {
                 connection = factory.createConnection(jmsUserName, jmsPassword);
-                connection.setExceptionListener(new JMSExceptionListener());
-                connection.start();
             }
+            connection.setExceptionListener(new JMSExceptionListener());
+            connection.start();
         } catch (Exception e) {
             LOGGER.error("Error connecting on JMS " + e.getMessage());
             throw new RuntimeException(e);
         }
+    }
+
+    private boolean thereIsNoCredentials(String jmsUserName, String jmsPassword) {
+        return jmsUserName == null && jmsPassword == null;
     }
 
     ConnectionFactory createJNDIConnectionFactory(final InitialContext context) throws NamingException {

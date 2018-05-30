@@ -53,8 +53,8 @@ public class ClusterParameters {
         this.jmsConnectionFactoryJndiName = System.getProperty(APPFORMER_JMS_CONNECTION_FACTORY,
                                                                "java:/ConnectionFactory");
         this.providerUrl = System.getProperty(APPFORMER_PROVIDER_URL, "tcp://localhost:61616");
-        this.jmsUserName = System.getProperty(APPFORMER_JMS_USERNAME, "admin");
-        this.jmsPassword = System.getProperty(APPFORMER_JMS_PASSWORD, "admin");
+        this.jmsUserName = System.getProperty(APPFORMER_JMS_USERNAME);
+        this.jmsPassword = System.getProperty(APPFORMER_JMS_PASSWORD);
     }
 
     public boolean isAppFormerClustered() {

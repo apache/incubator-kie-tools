@@ -44,6 +44,7 @@ public abstract class BaseClusterJMSServiceTest {
         factory = mock(ConnectionFactory.class);
         connection = mock(Connection.class);
         when(factory.createConnection(any(), any())).thenReturn(connection);
+        when(factory.createConnection()).thenReturn(connection);
         session1 = mock(Session.class);
         session2 = mock(Session.class);
         when(connection.createSession(eq(false),
@@ -65,10 +66,25 @@ public abstract class BaseClusterJMSServiceTest {
     }
 
     @Test
-    public void connectTest() throws JMSException {
+    public void connectTestEmptyUserNameAndPassword() throws JMSException {
         clusterService.connect();
         verify(connection).setExceptionListener(any());
         verify(connection).start();
+        verify(factory).createConnection();
+    }
+
+    @Test
+    public void connectTest() throws JMSException {
+        System.setProperty(ClusterParameters.APPFORMER_JMS_USERNAME, "dora");
+        System.setProperty(ClusterParameters.APPFORMER_JMS_PASSWORD, "bento");
+
+        clusterService = getClusterService(factory);
+
+        clusterService.connect();
+
+        verify(connection).setExceptionListener(any());
+        verify(connection).start();
+        verify(factory).createConnection(any(), any());
     }
 
     @Test
