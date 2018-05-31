@@ -114,11 +114,9 @@ public class SelectionManagerTest
         final double expectedY = 20;
         final double expectedWidth = -30;
         final double expectedHeight = -60;
+        final Transform transform = new Transform(scaleX, 0, 0, scaleY, translateX, translateY);
 
-        when(transform.getTranslateX()).thenReturn(translateX);
-        when(transform.getTranslateY()).thenReturn(translateY);
-        when(transform.getScaleX()).thenReturn(scaleX);
-        when(transform.getScaleY()).thenReturn(scaleY);
+        doReturn(transform).when(manager).getViewportTransform();
         doReturn(x).when(manager).relativeStartX();
         doReturn(y).when(manager).relativeStartY();
         doReturn(manager).when(onMouseXEventHandler).getSelectionManager();
@@ -144,11 +142,9 @@ public class SelectionManagerTest
         final double expectedY = 20;
         final double expectedWidth = 1;
         final double expectedHeight = 1;
+        final Transform transform = new Transform(scaleX, 0, 0, scaleY, translateX, translateY);
 
-        when(transform.getTranslateX()).thenReturn(translateX);
-        when(transform.getTranslateY()).thenReturn(translateY);
-        when(transform.getScaleX()).thenReturn(scaleX);
-        when(transform.getScaleY()).thenReturn(scaleY);
+        doReturn(transform).when(manager).getViewportTransform();
         doReturn(x).when(manager).relativeStartX();
         doReturn(y).when(manager).relativeStartY();
         doReturn(manager).when(onMouseXEventHandler).getSelectionManager();
@@ -168,10 +164,10 @@ public class SelectionManagerTest
         final Point2D start = new Point2D(startX, startY);
         final double translateX = 10d;
         final double scaleX = 2d;
+        final Transform transform = new Transform(scaleX, 0, 0, 1, translateX, 1);
 
+        doReturn(transform).when(manager).getViewportTransform();
         doReturn(start).when(manager).getStart();
-        when(transform.getTranslateX()).thenReturn(translateX);
-        when(transform.getScaleX()).thenReturn(scaleX);
 
         final Double relativeStartX = manager.relativeStartX();
 
@@ -186,10 +182,10 @@ public class SelectionManagerTest
         final Point2D start = new Point2D(startX, startY);
         final double translateY = 10d;
         final double scaleY = 2d;
+        final Transform transform = new Transform(1, 0, 0, scaleY, 1, translateY);
 
+        doReturn(transform).when(manager).getViewportTransform();
         doReturn(start).when(manager).getStart();
-        when(transform.getTranslateY()).thenReturn(translateY);
-        when(transform.getScaleY()).thenReturn(scaleY);
 
         final Double relativeStartY = manager.relativeStartY();
 
