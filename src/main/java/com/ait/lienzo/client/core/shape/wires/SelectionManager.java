@@ -280,8 +280,9 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         {
             final double relativeStartX = getSelectionManager().relativeStartX();
             final double relativeStartY = getSelectionManager().relativeStartY();
-            final double relativeEventX = (event.getX() - getViewportTransform().getTranslateX()) / getViewportTransform().getScaleX();
-            final double relativeEventY = (event.getY() - getViewportTransform().getTranslateY()) / getViewportTransform().getScaleY();
+            final Point2D untransformedPoint = getSelectionManager().getUntransformedPoint(new Point2D(event.getX(), event.getY()));
+            final double relativeEventX = untransformedPoint.getX();
+            final double relativeEventY = untransformedPoint.getY();
             final Layer overLayer = m_layer.getViewport().getOverLayer();
 
             double width = relativeEventX - relativeStartX;
@@ -495,14 +496,31 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
 
     double relativeStartX()
     {
-        final Transform transform = getViewportTransform();
-        return (getStart().getX() - transform.getTranslateX()) / transform.getScaleX();
+        return getUntransformedStartPoint().getX();
     }
 
     double relativeStartY()
     {
+        return getUntransformedStartPoint().getY();
+    }
+
+    public Point2D getUntransformedStartPoint()
+    {
+        return getUntransformedPoint(getStart());
+    }
+
+    public Point2D getUntransformedPoint(final Point2D point2D)
+    {
         final Transform transform = getViewportTransform();
-        return (getStart().getY() - transform.getTranslateY()) / transform.getScaleY();
+        final Point2D untransformed = new Point2D();
+
+        if (transform != null)
+        {
+            transform.getInverse().transform(point2D, untransformed);
+            return untransformed;
+        }
+
+        return point2D;
     }
 
     Point2D getStart()
@@ -510,7 +528,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         return m_start;
     }
 
-    private Transform getViewportTransform()
+    public Transform getViewportTransform()
     {
         return m_layer.getViewport().getTransform();
     }
