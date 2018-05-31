@@ -81,8 +81,6 @@ public class TimerSettingsFieldEditorView
 
     private static final String DATA_CONTENT_ATTR = "data-content";
 
-    private static final String DATE_TIME_PICKER_FORMAT = "yyyy-mm-dd hh:ii:ss";
-
     private DateTimeFormat isoDateTimeFormat = DateTimeFormat.getFormat("yyyy-MM-dd'T'HH:mm:ssZZZ");
 
     @Inject
@@ -189,7 +187,6 @@ public class TimerSettingsFieldEditorView
         timeDateTimePicker.setHighlightToday(true);
         timeDateTimePicker.setShowTodayButton(true);
         timeDateTimePicker.setForceParse(false);
-        // TODO timeDateTimePicker.setFormat(DATE_TIME_PICKER_FORMAT);
         timeDateTimePicker.addValueChangeHandler(event -> presenter.onTimeDateTimePickerChange());
         timeDateTimePicker.addHideHandler(hideEvent -> presenter.onTimeDateTimePickerHidden());
         timeDateTimePicker.setPosition(DateTimePickerPosition.BOTTOM_RIGHT);
@@ -322,6 +319,18 @@ public class TimerSettingsFieldEditorView
     @Override
     public String formatToISO(final Date value) {
         return isoDateTimeFormat.format(value);
+    }
+
+    @Override
+    public void setReadOnly(final boolean readOnly) {
+        durationTimer.setDisabled(readOnly);
+        timeDuration.setDisabled(readOnly);
+        multipleTimer.setDisabled(readOnly);
+        timeCycleLanguage.setDisabled(readOnly);
+        timeCycle.setDisabled(readOnly);
+        dateTimer.setDisabled(readOnly);
+        timeDate.setDisabled(readOnly);
+        pickerButton.setDisabled(readOnly);
     }
 
     private String getDurationTimerHtmlHelpText() {

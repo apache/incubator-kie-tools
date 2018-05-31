@@ -42,6 +42,7 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -96,6 +97,7 @@ public class ActivityDataIOEditorWidgetViewImplTest {
         doCallRealMethod().when(view).getAssignmentRows();
         doCallRealMethod().when(view).getAssignmentWidget(anyInt());
         doCallRealMethod().when(view).getAssignmentsCount();
+        doCallRealMethod().when(view).setReadOnly(anyBoolean());
         rows = new ArrayList<AssignmentRow>();
         rows.add(new AssignmentRow("varName",
                                    null,
@@ -184,5 +186,25 @@ public class ActivityDataIOEditorWidgetViewImplTest {
     public void testGetAssignmentWidgetMoreComplex() {
         view.getAssignmentWidget(123);
         verify(assignments).getComponent(123);
+    }
+
+    @Test
+    public void testSetReadOnlyTrue() {
+        view.setReadOnly(true);
+        verify(button,
+               times(1)).setEnabled(false);
+        for (int i = 0; i < view.getAssignmentsCount(); i++) {
+            view.getAssignmentWidget(i).setReadOnly(true);
+        }
+    }
+
+    @Test
+    public void testSetReadOnlyFalse() {
+        view.setReadOnly(false);
+        verify(button,
+               times(1)).setEnabled(true);
+        for (int i = 0; i < view.getAssignmentsCount(); i++) {
+            view.getAssignmentWidget(i).setReadOnly(false);
+        }
     }
 }

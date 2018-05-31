@@ -71,7 +71,7 @@ public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFie
 
     @Override
     protected void setReadOnly(boolean readOnly) {
-
+        widget.setReadOnly(readOnly);
     }
 
     @Override

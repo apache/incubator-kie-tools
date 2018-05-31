@@ -344,6 +344,14 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
         return parentWidget.isDuplicateName(name);
     }
 
+    @Override
+    public void setReadOnly(final boolean readOnly) {
+        name.setReadOnly(readOnly);
+        dataType.setEnabled(!readOnly);
+        processVar.setEnabled(!readOnly);
+        deleteButton.setEnabled(!readOnly);
+    }
+
     @EventHandler("deleteButton")
     public void handleDeleteButton(final ClickEvent e) {
         parentWidget.removeAssignment(getModel());

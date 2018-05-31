@@ -80,6 +80,12 @@ public class ScriptTypeFieldEditorView
                                                        option.getK2())));
     }
 
+    @Override
+    public void setReadOnly(boolean readOnly) {
+        language.setDisabled(readOnly);
+        script.setDisabled(readOnly);
+    }
+
     private Option newOption(final String text,
                              final String value) {
         final Option option = (Option) Window.getDocument().createElement("option");

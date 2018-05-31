@@ -51,7 +51,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
     @Inject
     protected ActivityDataIOEditorWidget outputAssignmentsWidget;
 
-    private Button btnSave;
+    protected Button btnSave;
 
     private Button btnCancel;
 
@@ -217,5 +217,12 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
     public void setInputAssignmentsDisallowedNames(final Set<String> names) {
         inputAssignmentsWidget.setDisallowedNames(names,
                                                   StunnerFormsClientFieldsConstants.INSTANCE.This_input_should_be_entered_as_a_property_for_the_task());
+    }
+
+    @Override
+    public void setReadOnly(boolean readOnly) {
+        btnSave.setEnabled(!readOnly);
+        inputAssignmentsWidget.setReadOnly(readOnly);
+        outputAssignmentsWidget.setReadOnly(readOnly);
     }
 }

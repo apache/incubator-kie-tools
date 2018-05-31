@@ -52,6 +52,7 @@ public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetVie
 
     // List of rows that won't be shown in the UI
     List<AssignmentRow> hiddenPropertyRows = new ArrayList<AssignmentRow>();
+    private boolean readOnly;
 
     @PostConstruct
     public void init() {
@@ -227,5 +228,10 @@ public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetVie
 
     public Widget getWidget() {
         return (Widget) view;
+    }
+
+    public void setReadOnly(final boolean readOnly) {
+        this.readOnly = readOnly;
+        view.setReadOnly(readOnly);
     }
 }

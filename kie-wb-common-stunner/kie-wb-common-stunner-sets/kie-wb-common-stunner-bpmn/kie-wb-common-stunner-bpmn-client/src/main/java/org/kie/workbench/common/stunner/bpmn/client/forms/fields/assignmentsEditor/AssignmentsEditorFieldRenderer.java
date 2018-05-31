@@ -59,7 +59,7 @@ public class AssignmentsEditorFieldRenderer extends FieldRenderer<AssignmentsEdi
 
     @Override
     protected void setReadOnly(final boolean readOnly) {
-
+        assignmentsEditor.setReadOnly(readOnly);
     }
 
     @Override

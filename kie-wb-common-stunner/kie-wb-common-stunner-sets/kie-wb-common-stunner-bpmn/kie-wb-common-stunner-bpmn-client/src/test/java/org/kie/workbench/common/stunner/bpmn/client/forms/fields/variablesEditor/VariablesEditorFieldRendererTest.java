@@ -245,4 +245,18 @@ public class VariablesEditorFieldRendererTest {
         assertTrue(variablesEditor.isDuplicateName("var2"));
         assertFalse(variablesEditor.isDuplicateName("var1"));
     }
+
+    @Test
+    public void testSetReadOnlyTrue() {
+        variablesEditor.setReadOnly(true);
+        verify(variablesEditorWidgetView,
+               times(1)).setReadOnly(true);
+    }
+
+    @Test
+    public void testSetReadOnlyFalse() {
+        variablesEditor.setReadOnly(false);
+        verify(variablesEditorWidgetView,
+               times(1)).setReadOnly(false);
+    }
 }

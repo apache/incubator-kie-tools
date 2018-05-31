@@ -147,6 +147,7 @@ public class AssignmentListItemWidgetViewImplTest {
         doCallRealMethod().when(view).setDisallowedNames(anySet(),
                                                          anyString());
         doCallRealMethod().when(view).handleDeleteButton(any(ClickEvent.class));
+        doCallRealMethod().when(view).setReadOnly(anyBoolean());
         AssignmentRow row = new AssignmentRow();
         doReturn(row).when(assignment).getModel();
     }
@@ -330,5 +331,31 @@ public class AssignmentListItemWidgetViewImplTest {
         view.setParentWidget(widget);
         view.handleDeleteButton(null);
         verify(widget).removeAssignment(model);
+    }
+
+    @Test
+    public void testSetReadOnlyTrue() {
+        view.setReadOnly(true);
+        verify(name,
+               times(1)).setReadOnly(true);
+        verify(dataType,
+               times(1)).setEnabled(false);
+        verify(processVar,
+               times(1)).setEnabled(false);
+        verify(deleteButton,
+               times(1)).setEnabled(false);
+    }
+
+    @Test
+    public void testSetReadOnlyFalse() {
+        view.setReadOnly(false);
+        verify(name,
+               times(1)).setReadOnly(false);
+        verify(dataType,
+               times(1)).setEnabled(true);
+        verify(processVar,
+               times(1)).setEnabled(true);
+        verify(deleteButton,
+               times(1)).setEnabled(true);
     }
 }

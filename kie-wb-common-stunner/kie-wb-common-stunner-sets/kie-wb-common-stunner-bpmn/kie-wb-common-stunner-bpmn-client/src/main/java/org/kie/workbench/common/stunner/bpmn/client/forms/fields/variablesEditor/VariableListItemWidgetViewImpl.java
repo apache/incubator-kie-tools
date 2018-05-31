@@ -234,6 +234,13 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
     }
 
     @Override
+    public void setReadOnly(final boolean readOnly) {
+        deleteButton.setEnabled(!readOnly);
+        dataTypeComboBox.setReadOnly(readOnly);
+        name.setEnabled(!readOnly);
+    }
+
+    @Override
     public boolean isDuplicateName(final String name) {
         return parentWidget.isDuplicateName(name);
     }

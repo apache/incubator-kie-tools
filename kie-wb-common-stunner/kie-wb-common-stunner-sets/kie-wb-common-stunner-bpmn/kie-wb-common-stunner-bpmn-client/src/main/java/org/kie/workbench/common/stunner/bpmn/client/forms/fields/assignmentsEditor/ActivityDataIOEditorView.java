@@ -70,4 +70,6 @@ public interface ActivityDataIOEditorView {
     void setOutputAssignmentRows(final List<AssignmentRow> outputAssignmentRows);
 
     void setInputAssignmentsDisallowedNames(final Set<String> names);
+
+    void setReadOnly(final boolean readOnly);
 }

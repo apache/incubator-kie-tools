@@ -98,4 +98,18 @@ public abstract class FieldEditorEditorWidgetBaseTest<T, E extends FieldEditorPr
                times(1)).notifyChange(oldValue,
                                       value);
     }
+
+    @Test
+    public void testSetReadonlyTrue() {
+        widget.setReadOnly(true);
+        verify(editor,
+               times(1)).setReadOnly(true);
+    }
+
+    @Test
+    public void testSetReadonlyFalse() {
+        widget.setReadOnly(false);
+        verify(editor,
+               times(1)).setReadOnly(false);
+    }
 }

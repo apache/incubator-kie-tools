@@ -124,6 +124,7 @@ public class VariablesEditorWidgetViewImplTest {
                                                  anyBoolean());
         doCallRealMethod().when(view).setDataTypes(anyListOf(String.class),
                                                    anyListOf(String.class));
+        doCallRealMethod().when(view).setReadOnly(anyBoolean());
         rows = new ArrayList<VariableRow>();
         rows.add(new VariableRow(Variable.VariableType.PROCESS,
                                  "varName",
@@ -210,5 +211,27 @@ public class VariablesEditorWidgetViewImplTest {
                         true);
         verify(view,
                times(1)).initView();
+    }
+
+    @Test
+    public void testSetReadOnlyTrue() {
+        view.setReadOnly(true);
+        verify(button,
+               times(1)).setEnabled(false);
+        for (int i = 0; i < variableRows.getValue().size(); i++) {
+            verify(view.getVariableWidget(i),
+                   times(1)).setReadOnly(true);
+        }
+    }
+
+    @Test
+    public void testSetReadOnlyFalse() {
+        view.setReadOnly(false);
+        verify(button,
+               times(1)).setEnabled(true);
+        for (int i = 0; i < variableRows.getValue().size(); i++) {
+            verify(view.getVariableWidget(i),
+                   times(1)).setReadOnly(false);
+        }
     }
 }

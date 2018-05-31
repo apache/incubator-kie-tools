@@ -75,6 +75,8 @@ public interface ComboBoxView {
         void listBoxValueChanged(final String newValue);
 
         void textBoxValueChanged(final String newValue);
+
+        void setReadOnly(final boolean readOnly);
     }
 
     void init(final ComboBoxView.ComboBoxPresenter presenter,
@@ -110,4 +112,6 @@ public interface ComboBoxView {
     void textBoxLostFocus();
 
     void listBoxGotFocus();
+
+    void setReadOnly(final boolean readOnly);
 }

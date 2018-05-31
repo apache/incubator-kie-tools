@@ -386,4 +386,18 @@ public class ActivityDataIOEditorWidgetTest {
         widget.setIsVisible(false);
         verify(view).setVisible(false);
     }
+
+    @Test
+    public void testSetReadonlyTrue() {
+        widget.setReadOnly(true);
+        verify(view,
+               times(1)).setReadOnly(true);
+    }
+
+    @Test
+    public void testSetReadonlyFalse() {
+        widget.setReadOnly(false);
+        verify(view,
+               times(1)).setReadOnly(false);
+    }
 }

@@ -193,4 +193,8 @@ public class AssigneeEditorWidget implements IsWidget,
         view.clearList();
         listItems.destroyAll();
     }
+
+    public void setReadOnly(boolean readOnly) {
+        view.setReadOnly(readOnly);
+    }
 }

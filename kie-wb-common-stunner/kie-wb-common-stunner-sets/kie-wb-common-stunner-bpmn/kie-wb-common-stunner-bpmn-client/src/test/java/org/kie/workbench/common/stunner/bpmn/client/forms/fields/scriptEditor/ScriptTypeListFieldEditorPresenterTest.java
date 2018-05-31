@@ -109,4 +109,18 @@ public class ScriptTypeListFieldEditorPresenterTest {
         changeHandler.onValueChange(oldValue,
                                     new ScriptTypeListValue().addValue(newScriptTypeValue));
     }
+
+    @Test
+    public void testSetReadonlyTrue() {
+        editor.setReadOnly(true);
+        verify(scriptTypePresenter,
+               times(1)).setReadOnly(true);
+    }
+
+    @Test
+    public void testSetReadonlyFalse() {
+        editor.setReadOnly(false);
+        verify(scriptTypePresenter,
+               times(1)).setReadOnly(false);
+    }
 }

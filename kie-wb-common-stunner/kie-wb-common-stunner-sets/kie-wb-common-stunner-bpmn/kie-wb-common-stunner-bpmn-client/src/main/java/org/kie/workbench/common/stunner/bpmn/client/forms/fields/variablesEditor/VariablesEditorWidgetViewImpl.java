@@ -80,6 +80,7 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
 
     List<String> dataTypes;
     List<String> dataTypeDisplayNames;
+    boolean readOnly = false;
 
     /**
      * The list of variableRows that currently exist.
@@ -129,6 +130,7 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
                                             oldValue,
                                             sVariables);
         }
+        setReadOnly(readOnly);
     }
 
     protected void setDataTypes(final List<String> dataTypes,
@@ -241,6 +243,15 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
         addVarButton.setIcon(IconType.PLUS);
         nameth.setInnerText("Name");
         datatypeth.setInnerText("Data Type");
+    }
+
+    @Override
+    public void setReadOnly(final boolean readOnly) {
+        this.readOnly = readOnly;
+        addVarButton.setEnabled(!readOnly);
+        for (int i = 0; i < getVariableRowsCount(); i++) {
+            getVariableWidget(i).setReadOnly(readOnly);
+        }
     }
 
     @Override

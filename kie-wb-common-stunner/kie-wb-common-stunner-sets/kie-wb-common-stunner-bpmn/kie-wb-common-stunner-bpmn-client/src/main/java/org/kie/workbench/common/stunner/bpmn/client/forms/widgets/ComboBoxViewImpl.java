@@ -152,4 +152,10 @@ public class ComboBoxViewImpl implements ComboBoxView {
             return listBox.getValue();
         }
     }
+
+    @Override
+    public void setReadOnly(boolean readOnly) {
+        listBox.setEnabled(!readOnly);
+        textBox.setEnabled(!readOnly);
+    }
 }

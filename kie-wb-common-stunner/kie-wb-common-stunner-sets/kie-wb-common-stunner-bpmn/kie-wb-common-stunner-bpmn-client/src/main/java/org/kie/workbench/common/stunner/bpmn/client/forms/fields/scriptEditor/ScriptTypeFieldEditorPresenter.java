@@ -54,6 +54,8 @@ public class ScriptTypeFieldEditorPresenter
         String getLanguage();
 
         void setLanguageOptions(List<Pair<String, String>> options);
+
+        void setReadOnly(boolean readOnly);
     }
 
     private final View view;
@@ -83,6 +85,11 @@ public class ScriptTypeFieldEditorPresenter
 
     public void setMode(ScriptTypeMode mode) {
         view.setLanguageOptions(getLanguageOptions(mode));
+    }
+
+    @Override
+    public void setReadOnly(boolean readOnly) {
+        view.setReadOnly(readOnly);
     }
 
     private List<Pair<String, String>> getLanguageOptions(ScriptTypeMode mode) {

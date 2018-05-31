@@ -260,6 +260,20 @@ public class TimerSettingsFieldEditorPresenterTest
                times(2)).showTimeDateTimePicker(false);
     }
 
+    @Test
+    public void testSetReadonlyTrue() {
+        editor.setReadOnly(true);
+        verify(view,
+               times(1)).setReadOnly(true);
+    }
+
+    @Test
+    public void testSetReadonlyFalse() {
+        editor.setReadOnly(false);
+        verify(view,
+               times(1)).setReadOnly(false);
+    }
+
     private void verifyDurationTimerDisplayMode(int times,
                                                 boolean setRadioChecked) {
         verify(view,

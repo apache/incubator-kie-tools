@@ -126,4 +126,18 @@ public class ScriptTypeFieldEditorPresenterTest
                           new ScriptTypeValue(LANGUAGE,
                                               SCRIPT));
     }
+
+    @Test
+    public void testSetReadonlyTrue() {
+        editor.setReadOnly(true);
+        verify(view,
+               times(1)).setReadOnly(true);
+    }
+
+    @Test
+    public void testSetReadonlyFalse() {
+        editor.setReadOnly(false);
+        verify(view,
+               times(1)).setReadOnly(false);
+    }
 }

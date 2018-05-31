@@ -119,6 +119,8 @@ public class TimerSettingsFieldEditorPresenter
         Date parseFromISO(final String value) throws IllegalArgumentException;
 
         String formatToISO(final Date value);
+
+        void setReadOnly(final boolean readOnly);
     }
 
     private final View view;
@@ -163,6 +165,11 @@ public class TimerSettingsFieldEditorPresenter
                 view.setTimeCycle(value.getTimeCycle());
             }
         }
+    }
+
+    @Override
+    public void setReadOnly(final boolean readOnly) {
+        view.setReadOnly(readOnly);
     }
 
     protected void onTimerDurationChange() {

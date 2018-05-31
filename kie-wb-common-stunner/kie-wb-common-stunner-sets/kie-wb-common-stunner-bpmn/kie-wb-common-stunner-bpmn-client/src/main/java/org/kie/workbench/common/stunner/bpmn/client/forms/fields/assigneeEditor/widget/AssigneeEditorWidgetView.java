@@ -40,9 +40,11 @@ public interface AssigneeEditorWidgetView extends IsWidget {
 
     void clearList();
 
-    void add(AssigneeListItem listItem);
+    void add(final AssigneeListItem listItem);
 
     void enableAddButton();
 
     void disableAddButton();
+
+    void setReadOnly(final boolean readOnly);
 }

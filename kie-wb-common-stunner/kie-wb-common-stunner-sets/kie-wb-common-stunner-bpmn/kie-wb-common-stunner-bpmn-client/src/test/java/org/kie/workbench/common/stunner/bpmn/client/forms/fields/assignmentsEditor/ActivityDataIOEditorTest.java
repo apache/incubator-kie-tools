@@ -297,4 +297,18 @@ public class ActivityDataIOEditorTest {
         verify(ioEditorView,
                never()).hideView();
     }
+
+    @Test
+    public void testSetReadOnlyTrue() {
+        ioEditor.setReadOnly(true);
+        verify(ioEditorView,
+               times(1)).setReadOnly(true);
+    }
+
+    @Test
+    public void testSetReadOnlyFalse() {
+        ioEditor.setReadOnly(false);
+        verify(ioEditorView,
+               times(1)).setReadOnly(false);
+    }
 }

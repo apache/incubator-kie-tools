@@ -50,6 +50,7 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -144,6 +145,7 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
         doCallRealMethod().when(widget).formatDataTypes(any(List.class));
         doCallRealMethod().when(widget).getTaskName();
         doCallRealMethod().when(widget).getDisallowedPropertyNames();
+        doCallRealMethod().when(widget).setReadOnly(anyBoolean());
         when(userTask.getGeneral()).thenReturn(taskGeneralSet);
         when(taskGeneralSet.getName()).thenReturn(taskName);
         when(taskName.getValue()).thenReturn(TASK_NAME);
@@ -405,6 +407,20 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
                      widget.hasOutputVars);
         assertEquals(false,
                      widget.isSingleOutputVar);
+    }
+
+    @Test
+    public void testSetReadOnlyTrue() {
+        widget.setReadOnly(true);
+        verify(activityDataIOEditor,
+               times(1)).setReadOnly(true);
+    }
+
+    @Test
+    public void testSetReadOnlyFalse() {
+        widget.setReadOnly(false);
+        verify(activityDataIOEditor,
+               times(1)).setReadOnly(false);
     }
 }
 

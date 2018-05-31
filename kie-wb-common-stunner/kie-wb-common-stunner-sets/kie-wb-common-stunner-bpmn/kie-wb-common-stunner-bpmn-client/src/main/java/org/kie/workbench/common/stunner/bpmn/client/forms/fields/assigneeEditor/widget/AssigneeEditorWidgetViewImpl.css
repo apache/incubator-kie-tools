@@ -13,3 +13,9 @@
 .kie-wb-common-stunner-assignee-table-add-action-icon {
     padding-right: 5px;
 }
+
+.kie-wb-common-stunner-assignee-table-add-action-disabled {
+    pointer-events: none;
+    cursor: default;
+    opacity: .4;
+}

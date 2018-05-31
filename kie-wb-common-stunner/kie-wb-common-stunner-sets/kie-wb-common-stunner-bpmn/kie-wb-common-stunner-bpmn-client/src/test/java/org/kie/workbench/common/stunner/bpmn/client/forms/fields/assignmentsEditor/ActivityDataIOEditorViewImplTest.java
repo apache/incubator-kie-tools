@@ -24,6 +24,7 @@ import java.util.Set;
 
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockito;
+import org.gwtbootstrap3.client.ui.Button;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,6 +61,9 @@ public class ActivityDataIOEditorViewImplTest {
     private ArgumentCaptor<List<AssignmentRow>> listAssignmentCaptor;
 
     @GwtMock
+    private Button btnSave;
+
+    @GwtMock
     private ActivityDataIOEditorViewImpl view;
 
     private List<AssignmentRow> rows;
@@ -74,6 +78,7 @@ public class ActivityDataIOEditorViewImplTest {
         GwtMockito.initMocks(this);
         view.inputAssignmentsWidget = inputAssignmentsWidget;
         view.outputAssignmentsWidget = outputAssignmentsWidget;
+        view.btnSave = btnSave;
         view.presenter = presenter;
         doCallRealMethod().when(view).setInputAssignmentRows(any(List.class));
         doCallRealMethod().when(view).setOutputAssignmentRows(any(List.class));
@@ -88,6 +93,7 @@ public class ActivityDataIOEditorViewImplTest {
         doCallRealMethod().when(view).setOutputAssignmentsVisibility(anyBoolean());
         doCallRealMethod().when(view).getInputAssignmentData();
         doCallRealMethod().when(view).getOutputAssignmentData();
+        doCallRealMethod().when(view).setReadOnly(anyBoolean());
         rows = new ArrayList<AssignmentRow>();
         rows.add(new AssignmentRow("varName",
                                    null,
@@ -257,5 +263,27 @@ public class ActivityDataIOEditorViewImplTest {
                      listAssignmentCaptor.getValue().get(1).getName());
         assertEquals("varName2",
                      listAssignmentCaptor.getValue().get(1).getProcessVar());
+    }
+
+    @Test
+    public void testSetReadOnlyTrue() {
+        view.setReadOnly(true);
+        verify(btnSave,
+               times(1)).setEnabled(false);
+        verify(inputAssignmentsWidget,
+               times(1)).setReadOnly(true);
+        verify(outputAssignmentsWidget,
+               times(1)).setReadOnly(true);
+    }
+
+    @Test
+    public void testSetReadOnlyFalse() {
+        view.setReadOnly(false);
+        verify(btnSave,
+               times(1)).setEnabled(true);
+        verify(inputAssignmentsWidget,
+               times(1)).setReadOnly(false);
+        verify(outputAssignmentsWidget,
+               times(1)).setReadOnly(false);
     }
 }

@@ -37,6 +37,8 @@ public abstract class FieldEditorPresenter<T> {
 
     public abstract void init();
 
+    public abstract void setReadOnly(final boolean readOnly);
+
     public T getValue() {
         return value;
     }

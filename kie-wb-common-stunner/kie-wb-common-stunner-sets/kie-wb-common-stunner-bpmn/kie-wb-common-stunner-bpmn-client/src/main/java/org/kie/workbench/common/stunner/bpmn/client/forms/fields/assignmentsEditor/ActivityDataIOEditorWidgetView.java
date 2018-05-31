@@ -56,4 +56,6 @@ public interface ActivityDataIOEditorWidgetView {
     AssignmentListItemWidgetView getAssignmentWidget(final int index);
 
     void setVisible(final boolean visible);
+
+    void setReadOnly(final boolean readOnly);
 }

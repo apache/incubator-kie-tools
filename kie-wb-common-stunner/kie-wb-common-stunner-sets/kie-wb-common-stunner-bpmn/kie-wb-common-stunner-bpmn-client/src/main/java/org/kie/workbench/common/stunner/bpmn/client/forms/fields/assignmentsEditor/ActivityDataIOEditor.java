@@ -148,6 +148,10 @@ public class ActivityDataIOEditor implements ActivityDataIOEditorView.Presenter 
         view.setOutputAssignmentRows(outputAssignmentRows);
     }
 
+    public void setReadOnly(final boolean readOnly) {
+        view.setReadOnly(readOnly);
+    }
+
     public void show() {
         view.showView();
     }

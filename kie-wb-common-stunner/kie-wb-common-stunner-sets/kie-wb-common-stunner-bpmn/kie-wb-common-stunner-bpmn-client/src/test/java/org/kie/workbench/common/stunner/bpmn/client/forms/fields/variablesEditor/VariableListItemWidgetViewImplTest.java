@@ -45,6 +45,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -123,6 +124,7 @@ public class VariableListItemWidgetViewImplTest {
         doCallRealMethod().when(view).setParentWidget(any(VariablesEditorWidgetView.Presenter.class));
         doCallRealMethod().when(view).isDuplicateName(anyString());
         doCallRealMethod().when(view).handleDeleteButton(any(ClickEvent.class));
+        doCallRealMethod().when(view).setReadOnly(anyBoolean());
         VariableRow row = new VariableRow();
         doReturn(row).when(variableRow).getModel();
     }
@@ -240,5 +242,27 @@ public class VariableListItemWidgetViewImplTest {
         view.setParentWidget(widget);
         view.handleDeleteButton(null);
         verify(widget).removeVariable(model);
+    }
+
+    @Test
+    public void testSetReadOnlyTrue() {
+        view.setReadOnly(true);
+        verify(deleteButton,
+               times(1)).setEnabled(false);
+        verify(dataTypeComboBox,
+               times(1)).setReadOnly(true);
+        verify(name,
+               times(1)).setEnabled(false);
+    }
+
+    @Test
+    public void testSetReadOnlyFalse() {
+        view.setReadOnly(false);
+        verify(deleteButton,
+               times(1)).setEnabled(true);
+        verify(dataTypeComboBox,
+               times(1)).setReadOnly(false);
+        verify(name,
+               times(1)).setEnabled(true);
     }
 }

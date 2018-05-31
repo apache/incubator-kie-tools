@@ -89,7 +89,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     }
 
     protected void setReadOnly(final boolean readOnly) {
-
+        view.setReadOnly(readOnly);
     }
 
     @Override

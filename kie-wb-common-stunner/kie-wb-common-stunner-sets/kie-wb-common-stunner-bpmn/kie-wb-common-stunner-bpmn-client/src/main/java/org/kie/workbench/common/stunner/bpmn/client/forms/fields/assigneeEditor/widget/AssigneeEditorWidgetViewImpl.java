@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assigneeEditor.widget;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -38,14 +40,20 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.FormWidget;
+import org.uberfire.commons.data.Pair;
+import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchDropDown;
 
 @Templated
 public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeEditorWidgetView,
                                                                        FormWidget<String> {
 
+    private static final String ACTION_ENABLED = "kie-wb-common-stunner-assignee-table-add-action";
+    private static final String ACTION_DISABLED = "kie-wb-common-stunner-assignee-table-add-action-disabled";
+
     private Presenter presenter;
 
-    private Map<AssigneeListItem, HTMLElement> elements = new HashMap<AssigneeListItem, HTMLElement>();
+    private Map<AssigneeListItem, HTMLElement> elements = new HashMap<>();
+    private boolean readOnly = false;
 
     @Inject
     private Document document;
@@ -68,13 +76,15 @@ public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeE
     @DataField
     protected TableSection assigneeRows;
 
+    protected List<Pair<LiveSearchDropDown<String>, Button>> assigneeRowsElements = new ArrayList<>();
+
     @Override
     public HasValue<String> wrapped() {
         return presenter;
     }
 
     @Override
-    public void init(Presenter presenter) {
+    public void init(final Presenter presenter) {
         this.presenter = presenter;
 
         nameth.setTextContent(presenter.getNameHeader());
@@ -82,18 +92,19 @@ public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeE
     }
 
     @Override
-    public boolean isDuplicateName(String name) {
+    public boolean isDuplicateName(final String name) {
         return false;
     }
 
     @Override
     public void clearList() {
         elements.clear();
+        assigneeRowsElements.clear();
         DOMUtil.removeAllChildren(assigneeRows);
     }
 
     @Override
-    public void add(AssigneeListItem listItem) {
+    public void add(final AssigneeListItem listItem) {
         HTMLElement tableRow = document.createElement("tr");
 
         HTMLElement liveSearchTd = document.createElement("td");
@@ -101,6 +112,7 @@ public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeE
         listItem.getLiveSearchDropDown().asWidget().getElement().getStyle().setWidth(100, Style.Unit.PCT);
 
         DOMUtil.appendWidgetToElement(liveSearchTd, listItem.getLiveSearchDropDown());
+        listItem.getLiveSearchDropDown().setEnabled(!readOnly);
         HTMLElement actionTd = document.createElement("td");
 
         Button button = (Button) document.createElement("button");
@@ -109,6 +121,7 @@ public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeE
             listItem.notifyRemoval();
             DOMUtil.removeFromParent(tableRow);
         }, false);
+        button.setDisabled(readOnly);
 
         actionTd.appendChild(button);
 
@@ -116,6 +129,7 @@ public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeE
         tableRow.appendChild(actionTd);
 
         assigneeRows.appendChild(tableRow);
+        assigneeRowsElements.add(new Pair<>(listItem.getLiveSearchDropDown(), button));
         elements.put(listItem, tableRow);
     }
 
@@ -127,6 +141,22 @@ public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeE
     @Override
     public void disableAddButton() {
         addAnchor.setHidden(true);
+    }
+
+    @Override
+    public void setReadOnly(final boolean readOnly) {
+        this.readOnly = readOnly;
+        DOMUtil.removeCSSClass(addAnchor, ACTION_DISABLED);
+        DOMUtil.removeCSSClass(addAnchor, ACTION_ENABLED);
+        if (readOnly) {
+            DOMUtil.addCSSClass(addAnchor, ACTION_DISABLED);
+        } else {
+            DOMUtil.addCSSClass(addAnchor, ACTION_ENABLED);
+        }
+        assigneeRowsElements.forEach(element -> {
+            element.getK1().setEnabled(!readOnly);
+            element.getK2().setDisabled(readOnly);
+        });
     }
 
     @EventHandler("addAnchor")

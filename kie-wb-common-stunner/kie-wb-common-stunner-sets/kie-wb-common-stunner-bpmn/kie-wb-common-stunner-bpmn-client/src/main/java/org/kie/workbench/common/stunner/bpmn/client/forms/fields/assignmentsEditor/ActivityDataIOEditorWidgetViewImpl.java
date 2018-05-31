@@ -76,6 +76,8 @@ public class ActivityDataIOEditorWidgetViewImpl extends Composite implements Act
     @Inject
     protected Event<NotificationEvent> notification;
 
+    private boolean readOnly = false;
+
     @Override
     public void init(final Presenter presenter) {
         this.presenter = presenter;
@@ -139,6 +141,7 @@ public class ActivityDataIOEditorWidgetViewImpl extends Composite implements Act
     @Override
     public void setAssignmentRows(final List<AssignmentRow> rows) {
         assignments.setValue(rows);
+        setReadOnly(readOnly);
     }
 
     @Override
@@ -149,6 +152,15 @@ public class ActivityDataIOEditorWidgetViewImpl extends Composite implements Act
     @Override
     public AssignmentListItemWidgetView getAssignmentWidget(final int index) {
         return assignments.getComponent(index);
+    }
+
+    @Override
+    public void setReadOnly(final boolean readOnly) {
+        this.readOnly = readOnly;
+        addVarButton.setEnabled(!readOnly);
+        for (int i = 0; i < getAssignmentsCount(); i++) {
+            getAssignmentWidget(i).setReadOnly(readOnly);
+        }
     }
 
     @EventHandler("addVarButton")

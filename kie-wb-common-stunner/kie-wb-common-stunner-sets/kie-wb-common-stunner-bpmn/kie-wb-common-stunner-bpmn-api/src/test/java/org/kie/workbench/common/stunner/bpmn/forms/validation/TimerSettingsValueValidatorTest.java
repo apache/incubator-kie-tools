@@ -40,12 +40,10 @@ public class TimerSettingsValueValidatorTest
     private List<TestElement> testElements = new ArrayList<>();
 
     private static final String[] VALID_TIME_DURATIONS = {
-            "P4Y",
-            "P4Y2M",
-            "P4Y2M6D",
-            "P4Y2M6DT1H",
-            "P4Y2M6DT1H8M",
-            "P4Y2M6DT1H8M15S",
+            "P6D",
+            "P6DT1H",
+            "P6DT1H8M",
+            "P6DT1H8M15S",
             "PT1H",
             "PT1H8M",
             "PT1H8M5S",
@@ -54,6 +52,12 @@ public class TimerSettingsValueValidatorTest
     };
 
     private static final String[] INVALID_TIME_DURATIONS = {
+            "P4Y",
+            "P4Y2M",
+            "P4Y2M6D",
+            "P4Y2M6DT1H",
+            "P4Y2M6DT1H8M",
+            "P4Y2M6DT1H8M15S",
             "",
             "PPP",
             "23EE",
@@ -61,23 +65,19 @@ public class TimerSettingsValueValidatorTest
     };
 
     private static final String[] VALID_ISO_TIME_CYCLE_DURATIONS = {
-            "R/P4Y",
-            "R/P4Y2M",
-            "R/P4Y2M6D",
-            "R/P4Y2M6DT1H",
-            "R/P4Y2M6DT1H8M",
-            "R/P4Y2M6DT1H8M15S",
+            "R/P6D",
+            "R/P6DT1H",
+            "R/P6DT1H8M",
+            "R/P6DT1H8M15S",
             "R/PT1H",
             "R/PT1H8M",
             "R/PT1H8M5S",
             "R/PT8M",
             "R/PT3S",
-            "R2/P4Y",
-            "R2/P4Y2M",
-            "R2/P4Y2M6D",
-            "R2/P4Y2M6DT1H",
-            "R2/P4Y2M6DT1H8M",
-            "R2/P4Y2M6DT1H8M15S",
+            "R2/P6D",
+            "R2/P6DT1H",
+            "R2/P6DT1H8M",
+            "R2/P6DT1H8M15S",
             "R2/PT1H",
             "R2/PT1H8M",
             "R2/PT1H8M5S",
@@ -86,6 +86,18 @@ public class TimerSettingsValueValidatorTest
     };
 
     private static final String[] INVALID_ISO_TIME_CYCLE_DURATIONS = {
+            "R/P4Y",
+            "R/P4Y2M",
+            "R/P4Y2M6D",
+            "R/P4Y2M6DT1H",
+            "R/P4Y2M6DT1H8M",
+            "R/P4Y2M6DT1H8M15S",
+            "R2/P4Y",
+            "R2/P4Y2M",
+            "R2/P4Y2M6D",
+            "R2/P4Y2M6DT1H",
+            "R2/P4Y2M6DT1H8M",
+            "R2/P4Y2M6DT1H8M15S",
             "",
             "R/",
             "R/4Y2M",

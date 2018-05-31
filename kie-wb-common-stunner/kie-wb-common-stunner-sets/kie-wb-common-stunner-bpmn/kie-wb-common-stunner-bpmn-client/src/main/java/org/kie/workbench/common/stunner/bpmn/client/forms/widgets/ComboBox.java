@@ -209,6 +209,11 @@ public class ComboBox implements ComboBoxView.ComboBoxPresenter {
         view.setListBoxModelValue(value);
     }
 
+    @Override
+    public void setReadOnly(final boolean readOnly) {
+        view.setReadOnly(readOnly);
+    }
+
     public void notifyModelChanged() {
         modelPresenter.notifyModelChanged();
     }

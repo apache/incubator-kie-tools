@@ -66,4 +66,6 @@ public interface AssignmentListItemWidgetView extends HasModel<AssignmentRow> {
     String getConstant();
 
     void setConstant(final String constant);
+
+    void setReadOnly(final boolean readOnly);
 }

@@ -372,4 +372,18 @@ public class ComboBoxTest {
         verify(view).setTextBoxVisible(false);
         verify(view).setListBoxVisible(true);
     }
+
+    @Test
+    public void testSetReadOnlyTrue() {
+        comboBox.setReadOnly(true);
+        verify(view,
+               times(1)).setReadOnly(true);
+    }
+
+    @Test
+    public void testSetReadOnlyFalse() {
+        comboBox.setReadOnly(false);
+        verify(view,
+               times(1)).setReadOnly(false);
+    }
 }

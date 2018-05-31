@@ -50,7 +50,7 @@ public class TimerSettingsFieldRenderer
 
     @Override
     protected void setReadOnly(final boolean readOnly) {
-        //readonly mode not required in this case.
+        widget.setReadOnly(readOnly);
     }
 
     @Override

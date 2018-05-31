@@ -72,4 +72,6 @@ public interface VariablesEditorWidgetView extends IsWidget {
     boolean isDuplicateName(final String name);
 
     void removeVariable(final VariableRow variableRow);
+
+    void setReadOnly(final boolean readOnly);
 }

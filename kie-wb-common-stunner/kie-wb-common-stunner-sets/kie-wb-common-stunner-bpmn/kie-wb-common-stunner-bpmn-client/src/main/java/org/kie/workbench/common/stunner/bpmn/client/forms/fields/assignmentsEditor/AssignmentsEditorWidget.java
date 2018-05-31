@@ -284,6 +284,10 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
         activityDataIOEditor.show();
     }
 
+    public void setReadOnly(final boolean readOnly) {
+        activityDataIOEditor.setReadOnly(readOnly);
+    }
+
     protected String getTaskName() {
         String taskName = "Task";
         if (bpmnModel != null && bpmnModel instanceof BaseTask) {

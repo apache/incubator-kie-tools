@@ -23,6 +23,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class TimerSettingsFieldRendererTest {
@@ -47,5 +49,19 @@ public class TimerSettingsFieldRendererTest {
     public void testGetSupportedCode() {
         assertEquals("TimerSettingsFieldType",
                      renderer.getSupportedCode());
+    }
+
+    @Test
+    public void testSetReadonlyTrue() {
+        renderer.setReadOnly(true);
+        verify(widget,
+               times(1)).setReadOnly(true);
+    }
+
+    @Test
+    public void testSetReadonlyFalse() {
+        renderer.setReadOnly(false);
+        verify(widget,
+               times(1)).setReadOnly(false);
     }
 }

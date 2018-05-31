@@ -183,4 +183,18 @@ public class AssigneeEditorWidgetTest {
         widget.destroy();
         verify(listItems).destroyAll();
     }
+
+    @Test
+    public void setReadOnlyTrue() {
+        widget.setReadOnly(true);
+        verify(view,
+               times(1)).setReadOnly(true);
+    }
+
+    @Test
+    public void setReadOnlyFalse() {
+        widget.setReadOnly(false);
+        verify(view,
+               times(1)).setReadOnly(false);
+    }
 }

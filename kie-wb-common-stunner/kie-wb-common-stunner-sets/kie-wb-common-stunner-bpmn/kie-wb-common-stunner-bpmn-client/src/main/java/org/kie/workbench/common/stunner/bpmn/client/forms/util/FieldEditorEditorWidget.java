@@ -43,6 +43,10 @@ public abstract class FieldEditorEditorWidget<T, E extends FieldEditorPresenter<
         editor.addChangeHandler(this::notifyChange);
     }
 
+    public void setReadOnly(final boolean readOnly) {
+        editor.setReadOnly(readOnly);
+    }
+    
     @Override
     public T getValue() {
         return editor.getValue();
