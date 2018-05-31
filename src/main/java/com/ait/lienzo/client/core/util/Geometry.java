@@ -286,8 +286,6 @@ public final class Geometry
                 s = (iy - ly[0]) / (ly[1] - ly[0]);
             }
 
-            // in bounds?
-            //if (t>0 && t<1.0 && s>0 && s<1.0)
             if (greaterOrCloseEnough(t, 0) && lesserOrCloseEnough(t, 1) && greaterOrCloseEnough(s, 0) && lesserOrCloseEnough(s, 1))
             {
                 intersections.push(new Point2D(ix, iy));
