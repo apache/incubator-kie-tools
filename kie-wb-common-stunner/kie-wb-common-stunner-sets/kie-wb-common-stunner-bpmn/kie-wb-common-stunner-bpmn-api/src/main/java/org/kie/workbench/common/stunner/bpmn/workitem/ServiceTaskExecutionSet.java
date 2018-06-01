@@ -25,6 +25,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.SkipFormField;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
@@ -40,16 +41,16 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Portable
 @Bindable
 @PropertySet
-@FormDefinition(startElement = "taskName")
+@FormDefinition(startElement = "isAsync")
 public class ServiceTaskExecutionSet implements BPMNPropertySet {
 
     @Property
-    @FormField
+    @SkipFormField
     @Valid
     protected TaskName taskName;
 
     @Property
-    @FormField(afterElement = "taskName")
+    @FormField
     @Valid
     private IsAsync isAsync;
 
