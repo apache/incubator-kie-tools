@@ -700,6 +700,7 @@ public class WorkbenchMegaMenuPresenterTest {
 
         ArgumentCaptor<Command> commandCaptor = ArgumentCaptor.forClass(Command.class);
         verify(view).setHomeLinkAction(commandCaptor.capture());
+        verify(view).setBrandImageAction(commandCaptor.capture());
         commandCaptor.getValue().execute();
 
         verify(placeManager,
@@ -717,6 +718,7 @@ public class WorkbenchMegaMenuPresenterTest {
 
         ArgumentCaptor<Command> commandCaptor = ArgumentCaptor.forClass(Command.class);
         verify(view).setHomeLinkAction(commandCaptor.capture());
+        verify(view).setBrandImageAction(commandCaptor.capture());
         commandCaptor.getValue().execute();
 
         verify(placeManager,
@@ -734,6 +736,7 @@ public class WorkbenchMegaMenuPresenterTest {
 
         ArgumentCaptor<Command> commandCaptor = ArgumentCaptor.forClass(Command.class);
         verify(view).setHomeLinkAction(commandCaptor.capture());
+        verify(view).setBrandImageAction(commandCaptor.capture());
         commandCaptor.getValue().execute();
 
         verify(placeManager).goTo("identifier");

@@ -164,6 +164,11 @@ public class WorkbenchMegaMenuView implements WorkbenchMegaMenuPresenter.View,
     }
 
     @Override
+    public void setBrandImageAction(final Command command) {
+        brandImage.setOnclick(event -> command.execute());
+    }
+
+    @Override
     public String getDefaultMenuText() {
         return translationService.format(Constants.Menu);
     }

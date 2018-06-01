@@ -65,6 +65,8 @@ public class WorkbenchMegaMenuPresenter extends WorkbenchBaseMenuPresenter {
 
         void setHomeLinkAction(Command command);
 
+        void setBrandImageAction(Command command);
+
         String getDefaultMenuText();
 
         void setBrandImage(String brandImageUrl);
@@ -379,14 +381,21 @@ public class WorkbenchMegaMenuPresenter extends WorkbenchBaseMenuPresenter {
 
     void setupHomeLink() {
         view.setHomeLinkAction(() -> {
-            final PerspectiveActivity homePerspectiveActivity = workbench.getHomePerspectiveActivity();
-            if (homePerspectiveActivity != null) {
-                final String homePerspectiveIdentifier = homePerspectiveActivity.getIdentifier();
-                if (hasAccessToPerspective(homePerspectiveIdentifier)) {
-                    placeManager.goTo(homePerspectiveIdentifier);
-                }
-            }
+            goToHomePerspective();
         });
+        view.setBrandImageAction(() -> {
+            goToHomePerspective();
+        });
+    }
+
+    private void goToHomePerspective() {
+        final PerspectiveActivity homePerspectiveActivity = workbench.getHomePerspectiveActivity();
+        if (homePerspectiveActivity != null) {
+            final String homePerspectiveIdentifier = homePerspectiveActivity.getIdentifier();
+            if (hasAccessToPerspective(homePerspectiveIdentifier)) {
+                placeManager.goTo(homePerspectiveIdentifier);
+            }
+        }
     }
 
     boolean hasAccessToPerspective(final String perspectiveId) {
