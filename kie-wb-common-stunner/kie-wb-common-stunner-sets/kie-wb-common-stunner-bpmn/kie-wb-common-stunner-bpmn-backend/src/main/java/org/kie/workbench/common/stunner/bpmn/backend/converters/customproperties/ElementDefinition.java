@@ -21,13 +21,16 @@ import java.util.Optional;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.ExtensionAttributeValue;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.impl.EStructuralFeatureImpl;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.jboss.drools.DroolsFactory;
-import org.jboss.drools.DroolsPackage;
 import org.jboss.drools.MetaDataType;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.util.Utils;
+
+import static org.jboss.drools.DroolsPackage.Literals.DOCUMENT_ROOT__META_DATA;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.asCData;
 
 public abstract class ElementDefinition<T> {
 
@@ -52,30 +55,36 @@ public abstract class ElementDefinition<T> {
     }
 
     void setStringValue(BaseElement element, String value) {
-        if (element != null) {
-            MetaDataType eleMetadata = DroolsFactory.eINSTANCE.createMetaDataType();
-            eleMetadata.setName(name);
-            eleMetadata.setMetaValue(asCData(value));
+        FeatureMap.Entry extension = extensionOf(
+                DOCUMENT_ROOT__META_DATA, metaDataOf(value));
+        getExtensionElements(element).add(extension);
+    }
 
-            if (element.getExtensionValues() == null || element.getExtensionValues().isEmpty()) {
-                ExtensionAttributeValue extensionElement = Bpmn2Factory.eINSTANCE.createExtensionAttributeValue();
-                element.getExtensionValues().add(extensionElement);
-            }
+    private FeatureMap.Entry extensionOf(EReference eref, MetaDataType eleMetadata) {
+        return new EStructuralFeatureImpl.SimpleFeatureMapEntry(
+                (EStructuralFeature.Internal) eref,
+                eleMetadata);
+    }
 
-            FeatureMap.Entry eleExtensionElementEntry = new EStructuralFeatureImpl.SimpleFeatureMapEntry(
-                    (EStructuralFeature.Internal) DroolsPackage.Literals.DOCUMENT_ROOT__META_DATA,
-                    eleMetadata);
-            element.getExtensionValues().get(0).getValue().add(eleExtensionElementEntry);
+    private MetaDataType metaDataOf(String value) {
+        MetaDataType eleMetadata = DroolsFactory.eINSTANCE.createMetaDataType();
+        eleMetadata.setName(name);
+        eleMetadata.setMetaValue(asCData(value));
+        return eleMetadata;
+    }
+
+    protected FeatureMap getExtensionElements(BaseElement element) {
+        if (element.getExtensionValues() == null || element.getExtensionValues().isEmpty()) {
+            ExtensionAttributeValue eav = Bpmn2Factory.eINSTANCE.createExtensionAttributeValue();
+            element.getExtensionValues().add(eav);
+            return eav.getValue();
+        } else {
+            return element.getExtensionValues().get(0).getValue();
         }
     }
 
     public CustomElement<T> of(BaseElement element) {
         return new CustomElement<>(this, element);
-    }
-
-    // eww
-    protected String asCData(String original) {
-        return "<![CDATA[" + original + "]]>";
     }
 }
 

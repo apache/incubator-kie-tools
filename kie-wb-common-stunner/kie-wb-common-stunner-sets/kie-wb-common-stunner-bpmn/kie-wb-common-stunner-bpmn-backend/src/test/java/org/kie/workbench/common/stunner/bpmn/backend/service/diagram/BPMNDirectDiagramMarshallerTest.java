@@ -2216,7 +2216,7 @@ public class BPMNDirectDiagramMarshallerTest {
                       1,
                       3,
                       2);
-        assertTrue(result.contains("MyUserTask</bpmn2:from>"));
+        assertTrue(result.contains("MyUserTask]]></bpmn2:from>"));
         String flatResult = result.replace(NEW_LINE,
                                            " ").replaceAll("( )+",
                                                            " ");

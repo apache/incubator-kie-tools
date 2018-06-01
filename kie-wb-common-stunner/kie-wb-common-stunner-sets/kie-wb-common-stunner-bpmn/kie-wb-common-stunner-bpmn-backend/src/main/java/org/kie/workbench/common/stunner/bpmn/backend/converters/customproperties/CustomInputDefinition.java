@@ -69,7 +69,7 @@ public abstract class CustomInputDefinition<T> {
 class BooleanInput extends CustomInputDefinition<Boolean> {
 
     BooleanInput(String name, Boolean defaultValue) {
-        super(name, "java.lang.Boolean", defaultValue);
+        super(name, "Object", defaultValue);
     }
 
     @Override
@@ -87,7 +87,7 @@ class StringInput extends CustomInputDefinition<String> {
     }
 
     StringInput(String name, String defaultValue) {
-        this(name, "java.lang.String", defaultValue);
+        this(name, "Object", defaultValue);
     }
 
     @Override

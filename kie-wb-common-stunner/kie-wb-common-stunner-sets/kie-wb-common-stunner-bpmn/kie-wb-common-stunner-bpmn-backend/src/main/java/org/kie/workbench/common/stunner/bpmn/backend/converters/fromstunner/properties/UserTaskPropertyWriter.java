@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -121,11 +122,16 @@ public class UserTaskPropertyWriter extends ActivityPropertyWriter {
     }
 
     private List<String> fromActorString(String delimitedActors) {
-        return Arrays.asList(delimitedActors.split(","));
+        String[] split = delimitedActors.split(",");
+        if (split.length == 1 && split[0].isEmpty()) {
+            return Collections.emptyList();
+        } else {
+            return Arrays.asList(split);
+        }
     }
 
     public void setGroupId(String value) {
-        groupId.set(asCData(value));
+        groupId.set(value);
     }
 
     public void setOnEntryAction(OnEntryAction onEntryAction) {

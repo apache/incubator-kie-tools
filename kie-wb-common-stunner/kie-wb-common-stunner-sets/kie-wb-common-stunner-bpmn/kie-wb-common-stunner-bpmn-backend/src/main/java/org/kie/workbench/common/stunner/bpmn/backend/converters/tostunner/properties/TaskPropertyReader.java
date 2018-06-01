@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
+import org.eclipse.bpmn2.Documentation;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
@@ -30,6 +31,15 @@ public class TaskPropertyReader extends FlowElementPropertyReader {
         super(task, plane, definitionResolver.getShape(task.getId()));
         this.task = task;
         this.definitionResolver = definitionResolver;
+    }
+
+    @Override
+    public String getDocumentation() {
+        return task.getDocumentation()
+                .stream()
+                .findFirst()
+                .map(Documentation::getText)
+                .orElse("");
     }
 
     public SimulationSet getSimulationSet() {

@@ -39,6 +39,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitActi
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.asCData;
 
 public class SubProcessPropertyWriter extends PropertyWriter implements ElementContainer {
 

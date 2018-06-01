@@ -19,11 +19,12 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.pro
 import org.eclipse.bpmn2.AdHocOrdering;
 import org.eclipse.bpmn2.AdHocSubProcess;
 import org.eclipse.bpmn2.FormalExpression;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocCompletionCondition;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.asCData;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.scriptLanguageToUri;
 
 public class AdHocSubProcessPropertyWriter extends SubProcessPropertyWriter {
 
@@ -41,7 +42,7 @@ public class AdHocSubProcessPropertyWriter extends SubProcessPropertyWriter {
     public void setAdHocCompletionCondition(AdHocCompletionCondition adHocCompletionCondition) {
         FormalExpression e = bpmn2.createFormalExpression();
         ScriptTypeValue s = adHocCompletionCondition.getValue();
-        e.setLanguage(Scripts.scriptLanguageToUri(s.getLanguage()));
+        e.setLanguage(scriptLanguageToUri(s.getLanguage()));
         e.setBody(asCData(s.getScript()));
         process.setCompletionCondition(e);
     }

@@ -26,6 +26,7 @@ import org.eclipse.bpmn2.Task;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Ids;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.asCData;
 
 public class CustomInput<T> {
 
@@ -108,7 +109,7 @@ public class CustomInput<T> {
     private Assignment assignment(String from, String to) {
         Assignment assignment = bpmn2.createAssignment();
         FormalExpression fromExpr = bpmn2.createFormalExpression();
-        fromExpr.setBody(from);
+        fromExpr.setBody(asCData(from));
         assignment.setFrom(fromExpr);
         FormalExpression toExpr = bpmn2.createFormalExpression();
         toExpr.setBody(to);

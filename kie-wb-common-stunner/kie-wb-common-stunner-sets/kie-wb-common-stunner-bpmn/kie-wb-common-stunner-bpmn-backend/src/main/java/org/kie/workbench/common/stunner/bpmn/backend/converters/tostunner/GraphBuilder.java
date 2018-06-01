@@ -134,16 +134,9 @@ public class GraphBuilder {
                          current.getParent().value().getUUID(),
                          current.value().getUUID());
 
-            this.addChildNode(current.getParent().value(), current.value());
+            this.addChildNode(current);
             current.getEdges().forEach(this::addEdge);
         }
-    }
-
-    private void addDockedNode(String parentId, String candidateId) {
-        Node parent = executionContext.getGraphIndex().getNode(parentId);
-        Node candidate = executionContext.getGraphIndex().getNode(candidateId);
-
-        addDockedNode(parent, candidate);
     }
 
     private void addDockedNode(Node parent, Node candidate) {
@@ -151,23 +144,18 @@ public class GraphBuilder {
         execute(addNodeCommand);
     }
 
-    public void addChildNode(String parentId, String childId) {
-        Node parent = getNode(parentId);
-        Node child = executionContext.getGraphIndex().getNode(childId);
-
-        AddChildNodeCommand addChildNodeCommand = commandFactory.addChildNode(parent, child);
-        execute(addChildNodeCommand);
-    }
-
-    private Node getNode(String id) {
-        return executionContext.getGraphIndex().getNode(id);
+    private void addChildNode(BpmnNode current) {
+        addChildNode(current.getParent().value(), current.value());
+        if (!current.isDocked()) {
+            translate(
+                    current.value(),
+                    current.getParent().value().getContent().getBounds().getUpperLeft());
+        }
     }
 
     private void addChildNode(Node<? extends View, ?> parent, Node<? extends View, ?> child) {
         AddChildNodeCommand addChildNodeCommand = commandFactory.addChildNode(parent, child);
         execute(addChildNodeCommand);
-
-        translate(child, parent.getContent().getBounds().getUpperLeft());
     }
 
     /**

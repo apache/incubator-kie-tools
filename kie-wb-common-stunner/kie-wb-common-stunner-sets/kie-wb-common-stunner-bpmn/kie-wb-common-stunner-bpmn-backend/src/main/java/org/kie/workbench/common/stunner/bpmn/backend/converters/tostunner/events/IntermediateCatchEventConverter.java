@@ -102,7 +102,8 @@ public class IntermediateCatchEventConverter {
                         .missing(EscalationEventDefinition.class)
                         .missing(CompensateEventDefinition.class)
                         .missing(ConditionalEventDefinition.class)
-                        .apply(eventDefinitions.get(0)).value();
+                        .apply(eventDefinitions.get(0)).value()
+                        .docked();
             default:
                 throw new UnsupportedOperationException("Multiple definitions not supported for boundary event");
         }

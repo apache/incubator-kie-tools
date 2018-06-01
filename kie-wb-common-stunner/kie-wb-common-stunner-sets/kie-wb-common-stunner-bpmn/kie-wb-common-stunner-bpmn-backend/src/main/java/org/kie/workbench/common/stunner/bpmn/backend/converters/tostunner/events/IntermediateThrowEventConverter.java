@@ -29,6 +29,7 @@ import org.eclipse.bpmn2.SignalEventDefinition;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.Match;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.EventDefinitionReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.EventPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.ThrowEventPropertyReader;
@@ -95,7 +96,7 @@ public class IntermediateThrowEventConverter {
         ));
 
         definition.setExecutionSet(new MessageEventExecutionSet(
-                new MessageRef(eventDefinition.getMessageRef().getName())
+                new MessageRef(EventDefinitionReader.messageRefOf(eventDefinition))
         ));
 
         node.getContent().setBounds(p.getBounds());

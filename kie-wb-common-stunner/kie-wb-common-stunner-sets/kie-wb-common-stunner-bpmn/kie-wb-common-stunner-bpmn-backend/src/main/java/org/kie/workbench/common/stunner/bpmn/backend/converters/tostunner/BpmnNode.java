@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * 2) other edges (and therefore, implicitly, other nodes)
  * that may be contained inside the node (e.g. in the case of a (Sub)Process)
  */
-public class BpmnNode {
+public abstract class BpmnNode {
 
     private static final Logger LOG = LoggerFactory.getLogger(BpmnNode.class);
 
@@ -48,8 +48,36 @@ public class BpmnNode {
         this.value = value;
     }
 
+    public abstract boolean isDocked();
+
+    public static class Simple extends BpmnNode {
+        public Simple(Node<? extends View<? extends BPMNViewDefinition>, ?> value) {
+            super(value);
+        }
+
+        @Override
+        public boolean isDocked() {
+            return false;
+        }
+    }
+
+    public static class Docked extends BpmnNode {
+        public Docked(Node<? extends View<? extends BPMNViewDefinition>, ?> value) {
+            super(value);
+        }
+
+        @Override
+        public boolean isDocked() {
+            return true;
+        }
+    }
+
     public static BpmnNode of(Node<? extends View<? extends BPMNViewDefinition>, ?> value) {
-        return new BpmnNode(value);
+        return new BpmnNode.Simple(value);
+    }
+
+    public BpmnNode docked() {
+        return new BpmnNode.Docked(this.value);
     }
 
     public BpmnNode getParent() {

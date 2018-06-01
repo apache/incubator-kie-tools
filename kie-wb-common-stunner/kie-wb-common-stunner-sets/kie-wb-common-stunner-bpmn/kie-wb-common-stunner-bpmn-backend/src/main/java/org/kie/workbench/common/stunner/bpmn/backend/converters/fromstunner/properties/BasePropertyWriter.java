@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.dc;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.di;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.asCData;
 
 public abstract class BasePropertyWriter {
 
@@ -138,12 +139,6 @@ public abstract class BasePropertyWriter {
         bounds.setHeight(height);
 
         return bounds;
-    }
-
-    // Apparently, the only way to wrap text in CDATA is to actually concat
-    // "<![CDATA[", "]]>" to the input string
-    protected String asCData(String original) {
-        return "<![CDATA[" + original + "]]>";
     }
 
     protected void addItemDefinition(ItemDefinition itemDefinition) {

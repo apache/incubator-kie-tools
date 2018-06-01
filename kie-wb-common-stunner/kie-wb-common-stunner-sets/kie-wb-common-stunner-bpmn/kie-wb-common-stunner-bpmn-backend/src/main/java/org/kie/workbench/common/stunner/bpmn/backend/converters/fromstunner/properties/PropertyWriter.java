@@ -23,6 +23,7 @@ import org.eclipse.bpmn2.FlowElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.asCData;
 
 public class PropertyWriter extends BasePropertyWriter {
 

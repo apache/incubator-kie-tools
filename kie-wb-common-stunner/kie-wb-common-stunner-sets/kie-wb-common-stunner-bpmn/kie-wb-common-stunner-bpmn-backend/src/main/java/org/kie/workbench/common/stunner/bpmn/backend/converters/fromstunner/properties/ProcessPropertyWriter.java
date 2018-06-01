@@ -51,6 +51,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.variables.Proce
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpsim;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.di;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.asCData;
 
 public class ProcessPropertyWriter extends BasePropertyWriter implements ElementContainer {
 

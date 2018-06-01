@@ -71,15 +71,15 @@ public class TaskConverter {
 
         p.setTaskName(executionSet.getTaskName().getValue());
         p.setActors(executionSet.getActors());
-        p.setGroupId(executionSet.getGroupid().getValue());
         p.setAssignmentsInfo(executionSet.getAssignmentsinfo());
-        p.setAsync(executionSet.getIsAsync().getValue());
         p.setSkippable(executionSet.getSkippable().getValue());
-        p.setPriority(executionSet.getPriority().getValue());
+        p.setGroupId(executionSet.getGroupid().getValue());
         p.setSubject(executionSet.getSubject().getValue());
         p.setDescription(executionSet.getDescription().getValue());
-        p.setAdHocAutostart(executionSet.getAdHocAutostart().getValue());
+        p.setPriority(executionSet.getPriority().getValue());
+        p.setAsync(executionSet.getIsAsync().getValue());
         p.setCreatedBy(executionSet.getCreatedBy().getValue());
+        p.setAdHocAutostart(executionSet.getAdHocAutostart().getValue());
         p.setOnEntryAction(executionSet.getOnEntryAction());
         p.setOnExitAction(executionSet.getOnExitAction());
 
@@ -141,7 +141,11 @@ public class TaskConverter {
         task.setId(n.getUUID());
         NoneTask definition = n.getContent().getDefinition();
         ActivityPropertyWriter p = propertyWriterFactory.of(task);
-        p.setName(definition.getGeneral().getName().getValue());
+
+        TaskGeneralSet general = definition.getGeneral();
+        p.setName(general.getName().getValue());
+        p.setDocumentation(general.getDocumentation().getValue());
+
         p.setBounds(n.getContent().getBounds());
 
         p.setSimulationSet(definition.getSimulationSet());
