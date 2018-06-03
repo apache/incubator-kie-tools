@@ -37,8 +37,11 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.List;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorItem;
+import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -71,11 +74,19 @@ public class DecisionNavigatorNestedItemFactory {
 
     private final Event<EditExpressionEvent> editExpressionEvent;
 
+    private final DecisionNavigatorPresenter decisionNavigatorPresenter;
+
+    private final Event<CanvasSelectionEvent> canvasSelectionEvent;
+
     @Inject
     public DecisionNavigatorNestedItemFactory(final SessionManager sessionManager,
-                                              final Event<EditExpressionEvent> editExpressionEvent) {
+                                              final Event<EditExpressionEvent> editExpressionEvent,
+                                              final DecisionNavigatorPresenter decisionNavigatorPresenter,
+                                              final Event<CanvasSelectionEvent> canvasSelectionEvent) {
         this.sessionManager = sessionManager;
         this.editExpressionEvent = editExpressionEvent;
+        this.decisionNavigatorPresenter = decisionNavigatorPresenter;
+        this.canvasSelectionEvent = canvasSelectionEvent;
     }
 
     public DecisionNavigatorItem makeItem(final Node<View, Edge> node) {
@@ -83,8 +94,8 @@ public class DecisionNavigatorNestedItemFactory {
         final String uuid = getUUID(node);
         final DecisionNavigatorItem.Type type = getType(node);
         final String label = getLabel(node);
-        final Command onClick = makeOnClickCommand(node);
         final String parentUUID = node.getUUID();
+        final Command onClick = makeOnClickCommand(node, parentUUID);
 
         return new DecisionNavigatorItem(uuid, label, type, onClick, parentUUID);
     }
@@ -93,10 +104,21 @@ public class DecisionNavigatorNestedItemFactory {
         return getOptionalHasExpression(node).isPresent() && getOptionalExpression(node).isPresent();
     }
 
-    Command makeOnClickCommand(final Node<View, Edge> node) {
+    Command makeOnClickCommand(final Node<View, Edge> node,
+                               final String uuid) {
+
         return () -> {
+
+            final CanvasHandler canvas = decisionNavigatorPresenter.getHandler();
+
+            canvasSelectionEvent.fire(makeCanvasSelectionEvent(canvas, uuid));
             editExpressionEvent.fire(makeEditExpressionEvent(node));
         };
+    }
+
+    CanvasSelectionEvent makeCanvasSelectionEvent(final CanvasHandler canvas,
+                                                  final String uuid) {
+        return new CanvasSelectionEvent(canvas, uuid);
     }
 
     EditExpressionEvent makeEditExpressionEvent(final Node<View, Edge> node) {

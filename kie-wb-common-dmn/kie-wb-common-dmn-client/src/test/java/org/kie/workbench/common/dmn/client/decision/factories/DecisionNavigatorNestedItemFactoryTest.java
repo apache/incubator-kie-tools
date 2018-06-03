@@ -32,8 +32,11 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorItem;
+import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -64,11 +67,20 @@ public class DecisionNavigatorNestedItemFactoryTest {
     @Mock
     private Node<View, Edge> node;
 
+    @Mock
+    private DecisionNavigatorPresenter decisionNavigatorPresenter;
+
+    @Mock
+    private EventSourceMock<CanvasSelectionEvent> canvasSelectionEvent;
+
     private DecisionNavigatorNestedItemFactory factory;
 
     @Before
     public void setup() {
-        factory = spy(new DecisionNavigatorNestedItemFactory(sessionManager, editExpressionEvent));
+        factory = spy(new DecisionNavigatorNestedItemFactory(sessionManager,
+                                                             editExpressionEvent,
+                                                             decisionNavigatorPresenter,
+                                                             canvasSelectionEvent));
     }
 
     @Test
@@ -84,7 +96,7 @@ public class DecisionNavigatorNestedItemFactoryTest {
         doReturn(uuid).when(factory).getUUID(node);
         doReturn(label).when(factory).getLabel(node);
         doReturn(type).when(factory).getType(node);
-        doReturn(command).when(factory).makeOnClickCommand(node);
+        doReturn(command).when(factory).makeOnClickCommand(node, parentUUID);
 
         final DecisionNavigatorItem item = factory.makeItem(node);
 
@@ -99,12 +111,30 @@ public class DecisionNavigatorNestedItemFactoryTest {
     public void testMakeOnClickCommand() {
 
         final EditExpressionEvent expressionEvent = mock(EditExpressionEvent.class);
+        final CanvasHandler canvasHandler = mock(CanvasHandler.class);
+        final CanvasSelectionEvent event = mock(CanvasSelectionEvent.class);
+        final String uuid = "uuid";
 
+        when(decisionNavigatorPresenter.getHandler()).thenReturn(canvasHandler);
+
+        doReturn(event).when(factory).makeCanvasSelectionEvent(canvasHandler, uuid);
         doReturn(expressionEvent).when(factory).makeEditExpressionEvent(node);
 
-        factory.makeOnClickCommand(node).execute();
+        factory.makeOnClickCommand(node, uuid).execute();
 
+        verify(canvasSelectionEvent).fire(event);
         verify(editExpressionEvent).fire(expressionEvent);
+    }
+
+    @Test
+    public void testMakeCanvasSelectionEvent() {
+
+        final CanvasHandler canvasHandler = mock(CanvasHandler.class);
+        final String uuid = "uuid";
+        final CanvasSelectionEvent event = factory.makeCanvasSelectionEvent(canvasHandler, uuid);
+
+        assertEquals(canvasHandler, event.getCanvasHandler());
+        assertEquals(uuid, event.getIdentifiers().iterator().next());
     }
 
     @Test
