@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.jboss.drools.DroolsPackage;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 public class CustomAttribute<T> {
@@ -35,7 +36,7 @@ public class CustomAttribute<T> {
         public void setValue(BaseElement element, String value) {
             // do not set if null or the XML serializer will NPE
             if (value != null) {
-                super.setValue(element, value);
+                super.setValue(element, value.isEmpty() ? Package.DEFAULT_PACKAGE : value);
             }
         }
     };
