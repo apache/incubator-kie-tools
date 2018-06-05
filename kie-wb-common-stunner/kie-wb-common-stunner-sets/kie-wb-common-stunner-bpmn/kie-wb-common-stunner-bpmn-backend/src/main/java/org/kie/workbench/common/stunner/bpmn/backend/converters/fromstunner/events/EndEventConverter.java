@@ -106,6 +106,7 @@ public class EndEventConverter {
                 definition.getDataIOSet().getAssignmentsinfo());
 
         p.addSignal(definition.getExecutionSet().getSignalRef());
+        p.addSignalScope(definition.getExecutionSet().getSignalScope());
 
         p.setBounds(n.getContent().getBounds());
         return p;
