@@ -912,11 +912,6 @@
         <groupId>javax.validation</groupId>
         <artifactId>validation-api</artifactId>
         <version>${version.javax.validation}</version>
-      </dependency>
-      <dependency>
-        <groupId>javax.validation</groupId>
-        <artifactId>validation-api</artifactId>
-        <version>${version.javax.validation}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
@@ -924,10 +919,6 @@
         <artifactId>cdi-api</artifactId>
         <version>${version.javax.enterprise}</version>
         <exclusions>
-          <exclusion>
-            <groupId>javax.annotation</groupId>
-            <artifactId>jsr250-api</artifactId>
-          </exclusion>
           <exclusion>
             <groupId>javax.el</groupId>
             <artifactId>javax.el-api</artifactId>

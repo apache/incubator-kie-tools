@@ -33,12 +33,24 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-api</artifactId>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.annotation</groupId>
+      <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-commons</artifactId>
+      <artifactId>uberfire-api</artifactId>
     </dependency>
 
     <dependency>
@@ -47,22 +59,8 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.spec.javax.interceptor</groupId>
-      <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-javax-enterprise</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
+      <artifactId>errai-common</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
