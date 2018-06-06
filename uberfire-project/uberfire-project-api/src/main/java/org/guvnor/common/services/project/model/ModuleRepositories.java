@@ -28,7 +28,7 @@ public class ModuleRepositories {
     private Set<ModuleRepository> repositories;
 
     public ModuleRepositories() {
-        this.repositories = new HashSet<ModuleRepository>();
+        this.repositories = new HashSet<>();
     }
 
     public ModuleRepositories(final @MapsTo("repositories") Set<ModuleRepository> repositories) {
@@ -40,7 +40,7 @@ public class ModuleRepositories {
     }
 
     public MavenRepositoryMetadata[] filterByIncluded() {
-        final Set<MavenRepositoryMetadata> filter = new HashSet<MavenRepositoryMetadata>();
+        final Set<MavenRepositoryMetadata> filter = new HashSet<>();
         for (ModuleRepository pr : repositories) {
             if (pr.isIncluded()) {
                 filter.add(pr.getMetadata());

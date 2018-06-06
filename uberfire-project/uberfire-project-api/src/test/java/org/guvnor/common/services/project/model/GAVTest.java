@@ -17,19 +17,47 @@ package org.guvnor.common.services.project.model;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class GAVTest {
 
     @Test
-    public void testGAVFromString() throws Exception {
+    public void testGAVFromString() {
         GAV gav = new GAV("myGroupID:myArtifactID:version");
 
-        assertEquals("myGroupID",
-                     gav.getGroupId());
-        assertEquals("myArtifactID",
-                     gav.getArtifactId());
-        assertEquals("version",
-                     gav.getVersion());
+        assertThat(gav.getGroupId()).isEqualTo("myGroupID");
+        assertThat(gav.getArtifactId()).isEqualTo("myArtifactID");
+        assertThat(gav.getVersion()).isEqualTo("version");
+    }
+
+    @Test
+    public void whenGivenNullString_throwsIllegalArgumentException() {
+        assertThatThrownBy(() -> new GAV(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Parameter named 'gavString' should be not null!");
+    }
+
+    @Test
+    public void whenGivenInvalidGav_throwsIllegalArgumentExceptions() {
+        assertThatThrownBy(() -> new GAV("nonsense"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("The GAV String must contain groupId artifactId and version separated by ':', but it was nonsense");
+    }
+
+    @Test
+    public void isSnapshotTest() {
+        GAV
+                noSnapshot1 = new GAV(),
+                noSnapshot2 = new GAV("group:artifact:1.0"),
+                noSnapshot3 = new GAV("group", "artifact", "version"),
+                noSnapshot4 = new GAV("group", "artifact", null),
+                snapshot = new GAV("group", "artifact", "1.0-SNAPSHOT");
+
+        assertThat(noSnapshot1.isSnapshot()).isFalse();
+        assertThat(noSnapshot2.isSnapshot()).isFalse();
+        assertThat(noSnapshot3.isSnapshot()).isFalse();
+        assertThat(noSnapshot4.isSnapshot()).isFalse();
+        assertThat(snapshot.isSnapshot()).isTrue();
     }
 }

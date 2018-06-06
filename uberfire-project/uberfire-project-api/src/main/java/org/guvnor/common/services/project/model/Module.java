@@ -34,7 +34,7 @@ public class Module {
 
     protected Path rootPath;
     protected Path pomXMLPath;
-    protected Collection<String> modules = new ArrayList<String>();
+    protected Collection<String> modules = new ArrayList<>();
     protected POM pom;
 
     // only loaded when listing projects
@@ -49,8 +49,7 @@ public class Module {
                   final POM pom) {
         this(rootPath,
              pomXMLPath);
-        this.pom = checkNotNull("pom",
-                                pom);
+        this.pom = checkNotNull("pom", pom);
     }
 
     public Module(final Path rootPath,
@@ -65,10 +64,8 @@ public class Module {
 
     public Module(Path rootPath,
                   Path pomXMLPath) {
-        this.rootPath = checkNotNull("rootPath",
-                                     rootPath);
-        this.pomXMLPath = checkNotNull("pomXMLPath",
-                                       pomXMLPath);
+        this.rootPath = checkNotNull("rootPath", rootPath);
+        this.pomXMLPath = checkNotNull("pomXMLPath", pomXMLPath);
     }
 
     public int getNumberOfAssets() {
@@ -114,7 +111,7 @@ public class Module {
     }
 
     public void setPom(POM pom) {
-        this.pom = pom;
+        this.pom = checkNotNull("pom", pom);
     }
 
     @Override

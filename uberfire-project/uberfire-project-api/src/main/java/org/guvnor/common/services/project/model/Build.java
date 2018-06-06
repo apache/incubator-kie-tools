@@ -16,19 +16,20 @@
 package org.guvnor.common.services.project.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class Build {
 
-    private ArrayList<Plugin> plugins = new ArrayList<Plugin>();
+    private List<Plugin> plugins = new ArrayList<>();
 
-    public ArrayList<Plugin> getPlugins() {
+    public List<Plugin> getPlugins() {
         return plugins;
     }
 
-    public void setPlugins(ArrayList<Plugin> plugins) {
+    public void setPlugins(List<Plugin> plugins) {
         this.plugins = plugins;
     }
 }

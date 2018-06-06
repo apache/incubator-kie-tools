@@ -23,7 +23,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class Plugin {
 
-    private List<Dependency> dependencies = new ArrayList<Dependency>();
+    private List<Dependency> dependencies = new ArrayList<>();
     private String groupId;
     private String artifactId;
     private String version;

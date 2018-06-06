@@ -24,6 +24,8 @@ import java.util.ListIterator;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
+import static java.util.stream.Collectors.toList;
+
 @Portable
 public class Dependencies
         implements List<Dependency> {
@@ -31,7 +33,7 @@ public class Dependencies
     private final List<Dependency> dependencies;
 
     public Dependencies() {
-        dependencies = new ArrayList<Dependency>();
+        dependencies = new ArrayList<>();
     }
 
     public Dependencies(final List<Dependency> dependencies) {
@@ -58,26 +60,22 @@ public class Dependencies
     }
 
     public Collection<GAV> getGavs(final String... scopes) {
-        final List<String> scopesAsList = Arrays.asList(scopes);
+        final List<String> scopesList = Arrays.asList(scopes);
 
-        if (scopesAsList.isEmpty()) {
-            return new ArrayList<GAV>(dependencies);
+        if (scopesList.isEmpty()) {
+            return new ArrayList<>(dependencies);
         } else {
-            final ArrayList<GAV> result = new ArrayList<GAV>();
-
-            for (Dependency dependency : dependencies) {
-                if (scopesAsList.contains(dependency.getScope())) {
-                    result.add(dependency);
-                }
-            }
-
-            return result;
+            return dependencies.stream()
+                    .filter(dep -> scopesList.contains(dep.getScope()))
+                    .collect(toList());
         }
     }
 
     public Collection<GAV> getCompileScopedGavs() {
         return getGavs("compile",
-                       null);
+                       // When scope is not declared (dependency.getScope() == null), maven considers it to be compile scope
+                       null
+        );
     }
 
     @Override
@@ -160,15 +158,12 @@ public class Dependencies
     @Override
     public Dependency set(int i,
                           Dependency dependency) {
-        return dependencies.set(i,
-                                dependency);
+        return dependencies.set(i, dependency);
     }
 
     @Override
-    public void add(int i,
-                    Dependency dependency) {
-        dependencies.add(i,
-                         dependency);
+    public void add(int i, Dependency dependency) {
+        dependencies.add(i, dependency);
     }
 
     @Override
@@ -199,7 +194,6 @@ public class Dependencies
     @Override
     public List<Dependency> subList(int i,
                                     int i1) {
-        return dependencies.subList(i,
-                                    i1);
+        return dependencies.subList(i, i1);
     }
 }

@@ -17,35 +17,37 @@ package org.guvnor.common.services.project.model;
 
 import java.util.Collection;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DependenciesTest {
 
     private Dependencies dependencies;
     private Dependency droolsCore;
-    private Dependency junit;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         dependencies = new Dependencies();
 
         droolsCore = new Dependency(new GAV("org.drools:drools-core:5.0"));
         droolsCore.setScope("compile");
         dependencies.add(droolsCore);
 
-        junit = new Dependency(new GAV("junit:junit:4.11"));
+        Dependency junit = new Dependency(new GAV("junit:junit:4.11"));
         junit.setScope("test");
         dependencies.add(junit);
+
+        Dependency depWithoutScope = new Dependency(new GAV("mygroup:depWithoutScope:1.0"));
+        dependencies.add(depWithoutScope);
     }
 
     @Test
-    public void testGetAllGAVs() throws Exception {
+    public void testGetAllGAVs() {
         final Collection<GAV> gavs = dependencies.getGavs();
-        assertEquals(2,
-                     gavs.size());
+        assertThat(gavs.size()).isEqualTo(3);
         assertContains(gavs,
                        "org.drools",
                        "drools-core",
@@ -54,23 +56,27 @@ public class DependenciesTest {
                        "junit",
                        "junit",
                        "4.11");
+        assertContains(gavs,
+                       "mygroup",
+                       "depWithoutScope",
+                       "1.0");
     }
 
     @Test
-    public void testFindByGav() throws Exception {
-        assertEquals(droolsCore,
-                     dependencies.get(new GAV("org.drools:drools-core:5.0")));
+    public void testFindByGav() {
+        assertThat(dependencies.get(new GAV("org.drools:drools-core:5.0")))
+                .isEqualTo(droolsCore);
     }
 
     @Test
-    public void testNullWhenNoResults() throws Exception {
-        assertNull(dependencies.get(new GAV("org.drools:drools-core:112.0")));
+    public void testNullWhenNoResults() {
+        assertThat(dependencies.get(new GAV("org.drools:drools-core:112.0"))).isNull();
     }
 
-    public static void assertContains(final Collection<GAV> gavs,
-                                      final String groupID,
-                                      final String artifactID,
-                                      final String version) {
+    private static void assertContains(final Collection<GAV> gavs,
+                                       final String groupID,
+                                       final String artifactID,
+                                       final String version) {
         for (GAV gav : gavs) {
             if (gav.getArtifactId().equals(artifactID)
                     && gav.getGroupId().equals(groupID)
@@ -79,24 +85,23 @@ public class DependenciesTest {
             }
         }
 
-        fail("Could not find " + groupID + ":" + artifactID + ":" + version);
+        Assertions.fail("Could not find " + groupID + ":" + artifactID + ":" + version);
     }
 
     @Test
-    public void testContainsGAV() throws Exception {
+    public void testContainsGAV() {
 
-        assertTrue(dependencies.containsDependency(new GAV("org.drools:drools-core:5.0")));
+        assertThat(dependencies.containsDependency(new GAV("org.drools:drools-core:5.0"))).isTrue();
         final Dependency dependency = new Dependency(new GAV("org.drools:drools-core:5.0"));
         dependency.setScope("test");
-        assertTrue(dependencies.containsDependency(dependency));
-        assertFalse(dependencies.containsDependency(new GAV("org.drools:drools-core:4.0")));
+        assertThat(dependencies.containsDependency(dependency)).isTrue();
+        assertThat(dependencies.containsDependency(new GAV("org.drools:drools-core:4.0"))).isFalse();
     }
 
     @Test
-    public void testGetTestScopedGAVs() throws Exception {
+    public void testGetTestScopedGAVs() {
         final Collection<GAV> gavs = dependencies.getGavs("test");
-        assertEquals(1,
-                     gavs.size());
+        assertThat(gavs).hasSize(1);
         assertContains(gavs,
                        "junit",
                        "junit",
@@ -104,10 +109,9 @@ public class DependenciesTest {
     }
 
     @Test
-    public void testGetCompileScopedGAVs() throws Exception {
+    public void testGetCompileScopedGAVs() {
         final Collection<GAV> gavs = dependencies.getGavs("compile");
-        assertEquals(1,
-                     gavs.size());
+        assertThat(gavs).hasSize(1);
         assertContains(gavs,
                        "org.drools",
                        "drools-core",
@@ -115,13 +119,16 @@ public class DependenciesTest {
     }
 
     @Test
-    public void testGetCompileScopedGavsMethod() throws Exception {
+    public void testGetCompileScopedGavsMethod() {
         final Collection<GAV> gavs = dependencies.getCompileScopedGavs();
-        assertEquals(1,
-                     gavs.size());
+        assertThat(gavs).hasSize(2);
         assertContains(gavs,
                        "org.drools",
                        "drools-core",
                        "5.0");
+        assertContains(gavs,
+                       "mygroup",
+                       "depWithoutScope",
+                       "1.0");
     }
 }

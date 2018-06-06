@@ -33,7 +33,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
  * There can be child Modules, but they are optional.
  * A WorkspaceProject can have several Branches, but the WorkspaceProject model focuses on only one of them.
  * <BR>
- * The WorkspaceProject model contains the Repository field and OrganizationalUnit, but these are here only here for convenience.
+ * The WorkspaceProject model contains the Repository field and OrganizationalUnit, but these are here only for convenience.
  * <b>The real WorkspaceProject root is the Branch root.</b>
  * Please do not use the Repository root path, this can point to any branch even to those that are not used.
  */

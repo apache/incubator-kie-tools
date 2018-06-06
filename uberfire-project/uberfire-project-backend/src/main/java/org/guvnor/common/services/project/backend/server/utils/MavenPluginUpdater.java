@@ -30,9 +30,9 @@ public class MavenPluginUpdater {
         this.pluginsDeclaredInPOM = pluginsDeclaredInPOM;
     }
 
-    public List<Plugin> update(final ArrayList<org.guvnor.common.services.project.model.Plugin> from) {
+    public List<Plugin> update(final List<org.guvnor.common.services.project.model.Plugin> from) {
 
-        ArrayList<Plugin> result = new ArrayList<Plugin>();
+        List<Plugin> result = new ArrayList<>();
 
         for (org.guvnor.common.services.project.model.Plugin plugin : from) {
             if (plugin.getArtifactId() != null && plugin.getGroupId() != null) {

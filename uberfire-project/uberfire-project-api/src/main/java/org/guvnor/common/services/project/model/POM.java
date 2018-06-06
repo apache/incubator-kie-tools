@@ -36,9 +36,9 @@ public class POM {
 
     private Build build;
 
-    private List<Dependency> dependencies = new ArrayList<Dependency>();
-    private List<MavenRepository> repositories = new ArrayList<MavenRepository>();
-    private List<String> modules = new ArrayList<String>();
+    private List<Dependency> dependencies = new ArrayList<>();
+    private List<MavenRepository> repositories = new ArrayList<>();
+    private List<String> modules = new ArrayList<>();
 
     public POM() {
         this.gav = new GAV();
@@ -70,7 +70,6 @@ public class POM {
                final String url,
                final GAV gav,
                final boolean multiModule) {
-        super();
         this.name = name;
         this.description = description;
         this.url = url;
@@ -153,7 +152,7 @@ public class POM {
     }
 
     public boolean isMultiModule() {
-        return packaging.equals("pom");
+        return "pom".equals(packaging);
     }
 
     public void setPackaging(String packaging) {
