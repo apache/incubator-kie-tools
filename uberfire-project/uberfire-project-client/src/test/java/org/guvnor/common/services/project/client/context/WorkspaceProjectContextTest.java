@@ -16,22 +16,14 @@
 
 package org.guvnor.common.services.project.client.context;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-
 import java.util.Optional;
 
 import org.guvnor.common.services.project.context.ProjectContextChangeHandle;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeHandler;
+import org.guvnor.common.services.project.events.ModuleUpdatedEvent;
 import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -50,8 +42,18 @@ import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.EventSourceMock;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+
 @RunWith(MockitoJUnitRunner.class)
-public class WorkspaceWorkspaceProjectContextTest {
+public class WorkspaceProjectContextTest {
 
     @Spy
     private EventSourceMock<WorkspaceProjectContextChangeEvent> changeEvent = new EventSourceMock<>();
@@ -199,5 +201,51 @@ public class WorkspaceWorkspaceProjectContextTest {
         verify(changeHandler,
                never()).onChange(any(),
                                  any());
+    }
+
+    @Test
+    public void testNoUpdateWhenNoActiveModule() throws Exception {
+
+        context.onModuleUpdated(new ModuleUpdatedEvent(getMockModule(),
+                                                       getMockModule()));
+        verify(changeEvent, never()).fire(any());
+    }
+
+    @Test
+    public void testNoUpdateWhenDifferentActiveModule() throws Exception {
+
+        final Module oldModule = getMockModule();
+
+        context.onProjectContextChanged(new WorkspaceProjectContextChangeEvent(new WorkspaceProject(mock(OrganizationalUnit.class),
+                                                                                                    mock(Repository.class),
+                                                                                                    mock(Branch.class),
+                                                                                                    oldModule),
+                                                                               oldModule));
+
+        context.onModuleUpdated(new ModuleUpdatedEvent(getMockModule(),
+                                                       getMockModule()));
+        verify(changeEvent, never()).fire(any());
+    }
+
+    @Test
+    public void testActiveModuleIsUpdated() throws Exception {
+
+        final Module oldModule = getMockModule();
+
+        context.onProjectContextChanged(new WorkspaceProjectContextChangeEvent(new WorkspaceProject(mock(OrganizationalUnit.class),
+                                                                                                    mock(Repository.class),
+                                                                                                    mock(Branch.class),
+                                                                                                    oldModule),
+                                                                               oldModule));
+
+        context.onModuleUpdated(new ModuleUpdatedEvent(oldModule,
+                                                       getMockModule()));
+        verify(changeEvent).fire(any());
+    }
+
+    private Module getMockModule() {
+        return new Module(mock(Path.class),
+                          mock(Path.class),
+                          new POM());
     }
 }

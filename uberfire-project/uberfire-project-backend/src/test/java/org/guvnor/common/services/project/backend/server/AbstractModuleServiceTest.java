@@ -22,7 +22,6 @@ import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOModuleCacheEvent;
 import org.guvnor.common.services.project.events.NewModuleEvent;
 import org.guvnor.common.services.project.events.NewPackageEvent;
-import org.guvnor.common.services.project.events.RenameModuleEvent;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.DeploymentMode;
@@ -32,7 +31,6 @@ import org.guvnor.structure.repositories.RepositoryService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
@@ -61,8 +59,6 @@ public class AbstractModuleServiceTest {
     @Mock
     private Event<NewPackageEvent> newPackageEvent;
     @Mock
-    private Event<RenameModuleEvent> renameProjectEvent;
-    @Mock
     private Event<InvalidateDMOModuleCacheEvent> invalidateDMOCache;
     @Mock
     private SessionInfo sessionInfo;
@@ -85,7 +81,6 @@ public class AbstractModuleServiceTest {
                                                                    repoService,
                                                                    newProjectEvent,
                                                                    newPackageEvent,
-                                                                   renameProjectEvent,
                                                                    invalidateDMOCache,
                                                                    sessionInfo,
                                                                    commentedOptionFactory,
@@ -121,24 +116,6 @@ public class AbstractModuleServiceTest {
         abstractProjectService.reImport(path);
 
         verify(invalidateDMOCache).fire(any(InvalidateDMOModuleCacheEvent.class));
-    }
-
-    @Test
-    public void testRenameEventFiredBeforeDeleteEvent() {
-        when(path.getFileName()).thenReturn("pom.xml");
-        when(path.toURI()).thenReturn("file://project1/pom.xml");
-        when(resourceResolver.resolveModule(any(Path.class))).thenReturn(module);
-        when(pomService.load(any())).thenReturn(mock(POM.class));
-
-        final InOrder inOrder = inOrder(renameProjectEvent,
-                                        ioService);
-
-        abstractProjectService.rename(path,
-                                      "newName",
-                                      "comment");
-
-        inOrder.verify(renameProjectEvent).fire(any());
-        inOrder.verify(ioService).endBatch();
     }
 
     @Test

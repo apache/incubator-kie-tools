@@ -30,7 +30,6 @@ import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOModuleCacheEvent;
 import org.guvnor.common.services.project.events.NewModuleEvent;
 import org.guvnor.common.services.project.events.NewPackageEvent;
-import org.guvnor.common.services.project.events.RenameModuleEvent;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
@@ -61,7 +60,6 @@ public abstract class AbstractModuleService<T extends Module>
     protected SessionInfo sessionInfo;
     private ModuleFinder moduleFinder;
 
-    private Event<RenameModuleEvent> renameModuleEvent;
     private Event<InvalidateDMOModuleCacheEvent> invalidateDMOCache;
 
     protected AbstractModuleService() {
@@ -72,7 +70,6 @@ public abstract class AbstractModuleService<T extends Module>
                                  final RepositoryService repoService,
                                  final Event<NewModuleEvent> newModuleEvent,
                                  final Event<NewPackageEvent> newPackageEvent,
-                                 final Event<RenameModuleEvent> renameModuleEvent,
                                  final Event<InvalidateDMOModuleCacheEvent> invalidateDMOCache,
                                  final SessionInfo sessionInfo,
                                  final CommentedOptionFactory commentedOptionFactory,
@@ -83,7 +80,6 @@ public abstract class AbstractModuleService<T extends Module>
         this.repoService = repoService;
         this.newModuleEvent = newModuleEvent;
         this.newPackageEvent = newPackageEvent;
-        this.renameModuleEvent = renameModuleEvent;
         this.invalidateDMOCache = invalidateDMOCache;
         this.commentedOptionFactory = commentedOptionFactory;
         this.moduleFinder = moduleFinder;
@@ -149,9 +145,6 @@ public abstract class AbstractModuleService<T extends Module>
                                 content,
                                 null,
                                 comment);
-                final Module newModule = resourceResolver.resolveModule(Paths.convert(newModulePath));
-                renameModuleEvent.fire(new RenameModuleEvent(oldModule,
-                                                             newModule));
             } catch (final Exception e) {
                 throw e;
             } finally {

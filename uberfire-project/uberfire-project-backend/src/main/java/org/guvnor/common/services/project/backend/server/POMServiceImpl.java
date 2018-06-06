@@ -15,23 +15,29 @@
 
 package org.guvnor.common.services.project.backend.server;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.backend.server.utils.POMContentHandler;
+import org.guvnor.common.services.project.events.ModuleUpdatedEvent;
+import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepository;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
@@ -45,6 +51,7 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
+import org.uberfire.mvp.Command;
 
 @Service
 @WorkspaceScoped
@@ -56,10 +63,11 @@ public class POMServiceImpl
     private POMContentHandler pomContentHandler;
     private M2RepoService m2RepoService;
     private MetadataService metadataService;
+    private Event<ModuleUpdatedEvent> moduleUpdatedEvent;
+    private ModuleService<? extends Module> moduleService;
     private MavenXpp3Writer writer;
     private PomEnhancer pomEnhancer;
 
-    @Inject
     private CommentedOptionFactory optionsFactory;
 
     public POMServiceImpl() {
@@ -71,11 +79,17 @@ public class POMServiceImpl
                           final POMContentHandler pomContentHandler,
                           final M2RepoService m2RepoService,
                           final MetadataService metadataService,
+                          final Event<ModuleUpdatedEvent> moduleUpdatedEvent,
+                          final ModuleService<? extends Module> moduleService,
+                          final CommentedOptionFactory optionsFactory,
                           final @Customizable PomEnhancer pomEnhancer) {
         this.ioService = ioService;
         this.pomContentHandler = pomContentHandler;
         this.m2RepoService = m2RepoService;
         this.metadataService = metadataService;
+        this.moduleUpdatedEvent = moduleUpdatedEvent;
+        this.moduleService = moduleService;
+        this.optionsFactory = optionsFactory;
         writer = new MavenXpp3Writer();
         this.pomEnhancer = pomEnhancer;
     }
@@ -86,14 +100,14 @@ public class POMServiceImpl
         org.uberfire.java.nio.file.Path pathToPOMXML = null;
         try {
             pomModel.addRepository(getRepository());
-            final org.uberfire.java.nio.file.Path nioRoot = Paths.convert(projectRoot);
-            pathToPOMXML = nioRoot.resolve("pom.xml");
+            pathToPOMXML = Paths.convert(projectRoot).resolve("pom.xml");
 
             if (ioService.exists(pathToPOMXML)) {
                 throw new FileAlreadyExistsException(pathToPOMXML.toString());
             }
-            final Model model = pomEnhancer.execute(pomContentHandler.convert(pomModel));
-            write(model, pathToPOMXML, ioService);
+            write(pomEnhancer.execute(pomContentHandler.convert(pomModel)),
+                  pathToPOMXML,
+                  ioService);
             //Don't raise a NewResourceAdded event as this is handled at the Project level in ProjectServices
             return Paths.convert(pathToPOMXML);
         } catch (Exception e) {
@@ -110,117 +124,164 @@ public class POMServiceImpl
     }
 
     private void write(Model model, org.uberfire.java.nio.file.Path pathToPOMXML, IOService ioService) {
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()){
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             writer.write(baos, model);
             ioService.write(pathToPOMXML, new String(baos.toByteArray(), StandardCharsets.UTF_8));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
     }
-    
+
     @Override
-    public POM load(final Path path) {
+    public POM load(final Path pomPath) {
         try {
-            return pomContentHandler.toModel(loadPomXMLString(path));
+            return pomContentHandler.toModel(loadPomXMLString(pomPath));
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);
         }
     }
 
-    private String loadPomXMLString(final Path path) {
-        final org.uberfire.java.nio.file.Path nioPath = Paths.convert(path);
+    private String loadPomXMLString(final Path pomPath) {
+        final org.uberfire.java.nio.file.Path nioPath = Paths.convert(pomPath);
         return ioService.readAllString(nioPath);
     }
 
     @Override
-    public Path save(final Path path,
-                     final POM content,
+    public Path save(final Path pomPath,
+                     final POM pom,
                      final Metadata metadata,
                      final String comment) {
-        try {
-
-            return save(path,
-                        content,
-                        metadata);
-        } catch (Exception e) {
-            throw ExceptionUtilities.handleException(e);
-        }
+        return save(pomPath,
+                    pom,
+                    metadata,
+                    comment,
+                    false);
     }
 
     @Override
-    public Path save(final Path path,
-                     final POM content,
+    public Path save(final Path pomPath,
+                     final POM pom,
                      final Metadata metadata,
                      final String comment,
                      final boolean updateModules) {
-
-        try {
-
-            ioService.startBatch(Paths.convert(path).getFileSystem(),
-                                 optionsFactory.makeCommentedOption(comment != null ? comment : ""));
-
-            save(path,
-                 content,
-                 metadata);
-
-            saveSubModules(path,
-                           content,
-                           updateModules);
-
-            return path;
-        } catch (Exception e) {
-            throw ExceptionUtilities.handleException(e);
-        } finally {
-            ioService.endBatch();
-        }
+        return new PomSaver(pomPath,
+                            pom,
+                            metadata,
+                            comment).savePOM(updateModules);
     }
 
-    private void saveSubModules(final Path path,
-                                final POM content,
-                                final boolean updateModules) throws IOException, XmlPullParserException {
-        if (updateModules &&
-                content.isMultiModule() &&
-                content.getModules() != null) {
-            for (String module : content.getModules()) {
+    private class PomSaver {
 
-                org.uberfire.java.nio.file.Path childPath = Paths.convert(path).getParent().resolve(module).resolve("pom.xml");
+        private final Path pomPath;
+        private final POM pom;
+        private final Metadata metadata;
+        private String comment;
+        private List<Command> updates = new ArrayList<>();
 
-                if (ioService.exists(childPath)) {
-                    POM child = load(Paths.convert(childPath));
-                    if (child != null) {
-                        child.setParent(content.getGav());
-                        child.getGav().setGroupId(content.getGav().getGroupId());
-                        child.getGav().setVersion(content.getGav().getVersion());
+        public PomSaver(final Path pomPath,
+                        final POM pom,
+                        final Metadata metadata,
+                        final String comment) {
 
-                        save(Paths.convert(childPath),
-                             child);
-                    }
+            this.pomPath = pomPath;
+            this.pom = pom;
+            this.metadata = metadata;
+            this.comment = comment;
+        }
+
+        public Path savePOM(final boolean updateModules) {
+
+            try {
+                ioService.startBatch(Paths.convert(pomPath).getFileSystem(),
+                                     optionsFactory.makeCommentedOption(comment != null ? comment : ""));
+
+                savePOM();
+
+                if (updateModules) {
+                    saveSubModulePOMs();
+                }
+
+                return pomPath;
+            } catch (Exception e) {
+                throw ExceptionUtilities.handleException(e);
+            } finally {
+
+                ioService.endBatch();
+
+                for (final Command update : updates) {
+                    update.execute();
                 }
             }
         }
-    }
 
-    private Path save(final Path path,
-                      final POM content,
-                      final Metadata metadata) throws IOException, XmlPullParserException {
-        if (metadata == null) {
-            save(path,
-                 content);
-        } else {
-            ioService.write(Paths.convert(path),
-                            pomContentHandler.toString(content,
-                                                       loadPomXMLString(path)),
-                            metadataService.setUpAttributes(path,
-                                                            metadata));
+        private void savePOM() throws IOException, XmlPullParserException {
+            savePOM(pomPath,
+                    pom,
+                    metadata);
         }
 
-        return path;
-    }
+        private void savePOM(final Path pomPath,
+                             final POM pom,
+                             final Metadata metadata) throws IOException, XmlPullParserException {
+            final Optional<Module> oldModuleForUpdateEvent = getModuleIfPomHasChanges(pomPath,
+                                                                                      pom);
 
-    private void save(final Path path,
-                      final POM content) throws IOException, XmlPullParserException {
-        ioService.write(Paths.convert(path),
-                        pomContentHandler.toString(content,
-                                                   loadPomXMLString(path)));
+            if (metadata == null) {
+                ioService.write(Paths.convert(pomPath),
+                                pomContentHandler.toString(pom,
+                                                           loadPomXMLString(pomPath)));
+            } else {
+                ioService.write(Paths.convert(pomPath),
+                                pomContentHandler.toString(pom,
+                                                           loadPomXMLString(pomPath)),
+                                metadataService.setUpAttributes(pomPath,
+                                                                metadata));
+            }
+
+            if (oldModuleForUpdateEvent.isPresent()) {
+                updates.add(() -> moduleUpdatedEvent.fire(new ModuleUpdatedEvent(oldModuleForUpdateEvent.get(),
+                                                                                 moduleService.resolveModule(pomPath))));
+            }
+        }
+
+        private Optional<Module> getModuleIfPomHasChanges(final Path pomPath,
+                                                          final POM pom) {
+            POM load = load(pomPath);
+            if (!load.equals(pom)) {
+                return Optional.of(moduleService.resolveModule(pomPath));
+            } else {
+                return Optional.empty();
+            }
+        }
+
+        private void saveSubModulePOMs() throws IOException, XmlPullParserException {
+
+            if (pom.isMultiModule() &&
+                    pom.getModules() != null) {
+                for (final String childModuleName : pom.getModules()) {
+                    saveGAVChange(pom.getGav(),
+                                  childModuleName);
+                }
+            }
+        }
+
+        private void saveGAVChange(final GAV gav,
+                                   final String childModuleName) throws IOException, XmlPullParserException {
+
+            final org.uberfire.java.nio.file.Path childPOMPath = Paths.convert(pomPath).getParent().resolve(childModuleName).resolve("pom.xml");
+
+            if (ioService.exists(childPOMPath)) {
+                final POM childContent = load(Paths.convert(childPOMPath));
+                if (childContent != null) {
+                    childContent.setParent(gav);
+                    childContent.getGav().setGroupId(gav.getGroupId());
+                    childContent.getGav().setVersion(gav.getVersion());
+
+                    savePOM(Paths.convert(childPOMPath),
+                            childContent,
+                            null);
+                }
+            }
+        }
     }
 }

@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.context.ProjectContextChangeHandle;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeHandler;
+import org.guvnor.common.services.project.events.ModuleUpdatedEvent;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
@@ -74,6 +75,16 @@ public class WorkspaceProjectContext {
         contextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(updatedWorkspaceProject,
                                                                        activeModule,
                                                                        activePackage));
+    }
+
+    public void onModuleUpdated(@Observes final ModuleUpdatedEvent moduleUpdatedEvent) {
+        if (activeModule != null && activeModule.getRootPath().equals(moduleUpdatedEvent.getOldModule().getRootPath())) {
+            contextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(new WorkspaceProject(activeWorkspaceProject.getOrganizationalUnit(),
+                                                                                                activeWorkspaceProject.getRepository(),
+                                                                                                activeWorkspaceProject.getBranch(),
+                                                                                                moduleUpdatedEvent.getNewModule()),
+                                                                           moduleUpdatedEvent.getNewModule()));
+        }
     }
 
     public void onProjectContextChanged(@Observes final WorkspaceProjectContextChangeEvent event) {

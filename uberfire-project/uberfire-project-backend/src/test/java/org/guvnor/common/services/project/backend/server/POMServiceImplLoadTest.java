@@ -19,9 +19,11 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.backend.server.utils.POMContentHandler;
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.m2repo.service.M2RepoService;
@@ -34,6 +36,7 @@ import org.mockito.MockitoAnnotations;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -71,6 +74,9 @@ public class POMServiceImplLoadTest {
                                      pomContentHandler,
                                      m2RepoService,
                                      metadataService,
+                                     new EventSourceMock<>(),
+                                     mock(ModuleService.class),
+                                     mock(CommentedOptionFactory.class),
                                      pomEnhancer);
     }
 

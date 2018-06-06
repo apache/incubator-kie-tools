@@ -19,19 +19,19 @@ import org.guvnor.common.services.project.model.Module;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * An event representing creation of a new Project
+ * An event representing a Module update.
  */
 @Portable
-public class RenameModuleEvent {
+public class ModuleUpdatedEvent {
 
     private Module oldModule;
     private Module newModule;
 
-    public RenameModuleEvent() {
+    public ModuleUpdatedEvent() {
     }
 
-    public RenameModuleEvent(final Module oldModule,
-                             final Module newModule) {
+    public ModuleUpdatedEvent(final Module oldModule,
+                              final Module newModule) {
         this.oldModule = oldModule;
         this.newModule = newModule;
     }
