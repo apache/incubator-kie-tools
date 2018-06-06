@@ -128,6 +128,39 @@ public class GuidedRuleEditorServiceImplCDITest extends CDITestSetup {
         Assertions.assertThat(messages).allMatch(m -> m.getText().contains(expectedError));
     }
 
+    @Test
+    public void testValidateSalienceAttribute() throws Exception {
+        final String resourcePath = RULES_ROOT + "salienceAttribute.rdrl";
+        final List<ValidationMessage> messages = validateResource(resourcePath);
+        Assertions.assertThat(messages).isEmpty();
+    }
+
+    @Test
+    public void testValidateSalienceAttributeInvalidNumber() throws Exception {
+        final String resourcePath = RULES_ROOT + "salienceAttributeInvalidNumber.rdrl";
+        final String expectedErrorSubstring = "Unable to";
+        final List<ValidationMessage> messages = validateResource(resourcePath);
+        // There are two messages:
+        // Unable to Analyse Expression ...
+        // Unable to build expression ...
+        // Each present twice due to two defined KIE bases
+        Assertions.assertThat(messages).hasSize(4);
+        Assertions.assertThat(messages).allMatch(m -> m.getText().contains(expectedErrorSubstring));
+    }
+
+    @Test
+    public void testValidateDateExpiresAttribute() throws Exception {
+        final String resourcePath = RULES_ROOT + "dateExpiresAttribute.rdrl";
+        final List<ValidationMessage> messages = validateResource(resourcePath);
+        Assertions.assertThat(messages).isEmpty();
+    }
+
+    @Test
+    public void testValidateDateEffectiveAttribute() throws Exception {
+        final String resourcePath = RULES_ROOT + "dateEffectiveAttribute.rdrl";
+        final List<ValidationMessage> messages = validateResource(resourcePath);
+        Assertions.assertThat(messages).isEmpty();
+    }
     private List<ValidationMessage> validateResource(final String resource) throws Exception {
         final Path resourcePath = getPath(resource);
         return guidedRuleService.validate(resourcePath, guidedRuleService.load(resourcePath));

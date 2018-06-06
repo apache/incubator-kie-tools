@@ -1,0 +1,12 @@
+package guvnor.feature.rules;
+
+rule "options_rule"
+	date-expires "31-May-2018"
+	dialect "mvel"
+	when
+		p : Person( age > 18 )
+	then
+		Message m = new Message();
+		m.setMessage( "fast" );
+		insert( m );
+end

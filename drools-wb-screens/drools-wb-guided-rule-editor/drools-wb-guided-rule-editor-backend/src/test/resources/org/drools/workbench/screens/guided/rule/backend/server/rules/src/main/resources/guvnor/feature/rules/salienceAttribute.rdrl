@@ -1,0 +1,12 @@
+package guvnor.feature.rules;
+
+rule "options_rule"
+	salience 123
+	dialect "mvel"
+	when
+		p : Person( age > 18 )
+	then
+		Message m = new Message();
+		m.setMessage( "fast" );
+		insert( m );
+end
