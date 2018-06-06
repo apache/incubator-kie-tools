@@ -118,7 +118,10 @@ public class JavaSourceVisitor extends ResourceReferenceCollector {
             }
             addJavaResourceReference(fieldClassName);
         } catch (Exception e) {
-            logger.error("Unable to index java class field for class: " + javaSource.getQualifiedName() + ", fieldName: " + fieldName + " fieldType: " + fieldType);
+            logger.error("Unable to index java class field for class: "
+                                 + javaSource.getQualifiedName()
+                                 + ", fieldName: " + fieldName
+                                 + ", fieldType: " + fieldType, e);
         }
 
         // Field annotations
@@ -140,7 +143,9 @@ public class JavaSourceVisitor extends ResourceReferenceCollector {
                 addJavaResourceReference(superClass);
                 // TODO: add relationship information ( child )
             } catch (ClassNotFoundException e) {
-                logger.error("Unable to index super class name for class: " + javaClassSource.getQualifiedName());
+                logger.error("Unable to index superclass name for class: "
+                                     + javaClassSource.getQualifiedName()
+                                     + ", superclass: " + javaClassSource.getSuperType(), e);
             }
         }
 
@@ -152,7 +157,9 @@ public class JavaSourceVisitor extends ResourceReferenceCollector {
                     addJavaResourceReference(implementedInterface);
                     // TODO: add relationship information ( implements )
                 } catch (ClassNotFoundException e) {
-                    logger.error("Unable to index implemented interface qualified name for class: " + javaClassSource.getQualifiedName() + ", interface: " + implementedInterface, e);
+                    logger.error("Unable to index implemented interface qualified name for class: "
+                                         + javaClassSource.getQualifiedName()
+                                         + ", interface: " + implementedInterface, e);
                 }
             }
         }
