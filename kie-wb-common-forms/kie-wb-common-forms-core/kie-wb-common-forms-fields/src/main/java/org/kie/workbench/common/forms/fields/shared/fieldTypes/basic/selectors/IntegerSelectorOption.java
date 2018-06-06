@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors;
 
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -34,13 +37,20 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.layout.Layout;
 )
 public class IntegerSelectorOption implements SelectorOption<Long> {
 
-    @FormField(labelKey = "value")
+    @FormField(
+            labelKey = "value",
+            required = true
+    )
+    @NotNull
     private Long value;
 
     @FormField(
             labelKey = "text",
-            afterElement = "value"
+            afterElement = "value",
+            required = true
     )
+    @NotEmpty
+    @NotNull
     private String text;
 
     public IntegerSelectorOption() {

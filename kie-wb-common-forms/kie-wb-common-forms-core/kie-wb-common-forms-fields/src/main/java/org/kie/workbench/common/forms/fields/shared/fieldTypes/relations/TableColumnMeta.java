@@ -40,8 +40,11 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.l
 public class TableColumnMeta {
 
     @FormField(
-            labelKey = "label"
+            labelKey = "label",
+            required = true
     )
+    @NotEmpty
+    @NotNull
     private String label;
 
     @FormField(

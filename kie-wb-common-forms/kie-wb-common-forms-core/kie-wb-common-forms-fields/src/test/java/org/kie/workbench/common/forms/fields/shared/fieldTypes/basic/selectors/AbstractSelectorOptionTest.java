@@ -16,12 +16,18 @@
 
 package org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors;
 
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -45,13 +51,6 @@ public abstract class AbstractSelectorOptionTest<TYPE> {
     @Before
     public void init() {
         option = newSelectorOption(valueA, LABEL_A);
-    }
-
-    @Test
-    public void testDefaultConstructor() {
-        option = new IntegerSelectorOption();
-        assertNull(option.getText());
-        assertNull(option.getValue());
     }
 
     @Test
@@ -90,5 +89,25 @@ public abstract class AbstractSelectorOptionTest<TYPE> {
         SelectorOption other = newSelectorOption(valueB, textB);
         assertTrue(anOption.equals(other) == shouldBeEqual);
         assertEquals(anOption.hashCode() == other.hashCode(), shouldBeEqual);
+    }
+
+    @Test
+    public void testValidateOption() {
+
+        final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+
+        SelectorOption emptyOption = newSelectorOption(null, null);
+
+        Set<ConstraintViolation<SelectorOption>> violations = validator.validate(emptyOption);
+
+        Assertions.assertThat(violations)
+                .isNotNull()
+                .isNotEmpty();
+
+        violations = validator.validate(option);
+
+        Assertions.assertThat(violations)
+                .isNotNull()
+                .isEmpty();
     }
 }
