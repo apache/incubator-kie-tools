@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.client.widget.LiteralTextBox;
 import org.mockito.Mock;
+import org.uberfire.ext.widgets.common.client.common.DatePicker;
 import org.uberfire.ext.widgets.common.client.common.DirtyableHorizontalPane;
 import org.uberfire.ext.widgets.common.client.common.FormStyleLayout;
 import org.uberfire.ext.widgets.common.client.common.NumericIntegerTextBox;
@@ -41,7 +42,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
-@WithClassesToStub({DateTimeFormat.class})
+@WithClassesToStub({DateTimeFormat.class, DatePicker.class})
 public class RuleAttributeWidgetTest {
 
     @Mock
@@ -116,5 +117,31 @@ public class RuleAttributeWidgetTest {
         verify(layout).addAttribute(eq(RuleAttributeWidget.SALIENCE_ATTR),
                                     eq(dirtyableHorizontalPane));
         verify(dirtyableHorizontalPane).add(isA(NumericIntegerTextBox.class));
+    }
+
+    @Test
+    public void testDateEffectiveAttribute() {
+        ruleModel.addAttribute(new RuleAttribute(RuleAttributeWidget.DATE_EFFECTIVE_ATTR, ""));
+
+        ruleAttributeWidget = new RuleAttributeWidget(ruleModeller,
+                                                      ruleModel,
+                                                      isReadOnly);
+
+        verify(layout).addAttribute(eq(RuleAttributeWidget.DATE_EFFECTIVE_ATTR),
+                                    eq(dirtyableHorizontalPane));
+        verify(dirtyableHorizontalPane).add(isA(DatePicker.class));
+    }
+
+    @Test
+    public void testDateExpiresAttribute() {
+        ruleModel.addAttribute(new RuleAttribute(RuleAttributeWidget.DATE_EXPIRES_ATTR, ""));
+
+        ruleAttributeWidget = new RuleAttributeWidget(ruleModeller,
+                                                      ruleModel,
+                                                      isReadOnly);
+
+        verify(layout).addAttribute(eq(RuleAttributeWidget.DATE_EXPIRES_ATTR),
+                                    eq(dirtyableHorizontalPane));
+        verify(dirtyableHorizontalPane).add(isA(DatePicker.class));
     }
 }

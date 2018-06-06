@@ -16,15 +16,23 @@
 
 package org.drools.workbench.screens.guided.rule.client.widget.attribute;
 
+import java.util.Date;
+
+import com.google.gwt.i18n.client.DateTimeFormat;
 import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
+import org.uberfire.ext.widgets.common.client.common.DatePicker;
 
 public class EditAttributeWidgetFactory {
 
+    private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
+    private static final DateTimeFormat DATE_FORMATTER = DateTimeFormat.getFormat(DATE_FORMAT);
+
     final boolean isReadOnly;
 
-    public EditAttributeWidgetFactory(boolean isReadOnly) {
+    public EditAttributeWidgetFactory(final boolean isReadOnly) {
         this.isReadOnly = isReadOnly;
     }
 
@@ -34,11 +42,41 @@ public class EditAttributeWidgetFactory {
         return textBox;
     }
 
+    public DatePicker datePicker(final RuleAttribute ruleAttribute, final boolean allowEmptyValues) {
+        final DatePicker datePicker = new DatePicker(allowEmptyValues);
+        initDatePickerByRuleAttribute(datePicker, ruleAttribute);
+        return datePicker;
+    }
+
     protected void initTextBoxByRuleAttribute(final TextBox textBox, final RuleAttribute ruleAttribute) {
         textBox.setEnabled(!isReadOnly);
         if (!isReadOnly) {
             textBox.addValueChangeHandler(event -> ruleAttribute.setValue(textBox.getValue()));
         }
         textBox.setValue(ruleAttribute.getValue());
+    }
+
+    protected void initDatePickerByRuleAttribute(final DatePicker datePicker, final RuleAttribute ruleAttribute) {
+        datePicker.addValueChangeHandler(event -> {
+            final Date date = datePicker.getValue();
+            final String sDate = (date == null ? null : DATE_FORMATTER.format(datePicker.getValue()));
+            ruleAttribute.setValue(sDate);
+        });
+
+        datePicker.setFormat(DATE_FORMAT);
+        datePicker.setValue(assertDateValue(ruleAttribute));
+    }
+
+    private Date assertDateValue(final RuleAttribute ruleAttribute) {
+        if (ruleAttribute == null || ruleAttribute.getValue() == null) {
+            return null;
+        }
+
+        try {
+            final Date d = DATE_FORMATTER.parse(ruleAttribute.getValue());
+            return d;
+        } catch (IllegalArgumentException iae) {
+            return null;
+        }
     }
 }

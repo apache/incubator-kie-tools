@@ -16,8 +16,6 @@
 
 package org.drools.workbench.screens.guided.rule.client.widget.attribute;
 
-import java.util.Date;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -26,9 +24,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -44,9 +39,7 @@ import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.soup.project.datamodel.oracle.DataType;
-import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.resources.ItemImages;
-import org.uberfire.ext.widgets.common.client.common.DatePicker;
 import org.uberfire.ext.widgets.common.client.common.DirtyableHorizontalPane;
 import org.uberfire.ext.widgets.common.client.common.FormStyleLayout;
 import org.uberfire.ext.widgets.common.client.common.InfoPopup;
@@ -58,9 +51,6 @@ import org.uberfire.ext.widgets.common.client.common.SmallLabel;
  * Added support for metadata - Michael Rhoden 10/17/08
  */
 public class RuleAttributeWidget extends Composite {
-
-    private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
-    private static final DateTimeFormat DATE_FORMATTER = DateTimeFormat.getFormat(DATE_FORMAT);
 
     /**
      * These are the names of all of the rule attributes for this widget
@@ -182,22 +172,7 @@ public class RuleAttributeWidget extends Composite {
             if (isReadOnly) {
                 editor = editAttributeWidgetFactory.textBox(at, DataType.TYPE_STRING);
             } else {
-                final DatePicker datePicker = new DatePicker(false);
-
-                // Wire up update handler
-                datePicker.addValueChangeHandler(new ValueChangeHandler<Date>() {
-                    @Override
-                    public void onValueChange(final ValueChangeEvent<Date> event) {
-                        final Date date = datePicker.getValue();
-                        final String sDate = (date == null ? null : DATE_FORMATTER.format(datePicker.getValue()));
-                        at.setValue(sDate);
-                    }
-                });
-
-                datePicker.setFormat(DATE_FORMAT);
-                datePicker.setValue(assertDateValue(at));
-
-                editor = datePicker;
+                editor = editAttributeWidgetFactory.datePicker(at, false);
             }
         } else if (attributeName.equals(DIALECT_ATTR)) {
             final ListBox lb = new ListBox();
@@ -239,18 +214,6 @@ public class RuleAttributeWidget extends Composite {
         }
 
         return horiz;
-    }
-
-    private Date assertDateValue(final RuleAttribute at) {
-        if (at.getValue() == null) {
-            return null;
-        }
-
-        try {
-            return DATE_FORMATTER.parse(at.getValue());
-        } catch (IllegalArgumentException iae) {
-            return null;
-        }
     }
 
     private Widget getEditorWidget(final RuleMetadata rm,
