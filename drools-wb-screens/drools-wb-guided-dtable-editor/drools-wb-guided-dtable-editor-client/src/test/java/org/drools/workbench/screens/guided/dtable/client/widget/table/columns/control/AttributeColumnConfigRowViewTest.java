@@ -25,7 +25,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
-import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
+import org.drools.workbench.screens.guided.rule.client.widget.attribute.RuleAttributeWidget;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.junit.Before;
 import org.junit.Test;

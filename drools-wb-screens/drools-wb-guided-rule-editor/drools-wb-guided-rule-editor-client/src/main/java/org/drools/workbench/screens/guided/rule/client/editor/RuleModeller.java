@@ -49,6 +49,8 @@ import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRu
 import org.drools.workbench.screens.guided.rule.client.widget.FactTypeKnownValueChangeEvent;
 import org.drools.workbench.screens.guided.rule.client.widget.FactTypeKnownValueChangeHandler;
 import org.drools.workbench.screens.guided.rule.client.widget.RuleModellerWidget;
+import org.drools.workbench.screens.guided.rule.client.widget.attribute.AddAttributeWidget;
+import org.drools.workbench.screens.guided.rule.client.widget.attribute.RuleAttributeWidget;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
@@ -349,27 +351,9 @@ public class RuleModeller extends Composite
     }
 
     private Widget getAddAttribute() {
-        Image add = GuidedRuleEditorImages508.INSTANCE.NewItem();
-        add.setTitle(GuidedRuleEditorResources.CONSTANTS.AddAnOptionToTheRuleToModifyItsBehaviorWhenEvaluatedOrExecuted());
-
-        add.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-                showAttributeSelector();
-            }
-        });
-        return add;
-    }
-
-    protected void showAttributeSelector() {
-        new GuidedRuleAttributeSelectorPopup(model,
-                                             lockLHS(),
-                                             lockRHS(),
-                                             new Command() {
-                                                 public void execute() {
-                                                     refreshWidget();
-                                                 }
-                                             }).show();
+        final AddAttributeWidget addAttributeWidget = new AddAttributeWidget();
+        addAttributeWidget.init(this);
+        return addAttributeWidget.asWidget();
     }
 
     /**

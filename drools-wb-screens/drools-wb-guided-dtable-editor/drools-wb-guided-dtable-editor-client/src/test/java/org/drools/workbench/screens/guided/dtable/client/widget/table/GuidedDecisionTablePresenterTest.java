@@ -55,7 +55,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoException;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.DependentEnumsUtilities;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableLinkManager.LinkFoundCallback;
-import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
+import org.drools.workbench.screens.guided.rule.client.widget.attribute.RuleAttributeWidget;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.jboss.errai.security.shared.api.identity.User;

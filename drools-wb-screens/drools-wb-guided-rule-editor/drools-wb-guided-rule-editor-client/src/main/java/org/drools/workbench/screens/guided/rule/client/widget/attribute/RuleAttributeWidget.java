@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.guided.rule.client.editor;
+package org.drools.workbench.screens.guided.rule.client.widget.attribute;
 
 import java.util.Date;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -37,6 +38,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.datamodel.rule.RuleMetadata;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.ListBox;
@@ -44,7 +46,6 @@ import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.resources.ItemImages;
-import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.ext.widgets.common.client.common.DatePicker;
 import org.uberfire.ext.widgets.common.client.common.DirtyableHorizontalPane;
 import org.uberfire.ext.widgets.common.client.common.FormStyleLayout;
@@ -99,7 +100,7 @@ public class RuleAttributeWidget extends Composite {
                                final boolean isReadOnly) {
         this.parent = parent;
         this.model = model;
-        FormStyleLayout layout = new FormStyleLayout();
+        FormStyleLayout layout = GWT.create(FormStyleLayout.class);
         //Adding metadata here, seems redundant to add a new widget for metadata. Model does handle meta data separate.
         RuleMetadata[] meta = model.metadataList;
         if (meta.length > 0) {
@@ -133,7 +134,6 @@ public class RuleAttributeWidget extends Composite {
 
     /**
      * Return a list of choices for rule attributes.
-     *
      * @return
      */
     public static String[] getAttributesList() {
@@ -158,6 +158,7 @@ public class RuleAttributeWidget extends Composite {
                                    final int idx,
                                    final boolean isReadOnly) {
         Widget editor = null;
+        final EditAttributeWidgetFactory editAttributeWidgetFactory = new EditAttributeWidgetFactory(isReadOnly);
 
         final String attributeName = at.getAttributeName();
         if (attributeName.equals(RULEFLOW_GROUP_ATTR)
@@ -165,44 +166,11 @@ public class RuleAttributeWidget extends Composite {
                 || attributeName.equals(ACTIVATION_GROUP_ATTR)
                 || attributeName.equals(TIMER_ATTR)
                 || attributeName.equals(CALENDARS_ATTR)) {
-            final TextBox tb = TextBoxFactory.getTextBox(DataType.TYPE_STRING);
-            tb.setEnabled(!isReadOnly);
-            if (!isReadOnly) {
-                tb.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-                    public void onValueChange(ValueChangeEvent<String> event) {
-                        at.setValue(tb.getValue());
-                    }
-                });
-            }
-            tb.setValue(at.getValue());
-            editor = tb;
+            editor = editAttributeWidgetFactory.textBox(at, DataType.TYPE_STRING);
         } else if (attributeName.equals(SALIENCE_ATTR)) {
-            final TextBox tb = TextBoxFactory.getTextBox(DataType.TYPE_NUMERIC_INTEGER);
-            tb.setEnabled(!isReadOnly);
-            if (!isReadOnly) {
-                tb.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-                    public void onValueChange(ValueChangeEvent<String> event) {
-                        at.setValue(tb.getValue());
-                    }
-                });
-            }
-            tb.setValue(at.getValue());
-            editor = tb;
+            editor = editAttributeWidgetFactory.textBox(at, DataType.TYPE_NUMERIC_INTEGER);
         } else if (attributeName.equals(DURATION_ATTR)) {
-            final TextBox tb = TextBoxFactory.getTextBox(DataType.TYPE_NUMERIC_LONG);
-            tb.setEnabled(!isReadOnly);
-            if (!isReadOnly) {
-                tb.addValueChangeHandler(new ValueChangeHandler<String>() {
-
-                    public void onValueChange(ValueChangeEvent<String> event) {
-                        at.setValue(tb.getValue());
-                    }
-                });
-            }
-            tb.setValue(at.getValue());
-            editor = tb;
+            editor = editAttributeWidgetFactory.textBox(at, DataType.TYPE_NUMERIC_LONG);
         } else if (attributeName.equals(NO_LOOP_ATTR)
                 || attributeName.equals(LOCK_ON_ACTIVE_ATTR)
                 || attributeName.equals(AUTO_FOCUS_ATTR)
@@ -212,9 +180,7 @@ public class RuleAttributeWidget extends Composite {
         } else if (attributeName.equals(DATE_EFFECTIVE_ATTR)
                 || attributeName.equals(DATE_EXPIRES_ATTR)) {
             if (isReadOnly) {
-                final TextBox tb = TextBoxFactory.getTextBox(DataType.TYPE_STRING);
-                tb.setValue(at.getValue());
-                tb.setEnabled(false);
+                editor = editAttributeWidgetFactory.textBox(at, DataType.TYPE_STRING);
             } else {
                 final DatePicker datePicker = new DatePicker(false);
 
@@ -264,7 +230,7 @@ public class RuleAttributeWidget extends Composite {
             editor = lb;
         }
 
-        DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
+        DirtyableHorizontalPane horiz = GWT.create(DirtyableHorizontalPane.class);
         if (editor != null) {
             horiz.add(editor);
             if (!isReadOnly) {
