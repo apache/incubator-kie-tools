@@ -21,6 +21,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Optional;
+
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
@@ -30,7 +31,6 @@ import org.guvnor.common.services.project.builder.events.InvalidateDMOModuleCach
 import org.guvnor.common.services.project.events.DeleteModuleEvent;
 import org.guvnor.common.services.project.events.NewModuleEvent;
 import org.guvnor.common.services.project.events.NewPackageEvent;
-import org.guvnor.common.services.project.events.RenameModuleEvent;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.MavenRepositorySource;
 import org.guvnor.common.services.project.model.Module;
@@ -56,8 +56,17 @@ import org.uberfire.java.nio.file.FileSystems;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceDeletedEvent;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ModuleServiceImplNewModuleTest {
@@ -91,7 +100,6 @@ public class ModuleServiceImplNewModuleTest {
     public void setup() {
         final Event<NewModuleEvent> newModuleEvent = mock(Event.class);
         final Event<NewPackageEvent> newPackageEvent = mock(Event.class);
-        final Event<RenameModuleEvent> renameModuleEvent = mock(Event.class);
         final Event<InvalidateDMOModuleCacheEvent> invalidateDMOCache = mock(Event.class);
 
         moduleService = new KieModuleServiceImpl(ioService,
@@ -100,7 +108,6 @@ public class ModuleServiceImplNewModuleTest {
                                                  mock(RepositoryService.class),
                                                  newModuleEvent,
                                                  newPackageEvent,
-                                                 renameModuleEvent,
                                                  invalidateDMOCache,
                                                  mock(SessionInfo.class),
                                                  mock(CommentedOptionFactory.class),

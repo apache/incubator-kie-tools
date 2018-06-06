@@ -206,7 +206,7 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
 
     @Test
     public void updateNoWorkspaceProject() throws Exception {
-        doReturn(null).when(libraryPlaces).getActiveWorkspaceContext();
+        doReturn(null).when(libraryPlaces).getActiveWorkspace();
 
         populatedAssetsScreen.init();
         populatedAssetsScreen.refreshOnFocus(mock(SelectPlaceEvent.class));
@@ -216,7 +216,7 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
 
     @Test
     public void updateNoMainModule() throws Exception {
-        doReturn(mock(WorkspaceProject.class)).when(libraryPlaces).getActiveWorkspaceContext();
+        doReturn(mock(WorkspaceProject.class)).when(libraryPlaces).getActiveWorkspace();
 
         populatedAssetsScreen.init();
         populatedAssetsScreen.refreshOnFocus(mock(SelectPlaceEvent.class));
@@ -226,7 +226,7 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
 
     @Test
     public void updateHidesBusyIndicatorWhenThereIsNoMainModule() throws Exception {
-        doReturn(mock(WorkspaceProject.class)).when(libraryPlaces).getActiveWorkspaceContext();
+        doReturn(mock(WorkspaceProject.class)).when(libraryPlaces).getActiveWorkspace();
 
         populatedAssetsScreen.init();
         populatedAssetsScreen.refreshOnFocus(mock(SelectPlaceEvent.class));
@@ -239,7 +239,7 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
     @Test
     public void updateNotTheCorrectPlace() throws Exception {
         final WorkspaceProject workspaceProject = mock(WorkspaceProject.class);
-        doReturn(workspaceProject).when(libraryPlaces).getActiveWorkspaceContext();
+        doReturn(workspaceProject).when(libraryPlaces).getActiveWorkspace();
 
         doReturn(mock(KieModule.class)).when(workspaceProject).getMainModule();
 
@@ -256,7 +256,7 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
 
         doNothing().when(populatedAssetsScreen).update();
         final WorkspaceProject workspaceProject = mock(WorkspaceProject.class);
-        doReturn(workspaceProject).when(libraryPlaces).getActiveWorkspaceContext();
+        doReturn(workspaceProject).when(libraryPlaces).getActiveWorkspace();
 
         doReturn(mock(KieModule.class)).when(workspaceProject).getMainModule();
 

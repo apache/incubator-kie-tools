@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.screens.library.client.settings.sections.generalsettings;
 
-import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -26,7 +25,6 @@ import javax.inject.Inject;
 import elemental2.promise.Promise;
 import org.guvnor.common.services.project.client.preferences.ProjectScopedResolutionStrategySupplier;
 import org.guvnor.common.services.project.model.POM;
-import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.preferences.GAVPreferences;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.jboss.errai.common.client.api.Caller;
@@ -167,9 +165,9 @@ public class GeneralSettingsPresenter extends Section<ProjectScreenModel> {
                 validateStringIsNotEmpty(pom.getName(), view.getEmptyNameMessage())
                         .then(o -> executeValidation(s -> s.isProjectNameValid(pom.getName()), view.getInvalidNameMessage()))
                         .then(o -> executeValidation(projectService,
-                                                     s -> s.spaceHasNoProjectsWithName(libraryPlaces.getActiveWorkspaceContext().getOrganizationalUnit(),
+                                                     s -> s.spaceHasNoProjectsWithName(libraryPlaces.getActiveWorkspace().getOrganizationalUnit(),
                                                                                        pom.getName(),
-                                                                                       libraryPlaces.getActiveWorkspaceContext()),
+                                                                                       libraryPlaces.getActiveWorkspace()),
                                                      view.getDuplicatedProjectNameMessage()))
                         .catch_(this::showErrorAndReject),
 

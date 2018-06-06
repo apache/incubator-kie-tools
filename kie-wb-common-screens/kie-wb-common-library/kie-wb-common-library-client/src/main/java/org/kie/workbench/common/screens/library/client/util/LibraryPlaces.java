@@ -36,7 +36,6 @@ import org.guvnor.common.services.project.client.context.WorkspaceProjectContext
 import org.guvnor.common.services.project.client.preferences.ProjectScopedResolutionStrategySupplier;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeHandler;
-import org.guvnor.common.services.project.events.RenameModuleEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
@@ -349,15 +348,6 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         }
     }
 
-    public void onProjectRenamed(@Observes final RenameModuleEvent renameModuleEvent) {
-        if (isLibraryPerspectiveOpen()) {
-            projectContext.getActiveWorkspaceProject()
-                    .map(proj -> proj.getMainModule())
-                    .filter(module -> renameModuleEvent.getOldModule().equals(module))
-                    .ifPresent(module -> refresh(null));
-        }
-    }
-
     public void onAssetSelected(@Observes final AssetDetailEvent assetDetails) {
         goToAsset(assetDetails.getPath());
     }
@@ -545,6 +535,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         translationUtils.refresh(() -> {
             libraryToolbar.init(() -> {
                 if (callback != null) {
+
                     callback.execute();
                 }
             });
@@ -794,7 +785,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
                 }
             };
 
-            closeUnsavedProjectAssetsPopUpPresenter.show(getActiveWorkspaceContext(),
+            closeUnsavedProjectAssetsPopUpPresenter.show(getActiveWorkspace(),
                                                          uncloseablePlaces,
                                                          Optional.of(newSuccessCallback),
                                                          Optional.of(() -> placeManager.goTo(uncloseablePlaces.get(0))));
@@ -820,7 +811,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
             final List<PlaceRequest> uncloseablePlaces = new ArrayList<>();
             uncloseablePlaces.add(place);
-            closeUnsavedProjectAssetsPopUpPresenter.show(getActiveWorkspaceContext(),
+            closeUnsavedProjectAssetsPopUpPresenter.show(getActiveWorkspace(),
                                                          uncloseablePlaces,
                                                          Optional.of(newSuccessCallback),
                                                          Optional.empty());
@@ -833,7 +824,12 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         closingLibraryPlaces = false;
     }
 
-    public WorkspaceProject getActiveWorkspaceContext() {
+    public WorkspaceProjectContext getWorkbenchContext(){
+        return projectContext;
+    }
+
+
+    public WorkspaceProject getActiveWorkspace() {
         return this.projectContext.getActiveWorkspaceProject().orElseThrow(() -> new IllegalStateException("No active workspace project found"));
     }
 
@@ -848,6 +844,10 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
             if (Utils.hasRepositoryChanged(previous.getWorkspaceProject(),
                                            current.getWorkspaceProject())) {
                 closeAllPlacesOrNothing(this::goToProject);
+            }
+
+            if (Utils.hasModuleChanged(previous.getModule(), current.getModule())) {
+                setupLibraryBreadCrumbs(projectContext.getActiveWorkspaceProject().get());
             }
         }
     }

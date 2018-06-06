@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.function.Predicate;
+
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 
@@ -48,9 +49,9 @@ import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
 import org.guvnor.common.services.project.builder.service.PostBuildHandler;
 import org.guvnor.common.services.project.events.NewModuleEvent;
 import org.guvnor.common.services.project.events.NewPackageEvent;
-import org.guvnor.common.services.project.events.RenameModuleEvent;
 import org.guvnor.common.services.project.service.ModuleRepositoriesService;
 import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
+import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.m2repo.backend.server.M2RepoServiceImpl;
@@ -121,9 +122,11 @@ import org.uberfire.security.authz.PermissionTypeRegistry;
 import org.uberfire.security.impl.authz.DefaultPermissionTypeRegistry;
 import org.uberfire.security.impl.authz.DotNamedPermissionType;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.kie.workbench.common.services.datamodel.backend.server.ModuleDataModelOracleTestUtils.assertContains;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DataModelServiceConstructorTest {
@@ -177,6 +180,9 @@ public class DataModelServiceConstructorTest {
                                                    pomContentHandler,
                                                    m2RepoService,
                                                    metadataService,
+                                                   new EventSourceMock<>(),
+                                                   mock(ModuleService.class),
+                                                   mock(CommentedOptionFactory.class),
                                                    pomEnhancer);
         KModuleContentHandler moduleContentHandler = new KModuleContentHandler();
 
@@ -189,7 +195,6 @@ public class DataModelServiceConstructorTest {
 
         Event<NewModuleEvent> newModuleEvent = new EventSourceMock<>();
         Event<NewPackageEvent> newPackageEvent = new EventSourceMock<>();
-        Event<RenameModuleEvent> renameModuleEvent = new EventSourceMock<>();
         Event<InvalidateDMOModuleCacheEvent> invalidateDMOCache = new EventSourceMock<>();
 
         PermissionTypeRegistry permissionTypeRegistry = new DefaultPermissionTypeRegistry();
@@ -231,7 +236,6 @@ public class DataModelServiceConstructorTest {
                                                        repoService,
                                                        newModuleEvent,
                                                        newPackageEvent,
-                                                       renameModuleEvent,
                                                        invalidateDMOCache,
                                                        sessionInfo,
                                                        commentedOptionFactory,
@@ -413,7 +417,6 @@ public class DataModelServiceConstructorTest {
                                           RepositoryService repoService,
                                           Event<NewModuleEvent> newModuleEvent,
                                           Event<NewPackageEvent> newPackageEvent,
-                                          Event<RenameModuleEvent> renameModuleEvent,
                                           Event<InvalidateDMOModuleCacheEvent> invalidateDMOCache,
                                           SessionInfo sessionInfo,
                                           CommentedOptionFactory commentedOptionFactory,
@@ -426,7 +429,6 @@ public class DataModelServiceConstructorTest {
                   repoService,
                   newModuleEvent,
                   newPackageEvent,
-                  renameModuleEvent,
                   invalidateDMOCache,
                   sessionInfo,
                   commentedOptionFactory,

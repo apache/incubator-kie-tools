@@ -75,7 +75,7 @@ public class AssetsScreenTest {
 
         workspaceProject = mock(WorkspaceProject.class);
         doReturn(mock(KieModule.class)).when(workspaceProject).getMainModule();
-        when(libraryPlaces.getActiveWorkspaceContext()).thenReturn(workspaceProject);
+        when(libraryPlaces.getActiveWorkspace()).thenReturn(workspaceProject);
 
         EmptyAssetsView emptyView = mock(EmptyAssetsView.class);
         PopulatedAssetsView populatedView = mock(PopulatedAssetsView.class);

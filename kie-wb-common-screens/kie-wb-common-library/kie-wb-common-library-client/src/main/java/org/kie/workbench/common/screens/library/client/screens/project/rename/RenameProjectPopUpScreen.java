@@ -21,16 +21,13 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.client.security.ProjectController;
-import org.guvnor.common.services.project.events.RenameModuleEvent;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
-import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberElemental;
-import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -38,12 +35,9 @@ public class RenameProjectPopUpScreen {
 
     private final Caller<KieModuleService> projectService;
     private View view;
-    private LibraryPlaces libraryPlaces;
     private ProjectController projectController;
     private TranslationService ts;
-    private BusyIndicatorView busyIndicator;
     private Event<NotificationEvent> notificationEvent;
-    private Event<RenameModuleEvent> renameProjectEvent;
     private WorkspaceProject workspaceProject;
 
     public interface View extends UberElemental<RenameProjectPopUpScreen>,
@@ -59,18 +53,12 @@ public class RenameProjectPopUpScreen {
                                     final Caller<KieModuleService> projectService,
                                     final ProjectController projectController,
                                     final TranslationService ts,
-                                    final BusyIndicatorView busyIndicator,
-                                    final LibraryPlaces libraryPlaces,
-                                    final Event<NotificationEvent> notificationEvent,
-                                    final Event<RenameModuleEvent> renameModuleEvent) {
+                                    final Event<NotificationEvent> notificationEvent) {
         this.view = view;
         this.projectService = projectService;
         this.projectController = projectController;
         this.ts = ts;
-        this.busyIndicator = busyIndicator;
-        this.libraryPlaces = libraryPlaces;
         this.notificationEvent = notificationEvent;
-        this.renameProjectEvent = renameModuleEvent;
     }
 
     @PostConstruct

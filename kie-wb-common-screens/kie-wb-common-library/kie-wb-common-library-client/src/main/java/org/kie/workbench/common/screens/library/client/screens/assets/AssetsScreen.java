@@ -73,7 +73,7 @@ public class AssetsScreen {
     @PostConstruct
     public void init() {
         this.view.init(this);
-        this.workspaceProject = libraryPlaces.getActiveWorkspaceContext();
+        this.workspaceProject = libraryPlaces.getActiveWorkspace();
         this.showAssets();
     }
 

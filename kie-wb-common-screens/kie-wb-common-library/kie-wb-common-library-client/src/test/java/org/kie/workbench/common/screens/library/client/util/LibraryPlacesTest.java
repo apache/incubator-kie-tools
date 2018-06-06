@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
 import javax.enterprise.event.Event;
 
 import org.ext.uberfire.social.activities.model.ExtendedTypes;
@@ -29,8 +30,9 @@ import org.ext.uberfire.social.activities.model.SocialFileSelectedEvent;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.preferences.ProjectScopedResolutionStrategySupplier;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
-import org.guvnor.common.services.project.events.RenameModuleEvent;
+import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
@@ -86,7 +88,8 @@ import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -223,7 +226,7 @@ public class LibraryPlacesTest {
                                               importRepositoryPopUpPresenters,
                                               assetListUpdateEvent,
                                               closeUnsavedProjectAssetsPopUpPresenter,
-                                              projectsSetupEvent){
+                                              projectsSetupEvent) {
 
             @Override
             protected Map<String, List<String>> getParameterMap() {
@@ -769,36 +772,33 @@ public class LibraryPlacesTest {
 
     @Test
     public void placesAreUpdatedWhenActiveModuleIsRenamedTest() {
-        final Module renamedModule = mock(Module.class);
-        final RenameModuleEvent renameModuleEvent = mock(RenameModuleEvent.class);
 
-        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
-
-        doReturn(activeModule).when(renameModuleEvent).getOldModule();
-        doReturn(renamedModule).when(renameModuleEvent).getNewModule();
-
-        libraryPlaces.onProjectRenamed(renameModuleEvent);
+        libraryPlaces.onChange(new WorkspaceProjectContextChangeEvent(mock(WorkspaceProject.class),
+                                                                      activeModule),
+                               new WorkspaceProjectContextChangeEvent(mock(WorkspaceProject.class),
+                                                                      mock(Module.class)));
 
         verify(breadcrumbs).clearBreadcrumbs(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        verify(libraryPlaces).setupLibraryBreadCrumbs(any());
     }
 
     @Test
     public void breadcrumbIsNotUpdatedWhenInactiveModuleIsRenamedTest() {
-        final Module activeModule = mock(Module.class);
-        final Module renamedModule = mock(Module.class);
-        final Module otherModule = mock(Module.class);
-        final RenameModuleEvent renameModuleEvent = mock(RenameModuleEvent.class);
 
-        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
-
-        doReturn(Optional.of(activeModule)).when(projectContext).getActiveModule();
-        doReturn(otherModule).when(renameModuleEvent).getOldModule();
-        doReturn(renamedModule).when(renameModuleEvent).getNewModule();
-
-        libraryPlaces.onProjectRenamed(renameModuleEvent);
+        final WorkspaceProjectContextChangeEvent workspaceProjectContextChangeEvent = new WorkspaceProjectContextChangeEvent(mock(WorkspaceProject.class),
+                                                                                                                             new Module(mock(Path.class),
+                                                                                                                                        mock(Path.class),
+                                                                                                                                        new POM("moduleName",
+                                                                                                                                                "description",
+                                                                                                                                                "url",
+                                                                                                                                                new GAV())));
+        libraryPlaces.onChange(workspaceProjectContextChangeEvent,
+                               workspaceProjectContextChangeEvent);
 
         verify(libraryPlaces,
                never()).setupLibraryBreadCrumbsForAsset(any());
+        verify(libraryPlaces,
+               never()).setupLibraryBreadCrumbs(any());
     }
 
     @Test

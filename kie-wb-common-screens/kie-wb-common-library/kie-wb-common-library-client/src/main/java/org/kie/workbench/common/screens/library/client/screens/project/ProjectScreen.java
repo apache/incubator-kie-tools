@@ -25,6 +25,8 @@ import com.google.gwt.core.client.Callback;
 import elemental2.dom.HTMLElement;
 import elemental2.promise.Promise;
 import org.guvnor.common.services.project.client.security.ProjectController;
+import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
+import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeHandler;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.messageconsole.client.console.widget.button.ViewHideAlertsButtonPresenter;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
@@ -64,7 +66,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 @WorkbenchScreen(identifier = LibraryPlaces.PROJECT_SCREEN,
         owningPerspective = LibraryPerspective.class)
-public class ProjectScreen {
+public class ProjectScreen implements WorkspaceProjectContextChangeHandler {
 
     private Elemental2DomUtil elemental2DomUtil;
     protected WorkspaceProject workspaceProject;
@@ -168,14 +170,15 @@ public class ProjectScreen {
         this.notificationEvent = notificationEvent;
         this.viewHideAlertsButtonPresenter = viewHideAlertsButtonPresenter;
         this.elemental2DomUtil = new Elemental2DomUtil();
+        this.libraryPlaces.getWorkbenchContext().addChangeHandler(this);
     }
 
     @PostConstruct
     public void initialize() {
-        this.workspaceProject = this.libraryPlaces.getActiveWorkspaceContext();
+        this.workspaceProject = this.libraryPlaces.getActiveWorkspace();
         this.view.init(this);
         this.buildExecutor.init(this.view);
-        this.view.setTitle(libraryPlaces.getActiveWorkspaceContext().getName());
+        this.view.setTitle(libraryPlaces.getActiveWorkspace().getName());
         this.view.addMainAction(viewHideAlertsButtonPresenter.getView());
         this.resolveContributorsCount();
         this.resolveAssetsCount();
@@ -200,6 +203,13 @@ public class ProjectScreen {
                 view.setImportAssetVisible(result);
             }
         });
+    }
+
+    @Override
+    public void onChange(final WorkspaceProjectContextChangeEvent previous,
+                         final WorkspaceProjectContextChangeEvent current) {
+        this.workspaceProject = current.getWorkspaceProject();
+        this.view.setTitle(workspaceProject.getName());
     }
 
     @OnMayClose
@@ -247,7 +257,7 @@ public class ProjectScreen {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return this.libraryPlaces.getActiveWorkspaceContext().getName();
+        return this.libraryPlaces.getActiveWorkspace().getName();
     }
 
     public void delete() {

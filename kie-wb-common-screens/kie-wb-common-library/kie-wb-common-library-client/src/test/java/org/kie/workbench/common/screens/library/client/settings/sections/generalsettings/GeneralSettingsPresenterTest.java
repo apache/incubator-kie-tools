@@ -91,7 +91,7 @@ public class GeneralSettingsPresenterTest {
                                                                     libraryPlaces));
 
         doReturn(space).when(project).getOrganizationalUnit();
-        doReturn(project).when(libraryPlaces).getActiveWorkspaceContext();
+        doReturn(project).when(libraryPlaces).getActiveWorkspace();
     }
 
     @Test

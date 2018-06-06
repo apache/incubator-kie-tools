@@ -29,7 +29,7 @@ import javax.inject.Named;
 
 import com.thoughtworks.xstream.XStream;
 import org.guvnor.common.services.project.events.DeleteModuleEvent;
-import org.guvnor.common.services.project.events.RenameModuleEvent;
+import org.guvnor.common.services.project.events.ModuleUpdatedEvent;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
@@ -316,7 +316,7 @@ public class ExplorerServiceImpl
         }
     }
 
-    void onModuleRename(@Observes final RenameModuleEvent event) {
+    void onModuleUpdate(@Observes final ModuleUpdatedEvent event) {
         cleanup(event.getOldModule());
     }
 

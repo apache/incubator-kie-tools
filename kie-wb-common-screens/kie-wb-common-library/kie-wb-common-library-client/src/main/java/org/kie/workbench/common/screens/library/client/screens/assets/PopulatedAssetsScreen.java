@@ -153,7 +153,7 @@ public class PopulatedAssetsScreen {
 
     @PostConstruct
     public void init() {
-        this.workspaceProject = libraryPlaces.getActiveWorkspaceContext();
+        this.workspaceProject = libraryPlaces.getActiveWorkspace();
         this.view.init(this);
         this.filterType = "ALL";
         this.view.setCategories(this.categoryUtils.createCategories());
@@ -383,7 +383,7 @@ public class PopulatedAssetsScreen {
         Category category = categoriesManagerCache.getCategory(filterType);
         List<String> suffixes = this.getSuffixes(category);
 
-        return new ProjectAssetsQuery(libraryPlaces.getActiveWorkspaceContext(),
+        return new ProjectAssetsQuery(libraryPlaces.getActiveWorkspace(),
                                       filter,
                                       startIndex,
                                       amount,
@@ -467,6 +467,6 @@ public class PopulatedAssetsScreen {
     }
 
     private boolean isProjectNull() {
-        return this.libraryPlaces.getActiveWorkspaceContext() == null || this.libraryPlaces.getActiveWorkspaceContext().getMainModule() == null;
+        return this.libraryPlaces.getActiveWorkspace() == null || this.libraryPlaces.getActiveWorkspace().getMainModule() == null;
     }
 }

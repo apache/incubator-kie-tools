@@ -17,6 +17,7 @@
 package org.kie.workbench.common.services.backend.project;
 
 import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -28,7 +29,6 @@ import org.guvnor.common.services.project.backend.server.ModuleFinder;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOModuleCacheEvent;
 import org.guvnor.common.services.project.events.NewModuleEvent;
 import org.guvnor.common.services.project.events.NewPackageEvent;
-import org.guvnor.common.services.project.events.RenameModuleEvent;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
@@ -64,7 +64,6 @@ public class KieModuleServiceImpl
                                 final RepositoryService repoService,
                                 final Event<NewModuleEvent> newModuleEvent,
                                 final Event<NewPackageEvent> newPackageEvent,
-                                final Event<RenameModuleEvent> renameModuleEvent,
                                 final Event<InvalidateDMOModuleCacheEvent> invalidateDMOCache,
                                 final SessionInfo sessionInfo,
                                 final CommentedOptionFactory commentedOptionFactory,
@@ -76,7 +75,6 @@ public class KieModuleServiceImpl
               repoService,
               newModuleEvent,
               newPackageEvent,
-              renameModuleEvent,
               invalidateDMOCache,
               sessionInfo,
               commentedOptionFactory,

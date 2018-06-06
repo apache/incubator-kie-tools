@@ -85,7 +85,7 @@ public class EmptyAssetsScreen {
     }
 
     protected boolean canUpdateProject() {
-        return this.projectController.canUpdateProject(this.libraryPlaces.getActiveWorkspaceContext());
+        return this.projectController.canUpdateProject(this.libraryPlaces.getActiveWorkspace());
     }
 
     public void addAsset() {
