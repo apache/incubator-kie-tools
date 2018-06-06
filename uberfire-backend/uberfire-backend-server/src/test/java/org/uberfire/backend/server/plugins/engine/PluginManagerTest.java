@@ -68,7 +68,9 @@ public class PluginManagerTest extends AbstractPluginsTest {
 
     @Test
     public void findPluginDeploymentDir() throws Exception {
-        final String pluginDeploymentDir = manager.findPluginDeploymentDir(contextRootDir);
+        PluginManager managerSpy = spy(manager);
+        final String pluginDeploymentDir = managerSpy.findPluginDeploymentDir(contextRootDir);
+        verify(managerSpy).encodePath(contextRootDir);
         assertEquals(this.pluginDeploymentDir,
                      pluginDeploymentDir);
     }
