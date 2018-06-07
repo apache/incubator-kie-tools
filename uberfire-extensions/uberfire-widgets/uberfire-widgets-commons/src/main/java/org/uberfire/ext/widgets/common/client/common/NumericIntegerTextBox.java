@@ -34,8 +34,8 @@ public class NumericIntegerTextBox extends AbstractRestrictedEntryTextBox {
     }
 
     @Override
-    public boolean isValidValue(String value,
-                                boolean isOnFocusLost) {
+    public boolean isValidValue(final String value,
+                                final boolean isOnFocusLost) {
         boolean isValid = VALID.test(value);
         if (!isValid) {
             return isValid;
