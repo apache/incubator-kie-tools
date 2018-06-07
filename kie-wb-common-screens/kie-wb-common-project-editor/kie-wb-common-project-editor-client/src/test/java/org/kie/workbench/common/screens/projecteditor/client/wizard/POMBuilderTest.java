@@ -11,10 +11,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 package org.kie.workbench.common.screens.projecteditor.client.wizard;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 
 import org.guvnor.common.services.project.model.POM;
@@ -58,7 +58,7 @@ public class POMBuilderTest {
     public void testContainsKieMavenPlugin() throws Exception {
         pomBuilder.setBuildPlugins(pomDefaultOptions.getBuildPlugins());
 
-        ArrayList<Plugin> plugins = pomBuilder.build().getBuild().getPlugins();
+        List<Plugin> plugins = pomBuilder.build().getBuild().getPlugins();
 
         assertEquals(1,
                      plugins.size());
