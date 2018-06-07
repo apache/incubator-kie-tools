@@ -45,6 +45,7 @@ import org.kie.workbench.common.screens.server.management.client.events.Containe
 import org.kie.workbench.common.screens.server.management.client.events.RefreshRemoteServers;
 import org.kie.workbench.common.screens.server.management.client.events.ServerTemplateSelected;
 import org.kie.workbench.common.screens.server.management.client.util.State;
+import org.kie.workbench.common.screens.server.management.model.ContainerRuntimeOperation;
 import org.kie.workbench.common.screens.server.management.model.ContainerSpecData;
 import org.kie.workbench.common.screens.server.management.model.ContainerUpdateEvent;
 import org.kie.workbench.common.screens.server.management.service.RuntimeManagementService;
@@ -55,6 +56,7 @@ import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.workbench.common.screens.server.management.model.ContainerRuntimeOperation.STOP_CONTAINER;
 
 @Dependent
 public class ContainerPresenter {
@@ -135,7 +137,12 @@ public class ContainerPresenter {
     }
 
     public void refreshOnContainerUpdateEvent(@Observes final ContainerUpdateEvent updateEvent) {
-        refresh();
+
+        final ContainerRuntimeOperation runtimeOperation = updateEvent.getContainerRuntimeOperation();
+
+        if (runtimeOperation != STOP_CONTAINER) {
+            refresh();
+        }
     }
 
     public void refresh() {

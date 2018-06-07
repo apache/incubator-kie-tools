@@ -16,20 +16,6 @@
 
 package org.kie.workbench.common.screens.server.management.client.container;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.anyObject;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -61,6 +47,7 @@ import org.kie.workbench.common.screens.server.management.client.events.Containe
 import org.kie.workbench.common.screens.server.management.client.events.RefreshRemoteServers;
 import org.kie.workbench.common.screens.server.management.client.events.ServerTemplateSelected;
 import org.kie.workbench.common.screens.server.management.client.util.State;
+import org.kie.workbench.common.screens.server.management.model.ContainerRuntimeOperation;
 import org.kie.workbench.common.screens.server.management.model.ContainerSpecData;
 import org.kie.workbench.common.screens.server.management.model.ContainerUpdateEvent;
 import org.kie.workbench.common.screens.server.management.service.RuntimeManagementService;
@@ -76,6 +63,20 @@ import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.anyObject;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContainerPresenterTest {
@@ -345,14 +346,27 @@ public class ContainerPresenterTest {
     }
 
     @Test
-    public void testRefreshOnContainerUpdateEvent() {
+    public void testRefreshOnContainerUpdateEventWhenRuntimeOperationIsNotStopContainer() {
         final ContainerUpdateEvent updateEvent = mock(ContainerUpdateEvent.class);
 
+        when(updateEvent.getContainerRuntimeOperation()).thenReturn(ContainerRuntimeOperation.START_CONTAINER);
         doNothing().when(presenter).refresh();
 
         presenter.refreshOnContainerUpdateEvent(updateEvent);
 
         verify(presenter).refresh();
+    }
+
+    @Test
+    public void testRefreshOnContainerUpdateEventWhenRuntimeOperationIsStopContainer() {
+        final ContainerUpdateEvent updateEvent = mock(ContainerUpdateEvent.class);
+
+        when(updateEvent.getContainerRuntimeOperation()).thenReturn(ContainerRuntimeOperation.STOP_CONTAINER);
+        doNothing().when(presenter).refresh();
+
+        presenter.refreshOnContainerUpdateEvent(updateEvent);
+
+        verify(presenter, never()).refresh();
     }
 
     @Test
