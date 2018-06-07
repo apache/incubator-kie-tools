@@ -27,14 +27,16 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Spy;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.doReturn;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class LienzoHandlerManagerTest {
@@ -81,6 +83,9 @@ public class LienzoHandlerManagerTest {
     @Mock
     private Context2D context2D;
 
+    @Spy
+    private DragMouseControl dragMouseControl = spy(DragMouseControl.LEFT_MOUSE_ONLY);
+
     @Captor
     private ArgumentCaptor<MouseDownHandler> mouseDownHandler;
 
@@ -114,7 +119,7 @@ public class LienzoHandlerManagerTest {
         doReturn(mediators).when(viewport).getMediators();
 
         doReturn(dragLayer).when(lienzoPanel).getDragLayer();
-        doReturn(DragMouseControl.LEFT_MOUSE_ONLY).when(lienzoPanel).getDragMouseButtons();
+        doReturn(dragMouseControl).when(lienzoPanel).getDragMouseButtons();
         doReturn(viewport).when(lienzoPanel).getViewport();
         doReturn(transform).when(viewport).getTransform();
 
@@ -144,5 +149,35 @@ public class LienzoHandlerManagerTest {
         verify(lienzoPanel).setCursor(Style.Cursor.DEFAULT);
 
         verify(mediators, times(5)).handleEvent(any(GwtEvent.class));
+    }
+
+    @Test
+    public void testMouseDownHandler_RightButton() {
+        verifyMouseDownHandlerButton(NativeEvent.BUTTON_RIGHT);
+    }
+
+    @Test
+    public void testMouseDownHandler_LeftButton() {
+        verifyMouseDownHandlerButton(NativeEvent.BUTTON_LEFT);
+    }
+
+    @Test
+    public void testMouseDownHandler_MiddleButton() {
+
+        verifyMouseDownHandlerButton(NativeEvent.BUTTON_MIDDLE);
+    }
+
+    private void verifyMouseDownHandlerButton(final int buttonCode) {
+        final boolean isLeft = buttonCode == NativeEvent.BUTTON_LEFT;
+        final boolean isMiddle = buttonCode == NativeEvent.BUTTON_MIDDLE;
+        final boolean isRight = buttonCode == NativeEvent.BUTTON_RIGHT;
+        final MouseDownEvent event = mock(MouseDownEvent.class);
+        doReturn(buttonCode).when(event).getNativeButton();
+
+        verify(lienzoPanel).addMouseDownHandler(mouseDownHandler.capture());
+
+        mouseDownHandler.getValue().onMouseDown(event);
+
+        verify(dragMouseControl).allowDrag(isLeft, isMiddle, isRight);
     }
 }
