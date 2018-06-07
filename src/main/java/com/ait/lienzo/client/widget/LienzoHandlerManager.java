@@ -208,9 +208,7 @@ final class LienzoHandlerManager
                     }
 
                     onNodeMouseClick(new NodeMouseClickEvent(event));
-                    m_mouse_button_left = (event.getNativeButton() == NativeEvent.BUTTON_LEFT);
-                    m_mouse_button_middle = (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE);
-                    m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
+                    checkPressedMouseButton(event.getNativeButton());
 
                     m_viewport.getOnEventHandlers().getOnMouseClickEventHandle().onMouseEventAfter(event);
                 }
@@ -228,9 +226,7 @@ final class LienzoHandlerManager
                     }
 
                     onNodeMouseDoubleClick(new NodeMouseDoubleClickEvent(event));
-                    m_mouse_button_left = (event.getNativeButton() == NativeEvent.BUTTON_LEFT);
-                    m_mouse_button_middle = (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE);
-                    m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
+                    checkPressedMouseButton(event.getNativeButton());
 
                     event.preventDefault();
 
@@ -263,9 +259,7 @@ final class LienzoHandlerManager
 
                         return;
                     }
-                    m_mouse_button_left = (event.getNativeButton() == NativeEvent.BUTTON_LEFT);
-                    m_mouse_button_middle = (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE);
-                    m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
+                    checkPressedMouseButton(event.getNativeButton());
 
                     onNodeMouseMove(nevent);
 
@@ -296,9 +290,7 @@ final class LienzoHandlerManager
                         return;
                     }
 
-                    m_mouse_button_left = (event.getNativeButton() == NativeEvent.BUTTON_LEFT);
-                    m_mouse_button_middle = (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE);
-                    m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
+                    checkPressedMouseButton(event.getNativeButton());
 
                     onNodeMouseUp(nevent);
 
@@ -326,9 +318,7 @@ final class LienzoHandlerManager
                         return;
                     }
 
-                    m_mouse_button_left = (event.getNativeButton() == NativeEvent.BUTTON_LEFT);
-                    m_mouse_button_middle = (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE);
-                    m_mouse_button_right = (event.getNativeButton() == NativeEvent.BUTTON_RIGHT);
+                    checkPressedMouseButton(event.getNativeButton());
 
                     onNodeMouseDown(nevent);
 
@@ -932,5 +922,15 @@ final class LienzoHandlerManager
     private final void fireEvent(final GwtEvent<?> event)
     {
         m_viewport.fireEvent(event);
+    }
+
+    /**
+     * Stores state of pressed mouse button
+     * @param nativeButtonCode
+     */
+    private void checkPressedMouseButton(final int nativeButtonCode) {
+        m_mouse_button_left = nativeButtonCode == NativeEvent.BUTTON_LEFT;
+        m_mouse_button_middle = nativeButtonCode == NativeEvent.BUTTON_MIDDLE;
+        m_mouse_button_right = nativeButtonCode == NativeEvent.BUTTON_RIGHT;
     }
 }
