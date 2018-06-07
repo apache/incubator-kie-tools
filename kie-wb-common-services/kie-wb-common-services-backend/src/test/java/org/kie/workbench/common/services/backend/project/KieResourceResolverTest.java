@@ -19,19 +19,25 @@ import javax.enterprise.inject.Instance;
 
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.backend.server.ModuleResourcePathResolver;
+import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.POMService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.util.Paths;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.io.IOService;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.doReturn;
 
 @RunWith(MockitoJUnitRunner.class)
 public class KieResourceResolverTest {
@@ -51,6 +57,9 @@ public class KieResourceResolverTest {
     @Mock
     Instance<ModuleResourcePathResolver> resourcePathResolversInstance;
 
+    @Captor
+    ArgumentCaptor<Path> pathArgumentCaptor;
+
     private KieResourceResolver resolver;
 
     @Before
@@ -65,8 +74,14 @@ public class KieResourceResolverTest {
 
     @Test
     public void returnModule() throws Exception {
+
+        doReturn(new POM()).when(pomService).load(pathArgumentCaptor.capture());
+
         assertNotNull(resolver.makeModule(Paths.convert(PathFactory.newPath("testFile",
                                                                             "file:///testFile"))));
+
+        final String pathThatWasUsedToLoadTheModulePomXml = pathArgumentCaptor.getValue().toURI();
+        assertThat(pathThatWasUsedToLoadTheModulePomXml).endsWith(":///testFile/pom.xml");
     }
 
     @Test
