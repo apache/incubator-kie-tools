@@ -70,6 +70,7 @@ import org.uberfire.client.workbench.events.ClosePlaceEvent;
 import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
+import org.uberfire.mvp.BiParameterizedCommand;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
@@ -641,11 +642,20 @@ public class PlaceManagerTest {
                 .thenReturn(singleton((Activity) ozPerspectiveActivity));
         when(ozPerspectiveActivity.getDefaultPerspectiveLayout()).thenReturn(ozPerspectiveDef);
         when(ozPerspectiveActivity.getPlace()).thenReturn(ozPerspectivePlace);
+        when(ozPerspectiveActivity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
+        when(ozPerspectiveActivity.getIdentifier()).thenReturn("oz_perspective");
 
         // we'll pretend we started in oz
         when(perspectiveManager.getCurrentPerspective()).thenReturn(ozPerspectiveActivity);
 
+        final BiParameterizedCommand<Command, PlaceRequest> closeChain = mock(BiParameterizedCommand.class);
+        placeManager.registerPerspectiveCloseChain("oz_perspective",
+                                                   closeChain);
+
         placeManager.goTo(ozPerspectivePlace);
+
+        verify(closeChain,
+               never()).execute(any(), any());
 
         // verify no side effects (should stay put)
         verify(ozPerspectiveActivity,

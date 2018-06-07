@@ -314,9 +314,12 @@ public class PlaceManagerImpl
         };
 
         final PerspectiveActivity currentPerspective = perspectiveManager.getCurrentPerspective();
+        final boolean thereIsAnOpenedPerspective = currentPerspective != null;
+        final boolean isDifferentPerspective = thereIsAnOpenedPerspective && !place.equals(currentPerspective.getPlace());
+        final boolean isForcedPlaceRequest = place instanceof ForcedPlaceRequest;
 
         // Before launching the perspective, checks if there is some close chain to be executed for the current perspective
-        if (currentPerspective != null) {
+        if (thereIsAnOpenedPerspective && (isDifferentPerspective || isForcedPlaceRequest)) {
             final BiParameterizedCommand<Command, PlaceRequest> closeChain = this.perspectiveCloseChain.get(currentPerspective.getIdentifier());
             if (closeChain != null) {
                 closeChain.execute(launchPerspectiveCommand,
