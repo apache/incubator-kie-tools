@@ -17,7 +17,6 @@
 package org.drools.workbench.screens.guided.dtable.client.editor;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Optional;
 
 import com.google.gwt.core.client.Scheduler;
@@ -33,6 +32,8 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.imports.Imports;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -47,6 +48,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.eq;
@@ -266,9 +268,22 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
         assertFalse(isDirty);
     }
 
-    private HashSet<GuidedDecisionTableView.Presenter> asSet(final GuidedDecisionTableView.Presenter presenter) {
-        return new HashSet<GuidedDecisionTableView.Presenter>() {{
-            add(presenter);
-        }};
+    @Test
+    public void testImportsTabIsAdded() {
+        final ObservablePath path = mock(ObservablePath.class);
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
+        final GuidedDecisionTableEditorContent content = makeDecisionTableContent();
+        final GuidedDecisionTableView.Presenter dtDocument = makeDecisionTable(path,
+                                                                               path,
+                                                                               placeRequest,
+                                                                               content);
+
+        presenter.registerDocument(dtDocument);
+        presenter.refreshDocument(dtDocument);
+
+        verify(kieEditorWrapperView).addImportsTab(eq(importsWidget));
+        final AsyncPackageDataModelOracle oracle = dtDocument.getDataModelOracle();
+        final Imports imports = dtDocument.getModel().getImports();
+        verify(importsWidget).setContent(same(oracle), same(imports), eq(false));
     }
 }

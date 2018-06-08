@@ -165,7 +165,7 @@ public class GuidedRuleEditorPresenterTest {
         verify(kieEditorWrapperView).clear();
         verify(kieEditorWrapperView).addMainEditorPage(view);
         verify(kieEditorWrapperView).addOverviewPage(any(), any());
-        verify(kieEditorWrapperView).addImportsTab(any());
+        verify(kieEditorWrapperView).addImportsTab(eq(importsWidgetPresenter));
         verify(kieEditorWrapperView).addSourcePage(any());
         verify(oracleFactory).makeAsyncPackageDataModelOracle(resourcePath, ruleModel, payload);
         verify(overviewWidgetPresenter).setContent(overview, resourcePath);

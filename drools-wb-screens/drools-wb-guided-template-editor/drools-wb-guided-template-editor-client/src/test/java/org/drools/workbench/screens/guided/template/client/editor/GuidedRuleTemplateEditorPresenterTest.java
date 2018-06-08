@@ -30,6 +30,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.imports.Imports;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -50,6 +51,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.notNull;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -130,6 +132,12 @@ public class GuidedRuleTemplateEditorPresenterTest {
                                 any(),
                                 notNull(EventBus.class),
                                 eq(false));
+
+        final Imports imports = templateModel.getImports();
+        verify(kieView).addImportsTab(eq(importsWidgetPresenter));
+        verify(importsWidgetPresenter).setContent(eq(oracle),
+                                                  same(imports),
+                                                  eq(false));
     }
 
     @Test
