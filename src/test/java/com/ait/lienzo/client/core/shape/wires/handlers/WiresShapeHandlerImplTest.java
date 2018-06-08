@@ -160,7 +160,6 @@ public class WiresShapeHandlerImplTest {
         verify(control).execute();
         verify(highlight, atLeastOnce()).restore();
         verify(control, never()).reset();
-        verify(tested, times(2)).batch();
     }
 
     @Test
@@ -186,7 +185,6 @@ public class WiresShapeHandlerImplTest {
         verify(control).reset();
         verify(highlight, atLeastOnce()).restore();
         verify(control, never()).execute();
-        verify(tested, times(2)).batch();
     }
 
     @Test
