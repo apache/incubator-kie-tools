@@ -440,8 +440,6 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             destroySelectionShape();
             m_selected.clear();
             m_selected.notifyListener();
-            m_layer.batch();
-            m_layer.getViewport().getOverLayer().batch();
         }
     }
 
@@ -1306,8 +1304,6 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
                 m_selectionManager.m_selectionShapeProvider
                         .setSize(attrs[2], attrs[3]);
             }
-            m_selectionManager.m_layer.batch();
-            m_selectionManager.m_layer.getViewport().getOverLayer().batch();
         }
 
         private WiresManager getWiresManager() {

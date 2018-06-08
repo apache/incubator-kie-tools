@@ -13,13 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-
 package com.ait.lienzo.client.core.animation;
 
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.google.gwt.animation.client.AnimationScheduler;
 import com.google.gwt.animation.client.AnimationScheduler.AnimationCallback;
+import com.google.gwt.dom.client.Element;
 
 public final class LayerRedrawManager
 {
@@ -65,18 +65,17 @@ public final class LayerRedrawManager
             if (false == m_layers.contains(layer))
             {
                 m_layers.add(layer.doBatchScheduled());
-
-                kick();
+                kick(layer.getElement());
             }
         }
         return layer;
     }
 
-    private void kick()
+    private void kick(Element layerElement)
     {
-        if (m_layers.size() > 0)
+        if (!m_layers.isEmpty())
         {
-            AnimationScheduler.get().requestAnimationFrame(m_redraw);
+            AnimationScheduler.get().requestAnimationFrame(m_redraw, layerElement);
         }
     }
 }

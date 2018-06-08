@@ -553,23 +553,20 @@ final class LienzoHandlerManager
             }
             m_lienzo.setCursor(cursor);
 
+            m_drag_node.fireEvent(new NodeDragEndEvent(m_dragContext));
+
+            m_dragContext.dragDone();
+
+            m_drag_node.setDragging(false);
+
             if (DragMode.DRAG_LAYER == m_drag_mode)
             {
                 m_drag_node.setVisible(true);
-
-                m_dragContext.dragDone();
 
                 m_drag_node.getLayer().draw();
 
                 m_lienzo.getDragLayer().clear();
             }
-            else
-            {
-                m_dragContext.dragDone();
-            }
-            m_drag_node.setDragging(false);
-
-            m_drag_node.fireEvent(new NodeDragEndEvent(m_dragContext));
 
             m_drag_node = null;
 

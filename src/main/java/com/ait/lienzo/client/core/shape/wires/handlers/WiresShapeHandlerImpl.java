@@ -49,7 +49,6 @@ public class WiresShapeHandlerImpl extends WiresManager.WiresDragHandler impleme
                                     PickerPart.ShapePart.BODY);
             }
         }
-        batch();
     }
 
     @Override
@@ -91,9 +90,6 @@ public class WiresShapeHandlerImpl extends WiresManager.WiresDragHandler impleme
                                 PickerPart.ShapePart.BODY);
             }
         }
-
-        batch();
-
         return adjusted;
     }
 
@@ -117,8 +113,6 @@ public class WiresShapeHandlerImpl extends WiresManager.WiresDragHandler impleme
 
         // Restore highlights, if any.
         highlight.restore();
-
-        batch();
     }
 
     @Override
@@ -174,9 +168,5 @@ public class WiresShapeHandlerImpl extends WiresManager.WiresDragHandler impleme
 
     private boolean isDocked(final WiresShape shape) {
         return null != shape.getDockedTo();
-    }
-
-    void batch() {
-        getShape().getGroup().getLayer().batch();
     }
 }
