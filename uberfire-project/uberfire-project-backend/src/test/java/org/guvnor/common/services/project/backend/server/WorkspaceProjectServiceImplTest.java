@@ -270,14 +270,14 @@ public class WorkspaceProjectServiceImplTest {
             String newName = impl.createFreshProjectName(this.ou1,
                                                          pom.getName());
 
-            assertEquals("repository1 [1]",
+            assertEquals("repository1-1",
                          newName);
         }
 
         {
 
             doReturn(Optional.of(mock(Branch.class))).when(repository2).getDefaultBranch();
-            doReturn("repository1 [1]").when(repository2).getAlias();
+            doReturn("repository1-1").when(repository2).getAlias();
 
             POM pom = new POM("repository1",
                               "description",
@@ -288,7 +288,7 @@ public class WorkspaceProjectServiceImplTest {
             String newName = impl.createFreshProjectName(this.ou1,
                                                          pom.getName());
 
-            assertEquals("repository1 [2]",
+            assertEquals("repository1-2",
                          newName);
         }
     }

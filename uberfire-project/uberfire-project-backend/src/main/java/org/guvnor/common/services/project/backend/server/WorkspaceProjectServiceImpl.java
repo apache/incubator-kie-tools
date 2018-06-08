@@ -173,7 +173,7 @@ public class WorkspaceProjectServiceImpl
         String suffix = "";
         while (!this.getAllWorkspaceProjectsByName(organizationalUnit,
                                                    name + suffix).isEmpty()) {
-            suffix = " [" + ++index + "]";
+            suffix = "-" + ++index;
         }
 
         return name + suffix;
