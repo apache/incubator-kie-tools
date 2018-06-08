@@ -78,7 +78,6 @@ public class CaseManagementDrawCommand extends AbstractCanvasCommand {
                               @Override
                               public void endGraphTraversal() {
                                   super.endGraphTraversal();
-                                  context.getCanvas().draw();
                               }
                           });
 

@@ -31,7 +31,6 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.DelegateCommandManager;
 import org.kie.workbench.common.stunner.core.command.HasCommandListener;
 import org.kie.workbench.common.stunner.core.command.impl.CommandManagerImpl;
-import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 
 /**
  * The default canvas command manager implementation.
@@ -101,9 +100,6 @@ public class CanvasCommandManagerImpl<H extends AbstractCanvasHandler>
         super.postExecute(context,
                           command,
                           result);
-        if (null != result && !CommandUtils.isError(result)) {
-            draw(context);
-        }
         if (null != this.listener) {
             listener.onExecute(context,
                                command,
@@ -124,9 +120,6 @@ public class CanvasCommandManagerImpl<H extends AbstractCanvasHandler>
         super.postUndo(context,
                        command,
                        result);
-        if (null != result && !CommandUtils.isError(result)) {
-            draw(context);
-        }
         if (null != this.listener) {
             listener.onUndo(context,
                             command,
@@ -142,10 +135,6 @@ public class CanvasCommandManagerImpl<H extends AbstractCanvasHandler>
     @Override
     public void setCommandListener(final CommandListener<H, CanvasViolation> listener) {
         this.listener = listener;
-    }
-
-    private void draw(final H context) {
-        context.getCanvas().draw();
     }
 }
 

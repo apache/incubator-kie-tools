@@ -156,7 +156,6 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
                          final boolean fireEvents) {
         // Add the shapes on canvas and fire events.
         addShape(shape);
-        getCanvas().draw();
         if (fireEvents) {
             // Fire listeners.
             notifyCanvasElementAdded(candidate);
@@ -178,7 +177,6 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
                                  shape);
         }
         removeShape(shape);
-        getCanvas().draw();
         if (fireEvents) {
             afterElementDeleted(element,
                                 shape);
@@ -234,7 +232,6 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
                    graphShape);
         beforeElementUpdated(candidate,
                              graphShape);
-        getCanvas().draw();
         afterDraw(candidate,
                   graphShape);
         notifyCanvasElementUpdated(candidate);

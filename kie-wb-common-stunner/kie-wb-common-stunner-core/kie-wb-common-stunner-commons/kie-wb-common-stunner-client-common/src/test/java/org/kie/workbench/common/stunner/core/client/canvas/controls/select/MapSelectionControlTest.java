@@ -51,7 +51,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -251,7 +250,6 @@ public class MapSelectionControlTest {
         tested.select(element);
         tested.clearSelection();
         assertTrue(tested.getSelectedItems().isEmpty());
-        verify(canvas, atLeastOnce()).draw();
         verify(shape, times(1)).applyState(eq(ShapeState.SELECTED));
         verify(shape, times(1)).applyState(eq(ShapeState.NONE));
         verify(shape, never()).applyState(eq(ShapeState.INVALID));
@@ -283,7 +281,6 @@ public class MapSelectionControlTest {
         CanvasClearSelectionEvent event = new CanvasClearSelectionEvent(canvasHandler);
         tested.onCanvasClearSelection(event);
         assertTrue(tested.getSelectedItems().isEmpty());
-        verify(canvas, atLeastOnce()).draw();
         verify(shape, times(1)).applyState(eq(ShapeState.SELECTED));
         verify(shape, times(1)).applyState(eq(ShapeState.NONE));
         verify(shape, never()).applyState(eq(ShapeState.INVALID));

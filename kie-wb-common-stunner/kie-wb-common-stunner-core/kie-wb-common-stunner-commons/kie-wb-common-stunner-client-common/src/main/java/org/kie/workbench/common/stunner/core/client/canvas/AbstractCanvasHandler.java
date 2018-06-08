@@ -377,7 +377,6 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
         if (null != getCanvas()) {
             notifyCanvasClear();
             getCanvas().clear();
-            getCanvas().draw();
         }
     }
 

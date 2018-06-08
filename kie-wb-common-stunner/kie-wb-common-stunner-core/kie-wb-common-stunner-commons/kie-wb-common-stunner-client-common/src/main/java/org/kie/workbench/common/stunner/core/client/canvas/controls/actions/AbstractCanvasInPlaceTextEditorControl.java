@@ -209,7 +209,6 @@ public abstract class AbstractCanvasInPlaceTextEditorControl
             final double alpha = editMode ? SHAPE_EDIT_ALPHA : SHAPE_NOT_EDIT_ALPHA;
             shape.getShapeView().setFillAlpha(alpha);
             hasTitle.setTitleAlpha(alpha);
-            getCanvas().draw();
             return true;
         }
         return false;

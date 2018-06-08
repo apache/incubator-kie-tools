@@ -106,7 +106,6 @@ public class NodeDragProxyImpl implements NodeDragProxy<AbstractCanvasHandler> {
                                                                connections[0],
                                                                connections[1]);
                                            deleteTransientEdgeShape();
-                                           canvas.draw();
                                        }
 
                                        private void drawEdge() {
@@ -120,7 +119,6 @@ public class NodeDragProxyImpl implements NodeDragProxy<AbstractCanvasHandler> {
                                                                                                       edgeSourceNodeShape.getShapeView(),
                                                                                                       nodeShape.getShapeView(),
                                                                                                       MutationContext.STATIC);
-                                           canvas.draw();
                                        }
 
                                        private MagnetConnection[] createShapeConnections() {
@@ -153,7 +151,6 @@ public class NodeDragProxyImpl implements NodeDragProxy<AbstractCanvasHandler> {
     private void deleteTransientEdgeShape() {
         if (null != this.transientEdgeShape) {
             getCanvas().deleteTransientShape(this.transientEdgeShape);
-            getCanvas().draw();
             this.transientEdgeShape = null;
         }
     }

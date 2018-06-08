@@ -174,8 +174,6 @@ public class CaseManagementCanvasHandlerTest {
 
         verify(canvas,
                times(1)).addShape(eq(shape));
-        verify(canvas,
-               times(1)).draw();
     }
 
     @SuppressWarnings("unchecked")
@@ -220,8 +218,6 @@ public class CaseManagementCanvasHandlerTest {
 
         verify(canvas,
                times(1)).deleteShape(eq(shape));
-        verify(canvas,
-               times(1)).draw();
     }
 
     @Test
@@ -356,8 +352,6 @@ public class CaseManagementCanvasHandlerTest {
         verify(shape,
                times(1)).applyProperties(eq(node),
                                          eq(mutationContext));
-        verify(canvas,
-               times(1)).draw();
     }
 
     @Test
@@ -378,9 +372,6 @@ public class CaseManagementCanvasHandlerTest {
         handler.register(shape,
                          node,
                          true);
-        verify(canvas,
-               times(1)).draw();
-
         handler.applyElementMutation(node,
                                      true,
                                      true,
@@ -392,7 +383,5 @@ public class CaseManagementCanvasHandlerTest {
         verify(shape,
                times(1)).applyProperties(eq(node),
                                          eq(mutationContext));
-        verify(canvas,
-               times(2)).draw();
     }
 }

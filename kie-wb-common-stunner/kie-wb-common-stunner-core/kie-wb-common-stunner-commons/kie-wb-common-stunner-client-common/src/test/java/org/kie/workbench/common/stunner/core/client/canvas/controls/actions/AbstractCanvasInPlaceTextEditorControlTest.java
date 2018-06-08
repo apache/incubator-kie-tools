@@ -411,7 +411,6 @@ public abstract class AbstractCanvasInPlaceTextEditorControlTest<C extends Abstr
     private void assertShow() {
         verify(testShapeView).setFillAlpha(eq(AbstractCanvasInPlaceTextEditorControl.SHAPE_EDIT_ALPHA));
         verify(testShapeView).setTitleAlpha(eq(AbstractCanvasInPlaceTextEditorControl.SHAPE_EDIT_ALPHA));
-        verify(canvas).draw();
 
         verify(textEditorBox).show(eq(element));
 

@@ -174,9 +174,6 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
 
     private SelectionControl<H, Element> clearSelection(final boolean fireEvent) {
         deselect(getSelectedItems());
-        if (null != getCanvas()) {
-            getCanvas().draw();
-        }
         if (fireEvent) {
             fireCanvasClear();
         }
@@ -197,9 +194,6 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
                         shape.applyState(ShapeState.NONE);
                     }
                 });
-
-        // Batch a show operation.
-        getCanvas().draw();
     }
 
     @Override

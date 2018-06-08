@@ -87,12 +87,6 @@ public class LienzoLayer extends AbstractLayer<LienzoLayer, ShapeView<?>, Shape<
     }
 
     @Override
-    public LienzoLayer draw() {
-        layer.batch();
-        return this;
-    }
-
-    @Override
     public void clear() {
         layer.clear();
     }
@@ -222,8 +216,6 @@ public class LienzoLayer extends AbstractLayer<LienzoLayer, ShapeView<?>, Shape<
         callback.apply(transform);
 
         getViewPort().setTransform(transform);
-
-        getViewPort().getScene().batch();
     }
 
     private void scale(final Transform transform,

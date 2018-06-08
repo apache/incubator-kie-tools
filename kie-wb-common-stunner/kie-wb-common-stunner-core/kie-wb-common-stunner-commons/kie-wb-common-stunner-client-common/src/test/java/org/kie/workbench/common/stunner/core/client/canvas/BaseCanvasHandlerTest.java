@@ -181,8 +181,6 @@ public class BaseCanvasHandlerTest {
                         false);
         verify(canvas,
                times(1)).addShape(eq(shape));
-        verify(canvas,
-               times(1)).draw();
     }
 
     @Test
@@ -193,8 +191,6 @@ public class BaseCanvasHandlerTest {
                           false);
         verify(canvas,
                times(1)).deleteShape(eq(shape));
-        verify(canvas,
-               times(1)).draw();
     }
 
     @Test
@@ -228,8 +224,6 @@ public class BaseCanvasHandlerTest {
         verify(shape,
                times(1)).applyProperties(eq(candidate),
                                          eq(mutationContext));
-        verify(canvas,
-               times(1)).draw();
     }
 
     @Test

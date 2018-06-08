@@ -282,12 +282,6 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
         return this;
     }
 
-    @Override
-    public AbstractCanvas draw() {
-        view.getLayer().draw();
-        return this;
-    }
-
     public AbstractCanvas clear() {
         return clear(true);
     }

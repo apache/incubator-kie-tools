@@ -111,7 +111,7 @@ public class AbstractDragProxyTest {
 
         verify(abstractDragProxy).setLocation(shapeProxy, expectedX, expectedY);
         verify(abstractDragProxy).scheduleMove(callback, expectedX, expectedY, timeout);
-        verify(layer).batch();
+        verify(layer, never()).batch();
     }
 
     @Test
@@ -135,7 +135,7 @@ public class AbstractDragProxyTest {
 
         verify(abstractDragProxy).setLocation(shapeProxy, expectedX, expectedY);
         verify(abstractDragProxy).scheduleMove(callback, expectedX, expectedY, timeout);
-        verify(layer).batch();
+        verify(layer, never()).batch();
     }
 
     @Test

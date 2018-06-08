@@ -72,7 +72,6 @@ public class ShapeGlyphDragHandlerImpl implements ShapeGlyphDragHandler<Abstract
         final Layer dragProxyLayer = new Layer();
         dragProxyLayer.add(dragShape);
         dragProxyPanel.add(dragProxyLayer);
-        dragProxyLayer.batch();
         setDragProxyPosition(dragProxyPanel, width, height, x, y);
         attachDragProxyHandlers(dragProxyPanel, dragProxyCallback);
 

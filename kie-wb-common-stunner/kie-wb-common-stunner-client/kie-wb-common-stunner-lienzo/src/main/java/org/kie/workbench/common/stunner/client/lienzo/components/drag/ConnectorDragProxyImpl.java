@@ -141,7 +141,6 @@ public class ConnectorDragProxyImpl implements ConnectorDragProxy<AbstractCanvas
                                                callback.onComplete(x,
                                                                    y);
                                                deregisterTransientConnector();
-                                               getCanvas().draw();
                                            }
                                        });
         return this;
@@ -169,7 +168,6 @@ public class ConnectorDragProxyImpl implements ConnectorDragProxy<AbstractCanvas
     private void deregisterTransientConnector() {
         if (null != this.connectorShapeView) {
             getWiresManager().deregister(connectorShapeView);
-            getCanvas().draw();
             this.connectorShapeView = null;
         }
     }

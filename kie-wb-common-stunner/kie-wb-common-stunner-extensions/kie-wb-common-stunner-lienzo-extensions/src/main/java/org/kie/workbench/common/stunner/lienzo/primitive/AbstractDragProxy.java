@@ -138,7 +138,6 @@ public abstract class AbstractDragProxy<T> {
 
                 setLocation(shapeProxy, x, y);
                 scheduleMove(callback, x, y, timeout);
-                layer.batch();
             }
         };
     }

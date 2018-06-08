@@ -25,7 +25,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -104,12 +103,10 @@ public class CanvasDiagramValidator<H extends AbstractCanvasHandler> {
     private boolean applyViolation(final H canvasHandler,
                                    final RuleViolation violation) {
         if (hasViolations(violation)) {
-            final Canvas canvas = canvasHandler.getCanvas();
             final Shape shape = getShape(canvasHandler,
                                          violation.getUUID());
             if (null != shape) {
                 shape.applyState(ShapeState.INVALID);
-                canvas.draw();
             }
             return true;
         }

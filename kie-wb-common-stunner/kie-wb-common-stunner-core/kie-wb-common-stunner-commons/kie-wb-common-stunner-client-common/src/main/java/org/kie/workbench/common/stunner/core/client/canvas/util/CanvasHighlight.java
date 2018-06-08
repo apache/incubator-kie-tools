@@ -59,7 +59,6 @@ public class CanvasHighlight {
             applyStateToShape(uuid,
                               ShapeState.INVALID);
         });
-        getCanvas().draw();
         return this;
     }
 
@@ -77,7 +76,6 @@ public class CanvasHighlight {
                     shape.applyState(ShapeState.NONE);
                 }
             });
-            getCanvas().draw();
             uuids.clear();
         }
         setValidCursor();
@@ -93,7 +91,6 @@ public class CanvasHighlight {
                             final ShapeState state) {
         applyStateToShape(node.getUUID(),
                           state);
-        getCanvas().draw();
     }
 
     private void applyStateToShape(final String uuid,

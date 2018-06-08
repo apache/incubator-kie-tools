@@ -72,7 +72,6 @@ public class CanvasHighlightVisitor {
         if (index < shapes.size()) {
             final Shape shape = shapes.get(index);
             shape.applyState(ShapeState.HIGHLIGHT);
-            canvasHandler.getCanvas().draw();
             final Timer t = new Timer() {
 
                 @Override
