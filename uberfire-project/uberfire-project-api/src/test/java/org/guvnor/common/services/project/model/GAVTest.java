@@ -39,12 +39,29 @@ public class GAVTest {
     }
 
     @Test
+    public void createGavFromString() {
+        GAV gav1 = new GAV("gr1:ar1:ver1");
+        assertThat(gav1.getGroupId()).isEqualTo("gr1");
+        assertThat(gav1.getArtifactId()).isEqualTo("ar1");
+        assertThat(gav1.getVersion()).isEqualTo("ver1");
+
+        GAV gav2 = new GAV("gr2:ar2:ver2:compile");
+        assertThat(gav2.getGroupId()).isEqualTo("gr2");
+        assertThat(gav2.getArtifactId()).isEqualTo("ar2");
+        assertThat(gav2.getVersion()).isEqualTo("ver2");
+    }
+
+    @Test
     public void whenGivenInvalidGav_throwsIllegalArgumentExceptions() {
         assertThatThrownBy(() -> new GAV("nonsense"))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("The GAV String must contain groupId artifactId and version separated by ':', but it was nonsense");
-    }
+                .hasMessage("The GAV String must have the form group:artifact:version[:scope] but was 'nonsense'");
 
+        assertThatThrownBy(() -> new GAV("mygroup:myartifact"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("The GAV String must have the form group:artifact:version[:scope] but was 'mygroup:myartifact'");
+    }
+    
     @Test
     public void isSnapshotTest() {
         GAV

@@ -39,8 +39,8 @@ public class GAV implements Serializable {
     public GAV(final String gavString) {
         String[] split = checkNotNull("gavString", gavString)
                 .split(":");
-        if (split.length != 3) {
-            throw new IllegalArgumentException("The GAV String must contain groupId artifactId and version separated by ':', but it was " + gavString);
+        if (split.length < 3) {
+            throw new IllegalArgumentException("The GAV String must have the form group:artifact:version[:scope] but was '" + gavString + "'");
         }
         this.groupId = split[0];
         this.artifactId = split[1];
