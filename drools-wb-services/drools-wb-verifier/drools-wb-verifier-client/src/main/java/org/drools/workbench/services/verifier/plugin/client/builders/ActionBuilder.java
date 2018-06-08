@@ -22,6 +22,7 @@ import java.util.List;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
@@ -33,6 +34,7 @@ import org.drools.workbench.services.verifier.api.client.index.FieldAction;
 import org.drools.workbench.services.verifier.api.client.index.Index;
 import org.drools.workbench.services.verifier.api.client.index.RetractAction;
 import org.drools.workbench.services.verifier.api.client.index.Rule;
+import org.drools.workbench.services.verifier.api.client.index.WorkItemAction;
 import org.drools.workbench.services.verifier.api.client.index.keys.Values;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.soup.project.datamodel.oracle.DataType;
@@ -139,6 +141,8 @@ public class ActionBuilder {
             return addRetractAction();
         } else if (actionCol instanceof ActionInsertFactCol52) {
             return addInsertFactAction((ActionInsertFactCol52) actionCol);
+        } else if (actionCol instanceof ActionWorkItemCol52) {
+            return addWorkItem();
         } else {
             return addAction(actionCol,
                              row.get(columnIndex));
@@ -149,12 +153,18 @@ public class ActionBuilder {
             BuildException {
 
         builderFactory.getPatternResolver()
-                .with( rule )
-                .with( columnIndex )
+                .with(rule)
+                .with(columnIndex)
                 .resolve();
 
         return addAction(actionCol,
                          row.get(columnIndex));
+    }
+
+    private Action addWorkItem() {
+        return new WorkItemAction(getColumn(),
+                                  getValues(row.get(columnIndex)),
+                                  configuration);
     }
 
     private Action addRetractAction() {

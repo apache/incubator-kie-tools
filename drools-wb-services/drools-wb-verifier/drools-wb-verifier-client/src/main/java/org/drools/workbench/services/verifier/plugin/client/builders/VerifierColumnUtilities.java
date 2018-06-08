@@ -64,8 +64,7 @@ public class VerifierColumnUtilities
 
         Logger.add("Looking for index: " + columnIndex + " from header meta data: " + ToString.toString(headerMetaData));
 
-        return getType(headerMetaData.getPatternsByColumnNumber()
-                               .get(columnIndex)
+        return getType(headerMetaData.getPatternsByColumnNumber(columnIndex)
                                .getPattern(),
                        col);
     }

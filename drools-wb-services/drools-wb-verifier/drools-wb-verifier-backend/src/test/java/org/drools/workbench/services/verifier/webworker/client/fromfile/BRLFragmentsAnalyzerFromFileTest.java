@@ -29,6 +29,7 @@ import org.junit.runner.RunWith;
 
 import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.assertDoesNotContain;
 import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.loadResource;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class BRLFragmentsAnalyzerFromFileTest
@@ -49,14 +50,27 @@ public class BRLFragmentsAnalyzerFromFileTest
 
         final Set<Issue> analysisReport = analyzerProvider.getAnalysisReport();
 
-        for (final Issue issue : analysisReport) {
-            System.out.println(issue.getCheckType());
-            System.out.println(issue.getDebugMessage());
-        }
-
         assertDoesNotContain(CONFLICTING_ROWS,
                              analysisReport);
         assertDoesNotContain(SINGLE_HIT_LOST,
                              analysisReport);
+    }
+
+    @Test
+    public void testRuleTableGDSTWorkItem() throws
+            Exception {
+        final String xml = loadResource("WorkItem.gdst");
+
+        final GuidedDecisionTable52 table52 = GuidedDTXMLPersistence.getInstance()
+                .unmarshal(xml);
+
+        final Analyzer analyzer = analyzerProvider.makeAnalyser(table52);
+
+        analyzer.resetChecks();
+        analyzer.analyze();
+
+        final Set<Issue> analysisReport = analyzerProvider.getAnalysisReport();
+
+        assertTrue(analysisReport.isEmpty());
     }
 }

@@ -112,12 +112,10 @@ public class ToString {
         builder.append("HeaderMetaData{");
         builder.append("\n");
 
-        for (final Integer integer : headerMetaData.getPatternsByColumnNumber()
-                .keySet()) {
+        for (final Integer integer : headerMetaData.keySet()) {
             builder.append(integer);
             builder.append(":");
-            builder.append(toString(headerMetaData.getPatternsByColumnNumber()
-                                            .get(integer).getPattern()));
+            builder.append(toString(headerMetaData.getPatternsByColumnNumber(integer).getPattern()));
             builder.append("\n");
         }
 

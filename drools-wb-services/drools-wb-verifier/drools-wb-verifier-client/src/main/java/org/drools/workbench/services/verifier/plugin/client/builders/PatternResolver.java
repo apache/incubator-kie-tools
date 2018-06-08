@@ -88,18 +88,16 @@ public class PatternResolver {
 
     private String getFactType() {
         final String factType = headerMetaData
-                .getPatternsByColumnNumber()
-                .get(PortablePreconditions.checkNotNull("columnIndex",
-                                                        columnIndex))
+                .getPatternsByColumnNumber(PortablePreconditions.checkNotNull("columnIndex",
+                                                                              columnIndex))
                 .getFactType();
         return factType;
     }
 
     private String getBoundName() {
         final String boundName = headerMetaData
-                .getPatternsByColumnNumber()
-                .get(PortablePreconditions.checkNotNull("columnIndex",
-                                                        columnIndex))
+                .getPatternsByColumnNumber(PortablePreconditions.checkNotNull("columnIndex",
+                                                                              columnIndex))
                 .getBoundName();
         return boundName;
     }

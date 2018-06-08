@@ -17,6 +17,7 @@
 package org.drools.workbench.services.verifier.plugin.client.api;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -30,7 +31,23 @@ public class HeaderMetaData {
         this.patternsByColumnNumber = patternsByColumnNumber;
     }
 
-    public Map<Integer, ModelMetaData> getPatternsByColumnNumber() {
-        return patternsByColumnNumber;
+    public ModelMetaData getPatternsByColumnNumber(final Integer columnIndex) {
+        if (patternsByColumnNumber.containsKey(columnIndex)) {
+            return patternsByColumnNumber.get(columnIndex);
+        } else {
+            throw new IllegalArgumentException("Could not find columnIndex: " + columnIndex);
+        }
+    }
+
+    public int size() {
+        return patternsByColumnNumber.size();
+    }
+
+    public boolean isEmpty() {
+        return patternsByColumnNumber.isEmpty();
+    }
+
+    public Set<Integer> keySet() {
+        return patternsByColumnNumber.keySet();
     }
 }

@@ -17,13 +17,12 @@
 package org.drools.workbench.services.verifier.plugin.client.builders;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.services.verifier.plugin.client.api.ModelMetaData;
+import org.drools.workbench.services.verifier.plugin.client.api.HeaderMetaData;
 import org.drools.workbench.services.verifier.plugin.client.builders.ModelMetaDataEnhancer.PatternType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +44,6 @@ public class ModelMetaDataEnhancerTest {
             Exception {
 
         assertTrue(new ModelMetaDataEnhancer(model).getHeaderMetaData()
-                           .getPatternsByColumnNumber()
                            .isEmpty());
     }
 
@@ -62,15 +60,14 @@ public class ModelMetaDataEnhancerTest {
         when(model.getExpandedColumns()).thenReturn(columns);
         when(model.getPattern(conditionCol52)).thenReturn(pattern52);
 
-        final Map<Integer, ModelMetaData> metaData = new ModelMetaDataEnhancer(model)
-                .getHeaderMetaData()
-                .getPatternsByColumnNumber();
+        final HeaderMetaData headerMetaData = new ModelMetaDataEnhancer(model)
+                .getHeaderMetaData();
 
         assertEquals(1,
-                     metaData.size());
+                     headerMetaData.size());
         assertEquals(pattern52,
-                     metaData.get(0).getPattern());
+                     headerMetaData.getPatternsByColumnNumber(0).getPattern());
         assertEquals(PatternType.LHS,
-                     metaData.get(0).getPatternType());
+                     headerMetaData.getPatternsByColumnNumber(0).getPatternType());
     }
 }
