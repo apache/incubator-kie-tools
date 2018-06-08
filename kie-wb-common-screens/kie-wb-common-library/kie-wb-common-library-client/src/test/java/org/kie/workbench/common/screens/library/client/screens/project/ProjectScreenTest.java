@@ -252,14 +252,17 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
         SettingsPresenter.View settingsView = mock(SettingsPresenter.View.class);
         when(settingsView.getElement()).thenReturn(new HTMLElement());
         when(this.settingsPresenter.getView()).thenReturn(settingsView);
+        doReturn(promises.resolve()).when(settingsPresenter).setupUsingCurrentSection();
 
         {
             doReturn(false).when(this.presenter).userCanUpdateProject();
             this.presenter.showSettings();
+            verify(view, never()).setContent(any());
         }
         {
             doReturn(true).when(this.presenter).userCanUpdateProject();
             this.presenter.showSettings();
+            verify(view).setContent(any());
         }
     }
 

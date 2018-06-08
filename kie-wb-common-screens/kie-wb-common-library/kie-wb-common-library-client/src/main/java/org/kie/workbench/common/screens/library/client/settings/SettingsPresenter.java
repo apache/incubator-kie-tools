@@ -130,11 +130,11 @@ public class SettingsPresenter {
         setupUsingCurrentSection();
     }
 
-    void setupUsingCurrentSection() {
+    public Promise<Void> setupUsingCurrentSection() {
         view.init(this);
 
         if (!projectContext.getActiveModule().isPresent()) {
-            return;
+            return promises.resolve();
         }
 
         view.showBusyIndicator();
@@ -150,7 +150,7 @@ public class SettingsPresenter {
 
         pathToPom.onConcurrentUpdate(info -> concurrentPomUpdateInfo = info);
 
-        promises.promisify(projectScreenService, s -> {
+        return promises.promisify(projectScreenService, s -> {
             return s.load(pathToPom);
         }).then(model -> {
             this.model = model;

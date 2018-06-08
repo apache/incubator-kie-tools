@@ -832,7 +832,7 @@ public class ProjectScreenServiceImplTest {
                                 eq(true));
 
         final POM updatedPom = pomArgumentCaptor.getValue();
-        assertEquals("newName [1]", updatedPom.getName());
+        assertEquals("newName-1", updatedPom.getName());
         assertEquals("newName", updatedPom.getGav().getArtifactId());
     }
 

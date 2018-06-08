@@ -119,7 +119,7 @@ public class SettingsPresenterTest {
         final List<Section<ProjectScreenModel>> sections = Arrays.asList(section1, section2);
 
         doReturn(sections).when(settingsSections).getList();
-        doNothing().when(presenter).setupUsingCurrentSection();
+        doReturn(promises.resolve()).when(presenter).setupUsingCurrentSection();
 
         presenter.setup();
 
