@@ -239,6 +239,7 @@ public class DefaultAdminPageHelperTest {
                                                             any());
 
         defaultAdminPageHelper.setup(true,
+                                     true,
                                      true);
         verifyLibraryPreferencesWasAddedInGlobalScope();
         verifyArtifactRepositoryPreferencesWasAddedInGlobalScope();
@@ -250,6 +251,7 @@ public class DefaultAdminPageHelperTest {
                                                             any());
 
         defaultAdminPageHelper.setup(false,
+                                     false,
                                      false);
         verifyLibraryPreferencesWasNotAdded();
         verifyArtifactRepositoryPreferencesWasNotAdded();
@@ -271,6 +273,7 @@ public class DefaultAdminPageHelperTest {
                                                              any());
 
         defaultAdminPageHelper.setup(false,
+                                     false,
                                      false);
 
         verifyLibraryPreferencesWasNotAdded();
@@ -281,10 +284,20 @@ public class DefaultAdminPageHelperTest {
     public void stunnerPreferencesWasAddedTest() {
         defaultAdminPageHelper.setup();
         defaultAdminPageHelper.setup(false,
+                                     false,
                                      false);
         defaultAdminPageHelper.setup(true,
+                                     true,
                                      true);
-        verifyStunnerPreferencesWasAdded(3);
+        verifyStunnerPreferencesWasAdded(2);
+    }
+
+    @Test
+    public void stunnerPreferencesWasNotAddedTest() {
+        defaultAdminPageHelper.setup(true,
+                                     true,
+                                     false);
+        verifyStunnerPreferencesWasAdded(0);
     }
 
     private void verifyLibraryPreferencesWasAddedInGlobalScope() {

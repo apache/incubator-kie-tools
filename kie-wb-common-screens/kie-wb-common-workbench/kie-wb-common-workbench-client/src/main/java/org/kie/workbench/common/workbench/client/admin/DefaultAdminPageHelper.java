@@ -87,11 +87,13 @@ public class DefaultAdminPageHelper {
 
     public void setup() {
         setup(true,
+              true,
               true);
     }
 
     public void setup(boolean libraryPreferencesEnabled,
-                      boolean artifactRepositoryPreferencesEnabled) {
+                      boolean artifactRepositoryPreferencesEnabled,
+                      boolean stunnerEnabled) {
         adminPage.addScreen("root",
                             constants.Settings());
         adminPage.setDefaultScreen("root");
@@ -103,7 +105,7 @@ public class DefaultAdminPageHelper {
         addGlobalPreferences(libraryPreferencesEnabled,
                              artifactRepositoryPreferencesEnabled);
         addGeneralPreferences();
-        addStunnerPreferences();
+        addStunnerPreferences(stunnerEnabled);
     }
 
     private void addGeneralPreferences() {
@@ -114,14 +116,16 @@ public class DefaultAdminPageHelper {
                           () -> workbenchConfigurationPresenter.show(languageConfigurationHandler));
     }
 
-    private void addStunnerPreferences() {
-        adminPage.addPreference("root",
-                                "StunnerPreferences",
-                                constants.StunnerDesignerPreferences(),
-                                "fa-object-group",
-                                "general",
-                                scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL),
-                                AdminPageOptions.WITH_BREADCRUMBS);
+    private void addStunnerPreferences(boolean stunnerEnabled) {
+        if(stunnerEnabled) {
+            adminPage.addPreference("root",
+                                    "StunnerPreferences",
+                                    constants.StunnerDesignerPreferences(),
+                                    "fa-object-group",
+                                    "general",
+                                    scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL),
+                                    AdminPageOptions.WITH_BREADCRUMBS);
+        }
     }
 
     private void addSecurityPerspective() {
