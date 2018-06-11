@@ -16,23 +16,36 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.ILocationAcceptor;
+import com.ait.lienzo.client.core.shape.wires.MagnetManager;
 import com.ait.lienzo.client.core.shape.wires.SelectionManager;
+import com.ait.lienzo.client.core.shape.wires.WiresConnection;
+import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
+import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
+import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresCompositeControl;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShapeView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateControlPointPositionCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPositionCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.event.ShapeLocationsChangedEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
@@ -46,17 +59,23 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseEnterHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPointImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
+import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
@@ -225,7 +244,53 @@ public class LocationControlImplTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testMove() {
+    public void testMove() throws Exception {
+        final WiresShapeView wiresShape = mock(WiresShapeView.class);
+        final WiresShapeView childWiresShape = mock(WiresShapeView.class);
+        final MagnetManager.Magnets magnets = mock(MagnetManager.Magnets.class);
+        final WiresMagnet magnet = mock(WiresMagnet.class);
+        final WiresConnection connection = mock(WiresConnection.class);
+        final NFastArrayList<WiresConnection> connections = new NFastArrayList<>(connection);
+        final WiresConnector connector = mock(WiresConnector.class);
+        final String connectorUUID = UUID.uuid();
+        final NFastArrayList<WiresShape> children = new NFastArrayList<>(childWiresShape);
+        final Group connectorGroup = mock(Group.class);
+        final Edge connectorEdge = mock(Edge.class);
+        final com.ait.lienzo.client.core.types.Point2D controlPointLienzo = new com.ait.lienzo.client.core.types.Point2D(100, 100);
+        final Point2DArray controlPointsLienzo = new Point2DArray(controlPointLienzo);
+        final ControlPoint controlPoint = new ControlPointImpl(new Point2D(0, 0), 0);
+        final List<ControlPoint> controlPoints = Arrays.asList(controlPoint);
+        final ViewConnector viewConnector = mock(ViewConnector.class);
+        Group parentGroup = mock(Group.class);
+        BoundingBox parentBB = new BoundingBox(0, 0, 200, 200);
+        MultiPath head = mock(MultiPath.class);
+        MultiPath tail = mock(MultiPath.class);
+
+        when(childWiresShape.getMagnets()).thenReturn(magnets);
+        when(childWiresShape.getParent()).thenReturn(wiresShape);
+        when(wiresShape.getGroup()).thenReturn(parentGroup);
+        when(parentGroup.getBoundingBox()).thenReturn(parentBB);
+        when(wiresShape.getX()).thenReturn(0d);
+        when(wiresShape.getY()).thenReturn(0d);
+        when(magnets.size()).thenReturn(1);
+        when(magnets.getMagnet(0)).thenReturn(magnet);
+        when(magnet.getConnectionsSize()).thenReturn(connections.size());
+        when(magnet.getConnections()).thenReturn(connections);
+        when(connection.getConnector()).thenReturn(connector);
+        when(connector.getGroup()).thenReturn(connectorGroup);
+        when(connectorGroup.uuid()).thenReturn(connectorUUID);
+        when(connector.getControlPoints()).thenReturn(controlPointsLienzo);
+        when(connector.getHead()).thenReturn(head);
+        when(connector.getTail()).thenReturn(tail);
+        when(head.getLocation()).thenReturn(new com.ait.lienzo.client.core.types.Point2D(1, 1));
+        when(tail.getLocation()).thenReturn(new com.ait.lienzo.client.core.types.Point2D(2, 2));
+        when(wiresShape.getChildShapes()).thenReturn(children);
+        when(shape.getShapeView()).thenReturn(wiresShape);
+        when(graphIndex.getEdge(connectorUUID)).thenReturn(connectorEdge);
+        when(connectorEdge.getContent()).thenReturn(viewConnector);
+        when(viewConnector.getControlPoints()).thenReturn(controlPoints);
+        when(connectorGroup.getUserData()).thenReturn(new WiresUtils.UserData(connectorUUID, ""));
+
         tested.init(canvasHandler);
         tested.register(element);
         Point2D location = new Point2D(45d, 65.5d);
@@ -238,9 +303,17 @@ public class LocationControlImplTest {
         verify(shapeLocationsChangedEvent, times(1)).fire(shapeLocationsChangedEventCaptor.capture());
         assertTrue(shapeLocationsChangedEventCaptor.getValue() instanceof ShapeLocationsChangedEvent);
 
-        final UpdateElementPositionCommand command = (UpdateElementPositionCommand) commandArgumentCaptor.getValue();
-        assertEquals(element, command.getElement());
-        assertEquals(location, command.getLocation());
+        //assert parent node move
+        final CompositeCommand command = (CompositeCommand) commandArgumentCaptor.getValue();
+        UpdateElementPositionCommand updateElementPositionCommand = (UpdateElementPositionCommand) command.getCommands().get(0);
+        assertEquals(element, updateElementPositionCommand.getElement());
+        assertEquals(location, updateElementPositionCommand.getLocation());
+
+        //assert child connector control point move
+        final UpdateControlPointPositionCommand controlPointCommand = (UpdateControlPointPositionCommand) command.getCommands().get(1);
+        assertEquals(controlPoint, controlPointCommand.getControlPoint());
+        assertEquals(new Point2D(controlPointLienzo.getX(), controlPointLienzo.getY()), controlPointCommand.getPosition());
+        assertEquals(connectorEdge, controlPointCommand.getCandidate());
     }
 
     @Test
@@ -259,9 +332,11 @@ public class LocationControlImplTest {
         ArgumentCaptor<CanvasCommand> commandArgumentCaptor = ArgumentCaptor.forClass(CanvasCommand.class);
         verify(commandManager, times(1)).execute(eq(canvasHandler),
                                                  commandArgumentCaptor.capture());
-        final UpdateElementPositionCommand command = (UpdateElementPositionCommand) commandArgumentCaptor.getValue();
-        assertEquals(element, command.getElement());
-        assertEquals(new Point2D(40d, 50d), command.getLocation());
+
+        final CompositeCommand command = (CompositeCommand) commandArgumentCaptor.getValue();
+        UpdateElementPositionCommand updateElementPositionCommand = (UpdateElementPositionCommand) command.getCommands().get(0);
+        assertEquals(element, updateElementPositionCommand.getElement());
+        assertEquals(new Point2D(40d, 50d), updateElementPositionCommand.getLocation());
     }
 
     @Test

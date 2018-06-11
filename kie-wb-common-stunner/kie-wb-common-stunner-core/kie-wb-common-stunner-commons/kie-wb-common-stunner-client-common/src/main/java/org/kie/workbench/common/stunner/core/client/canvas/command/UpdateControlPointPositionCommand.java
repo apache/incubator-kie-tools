@@ -50,4 +50,16 @@ public class UpdateControlPointPositionCommand extends AbstractCanvasGraphComman
     protected Command<AbstractCanvasHandler, CanvasViolation> newCanvasCommand(final AbstractCanvasHandler context) {
         return new UpdateCanvasControlPointPositionCommand(candidate, controlPoint, position);
     }
+
+    public Edge getCandidate() {
+        return candidate;
+    }
+
+    public ControlPoint getControlPoint() {
+        return controlPoint;
+    }
+
+    public Point2D getPosition() {
+        return position;
+    }
 }

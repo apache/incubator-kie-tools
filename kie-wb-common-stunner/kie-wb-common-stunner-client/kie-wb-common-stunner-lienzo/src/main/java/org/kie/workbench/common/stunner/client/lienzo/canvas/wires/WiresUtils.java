@@ -35,6 +35,14 @@ public final class WiresUtils {
         private String uuid;
         private String group;
 
+        public UserData() {
+        }
+
+        public UserData(String uuid, String group) {
+            this.uuid = uuid;
+            this.group = group;
+        }
+
         public String getUuid() {
             return uuid;
         }
