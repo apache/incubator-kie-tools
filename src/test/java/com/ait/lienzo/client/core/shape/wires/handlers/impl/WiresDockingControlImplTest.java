@@ -16,68 +16,22 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
-import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
-import com.ait.lienzo.client.core.shape.wires.PickerPart;
-import com.ait.lienzo.client.core.shape.wires.WiresManager;
-import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class WiresDockingControlImplTest {
+public class WiresDockingControlImplTest extends AbstractWiresControlTest {
 
     private WiresDockingControlImpl wiresDockingControl;
 
-    private WiresShape shape;
-
-    private WiresShape parent;
-
-    private Layer layer;
-
-    private WiresManager manager;
-
-    private ColorMapBackedPicker.PickerOptions pickerOptions = new ColorMapBackedPicker.PickerOptions(false, 0);
-
-    @Mock
-    private WiresParentPickerControlImpl parentPicker;
-
-    @Mock
-    private IDockingAcceptor dockingAcceptor;
-
-    private static final double SHAPE_SIZE = 10;
-    private static final double PARENT_SIZE = 100;
-
     @Before
     public void setUp() {
-
-        layer = new Layer();
-        manager = WiresManager.get(layer);
-
-        shape = new WiresShape(new MultiPath().rect(0, 0, SHAPE_SIZE, SHAPE_SIZE));
-        shape.setWiresManager(manager);
-        parent = new WiresShape(new MultiPath().rect(0, 0, PARENT_SIZE, PARENT_SIZE));
-        parent.setWiresManager(manager);
-        manager.getMagnetManager().createMagnets(parent);
-        shape.setLocation(new Point2D(0, 0));
-        parent.setLocation(new Point2D(0, 0));
-
-        when(parentPicker.getWiresLayer()).thenReturn(manager.getLayer());
-        when(parentPicker.getParent()).thenReturn(parent);
-        manager.setDockingAcceptor(dockingAcceptor);
-        when(dockingAcceptor.dockingAllowed(parent, shape)).thenReturn(true);
-        when(parentPicker.getParentShapePart()).thenReturn(PickerPart.ShapePart.BORDER);
-        when(parentPicker.getShape()).thenReturn(shape);
-        when(parentPicker.getCurrentLocation()).thenReturn(parent.getLocation());
+        super.setUp();
 
         wiresDockingControl = new WiresDockingControlImpl(parentPicker);
     }
