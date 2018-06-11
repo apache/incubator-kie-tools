@@ -127,18 +127,7 @@ public class WiresCompositeControlImpl
             }
         }
 
-        final Collection<WiresConnector> connectors = selectedConnectors;
-        if (!connectors.isEmpty()) {
-            // Update connectors and connections.
-            for (WiresConnector connector : connectors) {
-                WiresConnectorHandler handler = connector.getWiresConnectorHandler();
-                handler.getControl().move(dx,
-                                          dy,
-                                          true,
-                                          true);
-                WiresConnector.updateHeadTailForRefreshedConnector(connector);
-            }
-        }
+        ShapeControlUtils.updateConnectors(selectedConnectors, dx, dy);
 
         ShapeControlUtils.updateSpecialConnections(m_connectorsWithSpecialConnections,
                                                    false);
