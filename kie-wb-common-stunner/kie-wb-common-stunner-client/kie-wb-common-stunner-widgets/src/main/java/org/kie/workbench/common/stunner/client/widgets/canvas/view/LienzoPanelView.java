@@ -16,10 +16,6 @@
 
 package org.kie.workbench.common.stunner.client.widgets.canvas.view;
 
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.user.client.ui.RootPanel;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.HandlerRegistrationImpl;
 
 public class LienzoPanelView extends FocusableLienzoPanelView implements LienzoPanel.View {
@@ -29,65 +25,20 @@ public class LienzoPanelView extends FocusableLienzoPanelView implements LienzoP
 
     public LienzoPanelView(final int width,
                            final int height) {
+
         this(width, height, new HandlerRegistrationImpl());
+        initHandlers();
     }
 
     protected LienzoPanelView(final int width,
                               final int height,
                               HandlerRegistrationImpl handlerRegistrationImpl) {
-        super(width,
-              height);
-
+        super(width, height);
         handlerRegistrationManager = handlerRegistrationImpl;
-    }
-
-    protected RootPanel getRootPanel() {
-        return RootPanel.get();
     }
 
     @Override
     public void init(final LienzoPanel presenter) {
-
-        handlerRegistrationManager.register(
-                addFocusHandler(focusEvent -> presenter.onFocus())
-        );
-        handlerRegistrationManager.register(
-                addBlurHandler(blurEvent -> presenter.onBlur())
-        );
-        handlerRegistrationManager.register(
-                addMouseOverHandler(mouseOverEvent -> presenter.onMouseOver())
-        );
-        handlerRegistrationManager.register(
-                addMouseOutHandler(mouseOutEvent -> presenter.onMouseOut())
-        );
-        handlerRegistrationManager.register(
-                addMouseDownHandler(mouseDownEvent -> presenter.onMouseDown())
-        );
-        handlerRegistrationManager.register(
-                addMouseUpHandler(mouseUpEvent -> presenter.onMouseUp())
-        );
-        handlerRegistrationManager.register(
-                getRootPanel().addDomHandler(keyPressEvent -> {
-                                                 final int unicodeChar = keyPressEvent.getUnicodeCharCode();
-                                                 this.presenter.onKeyPress(unicodeChar);
-                                             },
-                                             KeyPressEvent.getType())
-        );
-        handlerRegistrationManager.register(
-                getRootPanel().addDomHandler(keyDownEvent -> {
-                                                 final int unicodeChar = keyDownEvent.getNativeKeyCode();
-                                                 this.presenter.onKeyDown(unicodeChar);
-                                             },
-                                             KeyDownEvent.getType())
-        );
-        handlerRegistrationManager.register(
-                getRootPanel().addDomHandler(keyUpEvent -> {
-                                                 final int unicodeChar = keyUpEvent.getNativeKeyCode();
-                                                 this.presenter.onKeyUp(unicodeChar);
-                                             },
-                                             KeyUpEvent.getType())
-        );
-
         this.presenter = presenter;
     }
 
@@ -96,5 +47,33 @@ public class LienzoPanelView extends FocusableLienzoPanelView implements LienzoP
         handlerRegistrationManager.removeHandler();
         presenter = null;
         super.destroy();
+    }
+
+    protected void initHandlers() {
+
+        handlerRegistrationManager.register(
+                addMouseDownHandler(mouseDownEvent -> presenter.onMouseDown())
+        );
+        handlerRegistrationManager.register(
+                addMouseUpHandler(mouseUpEvent -> presenter.onMouseUp())
+        );
+        handlerRegistrationManager.register(
+                addKeyPressHandler(keyPressEvent -> {
+                    final int unicodeChar = keyPressEvent.getUnicodeCharCode();
+                    presenter.onKeyPress(unicodeChar);
+                })
+        );
+        handlerRegistrationManager.register(
+                addKeyDownHandler(keyDownEvent -> {
+                    final int unicodeChar = keyDownEvent.getNativeKeyCode();
+                    presenter.onKeyDown(unicodeChar);
+                })
+        );
+        handlerRegistrationManager.register(
+                addKeyUpHandler(keyUpEvent -> {
+                    final int unicodeChar = keyUpEvent.getNativeKeyCode();
+                    presenter.onKeyUp(unicodeChar);
+                })
+        );
     }
 }

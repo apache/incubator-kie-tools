@@ -17,20 +17,12 @@
 package org.kie.workbench.common.stunner.client.widgets.canvas.view;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.RootPanel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,10 +31,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class LienzoPanelViewTest {
@@ -50,37 +40,24 @@ public class LienzoPanelViewTest {
     @Mock
     private HandlerRegistrationImpl handlerRegistrationManager;
 
-    @Mock
-    private RootPanel rootPanel;
-
-    @Mock
-    private LienzoPanel lienzoPanel;
-
     private LienzoPanelView spyTested;
 
     @Before
     public void setup() {
         spyTested = Mockito.spy(new LienzoPanelView(200, 200, handlerRegistrationManager));
-        when(spyTested.getRootPanel()).thenReturn(rootPanel);
     }
 
     @Test
-    public void testInit() {
-        spyTested.init(lienzoPanel);
+    public void testInitHandlers() {
+        spyTested.initHandlers();
 
-        verify(spyTested).addFocusHandler(any(FocusHandler.class));
-        verify(spyTested).addBlurHandler(any(BlurHandler.class));
-
-        verify(spyTested).addMouseOverHandler(any(MouseOverHandler.class));
-        verify(spyTested).addMouseOutHandler(any(MouseOutHandler.class));
         verify(spyTested).addMouseDownHandler(any(MouseDownHandler.class));
         verify(spyTested).addMouseUpHandler(any(MouseUpHandler.class));
-        verify(spyTested).addMouseUpHandler(any(MouseUpHandler.class));
 
-        verify(rootPanel).addDomHandler(any(KeyPressHandler.class), eq(KeyPressEvent.getType()));
-        verify(rootPanel).addDomHandler(any(KeyUpHandler.class), eq(KeyUpEvent.getType()));
-        verify(rootPanel).addDomHandler(any(KeyDownHandler.class), eq(KeyDownEvent.getType()));
+        verify(spyTested).addKeyPressHandler(any(KeyPressHandler.class));
+        verify(spyTested).addKeyDownHandler(any(KeyDownHandler.class));
+        verify(spyTested).addKeyUpHandler(any(KeyUpHandler.class));
 
-        verify(handlerRegistrationManager, times(9)).register(any(HandlerRegistration.class));
+        verify(handlerRegistrationManager, times(5)).register(any(HandlerRegistration.class));
     }
 }

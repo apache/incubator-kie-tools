@@ -27,9 +27,7 @@ import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -64,105 +62,31 @@ public class LienzoPanelTest {
     }
 
     @Test
-    public void testOnFocus() {
-        lienzoPanel.onFocus();
-        assertEquals(lienzoPanel.isFocused(), true);
-    }
-
-    @Test
-    public void testOnBlur() {
-        lienzoPanel.onBlur();
-        assertEquals(lienzoPanel.isFocused(), false);
-    }
-
-    @Test
-    public void testOnMouseOver() {
-        lienzoPanel.onMouseOver();
-        assertEquals(lienzoPanel.isListening(), true);
-    }
-
-    @Test
-    public void testOnMouseOut() {
-        lienzoPanel.onMouseOut();
-        assertEquals(lienzoPanel.isListening(), false);
-    }
-
-    @Test
     public void testOnMouseDown() {
-        lienzoPanel.onMouseOut();
-        lienzoPanel.onMouseDown();
-        verify(mouseDownEvent, never()).fire(any(CanvasMouseDownEvent.class));
-
-        lienzoPanel.onMouseOver();
         lienzoPanel.onMouseDown();
         verify(mouseDownEvent, times(1)).fire(any(CanvasMouseDownEvent.class));
     }
 
     @Test
+    public void testOnMouseUp() {
+        lienzoPanel.onMouseUp();
+        verify(mouseUpEvent, times(1)).fire(any(CanvasMouseUpEvent.class));
+    }
+
+    @Test
     public void testOnKeyPress() {
-        lienzoPanel.onMouseOut();
-        lienzoPanel.onBlur();
-        lienzoPanel.onKeyPress(KeyboardEvent.Key.DELETE.getUnicharCode());
-        verify(keyPressEvent, never()).fire(any(KeyPressEvent.class));
-
-        lienzoPanel.onMouseOut();
-        lienzoPanel.onFocus();
-        lienzoPanel.onKeyPress(KeyboardEvent.Key.DELETE.getUnicharCode());
-        verify(keyPressEvent, never()).fire(any(KeyPressEvent.class));
-
-        lienzoPanel.onMouseOver();
-        lienzoPanel.onBlur();
-        lienzoPanel.onKeyPress(KeyboardEvent.Key.DELETE.getUnicharCode());
-        verify(keyPressEvent, never()).fire(any(KeyPressEvent.class));
-
-        lienzoPanel.onMouseOver();
-        lienzoPanel.onFocus();
         lienzoPanel.onKeyPress(KeyboardEvent.Key.DELETE.getUnicharCode());
         verify(keyPressEvent, times(1)).fire(any(KeyPressEvent.class));
     }
 
     @Test
     public void testOnKeyDown() {
-        lienzoPanel.onMouseOut();
-        lienzoPanel.onBlur();
-        lienzoPanel.onKeyDown(KeyboardEvent.Key.DELETE.getUnicharCode());
-        verify(keyDownEvent, never()).fire(any(KeyDownEvent.class));
-
-        lienzoPanel.onMouseOut();
-        lienzoPanel.onFocus();
-        lienzoPanel.onKeyDown(KeyboardEvent.Key.DELETE.getUnicharCode());
-        verify(keyDownEvent, never()).fire(any(KeyDownEvent.class));
-
-        lienzoPanel.onMouseOver();
-        lienzoPanel.onBlur();
-        lienzoPanel.onKeyDown(KeyboardEvent.Key.DELETE.getUnicharCode());
-        verify(keyDownEvent, never()).fire(any(KeyDownEvent.class));
-
-        lienzoPanel.onMouseOver();
-        lienzoPanel.onFocus();
         lienzoPanel.onKeyDown(KeyboardEvent.Key.DELETE.getUnicharCode());
         verify(keyDownEvent, times(1)).fire(any(KeyDownEvent.class));
     }
 
     @Test
     public void testOnKeyUp() {
-        lienzoPanel.onMouseOut();
-        lienzoPanel.onBlur();
-        lienzoPanel.onKeyUp(KeyboardEvent.Key.DELETE.getUnicharCode());
-        verify(keyUpEvent, never()).fire(any(KeyUpEvent.class));
-
-        lienzoPanel.onMouseOut();
-        lienzoPanel.onFocus();
-        lienzoPanel.onKeyUp(KeyboardEvent.Key.DELETE.getUnicharCode());
-        verify(keyUpEvent, never()).fire(any(KeyUpEvent.class));
-
-        lienzoPanel.onMouseOver();
-        lienzoPanel.onBlur();
-        lienzoPanel.onKeyUp(KeyboardEvent.Key.DELETE.getUnicharCode());
-        verify(keyUpEvent, never()).fire(any(KeyUpEvent.class));
-
-        lienzoPanel.onMouseOver();
-        lienzoPanel.onFocus();
         lienzoPanel.onKeyUp(KeyboardEvent.Key.DELETE.getUnicharCode());
         verify(keyUpEvent, times(1)).fire(any(KeyUpEvent.class));
     }
