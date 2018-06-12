@@ -77,6 +77,7 @@ public abstract class BaseThrowingIntermediateEvent
         labels.add("FromEventbasedGateway");
         labels.add("IntermediateEventsMorph");
         labels.add("cmnop");
+        labels.add("IntermediateEventThrowing");
     }
 
     public BaseThrowingIntermediateEvent() {
