@@ -38,7 +38,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class EnumEditorTextCellTests {
+public class EnumEditorTextCellTest {
 
     private Cell.Context context;
 
