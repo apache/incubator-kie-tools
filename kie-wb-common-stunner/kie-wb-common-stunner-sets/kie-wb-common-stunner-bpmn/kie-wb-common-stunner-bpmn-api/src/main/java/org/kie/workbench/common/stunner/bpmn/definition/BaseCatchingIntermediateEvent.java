@@ -89,6 +89,7 @@ public abstract class BaseCatchingIntermediateEvent
         labels.add("EventOnChoreographyActivityBoundary");
         labels.add("IntermediateEventsMorph");
         labels.add("cm_nop");
+        labels.add("IntermediateEventCatching");
     }
 
     @Override
