@@ -44,18 +44,26 @@ public class FooterView extends Composite
     @DataField("version")
     Span version;
 
-    @Override
-    public void setup( final String url,
-                       final String version ) {
-        this.url.setText( url );
-        this.url.setHref( url );
-        this.version.setText( version );
-        this.copyUrl.getElement().setPropertyString( "data-clipboard-text", url );
-        glueCopy( this.copyUrl.getElement() );
-    }
-
-    public static native void glueCopy( final Element element ) /*-{
+    public static native void glueCopy(final Element element) /*-{
         var clip = new $wnd.ZeroClipboard(element);
     }-*/;
 
+    @Override
+    public void setupUrl(final String url) {
+        this.url.setText(url);
+        this.url.setHref(url);
+        this.copyUrl.getElement().setPropertyString("data-clipboard-text", url);
+        glueCopy(this.copyUrl.getElement());
+    }
+
+    @Override
+    public void setupVersion(final String version) {
+        this.version.setText(version);
+    }
+
+    @Override
+    public void hideUrlElements() {
+        url.setVisible(false);
+        copyUrl.setVisible(false);
+    }
 }
