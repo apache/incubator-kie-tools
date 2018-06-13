@@ -78,13 +78,11 @@ public interface JGitFileSystem extends FileSystem,
 
     int getNumberOfCommitsSinceLastGC();
 
-    void addOldHeadsOfPendingDiffs(String branchName,
-                                   NotificationModel notificationModel);
+    void addPostponedWatchEvents(List<WatchEvent<?>> postponedWatchEvents);
 
-    Map<String, NotificationModel> getOldHeadsOfPendingDiffs();
+    List<WatchEvent<?>> getPostponedWatchEvents();
 
-    boolean hasOldHeadsOfPendingDiffs();
+    void clearPostponedWatchEvents();
 
-    void clearOldHeadsOfPendingDiffs();
-
+    boolean hasPostponedEvents();
 }

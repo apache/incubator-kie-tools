@@ -184,7 +184,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
 
     private boolean isDefault;
 
-    private final Object oldHeadsOfPendingDiffsLock = new Object();
+    private final Object postponedEventsLock = new Object();
 
     private Daemon daemonService = null;
 
@@ -354,8 +354,8 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
     public void onCloseFileSystem(final JGitFileSystem fileSystem) {
         fsManager.addClosedFileSystems(fileSystem);
 
-        synchronized (oldHeadsOfPendingDiffsLock) {
-            fileSystem.clearOldHeadsOfPendingDiffs();
+        synchronized (postponedEventsLock) {
+            fileSystem.clearPostponedWatchEvents();
         }
 
         if (fsManager.allTheFSAreClosed()) {
@@ -2125,7 +2125,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
 
                 if (isOriginalStateBatch && !fileSystem.isOnBatch()) {
                     fileSystem.setBatchCommitInfo(null);
-                    notifyDiffs(fileSystem);
+                    firePostponedBatchEvents(fileSystem);
                 }
                 fileSystem.setHadCommitOnBatchState(false);
             } finally {
@@ -2342,29 +2342,18 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                             oldHead,
                             newHead);
             } else {
-                synchronized (oldHeadsOfPendingDiffsLock) {
+                synchronized (postponedEventsLock) {
 
-                    if (!fileSystem.hasOldHeadsOfPendingDiffs() ||
-                            !fileSystem.getOldHeadsOfPendingDiffs().containsKey(branchName)) {
+                    final ObjectId newHead = path.getFileSystem().getGit().getTreeFromRef(branchName);
+                    List<WatchEvent<?>> postponedWatchEvents = compareDiffs(path.getFileSystem(),
+                                                                            branchName,
+                                                                            commitInfo.getSessionId(),
+                                                                            commitInfo.getName(),
+                                                                            commitInfo.getMessage(),
+                                                                            oldHead,
+                                                                            newHead);
 
-                        if (!fileSystem.hasOldHeadsOfPendingDiffs()) {
-                            fileSystem.clearOldHeadsOfPendingDiffs();
-                        }
-
-                        if (fileSystem.getBatchCommitInfo() != null) {
-                            fileSystem.addOldHeadsOfPendingDiffs(branchName,
-                                                                 new NotificationModel(oldHead,
-                                                                                       fileSystem.getBatchCommitInfo().getSessionId(),
-                                                                                       fileSystem.getBatchCommitInfo().getName(),
-                                                                                       fileSystem.getBatchCommitInfo().getMessage()));
-                        } else {
-                            fileSystem.addOldHeadsOfPendingDiffs(branchName,
-                                                                 new NotificationModel(oldHead,
-                                                                                       commitInfo.getSessionId(),
-                                                                                       commitInfo.getName(),
-                                                                                       commitInfo.getMessage()));
-                        }
-                    }
+                    fileSystem.addPostponedWatchEvents(postponedWatchEvents);
                 }
             }
 
@@ -2383,26 +2372,15 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                                     new String[0]);
     }
 
-    private void notifyDiffs(JGitFileSystem fileSystem) {
-        synchronized (oldHeadsOfPendingDiffsLock) {
+    private void firePostponedBatchEvents(JGitFileSystem fileSystem) {
+        synchronized (postponedEventsLock) {
 
-            for (Map.Entry<String, NotificationModel> branchNameNotificationModelEntry : fileSystem.getOldHeadsOfPendingDiffs().entrySet()) {
-                final ObjectId newHead = fileSystem.getGit().getTreeFromRef(branchNameNotificationModelEntry.getKey());
-                try {
-                    notifyDiffs(fileSystem,
-                                branchNameNotificationModelEntry.getKey(),
-                                branchNameNotificationModelEntry.getValue().getSessionId(),
-                                branchNameNotificationModelEntry.getValue().getUserName(),
-                                branchNameNotificationModelEntry.getValue().getMessage(),
-                                branchNameNotificationModelEntry.getValue().getOriginalHead(),
-                                newHead);
-                } catch (final Exception ex) {
-                    LOG.error(String.format("Couldn't produce diff notification for repository `%s` branch `%s`.",
-                                            fileSystem.toString(),
-                                            branchNameNotificationModelEntry.getKey()),
-                              ex);
-                }
+            if (fileSystem.hasPostponedEvents()) {
+                fileSystem.publishEvents(fileSystem.getRootDirectories().iterator().next(),
+                                         fileSystem.getPostponedWatchEvents());
             }
+
+            fileSystem.clearPostponedWatchEvents();
 
             int value = fileSystem.incrementAndGetCommitCount();
             if (value >= config.getCommitLimit()) {
@@ -2410,17 +2388,17 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                 fileSystem.resetCommitCount();
             }
         }
-
-        fileSystem.clearOldHeadsOfPendingDiffs();
     }
 
-    void notifyDiffs(final JGitFileSystem fs,
-                     final String _tree,
-                     final String sessionId,
-                     final String userName,
-                     final String message,
-                     final ObjectId oldHead,
-                     final ObjectId newHead) {
+    List<WatchEvent<?>> notifyDiffs(final JGitFileSystem fs,
+                                    final String _tree,
+                                    final String sessionId,
+                                    final String userName,
+                                    final String message,
+                                    final ObjectId oldHead,
+                                    final ObjectId newHead) {
+
+        List<WatchEvent<?>> watchEvents = compareDiffs(fs, _tree, sessionId, userName, message, oldHead, newHead);
 
         final String tree;
         if (_tree.startsWith("refs/")) {
@@ -2430,10 +2408,34 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         }
 
         final String host = tree + "@" + fs.getName();
+
         final Path root = JGitPathImpl.createRoot(fs,
                                                   "/",
                                                   host,
                                                   false);
+        if (!watchEvents.isEmpty()) {
+            fs.publishEvents(root,
+                             watchEvents);
+        }
+        return watchEvents;
+    }
+
+    List<WatchEvent<?>> compareDiffs(final JGitFileSystem fs,
+                                     final String _tree,
+                                     final String sessionId,
+                                     final String userName,
+                                     final String message,
+                                     final ObjectId oldHead,
+                                     final ObjectId newHead) {
+
+        final String tree;
+        if (_tree.startsWith("refs/")) {
+            tree = _tree.substring(_tree.lastIndexOf("/") + 1);
+        } else {
+            tree = _tree;
+        }
+
+        final String host = tree + "@" + fs.getName();
 
         final List<DiffEntry> diff = fs.getGit().listDiffs(oldHead,
                                                            newHead);
@@ -2473,10 +2475,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
             events.add(e);
         }
 
-        if (!events.isEmpty()) {
-            fs.publishEvents(root,
-                             events);
-        }
+        return events;
     }
 
     GitSSHService getGitSSHService() {

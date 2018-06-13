@@ -37,12 +37,14 @@ import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.StandardWatchEventKind;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.api.FileSystemProviders;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemImpl;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProxy;
+import org.uberfire.java.nio.fs.jgit.ws.JGitWatchEvent;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -108,6 +110,69 @@ public class BatchTest {
         JGitFileSystemProvider gitFsProvider = (JGitFileSystemProvider) FileSystemProviders.resolveProvider(URI.create("git://whatever"));
         gitFsProvider.shutdown();
         FileUtils.deleteQuietly(gitFsProvider.getGitRepoContainerDir());
+    }
+
+    @Test
+    public void testMoveAndAddOnBatchShouldTriggerRenameAndModifyEvent() {
+        final Path init = ioService.get(URI.create("git://amend-repo-test/file.txt"));
+        final Path initMoved = ioService.get(URI.create("git://amend-repo-test/fileMoved.txt"));
+
+        final WatchService ws = init.getFileSystem().newWatchService();
+
+        ioService.write(init,
+                        "init!",
+                        new CommentedOption("User Tester",
+                                            "message1"));
+        {
+            List<WatchEvent<?>> events = ws.poll().pollEvents();
+            assertEquals(1,
+                         events.size());
+            assertEquals(StandardWatchEventKind.ENTRY_CREATE, ((JGitWatchEvent) events.get(0)).kind());
+        }
+
+        ioService.move(init, initMoved, new CommentedOption("moved"));
+
+        {
+            List<WatchEvent<?>> events = ws.poll().pollEvents();
+            assertEquals(1,
+                         events.size());
+            assertEquals(StandardWatchEventKind.ENTRY_RENAME, ((JGitWatchEvent) events.get(0)).kind());
+        }
+
+        final Path aNewFile = ioService.get(URI.create("git://amend-repo-test/aNewFile.txt"));
+        final Path aNewFileMoved = ioService.get(URI.create("git://amend-repo-test/aNewFileMoved.txt"));
+
+        ioService.write(aNewFile,
+                        "init!",
+                        new CommentedOption("User Tester",
+                                            "message1"));
+
+        {
+            List<WatchEvent<?>> events = ws.poll().pollEvents();
+            assertEquals(1,
+                         events.size());
+            assertEquals(StandardWatchEventKind.ENTRY_CREATE, ((JGitWatchEvent) events.get(0)).kind());
+        }
+
+        ioService.startBatch(aNewFile.getFileSystem());
+        ioService.move(aNewFile, aNewFileMoved, new CommentedOption("moved"));
+
+        ioService.write(aNewFileMoved,
+                        "aNewFileMoved!",
+                        new CommentedOption("User Tester",
+                                            "message1"));
+
+        ioService.endBatch();
+
+        assertEquals("aNewFileMoved!", ioService.readAllString(aNewFileMoved));
+        {
+            List<WatchEvent<?>> events = ws.poll().pollEvents();
+
+            assertEquals(2,
+                         events.size());
+            assertEquals(StandardWatchEventKind.ENTRY_RENAME, ((JGitWatchEvent) events.get(0)).kind());
+            assertEquals(StandardWatchEventKind.ENTRY_MODIFY, ((JGitWatchEvent) events.get(1)).kind());
+        }
     }
 
     @Test
@@ -183,7 +248,7 @@ public class BatchTest {
         ioService.endBatch();
         {
             List<WatchEvent<?>> events = ws.poll().pollEvents();
-            assertEquals(2,
+            assertEquals(4,
                          events.size()); //adds files
         }
 

@@ -153,25 +153,23 @@ public class JGitFileSystemProxy implements JGitFileSystem {
     }
 
     @Override
-    public void addOldHeadsOfPendingDiffs(String branchName,
-                                          NotificationModel notificationModel) {
-        cachedSupplier.get().addOldHeadsOfPendingDiffs(branchName,
-                                                       notificationModel);
+    public void addPostponedWatchEvents(List<WatchEvent<?>> postponedWatchEvents) {
+        cachedSupplier.get().addPostponedWatchEvents(postponedWatchEvents);
     }
 
     @Override
-    public Map<String, NotificationModel> getOldHeadsOfPendingDiffs() {
-        return cachedSupplier.get().getOldHeadsOfPendingDiffs();
+    public List<WatchEvent<?>> getPostponedWatchEvents() {
+        return cachedSupplier.get().getPostponedWatchEvents();
     }
 
     @Override
-    public boolean hasOldHeadsOfPendingDiffs() {
-        return cachedSupplier.get().hasOldHeadsOfPendingDiffs();
+    public void clearPostponedWatchEvents() {
+        cachedSupplier.get().clearPostponedWatchEvents();
     }
 
     @Override
-    public void clearOldHeadsOfPendingDiffs() {
-        cachedSupplier.get().clearOldHeadsOfPendingDiffs();
+    public boolean hasPostponedEvents() {
+        return cachedSupplier.get().hasPostponedEvents();
     }
 
     @Override

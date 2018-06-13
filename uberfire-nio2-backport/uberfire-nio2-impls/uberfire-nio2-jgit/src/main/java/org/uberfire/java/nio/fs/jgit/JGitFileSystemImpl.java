@@ -25,6 +25,8 @@ import java.nio.channels.FileLock;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -79,9 +81,10 @@ public class JGitFileSystemImpl implements JGitFileSystem {
     private FileSystemState state = FileSystemState.NORMAL;
     private CommitInfo batchCommitInfo = null;
     private Map<Path, Boolean> hadCommitOnBatchState = new ConcurrentHashMap<>();
-    private Map<String, NotificationModel> oldHeadsOfPendingDiffs = new ConcurrentHashMap<>();
     private Lock lock;
     private JGitFileSystemsEventsManager fsEventsManager;
+
+    private List<WatchEvent<?>> postponedWatchEvents = Collections.synchronizedList(new ArrayList<>());
 
     public JGitFileSystemImpl(final JGitFileSystemProvider provider,
                               final Map<String, String> fullHostNames,
@@ -570,24 +573,22 @@ public class JGitFileSystemImpl implements JGitFileSystem {
     }
 
     @Override
-    public void addOldHeadsOfPendingDiffs(String branchName,
-                                          NotificationModel notificationModel) {
-        oldHeadsOfPendingDiffs.put(branchName,
-                                   notificationModel);
+    public void addPostponedWatchEvents(List<WatchEvent<?>> postponedWatchEvents) {
+        this.postponedWatchEvents.addAll(postponedWatchEvents);
     }
 
     @Override
-    public Map<String, NotificationModel> getOldHeadsOfPendingDiffs() {
-        return oldHeadsOfPendingDiffs;
+    public List<WatchEvent<?>> getPostponedWatchEvents() {
+        return postponedWatchEvents;
     }
 
     @Override
-    public boolean hasOldHeadsOfPendingDiffs() {
-        return !oldHeadsOfPendingDiffs.isEmpty();
+    public void clearPostponedWatchEvents() {
+        this.postponedWatchEvents = Collections.synchronizedList(new ArrayList<>());
     }
 
     @Override
-    public void clearOldHeadsOfPendingDiffs() {
-        oldHeadsOfPendingDiffs = new ConcurrentHashMap<>();
+    public boolean hasPostponedEvents() {
+        return !getPostponedWatchEvents().isEmpty();
     }
 }
