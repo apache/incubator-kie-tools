@@ -199,8 +199,6 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
                                                               viewHideAlertsButtonPresenter);
         this.presenter = spy(projectScreen);
 
-        verify(projectContext).addChangeHandler(projectScreen);
-
         this.presenter.workspaceProject = createProject();
     }
 
@@ -420,9 +418,21 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
         final WorkspaceProject workspaceProject = mock(WorkspaceProject.class);
         doReturn("module name").when(workspaceProject).getName();
 
-        presenter.onChange(mock(WorkspaceProjectContextChangeEvent.class),
-                           new WorkspaceProjectContextChangeEvent(workspaceProject));
+        presenter.changeProjectAndTitleWhenContextChange(new WorkspaceProjectContextChangeEvent(workspaceProject));
 
         verify(view).setTitle("module name");
+    }
+
+    @Test
+    public void shouldNotChangeProjectAndTitleWhenContextChange() throws Exception {
+
+        presenter.changeProjectAndTitleWhenContextChange(new WorkspaceProjectContextChangeEvent() {
+            @Override
+            public WorkspaceProject getWorkspaceProject() {
+                return null;
+            }
+        });
+
+        verify(view, never()).setTitle(any());
     }
 }

@@ -26,7 +26,6 @@ import elemental2.dom.HTMLElement;
 import elemental2.promise.Promise;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
-import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeHandler;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.messageconsole.client.console.widget.button.ViewHideAlertsButtonPresenter;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
@@ -66,7 +65,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 @WorkbenchScreen(identifier = LibraryPlaces.PROJECT_SCREEN,
         owningPerspective = LibraryPerspective.class)
-public class ProjectScreen implements WorkspaceProjectContextChangeHandler {
+public class ProjectScreen {
 
     private Elemental2DomUtil elemental2DomUtil;
     protected WorkspaceProject workspaceProject;
@@ -170,7 +169,6 @@ public class ProjectScreen implements WorkspaceProjectContextChangeHandler {
         this.notificationEvent = notificationEvent;
         this.viewHideAlertsButtonPresenter = viewHideAlertsButtonPresenter;
         this.elemental2DomUtil = new Elemental2DomUtil();
-        this.libraryPlaces.getWorkbenchContext().addChangeHandler(this);
     }
 
     @PostConstruct
@@ -205,13 +203,6 @@ public class ProjectScreen implements WorkspaceProjectContextChangeHandler {
         });
     }
 
-    @Override
-    public void onChange(final WorkspaceProjectContextChangeEvent previous,
-                         final WorkspaceProjectContextChangeEvent current) {
-        this.workspaceProject = current.getWorkspaceProject();
-        this.view.setTitle(workspaceProject.getName());
-    }
-
     @OnMayClose
     public boolean onMayClose() {
         return settingsPresenter.mayClose();
@@ -231,6 +222,13 @@ public class ProjectScreen implements WorkspaceProjectContextChangeHandler {
 
     public void onContributorsUpdated(@Observes AfterEditOrganizationalUnitEvent event) {
         resolveContributorsCount();
+    }
+
+    public void changeProjectAndTitleWhenContextChange(@Observes final WorkspaceProjectContextChangeEvent current) {
+        if (current.getWorkspaceProject() != null) {
+            this.workspaceProject = current.getWorkspaceProject();
+            this.view.setTitle(workspaceProject.getName());
+        }
     }
 
     private void resolveContributorsCount() {
