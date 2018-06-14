@@ -97,7 +97,34 @@ public class EmptyAssetsScreenTest {
             return null;
         }).when(this.newFileUploader).acceptContext(any());
         this.emptyAssetsScreen.initialize();
+        verify(this.view).enableImportButton(eq(true));
         verify(this.view).enableImportButton(eq(false));
+    }
+
+    @Test
+    public void testInitializeAcceptContentSuccessWithPermission() {
+        doReturn(true).when(this.emptyAssetsScreen).canUpdateProject();
+        doAnswer(invocation -> {
+            Callback<Boolean, Void> callback = invocation.getArgumentAt(0,
+                                                                        Callback.class);
+            callback.onSuccess(true);
+            return null;
+        }).when(this.newFileUploader).acceptContext(any());
+        this.emptyAssetsScreen.initialize();
+        verify(this.view, times(2)).enableImportButton(eq(true));
+    }
+
+    @Test
+    public void testInitializeAcceptContentSuccessWithoutPermission() {
+        doReturn(false).when(this.emptyAssetsScreen).canUpdateProject();
+        doAnswer(invocation -> {
+            Callback<Boolean, Void> callback = invocation.getArgumentAt(0,
+                                                                        Callback.class);
+            callback.onSuccess(true);
+            return null;
+        }).when(this.newFileUploader).acceptContext(any());
+        this.emptyAssetsScreen.initialize();
+        verify(this.view, times(2)).enableImportButton(eq(false));
     }
 
     @Test
@@ -110,6 +137,7 @@ public class EmptyAssetsScreenTest {
             return null;
         }).when(this.newFileUploader).acceptContext(any());
         this.emptyAssetsScreen.initialize();
+        verify(this.view).enableImportButton(eq(true));
         verify(this.view).enableImportButton(eq(false));
     }
 

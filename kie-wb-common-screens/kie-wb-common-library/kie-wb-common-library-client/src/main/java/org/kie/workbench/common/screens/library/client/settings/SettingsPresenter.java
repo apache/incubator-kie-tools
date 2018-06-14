@@ -32,6 +32,7 @@ import elemental2.dom.HTMLElement;
 import elemental2.promise.Promise;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.repositories.ConflictingRepositoriesPopup;
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.jboss.errai.bus.client.api.messaging.Message;
@@ -78,6 +79,8 @@ public class SettingsPresenter {
         void hide();
 
         HTMLElement getContentContainer();
+
+        void disableActions();
     }
 
     private final View view;
@@ -91,6 +94,7 @@ public class SettingsPresenter {
     private final ManagedInstance<ObservablePath> observablePaths;
     private final ConflictingRepositoriesPopup conflictingRepositoriesPopup;
     private final SectionManager<ProjectScreenModel> sectionManager;
+    private final ProjectController projectController;
 
     private ObservablePath pathToPom;
 
@@ -107,7 +111,8 @@ public class SettingsPresenter {
                              final WorkspaceProjectContext projectContext,
                              final ManagedInstance<ObservablePath> observablePaths,
                              final ConflictingRepositoriesPopup conflictingRepositoriesPopup,
-                             final SectionManager<ProjectScreenModel> sectionManager) {
+                             final SectionManager<ProjectScreenModel> sectionManager,
+                             final ProjectController projectController) {
         this.view = view;
         this.promises = promises;
         this.notificationEvent = notificationEvent;
@@ -119,6 +124,7 @@ public class SettingsPresenter {
         this.observablePaths = observablePaths;
         this.conflictingRepositoriesPopup = conflictingRepositoriesPopup;
         this.sectionManager = sectionManager;
+        this.projectController = projectController;
     }
 
     @PostConstruct
@@ -138,6 +144,10 @@ public class SettingsPresenter {
         }
 
         view.showBusyIndicator();
+
+        if (!userCanUpdateProject()) {
+            view.disableActions();
+        }
 
         if (pathToPom != null) {
             pathToPom.dispose();
@@ -203,13 +213,17 @@ public class SettingsPresenter {
     }
 
     public void showSaveModal() {
-        sectionManager.validateAll().then(i -> {
-            savePopUpPresenter.show(this::save);
-            return promises.resolve();
-        }).catch_(e -> promises.catchOrExecute(e, this::defaultErrorResolution, (final Section<ProjectScreenModel> section) -> {
-            view.hideBusyIndicator();
-            return sectionManager.goTo(section);
-        }));
+        if (userCanUpdateProject()) {
+            sectionManager.validateAll().then(i -> {
+                savePopUpPresenter.show(this::save);
+                return promises.resolve();
+            }).catch_(e -> promises.catchOrExecute(e,
+                                                   this::defaultErrorResolution,
+                                                   (final Section<ProjectScreenModel> section) -> {
+                                                       view.hideBusyIndicator();
+                                                       return sectionManager.goTo(section);
+                                                   }));
+        }
     }
 
     void save(final String comment) {
@@ -322,12 +336,18 @@ public class SettingsPresenter {
         sectionManager.updateDirtyIndicator(settingsSectionChange.getSection());
     }
 
+    public boolean userCanUpdateProject() {
+        return projectContext.getActiveWorkspaceProject().isPresent() && projectController.canUpdateProject(projectContext.getActiveWorkspaceProject().get());
+    }
+
     public boolean mayClose() {
         return !sectionManager.hasDirtySections();
     }
 
     public void reset() {
-        setupUsingCurrentSection();
+        if (userCanUpdateProject()) {
+            setupUsingCurrentSection();
+        }
     }
 
     public View getView() {

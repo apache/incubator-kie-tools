@@ -106,6 +106,12 @@ public class SettingsView implements SettingsPresenter.View,
     }
 
     @Override
+    public void disableActions() {
+        save.disabled = true;
+        reset.disabled = true;
+    }
+
+    @Override
     public void show() {
         getElement().classList.remove("settings-hidden");
     }

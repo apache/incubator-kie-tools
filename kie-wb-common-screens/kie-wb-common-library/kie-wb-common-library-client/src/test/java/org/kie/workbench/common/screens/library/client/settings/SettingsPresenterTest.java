@@ -9,6 +9,7 @@ import elemental2.dom.Console;
 import elemental2.dom.DomGlobal;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.repositories.ConflictingRepositoriesPopup;
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
@@ -79,6 +80,9 @@ public class SettingsPresenterTest {
     @Mock
     private SectionManager<ProjectScreenModel> sectionManager;
 
+    @Mock
+    private ProjectController projectController;
+
     private static final SyncPromises promises = new SyncPromises();
 
     private SettingsPresenter presenter;
@@ -109,7 +113,8 @@ public class SettingsPresenterTest {
                 projectContext,
                 observablePaths,
                 conflictingRepositoriesPopup,
-                sectionManager));
+                sectionManager,
+                projectController));
     }
 
     @Test
@@ -145,11 +150,38 @@ public class SettingsPresenterTest {
         doReturn(true).when(sectionManager).manages(any());
         doReturn(promises.resolve()).when(sectionManager).goToCurrentSection();
         doReturn(promises.resolve()).when(presenter).setupSections(any());
+        doReturn(true).when(projectController).canUpdateProject(any());
 
         presenter.setupUsingCurrentSection();
 
         verify(view).init(eq(presenter));
         verify(view).showBusyIndicator();
+        verify(view, never()).disableActions();
+        verify(projectScreenService).load(any());
+        verify(presenter).setupSections(any());
+        verify(sectionManager).goToCurrentSection();
+        verify(view).hideBusyIndicator();
+
+        verify(sectionManager, never()).goToFirstAvailable();
+        verify(notificationEvent, never()).fire(any());
+    }
+
+    @Test
+    public void setupUsingCurrentSectionWithoutPermission() {
+
+        final Section<ProjectScreenModel> section = newMockedSection();
+
+        doReturn(new ArrayList<>(singletonList(section))).when(sectionManager).getSections();
+        doReturn(true).when(sectionManager).manages(any());
+        doReturn(promises.resolve()).when(sectionManager).goToCurrentSection();
+        doReturn(promises.resolve()).when(presenter).setupSections(any());
+        doReturn(false).when(projectController).canUpdateProject(any());
+
+        presenter.setupUsingCurrentSection();
+
+        verify(view).init(eq(presenter));
+        verify(view).showBusyIndicator();
+        verify(view).disableActions();
         verify(projectScreenService).load(any());
         verify(presenter).setupSections(any());
         verify(sectionManager).goToCurrentSection();
@@ -268,7 +300,7 @@ public class SettingsPresenterTest {
 
     @Test
     public void testShowSaveModal() {
-
+        doReturn(true).when(projectController).canUpdateProject(any());
         doReturn(promises.resolve()).when(sectionManager).validateAll();
 
         presenter.showSaveModal();
@@ -278,7 +310,19 @@ public class SettingsPresenterTest {
     }
 
     @Test
+    public void testShowSaveModalWithoutPermission() {
+        doReturn(false).when(projectController).canUpdateProject(any());
+        doReturn(promises.resolve()).when(sectionManager).validateAll();
+
+        presenter.showSaveModal();
+
+        verify(savePopUpPresenter, never()).show(any());
+        verify(sectionManager, never()).goTo(any());
+    }
+
+    @Test
     public void testShowSaveModalWithValidationError() {
+        doReturn(true).when(projectController).canUpdateProject(any());
         Section<ProjectScreenModel> section = newMockedSection();
         doReturn(promises.reject(section)).when(sectionManager).validateAll();
 
@@ -540,6 +584,26 @@ public class SettingsPresenterTest {
         presenter.onSettingsSectionChanged(new SettingsSectionChange<>(section));
 
         verify(sectionManager).updateDirtyIndicator(eq(section));
+    }
+
+    @Test
+    public void testResetWithPermission() {
+        doReturn(true).when(projectController).canUpdateProject(any());
+        doReturn(promises.resolve()).when(presenter).setupUsingCurrentSection();
+
+        presenter.reset();
+
+        verify(presenter).setupUsingCurrentSection();
+    }
+
+    @Test
+    public void testResetWithoutPermission() {
+        doReturn(false).when(projectController).canUpdateProject(any());
+        doReturn(promises.resolve()).when(presenter).setupUsingCurrentSection();
+
+        presenter.reset();
+
+        verify(presenter, never()).setupUsingCurrentSection();
     }
 
     public static Section<ProjectScreenModel> newMockedSection() {

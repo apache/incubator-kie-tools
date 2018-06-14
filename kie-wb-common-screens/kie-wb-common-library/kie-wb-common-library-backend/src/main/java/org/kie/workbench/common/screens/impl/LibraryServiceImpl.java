@@ -52,6 +52,7 @@ import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.structure.security.OrganizationalUnitAction;
+import org.guvnor.structure.security.RepositoryAction;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.exception.UnauthorizedException;
 import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
@@ -185,15 +186,19 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     public LibraryInfo getLibraryInfo(final OrganizationalUnit organizationalUnit) {
-        final Collection<WorkspaceProject> result = projectService.getAllWorkspaceProjects(organizationalUnit);
+        final Collection<WorkspaceProject> projects = projectService.getAllWorkspaceProjects(organizationalUnit).stream()
+                .filter(p -> authorizationManager.authorize(p.getRepository(),
+                                                            RepositoryAction.READ,
+                                                            sessionInfo.getIdentity()))
+                .collect(Collectors.toList());
 
-        for (final WorkspaceProject workspaceProject : result) {
-            if (workspaceProject.getMainModule() != null) {
-                workspaceProject.getMainModule().setNumberOfAssets(getNumberOfAssets(workspaceProject));
+        projects.stream().forEach(p -> {
+            if (p.getMainModule() != null) {
+                p.getMainModule().setNumberOfAssets(getNumberOfAssets(p));
             }
-        }
+        });
 
-        return new LibraryInfo(result);
+        return new LibraryInfo(projects);
     }
 
     @Override

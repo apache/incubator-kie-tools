@@ -44,6 +44,7 @@ import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
+import org.guvnor.structure.security.RepositoryAction;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -103,6 +104,9 @@ public class LibraryServiceImplTest {
 
     @Mock
     private OrganizationalUnitService ouService;
+
+    @Mock
+    private AuthorizationManager authorizationManager;
 
     @Mock
     private WorkspaceProjectService projectService;
@@ -200,7 +204,7 @@ public class LibraryServiceImplTest {
         libraryService = spy(new LibraryServiceImpl(ouService,
                                                     refactoringQueryService,
                                                     preferences,
-                                                    mock(AuthorizationManager.class),
+                                                    authorizationManager,
                                                     mock(SessionInfo.class),
                                                     explorerServiceHelper,
                                                     projectService,
@@ -250,19 +254,33 @@ public class LibraryServiceImplTest {
 
     @Test
     public void getLibraryInfoTest() {
-        final Path path = mockPath("file://the_project");
-        final WorkspaceProject project = mock(WorkspaceProject.class);
-        when(project.getRootPath()).thenReturn(path);
+        final Path path1 = mockPath("file://project1");
+        final WorkspaceProject project1 = mock(WorkspaceProject.class);
+        final Repository repository1 = mock(Repository.class);
+        when(project1.getRootPath()).thenReturn(path1);
+        when(project1.getRepository()).thenReturn(repository1);
+
+        final Path path2 = mockPath("file://project2");
+        final WorkspaceProject project2 = mock(WorkspaceProject.class);
+        final Repository repository2 = mock(Repository.class);
+        when(project2.getRootPath()).thenReturn(path2);
+        when(project2.getRepository()).thenReturn(repository2);
+
+        doReturn(true).when(authorizationManager).authorize(same(repository2),
+                                                            eq(RepositoryAction.READ),
+                                                            any());
+
         doReturn(true).when(ioService).exists(any());
 
         final Set<WorkspaceProject> projects = new HashSet<>();
-        projects.add(project);
+        projects.add(project1);
+        projects.add(project2);
         doReturn(projects).when(projectService).getAllWorkspaceProjects(ou1);
 
         final LibraryInfo libraryInfo = libraryService.getLibraryInfo(ou1);
 
-        assertEquals(new HashSet<>(projects),
-                     libraryInfo.getProjects());
+        assertEquals(1, libraryInfo.getProjects().size());
+        assertSame(project2, libraryInfo.getProjects().iterator().next());
     }
 
     @Test

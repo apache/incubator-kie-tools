@@ -58,7 +58,9 @@ public class EmptyAssetsScreen {
     public void initialize() {
         this.view.init(this);
 
-        this.enableButtons(canUpdateProject());
+        final boolean userCanUpdateProject = canUpdateProject();
+
+        this.enableButtons(userCanUpdateProject);
 
         newFileUploader.acceptContext(new Callback<Boolean, Void>() {
             @Override
@@ -68,7 +70,7 @@ public class EmptyAssetsScreen {
 
             @Override
             public void onSuccess(Boolean result) {
-                view.enableImportButton(result);
+                view.enableImportButton(result && userCanUpdateProject);
             }
         });
     }

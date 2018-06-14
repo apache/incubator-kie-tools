@@ -213,6 +213,106 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
     }
 
     @Test
+    public void testActionsVisibilityWithPermissionToUpdateProjectOnly() {
+        doReturn(true).when(this.presenter).userCanUpdateProject();
+
+        presenter.initialize();
+
+        verify(view).setAddAssetVisible(true);
+        verify(view).setImportAssetVisible(true);
+        verify(view).setEditContributorsVisible(false);
+        verify(view).setDuplicateVisible(false);
+        verify(view).setReimportVisible(true);
+        verify(view).setDeleteProjectVisible(false);
+        verify(view).setBuildEnabled(false);
+        verify(view).setDeployEnabled(false);
+        verify(view).setActionsVisible(true);
+    }
+
+    @Test
+    public void testActionsVisibilityWithPermissionToUpdateSpaceOnly() {
+        doReturn(true).when(this.presenter).canEditContributors();
+
+        presenter.initialize();
+
+        verify(view).setAddAssetVisible(false);
+        verify(view).setImportAssetVisible(false);
+        verify(view).setEditContributorsVisible(true);
+        verify(view).setDuplicateVisible(false);
+        verify(view).setReimportVisible(false);
+        verify(view).setDeleteProjectVisible(false);
+        verify(view).setBuildEnabled(false);
+        verify(view).setDeployEnabled(false);
+        verify(view).setActionsVisible(true);
+    }
+
+    @Test
+    public void testActionsVisibilityWithPermissionToDeleteProjectOnly() {
+        doReturn(true).when(this.presenter).userCanDeleteProject();
+
+        presenter.initialize();
+
+        verify(view).setAddAssetVisible(false);
+        verify(view).setImportAssetVisible(false);
+        verify(view).setEditContributorsVisible(false);
+        verify(view).setDuplicateVisible(false);
+        verify(view).setReimportVisible(false);
+        verify(view).setDeleteProjectVisible(true);
+        verify(view).setBuildEnabled(false);
+        verify(view).setDeployEnabled(false);
+        verify(view).setActionsVisible(true);
+    }
+
+    @Test
+    public void testActionsVisibilityWithPermissionToBuildProjectOnly() {
+        doReturn(true).when(this.presenter).userCanBuildProject();
+
+        presenter.initialize();
+
+        verify(view).setAddAssetVisible(false);
+        verify(view).setImportAssetVisible(false);
+        verify(view).setEditContributorsVisible(false);
+        verify(view).setDuplicateVisible(false);
+        verify(view).setReimportVisible(false);
+        verify(view).setDeleteProjectVisible(false);
+        verify(view).setBuildEnabled(true);
+        verify(view).setDeployEnabled(true);
+        verify(view).setActionsVisible(true);
+    }
+
+    @Test
+    public void testActionsVisibilityWithPermissionToCreateProjectsOnly() {
+        doReturn(true).when(this.presenter).userCanCreateProjects();
+
+        presenter.initialize();
+
+        verify(view).setAddAssetVisible(false);
+        verify(view).setImportAssetVisible(false);
+        verify(view).setEditContributorsVisible(false);
+        verify(view).setDuplicateVisible(true);
+        verify(view).setReimportVisible(false);
+        verify(view).setDeleteProjectVisible(false);
+        verify(view).setBuildEnabled(false);
+        verify(view).setDeployEnabled(false);
+        verify(view).setActionsVisible(true);
+    }
+
+    @Test
+    public void testActionsVisibilityWithoutAllPermissions() {
+        presenter.initialize();
+
+        verify(view).setAddAssetVisible(false);
+        verify(view).setImportAssetVisible(false);
+        verify(view).setEditContributorsVisible(false);
+        verify(view).setDuplicateVisible(false);
+        verify(view).setReimportVisible(false);
+        verify(view).setDeleteProjectVisible(false);
+        verify(view).setBuildEnabled(false);
+        verify(view).setDeployEnabled(false);
+        verify(view).setActionsVisible(false);
+    }
+
+    @Test
     public void testAddAsset() {
         {
             doReturn(false).when(this.presenter).userCanUpdateProject();
@@ -246,22 +346,14 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
 
     @Test
     public void testShowSettings() {
-
         SettingsPresenter.View settingsView = mock(SettingsPresenter.View.class);
         when(settingsView.getElement()).thenReturn(new HTMLElement());
         when(this.settingsPresenter.getView()).thenReturn(settingsView);
         doReturn(promises.resolve()).when(settingsPresenter).setupUsingCurrentSection();
 
-        {
-            doReturn(false).when(this.presenter).userCanUpdateProject();
-            this.presenter.showSettings();
-            verify(view, never()).setContent(any());
-        }
-        {
-            doReturn(true).when(this.presenter).userCanUpdateProject();
-            this.presenter.showSettings();
-            verify(view).setContent(any());
-        }
+        this.presenter.showSettings();
+
+        verify(view).setContent(any());
     }
 
     @Test

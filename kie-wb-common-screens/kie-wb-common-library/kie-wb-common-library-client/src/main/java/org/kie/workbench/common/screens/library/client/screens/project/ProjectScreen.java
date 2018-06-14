@@ -83,17 +83,23 @@ public class ProjectScreen {
 
         void setTitle(String projectName);
 
-        void setEditContributorsVisible(boolean visible);
-
         void setAddAssetVisible(boolean visible);
 
         void setImportAssetVisible(boolean visible);
+
+        void setEditContributorsVisible(boolean visible);
+
+        void setDuplicateVisible(boolean visible);
+
+        void setReimportVisible(boolean visible);
+
+        void setDeleteProjectVisible(boolean visible);
 
         void setBuildEnabled(boolean enabled);
 
         void setDeployEnabled(boolean enabled);
 
-        void setDeleteProjectVisible(boolean visible);
+        void setActionsVisible(boolean visible);
 
         String getLoadingMessage();
 
@@ -182,13 +188,22 @@ public class ProjectScreen {
         this.resolveAssetsCount();
         this.showAssets();
 
-        this.view.setEditContributorsVisible(this.canEditContributors());
-        this.view.setAddAssetVisible(this.userCanUpdateProject());
-        this.view.setImportAssetVisible(this.userCanUpdateProject());
-        this.view.setImportAssetVisible(this.userCanUpdateProject());
-        this.view.setBuildEnabled(this.userCanBuildProject());
-        this.view.setDeployEnabled(this.userCanBuildProject());
-        this.view.setDeleteProjectVisible(this.userCanDeleteRepository());
+        final boolean userCanUpdateProject = this.userCanUpdateProject();
+        final boolean userCanEditContributors = this.canEditContributors();
+        final boolean userCanDeleteProject = this.userCanDeleteProject();
+        final boolean userCanBuildProject = this.userCanBuildProject();
+        final boolean userCanCreateProjects = this.userCanCreateProjects();
+
+        this.view.setAddAssetVisible(userCanUpdateProject);
+        this.view.setImportAssetVisible(userCanUpdateProject);
+        this.view.setEditContributorsVisible(userCanEditContributors);
+        this.view.setDuplicateVisible(userCanCreateProjects);
+        this.view.setReimportVisible(userCanUpdateProject);
+        this.view.setDeleteProjectVisible(userCanDeleteProject);
+        this.view.setBuildEnabled(userCanBuildProject);
+        this.view.setDeployEnabled(userCanBuildProject);
+
+        this.view.setActionsVisible(userCanUpdateProject || userCanEditContributors || userCanDeleteProject || userCanBuildProject || userCanCreateProjects);
 
         newFileUploader.acceptContext(new Callback<Boolean, Void>() {
             @Override
@@ -198,7 +213,7 @@ public class ProjectScreen {
 
             @Override
             public void onSuccess(Boolean result) {
-                view.setImportAssetVisible(result);
+                view.setImportAssetVisible(result && userCanUpdateProject);
             }
         });
     }
@@ -259,7 +274,7 @@ public class ProjectScreen {
     }
 
     public void delete() {
-        if (userCanDeleteRepository()) {
+        if (userCanDeleteProject()) {
             final DeleteProjectPopUpScreen popUp = deleteProjectPopUpScreen.get();
             popUp.show(this.workspaceProject);
         }
@@ -278,13 +293,11 @@ public class ProjectScreen {
     }
 
     public void showSettings() {
-        if (userCanUpdateProject()) {
-            settingsPresenter.setupUsingCurrentSection().then(i -> {
-                SettingsPresenter.View settingsView = this.settingsPresenter.getView();
-                this.view.setContent(settingsView.getElement());
-                return promises.resolve();
-            });
-        }
+        settingsPresenter.setupUsingCurrentSection().then(i -> {
+            SettingsPresenter.View settingsView = this.settingsPresenter.getView();
+            this.view.setContent(settingsView.getElement());
+            return promises.resolve();
+        });
     }
 
     public void rename() {
@@ -369,7 +382,7 @@ public class ProjectScreen {
         return this.organizationalUnitController.canUpdateOrgUnit(this.workspaceProject.getOrganizationalUnit());
     }
 
-    public boolean userCanDeleteRepository() {
+    public boolean userCanDeleteProject() {
         return projectController.canDeleteProject(this.workspaceProject);
     }
 

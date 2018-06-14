@@ -96,6 +96,11 @@ public class ProjectView implements ProjectScreen.View,
 
     @Inject
     @Named("span")
+    @DataField("actions-dropdown")
+    private HTMLElement actionsDropdown;
+
+    @Inject
+    @Named("span")
     @DataField("contributors-count")
     private HTMLElement contributorsCount;
 
@@ -104,11 +109,11 @@ public class ProjectView implements ProjectScreen.View,
     private HTMLAnchorElement deleteProject;
 
     @Inject
-    @DataField("import-asset")
+    @DataField("import-asset-action")
     private HTMLAnchorElement importAsset;
 
     @Inject
-    @DataField("add-asset")
+    @DataField("add-asset-action")
     private HTMLAnchorElement addAsset;
 
     @Inject
@@ -166,11 +171,6 @@ public class ProjectView implements ProjectScreen.View,
     }
 
     @Override
-    public void setEditContributorsVisible(boolean visible) {
-        this.editContributors.hidden = !visible;
-    }
-
-    @Override
     public void setAddAssetVisible(boolean visible) {
         this.addAsset.hidden = !visible;
     }
@@ -178,6 +178,21 @@ public class ProjectView implements ProjectScreen.View,
     @Override
     public void setImportAssetVisible(boolean visible) {
         this.importAsset.hidden = !visible;
+    }
+
+    @Override
+    public void setEditContributorsVisible(boolean visible) {
+        this.editContributors.hidden = !visible;
+    }
+
+    @Override
+    public void setDuplicateVisible(boolean visible) {
+        this.duplicate.hidden = !visible;
+    }
+
+    @Override
+    public void setReimportVisible(boolean visible) {
+        this.reimport.hidden = !visible;
     }
 
     @Override
@@ -193,6 +208,11 @@ public class ProjectView implements ProjectScreen.View,
     @Override
     public void setDeleteProjectVisible(boolean visible) {
         this.deleteProject.hidden = !visible;
+    }
+
+    @Override
+    public void setActionsVisible(boolean visible) {
+        this.actionsDropdown.hidden = !visible;
     }
 
     @Override
@@ -248,7 +268,7 @@ public class ProjectView implements ProjectScreen.View,
         presenter.delete();
     }
 
-    @EventHandler("import-asset")
+    @EventHandler("import-asset-action")
     public void importAsset(final ClickEvent event) {
         presenter.importAsset();
     }
@@ -273,7 +293,7 @@ public class ProjectView implements ProjectScreen.View,
         presenter.deploy();
     }
 
-    @EventHandler("add-asset")
+    @EventHandler("add-asset-action")
     public void addAsset(final ClickEvent event) {
         presenter.addAsset();
     }
