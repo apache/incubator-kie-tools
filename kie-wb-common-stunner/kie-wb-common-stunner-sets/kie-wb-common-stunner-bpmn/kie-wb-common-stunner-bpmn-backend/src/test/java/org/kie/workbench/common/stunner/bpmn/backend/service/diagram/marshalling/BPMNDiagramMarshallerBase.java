@@ -32,10 +32,12 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.eclipse.bpmn2.Definitions;
 import org.kie.workbench.common.stunner.backend.definition.factory.TestScopeModelFactory;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.backend.BPMNDiagramMarshaller;
 import org.kie.workbench.common.stunner.bpmn.backend.BPMNDirectDiagramMarshaller;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder.BPMNGraphObjectBuilderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.Bpmn2OryxIdMappings;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.Bpmn2OryxManager;
@@ -337,6 +339,7 @@ public abstract class BPMNDiagramMarshallerBase {
                 new XMLEncoderDiagramMetadataMarshaller(),
                 definitionManager,
                 rulesManager,
+                widService,
                 applicationFactoryManager,
                 commandFactory,
                 commandManager);
@@ -378,6 +381,11 @@ public abstract class BPMNDiagramMarshallerBase {
 
     protected Diagram<Graph, Metadata> unmarshall(DiagramMarshaller<Graph, Metadata, Diagram<Graph, Metadata>> marshaller, InputStream is) throws Exception {
         return Unmarshalling.unmarshall(marshaller, is);
+    }
+
+    protected Definitions convertToDefinitions(Diagram<Graph, Metadata> d) {
+        return new DefinitionsConverter(d.getGraph())
+                .toDefinitions();
     }
 
     protected InputStream getStream(String data) {

@@ -21,7 +21,7 @@ import java.util.Objects;
 public class VariableDeclaration {
 
     private String identifier;
-    private String type;
+    private String type = "";
 
     public VariableDeclaration(String identifier, String type) {
         this.identifier = identifier;
@@ -31,7 +31,7 @@ public class VariableDeclaration {
     public static VariableDeclaration fromString(String encoded) {
         String[] split = encoded.split(":");
         String identifier = split[0];
-        String type = (split.length == 2) ? split[1] : null;
+        String type = (split.length == 2) ? split[1] : "";
         if (identifier.isEmpty()) {
             throw new IllegalArgumentException("Variable identifier cannot be empty. Given: '" + encoded + "'");
         }

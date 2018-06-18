@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +36,7 @@ import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.emf.ecore.util.FeatureMap;
+import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 
 /**
  * An object that resolves child definitions.
@@ -55,14 +57,18 @@ public class DefinitionResolver {
 
     private final Map<String, Signal> signals;
     private final Map<String, ElementParameters> simulationParameters;
+    private final Collection<WorkItemDefinition> workItemDefinitions;
     private final Definitions definitions;
     private final Process process;
     private final BPMNPlane plane;
 
-    public DefinitionResolver(Definitions definitions) {
+    public DefinitionResolver(
+            Definitions definitions,
+            Collection<WorkItemDefinition> workItemDefinitions) {
         this.definitions = definitions;
         this.signals = initSignals(definitions);
         this.simulationParameters = initSimulationParameters(definitions);
+        this.workItemDefinitions = workItemDefinitions;
         this.process = findProcess();
         this.plane = findPlane();
     }
@@ -77,6 +83,10 @@ public class DefinitionResolver {
 
     public Process getProcess() {
         return process;
+    }
+
+    public Collection<WorkItemDefinition> getWorkItemDefinitions() {
+        return workItemDefinitions;
     }
 
     /**

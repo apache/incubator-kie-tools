@@ -16,54 +16,56 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
+import org.eclipse.bpmn2.Assignment;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
+import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.InputSet;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.Property;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.VariableDeclaration;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Ids;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.AssociationDeclaration;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 
 public class InputAssignmentWriter {
 
-    private final String parentId;
     private final DataInputAssociation association;
-    private final InputSet inputSet;
-    private final DataInput target;
-    private final ItemDefinition typeDef;
-    private final VariableDeclaration decl;
+    private final DeclarationWriter declarationWriter;
 
-    public InputAssignmentWriter(
-            String parentId,
-            VariableScope.Variable variable,
-            VariableDeclaration decl) {
-        this.parentId = parentId;
-        this.decl = decl;
+    public static InputAssignmentWriter fromDeclaration(
+            AssociationDeclaration declaration,
+            DeclarationWriter dw,
+            VariableScope variableScope) {
 
-        // first we declare the type that we will use for the input
-        this.typeDef = typedefInput(decl);
+        switch (declaration.getType()) {
+            case SourceTarget:
+                return new InputAssignmentWriter(
+                        dw,
+                        variableScope.lookup(declaration.getSource()));
 
-        // then we declare the input that will provide
-        // the value that we assign to `source`
-        // e.g. myTarget
-        this.target = readInputFrom(decl.getIdentifier(), typeDef);
-
-        // then we create the actual association between the two
-        // e.g. mySource := myTarget (or, to put it differently, myTarget -> mySource)
-        this.association = associationOf(variable.getTypedIdentifier(), target);
-
-        this.inputSet = bpmn2.createInputSet();
-        this.inputSet.getDataInputRefs().add(target);
+            case FromTo:
+                return new InputAssignmentWriter(
+                        dw,
+                        declaration.getSource());
+            default:
+                throw new IllegalArgumentException("Unrecognized association type " + declaration.getType() +
+                                                           " in declaration " + declaration);
+        }
     }
 
-    private ItemDefinition typedefInput(VariableDeclaration decl) {
-        ItemDefinition typeDef = bpmn2.createItemDefinition();
-        typeDef.setId(Ids.dataInputItem(parentId, decl.getIdentifier()));
-        typeDef.setStructureRef(decl.getType());
-        return typeDef;
+    public InputAssignmentWriter(DeclarationWriter dw, VariableScope.Variable variable) {
+        this.declarationWriter = dw;
+        this.association = associationOf(variable.getTypedIdentifier(), declarationWriter.getDataInput());
+    }
+
+    public InputAssignmentWriter(
+            DeclarationWriter dw,
+            String expression) {
+        this.declarationWriter = dw;
+
+        // then we create the actual association between the two
+        // e.g. myTarget = expression
+        this.association = associationOf(expression, declarationWriter.getDataInput());
     }
 
     private DataInputAssociation associationOf(Property source, DataInput dataInput) {
@@ -79,26 +81,39 @@ public class InputAssignmentWriter {
         return dataInputAssociation;
     }
 
-    private DataInput readInputFrom(String targetName, ItemDefinition typeDef) {
-        DataInput dataInput = bpmn2.createDataInput();
-        // the id is an encoding of the node id + the name of the input
-        dataInput.setId(Ids.dataInput(parentId, decl.getIdentifier()));
-        dataInput.setName(targetName);
-        dataInput.setItemSubjectRef(typeDef);
-        CustomAttribute.dtype.of(dataInput).set(typeDef.getStructureRef());
-        return dataInput;
+    private DataInputAssociation associationOf(String expression, DataInput dataInput) {
+        DataInputAssociation dataInputAssociation =
+                bpmn2.createDataInputAssociation();
+
+        Assignment assignment = bpmn2.createAssignment();
+        String id = dataInput.getId();
+
+        FormalExpression toExpr = bpmn2.createFormalExpression();
+        toExpr.setBody(id);
+        assignment.setTo(toExpr);
+
+        FormalExpression fromExpr = bpmn2.createFormalExpression();
+        fromExpr.setBody(expression);
+        assignment.setFrom(fromExpr);
+
+        dataInputAssociation
+                .getAssignment().add(assignment);
+
+        dataInputAssociation
+                .setTargetRef(dataInput);
+        return dataInputAssociation;
     }
 
     public DataInput getDataInput() {
-        return target;
+        return declarationWriter.getDataInput();
     }
 
     public ItemDefinition getItemDefinition() {
-        return typeDef;
+        return declarationWriter.getItemDefinition();
     }
 
     public InputSet getInputSet() {
-        return inputSet;
+        return declarationWriter.getInputSet();
     }
 
     public DataInputAssociation getAssociation() {

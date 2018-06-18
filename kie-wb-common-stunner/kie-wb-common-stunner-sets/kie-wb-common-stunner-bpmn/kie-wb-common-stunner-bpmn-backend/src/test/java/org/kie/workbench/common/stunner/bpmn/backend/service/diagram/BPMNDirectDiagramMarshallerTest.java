@@ -48,6 +48,7 @@ import org.kie.workbench.common.stunner.backend.definition.factory.TestScopeMode
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.backend.BPMNDirectDiagramMarshaller;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsConverter;
+import org.kie.workbench.common.stunner.bpmn.backend.workitem.service.WorkItemDefinitionBackendService;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
@@ -94,6 +95,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
+import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.backend.BackendFactoryManager;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionAdapter;
@@ -140,6 +143,7 @@ import static org.junit.Assert.fail;
 import static org.kie.workbench.common.stunner.bpmn.backend.service.diagram.Assertions.assertDiagram;
 import static org.kie.workbench.common.stunner.bpmn.backend.service.diagram.Assertions.assertDocumentation;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -189,6 +193,7 @@ public class BPMNDirectDiagramMarshallerTest {
     private static final String BPMN_MAGNETSINLANE = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/magnetsInLane.bpmn";
     private static final String BPMN_ENDERROR_EVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endErrorEvent.bpmn";
     private static final String BPMN_EVENT_DEFINITION_REF = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/eventDefinitionRef.bpmn";
+    private static final String BPMN_SERVICE_TASKS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/serviceTasks.bpmn";
 
     private static final String NEW_LINE = System.lineSeparator();
 
@@ -206,6 +211,8 @@ public class BPMNDirectDiagramMarshallerTest {
 
     BackendFactoryManager applicationFactoryManager;
 
+    WorkItemDefinitionRegistry workItemDefinitionMockRegistry;
+
     private BPMNDirectDiagramMarshaller tested;
 
     private Diagram<Graph, Metadata> unmarshall(String s) throws Exception {
@@ -219,6 +226,8 @@ public class BPMNDirectDiagramMarshallerTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
+        // Work Items.
+        workItemDefinitionMockRegistry = new WorkItemDefinitionMockRegistry();
 
         // Graph utils.
         when(definitionManager.adapters()).thenReturn(adapterManager);
@@ -251,11 +260,16 @@ public class BPMNDirectDiagramMarshallerTest {
                                                                              null);
         GraphCommandFactory commandFactory = new GraphCommandFactory();
 
+        // The work item definition service.
+        WorkItemDefinitionBackendService widService = mock(WorkItemDefinitionBackendService.class);
+        when(widService.execute(any(Metadata.class))).thenReturn(workItemDefinitionMockRegistry.items());
+
         // The tested BPMN marshaller.
         tested = new BPMNDirectDiagramMarshaller(
                 new XMLEncoderDiagramMetadataMarshaller(),
                 definitionManager,
                 rulesManager,
+                widService,
                 applicationFactoryManager,
                 commandFactory,
                 commandManager);
@@ -2531,6 +2545,60 @@ public class BPMNDirectDiagramMarshallerTest {
                       7);
         assertEquals("Lanes test",
                      diagram.getMetadata().getTitle());
+    }
+
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshallWorkItems() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_SERVICE_TASKS);
+        assertDiagram(diagram,
+                      5);
+        // Email service task assertions.
+        Node<? extends Definition, ?> emailNode = diagram.getGraph().getNode("_277CE006-5E6E-4960-A68C-CC8A5347C33F");
+        assertTrue(emailNode.getContent().getDefinition() instanceof ServiceTask);
+        ServiceTask email = (ServiceTask) emailNode.getContent().getDefinition();
+        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getName(),
+                     email.getName());
+        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getCategory(),
+                     email.getCategory());
+        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getDefaultHandler(),
+                     email.getDefaultHandler());
+        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getDescription(),
+                     email.getDescription());
+        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getDisplayName(),
+                     email.getGeneral().getName().getValue());
+        assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getDocumentation(),
+                     email.getGeneral().getDocumentation().getValue());
+        // Log service task assertions.
+        Node<? extends Definition, ?> logNode = diagram.getGraph().getNode("_A940748F-A658-4FB8-84FD-B69F4B7A9205");
+        assertTrue(logNode.getContent().getDefinition() instanceof ServiceTask);
+        ServiceTask log = (ServiceTask) logNode.getContent().getDefinition();
+        assertEquals(WorkItemDefinitionMockRegistry.LOG.getName(),
+                     log.getName());
+        assertEquals(WorkItemDefinitionMockRegistry.LOG.getCategory(),
+                     log.getCategory());
+        assertEquals(WorkItemDefinitionMockRegistry.LOG.getDefaultHandler(),
+                     log.getDefaultHandler());
+        assertEquals(WorkItemDefinitionMockRegistry.LOG.getDescription(),
+                     log.getDescription());
+        assertEquals(WorkItemDefinitionMockRegistry.LOG.getDisplayName(),
+                     log.getGeneral().getName().getValue());
+        assertEquals(WorkItemDefinitionMockRegistry.LOG.getDocumentation(),
+                     log.getGeneral().getDocumentation().getValue());
+    }
+
+    @Test
+    public void testMarshallWorkItems() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_SERVICE_TASKS);
+        String result = tested.marshall(diagram);
+        System.out.println(result);
+        assertDiagram(result,
+                      1,
+                      4,
+                      3);
+        assertTrue(result.contains("drools:taskName=\"Email\""));
+        assertTrue(result.contains("drools:taskName=\"Log\""));
     }
 
     private List<Node> getNodes(Diagram<Graph, Metadata> diagram) {

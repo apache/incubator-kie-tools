@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
+import java.util.Optional;
+
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BPMNShape;
@@ -31,6 +33,9 @@ public class FlowElementPropertyReader extends BasePropertyReader {
     }
 
     public String getName() {
-        return CustomElement.name.of(element).get();
+        String extendedName = CustomElement.name.of(element).get();
+        return extendedName.isEmpty() ?
+                Optional.ofNullable(flowElement.getName()).orElse("")
+                : extendedName;
     }
 }

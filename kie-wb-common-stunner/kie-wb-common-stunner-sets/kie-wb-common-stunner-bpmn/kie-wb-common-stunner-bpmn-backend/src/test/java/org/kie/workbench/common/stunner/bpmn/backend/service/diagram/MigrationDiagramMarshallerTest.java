@@ -371,6 +371,7 @@ public class MigrationDiagramMarshallerTest {
                 new XMLEncoderDiagramMetadataMarshaller(),
                 definitionManager,
                 rulesManager,
+                widService,
                 applicationFactoryManager,
                 commandFactory,
                 commandManager);

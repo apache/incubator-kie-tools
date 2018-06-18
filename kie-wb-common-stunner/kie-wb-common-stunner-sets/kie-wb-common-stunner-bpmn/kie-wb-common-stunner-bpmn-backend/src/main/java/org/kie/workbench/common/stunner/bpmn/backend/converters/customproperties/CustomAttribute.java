@@ -30,6 +30,7 @@ public class CustomAttribute<T> {
     public static final AttributeDefinition<Boolean> independent = new BooleanAttribute(droolsns, "independent", false);
     public static final AttributeDefinition<Boolean> adHoc = new BooleanAttribute(droolsns, "adHoc", false);
     public static final AttributeDefinition<Boolean> waitForCompletion = new BooleanAttribute(droolsns, "waitForCompletion", false);
+    public static final AttributeDefinition<String> serviceTaskName = new StringAttribute(droolsns, "taskName", "");
     public static final AttributeDefinition<String> ruleFlowGroup = new StringAttribute(droolsns, "ruleFlowGroup", "");
     public static final AttributeDefinition<String> packageName = new StringAttribute(droolsns, "packageName", null) {
         @Override

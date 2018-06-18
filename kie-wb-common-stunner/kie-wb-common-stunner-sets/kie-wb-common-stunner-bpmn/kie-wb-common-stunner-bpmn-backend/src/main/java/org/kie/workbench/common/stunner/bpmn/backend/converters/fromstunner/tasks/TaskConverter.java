@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.prop
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.ScriptTaskPropertyWriter;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.ServiceTaskPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.UserTaskPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
@@ -33,6 +34,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGen
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BusinessRuleTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTaskExecutionSet;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
@@ -52,7 +55,36 @@ public class TaskConverter {
                 .when(ScriptTask.class, this::scriptTask)
                 .when(BusinessRuleTask.class, this::businessRuleTask)
                 .when(UserTask.class, this::userTask)
+                .when(ServiceTask.class, this::serviceTask)
                 .apply(node).value();
+    }
+
+    private PropertyWriter serviceTask(Node<View<ServiceTask>, ?> n) {
+        org.eclipse.bpmn2.Task task = bpmn2.createTask();
+        task.setId(n.getUUID());
+        ServiceTask definition = n.getContent().getDefinition();
+        ServiceTaskPropertyWriter p = propertyWriterFactory.of(task);
+
+        p.setServiceTaskName(definition.getName());
+
+        TaskGeneralSet general = definition.getGeneral();
+        p.setName(general.getName().getValue());
+        p.setDocumentation(general.getDocumentation().getValue());
+
+        ServiceTaskExecutionSet executionSet =
+                definition.getExecutionSet();
+
+        p.setAsync(executionSet.getIsAsync().getValue());
+        p.setOnEntryAction(executionSet.getOnEntryAction());
+        p.setOnExitAction(executionSet.getOnExitAction());
+        p.setAdHocAutostart(executionSet.getAdHocAutostart().getValue());
+
+        p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
+
+        p.setSimulationSet(definition.getSimulationSet());
+
+        p.setBounds(n.getContent().getBounds());
+        return p;
     }
 
     private PropertyWriter userTask(Node<View<UserTask>, ?> n) {

@@ -43,8 +43,8 @@ public class CatchEventPropertyWriter extends EventPropertyWriter {
                         flowElement.getId(),
                         assignmentsInfo
                                 .getOutputs()
-                                .lookup(declaration.getLeft()),
-                        variableScope.lookup(declaration.getRight())
+                                .lookup(declaration.getSource()),
+                        variableScope.lookup(declaration.getTarget())
                 ))
                 .forEach(doa -> {
                     this.addItemDefinition(doa.getItemDefinition());

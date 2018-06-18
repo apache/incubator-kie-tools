@@ -53,7 +53,7 @@ public abstract class CustomInputDefinition<T> {
     Optional<String> getStringValue(Task element) {
         for (DataInputAssociation din : element.getDataInputAssociations()) {
             DataInput targetRef = (DataInput) (din.getTargetRef());
-            if (targetRef.getName().equalsIgnoreCase(name)) {
+            if (targetRef.getName().equalsIgnoreCase(name) && !din.getAssignment().isEmpty()) {
                 Assignment assignment = din.getAssignment().get(0);
                 return Optional.of(evaluate(assignment).toString());
             }

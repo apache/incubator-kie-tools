@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.bpmn2.Definitions;
@@ -43,7 +44,7 @@ class TestDefinitionsWriter {
         bpmnDiagram.setPlane(di.createBPMNPlane());
         definitions.getDiagrams().add(bpmnDiagram);
 
-        this.definitionResolver = new DefinitionResolver(definitions);
+        this.definitionResolver = new DefinitionResolver(definitions, Collections.emptyList());
     }
 
     DefinitionResolver getDefinitionResolver() {

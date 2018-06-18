@@ -16,13 +16,19 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.eclipse.bpmn2.Assignment;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
+import org.eclipse.bpmn2.FormalExpression;
+import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Property;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.AssociationDeclaration;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.AssociationDeclaration.Direction;
@@ -33,9 +39,28 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.VariableDeclaration;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 
+import static java.util.Arrays.asList;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.AssociationDeclaration.Type;
 
 public class AssignmentsInfos {
+
+    private static Set<String> RESERVED_DECLARATIONS = new HashSet<>(asList(
+            "TaskName"));
+
+    private static Set<String> RESERVED_ASSIGNMENTS = new HashSet<>(asList(
+            "GroupId",
+            "Skippable",
+            "Comment",
+            "Description",
+            "Priority",
+            "Content",
+            "TaskName",
+            "Locale",
+            "CreatedBy",
+            "NotCompletedReassign",
+            "NotStartedReassign",
+            "NotCompletedNotify",
+            "NotStartedNotify"));
 
     public static AssignmentsInfo of(
             final List<DataInput> datainput,
@@ -55,10 +80,18 @@ public class AssignmentsInfos {
                 inputs, outputs, associations, alternativeEncoding).toString());
     }
 
+    public static boolean isReservedDeclaration(DataInput o) {
+        return RESERVED_DECLARATIONS.contains(o.getName());
+    }
+
+    public static boolean isReservedIdentifier(String targetName) {
+        return RESERVED_ASSIGNMENTS.contains(targetName);
+    }
+
     private static DeclarationList dataInputDeclarations(List<DataInput> dataInputs) {
         return new DeclarationList(
                 dataInputs.stream()
-                        .filter(o -> !o.getName().equals("TaskName"))
+                        .filter(o -> !isReservedDeclaration(o))
                         .map(in -> new VariableDeclaration(
                                 in.getName(),
                                 CustomAttribute.dtype.of(in).get()))
@@ -76,14 +109,35 @@ public class AssignmentsInfos {
     }
 
     private static List<AssociationDeclaration> inAssociationDeclarations(List<DataInputAssociation> inputAssociations) {
-        return inputAssociations.stream()
-                .filter(association -> !association.getSourceRef().isEmpty())
-                .map(in -> new AssociationDeclaration(
+        List<AssociationDeclaration> result = new ArrayList<>();
+        for (DataInputAssociation in : inputAssociations) {
+            List<ItemAwareElement> sourceList = in.getSourceRef();
+            List<Assignment> assignmentList = in.getAssignment();
+            String targetName = ((DataInput) in.getTargetRef()).getName();
+            if (isReservedIdentifier(targetName)) {
+                continue;
+            }
+
+            if (!sourceList.isEmpty()) {
+                String propertyName = getPropertyName((Property) sourceList.get(0));
+                result.add(new AssociationDeclaration(
                         Direction.Input,
                         Type.SourceTarget,
-                        getPropertyName((Property) in.getSourceRef().get(0)),
-                        ((DataInput) in.getTargetRef()).getName()))
-                .collect(Collectors.toList());
+                        propertyName,
+                        targetName));
+            } else if (!assignmentList.isEmpty()) {
+                Assignment assignment = assignmentList.get(0);
+                result.add(new AssociationDeclaration(
+                        Direction.Input,
+                        Type.FromTo,
+                        ((FormalExpression) assignment.getFrom()).getBody(),
+                        targetName));
+            } else {
+                throw new IllegalArgumentException("Cannot find SourceRef or Assignment for Target " + targetName);
+            }
+        }
+
+        return result;
     }
 
     private static List<AssociationDeclaration> outAssociationDeclarations(List<DataOutputAssociation> outputAssociations) {

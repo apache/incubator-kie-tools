@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.toList;
+
 public class AssociationList {
 
     private final List<AssociationDeclaration> inputs;
@@ -56,12 +58,16 @@ public class AssociationList {
             return new AssociationList(
                     Arrays.stream(encoded.split(","))
                             .map(AssociationDeclaration::fromString)
-                            .collect(Collectors.toList()));
+                            .collect(toList()));
         }
     }
 
     public List<AssociationDeclaration> getInputs() {
         return inputs;
+    }
+
+    public Stream<AssociationDeclaration> lookupInput(String id) {
+        return inputs.stream().filter(in -> in.getTarget().equals(id));
     }
 
     public List<AssociationDeclaration> getOutputs() {

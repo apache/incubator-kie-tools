@@ -112,11 +112,11 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
         if (simulationParameters != null) {
             this.simulationParameters.add(simulationParameters);
         }
+
         addChildShape(p.getShape());
         addChildEdge(p.getEdge());
-        this.itemDefinitions.addAll(p.itemDefinitions);
+        this.itemDefinitions.addAll(p.getItemDefinitions());
         this.rootElements.addAll(p.rootElements);
-        this.itemDefinitions.addAll(p.itemDefinitions);
 
         if (p instanceof SubProcessPropertyWriter) {
             Collection<BasePropertyWriter> childElements =

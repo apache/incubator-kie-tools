@@ -49,6 +49,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.Defini
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.GraphBuilder;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.resource.JBPMBpmn2ResourceFactoryImpl;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.resource.JBPMBpmn2ResourceImpl;
+import org.kie.workbench.common.stunner.bpmn.backend.workitem.service.WorkItemDefinitionBackendService;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.backend.service.XMLEncoderDiagramMetadataMarshaller;
@@ -77,6 +78,7 @@ public class BPMNDirectDiagramMarshaller implements DiagramMarshaller<Graph, Met
     private final XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller;
     private final DefinitionManager definitionManager;
     private final RuleManager ruleManager;
+    private final WorkItemDefinitionBackendService workItemDefinitionService;
     private final TypedFactoryManager typedFactoryManager;
     private final GraphCommandFactory commandFactory;
     private final GraphCommandManager commandManager;
@@ -86,12 +88,14 @@ public class BPMNDirectDiagramMarshaller implements DiagramMarshaller<Graph, Met
             final XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller,
             final DefinitionManager definitionManager,
             final RuleManager ruleManager,
+            final WorkItemDefinitionBackendService workItemDefinitionService,
             final FactoryManager factoryManager,
             final GraphCommandFactory commandFactory,
             final GraphCommandManager commandManager) {
         this.diagramMetadataMarshaller = diagramMetadataMarshaller;
         this.definitionManager = definitionManager;
         this.ruleManager = ruleManager;
+        this.workItemDefinitionService = workItemDefinitionService;
         this.typedFactoryManager = new TypedFactoryManager(factoryManager);
         this.commandFactory = commandFactory;
         this.commandManager = commandManager;
@@ -133,7 +137,9 @@ public class BPMNDirectDiagramMarshaller implements DiagramMarshaller<Graph, Met
 
         // definition resolver provides utlities to access elements of the BPMN datamodel
         DefinitionResolver definitionResolver =
-                new DefinitionResolver(parseDefinitions(inputStream));
+                new DefinitionResolver(
+                        parseDefinitions(inputStream),
+                        workItemDefinitionService.execute(metadata));
 
         metadata.setCanvasRootUUID(definitionResolver.getDefinitions().getId());
         metadata.setTitle(definitionResolver.getProcess().getName());

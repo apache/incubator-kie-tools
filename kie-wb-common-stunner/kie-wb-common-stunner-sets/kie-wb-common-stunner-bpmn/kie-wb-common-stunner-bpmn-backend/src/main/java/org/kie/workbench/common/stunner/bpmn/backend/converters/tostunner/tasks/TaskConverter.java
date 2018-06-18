@@ -19,10 +19,12 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.tasks
 import org.eclipse.bpmn2.Task;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.Match;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.BusinessRuleTaskPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.ScriptTaskPropertyReader;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.ServiceTaskPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.TaskPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.UserTaskPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
@@ -50,6 +52,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.Skippable;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Subject;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTaskExecutionSet;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -69,10 +73,49 @@ public class TaskConverter {
                 .when(org.eclipse.bpmn2.BusinessRuleTask.class, this::businessRuleTask)
                 .when(org.eclipse.bpmn2.ScriptTask.class, this::scriptTask)
                 .when(org.eclipse.bpmn2.UserTask.class, this::userTask)
-                .missing(org.eclipse.bpmn2.ServiceTask.class)
                 .missing(org.eclipse.bpmn2.ManualTask.class)
-                .orElse(this::noneTask)
+                .orElse(this::fallback)
                 .apply(task).value();
+    }
+
+    private BpmnNode serviceTask(org.eclipse.bpmn2.Task task) {
+        Node<View<ServiceTask>, Edge> node = factoryManager.newNode(task.getId(), ServiceTask.class);
+
+        ServiceTask definition = node.getContent().getDefinition();
+        ServiceTaskPropertyReader p = propertyReaderFactory.ofCustom(task);
+
+        definition.setName(p.getServiceTaskName());
+        definition.getTaskType().setRawType(p.getServiceTaskName());
+        definition.setDescription(p.getServiceTaskDescription());
+        definition.setCategory(p.getServiceTaskCategory());
+        definition.setDefaultHandler(p.getServiceTaskDefaultHandler());
+
+        definition.setGeneral(new TaskGeneralSet(
+                new Name(p.getName()),
+                new Documentation(p.getDocumentation())
+        ));
+
+        definition.setDataIOSet(new DataIOSet(
+                p.getAssignmentsInfo()
+        ));
+
+        definition.setExecutionSet(new ServiceTaskExecutionSet(
+                new TaskName(p.getTaskName()),
+                new IsAsync(p.isAsync()),
+                new AdHocAutostart(p.isAdHocAutoStart()),
+                new OnEntryAction(p.getOnEntryAction()),
+                new OnExitAction(p.getOnExitAction())
+        ));
+
+        definition.setSimulationSet(p.getSimulationSet());
+
+        node.getContent().setBounds(p.getBounds());
+
+        definition.setDimensionsSet(p.getRectangleDimensionsSet());
+        definition.setBackgroundSet(p.getBackgroundSet());
+        definition.setFontSet(p.getFontSet());
+
+        return BpmnNode.of(node);
     }
 
     private BpmnNode businessRuleTask(org.eclipse.bpmn2.BusinessRuleTask task) {
@@ -174,6 +217,17 @@ public class TaskConverter {
         definition.setFontSet(p.getFontSet());
 
         return BpmnNode.of(node);
+    }
+
+    private BpmnNode fallback(Task task) {
+        String taskName = CustomAttribute.serviceTaskName.of(task).get();
+        if (taskName.isEmpty()) {
+            return noneTask(task);
+        } else if (taskName.equals("BusinessRuleTask")) {
+            return noneTask(task);
+        } else {
+            return serviceTask(task);
+        }
     }
 
     private BpmnNode noneTask(Task task) {
