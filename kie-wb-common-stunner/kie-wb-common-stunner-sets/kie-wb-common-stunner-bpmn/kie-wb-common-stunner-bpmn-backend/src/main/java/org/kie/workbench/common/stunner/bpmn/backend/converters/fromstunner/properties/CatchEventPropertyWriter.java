@@ -57,6 +57,7 @@ public class CatchEventPropertyWriter extends EventPropertyWriter {
     public void setSimulationSet(SimulationAttributeSet simulationSet) {
         this.simulationParameters =
                 SimulationAttributeSets.toElementParameters(simulationSet);
+        simulationParameters.setElementRef(getId());
     }
 
     public ElementParameters getSimulationParameters() {
