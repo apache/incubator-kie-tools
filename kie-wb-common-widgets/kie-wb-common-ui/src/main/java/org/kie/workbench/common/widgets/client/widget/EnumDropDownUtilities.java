@@ -27,6 +27,7 @@ import org.jboss.errai.bus.client.api.BusErrorCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.soup.commons.util.ListSplitter;
 import org.kie.soup.project.datamodel.oracle.DropDownData;
 import org.kie.workbench.common.services.shared.enums.EnumDropdownService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -41,7 +42,6 @@ public class EnumDropDownUtilities {
 
     /**
      * Populate ListBox with values from DropDownData
-     *
      * @param value
      * @param dropData
      * @param isMultipleSelect
@@ -121,42 +121,28 @@ public class EnumDropDownUtilities {
 
         listBox.clear();
 
-        int selectedIndexOffset = addItems(listBox);
+        final Set<String> currentValues = getCurrentValues(value,
+                                                           isMultipleSelect);
 
+        int selectedIndexOffset = addItems(listBox);
         boolean selected = false;
-        Set<String> currentValues = new HashSet<String>();
-        String currentValue = value;
-        String trimmedCurrentValue = currentValue;
-        if (isMultipleSelect && trimmedCurrentValue != null) {
-            trimmedCurrentValue = currentValue.replace("\"",
-                                                       "");
-            trimmedCurrentValue = trimmedCurrentValue.replace("(",
-                                                              "");
-            trimmedCurrentValue = trimmedCurrentValue.replace(")",
-                                                              "");
-            for (String val : Arrays.asList(trimmedCurrentValue.split(","))) {
-                currentValues.add(val.trim());
-            }
-        } else {
-            currentValues.add(currentValue);
-        }
 
         for (int i = 0; i < enumeratedValues.length; i++) {
-            String v = enumeratedValues[i];
+            String enumeratedValue = enumeratedValues[i];
             String val;
-            if (v.indexOf('=') > 0) {
+            if (enumeratedValue.indexOf('=') > 0) {
                 //using a mapping
-                String[] splut = ConstraintValueHelper.splitValue(v);
-                String realValue = splut[0];
-                String display = splut[1];
+                final String[] split = ConstraintValueHelper.splitValue(enumeratedValue);
+                final String realValue = split[0];
+                final String display = split[1];
                 val = realValue;
                 listBox.addItem(display,
                                 realValue);
             } else {
-                listBox.addItem(v);
-                val = v;
+                listBox.addItem(enumeratedValue);
+                val = enumeratedValue;
             }
-            if (currentValue != null && currentValues.contains(val)) {
+            if (value != null && currentValues.contains(val)) {
                 listBox.setItemSelected(i + selectedIndexOffset,
                                         true);
                 selected = true;
@@ -166,6 +152,34 @@ public class EnumDropDownUtilities {
         if (!selected) {
             selectItem(listBox);
         }
+    }
+
+    private Set<String> getCurrentValues(final String value,
+                                         final boolean isMultipleSelect) {
+        final Set<String> result = new HashSet<String>();
+
+        if (value != null) {
+            if (isMultipleSelect) {
+                Arrays.stream(ListSplitter.split("\"",
+                                                 true,
+                                                 removeBrackets(value)))
+                        .forEach(enumItem -> result.add(enumItem.trim()));
+            } else {
+                result.add(value);
+            }
+        }
+
+        return result;
+    }
+
+    private String removeBrackets(final String value) {
+        String trimmedCurrentValue = value;
+
+        trimmedCurrentValue = trimmedCurrentValue.replace("(",
+                                                          "");
+        trimmedCurrentValue = trimmedCurrentValue.replace(")",
+                                                          "");
+        return trimmedCurrentValue;
     }
 
     protected int addItems(final ListBox listBox) {
