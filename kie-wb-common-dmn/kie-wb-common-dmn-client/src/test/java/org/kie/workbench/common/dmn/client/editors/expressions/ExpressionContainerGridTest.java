@@ -44,6 +44,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCacheImpl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -73,6 +74,8 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -83,8 +86,7 @@ public class ExpressionContainerGridTest {
 
     private static final String NAME = "name";
 
-    @Mock
-    private DMNGridLayer gridLayer;
+    private static final double COLUMN_NEW_WIDTH = 200.0;
 
     @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
@@ -137,6 +139,9 @@ public class ExpressionContainerGridTest {
     @Captor
     private ArgumentCaptor<Optional<HasName>> hasNameCaptor;
 
+    @Captor
+    private ArgumentCaptor<ClearExpressionTypeCommand> clearExpressionTypeCommandCaptor;
+
     private HasName hasName = new HasName() {
 
         private Name name = new Name(NAME);
@@ -156,12 +161,15 @@ public class ExpressionContainerGridTest {
 
     private ExpressionGridCache expressionGridCache;
 
+    private DMNGridLayer gridLayer;
+
     private ExpressionContainerGrid grid;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
         this.expressionGridCache = new ExpressionGridCacheImpl();
+        this.gridLayer = spy(new DMNGridLayer());
         this.grid = new ExpressionContainerGrid(gridLayer,
                                                 cellEditorControls,
                                                 translationService,
@@ -171,6 +179,8 @@ public class ExpressionContainerGridTest {
                                                 expressionEditorDefinitionsSupplier,
                                                 expressionGridCache,
                                                 onHasNameChanged);
+
+        this.gridLayer.add(grid);
 
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add(undefinedExpressionEditorDefinition);
@@ -242,6 +252,9 @@ public class ExpressionContainerGridTest {
         final ExpressionCellValue expressionCellValue = (ExpressionCellValue) gridCellValue;
         assertThat(expressionCellValue.getValue().isPresent()).isTrue();
         assertThat(expressionCellValue.getValue().get()).isSameAs(undefinedExpressionEditor);
+
+        verify(undefinedExpressionEditor).selectFirstCell();
+        verify(gridLayer).batch();
     }
 
     @Test
@@ -257,6 +270,28 @@ public class ExpressionContainerGridTest {
         final ExpressionCellValue expressionCellValue = (ExpressionCellValue) gridCellValue;
         assertThat(expressionCellValue.getValue().isPresent()).isTrue();
         assertThat(expressionCellValue.getValue().get()).isSameAs(literalExpressionEditor);
+
+        verify(literalExpressionEditor).selectFirstCell();
+        verify(gridLayer).batch();
+    }
+
+    @Test
+    public void testSetDefinedExpressionWhenReopeningWithResizedColumn() {
+        //Emulate User setting expression and resizing column
+        when(hasExpression.getExpression()).thenReturn(literalExpression);
+
+        grid.setExpression(NODE_UUID,
+                           hasExpression,
+                           Optional.of(hasName));
+        grid.getModel().getColumns().get(0).setWidth(COLUMN_NEW_WIDTH);
+
+        //Emulate re-opening editor
+        grid.setExpression(NODE_UUID,
+                           hasExpression,
+                           Optional.of(hasName));
+
+        //Verify width is preserved
+        assertThat(grid.getModel().getColumns().get(0).getWidth()).isEqualTo(COLUMN_NEW_WIDTH);
     }
 
     @Test
@@ -288,6 +323,41 @@ public class ExpressionContainerGridTest {
         grid.onItemSelected(listSelectorItem);
 
         verify(command).execute();
+    }
+
+    @Test
+    public void testOnClearExpressionItemSelected() {
+        //Emulate User setting expression and resizing column
+        when(hasExpression.getExpression()).thenReturn(literalExpression);
+
+        grid.setExpression(NODE_UUID,
+                           hasExpression,
+                           Optional.of(hasName));
+        verify(literalExpressionEditor).selectFirstCell();
+        verify(gridLayer).batch();
+
+        grid.getModel().getColumns().get(0).setWidth(COLUMN_NEW_WIDTH);
+
+        //Get and select ClearExpression item
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+        final HasListSelectorControl.ListSelectorItem item = items.get(0);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) item;
+
+        ti.getCommand().execute();
+
+        verify(sessionCommandManager).execute(eq(canvasHandler),
+                                              clearExpressionTypeCommandCaptor.capture());
+
+        final ClearExpressionTypeCommand clearExpressionTypeCommand = clearExpressionTypeCommandCaptor.getValue();
+        //We're using a mock HasExpression therefore the ClearExpressionCommand does not change mocked behaviour. Reset mock.
+        reset(hasExpression, gridLayer);
+
+        clearExpressionTypeCommand.execute(canvasHandler);
+
+        //Verify Expression has been cleared and UndefinedExpressionEditor
+        assertThat(grid.getModel().getColumns().get(0).getWidth()).isEqualTo(DMNGridColumn.DEFAULT_WIDTH);
+        verify(undefinedExpressionEditor).selectFirstCell();
+        verify(gridLayer).batch();
     }
 
     @Test

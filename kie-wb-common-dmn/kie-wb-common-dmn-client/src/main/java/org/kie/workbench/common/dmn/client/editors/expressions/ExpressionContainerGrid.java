@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.event.INodeXYEvent;
+import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
@@ -61,6 +62,7 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final ExpressionGridCache expressionGridCache;
     private final GridCellTuple parent = new GridCellTuple(0, 0, this);
+    private final GridColumn expressionColumn;
 
     private String nodeUUID;
     private HasExpression hasExpression;
@@ -99,9 +101,9 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
 
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
 
-        final GridColumn expressionColumn = new ExpressionEditorColumn(gridLayer,
-                                                                       new BaseHeaderMetaData(COLUMN_GROUP),
-                                                                       this);
+        expressionColumn = new ExpressionEditorColumn(gridLayer,
+                                                      new BaseHeaderMetaData(COLUMN_GROUP),
+                                                      this);
         expressionColumn.setMovable(false);
         expressionColumn.setResizable(true);
 
@@ -163,7 +165,9 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
 
         uiModelMapper.fromDMNModel(0, 0);
 
-        resizeBasedOnCellExpressionEditor();
+        final double width = expressionColumn.getWidth();
+        final double minWidth = expressionColumn.getMinimumWidth();
+        resizeBasedOnCellExpressionEditor(Math.max(width, minWidth));
     }
 
     @Override
@@ -190,14 +194,19 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
                                                                      hasExpression,
                                                                      uiModelMapper,
                                                                      expressionGridCache,
-                                                                     () -> resizeBasedOnCellExpressionEditor()));
+                                                                     () -> {
+                                                                         final double minWidth = expressionColumn.getMinimumWidth();
+                                                                         resizeBasedOnCellExpressionEditor(minWidth);
+                                                                     }));
     }
 
-    private void resizeBasedOnCellExpressionEditor() {
+    private void resizeBasedOnCellExpressionEditor(final double width) {
+        expressionColumn.setWidth(width);
+
         final GridCellValue<?> value = model.getCell(0, 0).getValue();
-        if (value instanceof ExpressionCellValue) {
-            final Optional<BaseExpressionGrid> grid = ((ExpressionCellValue) value).getValue();
-            grid.ifPresent(BaseExpressionGrid::resizeWhenExpressionEditorChanged);
-        }
+        final Optional<BaseExpressionGrid> grid = ((ExpressionCellValue) value).getValue();
+        grid.ifPresent(BaseExpressionGrid::selectFirstCell);
+
+        Optional.ofNullable(getLayer()).ifPresent(Layer::batch);
     }
 }
