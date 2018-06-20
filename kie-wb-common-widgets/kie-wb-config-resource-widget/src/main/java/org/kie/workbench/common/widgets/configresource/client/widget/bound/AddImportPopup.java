@@ -102,14 +102,13 @@ public class AddImportPopup extends BaseModal {
             for (Import importType : allAvailableImportTypes) {
                 importTypeListBox.addItem(importType.getType());
             }
-            footer.enableOkButton(false);
-            importTypeListBox.setSelectedIndex(0);
             importTypeListBox.setEnabled(true);
         } else {
             importTypeListBox.addItem(ImportConstants.INSTANCE.noTypesAvailable());
-            footer.enableOkButton(false);
-            importTypeListBox.setSelectedIndex(0);
             importTypeListBox.setEnabled(false);
         }
+
+        footer.enableOkButton(false);
+        importTypeListBox.setSelectedIndex(0);
     }
 }

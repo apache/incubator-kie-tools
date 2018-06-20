@@ -33,10 +33,16 @@ import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 @WithClassesToStub({Text.class})
@@ -71,6 +77,7 @@ public class AddImportPopupTest {
         popup.setContent(mock(Command.class),
                          externalFactTypes);
 
+        verify(importTypeListBox).clear();
         verify(importTypeListBox).addItem(importTypesCaptor.capture());
 
         final List<String> importTypes = importTypesCaptor.getAllValues();
@@ -79,6 +86,10 @@ public class AddImportPopupTest {
                      importTypes.size());
         assertEquals(ImportConstants.INSTANCE.noTypesAvailable(),
                      importTypes.get(0));
+
+        verify(importTypeListBox).addItem(ImportConstants.INSTANCE.noTypesAvailable());
+        verify(importTypeListBox).setSelectedIndex(0);
+        verify(importTypeListBox).setEnabled(false);
     }
 
     @Test
@@ -89,6 +100,7 @@ public class AddImportPopupTest {
         popup.setContent(mock(Command.class),
                          externalFactTypes);
 
+        verify(importTypeListBox).clear();
         verify(importTypeListBox,
                times(3)).addItem(importTypesCaptor.capture());
 
@@ -102,5 +114,20 @@ public class AddImportPopupTest {
                      importTypes.get(1));
         assertEquals(external1.getType(),
                      importTypes.get(2));
+
+        final InOrder inOrder = inOrder(importTypeListBox);
+        inOrder.verify(importTypeListBox).addItem(ImportConstants.INSTANCE.ChooseAFactType());
+        inOrder.verify(importTypeListBox).addItem(importTypes.get(1));
+        inOrder.verify(importTypeListBox).addItem(importTypes.get(2));
+        inOrder.verify(importTypeListBox).setEnabled(true);
+        inOrder.verify(importTypeListBox).setSelectedIndex(0);
+    }
+
+    @Test
+    public void testGetImportType() {
+        final String selectedType = "Person";
+        doReturn(selectedType).when(importTypeListBox).getSelectedValue();
+
+        assertEquals(selectedType, popup.getImportType());
     }
 }

@@ -32,8 +32,14 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ImportsWidgetPresenterTest {
@@ -228,6 +234,36 @@ public class ImportsWidgetPresenterTest {
     }
 
     @Test
+    public void testSetContentRemovesOldImportsOnImportAdded() {
+        when(dmo.getInternalFactTypes()).thenReturn(new String[]{"a"});
+        when(dmo.getExternalFactTypes()).thenReturn(new String[]{"b"});
+        final Imports imports = new Imports();
+        imports.addImport(new Import("c"));
+
+        presenter.setContent(dmo,
+                             imports,
+                             false);
+
+        when(dmo.getInternalFactTypes()).thenReturn(new String[]{"A"});
+        when(dmo.getExternalFactTypes()).thenReturn(new String[]{"B"});
+        final Imports importsNew = new Imports();
+        importsNew.addImport(new Import("C"));
+
+        presenter.setContent(dmo,
+                             importsNew,
+                             false);
+
+        assertEquals(1, presenter.getInternalFactTypes().size());
+        assertEquals("A", presenter.getInternalFactTypes().get(0).getType());
+
+        assertEquals(1, presenter.getExternalFactTypes().size());
+        assertEquals("B", presenter.getExternalFactTypes().get(0).getType());
+
+        assertEquals(1, presenter.getModelFactTypes().size());
+        assertEquals("C", presenter.getModelFactTypes().get(0).getType());
+    }
+
+    @Test
     public void testOnImportAddedExternal() {
         final Imports imports = new Imports();
 
@@ -243,6 +279,8 @@ public class ImportsWidgetPresenterTest {
                        imports.getImports());
         assertNotContains("org.pkg1.External1",
                           presenter.getExternalFactTypes());
+
+        verify(dmo).filter();
     }
 
     @Test
@@ -258,6 +296,8 @@ public class ImportsWidgetPresenterTest {
 
         assertEquals(0,
                      imports.getImports().size());
+
+        verify(dmo).filter();
 
         verify(importRemovedEvent,
                times(1)).fire(importRemovedEventCaptor.capture());

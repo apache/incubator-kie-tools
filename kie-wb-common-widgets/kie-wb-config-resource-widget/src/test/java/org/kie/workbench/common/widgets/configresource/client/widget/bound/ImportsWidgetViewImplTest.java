@@ -16,6 +16,7 @@
 package org.kie.workbench.common.widgets.configresource.client.widget.bound;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -28,9 +29,13 @@ import org.mockito.Mock;
 import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ImportsWidgetViewImplTest {
@@ -142,5 +147,26 @@ public class ImportsWidgetViewImplTest {
         verify(addImportPopup).setContent(eq(view.getAddImportCommand()),
                                           eq(externalFactTypes));
         verify(addImportPopup).show();
+    }
+
+    @Test
+    public void testAddImportButtonEnabled() {
+        assertAddImportButtonWhenViewIsReadonly(false);
+    }
+
+    @Test
+    public void testAddImportButtonDisabled() {
+        assertAddImportButtonWhenViewIsReadonly(true);
+    }
+
+    private void assertAddImportButtonWhenViewIsReadonly(final boolean viewIsReadonly) {
+        reset(view.addImportButton);
+
+        view.setContent(Collections.emptyList(),
+                        Collections.emptyList(),
+                        Collections.emptyList(),
+                        viewIsReadonly);
+
+        verify(view.addImportButton).setEnabled(!viewIsReadonly);
     }
 }
