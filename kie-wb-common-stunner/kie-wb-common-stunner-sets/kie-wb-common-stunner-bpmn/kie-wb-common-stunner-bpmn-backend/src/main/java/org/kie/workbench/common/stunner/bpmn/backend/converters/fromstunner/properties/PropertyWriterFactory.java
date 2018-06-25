@@ -74,6 +74,10 @@ public class PropertyWriterFactory {
         return new AdHocSubProcessPropertyWriter(e, variableScope);
     }
 
+    public MultipleInstanceSubProcessPropertyWriter ofMultipleInstanceSubProcess(SubProcess e) {
+        return new MultipleInstanceSubProcessPropertyWriter(e, variableScope);
+    }
+
     public SubProcessPropertyWriter of(SubProcess e) {
         return new SubProcessPropertyWriter(e, variableScope);
     }

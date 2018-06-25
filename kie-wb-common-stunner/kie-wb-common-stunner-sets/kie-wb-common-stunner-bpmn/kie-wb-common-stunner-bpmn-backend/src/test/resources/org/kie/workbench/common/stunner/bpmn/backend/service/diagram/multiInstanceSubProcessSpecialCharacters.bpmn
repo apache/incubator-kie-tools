@@ -59,7 +59,7 @@ System.out.println(message);]]></drools:script>
         <bpmn2:loopDataOutputRef>_BE298503-5114-4868-ADE0-A1AA15EECF7A_output</bpmn2:loopDataOutputRef>
         <bpmn2:inputDataItem xsi:type="bpmn2:tDataInput" id="miIn"/>
         <bpmn2:outputDataItem xsi:type="bpmn2:tDataOutput" id="miOut" itemSubjectRef="_BE298503-5114-4868-ADE0-A1AA15EECF7A_multiInstanceItemType"/>
-        <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_Pte811RGEei24IAxA5edAQ">processVariable.size == 0 && localVariable.size > 0</bpmn2:completionCondition>
+        <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_Pte811RGEei24IAxA5edAQ"><![CDATA[processVariable.size == 0 && localVariable.size > 0]]></bpmn2:completionCondition>
       </bpmn2:multiInstanceLoopCharacteristics>
       <bpmn2:startEvent id="_1A5CEBC3-E6B9-4F70-A93C-5FB2F7FE664D" name="">
         <bpmn2:extensionElements>

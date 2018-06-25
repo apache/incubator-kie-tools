@@ -135,7 +135,8 @@ public class Scripts {
     public static void setOnEntryAction(FlowElement flowElement, OnEntryAction onEntryAction) {
         ScriptTypeListValue value = onEntryAction.getValue();
         for (ScriptTypeValue scriptTypeValue : value.getValues()) {
-            if (scriptTypeValue.getScript() == null && scriptTypeValue.getScript().isEmpty()) {
+            String scriptText = scriptTypeValue.getScript();
+            if (scriptText == null || scriptText.isEmpty()) {
                 continue;
             }
             OnEntryScriptType script = droolsFactory.createOnEntryScriptType();

@@ -119,6 +119,10 @@ public class PropertyReaderFactory {
         return new AdHocSubProcessPropertyReader(el, plane, definitionResolver);
     }
 
+    public MultipleInstanceSubProcessPropertyReader ofMultipleInstance(SubProcess el) {
+        return new MultipleInstanceSubProcessPropertyReader(el, plane, definitionResolver);
+    }
+
     public ProcessPropertyReader of(Process el) {
         return new ProcessPropertyReader(el, plane, definitionResolver.getShape(el.getId()));
     }

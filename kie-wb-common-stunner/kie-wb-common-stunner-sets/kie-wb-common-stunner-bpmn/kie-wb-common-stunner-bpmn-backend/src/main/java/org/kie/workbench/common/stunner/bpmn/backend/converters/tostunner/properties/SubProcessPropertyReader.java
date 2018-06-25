@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptType
 
 public class SubProcessPropertyReader extends FlowElementPropertyReader {
 
-    private final SubProcess process;
+    protected final SubProcess process;
     private final DefinitionResolver definitionResolver;
 
     public SubProcessPropertyReader(SubProcess element, BPMNPlane plane, DefinitionResolver definitionResolver) {

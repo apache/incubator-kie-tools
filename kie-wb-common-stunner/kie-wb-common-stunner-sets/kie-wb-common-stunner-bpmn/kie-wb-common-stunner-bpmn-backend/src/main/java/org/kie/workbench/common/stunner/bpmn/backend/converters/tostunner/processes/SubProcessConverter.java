@@ -24,10 +24,12 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNo
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.ConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.AdHocSubProcessPropertyReader;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.MultipleInstanceSubProcessPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.SubProcessPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.MultipleInstanceSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
@@ -37,6 +39,13 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocCompl
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocOrdering;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MITrigger;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCollectionInput;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCollectionOutput;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCompletionCondition;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceDataInput;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceDataOutput;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
@@ -59,11 +68,12 @@ public class SubProcessConverter extends AbstractProcessConverter {
         BpmnNode subProcessRoot;
         if (subProcess instanceof org.eclipse.bpmn2.AdHocSubProcess) {
             subProcessRoot = convertAdHocSubProcess((org.eclipse.bpmn2.AdHocSubProcess) subProcess);
+        } else if (subProcess.getLoopCharacteristics() != null) {
+            subProcessRoot = convertMultInstanceSubprocessNode(subProcess);
+        } else if (subProcess.isTriggeredByEvent()) {
+            subProcessRoot = convertEventSubprocessNode(subProcess);
         } else {
-            subProcessRoot =
-                    subProcess.isTriggeredByEvent() ?
-                            convertEventSubprocessNode(subProcess)
-                            : convertEmbeddedSubprocessNode(subProcess);
+            subProcessRoot = convertEmbeddedSubprocessNode(subProcess);
         }
 
         Map<String, BpmnNode> nodes =
@@ -78,6 +88,44 @@ public class SubProcessConverter extends AbstractProcessConverter {
                 nodes);
 
         return subProcessRoot;
+    }
+
+    private BpmnNode convertMultInstanceSubprocessNode(SubProcess subProcess) {
+        Node<View<MultipleInstanceSubprocess>, Edge> node =
+                factoryManager.newNode(subProcess.getId(), MultipleInstanceSubprocess.class);
+
+        MultipleInstanceSubprocess definition = node.getContent().getDefinition();
+        MultipleInstanceSubProcessPropertyReader p = propertyReaderFactory.ofMultipleInstance(subProcess);
+
+        definition.setGeneral(new BPMNGeneralSet(
+                new Name(p.getName()),
+                new Documentation(p.getDocumentation())
+        ));
+
+        definition.setExecutionSet(new MultipleInstanceSubprocessTaskExecutionSet(
+                new MultipleInstanceCollectionInput(p.getCollectionInput()),
+                new MultipleInstanceCollectionOutput(p.getCollectionOutput()),
+                new MultipleInstanceDataInput(p.getDataInput()),
+                new MultipleInstanceDataOutput(p.getDataOutput()),
+                new MultipleInstanceCompletionCondition(p.getCompletionCondition()),
+                new OnEntryAction(p.getOnEntryAction()),
+                new OnExitAction(p.getOnExitAction()),
+                new MITrigger("true"),
+                new IsAsync(p.isAsync())
+        ));
+
+        definition.setProcessData(new ProcessData(
+                new ProcessVariables(p.getProcessVariables())));
+
+        definition.setSimulationSet(p.getSimulationSet());
+
+        definition.setDimensionsSet(p.getRectangleDimensionsSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setBackgroundSet(p.getBackgroundSet());
+
+        node.getContent().setBounds(p.getBounds());
+
+        return BpmnNode.of(node);
     }
 
     private BpmnNode convertAdHocSubProcess(org.eclipse.bpmn2.AdHocSubProcess subProcess) {

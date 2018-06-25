@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class DeclarationList {
@@ -44,7 +45,7 @@ public class DeclarationList {
 
     public VariableDeclaration lookup(String identifier) {
         return declarations.stream().filter(d -> identifier.equals(d.getIdentifier()))
-                .findFirst().orElse(null);
+                .findFirst().orElseThrow(() -> new NoSuchElementException("Cannot find binding for identifier: "+identifier));
     }
 
     public Collection<VariableDeclaration> getDeclarations() {

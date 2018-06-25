@@ -43,7 +43,7 @@ import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner
 
 public class SubProcessPropertyWriter extends PropertyWriter implements ElementContainer {
 
-    private final SubProcess process;
+    protected final SubProcess process;
     private Collection<ElementParameters> simulationParameters = new ArrayList<>();
     private Map<String, BasePropertyWriter> childElements = new HashMap<>();
 
@@ -104,6 +104,7 @@ public class SubProcessPropertyWriter extends PropertyWriter implements ElementC
             VariableScope.Variable variable =
                     variableScope.declare(this.process.getId(), decl.getIdentifier(), decl.getType());
             properties.add(variable.getTypedIdentifier());
+            this.itemDefinitions.add(variable.getTypeDeclaration());
         });
     }
 

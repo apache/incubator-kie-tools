@@ -34,6 +34,7 @@ public class Ids {
     }
 
     public static String typedIdentifier(String parentScopeId, String identifier) {
+        // TODO we cannot use this strategy until UI is migrated:
         return "var_" + parentScopeId + "_" + identifier;
     }
 
@@ -59,5 +60,9 @@ public class Ids {
 
     public static String bpmnEdge(String source, String target) {
         return "edge_" + source + "_to_" + target;
+    }
+
+    public static String multiInstanceItemType(String parentId, String id) {
+        return parentId + "_multiInstanceItemType_"+id;
     }
 }
