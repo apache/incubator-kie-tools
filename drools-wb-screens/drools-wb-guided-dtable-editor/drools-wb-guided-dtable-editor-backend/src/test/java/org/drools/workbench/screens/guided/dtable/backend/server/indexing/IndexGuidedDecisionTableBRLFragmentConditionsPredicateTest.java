@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.concurrent.NotThreadSafe;
-
 import org.apache.lucene.search.Query;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -37,7 +35,6 @@ import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
 
-@NotThreadSafe
 public class IndexGuidedDecisionTableBRLFragmentConditionsPredicateTest extends BaseIndexingTest<GuidedDTableResourceTypeDefinition> {
 
     @Test

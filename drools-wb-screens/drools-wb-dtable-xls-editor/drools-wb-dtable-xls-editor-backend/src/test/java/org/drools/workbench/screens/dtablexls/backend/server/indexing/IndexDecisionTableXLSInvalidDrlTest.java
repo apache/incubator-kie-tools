@@ -22,8 +22,6 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.concurrent.NotThreadSafe;
-
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
@@ -48,7 +46,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@NotThreadSafe
 public class IndexDecisionTableXLSInvalidDrlTest extends BaseIndexingTest<DecisionTableXLSResourceTypeDefinition> {
 
     @Test

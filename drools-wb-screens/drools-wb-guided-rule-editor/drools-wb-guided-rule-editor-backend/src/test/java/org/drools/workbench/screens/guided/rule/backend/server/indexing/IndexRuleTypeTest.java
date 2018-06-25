@@ -20,8 +20,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.concurrent.NotThreadSafe;
-
 import org.apache.lucene.search.Query;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDRLResourceTypeDefinition;
 import org.guvnor.common.services.project.categories.Decision;
@@ -35,7 +33,6 @@ import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
 
-@NotThreadSafe
 public class IndexRuleTypeTest extends BaseIndexingTest<GuidedRuleDRLResourceTypeDefinition> {
 
     @Test

@@ -21,8 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.concurrent.NotThreadSafe;
-
 import org.apache.lucene.search.Query;
 import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardXMLPersistence;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
@@ -40,7 +38,6 @@ import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
 
-@NotThreadSafe
 public class IndexGuidedScoreCardTest extends BaseIndexingTest<GuidedScoreCardResourceTypeDefinition> {
 
     @Test

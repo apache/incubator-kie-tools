@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.concurrent.NotThreadSafe;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.Query;
 import org.drools.workbench.screens.dsltext.type.DSLResourceTypeDefinition;
@@ -41,7 +39,6 @@ import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
 
-@NotThreadSafe
 public class IndexDefaultPackageDslEntriesTest extends BaseIndexingTest<DSLResourceTypeDefinition> {
 
     @Test
