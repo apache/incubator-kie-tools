@@ -19,8 +19,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.concurrent.NotThreadSafe;
-
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
@@ -35,7 +33,6 @@ import org.kie.workbench.common.services.refactoring.model.query.RefactoringPage
 
 import static org.junit.Assert.*;
 
-@NotThreadSafe
 public class FindResourceReferencesQueryInvalidIndexTermsTest extends BaseIndexingTest<TestDrlFileTypeDefinition> {
 
     protected Set<NamedQuery> getQueries() {

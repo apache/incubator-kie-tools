@@ -20,8 +20,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.annotation.concurrent.NotThreadSafe;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.TermQuery;
@@ -36,7 +34,6 @@ import static org.mockito.Mockito.*;
 
 import static org.mockito.Mockito.*;
 
-@NotThreadSafe
 public class MultipleRepositoryDeletedResourcesTest extends MultipleRepositoryBaseIndexingTest<TestPropertiesFileTypeDefinition> {
 
     @Test

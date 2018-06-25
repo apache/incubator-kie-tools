@@ -22,8 +22,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import javax.annotation.concurrent.NotThreadSafe;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
@@ -47,7 +45,6 @@ import org.uberfire.java.nio.file.Path;
 
 import static org.junit.Assert.*;
 
-@NotThreadSafe
 public class QueryOperationRequestTest extends BaseIndexingTest<TestDrlFileTypeDefinition> {
 
     // Setup fields, methods and other logic --------------------------------------------------------------------------------------

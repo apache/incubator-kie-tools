@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import javax.annotation.concurrent.NotThreadSafe;
-
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
@@ -49,7 +47,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.*;
 
-@NotThreadSafe
 public class IndexDrlInvalidDrl extends BaseIndexingTest<TestDrlFileTypeDefinition> {
 
     @Test

@@ -19,8 +19,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.concurrent.NotThreadSafe;
-
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
@@ -42,7 +40,6 @@ import org.uberfire.paging.PageResponse;
 
 import static org.junit.Assert.*;
 
-@NotThreadSafe
 public class FindResourceReferencesQueryValidIndexTermsTest
         extends BaseIndexingTest<TestDrlFileTypeDefinition> {
 

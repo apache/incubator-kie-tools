@@ -21,8 +21,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.concurrent.NotThreadSafe;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
@@ -35,7 +33,6 @@ import org.kie.workbench.common.services.refactoring.backend.server.query.standa
 
 import static org.junit.Assert.*;
 
-@NotThreadSafe
 public class RefactoringQueryServiceImplGeneralTest extends BaseIndexingTest<TestDrlFileTypeDefinition> {
 
     protected Set<NamedQuery> getQueries() {
