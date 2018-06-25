@@ -122,6 +122,7 @@ public class DMNEditorToolbar
     public PasteToolbarCommand getPasteToolbarCommand() {
         return (PasteToolbarCommand) toolbar.getCommand(12);
     }
+
     public SaveToolbarCommand getSaveToolbarCommand() {
         return (SaveToolbarCommand) toolbar.getCommand(13);
     }

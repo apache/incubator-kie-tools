@@ -50,8 +50,10 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -140,7 +142,7 @@ public class ExpressionContainerUIModelMapperTest {
                                                                                                              any(Optional.class),
                                                                                                              anyInt());
 
-        expressionGridCache = new ExpressionGridCacheImpl();
+        expressionGridCache = spy(new ExpressionGridCacheImpl());
         mapper = new ExpressionContainerUIModelMapper(parent,
                                                       () -> uiModel,
                                                       () -> Optional.ofNullable(expression),
@@ -148,7 +150,7 @@ public class ExpressionContainerUIModelMapperTest {
                                                       () -> hasExpression,
                                                       () -> Optional.of(hasName),
                                                       expressionEditorDefinitionsSupplier,
-                                                      expressionGridCache,
+                                                      () -> expressionGridCache,
                                                       listSelector);
     }
 
@@ -207,6 +209,9 @@ public class ExpressionContainerUIModelMapperTest {
                                                             eq(Optional.of(hasName)),
                                                             eq(0));
 
+        verify(expressionGridCache).putExpressionGrid(nodeUUIDCaptor.getValue().get(),
+                                                      Optional.of(literalExpressionEditor));
+
         mapper.fromDMNModel(0, 0);
 
         //There should only be one interaction with LiteralExpressionEditorDefinition
@@ -216,6 +221,8 @@ public class ExpressionContainerUIModelMapperTest {
                                                             any(Optional.class),
                                                             any(Optional.class),
                                                             anyInt());
+        verify(expressionGridCache).putExpressionGrid(anyString(),
+                                                      any(Optional.class));
     }
 
     @Test(expected = UnsupportedOperationException.class)

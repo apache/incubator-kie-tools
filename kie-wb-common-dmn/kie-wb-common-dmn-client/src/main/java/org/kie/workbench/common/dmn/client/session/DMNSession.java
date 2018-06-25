@@ -14,24 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.widgets.grid;
+package org.kie.workbench.common.dmn.client.session;
 
-import java.util.Optional;
-
+import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 
-public interface ExpressionGridCache extends CanvasControl<AbstractCanvas> {
+public interface DMNSession extends ClientSession<AbstractCanvas, AbstractCanvasHandler> {
 
-    Optional<BaseExpressionGrid> getExpressionGrid(final String nodeUUID);
-
-    void putExpressionGrid(final String nodeUUID,
-                           final Optional<BaseExpressionGrid> gridWidget);
-
-    void removeExpressionGrid(final String nodeUUID);
-
-    interface IsCacheable {
-
-        boolean isCacheable();
-    }
+    ExpressionGridCache getExpressionGridCache();
 }

@@ -333,13 +333,13 @@ public class SessionDiagramEditorScreen {
         decisionNavigatorDock.resetContent();
     }
 
+    void destroySession() {
+        presenter.destroy();
+    }
+
     @WorkbenchMenu
     public Menus getMenu() {
         return menu;
-    }
-
-    void destroySession() {
-        presenter.destroy();
     }
 
     @WorkbenchPartTitle

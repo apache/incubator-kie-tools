@@ -20,16 +20,29 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 
-@ApplicationScoped
-public class ExpressionGridCacheImpl implements ExpressionGridCache {
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasControl;
+
+@Dependent
+public class ExpressionGridCacheImpl extends AbstractCanvasControl<AbstractCanvas> implements ExpressionGridCache {
 
     private Map<String, Optional<BaseExpressionGrid>> cache = new HashMap<>();
 
     @Override
+    protected void doInit() {
+        cache = new HashMap<>();
+    }
+
+    @Override
+    protected void doDestroy() {
+        cache.clear();
+    }
+
+    @Override
     public Optional<BaseExpressionGrid> getExpressionGrid(final String nodeUUID) {
-        return cache.containsKey(nodeUUID) ? cache.get(nodeUUID) : Optional.empty();
+        return cache.getOrDefault(nodeUUID, Optional.empty());
     }
 
     @Override

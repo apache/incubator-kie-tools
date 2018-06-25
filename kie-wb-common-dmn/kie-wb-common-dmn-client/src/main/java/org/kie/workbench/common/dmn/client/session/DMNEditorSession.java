@@ -20,6 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.SingleLineTextEditorBox;
@@ -53,8 +54,7 @@ import org.uberfire.mvp.Command;
 
 @Dependent
 @DMNEditor
-public class DMNEditorSession
-        extends DefaultEditorSession {
+public class DMNEditorSession extends DefaultEditorSession implements DMNSession {
 
     @Inject
     public DMNEditorSession(final ManagedSession session,
@@ -74,27 +74,32 @@ public class DMNEditorSession
     @Override
     public void init(final Metadata metadata,
                      final Command callback) {
-        super.init(s ->
-                           s.registerCanvasControl(ZoomControl.class)
-                                   .registerCanvasControl(PanControl.class)
-                                   .registerCanvasHandlerControl(SelectionControl.class,
-                                                                 MultipleSelection.class)
-                                   .registerCanvasHandlerControl(ResizeControl.class)
-                                   .registerCanvasHandlerControl(ConnectionAcceptorControl.class)
-                                   .registerCanvasHandlerControl(ContainmentAcceptorControl.class)
-                                   .registerCanvasHandlerControl(DockingAcceptorControl.class)
-                                   .registerCanvasHandlerControl(CanvasInPlaceTextEditorControl.class,
-                                                                 SingleLineTextEditorBox.class)
-                                   .registerCanvasHandlerControl(LocationControl.class)
-                                   .registerCanvasHandlerControl(ToolboxControl.class)
-                                   .registerCanvasHandlerControl(ElementBuilderControl.class,
-                                                                 Observer.class)
-                                   .registerCanvasHandlerControl(NodeBuilderControl.class)
-                                   .registerCanvasHandlerControl(EdgeBuilderControl.class)
-                                   .registerCanvasControl(KeyboardControl.class)
-                                   .registerCanvasControl(ClipboardControl.class)
-                                   .registerCanvasHandlerControl(ControlPointControl.class),
+        super.init(s -> s.registerCanvasControl(ZoomControl.class)
+                           .registerCanvasControl(PanControl.class)
+                           .registerCanvasHandlerControl(SelectionControl.class,
+                                                         MultipleSelection.class)
+                           .registerCanvasHandlerControl(ResizeControl.class)
+                           .registerCanvasHandlerControl(ConnectionAcceptorControl.class)
+                           .registerCanvasHandlerControl(ContainmentAcceptorControl.class)
+                           .registerCanvasHandlerControl(DockingAcceptorControl.class)
+                           .registerCanvasHandlerControl(CanvasInPlaceTextEditorControl.class,
+                                                         SingleLineTextEditorBox.class)
+                           .registerCanvasHandlerControl(LocationControl.class)
+                           .registerCanvasHandlerControl(ToolboxControl.class)
+                           .registerCanvasHandlerControl(ElementBuilderControl.class,
+                                                         Observer.class)
+                           .registerCanvasHandlerControl(NodeBuilderControl.class)
+                           .registerCanvasHandlerControl(EdgeBuilderControl.class)
+                           .registerCanvasControl(KeyboardControl.class)
+                           .registerCanvasControl(ClipboardControl.class)
+                           .registerCanvasHandlerControl(ControlPointControl.class)
+                           .registerCanvasControl(ExpressionGridCache.class),
                    metadata,
                    callback);
+    }
+
+    @Override
+    public ExpressionGridCache getExpressionGridCache() {
+        return (ExpressionGridCache) getSession().getCanvasControl(ExpressionGridCache.class);
     }
 }

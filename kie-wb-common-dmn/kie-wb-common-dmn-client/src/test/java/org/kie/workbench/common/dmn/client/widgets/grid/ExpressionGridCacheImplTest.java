@@ -108,4 +108,30 @@ public class ExpressionGridCacheImplTest {
 
         assertThat(content).isEmpty();
     }
+
+    @Test
+    public void testDoInit() {
+        when(editor.isCacheable()).thenReturn(true);
+
+        cache.putExpressionGrid(UUID, Optional.of(editor));
+
+        assertThat(cache.getContent()).isNotEmpty();
+
+        cache.doInit();
+
+        assertThat(cache.getContent()).isEmpty();
+    }
+
+    @Test
+    public void testDoDestroy() {
+        when(editor.isCacheable()).thenReturn(true);
+
+        cache.putExpressionGrid(UUID, Optional.of(editor));
+
+        assertThat(cache.getContent()).isNotEmpty();
+
+        cache.doDestroy();
+
+        assertThat(cache.getContent()).isEmpty();
+    }
 }

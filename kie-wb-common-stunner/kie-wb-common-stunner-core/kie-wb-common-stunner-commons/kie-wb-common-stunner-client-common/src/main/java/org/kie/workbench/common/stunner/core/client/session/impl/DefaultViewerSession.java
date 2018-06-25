@@ -40,7 +40,6 @@ public class DefaultViewerSession
     private final ManagedSession session;
     private final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
 
-
     @Inject
     public DefaultViewerSession(final ManagedSession session,
                                 final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager) {
@@ -84,6 +83,10 @@ public class DefaultViewerSession
     @Override
     public void destroy() {
         session.destroy();
+    }
+
+    protected ManagedSession getSession() {
+        return session;
     }
 
     @Override

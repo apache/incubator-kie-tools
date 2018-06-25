@@ -138,6 +138,10 @@ public class DefaultEditorSession
         session.destroy();
     }
 
+    protected ManagedSession getSession() {
+        return session;
+    }
+
     @Override
     public AbstractCanvas getCanvas() {
         return session.getCanvas();

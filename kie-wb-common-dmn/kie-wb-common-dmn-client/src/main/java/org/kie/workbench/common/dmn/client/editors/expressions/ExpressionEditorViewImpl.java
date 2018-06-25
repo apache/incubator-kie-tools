@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
+import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BoundaryTransformMediator;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -71,7 +72,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     private SessionManager sessionManager;
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
-    private ExpressionGridCache expressionGridCache;
 
     public ExpressionEditorViewImpl() {
         //CDI proxy
@@ -87,8 +87,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                     final ListSelectorView.Presenter listSelector,
                                     final SessionManager sessionManager,
                                     final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                    final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
-                                    final ExpressionGridCache expressionGridCache) {
+                                    final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
         this.returnToDRG = returnToDRG;
 
         this.gridPanel = gridPanel;
@@ -102,17 +101,21 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
-        this.expressionGridCache = expressionGridCache;
-
-        setupGridPanel();
-        setupGridWidget();
-        setupGridWidgetPanControl();
     }
 
     @DataField("dmn-table")
     @SuppressWarnings("unused")
     public GridLienzoPanel getGridPanel() {
         return gridPanel;
+    }
+
+    @Override
+    public void init(final ExpressionEditorView.Presenter presenter) {
+        this.presenter = presenter;
+
+        setupGridPanel();
+        setupGridWidget();
+        setupGridWidgetPanControl();
     }
 
     protected void setupGridPanel() {
@@ -131,7 +134,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                               sessionManager,
                                                               sessionCommandManager,
                                                               expressionEditorDefinitionsSupplier,
-                                                              expressionGridCache,
+                                                              getExpressionGridCacheSupplier(),
                                                               this::setReturnToDRGText);
         gridLayer.removeAll();
         gridLayer.add(expressionContainerGrid);
@@ -140,17 +143,19 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                   () -> {/*Nothing*/});
     }
 
+    // This class (ExpressionEditorViewImpl) is instantiated when injected into SessionDiagramEditorScreen
+    // which is before a Session has been created and the ExpressionGridCache CanvasControl has been registered.
+    // Therefore we need to defer instance access to a Supplier.
+    protected Supplier<ExpressionGridCache> getExpressionGridCacheSupplier() {
+        return () -> ((DMNSession) sessionManager.getCurrentSession()).getExpressionGridCache();
+    }
+
     protected void setupGridWidgetPanControl() {
         final TransformMediator defaultTransformMediator = new BoundaryTransformMediator(expressionContainerGrid);
         mousePanMediator.setTransformMediator(defaultTransformMediator);
         mousePanMediator.setBatchDraw(true);
         gridLayer.setDefaultTransformMediator(defaultTransformMediator);
         gridPanel.getViewport().getMediators().push(mousePanMediator);
-    }
-
-    @Override
-    public void init(final ExpressionEditorView.Presenter presenter) {
-        this.presenter = presenter;
     }
 
     @Override

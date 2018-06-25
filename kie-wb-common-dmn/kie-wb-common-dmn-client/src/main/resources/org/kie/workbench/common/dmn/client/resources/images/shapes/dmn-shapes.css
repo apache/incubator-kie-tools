@@ -20,35 +20,34 @@
     *******************************
  */
 .businessKnowledgeModel {
-    fill:#ffffff;
-    stroke:#000000;
-    stroke-width:0.5px;
+    fill: #ffffff;
+    stroke: #000000;
+    stroke-width: 0.5px;
 }
 
 .decision {
-    fill:#ffffff;
-    stroke:#000000;
-    stroke-width:0.5px;
+    fill: #ffffff;
+    stroke: #000000;
+    stroke-width: 0.5px;
 }
 
 .inputData {
-    fill:#ffffff;
-    stroke:#000000;
-    stroke-width:0.5px;
+    fill: #ffffff;
+    stroke: #000000;
+    stroke-width: 0.5px;
 }
 
 .knowledgeSource {
-    fill:#ffffff;
-    stroke:#000000;
-    stroke-width:0.5px;
+    fill: #ffffff;
+    stroke: #000000;
+    stroke-width: 0.5px;
 }
 
 .textAnnotation {
-    fill:#ffffff;
-    stroke:#000000;
-    stroke-width:0.5px;
+    fill: #ffffff;
+    stroke: #000000;
+    stroke-width: 0.5px;
 }
-
 
 /*
     *******************************
@@ -71,9 +70,11 @@
 .shape-state-selected {
     stroke: blue;
 }
-.shape-state-highlight{
+
+.shape-state-highlight {
     stroke: blue;
 }
+
 .shape-state-invalid {
     stroke: red;
 }

@@ -72,6 +72,5 @@ public class DMNViewHandlersTest {
         verify(shape).setMaxWidth(eq(Width.MAX));
         verify(shape).setMinHeight(eq(Height.MIN));
         verify(shape).setMaxHeight(eq(Height.MAX));
-
     }
 }

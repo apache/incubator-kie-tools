@@ -60,7 +60,7 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
 
     private final SessionManager sessionManager;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    private final ExpressionGridCache expressionGridCache;
+    private final Supplier<ExpressionGridCache> expressionGridCache;
     private final GridCellTuple parent = new GridCellTuple(0, 0, this);
     private final GridColumn expressionColumn;
 
@@ -77,7 +77,7 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
                                    final SessionManager sessionManager,
                                    final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                    final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitions,
-                                   final ExpressionGridCache expressionGridCache,
+                                   final Supplier<ExpressionGridCache> expressionGridCache,
                                    final ParameterizedCommand<Optional<HasName>> onHasNameChanged) {
         super(new DMNGridData(),
               gridLayer,
@@ -193,7 +193,7 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
                                                                      nodeUUID,
                                                                      hasExpression,
                                                                      uiModelMapper,
-                                                                     expressionGridCache,
+                                                                     expressionGridCache.get(),
                                                                      () -> {
                                                                          final double minWidth = expressionColumn.getMinimumWidth();
                                                                          resizeBasedOnCellExpressionEditor(minWidth);

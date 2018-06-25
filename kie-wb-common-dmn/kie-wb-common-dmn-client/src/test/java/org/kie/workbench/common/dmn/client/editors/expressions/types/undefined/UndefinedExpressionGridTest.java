@@ -39,6 +39,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionT
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionCell;
+import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCacheImpl;
@@ -56,7 +57,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.ManagedSession;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -103,7 +104,7 @@ public class UndefinedExpressionGridTest {
     private SessionManager sessionManager;
 
     @Mock
-    private ClientSession session;
+    private DMNEditorSession session;
 
     @Mock
     private AbstractCanvasHandler handler;
@@ -153,6 +154,9 @@ public class UndefinedExpressionGridTest {
     @Mock
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
 
+    @Mock
+    private ManagedSession managedSession;
+
     @Captor
     private ArgumentCaptor<SetCellValueCommand> setCellValueCommandArgumentCaptor;
 
@@ -175,6 +179,9 @@ public class UndefinedExpressionGridTest {
     @SuppressWarnings("unchecked")
     public void setup() {
         expressionGridCache = spy(new ExpressionGridCacheImpl());
+        when(sessionManager.getCurrentSession()).thenReturn(session);
+        when(session.getExpressionGridCache()).thenReturn(expressionGridCache);
+
         definition = new UndefinedExpressionEditorDefinition(gridPanel,
                                                              gridLayer,
                                                              definitionUtils,
@@ -185,8 +192,7 @@ public class UndefinedExpressionGridTest {
                                                              cellEditorControls,
                                                              listSelector,
                                                              translationService,
-                                                             expressionEditorDefinitionsSupplier,
-                                                             expressionGridCache);
+                                                             expressionEditorDefinitionsSupplier);
 
         expression = definition.getModelClass();
 

@@ -25,11 +25,14 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
+import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
+import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCacheImpl;
 import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNEditorToolbar;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.session.impl.ManagedSession;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
@@ -68,14 +71,23 @@ public class ExpressionEditorTest {
     @Mock
     private Command command;
 
+    @Mock
+    private ManagedSession session;
+
     private ExpressionEditor testedEditor;
+
+    private ExpressionGridCache expressionGridCache;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
-        testedEditor = spy(new ExpressionEditor(view, decisionNavigator));
+        this.expressionGridCache = new ExpressionGridCacheImpl();
+
+        testedEditor = spy(new ExpressionEditor(view,
+                                                decisionNavigator));
         when(sessionPresenter.getToolbar()).thenReturn(editorToolbar);
         when(editorToolbar.isEnabled(any(ToolbarCommand.class))).thenReturn(true);
+        when(session.getCanvasControl(eq(ExpressionGridCache.class))).thenReturn(expressionGridCache);
     }
 
     @Test

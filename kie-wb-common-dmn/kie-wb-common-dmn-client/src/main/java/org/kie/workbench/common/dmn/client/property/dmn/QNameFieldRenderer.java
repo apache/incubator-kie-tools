@@ -49,7 +49,7 @@ public class QNameFieldRenderer extends FieldRenderer<QNameFieldDefinition, Defa
 
     //Required for Unit Testing
     void setFormGroup(final ManagedInstance<DefaultFormGroup> formGroupInstance) {
-        this.formGroupsInstance=formGroupInstance;
+        this.formGroupsInstance = formGroupInstance;
     }
 
     @Override

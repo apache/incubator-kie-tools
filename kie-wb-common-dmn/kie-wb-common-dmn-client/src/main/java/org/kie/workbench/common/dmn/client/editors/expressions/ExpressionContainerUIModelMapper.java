@@ -41,7 +41,7 @@ public class ExpressionContainerUIModelMapper extends BaseUIModelMapper<Expressi
     private final Supplier<HasExpression> hasExpression;
     private final Supplier<Optional<HasName>> hasName;
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitions;
-    private final ExpressionGridCache expressionGridCache;
+    private final Supplier<ExpressionGridCache> expressionGridCache;
     private final ListSelectorView.Presenter listSelector;
 
     public ExpressionContainerUIModelMapper(final GridCellTuple parent,
@@ -51,7 +51,7 @@ public class ExpressionContainerUIModelMapper extends BaseUIModelMapper<Expressi
                                             final Supplier<HasExpression> hasExpression,
                                             final Supplier<Optional<HasName>> hasName,
                                             final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitions,
-                                            final ExpressionGridCache expressionGridCache,
+                                            final Supplier<ExpressionGridCache> expressionGridCache,
                                             final ListSelectorView.Presenter listSelector) {
         super(uiModel,
               dmnModel);
@@ -75,7 +75,7 @@ public class ExpressionContainerUIModelMapper extends BaseUIModelMapper<Expressi
 
         final Optional<ExpressionEditorDefinition<Expression>> expressionEditorDefinition = expressionEditorDefinitions.get().getExpressionEditorDefinition(expression);
         expressionEditorDefinition.ifPresent(definition -> {
-            Optional<BaseExpressionGrid> editor = expressionGridCache.getExpressionGrid(uuid);
+            Optional<BaseExpressionGrid> editor = expressionGridCache.get().getExpressionGrid(uuid);
             if (!editor.isPresent()) {
                 final Optional<BaseExpressionGrid> oEditor = definition.getEditor(parent,
                                                                                   Optional.of(uuid),
@@ -83,7 +83,7 @@ public class ExpressionContainerUIModelMapper extends BaseUIModelMapper<Expressi
                                                                                   expression,
                                                                                   hasName,
                                                                                   0);
-                expressionGridCache.putExpressionGrid(uuid, oEditor);
+                expressionGridCache.get().putExpressionGrid(uuid, oEditor);
                 editor = oEditor;
             }
             final Optional<BaseExpressionGrid> _editor = editor;

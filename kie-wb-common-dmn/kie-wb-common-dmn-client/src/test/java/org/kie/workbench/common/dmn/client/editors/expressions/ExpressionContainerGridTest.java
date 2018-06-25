@@ -177,7 +177,7 @@ public class ExpressionContainerGridTest {
                                                 sessionManager,
                                                 sessionCommandManager,
                                                 expressionEditorDefinitionsSupplier,
-                                                expressionGridCache,
+                                                () -> expressionGridCache,
                                                 onHasNameChanged);
 
         this.gridLayer.add(grid);

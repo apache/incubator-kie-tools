@@ -37,6 +37,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionEditorDefinition;
+import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCacheImpl;
@@ -68,6 +69,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class ExpressionEditorViewImplTest {
@@ -90,6 +92,9 @@ public class ExpressionEditorViewImplTest {
     private CellEditorControlsView.Presenter cellEditorControls;
 
     @Mock
+    private ExpressionEditorView.Presenter presenter;
+
+    @Mock
     private TranslationService translationService;
 
     @Mock
@@ -97,6 +102,9 @@ public class ExpressionEditorViewImplTest {
 
     @Mock
     private SessionManager sessionManager;
+
+    @Mock
+    private DMNEditorSession session;
 
     @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
@@ -156,6 +164,9 @@ public class ExpressionEditorViewImplTest {
         doReturn(new BaseGridData()).when(editor).getModel();
 
         this.expressionGridCache = new ExpressionGridCacheImpl();
+        when(sessionManager.getCurrentSession()).thenReturn(session);
+        when(session.getExpressionGridCache()).thenReturn(expressionGridCache);
+
         this.view = spy(new ExpressionEditorViewImpl(returnToDRG,
                                                      gridPanel,
                                                      gridLayer,
@@ -165,8 +176,8 @@ public class ExpressionEditorViewImplTest {
                                                      listSelector,
                                                      sessionManager,
                                                      sessionCommandManager,
-                                                     expressionEditorDefinitionsSupplier,
-                                                     expressionGridCache));
+                                                     expressionEditorDefinitionsSupplier));
+        view.init(presenter);
 
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add(undefinedExpressionEditorDefinition);
@@ -182,6 +193,13 @@ public class ExpressionEditorViewImplTest {
                                                                                                              anyInt());
 
         doAnswer((i) -> i.getArguments()[1]).when(translationService).format(anyString(), anyObject());
+    }
+
+    @Test
+    public void testInit() {
+        verify(view).setupGridPanel();
+        verify(view).setupGridWidget();
+        verify(view).setupGridWidgetPanControl();
     }
 
     @Test
