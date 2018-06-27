@@ -95,7 +95,7 @@
       <artifactId>kie-wb-common-wf-sdm-extensions</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- dependencies added because of new illegal transitive dependency check -->
     <dependency>
       <groupId>org.apache.lucene</groupId>
@@ -1330,4 +1330,21 @@
 
   </build>
 
+  <profiles>
+    <!-- profile to disable GWT compilation of showcase (useful in full downstream builds) -->
+    <profile>
+      <id>no-showcase</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
