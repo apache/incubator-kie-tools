@@ -171,9 +171,9 @@ public class DomainLookupFunctions {
                     .getConnectionRules()
                     .stream()
                     .filter(rule -> rule.getRole().equals(edgeDefId))
-                    .filter(rule -> isSourceConnectionAllowed(rule, labels))
-                    .flatMap(rule -> rule.getPermittedConnections().stream()
-                            .map(CanConnect.PermittedConnection::getEndRole))
+                    .flatMap(rule -> rule.getPermittedConnections().stream())
+                    .filter(pc -> labels.contains(pc.getStartRole()))
+                    .map(CanConnect.PermittedConnection::getEndRole)
                     .collect(Collectors.toSet());
         }
     }

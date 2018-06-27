@@ -57,14 +57,19 @@ public class DomainLookupFunctionsTest {
 
     private static final String DEF_ID1 = "defId1";
     private static final String DEF_ID2 = "defId2";
+    private static final String DEF_ID3 = "defId3";
     private static final String ROLE1 = "role1";
     private static final String ROLE2 = "role2";
-    private static final CanConnect canConnect1To2 = new CanConnect("1to2",
-                                                                    DEF_ID2,
-                                                                    Collections.singletonList(new CanConnect.PermittedConnection(ROLE1,
-                                                                                                                                 ROLE2)));
+    private static final String ROLE3 = "role3";
+    private static final CanConnect permittedConnections = new CanConnect("PermittedConnections",
+                                                                          DEF_ID2,
+                                                                          Arrays.asList(new CanConnect.PermittedConnection(ROLE1,
+                                                                                                                           ROLE2),
+                                                                                        new CanConnect.PermittedConnection(ROLE2,
+                                                                                                                           ROLE3)));
+
     private static final RuleSet RULE_SET = new RuleSetImpl("ruleSet1",
-                                                            Arrays.asList(canConnect1To2));
+                                                            Collections.singleton(permittedConnections));
 
     @Mock
     private DomainLookupContext context;
@@ -86,36 +91,40 @@ public class DomainLookupFunctionsTest {
         when(context.getRuleManager()).thenReturn(ruleManager);
         when(context.getCache()).thenReturn(cache);
         when(cache.getRuleSet()).thenReturn(RULE_SET);
-        when(cache.getConnectionRules()).thenReturn(Collections.singletonList(canConnect1To2));
+        when(cache.getConnectionRules()).thenReturn(Collections.singletonList(permittedConnections));
         when(context.getDefinitionsRegistry()).thenReturn(definitionsCache);
         TestingGraphMockHandler graphTestHandler = new TestingGraphMockHandler();
         when(context.getDefinitionManager()).thenReturn(graphTestHandler.definitionManager);
         graph1Instance = TestingGraphInstanceBuilder.newGraph1(graphTestHandler);
-        Set<String> labels = new HashSet<String>(1) {{
-            add(ROLE1);
-        }};
-        when(definitionsCache.getLabels(eq(DEF_ID1))).thenReturn(labels);
+
+        when(definitionsCache.getLabels(eq(DEF_ID1))).thenReturn(Collections.singleton(ROLE1));
+        when(definitionsCache.getLabels(eq(DEF_ID2))).thenReturn(Collections.singleton(ROLE2));
+        when(definitionsCache.getLabels(eq(DEF_ID3))).thenReturn(Collections.singleton(ROLE3));
     }
 
     @Test
     public void testIsSourceConnectionAllowed() {
-        assertTrue(isSourceConnectionAllowed(canConnect1To2,
+        assertTrue(isSourceConnectionAllowed(permittedConnections,
                                              new HashSet<String>(1) {{
                                                  add(ROLE1);
                                              }}));
-        assertFalse(isSourceConnectionAllowed(canConnect1To2,
+        assertTrue(isSourceConnectionAllowed(permittedConnections,
+                                             new HashSet<String>(1) {{
+                                                 add(ROLE2);
+                                             }}));
+        assertFalse(isSourceConnectionAllowed(permittedConnections,
                                               new HashSet<String>(1) {{
-                                                  add(ROLE2);
+                                                  add(ROLE3);
                                               }}));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testLookupConnectionTargetRoles() {
-
         LookupConnectionTargetRoles function = new LookupConnectionTargetRoles(DEF_ID2,
                                                                                DEF_ID1);
         Set<String> result = function.execute(context);
+        assertEquals(1, result.size());
         assertTrue(result.contains(ROLE2));
     }
 
