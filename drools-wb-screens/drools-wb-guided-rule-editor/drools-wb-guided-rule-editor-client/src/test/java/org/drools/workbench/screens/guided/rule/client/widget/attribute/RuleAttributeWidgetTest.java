@@ -16,14 +16,19 @@
 
 package org.drools.workbench.screens.guided.rule.client.widget.attribute;
 
+import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockito;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import org.drools.workbench.models.datamodel.rule.RuleAttribute;
+import org.drools.workbench.models.datamodel.rule.RuleMetadata;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
+import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +43,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
@@ -50,6 +56,15 @@ public class RuleAttributeWidgetTest {
 
     @Mock
     private DirtyableHorizontalPane dirtyableHorizontalPane;
+
+    @Mock
+    private TextBox textBox;
+
+    @Mock
+    private Element textBoxElement;
+
+    @Mock
+    private InputElement textBoxInputElement;
 
     @Mock
     private RuleModeller ruleModeller;
@@ -66,6 +81,11 @@ public class RuleAttributeWidgetTest {
                                       aClass -> layout);
         GwtMockito.useProviderForType(DirtyableHorizontalPane.class,
                                       aClass -> dirtyableHorizontalPane);
+        GwtMockito.useProviderForType(TextBox.class,
+                                      aClass -> textBox);
+
+        doReturn(textBoxElement).when(textBox).getElement();
+        doReturn(textBoxInputElement).when(textBoxElement).cast();
 
         ruleModel = new RuleModel();
     }
@@ -143,5 +163,42 @@ public class RuleAttributeWidgetTest {
         verify(layout).addAttribute(eq(RuleAttributeWidget.DATE_EXPIRES_ATTR),
                                     eq(dirtyableHorizontalPane));
         verify(dirtyableHorizontalPane).add(isA(DatePicker.class));
+    }
+
+    @Test
+    public void testMetadataFrozenConditionsTranslated() {
+        ruleModel.addMetadata(new RuleMetadata(RuleAttributeWidget.LOCK_LHS, "true"));
+
+        ruleAttributeWidget = new RuleAttributeWidget(ruleModeller,
+                                                      ruleModel,
+                                                      isReadOnly);
+
+        verify(layout).addAttribute(eq(GuidedRuleEditorResources.CONSTANTS.FrozenConditions()),
+                                    eq(dirtyableHorizontalPane));
+    }
+
+    @Test
+    public void testMetadataFrozenActionsTranslated() {
+        ruleModel.addMetadata(new RuleMetadata(RuleAttributeWidget.LOCK_RHS, "true"));
+
+        ruleAttributeWidget = new RuleAttributeWidget(ruleModeller,
+                                                      ruleModel,
+                                                      isReadOnly);
+
+        verify(layout).addAttribute(eq(GuidedRuleEditorResources.CONSTANTS.FrozenActions()),
+                                    eq(dirtyableHorizontalPane));
+    }
+
+    @Test
+    public void testMetadataUnknownNotTranslated() {
+        final String metadata = "unknown-metadata";
+        ruleModel.addMetadata(new RuleMetadata(metadata, "true"));
+
+        ruleAttributeWidget = new RuleAttributeWidget(ruleModeller,
+                                                      ruleModel,
+                                                      isReadOnly);
+
+        verify(layout).addAttribute(eq(metadata),
+                                    eq(dirtyableHorizontalPane));
     }
 }

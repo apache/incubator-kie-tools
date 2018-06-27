@@ -254,6 +254,10 @@ public interface Constants
 
     String FreezeAreasForEditing();
 
+    String FrozenActions();
+
+    String FrozenConditions();
+
     String Conditions();
 
     String MoveUp();

@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.guided.rule.client.widget.attribute;
 
+import java.util.Objects;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -72,7 +74,6 @@ public class RuleAttributeWidget extends Composite {
     public static final String LOCK_LHS = "freeze_conditions";
     public static final String LOCK_RHS = "freeze_actions";
 
-    public static final String DEFAULT_DIALECT = "mvel";
     public static final String[] DIALECTS = {"java", "mvel"};
 
     /**
@@ -100,7 +101,7 @@ public class RuleAttributeWidget extends Composite {
         }
         for (int i = 0; i < meta.length; i++) {
             RuleMetadata rmd = meta[i];
-            layout.addAttribute(rmd.getAttributeName(),
+            layout.addAttribute(translateMetadataIfTranslationsIsKnown(rmd.getAttributeName()),
                                 getEditorWidget(rmd,
                                                 i,
                                                 isReadOnly));
@@ -229,7 +230,7 @@ public class RuleAttributeWidget extends Composite {
                                    isReadOnly);
         }
 
-        DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
+        DirtyableHorizontalPane horiz = GWT.create(DirtyableHorizontalPane.class);
         horiz.add(editor);
         if (!isReadOnly) {
             horiz.add(getRemoveMetaIcon(idx));
@@ -259,7 +260,7 @@ public class RuleAttributeWidget extends Composite {
 
     private TextBox textBoxEditor(final RuleMetadata rm,
                                   final boolean isReadOnly) {
-        final TextBox box = new TextBox();
+        final TextBox box = GWT.create(TextBox.class);
         box.setEnabled(!isReadOnly);
         ((InputElement) box.getElement().cast()).setSize((rm.getValue().length() < 3) ? 3 : rm.getValue().length());
         box.setText(rm.getValue());
@@ -301,5 +302,24 @@ public class RuleAttributeWidget extends Composite {
             }
         });
         return remove;
+    }
+
+    /**
+     * Translates specific metadata to human readable texts
+     * Currently translated are frozen_actions and frozen_conditions
+     * Otherwise returns the original metadata
+     * @param metadata
+     * @return Human readable text for the given metadata
+     */
+    private static String translateMetadataIfTranslationsIsKnown(final String metadata) {
+        if (Objects.equals(metadata, LOCK_LHS)) {
+            return GuidedRuleEditorResources.CONSTANTS.FrozenConditions();
+        }
+
+        if (Objects.equals(metadata, LOCK_RHS)) {
+            return GuidedRuleEditorResources.CONSTANTS.FrozenActions();
+        }
+
+        return metadata;
     }
 }
