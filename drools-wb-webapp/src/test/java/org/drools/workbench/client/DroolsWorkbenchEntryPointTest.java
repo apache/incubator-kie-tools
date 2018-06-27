@@ -95,7 +95,8 @@ public class DroolsWorkbenchEntryPointTest {
                                                                       adminPageHelper,
                                                                       scopeFactory,
                                                                       workbenchConfigurationPresenter,
-                                                                      languageConfigurationHandler));
+                                                                      languageConfigurationHandler,
+                                                                      null));
         mockMenuHelper();
         mockConstants();
     }
