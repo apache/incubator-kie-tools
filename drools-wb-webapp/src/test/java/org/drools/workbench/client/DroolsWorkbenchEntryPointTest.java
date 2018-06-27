@@ -27,6 +27,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.client.handlers.workbench.configuration.LanguageConfigurationHandler;
 import org.kie.workbench.common.widgets.client.handlers.workbench.configuration.WorkbenchConfigurationPresenter;
 import org.kie.workbench.common.workbench.client.admin.DefaultAdminPageHelper;
+import org.kie.workbench.common.workbench.client.error.DefaultWorkbenchErrorCallback;
 import org.kie.workbench.common.workbench.client.menu.DefaultWorkbenchFeaturesMenusHelper;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -80,6 +81,9 @@ public class DroolsWorkbenchEntryPointTest {
     @Mock
     protected LanguageConfigurationHandler languageConfigurationHandler;
 
+    @Mock
+    protected DefaultWorkbenchErrorCallback defaultWorkbenchErrorCallback;
+
     private DroolsWorkbenchEntryPoint droolsWorkbenchEntryPoint;
 
     @Before
@@ -96,7 +100,7 @@ public class DroolsWorkbenchEntryPointTest {
                                                                       scopeFactory,
                                                                       workbenchConfigurationPresenter,
                                                                       languageConfigurationHandler,
-                                                                      null));
+                                                                      defaultWorkbenchErrorCallback));
         mockMenuHelper();
         mockConstants();
     }
