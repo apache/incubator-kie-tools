@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 import org.uberfire.ext.metadata.backend.elastic.metamodel.ElasticMetaObject;
 import org.uberfire.ext.metadata.backend.elastic.metamodel.ElasticMetaProperty;
-import org.uberfire.ext.metadata.engine.MetaModelStore;
+import org.uberfire.ext.metadata.backend.elastic.metamodel.ElasticSearchMappingStore;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.model.KProperty;
 import org.uberfire.ext.metadata.model.impl.KObjectImpl;
@@ -47,10 +47,10 @@ public class MappingFieldFactory {
     public static final String CREATED_BY = "createdBy";
     public static final String CREATED_DATE = "createdDate";
     public static final String LAST_MODIFIED_DATE = "lastModifiedDate";
-    private final MetaModelStore metaModelStore;
+    private ElasticSearchMappingStore metaModelStore;
 
-    public MappingFieldFactory(MetaModelStore metaModelStore) {
-        this.metaModelStore = metaModelStore;
+    public MappingFieldFactory(ElasticSearchMappingStore elasticMetaModel) {
+        this.metaModelStore = elasticMetaModel;
     }
 
     public MetaObject build(KObject kObject) {
@@ -203,15 +203,19 @@ public class MappingFieldFactory {
     }
 
     public KObject fromDocument(Map<String, ?> document) {
-        MetaObject metaModel = metaModelStore.getMetaObject((String) document.get(MetaObject.META_OBJECT_TYPE));
+        String clustedId = String.valueOf(document.get(MetaObject.META_OBJECT_CLUSTER_ID));
+        String type = String.valueOf(document.get(MetaObject.META_OBJECT_TYPE));
+
+        MetaObject metaModel = metaModelStore.getMetaObject(clustedId,
+                                                            type);
 
         Collection<MetaProperty> properties = metaModel.getProperties();
         List<KProperty<?>> kProperties = buildKProperties(document,
                                                           properties);
 
         return new KObjectImpl(String.valueOf(document.get(MetaObject.META_OBJECT_ID)),
-                               String.valueOf(document.get(MetaObject.META_OBJECT_TYPE)),
-                               String.valueOf(document.get(MetaObject.META_OBJECT_CLUSTER_ID)),
+                               type,
+                               clustedId,
                                String.valueOf(document.get(MetaObject.META_OBJECT_SEGMENT_ID)),
                                String.valueOf(document.get(MetaObject.META_OBJECT_KEY)),
                                kProperties,

@@ -75,7 +75,7 @@ public class ElasticSearchIndexProvider implements IndexProvider {
     public static final String ES_KEYWORD_TYPE = "keyword";
     private final ElasticSearchContext elasticSearchContext;
     private final MappingFieldFactory fieldFactory;
-    private final ElasticSearchMappingStore elasticMetaModel;
+    private final ElasticSearchMappingStore elasticSearchMappingStore;
     private final MetaModelStore metaModelStore;
     private final Analyzer analyzer;
     private Logger logger = LoggerFactory.getLogger(ElasticSearchIndexProvider.class);
@@ -83,11 +83,11 @@ public class ElasticSearchIndexProvider implements IndexProvider {
     public ElasticSearchIndexProvider(MetaModelStore metaModelStore,
                                       ElasticSearchContext elasticSearchContext,
                                       Analyzer analyzer) {
-        this.elasticMetaModel = new ElasticSearchMappingStore(this);
+        this.elasticSearchMappingStore = new ElasticSearchMappingStore(this);
         this.metaModelStore = metaModelStore;
         this.elasticSearchContext = elasticSearchContext;
         this.analyzer = analyzer;
-        this.fieldFactory = new MappingFieldFactory(metaModelStore);
+        this.fieldFactory = new MappingFieldFactory(this.elasticSearchMappingStore);
     }
 
     public Client getClient() {
@@ -102,8 +102,8 @@ public class ElasticSearchIndexProvider implements IndexProvider {
     @Override
     public void index(KObject object) {
         MetaObject metaObject = fieldFactory.build(object);
-        elasticMetaModel.updateMetaModel(object,
-                                         metaObject);
+        elasticSearchMappingStore.updateMetaModel(object,
+                                                  metaObject);
         this.deleteIfExists(object);
         this.createIndexRequest((ElasticMetaObject) metaObject)
                 .setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE)
@@ -126,8 +126,8 @@ public class ElasticSearchIndexProvider implements IndexProvider {
         BulkRequestBuilder bulk = this.getClient().prepareBulk();
         elements.forEach(elem -> {
             MetaObject metaObject = fieldFactory.build(elem);
-            elasticMetaModel.updateMetaModel(elem,
-                                             metaObject);
+            elasticSearchMappingStore.updateMetaModel(elem,
+                                                      metaObject);
             bulk.add(this.createIndexRequest((ElasticMetaObject) metaObject));
         });
         bulk.setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE)
@@ -158,7 +158,7 @@ public class ElasticSearchIndexProvider implements IndexProvider {
 
     @Override
     public void delete(String index) {
-        this.getClient().admin().indices().prepareDelete(index).get();
+        this.getClient().admin().indices().prepareDelete(sanitizeIndex(index)).get();
     }
 
     @Override
@@ -389,8 +389,8 @@ public class ElasticSearchIndexProvider implements IndexProvider {
                       type);
         try {
             GetMappingsResponse mappingResponse = this.getClient().admin().indices().prepareGetMappings(sanitizeIndex(index)).addTypes(sanitizeIndex(type)).get();
-            return Optional.ofNullable(mappingResponse.getMappings().getOrDefault(index,
-                                                                                  ImmutableOpenMap.of()).getOrDefault(type,
+            return Optional.ofNullable(mappingResponse.getMappings().getOrDefault(sanitizeIndex(index),
+                                                                                  ImmutableOpenMap.of()).getOrDefault(sanitizeIndex(type),
                                                                                                                       null));
         } catch (IndexNotFoundException ex) {
             if (logger.isDebugEnabled()) {

@@ -17,20 +17,28 @@
 package org.uberfire.ext.metadata.backend.elastic.metamodel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.uberfire.ext.metadata.backend.elastic.index.ElasticSearchIndexProvider;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.model.KProperty;
+import org.uberfire.ext.metadata.model.impl.MetaObjectImpl;
+import org.uberfire.ext.metadata.model.impl.MetaPropertyImpl;
 import org.uberfire.ext.metadata.model.schema.MetaObject;
 import org.uberfire.ext.metadata.model.schema.MetaProperty;
-import org.uberfire.java.nio.file.Option;
 
 public class ElasticSearchMappingStore {
 
+    protected static final String ES_MAPPING_PROPERTIES = "properties";
+    protected static final String ES_MAPPING_TYPE = "type";
+    protected static final String JAVA_LANG = "java.lang.";
     private final ElasticSearchIndexProvider indexProvider;
 
     public ElasticSearchMappingStore(ElasticSearchIndexProvider indexProvider) {
@@ -63,6 +71,72 @@ public class ElasticSearchMappingStore {
             this.indexProvider.putMapping(object.getClusterId(),
                                           object.getType().getName(),
                                           dirtyProperties);
+        }
+    }
+
+    public MetaObject getMetaObject(String clusterId,
+                                    String type) {
+
+        Optional<MappingMetaData> mapping = this.indexProvider.getMapping(clusterId,
+                                                                          type);
+
+        Map<String, Object> entries = mapping
+                .map(mappingMetaData -> mappingMetaData.sourceAsMap())
+                .orElse(Collections.emptyMap());
+
+        MetaObject meta = this.createMetaObjects(type,
+                                                 entries);
+
+        return meta;
+    }
+
+    private MetaObject createMetaObjects(String type,
+                                         Map<String, Object> entries) {
+
+        Set<MetaProperty> children = inspectTree(Optional.empty(),
+                                                 entries);
+
+        return new MetaObjectImpl(() -> type,
+                                  children);
+    }
+
+    protected Set<MetaProperty> inspectTree(Optional<String> key,
+                                            Map<String, Object> mapping) {
+        if (mapping.get(ES_MAPPING_PROPERTIES) == null) {
+            String t = mapping.get(ES_MAPPING_TYPE).toString();
+            return Collections.singleton(new MetaPropertyImpl(key.get(),
+                                                              false,
+                                                              false,
+                                                              Collections.singleton(this.convertType(t))));
+        } else {
+            Map<String, Object> fields = (Map<String, Object>) mapping.get(ES_MAPPING_PROPERTIES);
+            Set<MetaProperty> metaProperties = fields.entrySet()
+                    .stream()
+                    .map(field -> inspectTree(Optional.of(key.map(k -> k + ".").orElse("") + field.getKey()),
+                                              (Map<String, Object>) field.getValue()))
+                    .flatMap(x -> x.stream())
+                    .collect(Collectors.toSet());
+
+            return metaProperties;
+        }
+    }
+
+    protected Class<?> convertType(String type) {
+        if (type.equalsIgnoreCase(ElasticSearchIndexProvider.ES_TEXT_TYPE) ||
+                type.equalsIgnoreCase(ElasticSearchIndexProvider.ES_KEYWORD_TYPE)) {
+            return String.class;
+        } else {
+            return loadClass(type);
+        }
+    }
+
+    protected Class<?> loadClass(String type) {
+
+        try {
+            return ElasticSearchMappingStore.class.getClassLoader().loadClass(JAVA_LANG + StringUtils.capitalize(type));
+        } catch (ClassNotFoundException e) {
+            throw new ElasticsearchMappingException("Error transforming type to class",
+                                                    e);
         }
     }
 }

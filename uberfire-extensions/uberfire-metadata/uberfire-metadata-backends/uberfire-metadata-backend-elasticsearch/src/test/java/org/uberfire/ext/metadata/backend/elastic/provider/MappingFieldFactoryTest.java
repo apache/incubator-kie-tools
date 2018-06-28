@@ -22,11 +22,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.ext.metadata.backend.elastic.metamodel.ElasticMetaObject;
 import org.uberfire.ext.metadata.backend.elastic.metamodel.ElasticMetaProperty;
+import org.uberfire.ext.metadata.backend.elastic.metamodel.ElasticSearchMappingStore;
 import org.uberfire.ext.metadata.metamodel.NullMetaModelStore;
 import org.uberfire.ext.metadata.model.impl.KObjectImpl;
 import org.uberfire.ext.metadata.model.schema.MetaObject;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 public class MappingFieldFactoryTest {
 
@@ -34,7 +36,7 @@ public class MappingFieldFactoryTest {
 
     @Before
     public void setUp() {
-        this.fieldFactory = new MappingFieldFactory(new NullMetaModelStore());
+        this.fieldFactory = new MappingFieldFactory(mock(ElasticSearchMappingStore.class));
     }
 
     @Test
