@@ -33,6 +33,7 @@ import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.io.CommonIOServiceDotFileTest;
 import org.uberfire.io.IOService;
 import org.uberfire.io.lock.BatchLockControl;
+import org.uberfire.java.nio.base.WatchContext;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.file.FileSystem;
@@ -110,6 +111,32 @@ public class BatchTest {
         JGitFileSystemProvider gitFsProvider = (JGitFileSystemProvider) FileSystemProviders.resolveProvider(URI.create("git://whatever"));
         gitFsProvider.shutdown();
         FileUtils.deleteQuietly(gitFsProvider.getGitRepoContainerDir());
+    }
+
+    @Test
+    public void deleteOnBatchEventShouldKeepUserInfo() {
+        final Path init = ioService.get(URI.create("git://amend-repo-test/file.txt"));
+
+        final WatchService ws = init.getFileSystem().newWatchService();
+        String user = "dora";
+        String message = "message";
+        ioService.write(init,
+                        "init!",
+                        new CommentedOption(user,
+                                            message));
+        {
+            List<WatchEvent<?>> events = ws.poll().pollEvents();
+        }
+
+        ioService.startBatch(init.getFileSystem());
+        ioService.delete(init, new CommentedOption(user, message));
+        ioService.endBatch();
+        {
+            List<WatchEvent<?>> events = ws.poll().pollEvents();
+            JGitWatchEvent event = (JGitWatchEvent) events.get(0);
+            WatchContext context = (WatchContext) event.context();
+            assertEquals(user, context.getUser());
+        }
     }
 
     @Test

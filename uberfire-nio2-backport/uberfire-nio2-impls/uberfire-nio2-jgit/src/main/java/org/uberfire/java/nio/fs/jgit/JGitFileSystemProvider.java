@@ -2344,12 +2344,25 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
             } else {
                 synchronized (postponedEventsLock) {
 
+                    String sessionId;
+                    String userName;
+                    String message;
+                    if (fileSystem.getBatchCommitInfo() != null) {
+                        sessionId = fileSystem.getBatchCommitInfo().getSessionId();
+                        userName = fileSystem.getBatchCommitInfo().getName();
+                        message = fileSystem.getBatchCommitInfo().getMessage();
+                    } else {
+                        sessionId = commitInfo.getSessionId();
+                        userName = commitInfo.getName();
+                        message = commitInfo.getMessage();
+                    }
+
                     final ObjectId newHead = path.getFileSystem().getGit().getTreeFromRef(branchName);
                     List<WatchEvent<?>> postponedWatchEvents = compareDiffs(path.getFileSystem(),
                                                                             branchName,
-                                                                            commitInfo.getSessionId(),
-                                                                            commitInfo.getName(),
-                                                                            commitInfo.getMessage(),
+                                                                            sessionId,
+                                                                            userName,
+                                                                            message,
                                                                             oldHead,
                                                                             newHead);
 
