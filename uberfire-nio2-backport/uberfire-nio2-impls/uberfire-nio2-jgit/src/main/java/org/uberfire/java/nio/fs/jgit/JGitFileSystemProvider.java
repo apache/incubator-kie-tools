@@ -667,7 +667,8 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                                    origin,
                                    fsName,
                                    credential,
-                                   config.isEnableKetch() ? leaders : null);
+                                   config.isEnableKetch() ? leaders : null,
+                                   config.getHookDir());
                 } else if (subdirectory != null) {
                     if (isMirror) {
                         throw new UnsupportedOperationException("Cannot make mirror repository when cloning subdirectory.");
@@ -677,13 +678,15 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                                                 subdirectory,
                                                 branches,
                                                 credential,
-                                                leaders);
+                                                leaders,
+                                                config.getHookDir());
                 } else {
                     git = Git.clone(repoDest,
                                     origin,
                                     isMirror,
                                     credential,
-                                    config.isEnableKetch() ? leaders : null);
+                                    config.isEnableKetch() ? leaders : null,
+                                    config.getHookDir());
                 }
             } catch (Clone.CloneException ce) {
                 fsManager.remove(fsName);

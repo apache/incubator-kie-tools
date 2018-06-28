@@ -16,18 +16,17 @@
 
 package org.uberfire.java.nio.fs.jgit.util.commands;
 
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+
 import java.io.File;
 
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.internal.ketch.KetchLeaderCache;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.exceptions.GitException;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class Fork {
 
@@ -39,12 +38,14 @@ public class Fork {
     private final String source;
     private final String target;
     private CredentialsProvider credentialsProvider;
+    private final File hookDir;
 
     public Fork(final File parentFolder,
                 final String source,
                 final String target,
                 final CredentialsProvider credentialsProvider,
-                final KetchLeaderCache leaders) {
+                final KetchLeaderCache leaders,
+                final File hookDir) {
         this.parentFolder = checkNotNull("parentFolder",
                                          parentFolder);
         this.source = checkNotEmpty("source",
@@ -54,6 +55,8 @@ public class Fork {
         this.credentialsProvider = checkNotNull("credentialsProvider",
                                                 credentialsProvider);
         this.leaders = leaders;
+        
+        this.hookDir = hookDir;
     }
 
     public Git execute()  {
@@ -80,6 +83,7 @@ public class Fork {
                          origin.toPath().toUri().toString(),
                          false,
                          credentialsProvider,
-                         leaders);
+                         leaders,
+                         hookDir);
     }
 }

@@ -45,6 +45,7 @@ public class Clone {
     private final CredentialsProvider credentialsProvider;
     private final boolean isMirror;
     private final KetchLeaderCache leaders;
+    private final File hookDir;
 
     private Logger logger = LoggerFactory.getLogger(Clone.class);
 
@@ -52,7 +53,8 @@ public class Clone {
                  final String origin,
                  final boolean isMirror,
                  final CredentialsProvider credentialsProvider,
-                 final KetchLeaderCache leaders) {
+                 final KetchLeaderCache leaders,
+                 final File hookDir) {
         this.repoDir = checkNotNull("directory",
                                     directory);
         this.origin = checkNotEmpty("origin",
@@ -60,6 +62,7 @@ public class Clone {
         this.isMirror = isMirror;
         this.credentialsProvider = credentialsProvider;
         this.leaders = leaders;
+        this.hookDir = hookDir;
     }
 
     public Optional<Git> execute() {
@@ -72,7 +75,7 @@ public class Clone {
         }
 
         final Git git = Git.createRepository(repoDir,
-                                             null);
+                                             hookDir);
 
         if (git != null) {
             try {

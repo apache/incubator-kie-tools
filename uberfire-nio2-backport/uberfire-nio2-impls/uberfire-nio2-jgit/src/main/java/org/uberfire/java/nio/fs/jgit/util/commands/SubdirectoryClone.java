@@ -79,6 +79,7 @@ public class SubdirectoryClone {
     private final String origin;
     private final CredentialsProvider credentialsProvider;
     private final KetchLeaderCache leaders;
+    private final File hookDir;
 
     private Logger logger = LoggerFactory.getLogger(SubdirectoryClone.class);
     private List<String> branches;
@@ -91,13 +92,15 @@ public class SubdirectoryClone {
      * @param branches The branches that should be copied. Must not be null.
      * @param credentialsProvider Provides credentials for the initial cloning of the origin. May be null.
      * @param leaders Used for initial cloning. May be null.
+     * @param hookDir Used to specify the directory containing the Git Hooks to add to the repository. May be null.
      */
     public SubdirectoryClone(final File directory,
                              final String origin,
                              final String subdirectory,
                              final List<String> branches,
                              final CredentialsProvider credentialsProvider,
-                             final KetchLeaderCache leaders) {
+                             final KetchLeaderCache leaders,
+                             final File hookDir) {
         this.subdirectory = ensureTrailingSlash(subdirectory);
         this.branches = branches;
         this.repoDir = checkNotNull("directory",
@@ -106,6 +109,7 @@ public class SubdirectoryClone {
                                     origin);
         this.credentialsProvider = credentialsProvider;
         this.leaders = leaders;
+        this.hookDir = hookDir;
     }
 
     private static String ensureTrailingSlash(String subdirectory) {
@@ -117,7 +121,7 @@ public class SubdirectoryClone {
     }
 
     public Git execute() {
-        final Git git = new Clone(repoDir, origin, false, credentialsProvider, leaders).execute().get();
+        final Git git = new Clone(repoDir, origin, false, credentialsProvider, leaders, hookDir).execute().get();
         final Repository repository = git.getRepository();
 
         try (final ObjectReader reader = repository.newObjectReader();

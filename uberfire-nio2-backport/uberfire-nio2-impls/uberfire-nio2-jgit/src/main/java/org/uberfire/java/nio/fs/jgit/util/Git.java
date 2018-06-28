@@ -73,33 +73,38 @@ public interface Git {
                     final String origin,
                     final String name,
                     final CredentialsProvider credential,
-                    final KetchLeaderCache leaders) {
+                    final KetchLeaderCache leaders,
+                    final File hookDir) {
         return new Fork(gitRepoContainerDir,
                         origin,
                         name,
                         credential,
-                        leaders).execute();
+                        leaders,
+                        hookDir).execute();
     }
 
     static Git clone(final File repoDest,
                      final String origin,
                      final boolean isMirror,
                      final CredentialsProvider credential,
-                     final KetchLeaderCache leaders) {
+                     final KetchLeaderCache leaders,
+                     final File hookDir) {
         return new Clone(repoDest,
                          origin,
                          isMirror,
                          credential,
-                         leaders).execute().get();
+                         leaders,
+                         hookDir).execute().get();
     }
 
-    static Git cloneSubdirectory(File repoDest, String origin, String subdirectory, List<String> branches, CredentialsProvider credential, KetchLeaderCache leaders) {
+    static Git cloneSubdirectory(File repoDest, String origin, String subdirectory, List<String> branches, CredentialsProvider credential, KetchLeaderCache leaders, File hookDir) {
         return new SubdirectoryClone(repoDest,
                                      origin,
                                      subdirectory,
                                      branches,
                                      credential,
-                                     leaders).execute();
+                                     leaders,
+                                     hookDir).execute();
     }
 
     void convertRefTree();

@@ -16,6 +16,16 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.uberfire.java.nio.fs.jgit.util.model.PathType.DIRECTORY;
+import static org.uberfire.java.nio.fs.jgit.util.model.PathType.FILE;
+import static org.uberfire.java.nio.fs.jgit.util.model.PathType.NOT_FOUND;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -36,13 +46,6 @@ import org.uberfire.java.nio.fs.jgit.util.commands.CreateRepository;
 import org.uberfire.java.nio.fs.jgit.util.commands.GetTreeFromRef;
 import org.uberfire.java.nio.fs.jgit.util.commands.ListDiffs;
 import org.uberfire.java.nio.fs.jgit.util.commands.ListRefs;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static org.uberfire.java.nio.fs.jgit.util.model.PathType.DIRECTORY;
-import static org.uberfire.java.nio.fs.jgit.util.model.PathType.FILE;
-import static org.uberfire.java.nio.fs.jgit.util.model.PathType.NOT_FOUND;
 
 public class JGitUtilTest extends AbstractTestInfra {
 
@@ -127,6 +130,7 @@ public class JGitUtilTest extends AbstractTestInfra {
                                   origin.getRepository().getDirectory().toString(),
                                   false,
                                   CredentialsProvider.getDefault(),
+                                  null,
                                   null).execute().get();
 
         assertThat(git).isNotNull();
@@ -177,6 +181,7 @@ public class JGitUtilTest extends AbstractTestInfra {
                                   origin.getRepository().getDirectory().toString(),
                                   false,
                                   CredentialsProvider.getDefault(),
+                                  null,
                                   null).execute().get();
 
         assertThat(git.getPathInfo("user_branch",
@@ -228,6 +233,7 @@ public class JGitUtilTest extends AbstractTestInfra {
                                   origin.getRepository().getDirectory().toString(),
                                   false,
                                   CredentialsProvider.getDefault(),
+                                  null,
                                   null).execute().get();
 
         assertThat(git.getPathInfo("master",

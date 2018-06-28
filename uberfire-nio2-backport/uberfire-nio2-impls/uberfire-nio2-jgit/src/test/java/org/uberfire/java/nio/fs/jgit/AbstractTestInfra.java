@@ -17,23 +17,33 @@
 package org.uberfire.java.nio.fs.jgit;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.lib.PersonIdent;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.util.FS_POSIX;
 import org.eclipse.jgit.util.FileUtils;
+import org.eclipse.jgit.util.ProcessResult;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -41,12 +51,15 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.commands.Commit;
 import org.uberfire.java.nio.fs.jgit.util.model.CommitInfo;
 import org.uberfire.java.nio.fs.jgit.util.model.DefaultCommitContent;
 
 import static java.util.stream.Collectors.toMap;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractTestInfra {
 
@@ -239,5 +252,76 @@ public abstract class AbstractTestInfra {
 
     static TestFile content(final String path, final String content) {
         return new TestFile(path, content);
+    }
+    
+
+    /**
+     * Creates mock hook in defined hooks directory.
+     * @param hooksDirectory Directory in which mock hook is created.
+     * @param hookName Name of the created hook. This is the filename of created hook file.
+     * @throws FileNotFoundException
+     * @throws UnsupportedEncodingException
+     */
+    void writeMockHook(final File hooksDirectory,
+                               final String hookName)
+            throws FileNotFoundException, UnsupportedEncodingException {
+        final PrintWriter writer = new PrintWriter(new File(hooksDirectory,
+                                                            hookName),
+                                                   "UTF-8");
+        writer.println("# something");
+        writer.close();
+    }
+    
+    /**
+     * Tests if defined hook was executed or not.
+     * @param gitRepoName Name of test git repository that is created for committing changes.
+     * @param testedHookName Tested hook name. This hook is checked for its execution.
+     * @param wasExecuted Expected hook execution state. If true, test expects that defined hook is executed.
+     * If false, test expects that defined hook is not executed.
+     * @throws IOException
+     */
+    void testHook(final String gitRepoName,
+                          final String testedHookName,
+                          final boolean wasExecuted) throws IOException {
+        final URI newRepo = URI.create("git://" + gitRepoName);
+
+        final AtomicBoolean hookExecuted = new AtomicBoolean(false);
+        final FileSystem fs = provider.newFileSystem(newRepo,
+                                                     EMPTY_ENV);
+
+        provider.setDetectedFS(new FS_POSIX() {
+            @Override
+            public ProcessResult runHookIfPresent(Repository repox,
+                                                  String hookName,
+                                                  String[] args) throws JGitInternalException {
+                if (hookName.equals(testedHookName)) {
+                    hookExecuted.set(true);
+                }
+                return null;
+            }
+        });
+
+        assertThat(fs).isNotNull();
+
+        final Path path = provider.getPath(URI.create("git://user_branch@" + gitRepoName + "/some/path/myfile.txt"));
+
+        final OutputStream outStream = provider.newOutputStream(path);
+        assertThat(outStream).isNotNull();
+        outStream.write("my cool content".getBytes());
+        outStream.close();
+
+        final InputStream inStream = provider.newInputStream(path);
+
+        final String content = new Scanner(inStream).useDelimiter("\\A").next();
+
+        inStream.close();
+
+        assertThat(content).isNotNull().isEqualTo("my cool content");
+
+        if (wasExecuted) {
+            assertThat(hookExecuted.get()).isTrue();
+        } else {
+            assertThat(hookExecuted.get()).isFalse();
+        }
     }
 }

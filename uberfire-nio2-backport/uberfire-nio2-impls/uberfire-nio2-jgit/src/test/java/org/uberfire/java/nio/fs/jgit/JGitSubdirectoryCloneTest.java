@@ -16,6 +16,11 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toSet;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,6 +33,8 @@ import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.dircache.DirCacheEditor;
 import org.eclipse.jgit.dircache.DirCacheEditor.PathEdit;
 import org.eclipse.jgit.dircache.DirCacheEntry;
+import org.eclipse.jgit.hooks.PostCommitHook;
+import org.eclipse.jgit.hooks.PreCommitHook;
 import org.eclipse.jgit.lib.CommitBuilder;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.FileMode;
@@ -47,11 +54,6 @@ import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.commands.CreateRepository;
 import org.uberfire.java.nio.fs.jgit.util.commands.ListRefs;
 import org.uberfire.java.nio.fs.jgit.util.commands.SubdirectoryClone;
-
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
-import static java.util.stream.Collectors.toSet;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class JGitSubdirectoryCloneTest extends AbstractTestInfra {
 
@@ -78,6 +80,7 @@ public class JGitSubdirectoryCloneTest extends AbstractTestInfra {
                                                  "dir1",
                                                  singletonList("master"),
                                                  CredentialsProvider.getDefault(),
+                                                 null,
                                                  null).execute();
 
         assertThat(origin.getRepository().getRemoteNames()).isEmpty();
@@ -130,6 +133,7 @@ public class JGitSubdirectoryCloneTest extends AbstractTestInfra {
                                                  "dir1",
                                                  asList("master", "dev"),
                                                  CredentialsProvider.getDefault(),
+                                                 null,
                                                  null).execute();
 
         assertThat(cloned).isNotNull();
@@ -200,6 +204,7 @@ public class JGitSubdirectoryCloneTest extends AbstractTestInfra {
                                                  "dir1",
                                                  asList("master", "dev"),
                                                  CredentialsProvider.getDefault(),
+                                                 null,
                                                  null).execute();
 
         assertThat(cloned).isNotNull();
@@ -237,6 +242,64 @@ public class JGitSubdirectoryCloneTest extends AbstractTestInfra {
             assertClonedCommitData(origin, "dir1", cloneCommits.get(1), originCommits.get(1));
         }
     }
+    
+    @Test
+    public void cloneSubdirectoryWithHookDir() throws Exception {
+    	final File hooksDir = createTempDirectory();
+
+        writeMockHook(hooksDir, PostCommitHook.NAME);
+        writeMockHook(hooksDir, PreCommitHook.NAME);
+        
+        final File parentFolder = createTempDirectory();
+
+        final File sourceDir = new File(parentFolder,
+                                        SOURCE_GIT + ".git");
+
+        final File targetDir = new File(parentFolder,
+                                        TARGET_GIT + ".git");
+
+        final Git origin = gitRepo(sourceDir);
+        commit(origin, "master", "first", content("dir1/file.txt", "foo"));
+        commit(origin, "master", "second", content("dir2/file2.txt", "bar"));
+        commit(origin, "master", "third", content("file3.txt", "moogah"));
+
+        final Git cloned = new SubdirectoryClone(targetDir,
+                                                 sourceDir.getAbsoluteFile().toURI().toString(),
+                                                 "dir1",
+                                                 singletonList("master"),
+                                                 CredentialsProvider.getDefault(),
+                                                 null,
+                                                 hooksDir).execute();
+
+        assertThat(origin.getRepository().getRemoteNames()).isEmpty();
+
+        assertThat(cloned).isNotNull();
+        assertThat(listRefs(cloned)).hasSize(1);
+
+        final List<RevCommit> cloneCommits = getCommits(cloned, "master");
+        assertThat(cloneCommits).hasSize(1);
+
+        final RevCommit clonedCommit = cloneCommits.get(0);
+        final RevCommit originCommit = getCommits(origin, "master").get(2); // Ordered children first
+
+        assertClonedCommitData(origin, "dir1", clonedCommit, originCommit);
+        
+        boolean foundPreCommitHook = false;
+        boolean foundPostCommitHook = false;
+        File[] hooks = new File(cloned.getRepository().getDirectory(), "hooks").listFiles();
+		assertThat(hooks).isNotEmpty().isNotNull();
+		assertThat(hooks.length).isEqualTo(2);
+        for (File hook : hooks) {
+            if (hook.getName().equals(PreCommitHook.NAME)) {
+                foundPreCommitHook = hook.canExecute();
+            } else if (hook.getName().equals(PostCommitHook.NAME)) {
+                foundPostCommitHook = hook.canExecute();
+            }
+        }
+        assertThat(foundPreCommitHook).isTrue();
+        assertThat(foundPostCommitHook).isTrue();
+    }
+
 
     private void assertClonedCommitData(final Git origin,
                                         final String subdirectory,

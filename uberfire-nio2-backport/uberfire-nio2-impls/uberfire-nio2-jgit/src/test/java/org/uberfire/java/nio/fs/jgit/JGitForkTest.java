@@ -16,6 +16,9 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -23,7 +26,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
+import org.eclipse.jgit.hooks.PostCommitHook;
+import org.eclipse.jgit.hooks.PreCommitHook;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -37,9 +41,6 @@ import org.uberfire.java.nio.fs.jgit.util.commands.CreateRepository;
 import org.uberfire.java.nio.fs.jgit.util.commands.Fork;
 import org.uberfire.java.nio.fs.jgit.util.commands.ListRefs;
 import org.uberfire.java.nio.fs.jgit.util.exceptions.GitException;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 public class JGitForkTest extends AbstractTestInfra {
 
@@ -97,6 +98,7 @@ public class JGitForkTest extends AbstractTestInfra {
                  SOURCE_GIT,
                  TARGET_GIT,
                  CredentialsProvider.getDefault(),
+                 null,
                  null).execute();
 
         final File gitCloned = new File(parentFolder,
@@ -156,6 +158,7 @@ public class JGitForkTest extends AbstractTestInfra {
                  SOURCE_GIT,
                  TARGET_GIT,
                  CredentialsProvider.getDefault(),
+                 null,
                  null).execute();
     }
 
@@ -168,6 +171,7 @@ public class JGitForkTest extends AbstractTestInfra {
                      SOURCE_GIT,
                      TARGET_GIT,
                      CredentialsProvider.getDefault(),
+                     null,
                      null).execute();
             fail("If got here is because it could for the repository");
         } catch (Clone.CloneException e) {
@@ -234,5 +238,66 @@ public class JGitForkTest extends AbstractTestInfra {
                                forkEnv);
         provider.newFileSystem(forkUri,
                                forkEnv);
+    }
+    
+    @Test
+    public void testForkWithHookDir() throws IOException, GitAPIException {
+    	final File hooksDir = createTempDirectory();
+
+        writeMockHook(hooksDir, PostCommitHook.NAME);
+        writeMockHook(hooksDir, PreCommitHook.NAME);
+        
+        final File parentFolder = createTempDirectory();
+
+        final File gitSource = new File(parentFolder,
+                                        SOURCE_GIT + ".git");
+        final Git origin = new CreateRepository(gitSource, hooksDir).execute().get();
+
+        new Commit(origin,
+                   "user_branch",
+                   "name",
+                   "name@example.com",
+                   "commit!",
+                   null,
+                   null,
+                   false,
+                   new HashMap<String, File>() {{
+                       put("file2.txt",
+                           tempFile("temp2222"));
+                   }}).execute();
+
+        new Fork(parentFolder,
+                 SOURCE_GIT,
+                 TARGET_GIT,
+                 CredentialsProvider.getDefault(),
+                 null,
+                 null).execute();
+
+        final File gitCloned = new File(parentFolder, TARGET_GIT + ".git");
+        final Git cloned = Git.createRepository(gitCloned, hooksDir);
+
+        assertThat(cloned).isNotNull();
+
+        assertThat(new ListRefs(cloned.getRepository()).execute()).hasSize(1);
+
+        assertThat(new ListRefs(cloned.getRepository()).execute().get(0).getName()).isEqualTo("refs/heads/user_branch");
+
+        final String remotePath = ((GitImpl) cloned)._remoteList().call().get(0).getURIs().get(0).getPath();
+        assertThat(remotePath).isEqualTo(gitSource.getPath() + "/");
+        
+        boolean foundPreCommitHook = false;
+        boolean foundPostCommitHook = false;
+        File[] hooks = new File(cloned.getRepository().getDirectory(), "hooks").listFiles();
+		assertThat(hooks).isNotEmpty().isNotNull();
+		assertThat(hooks.length).isEqualTo(2);
+        for (File hook : hooks) {
+            if (hook.getName().equals(PreCommitHook.NAME)) {
+                foundPreCommitHook = hook.canExecute();
+            } else if (hook.getName().equals(PostCommitHook.NAME)) {
+                foundPostCommitHook = hook.canExecute();
+            }
+        }
+        assertThat(foundPreCommitHook).isTrue();
+        assertThat(foundPostCommitHook).isTrue();
     }
 }

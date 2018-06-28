@@ -16,31 +16,30 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.hooks.PostCommitHook;
+import org.eclipse.jgit.hooks.PreCommitHook;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.commands.Clone;
 import org.uberfire.java.nio.fs.jgit.util.commands.Commit;
 import org.uberfire.java.nio.fs.jgit.util.commands.CreateRepository;
 import org.uberfire.java.nio.fs.jgit.util.commands.ListRefs;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.Assert.*;
-
 public class JGitCloneTest extends AbstractTestInfra {
 
     private static final String
             TARGET_GIT = "target/target",
             SOURCE_GIT = "source/source";
-    private static Logger logger = LoggerFactory.getLogger(JGitCloneTest.class);
 
     @Test
     public void testToCloneSuccess() throws IOException, GitAPIException {
@@ -52,12 +51,13 @@ public class JGitCloneTest extends AbstractTestInfra {
         final File gitTarget = new File(parentFolder,
                                         TARGET_GIT + ".git");
 
-        final Git origin = setupGitRepo(gitSource);
+        final Git origin = setupGitRepo(gitSource, null);
 
         final Git cloned = new Clone(gitTarget,
                                      gitSource.getAbsolutePath(),
                                      false,
                                      CredentialsProvider.getDefault(),
+                                     null,
                                      null).execute().get();
 
         assertThat(cloned).isNotNull();
@@ -80,12 +80,13 @@ public class JGitCloneTest extends AbstractTestInfra {
         final File gitTarget = new File(parentFolder,
                                         TARGET_GIT + ".git");
 
-        final Git origin = setupGitRepo(gitSource);
+        final Git origin = setupGitRepo(gitSource, null);
 
         final Git cloned = new Clone(gitTarget,
                                      gitSource.getAbsolutePath(),
                                      false,
                                      CredentialsProvider.getDefault(),
+                                     null,
                                      null).execute().get();
 
         assertThat(cloned).isNotNull();
@@ -98,12 +99,63 @@ public class JGitCloneTest extends AbstractTestInfra {
                                            gitSource.getAbsolutePath(),
                                            false,
                                            CredentialsProvider.getDefault(),
+                                           null,
                                            null).execute().get())
                 .isInstanceOf(Clone.CloneException.class);
     }
+    
+    @Test
+    public void testCloneWithHookDir() throws IOException, GitAPIException {
+    	final File hooksDir = createTempDirectory();
 
-    private Git setupGitRepo(File gitSource) throws IOException {
-        final Git origin = new CreateRepository(gitSource).execute().get();
+        writeMockHook(hooksDir, PostCommitHook.NAME);
+        writeMockHook(hooksDir, PreCommitHook.NAME);
+    	
+    	final File parentFolder = createTempDirectory();
+
+        final File gitSource = new File(parentFolder,
+                                        SOURCE_GIT + ".git");
+
+        final File gitTarget = new File(parentFolder,
+                                        TARGET_GIT + ".git");
+        		
+
+        final Git origin = setupGitRepo(gitSource, hooksDir);
+
+        final Git cloned = new Clone(gitTarget,
+                                     gitSource.getAbsolutePath(),
+                                     false,
+                                     CredentialsProvider.getDefault(),
+                                     null,
+                                     hooksDir).execute().get();
+
+        assertThat(cloned).isNotNull();
+
+        assertThat(new ListRefs(cloned.getRepository()).execute()).hasSize(2);
+        assertEquals(new ListRefs(cloned.getRepository()).execute().size(),
+                     new ListRefs(origin.getRepository()).execute().size());
+
+        assertThat(new ListRefs(cloned.getRepository()).execute().get(0).getName()).isEqualTo("refs/heads/master");
+        assertThat(new ListRefs(cloned.getRepository()).execute().get(1).getName()).isEqualTo("refs/heads/user_branch");
+        
+        boolean foundPreCommitHook = false;
+        boolean foundPostCommitHook = false;
+        File[] hooks = new File(cloned.getRepository().getDirectory(), "hooks").listFiles();
+		assertThat(hooks).isNotEmpty().isNotNull();
+		assertThat(hooks.length).isEqualTo(2);
+        for (File hook : hooks) {
+            if (hook.getName().equals(PreCommitHook.NAME)) {
+                foundPreCommitHook = hook.canExecute();
+            } else if (hook.getName().equals(PostCommitHook.NAME)) {
+                foundPostCommitHook = hook.canExecute();
+            }
+        }
+        assertThat(foundPreCommitHook).isTrue();
+        assertThat(foundPostCommitHook).isTrue();
+    }
+
+    private Git setupGitRepo(File gitSource, File hooksDir) throws IOException {
+        final Git origin = new CreateRepository(gitSource, hooksDir).execute().get();
 
         new Commit(origin,
                    "user_branch",

@@ -53,6 +53,7 @@ public class JGitMirrorTest extends AbstractTestInfra {
                   ORIGIN,
                   true,
                   CredentialsProvider.getDefault(),
+                  null,
                   null).execute();
 
         final Git cloned = Git.open(directory);
@@ -89,6 +90,7 @@ public class JGitMirrorTest extends AbstractTestInfra {
                   ORIGIN,
                   false,
                   CredentialsProvider.getDefault(),
+                  null,
                   null).execute();
 
         final Git cloned = Git.open(directory);
@@ -127,6 +129,7 @@ public class JGitMirrorTest extends AbstractTestInfra {
                   ORIGIN,
                   false,
                   null,
+                  null,
                   null).execute();
 
         final Git cloned = Git.open(directory);
@@ -157,6 +160,7 @@ public class JGitMirrorTest extends AbstractTestInfra {
                       ORIGIN + "sssss",
                       false,
                       CredentialsProvider.getDefault(),
+                      null,
                       null).execute();
             fail("If got here the test is wrong because the ORIGIN does no exist");
         } catch (Clone.CloneException ex) {
