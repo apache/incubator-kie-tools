@@ -27,7 +27,10 @@ public class WorkbenchLayoutInfoImpl implements WorkbenchLayoutInfo {
 
     @Override
     public int getHeaderHeight() {
-
-        return workbenchLayout.getHeaderPanel().getBoundingClientRect().getHeight().intValue();
+        try {
+            return workbenchLayout.getHeaderPanel().getBoundingClientRect().getHeight().intValue();
+        } catch (Exception e) {
+            return 0;
+        }
     }
 }
