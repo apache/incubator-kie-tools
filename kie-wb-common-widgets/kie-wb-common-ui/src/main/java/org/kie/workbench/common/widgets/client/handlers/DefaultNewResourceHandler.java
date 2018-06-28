@@ -63,7 +63,7 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
     protected Event<NewResourceSuccessEvent> newResourceSuccessEvent;
 
     @Inject
-    private BusyIndicatorView busyIndicatorView;
+    protected BusyIndicatorView busyIndicatorView;
 
     //Package-protected constructor for tests. In an ideal world we'd move to Constructor injection
     //however that would require every sub-class of this abstract class to also have Constructor

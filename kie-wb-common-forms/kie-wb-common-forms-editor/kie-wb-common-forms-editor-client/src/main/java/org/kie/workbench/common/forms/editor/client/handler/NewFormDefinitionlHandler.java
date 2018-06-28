@@ -23,23 +23,25 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.editor.client.handler.formModel.FormModelsPresenter;
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
 import org.kie.workbench.common.forms.editor.client.type.FormDefinitionResourceType;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
+import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.backend.vfs.Path;
+import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
-import org.uberfire.ext.widgets.common.client.common.BusyPopup;
-import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
+import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
@@ -48,33 +50,39 @@ public class NewFormDefinitionlHandler extends DefaultNewResourceHandler {
 
     private Caller<FormEditorService> modelerService;
 
-    private PlaceManager placeManager;
-
     private FormDefinitionResourceType resourceType;
-
-    private Event<NotificationEvent> notificationEvent;
 
     private TranslationService translationService;
 
     private FormModelsPresenter formModelsPresenter;
 
     @Inject
-    public NewFormDefinitionlHandler(Caller<FormEditorService> modelerService,
-                                     PlaceManager placeManager,
-                                     FormDefinitionResourceType resourceType,
-                                     Event<NotificationEvent> notificationEvent,
-                                     TranslationService translationService,
-                                     FormModelsPresenter formModelsPresenter) {
+    public NewFormDefinitionlHandler(final Caller<FormEditorService> modelerService,
+                                     final FormDefinitionResourceType resourceType,
+                                     final TranslationService translationService,
+                                     final FormModelsPresenter formModelsPresenter,
+                                     final WorkspaceProjectContext context,
+                                     final Caller<KieModuleService> moduleService,
+                                     final Caller<ValidationService> validationService,
+                                     final PlaceManager placeManager,
+                                     final Event<NotificationEvent> notificationEvent,
+                                     final Event<NewResourceSuccessEvent> newResourceSuccessEvent,
+                                     final BusyIndicatorView busyIndicatorView) {
         this.modelerService = modelerService;
-        this.placeManager = placeManager;
         this.resourceType = resourceType;
-        this.notificationEvent = notificationEvent;
         this.translationService = translationService;
         this.formModelsPresenter = formModelsPresenter;
+        this.context = context;
+        this.moduleService = moduleService;
+        this.validationService = validationService;
+        this.placeManager = placeManager;
+        this.notificationEvent = notificationEvent;
+        this.newResourceSuccessEvent = newResourceSuccessEvent;
+        this.busyIndicatorView = busyIndicatorView;
     }
 
     @PostConstruct
-    private void setupExtensions() {
+    protected void setupExtensions() {
         extensions.add(Pair.newPair("", // not needed FormModelsPresenter describes the extension itself
                                     formModelsPresenter));
     }
@@ -97,8 +105,8 @@ public class NewFormDefinitionlHandler extends DefaultNewResourceHandler {
     @Override
     public List<Pair<String, ? extends IsWidget>> getExtensions() {
         formModelsPresenter.initialize(context.getActiveModule()
-                                              .orElseThrow(() -> new IllegalStateException("Cannot get module root path without an active module."))
-                                              .getRootPath());
+                                               .orElseThrow(() -> new IllegalStateException("Cannot get module root path without an active module."))
+                                               .getRootPath());
 
         return super.getExtensions();
     }
@@ -112,34 +120,23 @@ public class NewFormDefinitionlHandler extends DefaultNewResourceHandler {
         if (!isValid) {
             callback.onFailure();
         } else {
-            super.validate(baseFileName,
-                           callback);
+            super.validate(baseFileName, callback);
         }
     }
 
     @Override
-    public void create(org.guvnor.common.services.project.model.Package pkg,
-                       String baseFileName,
+    public void create(final org.guvnor.common.services.project.model.Package pkg,
+                       final String baseFileName,
                        final NewResourcePresenter presenter) {
 
-        BusyPopup.showMessage(translationService.getTranslation(FormEditorConstants.NewFormDefinitionlHandlerSelectFormUse));
+        busyIndicatorView.showBusyIndicator(translationService.getTranslation(FormEditorConstants.NewFormDefinitionlHandlerSelectFormUse));
 
-        modelerService.call(path -> {
-                                BusyPopup.close();
-                                presenter.complete();
-                                notifySuccess();
-                                PlaceRequest place = new PathPlaceRequest((Path) path,
-                                                                          "FormEditor");
-                                placeManager.goTo(place);
-                            },
-                            (message, throwable) -> {
-                                BusyPopup.close();
-                                ErrorPopup.showMessage(CommonConstants.INSTANCE.SorryAnItemOfThatNameAlreadyExistsInTheRepositoryPleaseChooseAnother());
-                                return false;
-                            }
-        ).createForm(pkg.getPackageMainResourcesPath(),
-                     buildFileName(baseFileName,
-                                   resourceType),
-                     formModelsPresenter.getFormModel());
+        modelerService.call(getSuccessCallback(presenter), getErrorCallback()).createForm(pkg.getPackageMainResourcesPath(),
+                                                                                          buildFileName(baseFileName, resourceType),
+                                                                                          formModelsPresenter.getFormModel());
+    }
+
+    protected ErrorCallback<Message> getErrorCallback() {
+        return new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView);
     }
 }
