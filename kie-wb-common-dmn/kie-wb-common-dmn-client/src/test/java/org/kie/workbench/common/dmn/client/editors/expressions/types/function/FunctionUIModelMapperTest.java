@@ -143,7 +143,7 @@ public class FunctionUIModelMapperTest {
                                                 expressionEditorDefinitionsSupplier,
                                                 supplementaryEditorDefinitionsSupplier,
                                                 listSelector,
-                                                0);
+                                                1);
         this.cellValueSupplier = Optional::empty;
     }
 

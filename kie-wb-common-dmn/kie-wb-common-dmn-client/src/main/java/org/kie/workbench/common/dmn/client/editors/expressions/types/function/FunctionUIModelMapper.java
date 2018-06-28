@@ -101,7 +101,7 @@ public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition>
                                                                  function,
                                                                  expression,
                                                                  Optional.empty(),
-                                                                 nesting + 1);
+                                                                 nesting);
         uiModel.get().setCell(rowIndex,
                               columnIndex,
                               () -> new FunctionGridCell<>(new ExpressionCellValue(editor),

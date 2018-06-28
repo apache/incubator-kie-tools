@@ -134,7 +134,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                                          expressionEditorDefinitionsSupplier,
                                          supplementaryEditorDefinitionsSupplier,
                                          listSelector,
-                                         nesting);
+                                         nesting + 1);
     }
 
     @Override
@@ -302,7 +302,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                                                                                  hasExpression,
                                                                                  expression,
                                                                                  hasName,
-                                                                                 nesting);
+                                                                                 nesting + 1);
             doSetKind(kind,
                       function,
                       expression,
