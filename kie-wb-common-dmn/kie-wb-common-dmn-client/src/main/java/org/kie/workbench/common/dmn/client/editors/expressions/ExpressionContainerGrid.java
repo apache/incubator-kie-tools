@@ -27,6 +27,8 @@ import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
@@ -65,8 +67,11 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
     private final GridColumn expressionColumn;
 
     private String nodeUUID;
-    private HasExpression hasExpression;
     private Optional<HasName> hasName = Optional.empty();
+    private HasExpression hasExpression;
+
+    private final ParameterizedCommand<Optional<Expression>> onHasExpressionChanged;
+    private final ParameterizedCommand<Optional<HasName>> onHasNameChanged;
 
     private ExpressionContainerUIModelMapper uiModelMapper;
 
@@ -78,6 +83,7 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
                                    final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                    final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitions,
                                    final Supplier<ExpressionGridCache> expressionGridCache,
+                                   final ParameterizedCommand<Optional<Expression>> onHasExpressionChanged,
                                    final ParameterizedCommand<Optional<HasName>> onHasNameChanged) {
         super(new DMNGridData(),
               gridLayer,
@@ -89,12 +95,15 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
         this.sessionCommandManager = sessionCommandManager;
         this.expressionGridCache = expressionGridCache;
 
+        this.onHasExpressionChanged = onHasExpressionChanged;
+        this.onHasNameChanged = onHasNameChanged;
+
         this.uiModelMapper = new ExpressionContainerUIModelMapper(parent,
                                                                   this::getModel,
                                                                   () -> Optional.ofNullable(hasExpression.getExpression()),
                                                                   () -> nodeUUID,
                                                                   () -> hasExpression,
-                                                                  () -> spyHasName(onHasNameChanged),
+                                                                  () -> hasName,
                                                                   expressionEditorDefinitions,
                                                                   expressionGridCache,
                                                                   listSelector);
@@ -113,38 +122,6 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
         getRenderer().setColumnRenderConstraint((isSelectionLayer, gridColumn) -> !isSelectionLayer || gridColumn.equals(expressionColumn));
     }
 
-    Optional<HasName> spyHasName(final ParameterizedCommand<Optional<HasName>> onHasNameChanged) {
-        final Name name = new Name() {
-            @Override
-            public String getValue() {
-                return hasName.orElse(HasName.NOP).getName().getValue();
-            }
-
-            @Override
-            public void setValue(final String value) {
-                hasName.ifPresent(hn -> {
-                    hn.getName().setValue(value);
-                    onHasNameChanged.execute(hasName);
-                });
-            }
-        };
-
-        return Optional.of(new HasName() {
-            @Override
-            public Name getName() {
-                return name;
-            }
-
-            @Override
-            public void setName(final Name name) {
-                hasName.ifPresent(hn -> {
-                    hn.setName(name);
-                    onHasNameChanged.execute(hasName);
-                });
-            }
-        });
-    }
-
     @Override
     public boolean onDragHandle(final INodeXYEvent event) {
         return false;
@@ -160,14 +137,70 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
                               final HasExpression hasExpression,
                               final Optional<HasName> hasName) {
         this.nodeUUID = nodeUUID;
-        this.hasExpression = hasExpression;
-        this.hasName = hasName;
+        this.hasExpression = spyHasExpression(hasExpression);
+        this.hasName = spyHasName(hasName);
 
         uiModelMapper.fromDMNModel(0, 0);
 
         final double width = expressionColumn.getWidth();
         final double minWidth = expressionColumn.getMinimumWidth();
         resizeBasedOnCellExpressionEditor(Math.max(width, minWidth));
+    }
+
+    HasExpression spyHasExpression(final HasExpression hasExpression) {
+        final HasExpression spy = new HasExpression() {
+            @Override
+            public Expression getExpression() {
+                return hasExpression.getExpression();
+            }
+
+            @Override
+            public void setExpression(final Expression expression) {
+                hasExpression.setExpression(expression);
+                onHasExpressionChanged.execute(Optional.ofNullable(expression));
+            }
+
+            @Override
+            public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
+                return hasExpression.getExpression();
+            }
+        };
+
+        return spy;
+    }
+
+    Optional<HasName> spyHasName(final Optional<HasName> hasName) {
+        final Name name = new Name() {
+            @Override
+            public String getValue() {
+                return hasName.orElse(HasName.NOP).getName().getValue();
+            }
+
+            @Override
+            public void setValue(final String value) {
+                hasName.ifPresent(hn -> {
+                    hn.getName().setValue(value);
+                    onHasNameChanged.execute(hasName);
+                });
+            }
+        };
+
+        final HasName spy = new HasName() {
+            @Override
+            public Name getName() {
+                return name;
+            }
+
+            @Override
+            public void setName(final Name name) {
+                hasName.ifPresent(hn -> {
+                    hn.setName(name);
+                    onHasNameChanged.execute(hasName);
+                });
+            }
+        };
+
+        return Optional.of(spy);
     }
 
     @Override

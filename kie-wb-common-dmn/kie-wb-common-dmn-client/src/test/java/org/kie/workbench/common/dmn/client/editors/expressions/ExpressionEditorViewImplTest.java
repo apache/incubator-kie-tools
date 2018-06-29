@@ -26,6 +26,7 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Element;
 import org.jboss.errai.common.client.dom.Anchor;
+import org.jboss.errai.common.client.dom.Heading;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,10 +34,11 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionEditorDefinition;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
@@ -80,6 +82,9 @@ public class ExpressionEditorViewImplTest {
     private Anchor returnToDRG;
 
     @Mock
+    private Heading expressionType;
+
+    @Mock
     private DMNGridPanel gridPanel;
 
     @Mock
@@ -113,10 +118,16 @@ public class ExpressionEditorViewImplTest {
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
     @Mock
-    private UndefinedExpressionEditorDefinition undefinedExpressionEditorDefinition;
+    private ExpressionEditorDefinition undefinedExpressionEditorDefinition;
 
     @Mock
     private BaseExpressionGrid undefinedExpressionEditor;
+
+    @Mock
+    private ExpressionEditorDefinition literalExpressionEditorDefinition;
+
+    @Mock
+    private BaseExpressionGrid literalExpressionEditor;
 
     @Mock
     private Viewport viewport;
@@ -168,6 +179,7 @@ public class ExpressionEditorViewImplTest {
         when(session.getExpressionGridCache()).thenReturn(expressionGridCache);
 
         this.view = spy(new ExpressionEditorViewImpl(returnToDRG,
+                                                     expressionType,
                                                      gridPanel,
                                                      gridLayer,
                                                      mousePanMediator,
@@ -181,6 +193,7 @@ public class ExpressionEditorViewImplTest {
 
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add(undefinedExpressionEditorDefinition);
+        expressionEditorDefinitions.add(literalExpressionEditorDefinition);
 
         doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
         doReturn(Optional.empty()).when(undefinedExpressionEditorDefinition).getModelClass();
@@ -192,7 +205,17 @@ public class ExpressionEditorViewImplTest {
                                                                                                              any(Optional.class),
                                                                                                              anyInt());
 
+        doReturn(Optional.of(new LiteralExpression())).when(literalExpressionEditorDefinition).getModelClass();
+        doReturn(new BaseGridData()).when(literalExpressionEditor).getModel();
+        doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
+                                                                                                         any(Optional.class),
+                                                                                                         any(HasExpression.class),
+                                                                                                         any(Optional.class),
+                                                                                                         any(Optional.class),
+                                                                                                         anyInt());
+
         doAnswer((i) -> i.getArguments()[1]).when(translationService).format(anyString(), anyObject());
+        doAnswer((i) -> i.getArguments()[0]).when(translationService).getTranslation(anyString());
     }
 
     @Test
@@ -248,7 +271,7 @@ public class ExpressionEditorViewImplTest {
     }
 
     @Test
-    public void testSetEditorDoesUpdateReturnToDRGTextWhenHasNameIsNotEmpty() {
+    public void testSetExpressionDoesUpdateReturnToDRGTextWhenHasNameIsNotEmpty() {
         final String NAME = "NAME";
         final Name name = new Name(NAME);
         final HasName hasNameMock = mock(HasName.class);
@@ -263,7 +286,7 @@ public class ExpressionEditorViewImplTest {
     }
 
     @Test
-    public void testSetEditorDoesNotUpdateReturnToDRGTextWhenHasNameIsEmpty() {
+    public void testSetExpressionDoesNotUpdateReturnToDRGTextWhenHasNameIsEmpty() {
         final Optional<HasName> hasName = Optional.empty();
 
         view.setExpression(NODE_UUID,
@@ -271,5 +294,29 @@ public class ExpressionEditorViewImplTest {
                            hasName);
 
         verify(returnToDRG, never()).setTextContent(any(String.class));
+    }
+
+    @Test
+    public void testSetExpressionDoesUpdateExpressionTypeTextWhenHasExpressionIsNotEmpty() {
+        final Expression expression = new LiteralExpression();
+        final Optional<HasName> hasName = Optional.empty();
+        when(hasExpression.getExpression()).thenReturn(expression);
+
+        view.setExpression(NODE_UUID,
+                           hasExpression,
+                           hasName);
+
+        verify(expressionType).setTextContent(eq(LiteralExpression.class.getSimpleName()));
+    }
+
+    @Test
+    public void testSetExpressionDoesNotUpdateExpressionTypeTextWhenHasExpressionTextWhenHasExpressionIsEmpty() {
+        final Optional<HasName> hasName = Optional.empty();
+
+        view.setExpression(NODE_UUID,
+                           hasExpression,
+                           hasName);
+
+        verify(expressionType).setTextContent(eq("<" + DMNEditorConstants.ExpressionEditor_UndefinedExpressionType + ">"));
     }
 }

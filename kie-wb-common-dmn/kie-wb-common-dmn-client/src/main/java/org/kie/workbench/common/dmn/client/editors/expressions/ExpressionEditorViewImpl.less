@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+@blockHeight_returnToDRGHeight: 32;
+@blockHeight_expressionType: 32;
+@blockHeight_total: @blockHeight_returnToDRGHeight + @blockHeight_expressionType;
+
 .kie-dmn-container {
   display: flex;
   flex-direction: column;
@@ -23,7 +27,7 @@
 }
 
 .kie-dmn-return-to-DRG {
-  height: 32px;
+  height: @blockHeight_returnToDRGHeight px;
   display: block;
 }
 
@@ -32,10 +36,15 @@
   padding: 0 9px 0 7px;
 }
 
+.kie-dmn-expression-type {
+  height: @blockHeight_expressionType px;
+  display: block;
+}
+
 .kie-dmn-expression-editor {
   display: flex;
   width: 100%;
-  height: ~"calc(100% - 32px)";
-  top: 32px;
+  height: ~"calc(100% - @{blockHeight_total}px)";
+  top: @blockHeight_total px;
 }
 

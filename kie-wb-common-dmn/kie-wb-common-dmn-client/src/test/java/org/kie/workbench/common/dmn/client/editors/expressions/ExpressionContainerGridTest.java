@@ -28,6 +28,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.ClearExpressionTypeCommand;
@@ -136,6 +138,9 @@ public class ExpressionContainerGridTest {
     @Mock
     private ParameterizedCommand<Optional<HasName>> onHasNameChanged;
 
+    @Mock
+    private ParameterizedCommand<Optional<Expression>> onHasExpressionChanged;
+
     @Captor
     private ArgumentCaptor<Optional<HasName>> hasNameCaptor;
 
@@ -178,6 +183,7 @@ public class ExpressionContainerGridTest {
                                                 sessionCommandManager,
                                                 expressionEditorDefinitionsSupplier,
                                                 () -> expressionGridCache,
+                                                onHasExpressionChanged,
                                                 onHasNameChanged);
 
         this.gridLayer.add(grid);
@@ -366,7 +372,7 @@ public class ExpressionContainerGridTest {
                            hasExpression,
                            Optional.of(hasName));
 
-        final Optional<HasName> spy = grid.spyHasName(onHasNameChanged);
+        final Optional<HasName> spy = grid.spyHasName(Optional.of(hasName));
 
         assertThat(spy.isPresent()).isTrue();
         assertThat(spy.get().getName().getValue()).isEqualTo(NAME);
@@ -380,7 +386,7 @@ public class ExpressionContainerGridTest {
                            hasExpression,
                            Optional.of(hasName));
 
-        final Optional<HasName> spy = grid.spyHasName(onHasNameChanged);
+        final Optional<HasName> spy = grid.spyHasName(Optional.of(hasName));
 
         assertThat(spy.isPresent()).isTrue();
         spy.get().getName().setValue(NEW_NAME);
@@ -400,7 +406,7 @@ public class ExpressionContainerGridTest {
                            hasExpression,
                            Optional.of(hasName));
 
-        final Optional<HasName> spy = grid.spyHasName(onHasNameChanged);
+        final Optional<HasName> spy = grid.spyHasName(Optional.of(hasName));
 
         assertThat(spy.isPresent()).isTrue();
         spy.get().setName(newName);
@@ -416,7 +422,7 @@ public class ExpressionContainerGridTest {
                            hasExpression,
                            Optional.empty());
 
-        final Optional<HasName> spy = grid.spyHasName(onHasNameChanged);
+        final Optional<HasName> spy = grid.spyHasName(Optional.empty());
 
         assertThat(spy.isPresent()).isTrue();
         assertThat(spy.get().getName().getValue()).isEqualTo(HasName.NOP.getName().getValue());
@@ -431,7 +437,7 @@ public class ExpressionContainerGridTest {
                            hasExpression,
                            Optional.empty());
 
-        final Optional<HasName> spy = grid.spyHasName(onHasNameChanged);
+        final Optional<HasName> spy = grid.spyHasName(Optional.empty());
 
         assertThat(spy.isPresent()).isTrue();
         spy.get().getName().setValue(NEW_NAME);
@@ -451,12 +457,69 @@ public class ExpressionContainerGridTest {
                            hasExpression,
                            Optional.empty());
 
-        final Optional<HasName> spy = grid.spyHasName(onHasNameChanged);
+        final Optional<HasName> spy = grid.spyHasName(Optional.empty());
 
         assertThat(spy.isPresent()).isTrue();
         spy.get().setName(newName);
 
         assertThat(hasName.getName().getValue()).isEqualTo(NAME);
         verify(onHasNameChanged, never()).execute(any(Optional.class));
+    }
+
+    @Test
+    public void testSpyHasExpressionWithExpressionGet() {
+        when(hasExpression.getExpression()).thenReturn(literalExpression);
+
+        grid.setExpression(NODE_UUID,
+                           hasExpression,
+                           Optional.of(hasName));
+
+        final HasExpression spy = grid.spyHasExpression(hasExpression);
+
+        assertThat(spy.getExpression()).isEqualTo(literalExpression);
+    }
+
+    @Test
+    public void testSpyHasExpressionWithoutExpressionGet() {
+        grid.setExpression(NODE_UUID,
+                           hasExpression,
+                           Optional.of(hasName));
+
+        final HasExpression spy = grid.spyHasExpression(hasExpression);
+
+        assertThat(spy.getExpression()).isNull();
+    }
+
+    @Test
+    public void testSpyHasExpressionWithExpressionSet() {
+        final HasExpression hasExpression = new HasExpression() {
+
+            private Expression expression = new LiteralExpression();
+
+            @Override
+            public Expression getExpression() {
+                return expression;
+            }
+
+            @Override
+            public void setExpression(final Expression expression) {
+                this.expression = expression;
+            }
+
+            @Override
+            public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
+                return null;
+            }
+        };
+
+        grid.setExpression(NODE_UUID,
+                           hasExpression,
+                           Optional.of(hasName));
+
+        final HasExpression spy = grid.spyHasExpression(hasExpression);
+
+        spy.setExpression(null);
+
+        assertThat(hasExpression.getExpression()).isNull();
     }
 }

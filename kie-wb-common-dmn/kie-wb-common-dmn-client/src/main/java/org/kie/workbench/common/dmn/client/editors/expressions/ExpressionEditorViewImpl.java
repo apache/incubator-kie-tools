@@ -20,16 +20,19 @@ import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.event.dom.client.ClickEvent;
 import org.jboss.errai.common.client.dom.Anchor;
+import org.jboss.errai.common.client.dom.Heading;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
@@ -59,6 +62,9 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     @DataField("returnToDRG")
     private Anchor returnToDRG;
 
+    @DataField("expressionType")
+    private Heading expressionType;
+
     private ExpressionContainerGrid expressionContainerGrid;
 
     private DMNGridPanel gridPanel;
@@ -79,6 +85,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     @Inject
     public ExpressionEditorViewImpl(final Anchor returnToDRG,
+                                    final @Named("h2") Heading expressionType,
                                     final @DMNEditor DMNGridPanel gridPanel,
                                     final @DMNEditor DMNGridLayer gridLayer,
                                     final @DMNEditor RestrictedMousePanMediator mousePanMediator,
@@ -89,6 +96,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                     final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                     final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
         this.returnToDRG = returnToDRG;
+        this.expressionType = expressionType;
 
         this.gridPanel = gridPanel;
         this.gridLayer = gridLayer;
@@ -135,6 +143,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                               sessionCommandManager,
                                                               expressionEditorDefinitionsSupplier,
                                                               getExpressionGridCacheSupplier(),
+                                                              this::setExpressionTypeText,
                                                               this::setReturnToDRGText);
         gridLayer.removeAll();
         gridLayer.add(expressionContainerGrid);
@@ -167,11 +176,18 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                               hasName);
 
         setReturnToDRGText(hasName);
+        setExpressionTypeText(Optional.ofNullable(hasExpression.getExpression()));
     }
 
     private void setReturnToDRGText(final Optional<HasName> hasName) {
         hasName.ifPresent(name -> returnToDRG.setTextContent(translationService.format(DMNEditorConstants.ExpressionEditor_ReturnToDRG,
                                                                                        name.getName().getValue())));
+    }
+
+    private void setExpressionTypeText(final Optional<Expression> expression) {
+        expressionType.setTextContent(expression.isPresent() ?
+                                              expression.get().getClass().getSimpleName() :
+                                              "<" + translationService.getTranslation(DMNEditorConstants.ExpressionEditor_UndefinedExpressionType) + ">");
     }
 
     @SuppressWarnings("unused")
