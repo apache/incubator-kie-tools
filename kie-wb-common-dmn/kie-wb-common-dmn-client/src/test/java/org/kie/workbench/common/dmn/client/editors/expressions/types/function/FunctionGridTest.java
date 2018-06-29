@@ -639,7 +639,7 @@ public class FunctionGridTest {
         final SetKindCommand setKindCommand = setKindCommandCaptor.getValue();
         setKindCommand.execute(canvasHandler);
 
-        verify(grid).resizeWhenExpressionEditorChanged();
+        verify(grid).resizeBasedOnCellExpressionEditor(eq(0), eq(0));
 
         final GridCellTuple parent = parentCaptor.getValue();
         assertEquals(grid, parent.getGridWidget());

@@ -323,7 +323,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                                                          function,
                                                          kind,
                                                          expression,
-                                                         this::resizeWhenExpressionEditorChanged));
+                                                         () -> resizeBasedOnCellExpressionEditor(0, 0)));
     }
 
     void clearExpressionType() {
