@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.library.client.screens;
 
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -156,16 +157,32 @@ public class LibraryScreen {
 
     public void showProjects() {
 
+        final OrganizationalUnit activeOU = projectContext.getActiveOrganizationalUnit()
+                                                          .orElseThrow(() -> new IllegalStateException("Cannot try to query library projects without an active organizational unit."));
+        final boolean cachedHasProjects = !activeOU.getRepositories().isEmpty();
+        if (cachedHasProjects) {
+            showPopulatedLibraryScreen();
+        } else {
+            showEmptyLibraryScreen();
+        }
+        // Now do a call and possibly update if this is different
         libraryService.call((Boolean hasProjects) -> {
-            if (hasProjects) {
-                view.updateContent(populatedLibraryScreen.getView().getElement());
-                view.setProjectsCount(populatedLibraryScreen.getProjectsCount());
-            } else {
-                view.updateContent(emptyLibraryScreen.getView().getElement());
-                view.setProjectsCount(0);
+            if (hasProjects && !cachedHasProjects) {
+                showPopulatedLibraryScreen();
+            } else if (!hasProjects && cachedHasProjects) {
+                showEmptyLibraryScreen();
             }
-        }).hasProjects(projectContext.getActiveOrganizationalUnit()
-                               .orElseThrow(() -> new IllegalStateException("Cannot try to query library projects without an active organizational unit.")));
+        }).hasProjects(activeOU);
+    }
+
+    private void showEmptyLibraryScreen() {
+        view.updateContent(emptyLibraryScreen.getView().getElement());
+        view.setProjectsCount(0);
+    }
+
+    private void showPopulatedLibraryScreen() {
+        view.updateContent(populatedLibraryScreen.getView().getElement());
+        view.setProjectsCount(populatedLibraryScreen.getProjectsCount());
     }
 
     public void showContributors() {
