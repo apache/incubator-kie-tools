@@ -1450,12 +1450,7 @@
   <profiles>
     <!-- Fast compiled build including Source maps for easier debugging. -->
     <profile>
-      <id>sourcemaps</id>
-      <activation>
-        <property>
-          <name>sourcemaps</name>
-        </property>
-      </activation>
+      <id>sources</id>
       <build>
         <plugins>
           <plugin>
@@ -1493,6 +1488,21 @@
                 </configuration>
               </execution>
             </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- profile to disable GWT compilation of showcase (useful in full downstream builds) -->
+    <profile>
+      <id>no-showcase</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
           </plugin>
         </plugins>
       </build>

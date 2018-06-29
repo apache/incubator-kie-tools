@@ -1034,7 +1034,21 @@
         </pluginManagement>
       </build>
     </profile>
-
+    <!-- profile to disable GWT compilation of showcase (useful in full downstream builds) -->
+    <profile>
+      <id>no-showcase</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
 </project>
