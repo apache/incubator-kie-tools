@@ -389,7 +389,7 @@
           <disableCastChecking>true</disableCastChecking>
           <runTarget>index.html</runTarget>
           <hostedWebapp>src/main/webapp</hostedWebapp>
-          <module>org.uberfire.FastCompiledUberfireShowcase</module>   
+          <module>org.uberfire.FastCompiledUberfireShowcase</module>
           <generateJsInteropExports>true</generateJsInteropExports>
           <compileSourcesArtifacts>
             <compileSourcesArtifact>org.kie.soup:kie-soup-commons</compileSourcesArtifact>
@@ -492,7 +492,7 @@
                 <include>src/main/webapp/org.uberfire.UberfireShowcase/</include>
                 <include>src/main/webapp/WEB-INF/deploy/</include>
                 <include>src/main/webapp/WEB-INF/classes/</include>
-                <include>src/main/webapp/WEB-INF/lib/</include>                
+                <include>src/main/webapp/WEB-INF/lib/</include>
                 <include>repositories/</include>
                 <include>.errai/</include>
                 <include>.niogit/**</include>
@@ -524,6 +524,21 @@
               <!-- Build all GWT permutations and optimize them -->
               <module>org.uberfire.UberfireShowcase</module>
               <draftCompile>false</draftCompile>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- profile to disable GWT compilation of showcase (useful in full downstream builds) -->
+    <profile>
+      <id>no-showcase</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <configuration>
+              <skip>true</skip>
             </configuration>
           </plugin>
         </plugins>
