@@ -62,8 +62,10 @@ public class StunnerDocksHandler extends AbstractWorkbenchDocksHandler {
                      true);
     }
 
-    private void onDiagramEditorMaximized(@Observes ScreenMaximizedEvent event) {
-        refreshDocks(true,
-                     false);
+    public void onDiagramEditorMaximized(@Observes ScreenMaximizedEvent event) {
+        if (event.isDiagramScreen()) {
+            refreshDocks(true,
+                         false);
+        }
     }
 }

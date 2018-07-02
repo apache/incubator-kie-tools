@@ -22,6 +22,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
@@ -68,6 +69,22 @@ public class StunnerDocksHandlerTest {
     @Test
     public void testOnDiagramLoseFocusEvent() {
         handler.onDiagramLoseFocusEvent(new OnDiagramLoseFocusEvent());
+    }
+
+    @Test
+    public void testOnDiagramEditorMaximized() {
+        handler.onDiagramEditorMaximized(new ScreenMaximizedEvent(true));
+
+        assertTrue(handler.shouldRefreshDocks());
+        assertFalse(handler.shouldDisableDocks());
+    }
+
+    @Test
+    public void testOnOtherEditorMaximized() {
+        handler.onDiagramEditorMaximized(new ScreenMaximizedEvent(false));
+
+        assertFalse(handler.shouldRefreshDocks());
+        assertFalse(handler.shouldDisableDocks());
     }
 
     public void onDiagramLoseFocusEvent(@Observes OnDiagramLoseFocusEvent event) {

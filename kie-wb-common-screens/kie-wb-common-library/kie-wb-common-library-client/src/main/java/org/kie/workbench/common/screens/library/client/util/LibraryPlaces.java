@@ -75,6 +75,8 @@ import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
+import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
+import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
 import org.uberfire.ext.editor.commons.client.event.ConcurrentDeleteAcceptedEvent;
 import org.uberfire.ext.editor.commons.client.event.ConcurrentRenameAcceptedEvent;
 import org.uberfire.ext.preferences.client.central.screen.PreferencesRootScreen;
@@ -175,6 +177,8 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
     private boolean docksHidden = true;
 
+    private boolean editorMaximized = false;
+
     private boolean closingLibraryPlaces = false;
 
     public LibraryPlaces() {
@@ -267,6 +271,16 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         }
     }
 
+    public void showDocksWhenMinimizingEditor(@Observes PlaceMinimizedEvent placeMinimizedEvent) {
+        editorMaximized = false;
+        showDocks();
+    }
+
+    public void hideDocksWhenMaximizingEditor(@Observes PlaceMaximizedEvent placeMaximizedEvent) {
+        editorMaximized = true;
+        hideDocks();
+    }
+
     /*
      * Re-reroutes this event for project screen. If we tried to observe this directly from the project screen,
      * there are timing issues involved with subscribing to the event.
@@ -283,7 +297,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     }
 
     public void showDocks() {
-        if (docksHidden) {
+        if (docksHidden && !editorMaximized) {
             if (!docksReady) {
                 docks.setup(LibraryPlaces.LIBRARY_PERSPECTIVE,
                             new DefaultPlaceRequest(PROJECT_EXPLORER));
@@ -531,6 +545,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     }
 
     public void refresh(final Command callback) {
+        editorMaximized = false;
         breadcrumbs.clearBreadcrumbs(LibraryPlaces.LIBRARY_PERSPECTIVE);
         translationUtils.refresh(() -> {
             libraryToolbar.init(() -> {

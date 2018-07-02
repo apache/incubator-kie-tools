@@ -72,6 +72,8 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
+import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
+import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
 import org.uberfire.ext.preferences.client.central.screen.PreferencesRootScreen;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralInitializationEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralSaveEvent;
@@ -428,7 +430,10 @@ public class LibraryPlacesTest {
     }
 
     @Test
-    public void showDocksTest() {
+    public void showDocksWithEditorMinimizedTest() {
+        libraryPlaces.hideDocksWhenMaximizingEditor(mock(PlaceMaximizedEvent.class));
+        libraryPlaces.showDocksWhenMinimizingEditor(mock(PlaceMinimizedEvent.class));
+
         libraryPlaces.showDocks();
         libraryPlaces.showDocks();
 
@@ -437,6 +442,21 @@ public class LibraryPlacesTest {
                                new DefaultPlaceRequest(LibraryPlaces.PROJECT_EXPLORER));
         verify(docks,
                times(1)).show();
+        verify(docks,
+               never()).hide();
+    }
+
+    @Test
+    public void doNotShowDocksWithEditorMaximizedTest() {
+        libraryPlaces.hideDocksWhenMaximizingEditor(mock(PlaceMaximizedEvent.class));
+
+        libraryPlaces.showDocks();
+
+        verify(docks,
+               never()).setup(LibraryPlaces.LIBRARY_PERSPECTIVE,
+                               new DefaultPlaceRequest(LibraryPlaces.PROJECT_EXPLORER));
+        verify(docks,
+               never()).show();
         verify(docks,
                never()).hide();
     }
