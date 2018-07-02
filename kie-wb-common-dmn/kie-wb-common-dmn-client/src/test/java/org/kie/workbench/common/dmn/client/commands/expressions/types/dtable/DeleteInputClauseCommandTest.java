@@ -236,5 +236,6 @@ public class DeleteInputClauseCommandTest {
 
         verify(canvasOperation).execute();
         verify(command).updateParentInformation();
+        verify(command).restoreColumnWidths();
     }
 }

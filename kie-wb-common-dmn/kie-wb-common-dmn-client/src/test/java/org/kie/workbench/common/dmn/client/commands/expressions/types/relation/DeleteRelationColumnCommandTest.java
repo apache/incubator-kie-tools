@@ -328,6 +328,7 @@ public class DeleteRelationColumnCommandTest {
                      uiModel.getCell(0, 1).getValue().getValue());
 
         verify(command).updateParentInformation();
+        verify(command).restoreColumnWidths();
 
         verify(canvasOperation).execute();
     }
@@ -356,6 +357,7 @@ public class DeleteRelationColumnCommandTest {
                      uiModel.getRowCount());
 
         verify(command).updateParentInformation();
+        verify(command).restoreColumnWidths();
 
         verify(canvasOperation).execute();
     }

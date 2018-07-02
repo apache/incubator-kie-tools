@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.commands.util;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
@@ -99,5 +100,21 @@ public class CommandUtils {
         final GridCell<?> cell = cellTuple.getGridWidget().getModel().getCell(cellTuple.getRowIndex(),
                                                                               cellTuple.getColumnIndex());
         return Optional.ofNullable(cell == null ? null : cell.getValue());
+    }
+
+    public static List<Double> extractColumnWidths(final GridData uiModel) {
+        return uiModel.getColumns()
+                .stream()
+                .map(GridColumn::getWidth)
+                .collect(Collectors.toList());
+    }
+
+    public static void restoreColumnWidths(final GridData uiModel,
+                                           final List<Double> oldColumnWidths) {
+        IntStream.range(0, oldColumnWidths.size())
+                .forEach(index -> uiModel
+                        .getColumns()
+                        .get(index)
+                        .setWidth(oldColumnWidths.get(index)));
     }
 }

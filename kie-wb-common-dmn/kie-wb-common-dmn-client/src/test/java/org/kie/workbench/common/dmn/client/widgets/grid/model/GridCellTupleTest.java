@@ -16,9 +16,13 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.model;
 
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -38,6 +42,9 @@ public class GridCellTupleTest {
     @Mock
     private GridColumn gridColumn;
 
+    @Mock
+    private BaseExpressionGrid existingEditor;
+
     private GridData gridData;
 
     private GridCellTuple tuple;
@@ -47,6 +54,7 @@ public class GridCellTupleTest {
         tuple = new GridCellTuple(0, 0, gridWidget);
         gridData = new BaseGridData(false);
         gridData.appendColumn(gridColumn);
+        gridData.appendRow(new DMNGridRow());
 
         when(gridWidget.getModel()).thenReturn(gridData);
     }
@@ -66,7 +74,31 @@ public class GridCellTupleTest {
 
         tuple.proposeContainingColumnWidth(50.0);
 
-        verify(gridColumn).setWidth(100.0);
+        verify(gridColumn).setWidth(50.0);
+    }
+
+    @Test
+    public void testProposeContainingColumnWidthWhenSmallerThanExistingEditor() {
+        gridData.setCell(0, 0, () -> new DMNGridCell<>(new ExpressionCellValue(Optional.of(existingEditor))));
+        when(existingEditor.getPadding()).thenReturn(BaseExpressionGrid.DEFAULT_PADDING);
+        when(existingEditor.getMinimumWidth()).thenReturn(200.0);
+        when(gridColumn.getWidth()).thenReturn(100.0);
+
+        tuple.proposeContainingColumnWidth(50.0);
+
+        verify(gridColumn).setWidth(200.0);
+    }
+
+    @Test
+    public void testProposeContainingColumnWidthWhenLargerThanExistingEditor() {
+        gridData.setCell(0, 0, () -> new DMNGridCell<>(new ExpressionCellValue(Optional.of(existingEditor))));
+        when(existingEditor.getPadding()).thenReturn(BaseExpressionGrid.DEFAULT_PADDING);
+        when(existingEditor.getMinimumWidth()).thenReturn(200.0);
+        when(gridColumn.getWidth()).thenReturn(100.0);
+
+        tuple.proposeContainingColumnWidth(300.0);
+
+        verify(gridColumn).setWidth(300.0);
     }
 
     @Test

@@ -259,6 +259,39 @@ public class CommandUtilsTest {
         Assertions.assertThat(CommandUtils.extractGridCellValue(cellTuple)).hasValue(gridCellValue);
     }
 
+    @Test
+    public void testExtractColumnWidths() {
+        final GridColumn uiColumn1 = new RowNumberColumn();
+        final GridColumn uiColumn2 = new RowNumberColumn();
+        uiColumn1.setWidth(100.0);
+        uiColumn2.setWidth(200.0);
+        uiModel.appendColumn(uiColumn1);
+        uiModel.appendColumn(uiColumn2);
+
+        final List<Double> columnWidths = CommandUtils.extractColumnWidths(uiModel);
+
+        Assertions.assertThat(columnWidths).containsExactly(100.0, 200.0);
+    }
+
+    @Test
+    public void testRestoreColumnWidths() {
+        final GridColumn uiColumn1 = new RowNumberColumn();
+        final GridColumn uiColumn2 = new RowNumberColumn();
+        uiColumn1.setWidth(100.0);
+        uiColumn2.setWidth(200.0);
+        uiModel.appendColumn(uiColumn1);
+        uiModel.appendColumn(uiColumn2);
+
+        final List<Double> columnWidths = CommandUtils.extractColumnWidths(uiModel);
+
+        uiColumn1.setWidth(300.0);
+        uiColumn2.setWidth(500.0);
+
+        CommandUtils.restoreColumnWidths(uiModel, columnWidths);
+
+        Assertions.assertThat(columnWidths).containsExactly(100.0, 200.0);
+    }
+
     private void assertParentInformationValues(final int expressionColumnIndex) {
         IntStream.range(0, ROW_COUNT)
                 .forEach(rowIndex -> {

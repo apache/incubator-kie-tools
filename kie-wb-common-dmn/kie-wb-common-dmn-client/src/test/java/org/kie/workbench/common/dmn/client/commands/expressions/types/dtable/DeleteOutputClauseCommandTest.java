@@ -236,5 +236,6 @@ public class DeleteOutputClauseCommandTest {
 
         verify(canvasOperation).execute();
         verify(command).updateParentInformation();
+        verify(command).restoreColumnWidths();
     }
 }

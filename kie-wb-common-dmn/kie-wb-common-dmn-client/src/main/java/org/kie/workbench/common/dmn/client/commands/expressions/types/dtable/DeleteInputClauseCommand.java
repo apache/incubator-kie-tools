@@ -54,6 +54,7 @@ public class DeleteInputClauseCommand extends AbstractCanvasGraphCommand impleme
     private final InputClause oldInputClause;
     private final List<UnaryTests> oldColumnData;
     private final GridColumn<?> oldUiModelColumn;
+    private final List<Double> oldColumnWidths;
 
     public DeleteInputClauseCommand(final DecisionTable dtable,
                                     final GridData uiModel,
@@ -69,6 +70,7 @@ public class DeleteInputClauseCommand extends AbstractCanvasGraphCommand impleme
         this.oldInputClause = dtable.getInput().get(uiColumnIndex - DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
         this.oldColumnData = extractColumnData();
         this.oldUiModelColumn = uiModel.getColumns().get(uiColumnIndex);
+        this.oldColumnWidths = CommandUtils.extractColumnWidths(uiModel);
     }
 
     private List<UnaryTests> extractColumnData() {
@@ -143,6 +145,7 @@ public class DeleteInputClauseCommand extends AbstractCanvasGraphCommand impleme
                 }
 
                 updateParentInformation();
+                restoreColumnWidths();
 
                 canvasOperation.execute();
 
@@ -153,5 +156,9 @@ public class DeleteInputClauseCommand extends AbstractCanvasGraphCommand impleme
 
     public void updateParentInformation() {
         CommandUtils.updateParentInformation(uiModel);
+    }
+
+    public void restoreColumnWidths() {
+        CommandUtils.restoreColumnWidths(uiModel, oldColumnWidths);
     }
 }

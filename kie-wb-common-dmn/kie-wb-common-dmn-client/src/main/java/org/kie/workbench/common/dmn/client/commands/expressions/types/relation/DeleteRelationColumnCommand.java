@@ -54,6 +54,7 @@ public class DeleteRelationColumnCommand extends AbstractCanvasGraphCommand impl
     private final InformationItem oldInformationItem;
     private final List<Expression> oldColumnData;
     private final GridColumn<?> oldUiModelColumn;
+    private final List<Double> oldColumnWidths;
 
     public DeleteRelationColumnCommand(final Relation relation,
                                        final GridData uiModel,
@@ -69,6 +70,7 @@ public class DeleteRelationColumnCommand extends AbstractCanvasGraphCommand impl
         this.oldInformationItem = relation.getColumn().get(uiColumnIndex - RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
         this.oldColumnData = extractColumnData(uiColumnIndex);
         this.oldUiModelColumn = uiModel.getColumns().get(uiColumnIndex);
+        this.oldColumnWidths = CommandUtils.extractColumnWidths(uiModel);
     }
 
     private List<Expression> extractColumnData(final int uiColumnIndex) {
@@ -139,6 +141,7 @@ public class DeleteRelationColumnCommand extends AbstractCanvasGraphCommand impl
                 }
 
                 updateParentInformation();
+                restoreColumnWidths();
 
                 canvasOperation.execute();
 
@@ -149,5 +152,9 @@ public class DeleteRelationColumnCommand extends AbstractCanvasGraphCommand impl
 
     public void updateParentInformation() {
         CommandUtils.updateParentInformation(uiModel);
+    }
+
+    public void restoreColumnWidths() {
+        CommandUtils.restoreColumnWidths(uiModel, oldColumnWidths);
     }
 }

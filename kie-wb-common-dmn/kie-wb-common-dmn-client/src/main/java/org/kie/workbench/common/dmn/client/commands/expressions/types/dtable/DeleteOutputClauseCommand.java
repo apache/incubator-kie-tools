@@ -54,6 +54,7 @@ public class DeleteOutputClauseCommand extends AbstractCanvasGraphCommand implem
     private final OutputClause oldOutputClause;
     private final List<LiteralExpression> oldColumnData;
     private final GridColumn<?> oldUiModelColumn;
+    private final List<Double> oldColumnWidths;
 
     public DeleteOutputClauseCommand(final DecisionTable dtable,
                                      final GridData uiModel,
@@ -69,6 +70,7 @@ public class DeleteOutputClauseCommand extends AbstractCanvasGraphCommand implem
         this.oldOutputClause = dtable.getOutput().get(getOutputClauseIndex());
         this.oldColumnData = extractColumnData();
         this.oldUiModelColumn = uiModel.getColumns().get(uiColumnIndex);
+        this.oldColumnWidths = CommandUtils.extractColumnWidths(uiModel);
     }
 
     private List<LiteralExpression> extractColumnData() {
@@ -143,6 +145,7 @@ public class DeleteOutputClauseCommand extends AbstractCanvasGraphCommand implem
                 }
 
                 updateParentInformation();
+                restoreColumnWidths();
 
                 canvasOperation.execute();
 
@@ -153,5 +156,9 @@ public class DeleteOutputClauseCommand extends AbstractCanvasGraphCommand implem
 
     public void updateParentInformation() {
         CommandUtils.updateParentInformation(uiModel);
+    }
+
+    public void restoreColumnWidths() {
+        CommandUtils.restoreColumnWidths(uiModel, oldColumnWidths);
     }
 }

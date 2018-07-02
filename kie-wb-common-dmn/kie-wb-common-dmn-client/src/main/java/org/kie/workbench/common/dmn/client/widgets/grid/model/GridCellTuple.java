@@ -16,8 +16,16 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.model;
 
+import java.util.Optional;
+
 import com.google.gwt.user.client.ui.RequiresResize;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.uberfire.ext.wires.core.grids.client.model.GridCell;
+import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 public class GridCellTuple implements RequiresResize {
@@ -56,8 +64,28 @@ public class GridCellTuple implements RequiresResize {
 
     public void proposeContainingColumnWidth(final double proposedWidth) {
         final GridColumn<?> parentColumn = gridWidget.getModel().getColumns().get(columnIndex);
-        final double requiredWidth = Math.max(proposedWidth, parentColumn.getWidth());
+        final double requiredWidth = Math.max(proposedWidth, getMinimumParentColumnWidth(proposedWidth));
         parentColumn.setWidth(requiredWidth);
+    }
+
+    private double getMinimumParentColumnWidth(final double proposedWidth) {
+        double minimumWidth = proposedWidth;
+        final GridData uiModel = gridWidget.getModel();
+        for (GridRow row : uiModel.getRows()) {
+            final GridCell<?> cell = row.getCells().get(columnIndex);
+            if (cell != null) {
+                final GridCellValue<?> value = cell.getValue();
+                if (value instanceof ExpressionCellValue) {
+                    final ExpressionCellValue ecv = (ExpressionCellValue) value;
+                    final Optional<BaseExpressionGrid> editor = ecv.getValue();
+                    if (editor.isPresent()) {
+                        final BaseExpressionGrid beg = editor.get();
+                        minimumWidth = Math.max(minimumWidth, beg.getMinimumWidth());
+                    }
+                }
+            }
+        }
+        return minimumWidth;
     }
 
     @Override
