@@ -94,6 +94,8 @@ import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
+import static org.kie.workbench.common.stunner.project.client.resources.i18n.StunnerProjectClientConstants.DIAGRAM_PARSING_ERROR;
+
 public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType> extends KieEditor<ProjectDiagramResource> {
 
     private static Logger LOGGER = Logger.getLogger(AbstractProjectDiagramEditor.class.getName());
@@ -716,6 +718,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
             getView().setWidget(xmlEditorView.asWidget());
             editorProxy = makeXmlEditorProxy();
             hideLoadingViews();
+            notification.fire(new NotificationEvent(translationService.getValue(DIAGRAM_PARSING_ERROR, Objects.toString(e.getMessage(),"")),
+                                                    NotificationEvent.NotificationType.ERROR));
 
             Scheduler.get().scheduleDeferred(xmlEditorView::onResize);
         } else {
