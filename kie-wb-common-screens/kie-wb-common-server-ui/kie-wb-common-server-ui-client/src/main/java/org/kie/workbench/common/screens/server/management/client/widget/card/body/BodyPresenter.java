@@ -63,7 +63,7 @@ public class BodyPresenter {
     public void setup(final Collection<Message> messages) {
         checkNotNull("messages",
                      messages);
-
+        view.clear();
         if (messages.isEmpty()) {
             view.addNotification(setupNotification(null).getView());
         } else {

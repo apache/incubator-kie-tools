@@ -177,4 +177,38 @@ public class ContainerRemoteStatusPresenterTest {
         verify( cardPresenter3 ).setup( newContainer2.getServerInstanceKey(), newContainer2 );
     }
 
+    @Test
+    public void testOnServerInstanceUpdatedDuplicatedContainerName() {
+        final ContainerCardPresenter cardPresenter = mock( ContainerCardPresenter.class );
+        when( cardPresenter.getView() ).thenReturn( mock( ContainerCardPresenter.View.class ) );
+        when( presenterProvider.get() ).thenReturn( cardPresenter );
+
+        final ServerInstance serverInstance = new ServerInstance( "templateId", "serverName", "serverInstanceId", "url", "1.0", Collections.<Message>emptyList(), Collections.<Container>emptyList() );
+        final Container container = new Container( "containerSpecId", "containerName", serverInstance, Collections.<Message>emptyList(), null, null );
+        container.setStatus( KieContainerStatus.STARTED );
+        final Container container2 = new Container( "containerSpecId2", "containerName", serverInstance, Collections.<Message>emptyList(), null, null );
+        container2.setStatus( KieContainerStatus.STARTED );
+
+        final Container containerToBeRemoved = new Container( "containerToBeRemovedSpecId", "containerToBeRemovedName", serverInstance, Collections.<Message>emptyList(), null, null );
+        containerToBeRemoved.setStatus( KieContainerStatus.STARTED );
+        serverInstance.addContainer( container );
+        serverInstance.addContainer( container2 );
+
+        presenter.setup( new ContainerSpec(), Arrays.asList( container, container2, containerToBeRemoved ) );
+
+        presenter.onServerInstanceUpdated( new ServerInstanceUpdated( serverInstance ) );
+
+        //One container updated,  one removed
+        verify( cardPresenter ).updateContent( serverInstance, container );
+        verify( cardPresenter ).updateContent( serverInstance, container2 );
+        verify( cardPresenter ).delete();
+        final ArgumentCaptor<Container> containerCaptor = ArgumentCaptor.forClass( Container.class );
+        verify( cardPresenter, times( 3 ) ).setup( eq( container.getServerInstanceKey() ), containerCaptor.capture() );
+        final List<Container> containers = containerCaptor.getAllValues();
+        assertEquals( 3, containers.size() );
+        assertEquals( container, containers.get( 0 ) );
+        assertEquals( container2, containers.get( 1 ) );
+        assertEquals( containerToBeRemoved, containers.get( 2 ) );
+    }
+
 }

@@ -171,6 +171,8 @@ public class ContainerPresenterTest {
         containers = new ArrayList<Container>();
         containerSpecData = new ContainerSpecData(containerSpec,
                                                   containers);
+
+        presenter.setContainerSpec(containerSpec);
     }
 
     @Test
@@ -242,6 +244,30 @@ public class ContainerPresenterTest {
         verifyLoad(true,
                    1);
     }
+
+    @Test
+    public void testLoadContainersOnlyOnSelectedContainerEvent() {
+
+        ContainerSpec containerSpec1 = new ContainerSpec("containerId1",
+                                                         "containerName",
+                                                         serverTemplateKey,
+                                                         releaseId,
+                                                         KieContainerStatus.STOPPED,
+                                                         new HashMap<Capability, ContainerConfig>());
+        presenter.setContainerSpec(containerSpec1);
+        presenter.loadContainers(containerSpecData);
+
+        verifyLoad(true,
+                   0);
+
+        presenter.setContainerSpec(containerSpec);
+        presenter.loadContainers(containerSpecData);
+
+        verifyLoad(true,
+                   1);
+
+    }
+
 
     @Test
     public void testRefresh() {

@@ -108,6 +108,10 @@ public class ContainerPresenter {
         return view;
     }
 
+    protected void setContainerSpec(ContainerSpec containerSpec){
+        this.containerSpec = containerSpec;
+    }
+
     public void onRefresh(@Observes final RefreshRemoteServers refresh) {
         if (refresh != null && refresh.getContainerSpecKey() != null) {
             load(refresh.getContainerSpecKey());
@@ -128,7 +132,10 @@ public class ContainerPresenter {
     public void loadContainers(@Observes final ContainerSpecData content) {
         if (content != null &&
                 content.getContainerSpec() != null &&
-                content.getContainers() != null) {
+                content.getContainers() != null &&
+                containerSpec!=null &&
+                containerSpec.getId()!=null &&
+                containerSpec.getId().equals(content.getContainerSpec().getId())) {
             setup(content.getContainerSpec(),
                   content.getContainers());
         } else {
@@ -153,6 +160,7 @@ public class ContainerPresenter {
         checkNotNull("containerSpecKey", containerSpecKey);
         runtimeManagementService.call((RemoteCallback<ContainerSpecData>) content -> {
             checkNotNull("content", content);
+            setContainerSpec(content.getContainerSpec());
             loadContainers(content);
         }).getContainersByContainerSpec(containerSpecKey.getServerTemplateKey().getId(),
                                         containerSpecKey.getId());
