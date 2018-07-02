@@ -27,6 +27,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableDefaultValueUtilities;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapperHelper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.InputClauseColumn;
@@ -131,17 +132,19 @@ public class AddInputClauseCommandTest {
 
         // one new input column
         assertEquals(1, dtable.getInput().size());
+        assertEquals(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "1",
+                     dtable.getInput().get(0).getInputExpression().getText());
 
         // first rule
         final List<UnaryTests> inputEntriesRuleOne = dtable.getRule().get(0).getInputEntry();
         assertEquals(1, inputEntriesRuleOne.size());
-        assertEquals(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE, inputEntriesRuleOne.get(0).getText());
+        assertEquals(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT, inputEntriesRuleOne.get(0).getText());
         assertEquals(dtable.getRule().get(0), inputEntriesRuleOne.get(0).getParent());
 
         // second rule
         final List<UnaryTests> inputEntriesRuleTwo = dtable.getRule().get(1).getInputEntry();
         assertEquals(1, inputEntriesRuleTwo.size());
-        assertEquals(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE, inputEntriesRuleTwo.get(0).getText());
+        assertEquals(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT, inputEntriesRuleTwo.get(0).getText());
         assertEquals(dtable.getRule().get(1), inputEntriesRuleTwo.get(0).getParent());
 
         assertEquals(dtable,
@@ -168,19 +171,23 @@ public class AddInputClauseCommandTest {
                      graphCommand.execute(graphCommandExecutionContext));
 
         assertEquals(2, dtable.getInput().size());
+        assertEquals(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "1",
+                     dtable.getInput().get(0).getInputExpression().getText());
+        assertEquals("",
+                     dtable.getInput().get(1).getInputExpression().getText());
 
         // first rule
         final List<UnaryTests> inputEntriesRuleOne = dtable.getRule().get(0).getInputEntry();
         assertEquals(2, inputEntriesRuleOne.size());
         assertEquals(ruleOneOldInput, inputEntriesRuleOne.get(1).getText());
-        assertEquals(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE, inputEntriesRuleOne.get(0).getText());
+        assertEquals(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT, inputEntriesRuleOne.get(0).getText());
         assertEquals(dtable.getRule().get(0), inputEntriesRuleOne.get(0).getParent());
 
         // second rule
         final List<UnaryTests> inputEntriesRuleTwo = dtable.getRule().get(1).getInputEntry();
         assertEquals(2, inputEntriesRuleTwo.size());
         assertEquals(ruleTwoOldInput, inputEntriesRuleTwo.get(1).getText());
-        assertEquals(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE, inputEntriesRuleTwo.get(0).getText());
+        assertEquals(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT, inputEntriesRuleTwo.get(0).getText());
         assertEquals(dtable.getRule().get(1), inputEntriesRuleTwo.get(0).getParent());
 
         assertEquals(dtable,
@@ -207,13 +214,19 @@ public class AddInputClauseCommandTest {
                      graphCommand.execute(graphCommandExecutionContext));
 
         assertEquals(3, dtable.getInput().size());
+        assertEquals("",
+                     dtable.getInput().get(0).getInputExpression().getText());
+        assertEquals(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "1",
+                     dtable.getInput().get(1).getInputExpression().getText());
+        assertEquals("",
+                     dtable.getInput().get(2).getInputExpression().getText());
 
         final List<UnaryTests> ruleInputs = dtable.getRule().get(0).getInputEntry();
 
         // first rule
         assertEquals(3, ruleInputs.size());
         assertEquals(ruleInputOne, ruleInputs.get(0).getText());
-        assertEquals(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE, ruleInputs.get(1).getText());
+        assertEquals(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT, ruleInputs.get(1).getText());
         assertEquals(dtable.getRule().get(0), ruleInputs.get(1).getParent());
         assertEquals(ruleInputTwo, ruleInputs.get(2).getText());
 

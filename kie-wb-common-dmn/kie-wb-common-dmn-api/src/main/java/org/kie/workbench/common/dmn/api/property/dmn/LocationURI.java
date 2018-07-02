@@ -35,7 +35,7 @@ public class LocationURI implements DMNProperty {
     private String value;
 
     public LocationURI() {
-        this("My LocationURI");
+        this("");
     }
 
     public LocationURI(final String value) {

@@ -35,7 +35,7 @@ public class Description implements DMNProperty {
     private String value;
 
     public Description() {
-        this("My description");
+        this("");
     }
 
     public Description(final String value) {

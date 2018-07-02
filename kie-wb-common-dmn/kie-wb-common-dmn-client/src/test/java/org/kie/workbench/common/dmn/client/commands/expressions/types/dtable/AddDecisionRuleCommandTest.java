@@ -25,6 +25,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableDefaultValueUtilities;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DescriptionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.InputClauseColumn;
@@ -46,7 +47,6 @@ import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
@@ -153,7 +153,7 @@ public class AddDecisionRuleCommandTest {
         assertEquals(rule, dtable.getRule().get(0));
         assertTrue(rule.getDescription() != null);
         assertTrue(rule.getDescription().getValue() != null);
-        assertFalse(rule.getDescription().getValue().isEmpty());
+        assertEquals(DecisionTableDefaultValueUtilities.RULE_DESCRIPTION, rule.getDescription().getValue());
 
         assertEquals(dtable,
                      rule.getParent());
@@ -182,7 +182,7 @@ public class AddDecisionRuleCommandTest {
 
         for (int inputIndex = 0; inputIndex < inputsCount; inputIndex++) {
             assertTrue(rule.getInputEntry().get(inputIndex).getText() != null);
-            assertFalse(rule.getInputEntry().get(inputIndex).getText().isEmpty());
+            assertEquals(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT, rule.getInputEntry().get(inputIndex).getText());
             assertEquals(rule, rule.getInputEntry().get(inputIndex).getParent());
         }
 
@@ -213,7 +213,7 @@ public class AddDecisionRuleCommandTest {
 
         for (int outputIndex = 0; outputIndex < outputsCount; outputIndex++) {
             assertTrue(rule.getOutputEntry().get(outputIndex).getText() != null);
-            assertFalse(rule.getOutputEntry().get(outputIndex).getText().isEmpty());
+            assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT, rule.getOutputEntry().get(outputIndex).getText());
             assertEquals(rule, rule.getOutputEntry().get(outputIndex).getParent());
         }
 
@@ -379,8 +379,8 @@ public class AddDecisionRuleCommandTest {
     private void assertDefaultUiRowValues(final int uiRowIndex) {
         final GridRow uiGridRow = uiModel.getRow(uiRowIndex);
         assertEquals(uiRowIndex + 1, uiGridRow.getCells().get(0).getValue().getValue());
-        assertEquals(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE, uiGridRow.getCells().get(1).getValue().getValue());
-        assertEquals(AddOutputClauseCommand.OUTPUT_CLAUSE_DEFAULT_VALUE, uiGridRow.getCells().get(2).getValue().getValue());
-        assertEquals(AddDecisionRuleCommand.DESCRIPTION_DEFAULT_VALUE, uiGridRow.getCells().get(3).getValue().getValue());
+        assertEquals(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT, uiGridRow.getCells().get(1).getValue().getValue());
+        assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT, uiGridRow.getCells().get(2).getValue().getValue());
+        assertEquals(DecisionTableDefaultValueUtilities.RULE_DESCRIPTION, uiGridRow.getCells().get(3).getValue().getValue());
     }
 }

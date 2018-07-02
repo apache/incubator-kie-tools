@@ -91,6 +91,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
     public Optional<Relation> getModelClass() {
         final Relation relation = new Relation();
         final InformationItem column = new InformationItem();
+        column.getName().setValue(RelationDefaultValueUtilities.getNewColumnName(relation));
         final org.kie.workbench.common.dmn.api.definition.v1_1.List row = new org.kie.workbench.common.dmn.api.definition.v1_1.List();
         final LiteralExpression literalExpression = new LiteralExpression();
         row.getExpression().add(literalExpression);

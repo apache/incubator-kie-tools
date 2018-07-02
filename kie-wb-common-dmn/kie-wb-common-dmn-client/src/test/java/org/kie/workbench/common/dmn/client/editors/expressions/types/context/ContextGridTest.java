@@ -30,7 +30,6 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.AddContextEntryCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.DeleteContextEntryCommand;
@@ -294,7 +293,7 @@ public class ContextGridTest {
 
         assertEquals(1,
                      uiModel.getCell(0, 0).getValue().getValue());
-        assertEquals(Name.DEFAULT_NAME,
+        assertEquals(ContextEntryDefaultValueUtilities.PREFIX + "1",
                      uiModel.getCell(0, 1).getValue().getValue());
         assertTrue(uiModel.getCell(0, 2).getValue() instanceof ExpressionCellValue);
         final ExpressionCellValue dcv0 = (ExpressionCellValue) uiModel.getCell(0, 2).getValue();

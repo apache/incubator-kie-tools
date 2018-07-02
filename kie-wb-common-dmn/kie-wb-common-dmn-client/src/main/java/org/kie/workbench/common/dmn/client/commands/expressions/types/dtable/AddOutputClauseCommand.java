@@ -22,6 +22,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableDefaultValueUtilities;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapperHelper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.OutputClauseColumn;
@@ -40,8 +41,6 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 public class AddOutputClauseCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
                                                                                   VetoUndoCommand {
-
-    public static final String OUTPUT_CLAUSE_DEFAULT_VALUE = "literal expression";
 
     private final DecisionTable dtable;
     private final OutputClause outputClause;
@@ -79,10 +78,11 @@ public class AddOutputClauseCommand extends AbstractCanvasGraphCommand implement
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
                 final int clauseIndex = uiColumnIndex - DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT - dtable.getInput().size();
                 dtable.getOutput().add(clauseIndex, outputClause);
+                outputClause.setName(DecisionTableDefaultValueUtilities.getNewOutputClauseName(dtable));
 
                 dtable.getRule().forEach(rule -> {
                     final LiteralExpression le = new LiteralExpression();
-                    le.setText(OUTPUT_CLAUSE_DEFAULT_VALUE);
+                    le.setText(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT);
                     rule.getOutputEntry().add(clauseIndex, le);
                     le.setParent(rule);
                 });

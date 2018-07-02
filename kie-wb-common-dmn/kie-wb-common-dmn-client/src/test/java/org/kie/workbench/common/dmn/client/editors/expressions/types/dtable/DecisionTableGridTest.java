@@ -290,11 +290,11 @@ public class DecisionTableGridTest {
 
         assertEquals(1,
                      uiModel.getCell(0, 0).getValue().getValue());
-        assertEquals(DecisionTableEditorDefinition.INPUT_CLAUSE_UNARY_TEST_TEXT,
+        assertEquals(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT,
                      uiModel.getCell(0, 1).getValue().getValue());
-        assertEquals(DecisionTableEditorDefinition.OUTPUT_CLAUSE_EXPRESSION_TEXT,
+        assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT,
                      uiModel.getCell(0, 2).getValue().getValue());
-        assertEquals(DecisionTableEditorDefinition.RULE_DESCRIPTION,
+        assertEquals(DecisionTableDefaultValueUtilities.RULE_DESCRIPTION,
                      uiModel.getCell(0, 3).getValue().getValue());
     }
 
@@ -352,7 +352,7 @@ public class DecisionTableGridTest {
         assertTrue(header.get(0) instanceof InputClauseColumnHeaderMetaData);
 
         final InputClauseColumnHeaderMetaData md = (InputClauseColumnHeaderMetaData) header.get(0);
-        assertEquals(DecisionTableEditorDefinition.INPUT_CLAUSE_EXPRESSION_TEXT,
+        assertEquals(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "1",
                      md.getTitle());
     }
 

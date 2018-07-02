@@ -26,6 +26,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableDefaultValueUtilities;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -43,8 +44,6 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 public class AddDecisionRuleCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
                                                                                   VetoUndoCommand {
-
-    public static final String DESCRIPTION_DEFAULT_VALUE = "A rule";
 
     private final DecisionTable dtable;
     private final DecisionRule rule;
@@ -85,18 +84,18 @@ public class AddDecisionRuleCommand extends AbstractCanvasGraphCommand implement
 
                 for (int ie = 0; ie < dtable.getInput().size(); ie++) {
                     final UnaryTests ut = new UnaryTests();
-                    ut.setText(AddInputClauseCommand.INPUT_CLAUSE_DEFAULT_VALUE);
+                    ut.setText(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT);
                     rule.getInputEntry().add(ut);
                     ut.setParent(rule);
                 }
                 for (int oe = 0; oe < dtable.getOutput().size(); oe++) {
                     final LiteralExpression le = new LiteralExpression();
-                    le.setText(AddOutputClauseCommand.OUTPUT_CLAUSE_DEFAULT_VALUE);
+                    le.setText(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT);
                     rule.getOutputEntry().add(le);
                     le.setParent(rule);
                 }
                 final Description d = new Description();
-                d.setValue(DESCRIPTION_DEFAULT_VALUE);
+                d.setValue(DecisionTableDefaultValueUtilities.RULE_DESCRIPTION);
                 rule.setDescription(d);
 
                 rule.setParent(dtable);

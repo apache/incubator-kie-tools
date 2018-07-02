@@ -57,16 +57,6 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 @ApplicationScoped
 public class DecisionTableEditorDefinition extends BaseEditorDefinition<DecisionTable, DecisionTableGridData> {
 
-    static final String INPUT_CLAUSE_EXPRESSION_TEXT = "input";
-
-    static final String INPUT_CLAUSE_UNARY_TEST_TEXT = "unary test";
-
-    static final String OUTPUT_CLAUSE_NAME = "output";
-
-    static final String OUTPUT_CLAUSE_EXPRESSION_TEXT = "literal expression";
-
-    static final String RULE_DESCRIPTION = "A rule";
-
     private HitPolicyEditorView.Presenter hitPolicyEditor;
 
     public DecisionTableEditorDefinition() {
@@ -116,25 +106,25 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
 
         final InputClause ic = new InputClause();
         final LiteralExpression le = new LiteralExpression();
-        le.setText(INPUT_CLAUSE_EXPRESSION_TEXT);
+        le.setText(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
         ic.setInputExpression(le);
         dtable.getInput().add(ic);
 
         final OutputClause oc = new OutputClause();
-        oc.setName(OUTPUT_CLAUSE_NAME);
+        oc.setName(DecisionTableDefaultValueUtilities.getNewOutputClauseName(dtable));
         dtable.getOutput().add(oc);
 
         final DecisionRule dr = new DecisionRule();
         final UnaryTests drut = new UnaryTests();
-        drut.setText(INPUT_CLAUSE_UNARY_TEST_TEXT);
+        drut.setText(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT);
         dr.getInputEntry().add(drut);
 
         final LiteralExpression drle = new LiteralExpression();
-        drle.setText(OUTPUT_CLAUSE_EXPRESSION_TEXT);
+        drle.setText(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT);
         dr.getOutputEntry().add(drle);
 
         final Description d = new Description();
-        d.setValue(RULE_DESCRIPTION);
+        d.setValue(DecisionTableDefaultValueUtilities.RULE_DESCRIPTION);
         dr.setDescription(d);
 
         dtable.getRule().add(dr);

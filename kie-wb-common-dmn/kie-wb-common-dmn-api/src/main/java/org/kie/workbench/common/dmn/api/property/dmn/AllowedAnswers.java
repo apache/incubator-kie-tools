@@ -35,7 +35,7 @@ public class AllowedAnswers implements DMNProperty {
     private String value;
 
     public AllowedAnswers() {
-        this("My allowed answers");
+        this("");
     }
 
     public AllowedAnswers(final String value) {

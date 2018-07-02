@@ -30,7 +30,6 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Binding;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
@@ -102,7 +101,7 @@ public class InvocationEditorDefinition extends BaseEditorDefinition<Invocation,
         invocation.setExpression(literalExpression);
 
         final InformationItem parameter = new InformationItem();
-        parameter.setName(new Name("p0"));
+        parameter.getName().setValue(InvocationDefaultValueUtilities.getNewParameterName(invocation));
         final Binding binding = new Binding();
         binding.setParameter(parameter);
         invocation.getBinding().add(binding);

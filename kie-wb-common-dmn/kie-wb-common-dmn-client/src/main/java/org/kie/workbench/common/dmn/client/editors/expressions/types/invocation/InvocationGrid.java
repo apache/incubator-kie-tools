@@ -44,7 +44,6 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.U
 import org.kie.workbench.common.dmn.client.editors.expressions.util.SelectionUtils;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -129,13 +128,12 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
 
     @Override
     protected void initialiseUiColumns() {
-        final TextBoxSingletonDOMElementFactory headerFactory = getHeaderHasNameTextBoxFactory();
         final InvocationColumnExpressionHeaderMetaData expressionHeaderMetaData = new InvocationColumnExpressionHeaderMetaData(this::getExpressionText,
                                                                                                                                this::setExpressionText,
-                                                                                                                               headerFactory);
+                                                                                                                               getHeaderTextBoxFactory());
         final NameColumn nameColumn = new NameColumn(Arrays.asList(new NameColumnHeaderMetaData(() -> hasName.orElse(HasName.NOP).getName().getValue(),
                                                                                                 (s) -> hasName.orElse(HasName.NOP).getName().setValue(s),
-                                                                                                headerFactory),
+                                                                                                getHeaderHasNameTextBoxFactory()),
                                                                    expressionHeaderMetaData),
                                                      getBodyTextBoxFactory(),
                                                      this);

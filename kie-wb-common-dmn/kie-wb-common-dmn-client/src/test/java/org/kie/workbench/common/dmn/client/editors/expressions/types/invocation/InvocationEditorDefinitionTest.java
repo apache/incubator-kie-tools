@@ -148,7 +148,7 @@ public class InvocationEditorDefinitionTest {
                      model.getBinding().size());
 
         assertNotNull(model.getBinding().get(0).getParameter());
-        assertEquals("p0",
+        assertEquals(InvocationDefaultValueUtilities.PREFIX + "1",
                      model.getBinding().get(0).getParameter().getName().getValue());
 
         assertNull(model.getBinding().get(0).getExpression());

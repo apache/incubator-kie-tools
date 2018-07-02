@@ -142,9 +142,11 @@ public class DecisionTableEditorDefinitionTest {
         final List<InputClause> input = model.getInput();
         assertThat(input.size()).isEqualTo(1);
         assertThat(input.get(0).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(0).getInputExpression().getText()).isEqualTo(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "1");
 
         final List<OutputClause> output = model.getOutput();
         assertThat(output.size()).isEqualTo(1);
+        assertThat(output.get(0).getName()).isEqualTo(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_PREFIX + "1");
 
         final List<DecisionRule> rules = model.getRule();
         assertThat(rules.size()).isEqualTo(1);
@@ -152,11 +154,14 @@ public class DecisionTableEditorDefinitionTest {
         final DecisionRule rule = rules.get(0);
         assertThat(rule.getInputEntry().size()).isEqualTo(1);
         assertThat(rule.getInputEntry().get(0)).isInstanceOf(UnaryTests.class);
+        assertThat(rule.getInputEntry().get(0).getText()).isEqualTo(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT);
 
         assertThat(rule.getOutputEntry().size()).isEqualTo(1);
         assertThat(rule.getOutputEntry().get(0)).isInstanceOf(LiteralExpression.class);
+        assertThat(rule.getOutputEntry().get(0).getText()).isEqualTo(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT);
 
         assertThat(rule.getDescription()).isNotNull();
+        assertThat(rule.getDescription().getValue()).isEqualTo(DecisionTableDefaultValueUtilities.RULE_DESCRIPTION);
 
         assertThat(input.get(0).getParent()).isEqualTo(model);
         assertThat(input.get(0).getInputExpression().getParent()).isEqualTo(input.get(0));

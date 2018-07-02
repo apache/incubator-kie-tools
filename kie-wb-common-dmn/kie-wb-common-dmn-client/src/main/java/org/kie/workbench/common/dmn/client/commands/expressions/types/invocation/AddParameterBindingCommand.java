@@ -19,10 +19,12 @@ package org.kie.workbench.common.dmn.client.commands.expressions.types.invocatio
 import java.util.stream.IntStream;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Binding;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.InvocationDefaultValueUtilities;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.InvocationUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -75,8 +77,9 @@ public class AddParameterBindingCommand extends AbstractCanvasGraphCommand imple
 
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
-                invocation.getBinding().add(uiRowIndex,
-                                            binding);
+                invocation.getBinding().add(uiRowIndex, binding);
+                final InformationItem informationItem = binding.getParameter();
+                informationItem.getName().setValue(InvocationDefaultValueUtilities.getNewParameterName(invocation));
 
                 binding.setParent(invocation);
                 binding.getParameter().setParent(binding);

@@ -35,7 +35,7 @@ public class Question implements DMNProperty {
     private String value;
 
     public Question() {
-        this("My question");
+        this("");
     }
 
     public Question(final String value) {

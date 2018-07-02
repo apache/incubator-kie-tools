@@ -18,10 +18,12 @@ package org.kie.workbench.common.dmn.client.commands.expressions.types.dtable;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableDefaultValueUtilities;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapperHelper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.InputClauseColumn;
@@ -40,8 +42,6 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
                                                                                  VetoUndoCommand {
-
-    public static final String INPUT_CLAUSE_DEFAULT_VALUE = "unary test";
 
     private final DecisionTable dtable;
     private final InputClause inputClause;
@@ -79,9 +79,12 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
                 final int clauseIndex = uiColumnIndex - DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT;
                 dtable.getInput().add(clauseIndex, inputClause);
+                final LiteralExpression le = inputClause.getInputExpression();
+                le.setText(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
+
                 dtable.getRule().forEach(rule -> {
                     final UnaryTests ut = new UnaryTests();
-                    ut.setText(INPUT_CLAUSE_DEFAULT_VALUE);
+                    ut.setText(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT);
                     rule.getInputEntry().add(clauseIndex, ut);
                     ut.setParent(rule);
                 });

@@ -26,6 +26,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.List;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationDefaultValueUtilities;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
@@ -132,6 +133,8 @@ public class AddRelationColumnCommandTest {
                      relation.getColumn().size());
         assertEquals(informationItem,
                      relation.getColumn().get(0));
+        assertEquals(RelationDefaultValueUtilities.PREFIX + "1",
+                     informationItem.getName().getValue());
         assertEquals(1,
                      relation.getRow().size());
         assertEquals(1,
@@ -163,6 +166,8 @@ public class AddRelationColumnCommandTest {
                      relation.getColumn().size());
         assertEquals(informationItem,
                      relation.getColumn().get(0));
+        assertEquals(RelationDefaultValueUtilities.PREFIX + "1",
+                     informationItem.getName().getValue());
         assertEquals(existingInformationItem,
                      relation.getColumn().get(1));
         assertEquals(1,
@@ -207,6 +212,8 @@ public class AddRelationColumnCommandTest {
                      relation.getColumn().get(0));
         assertEquals(informationItem,
                      relation.getColumn().get(1));
+        assertEquals(RelationDefaultValueUtilities.PREFIX + "1",
+                     informationItem.getName().getValue());
         assertEquals(existingInformationItemLast,
                      relation.getColumn().get(2));
         assertEquals(1,
@@ -235,6 +242,8 @@ public class AddRelationColumnCommandTest {
                      relation.getColumn().size());
         assertEquals(informationItem,
                      relation.getColumn().get(0));
+        assertEquals(RelationDefaultValueUtilities.PREFIX + "1",
+                     informationItem.getName().getValue());
         assertEquals(0,
                      relation.getRow().size());
 

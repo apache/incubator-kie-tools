@@ -302,7 +302,7 @@ public class InvocationGridTest {
 
         assertEquals(1,
                      uiModel.getCell(0, 0).getValue().getValue());
-        assertEquals("p0",
+        assertEquals(InvocationDefaultValueUtilities.PREFIX + "1",
                      uiModel.getCell(0, 1).getValue().getValue());
         assertTrue(uiModel.getCell(0, 2).getValue() instanceof ExpressionCellValue);
         final ExpressionCellValue dcv0 = (ExpressionCellValue) uiModel.getCell(0, 2).getValue();

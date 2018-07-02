@@ -29,6 +29,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableDefaultValueUtilities;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapperHelper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.InputClauseColumn;
@@ -147,17 +148,19 @@ public class AddOutputClauseCommandTest {
 
         // one new output column
         assertEquals(1, dtable.getOutput().size());
+        assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_PREFIX + "1",
+                     dtable.getOutput().get(0).getName());
 
         // first rule
         final List<LiteralExpression> outputEntriesRuleOne = dtable.getRule().get(0).getOutputEntry();
         assertEquals(1, outputEntriesRuleOne.size());
-        assertEquals(AddOutputClauseCommand.OUTPUT_CLAUSE_DEFAULT_VALUE, outputEntriesRuleOne.get(0).getText());
+        assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT, outputEntriesRuleOne.get(0).getText());
         assertEquals(dtable.getRule().get(0), outputEntriesRuleOne.get(0).getParent());
 
         // second rule
         final List<LiteralExpression> outputEntriesRuleTwo = dtable.getRule().get(1).getOutputEntry();
         assertEquals(1, outputEntriesRuleTwo.size());
-        assertEquals(AddOutputClauseCommand.OUTPUT_CLAUSE_DEFAULT_VALUE, outputEntriesRuleTwo.get(0).getText());
+        assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT, outputEntriesRuleTwo.get(0).getText());
         assertEquals(dtable.getRule().get(1), outputEntriesRuleTwo.get(0).getParent());
 
         assertEquals(dtable,
@@ -184,19 +187,23 @@ public class AddOutputClauseCommandTest {
                      graphCommand.execute(graphCommandExecutionContext));
 
         assertEquals(2, dtable.getOutput().size());
+        assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_PREFIX + "1",
+                     dtable.getOutput().get(0).getName());
+        assertEquals("",
+                     dtable.getOutput().get(1).getName());
 
         // first rule
         final List<LiteralExpression> outputEntriesRuleOne = dtable.getRule().get(0).getOutputEntry();
         assertEquals(2, outputEntriesRuleOne.size());
         assertEquals(ruleOneOldOutput, outputEntriesRuleOne.get(1).getText());
-        assertEquals(AddOutputClauseCommand.OUTPUT_CLAUSE_DEFAULT_VALUE, outputEntriesRuleOne.get(0).getText());
+        assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT, outputEntriesRuleOne.get(0).getText());
         assertEquals(dtable.getRule().get(0), outputEntriesRuleOne.get(0).getParent());
 
         // second rule
         final List<LiteralExpression> outputEntriesRuleTwo = dtable.getRule().get(1).getOutputEntry();
         assertEquals(2, outputEntriesRuleTwo.size());
         assertEquals(ruleTwoOldOutput, outputEntriesRuleTwo.get(1).getText());
-        assertEquals(AddOutputClauseCommand.OUTPUT_CLAUSE_DEFAULT_VALUE, outputEntriesRuleTwo.get(0).getText());
+        assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT, outputEntriesRuleTwo.get(0).getText());
         assertEquals(dtable.getRule().get(1), outputEntriesRuleTwo.get(0).getParent());
 
         assertEquals(dtable,
@@ -223,13 +230,19 @@ public class AddOutputClauseCommandTest {
                      graphCommand.execute(graphCommandExecutionContext));
 
         assertEquals(3, dtable.getOutput().size());
+        assertEquals("",
+                     dtable.getOutput().get(0).getName());
+        assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_PREFIX + "1",
+                     dtable.getOutput().get(1).getName());
+        assertEquals("",
+                     dtable.getOutput().get(2).getName());
 
         final List<LiteralExpression> ruleOutputs = dtable.getRule().get(0).getOutputEntry();
 
         // first rule
         assertEquals(3, ruleOutputs.size());
         assertEquals(ruleOutputOne, ruleOutputs.get(0).getText());
-        assertEquals(AddOutputClauseCommand.OUTPUT_CLAUSE_DEFAULT_VALUE, ruleOutputs.get(1).getText());
+        assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT, ruleOutputs.get(1).getText());
         assertEquals(dtable.getRule().get(0), ruleOutputs.get(1).getParent());
         assertEquals(ruleOutputTwo, ruleOutputs.get(2).getText());
 

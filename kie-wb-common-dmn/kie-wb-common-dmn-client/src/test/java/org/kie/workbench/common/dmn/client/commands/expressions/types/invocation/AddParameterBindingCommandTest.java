@@ -29,6 +29,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.NameColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.InvocationDefaultValueUtilities;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.InvocationUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
@@ -152,16 +153,19 @@ public class AddParameterBindingCommandTest {
         makeCommand(uiRowIndex, binding, uiModelRow);
     }
 
-    private void makeCommand(final int uiRowIndex, final String bindingName, final DMNGridRow uiGridRow) {
+    private void makeCommand(final int uiRowIndex, final DMNGridRow uiGridRow) {
         final Binding rowEntry = new Binding();
         final InformationItem parameter = new InformationItem();
-        parameter.setName(new Name(bindingName));
+        parameter.setName(new Name());
         rowEntry.setParameter(parameter);
         makeCommand(uiRowIndex, rowEntry, uiGridRow);
     }
 
     private void assertBindingDefinitions(final Binding... bindings) {
         Assertions.assertThat(invocation.getBinding()).containsExactly(bindings);
+
+        assertEquals(InvocationDefaultValueUtilities.PREFIX + "1",
+                     binding.getParameter().getName().getValue());
     }
 
     private void assertRowValues(final int rowNumberIndex, final int rowNumberValue, final String nameColumnValue) {
@@ -376,7 +380,7 @@ public class AddParameterBindingCommandTest {
                      uiModel.getRows().get(0).getCells().size());
         assertEquals(1,
                      uiModel.getCell(0, ROW_NUMBER_COLUMN_INDEX).getValue().getValue());
-        assertEquals("p0",
+        assertEquals(InvocationDefaultValueUtilities.PREFIX + "1",
                      uiModel.getCell(0, BINDING_PARAMETER_COLUMN_INDEX).getValue().getValue());
         assertNull(uiModel.getCell(0, BINDING_EXPRESSION_COLUMN_INDEX));
 
@@ -386,7 +390,6 @@ public class AddParameterBindingCommandTest {
     @Test
     public void testCanvasCommandExecuteMultipleEntries() {
         // first row
-        final String firstRowText = "p0";
         makeCommand();
         command.newGraphCommand(handler).execute(gce);
         final Command<AbstractCanvasHandler, CanvasViolation> firstEntryCanvasCommand = command.newCanvasCommand(handler);
@@ -394,18 +397,16 @@ public class AddParameterBindingCommandTest {
                      firstEntryCanvasCommand.execute(handler));
 
         // second row
-        final String secondRowText = "second entry";
         final DMNGridRow uiSecondModelRow = new DMNGridRow();
-        makeCommand(1, secondRowText, uiSecondModelRow);
+        makeCommand(1, uiSecondModelRow);
         command.newGraphCommand(handler).execute(gce);
         final Command<AbstractCanvasHandler, CanvasViolation> secondEntryCanvasCommand = command.newCanvasCommand(handler);
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      secondEntryCanvasCommand.execute(handler));
 
         // third row
-        final String thirdRowText = "third entry";
         final DMNGridRow uiThirdModelRow = new DMNGridRow();
-        makeCommand(0, thirdRowText, uiThirdModelRow);
+        makeCommand(0, uiThirdModelRow);
         command.newGraphCommand(handler).execute(gce);
         final Command<AbstractCanvasHandler, CanvasViolation> thirdEntryCanvasCommand = command.newCanvasCommand(handler);
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
@@ -428,9 +429,9 @@ public class AddParameterBindingCommandTest {
         assertEquals(uiExpressionEditorColumn,
                      uiModel.getColumns().get(BINDING_EXPRESSION_COLUMN_INDEX));
 
-        assertRowValues(0, 1, thirdRowText);
-        assertRowValues(1, 2, firstRowText);
-        assertRowValues(2, 3, secondRowText);
+        assertRowValues(0, 1, InvocationDefaultValueUtilities.PREFIX + "3");
+        assertRowValues(1, 2, InvocationDefaultValueUtilities.PREFIX + "1");
+        assertRowValues(2, 3, InvocationDefaultValueUtilities.PREFIX + "2");
 
         verify(canvasOperation, times(3)).execute();
     }

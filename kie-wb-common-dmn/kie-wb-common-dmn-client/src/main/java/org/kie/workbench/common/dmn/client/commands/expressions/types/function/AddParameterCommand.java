@@ -20,6 +20,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.FunctionDefaultValueUtilities;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
@@ -58,6 +59,7 @@ public class AddParameterCommand extends AbstractCanvasGraphCommand implements V
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
                 function.getFormalParameter().add(parameter);
+                parameter.getName().setValue(FunctionDefaultValueUtilities.getNewParameterName(function));
 
                 parameter.setParent(function);
 

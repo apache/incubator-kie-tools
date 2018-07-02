@@ -35,7 +35,7 @@ public class KnowledgeSourceType implements DMNProperty {
     private String value;
 
     public KnowledgeSourceType() {
-        this("My KnowledgeSourceType");
+        this("");
     }
 
     public KnowledgeSourceType(final String value) {

@@ -35,7 +35,7 @@ public class Text implements DMNProperty {
     private String value;
 
     public Text() {
-        this("My text");
+        this("");
     }
 
     public Text(final String value) {

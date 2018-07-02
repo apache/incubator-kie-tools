@@ -100,6 +100,7 @@ public class ContextEditorDefinition extends BaseEditorDefinition<Context, Conte
         final Context context = new Context();
         final ContextEntry contextEntry = new ContextEntry();
         final InformationItem informationItem = new InformationItem();
+        informationItem.getName().setValue(ContextEntryDefaultValueUtilities.getNewContextEntryName(context));
         contextEntry.setVariable(informationItem);
         context.getContextEntry().add(contextEntry);
 

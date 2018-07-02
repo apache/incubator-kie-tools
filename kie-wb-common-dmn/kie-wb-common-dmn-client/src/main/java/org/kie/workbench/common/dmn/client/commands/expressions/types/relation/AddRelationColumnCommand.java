@@ -23,6 +23,7 @@ import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationDefaultValueUtilities;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationUIModelMapper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationUIModelMapperHelper;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -76,8 +77,9 @@ public class AddRelationColumnCommand extends AbstractCanvasGraphCommand impleme
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
                 final int iiIndex = uiColumnIndex - RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT;
-                relation.getColumn().add(iiIndex,
-                                         informationItem);
+                relation.getColumn().add(iiIndex, informationItem);
+                informationItem.getName().setValue(RelationDefaultValueUtilities.getNewColumnName(relation));
+
                 relation.getRow().forEach(row -> {
                     final LiteralExpression le = new LiteralExpression();
                     row.getExpression().add(iiIndex, le);

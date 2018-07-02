@@ -129,11 +129,14 @@ public class RelationEditorDefinitionTest {
         final Relation model = oModel.get();
 
         assertNotNull(model.getRow());
+        assertNotNull(model.getRow().get(0).getId());
         assertNotNull(model.getRow().get(0).getExpression().get(0));
         assertTrue(model.getRow().get(0).getExpression().get(0) instanceof LiteralExpression);
-        assertNotNull(model.getColumn());
 
-        assertNotNull(model.getRow().get(0).getId());
+        assertNotNull(model.getColumn());
+        assertEquals(1, model.getColumn().size());
+        assertEquals(RelationDefaultValueUtilities.PREFIX + "1",
+                     model.getColumn().get(0).getName().getValue());
 
         assertEquals(model,
                      model.getRow().get(0).getParent());

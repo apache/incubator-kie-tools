@@ -20,9 +20,11 @@ import java.util.stream.IntStream;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextEntryDefaultValueUtilities;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -75,8 +77,10 @@ public class AddContextEntryCommand extends AbstractCanvasGraphCommand implement
 
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
-                context.getContextEntry().add(uiRowIndex,
-                                              contextEntry);
+                context.getContextEntry().add(uiRowIndex, contextEntry);
+                final InformationItem informationItem = contextEntry.getVariable();
+                informationItem.getName().setValue(ContextEntryDefaultValueUtilities.getNewContextEntryName(context));
+
                 contextEntry.setParent(context);
                 contextEntry.getVariable().setParent(contextEntry);
 

@@ -145,6 +145,8 @@ public class ContextEditorDefinitionTest {
                      model.getContextEntry().size());
 
         assertNotNull(model.getContextEntry().get(0).getVariable());
+        assertEquals(ContextEntryDefaultValueUtilities.PREFIX + "1",
+                     model.getContextEntry().get(0).getVariable().getName().getValue());
 
         assertNull(model.getContextEntry().get(1).getVariable());
         assertTrue(model.getContextEntry().get(1).getExpression() instanceof LiteralExpression);

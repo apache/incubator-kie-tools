@@ -31,7 +31,7 @@ import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTyp
 @FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
 public class Name implements DMNProperty {
 
-    public static final transient String DEFAULT_NAME = "My name";
+    public static final transient String DEFAULT_NAME = "";
 
     @Value
     @FieldValue

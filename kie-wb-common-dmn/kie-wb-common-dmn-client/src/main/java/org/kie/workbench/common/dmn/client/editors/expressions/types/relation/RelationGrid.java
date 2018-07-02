@@ -28,7 +28,6 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.List;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
-import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationColumnCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationRowCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationColumnCommand;
@@ -213,7 +212,6 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
     void addColumn(final int index) {
         expression.ifPresent(relation -> {
             final InformationItem informationItem = new InformationItem();
-            informationItem.setName(new Name("Column"));
             final RelationColumn relationColumn = makeRelationColumn(informationItem);
 
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),

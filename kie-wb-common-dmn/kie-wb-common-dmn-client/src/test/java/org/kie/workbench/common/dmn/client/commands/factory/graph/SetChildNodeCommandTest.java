@@ -19,11 +19,17 @@ package org.kie.workbench.common.dmn.client.commands.factory.graph;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
@@ -40,10 +46,16 @@ public class SetChildNodeCommandTest extends org.kie.workbench.common.stunner.co
     private View candidateContent;
 
     @Mock
-    private DMNModelInstrumentedBase parentDefinition;
+    private DMNDiagram parentDefinition;
 
     @Mock
-    private DMNModelInstrumentedBase candidateDefinition;
+    private Decision candidateDefinition;
+
+    @Mock
+    private Name candidateDefinitionName;
+
+    @Captor
+    private ArgumentCaptor<String> candidateDefinitionNameCaptor;
 
     @Before
     public void setup() throws Exception {
@@ -53,6 +65,7 @@ public class SetChildNodeCommandTest extends org.kie.workbench.common.stunner.co
         when(candidate.getContent()).thenReturn(candidateContent);
         when(parentContent.getDefinition()).thenReturn(parentDefinition);
         when(candidateContent.getDefinition()).thenReturn(candidateDefinition);
+        when(candidateDefinition.getName()).thenReturn(candidateDefinitionName);
     }
 
     @Override
@@ -66,6 +79,12 @@ public class SetChildNodeCommandTest extends org.kie.workbench.common.stunner.co
         super.testExecute();
 
         verify(candidateDefinition).setParent(eq(parentDefinition));
+
+        verify(candidateDefinitionName).setValue(candidateDefinitionNameCaptor.capture());
+
+        final String name = candidateDefinitionNameCaptor.getValue();
+        assertThat(name).startsWith(Decision.class.getSimpleName());
+        assertThat(name).endsWith("-1");
     }
 
     @Override

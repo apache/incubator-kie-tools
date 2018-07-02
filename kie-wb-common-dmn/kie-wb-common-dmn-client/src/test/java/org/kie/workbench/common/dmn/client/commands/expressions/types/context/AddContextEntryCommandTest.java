@@ -27,6 +27,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextEntryDefaultValueUtilities;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextUIModelMapper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
@@ -201,6 +202,8 @@ public class AddContextEntryCommandTest {
                      context.getContextEntry().size());
         assertEquals(contextEntry,
                      context.getContextEntry().get(0));
+        assertEquals(ContextEntryDefaultValueUtilities.PREFIX + "1",
+                     contextEntry.getVariable().getName().getValue());
         assertEquals(defaultResultContextEntry,
                      context.getContextEntry().get(1));
 
@@ -212,9 +215,10 @@ public class AddContextEntryCommandTest {
 
     @Test
     public void testGraphCommandExecuteMultipleEntriesPresent() {
+        final String EXISTING_ENTRY_NAME = "old one";
         final ContextEntry firstEntry = new ContextEntry() {{
             setVariable(new InformationItem() {{
-                setName(new Name("old one"));
+                setName(new Name(EXISTING_ENTRY_NAME));
             }});
         }};
         context.getContextEntry().add(0, firstEntry);
@@ -229,8 +233,12 @@ public class AddContextEntryCommandTest {
                      context.getContextEntry().size());
         assertEquals(firstEntry,
                      context.getContextEntry().get(0));
+        assertEquals(EXISTING_ENTRY_NAME,
+                     firstEntry.getVariable().getName().getValue());
         assertEquals(contextEntry,
                      context.getContextEntry().get(1));
+        assertEquals(ContextEntryDefaultValueUtilities.PREFIX + "1",
+                     contextEntry.getVariable().getName().getValue());
         assertEquals(defaultResultContextEntry,
                      context.getContextEntry().get(2));
 
@@ -323,7 +331,7 @@ public class AddContextEntryCommandTest {
                      uiModel.getRows().get(0).getCells().size());
         assertEquals(1,
                      uiModel.getCell(0, 0).getValue().getValue());
-        assertEquals("variable",
+        assertEquals(ContextEntryDefaultValueUtilities.PREFIX + "1",
                      uiModel.getCell(0, 1).getValue().getValue());
         assertTrue(uiModel.getCell(0, 2).getValue() instanceof ExpressionCellValue);
 
@@ -353,9 +361,7 @@ public class AddContextEntryCommandTest {
 
         // second row
         final ContextEntry secondRowEntry = new ContextEntry() {{
-            setVariable(new InformationItem() {{
-                setName(new Name("last entry"));
-            }});
+            setVariable(new InformationItem());
         }};
         final DMNGridRow uiSecondModelRow = new DMNGridRow();
         command = spy(new AddContextEntryCommand(context,
@@ -394,7 +400,7 @@ public class AddContextEntryCommandTest {
                      uiModel.getRows().get(0).getCells().size());
         assertEquals(1,
                      uiModel.getCell(0, 0).getValue().getValue());
-        assertEquals("variable",
+        assertEquals(ContextEntryDefaultValueUtilities.PREFIX + "1",
                      uiModel.getCell(0, 1).getValue().getValue());
         assertTrue(uiModel.getCell(0, 2).getValue() instanceof ExpressionCellValue);
 
@@ -402,7 +408,7 @@ public class AddContextEntryCommandTest {
                      uiModel.getRows().get(1).getCells().size());
         assertEquals(2,
                      uiModel.getCell(1, 0).getValue().getValue());
-        assertEquals("last entry",
+        assertEquals(ContextEntryDefaultValueUtilities.PREFIX + "2",
                      uiModel.getCell(1, 1).getValue().getValue());
         assertTrue(uiModel.getCell(1, 2).getValue() instanceof ExpressionCellValue);
 
