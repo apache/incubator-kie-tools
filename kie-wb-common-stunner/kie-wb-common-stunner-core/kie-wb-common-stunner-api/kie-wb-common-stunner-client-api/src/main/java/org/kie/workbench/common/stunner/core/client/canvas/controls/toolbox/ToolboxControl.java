@@ -19,11 +19,11 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox;
 import java.util.Iterator;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistationControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.Toolbox;
 
 public interface ToolboxControl<C extends CanvasHandler, E>
-        extends CanvasRegistationControl<C, E> {
+        extends CanvasRegistrationControl<C, E> {
 
     Iterator<Toolbox<?>> getToolboxes(E element);
 }

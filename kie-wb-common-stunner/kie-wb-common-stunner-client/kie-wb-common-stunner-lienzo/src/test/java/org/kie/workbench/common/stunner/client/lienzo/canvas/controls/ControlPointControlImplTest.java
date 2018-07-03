@@ -41,6 +41,7 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
@@ -84,7 +85,7 @@ public class ControlPointControlImplTest extends AbstractCanvasControlTest {
 
         initialControlPointPosition = new Point2D(0, 0);
         newControlPointPosition = new Point2D(10, 10);
-        controlPoint1 = new ControlPointImpl(initialControlPointPosition);
+        controlPoint1 = spy(new ControlPointImpl(initialControlPointPosition));
         canvasSelectionEvent = new CanvasSelectionEvent(canvasHandler, EDGE_UUID);
         canvasControlPointDragStartEvent = new CanvasControlPointDragStartEvent(initialControlPointPosition);
         canvasControlPointDragEndEvent = new CanvasControlPointDragEndEvent(newControlPointPosition);
@@ -100,7 +101,7 @@ public class ControlPointControlImplTest extends AbstractCanvasControlTest {
         when(viewConnector.getControlPoints()).thenReturn(Arrays.asList(controlPoint1));
 
         controlPointControl.init(canvasHandler);
-        controlPointControl.setCommandManagerProvider(() -> commandManager);
+        controlPointControl.setCommandManagerProvider(commandManagerProvider);
         controlPointControl.register(edge);
     }
 
@@ -176,4 +177,25 @@ public class ControlPointControlImplTest extends AbstractCanvasControlTest {
         controlPointControl.onControlPointDragStartEvent(canvasControlPointDragStartEvent);
         assertEquals(controlPointControl.getSelectedControlPoint(), controlPoint1);
     }
+
+    @Test
+    public void testClear() {
+        controlPointControl.clear();
+        verify(controlPointControl).doClear();
+        assertNull(controlPointControl.getSelectedEdge());
+        assertNull(controlPointControl.getSelectedControlPoint());
+        assertEquals(commandManagerProvider,
+                     controlPointControl.getCommandManagerProvider());
+    }
+
+    @Test
+    public void testDestroy() {
+        controlPointControl.destroy();
+        verify(controlPointControl).doDestroy();
+        verify(controlPointControl).clear();
+        assertNull(controlPointControl.getSelectedEdge());
+        assertNull(controlPointControl.getSelectedControlPoint());
+        assertNull(controlPointControl.getCommandManagerProvider());
+    }
+
 }

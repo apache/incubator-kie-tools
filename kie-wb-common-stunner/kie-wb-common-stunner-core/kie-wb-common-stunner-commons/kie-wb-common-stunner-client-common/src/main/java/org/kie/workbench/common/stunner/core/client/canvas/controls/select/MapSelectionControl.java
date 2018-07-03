@@ -28,11 +28,10 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistationControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeRemovedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickHandler;
@@ -45,7 +44,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 public final class MapSelectionControl<H extends AbstractCanvasHandler>
         extends AbstractCanvasHandlerControl<H>
         implements SelectionControl<H, Element>,
-                   CanvasRegistationControl<H, Element> {
+                   CanvasRegistrationControl<H, Element> {
 
     private final Consumer<CanvasSelectionEvent> selectionEventConsumer;
     private final Consumer<CanvasClearSelectionEvent> clearSelectionEventConsumer;
@@ -87,6 +86,11 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
         layer.addHandler(ViewEventType.MOUSE_CLICK,
                          clickHandler);
         this.layerClickHandler = clickHandler;
+    }
+
+    @Override
+    public void clear() {
+        clearSelection(true);
     }
 
     @Override
@@ -184,6 +188,7 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
     private void updateViewShapesState(Collection<String> uuids) {
         uuids.stream()
                 .map(uuid -> getCanvas().getShape(uuid))
+                .filter(shape -> shape != null)
                 .forEach(shape -> {
                     final boolean isSelected = isSelected(shape.getUUID());
                     if (isSelected && isReadonly()) {
@@ -212,8 +217,7 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
             return;
         }
         if (getCanvas().equals(shapeRemovedEvent.getCanvas())) {
-            final Shape<?> shape = shapeRemovedEvent.getShape();
-            deselect(Collections.singletonList(shape.getUUID()));
+            items.remove(shapeRemovedEvent.getShape().getUUID());
         }
     }
 

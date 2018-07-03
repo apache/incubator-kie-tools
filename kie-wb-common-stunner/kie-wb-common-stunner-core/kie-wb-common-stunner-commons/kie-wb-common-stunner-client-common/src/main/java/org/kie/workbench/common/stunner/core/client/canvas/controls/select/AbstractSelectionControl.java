@@ -26,7 +26,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistationControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeRemovedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
@@ -41,7 +41,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 
 public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
         implements SelectionControl<H, Element>,
-                   CanvasRegistationControl<H, Element>,
+                   CanvasRegistrationControl<H, Element>,
                    CanvasControl.SessionAware<ClientSession> {
 
     private final Event<CanvasSelectionEvent> canvasSelectionEvent;
@@ -126,6 +126,11 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
     }
 
     protected void onClearSelection() {
+    }
+
+    @Override
+    public void clear() {
+        clearSelection();
     }
 
     @Override

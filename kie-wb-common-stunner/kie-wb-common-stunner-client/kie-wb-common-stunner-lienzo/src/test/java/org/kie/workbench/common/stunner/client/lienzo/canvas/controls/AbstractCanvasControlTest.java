@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeViewExtStub;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
@@ -67,6 +68,9 @@ public abstract class AbstractCanvasControlTest {
             new BoundImpl(30d,
                           40d)
     );
+
+    @Mock
+    protected RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
 
     @Mock
     protected CanvasCommandManager<AbstractCanvasHandler> commandManager;
@@ -131,6 +135,8 @@ public abstract class AbstractCanvasControlTest {
     public void setUp(){
         this.canvasCommandFactory = spy(new DefaultCanvasCommandFactory(null, null));
         this.shapeView = spy(new ShapeViewExtStub(shapeEventHandler,hasControlPoints));
+
+        when(commandManagerProvider.getCommandManager()).thenReturn(commandManager);
 
         when(element.getUUID()).thenReturn(ELEMENT_UUID);
         when(element.asNode()).thenReturn(element);

@@ -98,6 +98,13 @@ public class ControlPointControlImpl
         this.commandManagerProvider = provider;
     }
 
+    /**
+     * For testing purposes
+     */
+    CommandManagerProvider<AbstractCanvasHandler> getCommandManagerProvider() {
+        return commandManagerProvider;
+    }
+
     @Override
     public void addControlPoint(Edge candidate, ControlPoint... controlPoint) {
         checkAndExecuteCommand(canvasCommandFactory.addControlPoint(candidate, controlPoint));
@@ -223,7 +230,9 @@ public class ControlPointControlImpl
         return selectedControlPoint;
     }
 
-    private void clear() {
+    @Override
+    protected void doClear() {
+        super.doClear();
         this.selectedEdge = null;
         this.selectedControlPoint = null;
     }

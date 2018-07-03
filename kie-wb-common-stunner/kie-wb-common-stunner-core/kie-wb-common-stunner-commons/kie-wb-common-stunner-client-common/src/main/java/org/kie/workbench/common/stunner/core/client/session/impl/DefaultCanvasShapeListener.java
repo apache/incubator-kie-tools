@@ -17,9 +17,8 @@
 package org.kie.workbench.common.stunner.core.client.session.impl;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistationControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasShapeListener;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 
@@ -66,9 +65,9 @@ public class DefaultCanvasShapeListener implements CanvasShapeListener {
     private void fireRegistrationListeners(final CanvasControl<AbstractCanvas> control,
                                            final Shape shape,
                                            final boolean add) {
-        if (null != shape && control instanceof CanvasRegistationControl) {
-            final CanvasRegistationControl<AbstractCanvas, Shape> registrationControl =
-                    (CanvasRegistationControl<AbstractCanvas, Shape>) control;
+        if (null != shape && control instanceof CanvasRegistrationControl) {
+            final CanvasRegistrationControl<AbstractCanvas, Shape> registrationControl =
+                    (CanvasRegistrationControl<AbstractCanvas, Shape>) control;
             if (add) {
                 registrationControl.register(shape);
             } else {
@@ -82,10 +81,10 @@ public class DefaultCanvasShapeListener implements CanvasShapeListener {
     }
 
     private void fireRegistrationClearListeners(final CanvasControl<AbstractCanvas> control) {
-        if (control instanceof AbstractCanvasHandlerRegistrationControl) {
-            final AbstractCanvasHandlerRegistrationControl registrationControl =
-                    (AbstractCanvasHandlerRegistrationControl) control;
-            registrationControl.destroy();
+        if (control instanceof CanvasRegistrationControl) {
+            final CanvasRegistrationControl registrationControl =
+                    (CanvasRegistrationControl) control;
+            registrationControl.clear();
         }
     }
 }

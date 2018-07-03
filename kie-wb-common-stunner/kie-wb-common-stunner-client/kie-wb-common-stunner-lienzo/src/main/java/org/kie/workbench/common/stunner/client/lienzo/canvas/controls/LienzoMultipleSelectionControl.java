@@ -159,7 +159,9 @@ public final class LienzoMultipleSelectionControl<H extends AbstractCanvasHandle
     @Override
     protected void onClearSelection() {
         super.onClearSelection();
-        clear();
+        if (Objects.nonNull(getSelectionControl().getCanvasHandler())) {
+            getSelectionManager().clearSelection();
+        }
     }
 
     @Override
@@ -167,12 +169,6 @@ public final class LienzoMultipleSelectionControl<H extends AbstractCanvasHandle
         getSelectionManager().destroy();
         selectionShapeProvider.destroy();
         super.onDestroy();
-    }
-
-    private void clear() {
-        if (Objects.nonNull(getSelectionControl().getCanvasHandler())) {
-            getSelectionManager().clearSelection();
-        }
     }
 
     private AbstractCanvasHandler getCanvasHandler() {

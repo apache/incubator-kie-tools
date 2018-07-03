@@ -294,17 +294,19 @@ public class LocationControlImpl
     }
 
     @Override
+    protected void doClear() {
+        ifSelectionManager(s -> s.getControl().setBoundsConstraint(null));
+        selectedIDs.clear();
+        super.doClear();
+    }
+
+    @Override
     protected void doDestroy() {
         clear();
+        getWiresManager().setLocationAcceptor(ILocationAcceptor.ALL);
         commandManagerProvider = null;
         boundsConstraint = null;
         super.doDestroy();
-    }
-
-    private void clear() {
-        getWiresManager().setLocationAcceptor(ILocationAcceptor.ALL);
-        ifSelectionManager(s -> s.getControl().setBoundsConstraint(null));
-        selectedIDs.clear();
     }
 
     void onCanvasSelectionEvent(final @Observes CanvasSelectionEvent event) {

@@ -65,6 +65,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -174,12 +175,12 @@ public class LienzoMultipleSelectionControlTest {
                                             PATH);
         shapeView.setUUID(ELEMENT_UUID);
         when(shape.getShapeView()).thenReturn(shapeView);
-        selectionShapeProvider = new LienzoMultipleSelectionControl.CursoredSelectionShapeProvider(delegateShapeProvider,
-                                                                                                   () -> canvasHandler);
-        tested = new LienzoMultipleSelectionControl<>(selectionControl,
+        selectionShapeProvider = spy(new LienzoMultipleSelectionControl.CursoredSelectionShapeProvider(delegateShapeProvider,
+                                                                                                   () -> canvasHandler));
+        tested = spy(new LienzoMultipleSelectionControl<>(selectionControl,
                                                       canvasSelectionEvent,
                                                       clearSelectionEvent,
-                                                      selectionShapeProvider);
+                                                      selectionShapeProvider));
     }
 
     @Test
@@ -356,5 +357,22 @@ public class LienzoMultipleSelectionControlTest {
         tested.register(element);
         tested.deregister(element);
         verify(selectionControl, times(1)).deregister(eq(element));
+    }
+
+    @Test
+    public void testClear() {
+        tested.clear();
+        verify(tested).clearSelection();
+        verify(selectionControl).clearSelection();
+        verify(selectionManager,
+               times(1)).clearSelection();
+    }
+
+    @Test
+    public void testDestroy() {
+        tested.destroy();
+        verify(tested).onDestroy();
+        verify(selectionManager).destroy();
+        verify(selectionShapeProvider).destroy();
     }
 }

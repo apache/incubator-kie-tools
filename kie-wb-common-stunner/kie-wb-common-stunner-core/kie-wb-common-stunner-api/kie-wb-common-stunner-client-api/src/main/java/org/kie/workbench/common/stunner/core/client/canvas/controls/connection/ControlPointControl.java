@@ -17,7 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.canvas.controls.connection;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistationControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 /**
  * Control responsible to manage {@link ControlPoint} operations: add, move on canvas.
  */
-public interface ControlPointControl<H extends CanvasHandler> extends CanvasRegistationControl<H, Element>,
+public interface ControlPointControl<H extends CanvasHandler> extends CanvasRegistrationControl<H, Element>,
                                                                       RequiresCommandManager<H> {
 
     void addControlPoint(Edge candidate, ControlPoint... controlPoint);

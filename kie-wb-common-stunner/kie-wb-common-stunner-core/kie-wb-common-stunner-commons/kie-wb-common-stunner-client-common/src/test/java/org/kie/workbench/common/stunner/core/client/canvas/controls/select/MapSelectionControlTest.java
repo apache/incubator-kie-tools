@@ -42,6 +42,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
@@ -97,6 +98,11 @@ public class MapSelectionControlTest {
 
     @Mock
     private HasControlPoints<ShapeViewExtStub> hasControlPoints;
+
+    @Captor
+    private ArgumentCaptor<CanvasClearSelectionEvent> canvasClearSelectionEventCaptor;
+
+    private ShapeViewExtStub shapeView;
 
     private MapSelectionControl<AbstractCanvasHandler> tested;
 
@@ -268,9 +274,6 @@ public class MapSelectionControlTest {
         tested.onShapeRemoved(shapeRemovedEvent);
         assertTrue(tested.getSelectedItems().isEmpty());
         verify(shape, times(1)).applyState(eq(ShapeState.SELECTED));
-        verify(shape, times(1)).applyState(eq(ShapeState.NONE));
-        verify(shape, never()).applyState(eq(ShapeState.INVALID));
-        verify(shape, never()).applyState(eq(ShapeState.HIGHLIGHT));
     }
 
     @Test
@@ -309,6 +312,26 @@ public class MapSelectionControlTest {
         final CanvasSelectionEvent selectionEvent = elementSelectedEventArgumentCaptor.getValue();
         assertEquals(1, selectionEvent.getIdentifiers().size());
         assertEquals(ELEMENT_UUID, selectionEvent.getIdentifiers().iterator().next());
+    }
+
+    @Test
+    public void testClear() {
+        tested.init(canvasHandler);
+        tested.register(element);
+        tested.select(element);
+        tested.clear();
+        assertTrue(tested.getSelectedItems().isEmpty());
+        verify(clearSelectionEvent,
+               times(1)).fire(canvasClearSelectionEventCaptor.capture());
+        assertEquals(canvasHandler,
+                     canvasClearSelectionEventCaptor.getValue().getCanvasHandler());
+    }
+
+    @Test
+    public void testDestroy() {
+        tested.init(canvasHandler);
+        tested.destroy();
+        verify(layer).removeHandler(any(MouseClickHandler.class));
     }
 
     private boolean isRegistered(Element e) {

@@ -349,4 +349,23 @@ public class LocationControlImplTest {
                times(1)).removeHandler(any(ViewHandler.class));
         assertFalse(tested.isRegistered(element));
     }
+
+    @Test
+    public void testClear() {
+        tested.init(canvasHandler);
+        tested.clear();
+        verify(selectionManager).getControl();
+        verify(wiresCompositeControl).setBoundsConstraint(null);
+    }
+
+    @Test
+    public void testDestroy() {
+        tested.init(canvasHandler);
+        tested.destroy();
+        verify(selectionManager,
+               times(2)).getControl();
+        verify(wiresCompositeControl,
+               times(2)).setBoundsConstraint(null);
+        verify(wiresManager).setLocationAcceptor(ILocationAcceptor.ALL);
+    }
 }

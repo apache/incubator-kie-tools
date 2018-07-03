@@ -35,7 +35,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 
 public abstract class AbstractCanvasHandlerRegistrationControl<H extends AbstractCanvasHandler>
         extends AbstractCanvasHandlerControl<H>
-        implements CanvasRegistationControl<H, Element> {
+        implements CanvasRegistrationControl<H, Element> {
 
     private static Logger LOGGER = Logger.getLogger(AbstractCanvasHandlerRegistrationControl.class.getName());
 
@@ -57,6 +57,11 @@ public abstract class AbstractCanvasHandlerRegistrationControl<H extends Abstrac
         doOnAllHandlers(enableEventHandler());
     }
 
+    @Override
+    public void clear() {
+        doClear();
+    }
+
     private void doOnAllHandlers(Consumer<Shape> handlerFunction) {
         if (!handlers.isEmpty() && Objects.nonNull(canvasHandler)) {
             handlers.keySet().stream()
@@ -76,8 +81,7 @@ public abstract class AbstractCanvasHandlerRegistrationControl<H extends Abstrac
         };
     }
 
-    @Override
-    protected void doDestroy() {
+    protected void doClear() {
         new HashSet<>(handlers.keySet())
                 .stream()
                 .forEach(this::deregister);
@@ -86,6 +90,11 @@ public abstract class AbstractCanvasHandlerRegistrationControl<H extends Abstrac
                 .stream()
                 .forEach(this::deregister);
         disabledHandlers.clear();
+    }
+
+    @Override
+    protected void doDestroy() {
+        doClear();
     }
 
     @Override
