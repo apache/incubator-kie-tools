@@ -27,7 +27,7 @@
 
   <groupId>org.uberfire</groupId>
   <artifactId>uberfire-parent</artifactId>
-  <version>2.5.0-SNAPSHOT</version>
+  <version>2.6.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>UberFire parent</name>
@@ -50,7 +50,7 @@
 
   <properties>
     <uberfire.version>${project.version}</uberfire.version>
-    <version.org.kie>7.8.0-SNAPSHOT</version.org.kie>
+    <version.org.kie>7.9.0-SNAPSHOT</version.org.kie>
     <version.org.kie.soup>${version.org.kie}</version.org.kie.soup>
     <!-- Exception as it is needed for gwt-maven-plugin version-->
     <version.com.google.gwt>2.8.2</version.com.google.gwt>
@@ -65,7 +65,7 @@
     <version.org.apache.sshd>1.6.0</version.org.apache.sshd>
     <!-- Custom Freemarker build with workaround for random concurrent access issue (annotation processors). See AF-600 for more info.-->
     <version.org.freemarker>2.3.26.jbossorg-1</version.org.freemarker>
-    <version.org.jboss.errai>4.3.0-SNAPSHOT</version.org.jboss.errai>
+    <version.org.jboss.errai>4.3.1-SNAPSHOT</version.org.jboss.errai>
     <version.org.webjars.bower.org.patternfly>3.18.1</version.org.webjars.bower.org.patternfly>
     <version.org.webjars.bower.google-code-prettify>1.0.4</version.org.webjars.bower.google-code-prettify>
     <version.org.webjars.bower.bootstrap-select>1.10.0</version.org.webjars.bower.bootstrap-select>
