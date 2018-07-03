@@ -23,10 +23,12 @@ import java.util.Map;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.marshalling.FieldValueMarshaller;
+import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.marshalling.FieldValueMarshallerRegistry;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.validation.ContextModelConstraintsExtractor;
 import org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic.BackendFormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic.BackendFormRenderingContextManager;
-import org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic.FormValuesProcessor;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.slf4j.Logger;
@@ -39,14 +41,14 @@ public class BackendFormRenderingContextManagerImpl implements BackendFormRender
 
     protected Map<Long, BackendFormRenderingContextImpl> contexts = new HashMap<>();
 
-    protected FormValuesProcessor valuesProcessor;
+    protected FieldValueMarshallerRegistry registry;
 
     protected ContextModelConstraintsExtractor constraintsExtractor;
 
     @Inject
-    public BackendFormRenderingContextManagerImpl(FormValuesProcessor valuesProcessor,
+    public BackendFormRenderingContextManagerImpl(FieldValueMarshallerRegistry registry,
                                                   ContextModelConstraintsExtractor constraintsExtractor) {
-        this.valuesProcessor = valuesProcessor;
+        this.registry = registry;
         this.constraintsExtractor = constraintsExtractor;
     }
 
@@ -78,14 +80,25 @@ public class BackendFormRenderingContextManagerImpl implements BackendFormRender
                                                                                       classLoader,
                                                                                       params);
 
-        Map<String, Object> clienFormData = valuesProcessor.readFormValues(rootForm,
-                                                                           formData,
-                                                                           context);
+        Map<String, Object> clientFormData = new HashMap<>();
+
+        rootForm.getFields().stream()
+                .filter(fieldDefinition -> !StringUtils.isEmpty(fieldDefinition.getBinding()))
+                .forEach(fieldDefinition -> {
+                    Object value = formData.get(fieldDefinition.getBinding());
+                    FieldValueMarshaller marshaller = registry.getMarshaller(fieldDefinition);
+                    if(marshaller != null) {
+                        marshaller.init(value, fieldDefinition, rootForm, context);
+                        context.getRootFormMarshallers().put(fieldDefinition.getBinding(), marshaller);
+                        value = marshaller.toFlatValue();
+                    }
+                    clientFormData.put(fieldDefinition.getBinding(), value);
+                });
 
         constraintsExtractor.readModelConstraints(clientRenderingContext,
                                                   classLoader);
 
-        clientRenderingContext.setModel(clienFormData);
+        clientRenderingContext.setModel(clientFormData);
 
         contexts.put(context.getTimestamp(),
                      context);
@@ -103,10 +116,21 @@ public class BackendFormRenderingContextManagerImpl implements BackendFormRender
             throw new IllegalArgumentException("Unable to find context with id '" + timestamp + "'");
         }
 
-        Map<String, Object> contextData = valuesProcessor.writeFormValues(context.getRenderingContext().getRootForm(),
-                                                                          formValues,
-                                                                          context.getFormData(),
-                                                                          context);
+        FormDefinition rootForm = context.getRenderingContext().getRootForm();
+
+        Map<String, Object> contextData = new HashMap<>();
+
+        rootForm.getFields().stream()
+                .filter(fieldDefinition -> !StringUtils.isEmpty(fieldDefinition.getBinding()))
+                .forEach(fieldDefinition -> {
+                    Object value = formValues.get(fieldDefinition.getBinding());
+
+                    FieldValueMarshaller marshaller = context.getRootFormMarshallers().get(fieldDefinition.getBinding());
+                    if(marshaller != null) {
+                        value = marshaller.toRawValue(value);
+                    }
+                    contextData.put(fieldDefinition.getBinding(), value);
+                });
 
         context.setFormData(contextData);
 

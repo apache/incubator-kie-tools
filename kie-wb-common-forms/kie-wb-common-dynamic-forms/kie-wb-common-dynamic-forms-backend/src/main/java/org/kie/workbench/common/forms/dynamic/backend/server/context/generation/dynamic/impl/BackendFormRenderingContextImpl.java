@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.dynamic.backend.server.context.generation
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.marshalling.FieldValueMarshaller;
 import org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic.BackendFormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
 
@@ -33,6 +34,8 @@ public class BackendFormRenderingContextImpl implements BackendFormRenderingCont
     protected ClassLoader classLoader;
 
     protected Map<String, Object> attributes = new HashMap<>();
+
+    protected Map<String, FieldValueMarshaller> rootFormMarshallers = new HashMap<>();
 
     public BackendFormRenderingContextImpl(Long timestamp,
                                            MapModelRenderingContext renderingContext,
@@ -73,5 +76,9 @@ public class BackendFormRenderingContextImpl implements BackendFormRenderingCont
     @Override
     public Map<String, Object> getAttributes() {
         return attributes;
+    }
+
+    public Map<String, FieldValueMarshaller> getRootFormMarshallers() {
+        return rootFormMarshallers;
     }
 }

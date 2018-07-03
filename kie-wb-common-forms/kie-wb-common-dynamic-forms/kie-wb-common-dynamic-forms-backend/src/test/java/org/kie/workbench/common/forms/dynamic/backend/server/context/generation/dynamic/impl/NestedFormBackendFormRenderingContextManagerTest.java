@@ -188,21 +188,16 @@ public class NestedFormBackendFormRenderingContextManagerTest extends AbstractBa
 
     protected void testWriteNestedModelWithoutModel(boolean classOnContentMarshaller) {
         try {
-            initContentMarshallerClassLoader(Person.class,
-                                             classOnContentMarshaller);
+            initContentMarshallerClassLoader(Person.class, classOnContentMarshaller);
 
             formData.remove("person");
 
             Map<String, Object> personValues = new HashMap<>();
-            personValues.put("id",
-                             5555);
-            personValues.put("name",
-                             "John");
-            personValues.put("lastName",
-                             "Snow");
+            personValues.put("id", 5555);
+            personValues.put("name", "John");
+            personValues.put("lastName", "Snow");
             Date date = new Date();
-            personValues.put("birthday",
-                             date);
+            personValues.put("birthday", date);
 
             Map<String, Object> formValues = new HashMap<>();
 
@@ -231,9 +226,8 @@ public class NestedFormBackendFormRenderingContextManagerTest extends AbstractBa
 
             Person personValue = (Person) value;
 
-            assertEquals("Name must be '5555'",
-                         new Integer(5555),
-                         personValue.getId());
+            assertEquals("Id must be '5555'", new Integer(5555), personValue.getId());
+
             assertEquals("Name must be 'John'",
                          "John",
                          personValue.getName());
@@ -254,7 +248,12 @@ public class NestedFormBackendFormRenderingContextManagerTest extends AbstractBa
 
         form.setId(Person.class.getName());
 
-        FieldDefinition field = fieldManager.getDefinitionByDataType(new TypeInfoImpl(String.class.getName()));
+        FieldDefinition field = fieldManager.getDefinitionByDataType(new TypeInfoImpl(Integer.class.getName()));
+        field.setName("id");
+        field.setBinding("id");
+        form.getFields().add(field);
+
+        field = fieldManager.getDefinitionByDataType(new TypeInfoImpl(String.class.getName()));
         field.setName("name");
         field.setBinding("name");
         form.getFields().add(field);

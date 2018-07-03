@@ -24,12 +24,17 @@ import javax.enterprise.inject.Instance;
 
 import org.junit.After;
 import org.junit.Before;
-import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.fieldProcessors.MultipleSubFormFieldValueProcessor;
-import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.fieldProcessors.SubFormFieldValueProcessor;
+import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.marshalling.FieldValueMarshaller;
+import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.marshalling.FieldValueMarshallerRegistryImpl;
+import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.marshalling.TextAreaFormFieldValueMarshaller;
+import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.marshalling.models.MultipleSubFormFieldValueMarshaller;
+import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.marshalling.models.SubFormFieldValueMarshaller;
+import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.marshalling.time.DateMultipleInputFieldValueMarshaller;
+import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.marshalling.time.DateMultipleSelectorFieldValueMarshaller;
+import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.marshalling.time.LocalDateFieldValueMarshaller;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.model.Person;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.validation.impl.ContextModelConstraintsExtractorImpl;
 import org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic.BackendFormRenderingContext;
-import org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic.FieldValueProcessor;
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
@@ -41,11 +46,11 @@ import static org.mockito.Mockito.when;
 
 public abstract class AbstractBackendFormRenderingContextManagerTest {
 
-    protected Instance<FieldValueProcessor<? extends FieldDefinition, ?, ?>> fieldValueProcessors;
+    protected Instance<FieldValueMarshaller<?, ?, ? extends FieldDefinition>> marshallersInstance;
 
     protected TestFieldManager fieldManager = new TestFieldManager();
 
-    private FormValuesProcessorImpl formValuesProcessor;
+    private FieldValueMarshallerRegistryImpl registry;
 
     protected BackendFormRenderingContextManagerImpl contextManager;
 
@@ -58,30 +63,36 @@ public abstract class AbstractBackendFormRenderingContextManagerTest {
     @Before
     public void initTest() {
 
-        List<FieldValueProcessor> processors = Arrays.asList(new SubFormFieldValueProcessor(),
-                                                             new MultipleSubFormFieldValueProcessor());
+        SubFormFieldValueMarshaller subFormFieldValueMarshaller = new SubFormFieldValueMarshaller();
+        MultipleSubFormFieldValueMarshaller multipleSubFormFieldValueMarshaller = new MultipleSubFormFieldValueMarshaller();
 
-        fieldValueProcessors = mock(Instance.class);
-        when(fieldValueProcessors.iterator()).then(proc -> processors.iterator());
+        List<FieldValueMarshaller> marshallers = Arrays.asList(subFormFieldValueMarshaller,
+                                                               multipleSubFormFieldValueMarshaller,
+                                                               new DateMultipleInputFieldValueMarshaller(),
+                                                               new DateMultipleSelectorFieldValueMarshaller(),
+                                                               new LocalDateFieldValueMarshaller(),
+                                                               new TextAreaFormFieldValueMarshaller());
 
-        formValuesProcessor = new FormValuesProcessorImpl(fieldValueProcessors);
+        marshallersInstance = mock(Instance.class);
 
-        contextManager = new BackendFormRenderingContextManagerImpl(formValuesProcessor,
-                                                                    new ContextModelConstraintsExtractorImpl());
+        when(marshallersInstance.iterator()).then(proc -> marshallers.iterator());
+
+        registry = new FieldValueMarshallerRegistryImpl(marshallersInstance);
+
+        subFormFieldValueMarshaller.setRegistry(registry);
+        multipleSubFormFieldValueMarshaller.setRegistry(registry);
+
+        contextManager = new BackendFormRenderingContextManagerImpl(registry, new ContextModelConstraintsExtractorImpl());
 
         formData = generateFormData();
 
         classLoader = mock(ClassLoader.class);
 
-        long timestamp = contextManager.registerContext(getRootForm(),
-                                                        formData,
-                                                        classLoader,
-                                                        getNestedForms()).getTimestamp();
+        long timestamp = contextManager.registerContext(getRootForm(), formData, classLoader, getNestedForms()).getTimestamp();
 
         context = contextManager.getContext(timestamp);
 
-        assertNotNull("Context cannot be null",
-                      context);
+        assertNotNull("Context cannot be null", context);
     }
 
     protected abstract FormDefinition[] getNestedForms();
