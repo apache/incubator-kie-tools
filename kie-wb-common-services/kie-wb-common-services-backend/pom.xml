@@ -67,7 +67,38 @@
             <nonFilteredFileExtension>xls</nonFilteredFileExtension>
           </nonFilteredFileExtensions>
         </configuration>
-      </plugin>   
+      </plugin>
+      <!-- only added so Maven resolves plugin dependencies to be used in test classes -->
+      <plugin>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-takari-plugin</artifactId>
+        <version>${project.version}</version>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <phase>none</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-plugin-versions</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requirePluginVersions>
+                  <!-- Allow kie-takari-plugin to use SNAPSHOT version -->
+                  <unCheckedPluginList>org.kie:kie-takari-plugin</unCheckedPluginList>
+                </requirePluginVersions>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -457,17 +488,6 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-takari-plugin</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.codehaus.plexus</groupId>
-          <artifactId>plexus-container-default</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
   </dependencies>
 
 </project>
