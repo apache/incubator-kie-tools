@@ -67,11 +67,6 @@ public abstract class BaseUploadServlet extends BaseFilteredServlet {
                              final FileItem uploadedItem) throws IOException {
         try {
             ioService.startBatch(path.getFileSystem());
-
-            if (!ioService.exists(path)) {
-                ioService.createFile(path);
-            }
-
             ioService.write(path,
                             IOUtils.toByteArray(uploadedItem.getInputStream()));
         } finally {

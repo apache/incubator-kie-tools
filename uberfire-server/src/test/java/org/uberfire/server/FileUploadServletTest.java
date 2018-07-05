@@ -282,8 +282,6 @@ public class FileUploadServletTest {
         verify(ioService,
                times(1)).get(eq(expectedURI));
         verify(ioService,
-               times(1)).exists(any(Path.class));
-        verify(ioService,
                times(1)).write(any(Path.class),
                                eq(fileContent.getBytes()));
         verify(ioService,
@@ -334,8 +332,6 @@ public class FileUploadServletTest {
                times(1)).startBatch(eq(fileSystem));
         verify(ioService,
                times(1)).get(eq(expectedURI));
-        verify(ioService,
-               times(1)).exists(any(Path.class));
         verify(ioService,
                times(1)).write(any(Path.class),
                                eq(fileContent.getBytes()));
