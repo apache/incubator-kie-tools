@@ -160,9 +160,11 @@ public class AddProjectPopUpPresenterTest {
 
         final ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass(POM.class);
 
+        verify(view).setAddButtonEnabled(false);
         verify(libraryService).createProject(eq(organizationalUnit),
                                              pomArgumentCaptor.capture(),
                                              eq(DeploymentMode.VALIDATED));
+        verify(view).setAddButtonEnabled(true);
     }
 
     @Test
@@ -181,9 +183,11 @@ public class AddProjectPopUpPresenterTest {
 
         final ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass(POM.class);
 
+        verify(view).setAddButtonEnabled(false);
         verify(libraryService).createProject(eq(organizationalUnit),
                                              pomArgumentCaptor.capture(),
                                              eq(DeploymentMode.VALIDATED));
+        verify(view).setAddButtonEnabled(true);
 
         final POM pom = pomArgumentCaptor.getValue();
 
@@ -215,9 +219,11 @@ public class AddProjectPopUpPresenterTest {
 
         final ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass(POM.class);
 
+        verify(view).setAddButtonEnabled(false);
         verify(libraryService).createProject(eq(organizationalUnit),
                                              pomArgumentCaptor.capture(),
                                              eq(DeploymentMode.VALIDATED));
+        verify(view).setAddButtonEnabled(true);
         
         final POM pom = pomArgumentCaptor.getValue();
 
@@ -240,7 +246,9 @@ public class AddProjectPopUpPresenterTest {
 
         presenter.add();
 
+        verify(view).setAddButtonEnabled(false);
         verify(view).showBusyIndicator(anyString());
+        verify(view).setAddButtonEnabled(true);
         verify(newProjectEvent).fire(any(NewProjectEvent.class));
         verify(view).hide();
         verify(notificationEvent).fire(any(NotificationEvent.class));
@@ -260,6 +268,7 @@ public class AddProjectPopUpPresenterTest {
 
         presenter.add();
 
+        verify(view).setAddButtonEnabled(false);
         verify(view).showBusyIndicator(anyString());
         verify(newProjectEvent,
                never()).fire(any(NewProjectEvent.class));
@@ -269,6 +278,7 @@ public class AddProjectPopUpPresenterTest {
         verify(view).showError(anyString());
         verify(libraryPlaces,
                never()).goToProject(any(WorkspaceProject.class));
+        verify(view).setAddButtonEnabled(true);
     }
 
     @Test
@@ -282,6 +292,7 @@ public class AddProjectPopUpPresenterTest {
 
         presenter.add();
 
+        verify(view).setAddButtonEnabled(false);
         verify(view).showBusyIndicator(anyString());
         verify(newProjectEvent,
                never()).fire(any(NewProjectEvent.class));
@@ -291,6 +302,7 @@ public class AddProjectPopUpPresenterTest {
         verify(view).showError(anyString());
         verify(libraryPlaces,
                never()).goToProject(any(WorkspaceProject.class));
+        verify(view).setAddButtonEnabled(true);
     }
 
     @Test
@@ -304,6 +316,7 @@ public class AddProjectPopUpPresenterTest {
 
         presenter.add();
 
+        verify(view).setAddButtonEnabled(false);
         verify(view).showBusyIndicator(anyString());
         verify(newProjectEvent,
                never()).fire(any(NewProjectEvent.class));
@@ -313,6 +326,7 @@ public class AddProjectPopUpPresenterTest {
         verify(view).showError(anyString());
         verify(libraryPlaces,
                never()).goToProject(any(WorkspaceProject.class));
+        verify(view).setAddButtonEnabled(true);
     }
 
     @Test
@@ -326,6 +340,7 @@ public class AddProjectPopUpPresenterTest {
 
         presenter.add();
 
+        verify(view).setAddButtonEnabled(false);
         verify(view).showBusyIndicator(anyString());
         verify(newProjectEvent,
                never()).fire(any(NewProjectEvent.class));
@@ -335,6 +350,7 @@ public class AddProjectPopUpPresenterTest {
         verify(view).showError(anyString());
         verify(libraryPlaces,
                never()).goToProject(any(WorkspaceProject.class));
+        verify(view).setAddButtonEnabled(true);
     }
 
     @Test
@@ -348,6 +364,7 @@ public class AddProjectPopUpPresenterTest {
 
         presenter.add();
 
+        verify(view).setAddButtonEnabled(false);
         verify(view).showBusyIndicator(anyString());
         verify(newProjectEvent,
                never()).fire(any(NewProjectEvent.class));
@@ -357,6 +374,7 @@ public class AddProjectPopUpPresenterTest {
         verify(view).showError(anyString());
         verify(libraryPlaces,
                never()).goToProject(any(WorkspaceProject.class));
+        verify(view).setAddButtonEnabled(true);
     }
 
     @Test
@@ -372,6 +390,7 @@ public class AddProjectPopUpPresenterTest {
 
         presenter.add();
 
+        verify(view).setAddButtonEnabled(false);
         verify(view).showBusyIndicator(anyString());
         verify(newProjectEvent,
                never()).fire(any(NewProjectEvent.class));
@@ -381,6 +400,7 @@ public class AddProjectPopUpPresenterTest {
         verify(view).showError(anyString());
         verify(libraryPlaces,
                never()).goToProject(any(WorkspaceProject.class));
+        verify(view).setAddButtonEnabled(true);
     }
 
     @Test
@@ -396,6 +416,7 @@ public class AddProjectPopUpPresenterTest {
 
         presenter.add();
 
+        verify(view).setAddButtonEnabled(false);
         verify(view).showBusyIndicator(anyString());
         verify(newProjectEvent,
                never()).fire(any(NewProjectEvent.class));
@@ -405,6 +426,7 @@ public class AddProjectPopUpPresenterTest {
         verify(view).showError(anyString());
         verify(libraryPlaces,
                never()).goToProject(any(WorkspaceProject.class));
+        verify(view).setAddButtonEnabled(true);
     }
 
     @Test
@@ -420,6 +442,7 @@ public class AddProjectPopUpPresenterTest {
 
         presenter.add();
 
+        verify(view).setAddButtonEnabled(false);
         verify(view).showBusyIndicator(anyString());
         verify(newProjectEvent,
                never()).fire(any(NewProjectEvent.class));
@@ -429,6 +452,7 @@ public class AddProjectPopUpPresenterTest {
         verify(view).showError(anyString());
         verify(libraryPlaces,
                never()).goToProject(any(WorkspaceProject.class));
+        verify(view).setAddButtonEnabled(true);
     }
 
     @Test
@@ -444,6 +468,7 @@ public class AddProjectPopUpPresenterTest {
 
         presenter.add();
 
+        verify(view).setAddButtonEnabled(false);
         verify(view).showBusyIndicator(anyString());
         verify(newProjectEvent,
                never()).fire(any(NewProjectEvent.class));
@@ -453,6 +478,7 @@ public class AddProjectPopUpPresenterTest {
         verify(view).showError(anyString());
         verify(libraryPlaces,
                never()).goToProject(any(WorkspaceProject.class));
+        verify(view).setAddButtonEnabled(true);
     }
 
 
@@ -465,7 +491,9 @@ public class AddProjectPopUpPresenterTest {
 
         presenter.add();
 
+        verify(view).setAddButtonEnabled(false);
         verify(view).showBusyIndicator(anyString());
+        verify(view).setAddButtonEnabled(true);
         verify(command).execute(any());
     }
 }

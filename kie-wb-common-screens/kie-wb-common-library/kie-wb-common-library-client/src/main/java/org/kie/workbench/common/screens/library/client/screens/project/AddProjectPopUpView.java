@@ -93,6 +93,8 @@ public class AddProjectPopUpView implements AddProjectPopUpPresenter.View,
     @DataField("version")
     Input version;
 
+    private Button addButton;
+
     @Override
     public void init(final AddProjectPopUpPresenter presenter) {
         this.presenter = presenter;
@@ -232,6 +234,13 @@ public class AddProjectPopUpView implements AddProjectPopUpPresenter.View,
                          ts.getTranslation(LibraryConstants.Version));
     }
 
+    @Override
+    public void setAddButtonEnabled(final boolean enabled) {
+        if (addButton != null) {
+            addButton.setEnabled(enabled);
+        }
+    }
+
     private void modalSetup() {
         this.modal = new CommonModalBuilder()
                 .addHeader(ts.format(LibraryConstants.AddProject))
@@ -248,9 +257,10 @@ public class AddProjectPopUpView implements AddProjectPopUpPresenter.View,
     }
 
     private Button addButton() {
-        return button(ts.format(LibraryConstants.Add),
-                      () -> presenter.add(),
-                      ButtonType.PRIMARY);
+        addButton = button(ts.format(LibraryConstants.Add),
+                                     () -> presenter.add(),
+                                     ButtonType.PRIMARY);
+        return addButton;
     }
 
     private Button cancelButton() {

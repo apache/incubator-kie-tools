@@ -103,6 +103,8 @@ public class AddProjectPopUpPresenter {
         String getEmptyVersionMessage();
 
         String getInvalidVersionMessage();
+
+        void setAddButtonEnabled(boolean enabled);
     }
     
     private Caller<LibraryService> libraryService;
@@ -189,7 +191,7 @@ public class AddProjectPopUpPresenter {
     }
 
     private void createProject(final DeploymentMode mode) {
-        view.showBusyIndicator(view.getSavingMessage());
+        beginProjectCreation();
 
         final String name = view.getName();
         final String description = view.getDescription();
@@ -202,7 +204,10 @@ public class AddProjectPopUpPresenter {
                        artifactId,
                        version,
                        () -> {
-                           final ParameterizedCommand<WorkspaceProject> successCallback = getSuccessCallback();
+                           final ParameterizedCommand<WorkspaceProject> successCallback = (project) -> {
+                               endProjectCreation();
+                               getSuccessCallback().execute(project);
+                           };
                            final ErrorCallback<?> errorCallback = getErrorCallback();
                            final POM pom = setDefaultPOM(groupId,
                                                          artifactId,
@@ -215,6 +220,16 @@ public class AddProjectPopUpPresenter {
                                                                             pom,
                                                                             mode);
                        });
+    }
+
+    private void beginProjectCreation() {
+        view.setAddButtonEnabled(false);
+        view.showBusyIndicator(view.getSavingMessage());
+    }
+
+    private void endProjectCreation() {
+        view.setAddButtonEnabled(true);
+        view.hideBusyIndicator();
     }
 
     private void validateFields(final String name,
@@ -235,7 +250,7 @@ public class AddProjectPopUpPresenter {
     private void validateName(final String name,
                               final Command successCallback) {
         if (name == null || name.trim().isEmpty()) {
-            view.hideBusyIndicator();
+            endProjectCreation();
             view.showError(view.getEmptyNameMessage());
             return;
         }
@@ -246,7 +261,7 @@ public class AddProjectPopUpPresenter {
                     successCallback.execute();
                 }
             } else {
-                view.hideBusyIndicator();
+                endProjectCreation();
                 view.showError(view.getInvalidNameMessage());
             }
         }).isProjectNameValid(name);
@@ -255,7 +270,7 @@ public class AddProjectPopUpPresenter {
     private void validateGroupId(final String groupId,
                                  final Command successCallback) {
         if (groupId == null || groupId.trim().isEmpty()) {
-            view.hideBusyIndicator();
+            endProjectCreation();
             view.showError(view.getEmptyGroupIdMessage());
             return;
         }
@@ -266,7 +281,7 @@ public class AddProjectPopUpPresenter {
                     successCallback.execute();
                 }
             } else {
-                view.hideBusyIndicator();
+                endProjectCreation();
                 view.showError(view.getInvalidGroupIdMessage());
             }
         }).validateGroupId(groupId);
@@ -275,7 +290,7 @@ public class AddProjectPopUpPresenter {
     private void validateArtifactId(final String artifactId,
                                     final Command successCallback) {
         if (artifactId == null || artifactId.trim().isEmpty()) {
-            view.hideBusyIndicator();
+            endProjectCreation();
             view.showError(view.getEmptyArtifactIdMessage());
             return;
         }
@@ -286,7 +301,7 @@ public class AddProjectPopUpPresenter {
                     successCallback.execute();
                 }
             } else {
-                view.hideBusyIndicator();
+                endProjectCreation();
                 view.showError(view.getInvalidArtifactIdMessage());
             }
         }).validateArtifactId(artifactId);
@@ -295,7 +310,7 @@ public class AddProjectPopUpPresenter {
     private void validateVersion(final String version,
                                  final Command successCallback) {
         if (version == null || version.trim().isEmpty()) {
-            view.hideBusyIndicator();
+            endProjectCreation();
             view.showError(view.getEmptyVersionMessage());
             return;
         }
@@ -306,7 +321,7 @@ public class AddProjectPopUpPresenter {
                     successCallback.execute();
                 }
             } else {
-                view.hideBusyIndicator();
+                endProjectCreation();
                 view.showError(view.getInvalidVersionMessage());
             }
         }).validateGAVVersion(version);
@@ -335,7 +350,7 @@ public class AddProjectPopUpPresenter {
             put(GAVAlreadyExistsException.class,
                 parameter -> {
                     GAVAlreadyExistsException exception = (GAVAlreadyExistsException) parameter;
-                    view.hideBusyIndicator();
+                    endProjectCreation();
                     conflictingRepositoriesPopup.setContent(exception.getGAV(),
                                                             ((GAVAlreadyExistsException) parameter).getRepositories(),
                                                             () -> {
@@ -346,7 +361,7 @@ public class AddProjectPopUpPresenter {
                 });
             put(FileAlreadyExistsException.class,
                 parameter -> {
-                    view.hideBusyIndicator();
+                    endProjectCreation();
                     view.showError(view.getDuplicatedProjectMessage());
                 });
         }};
