@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.Dock
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -49,12 +50,15 @@ public class SessionEditorImpl<S extends EditorSession>
         implements SessionDiagramEditor<S> {
 
     private final AbstractDiagramViewer<Diagram, AbstractCanvasHandler> diagramViewer;
+    private final StunnerPreferencesRegistries preferencesRegistries;
 
     private Supplier<Diagram> diagramSupplier;
 
     @Inject
-    public SessionEditorImpl(final WidgetWrapperView view) {
+    public SessionEditorImpl(final WidgetWrapperView view,
+                             final StunnerPreferencesRegistries preferencesRegistries) {
         this.diagramViewer = new SessionDiagramEditor(view);
+        this.preferencesRegistries = preferencesRegistries;
         this.diagramSupplier = () -> null != getSessionHandler() ?
                 getSessionHandler().getDiagram() :
                 null;
@@ -156,6 +160,11 @@ public class SessionEditorImpl<S extends EditorSession>
         @Override
         protected AbstractCanvas getCanvas() {
             return getSession().getCanvas();
+        }
+
+        @Override
+        protected StunnerPreferencesRegistries getPreferencesRegistry(){
+            return preferencesRegistries;
         }
 
         @Override

@@ -42,6 +42,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomCon
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
@@ -49,6 +50,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
 import org.kie.workbench.common.stunner.core.rule.EmptyRuleSet;
 import org.kie.workbench.common.stunner.core.rule.RuleSet;
@@ -161,6 +163,12 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
     @Mock
     private Object defSet;
 
+    @Mock
+    private StunnerPreferencesRegistries preferencesRegistries;
+
+    @Mock
+    StunnerPreferences stunnerPreferences;
+
     private SessionPreviewImpl preview;
 
     @Before
@@ -186,6 +194,7 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
         when(diagram.getMetadata()).thenReturn(metaData);
         when(metaData.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
         when(definitionUtils.getQualifier(eq(DEFINITION_SET_ID))).thenReturn(qualifier);
+        when(preferencesRegistries.get(DEFINITION_SET_ID)).thenReturn(stunnerPreferences);
 
         when(customCanvasCommandFactoryInstance.get()).thenReturn(customCanvasCommandFactoryImplementation);
         when(defaultCanvasCommandFactoryInstance.get()).thenReturn(defaultCanvasCommandFactoryImplementation);
@@ -209,7 +218,8 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
                                               selectionControls,
                                               canvasCommandFactories,
                                               canvasCommandManagers,
-                                              view);
+                                              view,
+                                              preferencesRegistries);
     }
 
     @Test

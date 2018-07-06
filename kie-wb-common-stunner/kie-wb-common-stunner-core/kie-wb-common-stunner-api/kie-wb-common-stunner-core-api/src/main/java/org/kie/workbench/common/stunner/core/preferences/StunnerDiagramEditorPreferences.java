@@ -43,6 +43,11 @@ public class StunnerDiagramEditorPreferences implements BasePreference<StunnerDi
             validators = CanvasHeightValidator.class)
     int canvasHeight;
 
+    @Property(bundleKey = "StunnerDiagramEditorPreferences.EnableHiDpi.Label",
+            helpBundleKey = "StunnerDiagramEditorPreferences.EnableHiDpi.Help",
+            formType = PropertyFormType.BOOLEAN)
+    boolean enableHiDPI;
+
     public boolean isAutoHidePalettePanel() {
         return autoHidePalettePanel;
     }
@@ -65,5 +70,13 @@ public class StunnerDiagramEditorPreferences implements BasePreference<StunnerDi
 
     public void setCanvasHeight(int canvasHeight) {
         this.canvasHeight = canvasHeight;
+    }
+
+    public boolean isHiDPIEnabled(){
+        return enableHiDPI;
+    }
+
+    public void setEnableHiDPI(boolean enableHiDPI){
+        this.enableHiDPI = enableHiDPI;
     }
 }

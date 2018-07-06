@@ -27,24 +27,32 @@ import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasSettings;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
+
+    private static final String DEFINITION_SET_ID = "definitionSetId";
 
     @Mock
     private DefinitionUtils definitionUtils;
@@ -66,6 +74,15 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
     @Mock
     DiagramViewer.DiagramViewerCallback<Diagram> callback;
 
+    @Mock
+    CanvasSettings canvasSettings;
+
+    @Mock
+    StunnerPreferencesRegistries preferencesRegistries;
+
+    @Mock
+    StunnerPreferences stunnerPreferences;
+
     private DefaultDiagramViewer tested;
 
     @Before
@@ -76,13 +93,16 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
         canvasHandlers = spy(new ManagedInstanceStub<>(canvasHandler));
         zoomControl = spy(new ManagedInstanceStub<>(zoomControlInstance));
         selectionControl = spy(new ManagedInstanceStub<>(selectionControlInstance));
+        when(metadata.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
+        when(preferencesRegistries.get(DEFINITION_SET_ID)).thenReturn(stunnerPreferences);
         this.tested =
                 new DefaultDiagramViewer(definitionUtils,
                                          canvases,
                                          canvasHandlers,
                                          zoomControl,
                                          selectionControl,
-                                         view);
+                                         view,
+                                         preferencesRegistries);
     }
 
     @Test
@@ -93,8 +113,15 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
         assertEquals(diagram,
                      tested.getInstance());
         verify(canvas,
-               times(1)).initialize(100,
-                                    100);
+               times(1)).initialize(argThat(new ArgumentMatcher<CanvasSettings>() {
+            @Override
+            public boolean matches(Object emp) {
+                CanvasSettings settings = (CanvasSettings)emp;
+                return !settings.isHiDPIEnabled()
+                        && settings.getHeight() == 100
+                        && settings.getWidth() == 100;
+            }
+        }));
         verify(canvasHandler,
                times(1)).handle(eq(canvas));
         verify(canvasHandler,

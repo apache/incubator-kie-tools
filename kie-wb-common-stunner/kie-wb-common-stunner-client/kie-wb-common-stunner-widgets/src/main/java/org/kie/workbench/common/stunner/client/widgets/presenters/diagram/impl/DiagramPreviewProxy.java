@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
@@ -37,7 +38,8 @@ public abstract class DiagramPreviewProxy<D extends Diagram> extends AbstractDia
     private final DiagramViewerProxy<D> viewer;
 
     @SuppressWarnings("unchecked")
-    public DiagramPreviewProxy(final WidgetWrapperView view) {
+    public DiagramPreviewProxy(final WidgetWrapperView view,
+                               final StunnerPreferencesRegistries preferencesRegistries) {
         this.viewer =
                 new DiagramViewerProxy<D>(view) {
                     @Override
@@ -58,6 +60,11 @@ public abstract class DiagramPreviewProxy<D extends Diagram> extends AbstractDia
                     @Override
                     protected AbstractCanvas getCanvas() {
                         return DiagramPreviewProxy.this.getCanvas();
+                    }
+
+                    @Override
+                    protected StunnerPreferencesRegistries getPreferencesRegistry() {
+                        return preferencesRegistries;
                     }
 
                     @Override

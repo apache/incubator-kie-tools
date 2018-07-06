@@ -31,9 +31,11 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.mockito.Mock;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -48,6 +50,8 @@ import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
+
+    private static final String DEFINITION_SET_ID = "definitionSetId";
 
     @Mock
     EditorSession session;
@@ -65,6 +69,10 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
     DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl;
     @Mock
     WidgetWrapperView view;
+    @Mock
+    StunnerPreferencesRegistries preferencesRegistries;
+    @Mock
+    StunnerPreferences stunnerPreferences;
 
     private SessionEditorImpl<EditorSession> tested;
 
@@ -79,7 +87,9 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
         when(session.getConnectionAcceptorControl()).thenReturn(connectionAcceptorControl);
         when(session.getContainmentAcceptorControl()).thenReturn(containmentAcceptorControl);
         when(session.getDockingAcceptorControl()).thenReturn(dockingAcceptorControl);
-        this.tested = new SessionEditorImpl<>(view);
+        when(metadata.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
+        when(preferencesRegistries.get(DEFINITION_SET_ID)).thenReturn(stunnerPreferences);
+        this.tested = new SessionEditorImpl<>(view, preferencesRegistries);
     }
 
     @Test

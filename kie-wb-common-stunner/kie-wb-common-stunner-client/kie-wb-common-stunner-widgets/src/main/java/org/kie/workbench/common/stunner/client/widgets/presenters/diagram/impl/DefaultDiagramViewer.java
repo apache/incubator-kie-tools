@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SingleSelection;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
 import org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -50,6 +51,7 @@ public class DefaultDiagramViewer
     private final ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances;
     private final ManagedInstance<ZoomControl<AbstractCanvas>> zoomControlInstances;
     private final ManagedInstance<SelectionControl<AbstractCanvasHandler, Element>> selectionControlInstances;
+    private final StunnerPreferencesRegistries preferencesRegistries;
 
     private AbstractCanvas canvas;
     private AbstractCanvasHandler canvasHandler;
@@ -62,13 +64,15 @@ public class DefaultDiagramViewer
                                 final @Any ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances,
                                 final @Any ManagedInstance<ZoomControl<AbstractCanvas>> zoomControlInstances,
                                 final @Any @SingleSelection ManagedInstance<SelectionControl<AbstractCanvasHandler, Element>> selectionControlInstances,
-                                final WidgetWrapperView view) {
+                                final WidgetWrapperView view,
+                                final StunnerPreferencesRegistries preferencesRegistries) {
         super(view);
         this.definitionUtils = definitionUtils;
         this.canvasInstances = canvasInstances;
         this.canvasHandlerInstances = canvasHandlerInstances;
         this.zoomControlInstances = zoomControlInstances;
         this.selectionControlInstances = selectionControlInstances;
+        this.preferencesRegistries = preferencesRegistries;
     }
 
     @Override
@@ -140,6 +144,11 @@ public class DefaultDiagramViewer
 
     public AbstractCanvas getCanvas() {
         return canvas;
+    }
+
+    @Override
+    protected StunnerPreferencesRegistries getPreferencesRegistry() {
+        return preferencesRegistries;
     }
 
     @Override

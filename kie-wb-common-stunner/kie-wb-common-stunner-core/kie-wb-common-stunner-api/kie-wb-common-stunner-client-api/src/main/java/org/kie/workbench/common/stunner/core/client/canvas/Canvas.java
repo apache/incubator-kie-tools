@@ -34,8 +34,7 @@ public interface Canvas<S extends Shape> {
     /**
      * Initializes a canvas with the given size.
      */
-    Canvas initialize(final int width,
-                      final int height);
+    Canvas initialize(CanvasSettings canvasSettings);
 
     /**
      * Get all Shapes on the Canvas

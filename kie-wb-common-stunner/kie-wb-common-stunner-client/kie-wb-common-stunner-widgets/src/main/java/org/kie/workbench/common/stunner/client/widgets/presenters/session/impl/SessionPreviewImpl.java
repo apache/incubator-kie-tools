@@ -45,6 +45,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasU
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils;
@@ -106,7 +107,8 @@ public class SessionPreviewImpl<S extends AbstractSession>
                               final @Any @SingleSelection ManagedInstance<SelectionControl<AbstractCanvasHandler, Element>> selectionControls,
                               final @Any ManagedInstance<CanvasCommandFactory> canvasCommandFactories,
                               final @Any ManagedInstance<CanvasCommandManager<AbstractCanvasHandler>> canvasCommandManagers,
-                              final WidgetWrapperView view) {
+                              final WidgetWrapperView view,
+                              final StunnerPreferencesRegistries preferencesRegistries) {
         this.definitionUtils = definitionUtils;
         this.graphUtils = graphUtils;
         this.shapeManager = shapeManager;
@@ -119,7 +121,8 @@ public class SessionPreviewImpl<S extends AbstractSession>
         this.canvasCommandManagers = canvasCommandManagers;
         this.isCommandAllowed = c -> true;
         this.diagramPreview =
-                new DiagramPreviewProxy<Diagram>(view) {
+                new DiagramPreviewProxy<Diagram>(view,
+                                                 preferencesRegistries) {
                     @Override
                     public SelectionControl<AbstractCanvasHandler, Element> getSelectionControl() {
                         return selectionControl;

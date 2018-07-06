@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasSettings;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasClearEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasDrawnEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasFocusedEvent;
@@ -117,8 +118,7 @@ public class WiresCanvasTest {
             }
 
             @Override
-            public Canvas initialize(final int width,
-                                     final int height) {
+            public Canvas initialize(CanvasSettings settings) {
                 return this;
             }
 

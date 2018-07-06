@@ -28,9 +28,11 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.mockito.Mock;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -45,6 +47,8 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class SessionViewerTest extends AbstractCanvasHandlerViewerTest {
 
+    private static final String DEFINITION_SET_ID = "definitionSetId";
+
     @Mock
     ViewerSession session;
     @Mock
@@ -55,6 +59,10 @@ public class SessionViewerTest extends AbstractCanvasHandlerViewerTest {
     SelectionControl<AbstractCanvasHandler, Element> selectionControl;
     @Mock
     WidgetWrapperView view;
+    @Mock
+    StunnerPreferencesRegistries preferencesRegistries;
+    @Mock
+    StunnerPreferences stunnerPreferences;
 
     private SessionViewerImpl<ViewerSession> tested;
 
@@ -62,11 +70,13 @@ public class SessionViewerTest extends AbstractCanvasHandlerViewerTest {
     public void setup() throws Exception {
         super.init();
         when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(metadata.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
+        when(preferencesRegistries.get(DEFINITION_SET_ID)).thenReturn(stunnerPreferences);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(session.getCanvas()).thenReturn(canvas);
         when(session.getZoomControl()).thenReturn(zoomControl);
         when(session.getSelectionControl()).thenReturn(selectionControl);
-        this.tested = new SessionViewerImpl<>(view);
+        this.tested = new SessionViewerImpl<>(view, preferencesRegistries);
     }
 
     @Test

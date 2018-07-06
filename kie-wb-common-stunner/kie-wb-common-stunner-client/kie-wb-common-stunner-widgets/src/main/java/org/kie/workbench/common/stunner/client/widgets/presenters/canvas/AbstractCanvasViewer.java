@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasSettings;
 
 /**
  * A widget that displays a diagram into a canvas.
@@ -89,15 +90,12 @@ public abstract class AbstractCanvasViewer<T, H extends AbstractCanvasHandler, V
      * Opens an item.
      * It initializes the canvas and the handler as provides a valid canvas view.
      * @param canvas The canvas instance.
-     * @param width The canvas width.
-     * @param height The canvas height.
+     * @param settings The canvas settings.
      */
     @SuppressWarnings("unchecked")
     protected void openCanvas(final AbstractCanvas canvas,
-                              final int width,
-                              final int height) {
-        canvas.initialize(width,
-                          height);
+                              final CanvasSettings settings) {
+        canvas.initialize(settings);
         // Initialize the canvas handler for the canvas.
         getHandler().handle(canvas);
         enableControls();

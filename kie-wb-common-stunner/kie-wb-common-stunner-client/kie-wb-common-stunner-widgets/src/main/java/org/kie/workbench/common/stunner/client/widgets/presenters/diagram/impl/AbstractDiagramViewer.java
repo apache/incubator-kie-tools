@@ -21,6 +21,8 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.Diagra
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasSettings;
+import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
@@ -28,6 +30,8 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.preferences.StunnerDiagramEditorPreferences;
+import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
@@ -44,17 +48,30 @@ public abstract class AbstractDiagramViewer<D extends Diagram, H extends Abstrac
 
     protected abstract AbstractCanvas getCanvas();
 
+    protected abstract StunnerPreferencesRegistries getPreferencesRegistry();
+
     @Override
     @SuppressWarnings("unchecked")
     public void open(final D diagram,
                      final DiagramViewer.DiagramViewerCallback<D> callback) {
         onOpen(diagram);
         callback.onOpen(diagram);
+
+        final String definitionSetId = diagram.getMetadata().getDefinitionSetId();
+        final StunnerPreferences preferences = getPreferencesRegistry().get(definitionSetId);
+        final StunnerDiagramEditorPreferences editorPreferences = preferences.getDiagramEditorPreferences();
+
+        final boolean isHiDPIEnabled = editorPreferences != null && editorPreferences.isHiDPIEnabled();
+
         final int[] ds = getDiagramSize(diagram);
-        // Open and initialize the canvas and its hander.
+
+        final CanvasSettings settings = new CanvasSettings(ds[0],
+                                                           ds[1],
+                                                           isHiDPIEnabled);
+
+        // Open and initialize the canvas and its handler.
         openCanvas(getCanvas(),
-                   ds[0],
-                   ds[1]);
+                   settings);
         // Notify listeners that the canvas and the handler are ready.
         callback.afterCanvasInitialized();
         // Loads and draw the diagram into the canvas handled instance.

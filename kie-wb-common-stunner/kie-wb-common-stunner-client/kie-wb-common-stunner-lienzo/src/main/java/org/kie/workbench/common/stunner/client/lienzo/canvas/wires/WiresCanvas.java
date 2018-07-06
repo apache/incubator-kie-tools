@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 
 import javax.enterprise.event.Event;
 
+import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.wires.IConnectionAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
@@ -32,6 +33,7 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
 import org.kie.workbench.common.stunner.client.lienzo.util.LienzoLayerUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasSettings;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasClearEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasDrawnEvent;
@@ -81,8 +83,8 @@ public abstract class WiresCanvas extends AbstractCanvas<WiresCanvas.View> {
     }
 
     @Override
-    public Canvas initialize(final int width,
-                             final int height) {
+    public Canvas initialize(CanvasSettings settings) {
+        LienzoCore.get().setHidpiEnabled(settings.isHiDPIEnabled());
         return this;
     }
 

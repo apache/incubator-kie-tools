@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.client.lienzo.Lienzo;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.widgets.canvas.view.LienzoPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasSettings;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasClearEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasDrawnEvent;
@@ -77,10 +78,10 @@ public class WiresCanvasPresenter extends WiresCanvas implements IsWidget {
     }
 
     @Override
-    public Canvas initialize(final int width,
-                             final int height) {
-        super.initialize(width,
-                         height);
+    public Canvas initialize(CanvasSettings settings) {
+        super.initialize(settings);
+        final int width = settings.getWidth();
+        final int height = settings.getHeight();
         lienzoPanel.show(width,
                          height,
                          PADDING);

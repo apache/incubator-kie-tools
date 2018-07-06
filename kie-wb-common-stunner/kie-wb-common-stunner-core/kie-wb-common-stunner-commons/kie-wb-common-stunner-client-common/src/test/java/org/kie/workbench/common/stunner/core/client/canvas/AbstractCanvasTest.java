@@ -251,8 +251,7 @@ public class AbstractCanvasTest {
         }
 
         @Override
-        public Canvas initialize(final int width,
-                                 final int height) {
+        public Canvas initialize(CanvasSettings settings) {
             return this;
         }
 
