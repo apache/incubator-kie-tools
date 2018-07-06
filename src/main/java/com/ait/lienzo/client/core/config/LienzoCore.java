@@ -523,8 +523,8 @@ public final class LienzoCore
         return m_hidpiEnabled;
     }
 
-    public boolean setHidpiEnabled(boolean hidpiEnabled) {
-        return m_hidpiEnabled;
+    public boolean setHidpiEnabled(final boolean hidpiEnabled) {
+        return m_hidpiEnabled = hidpiEnabled;
     }
 
     private final boolean examineNativeLineDashSupported()
