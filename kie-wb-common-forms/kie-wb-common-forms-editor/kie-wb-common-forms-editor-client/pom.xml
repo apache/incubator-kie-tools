@@ -68,6 +68,11 @@
 
     <dependency>
       <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-data-binding</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
       <artifactId>errai-ui</artifactId>
     </dependency>
 

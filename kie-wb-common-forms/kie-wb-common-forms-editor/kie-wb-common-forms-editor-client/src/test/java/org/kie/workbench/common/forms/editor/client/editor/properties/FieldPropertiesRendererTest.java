@@ -32,7 +32,6 @@ import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
@@ -84,8 +83,18 @@ public class FieldPropertiesRendererTest {
         renderer = spy(new FieldPropertiesRenderer(view,
                                                    dynamicFormModelGenerator,
                                                    staticDataBindingEditor,
-                                                   dynamicDataBindingEditor,
-                                                   fieldManager));
+                                                   dynamicDataBindingEditor) {
+            @Override
+            public FieldDefinition doCopy(FieldDefinition originalField) {
+                FieldDefinition fieldCopy = fieldManager.getFieldFromProvider(originalField.getFieldType().getTypeName(), originalField.getFieldTypeInfo());
+                fieldCopy.copyFrom(originalField);
+                fieldCopy.setId(originalField.getId());
+                fieldCopy.setName(originalField.getName());
+
+                return fieldCopy;
+            }
+        });
+
         renderer.init();
 
         when(helper.getCurrentField()).thenReturn(lastNameField);
@@ -104,13 +113,12 @@ public class FieldPropertiesRendererTest {
 
         renderer.render(helper);
 
-        assertSame(helper,
-                   renderer.helper);
+        assertSame(helper, renderer.helper);
         assertNotNull(renderer.fieldCopy);
-        verify(renderer,
-               times(1)).resetFieldCopy(any());
-        verify(fieldManager).getFieldFromProvider(any(),
-                                                  any());
+
+        verify(renderer, times(1)).doCopy(any());
+
+        verify(fieldManager).getFieldFromProvider(any(), any());
     }
 
     @Test
@@ -165,29 +173,6 @@ public class FieldPropertiesRendererTest {
                                             lastNameField.getId());
         verify(renderer,
                atLeastOnce()).render();
-    }
-
-    @Test
-    public void testResetFieldCopy() {
-        FieldDefinition originalField = lastNameField;
-        loadContent();
-
-        FieldDefinition fieldCopy = renderer.resetFieldCopy(originalField);
-
-        assertEquals(originalField.getId(),
-                     fieldCopy.getId());
-        assertEquals(originalField.getName(),
-                     fieldCopy.getName());
-        assertEquals(originalField.getLabel(),
-                     fieldCopy.getLabel());
-        assertEquals(originalField.getStandaloneClassName(),
-                     fieldCopy.getStandaloneClassName());
-        assertEquals(originalField.getRequired(),
-                     fieldCopy.getRequired());
-        assertEquals(originalField.getReadOnly(),
-                     fieldCopy.getReadOnly());
-        assertEquals(originalField.getValidateOnChange(),
-                     fieldCopy.getValidateOnChange());
     }
 
     @Test

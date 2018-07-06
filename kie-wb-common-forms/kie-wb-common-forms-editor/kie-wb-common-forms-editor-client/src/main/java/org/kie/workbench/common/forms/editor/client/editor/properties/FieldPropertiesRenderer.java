@@ -26,16 +26,17 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Modal;
+import org.jboss.errai.databinding.client.BindableProxy;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
 import org.kie.workbench.common.forms.editor.client.editor.properties.binding.DataBindingEditor;
 import org.kie.workbench.common.forms.editor.client.editor.properties.binding.DynamicFormModel;
 import org.kie.workbench.common.forms.editor.client.editor.properties.binding.StaticFormModel;
+import org.kie.workbench.common.forms.editor.client.editor.properties.util.DeepCloneHelper;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
 import org.kie.workbench.common.forms.model.DynamicModel;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
-import org.kie.workbench.common.forms.service.shared.FieldManager;
 
 @Dependent
 public class FieldPropertiesRenderer implements IsWidget {
@@ -65,21 +66,17 @@ public class FieldPropertiesRenderer implements IsWidget {
 
     protected FieldPropertiesRendererHelper helper;
 
-    private FieldManager fieldManager;
-
     private boolean acceptChanges = false;
 
     @Inject
     public FieldPropertiesRenderer(FieldPropertiesRendererView view,
                                    DynamicFormModelGenerator dynamicFormModelGenerator,
                                    @StaticFormModel DataBindingEditor staticDataBindingEditor,
-                                   @DynamicFormModel DataBindingEditor dynamicDataBindingEditor,
-                                   FieldManager fieldManager) {
+                                   @DynamicFormModel DataBindingEditor dynamicDataBindingEditor) {
         this.view = view;
         this.dynamicFormModelGenerator = dynamicFormModelGenerator;
         this.staticDataBindingEditor = staticDataBindingEditor;
         this.dynamicDataBindingEditor = dynamicDataBindingEditor;
-        this.fieldManager = fieldManager;
     }
 
     @PostConstruct
@@ -90,7 +87,7 @@ public class FieldPropertiesRenderer implements IsWidget {
     public void render(final FieldPropertiesRendererHelper helper) {
         this.helper = helper;
         this.originalField = helper.getCurrentField();
-        this.fieldCopy = resetFieldCopy(originalField);
+        this.fieldCopy = doCopy(originalField);
         this.acceptChanges = false;
         render();
     }
@@ -102,18 +99,13 @@ public class FieldPropertiesRenderer implements IsWidget {
             renderingContext.setRootForm(context.getRootForm());
             renderingContext.getAvailableForms().putAll(context.getAvailableForms());
             renderingContext.setModel(fieldCopy);
-            doRender(helper,
-                     renderingContext);
+            doRender(helper, renderingContext);
         }
     }
 
-    public FieldDefinition resetFieldCopy(final FieldDefinition originalField) {
-        fieldCopy = fieldManager.getFieldFromProvider(originalField.getFieldType().getTypeName(),
-                                                      originalField.getFieldTypeInfo());
-        fieldCopy.copyFrom(originalField);
-        fieldCopy.setId(originalField.getId());
-        fieldCopy.setName(originalField.getName());
-        return fieldCopy;
+    @SuppressWarnings("unchecked")
+    public FieldDefinition doCopy(final FieldDefinition originalField) {
+        return DeepCloneHelper.deepClone(originalField);
     }
 
     public void onPressOk() {
@@ -129,7 +121,7 @@ public class FieldPropertiesRenderer implements IsWidget {
     }
 
     private void doAcceptChanges() {
-        helper.onPressOk(fieldCopy);
+        helper.onPressOk(unwrap(fieldCopy));
     }
 
     private void doCancel() {
@@ -137,9 +129,17 @@ public class FieldPropertiesRenderer implements IsWidget {
     }
 
     public void onFieldTypeChange(final String typeCode) {
-        fieldCopy = helper.onFieldTypeChange(fieldCopy,
-                                             typeCode);
+        fieldCopy = helper.onFieldTypeChange(unwrap(fieldCopy), typeCode);
+
         render();
+    }
+
+    private FieldDefinition unwrap(FieldDefinition fieldDefinition) {
+        if (fieldDefinition instanceof BindableProxy) {
+            return ((BindableProxy<FieldDefinition>) fieldDefinition).deepUnwrap();
+        }
+
+        return fieldDefinition;
     }
 
     public void onFieldBindingChange(final String bindingExpression) {
