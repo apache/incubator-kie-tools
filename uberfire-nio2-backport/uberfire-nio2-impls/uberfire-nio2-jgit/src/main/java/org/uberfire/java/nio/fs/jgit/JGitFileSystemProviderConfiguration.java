@@ -75,7 +75,7 @@ public class JGitFileSystemProviderConfiguration {
     public static final String DEFAULT_SSH_ALGORITHM = "RSA";
     public static final String DEFAULT_SSH_CERT_PASSPHRASE = "";
     public static final String DEFAULT_COMMIT_LIMIT_TO_GC = "20";
-    public static final String DEFAULT_JGIT_FILE_SYSTEM_INSTANCES_CACHE = "20";
+    public static final String DEFAULT_JGIT_FILE_SYSTEM_INSTANCES_CACHE = "10000";
     public static final String DEFAULT_GIT_ENV_KEY_MIGRATE_FROM = "migrate-from";
     public static final String DEFAULT_ENABLE_GIT_KETCH = "false";
 
