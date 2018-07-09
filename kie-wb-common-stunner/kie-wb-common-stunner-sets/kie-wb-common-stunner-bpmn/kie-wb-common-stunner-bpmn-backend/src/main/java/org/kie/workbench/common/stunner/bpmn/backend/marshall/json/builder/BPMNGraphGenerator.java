@@ -59,11 +59,15 @@ import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegis
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Support for a basic single process hierarchy
  */
 public class BPMNGraphGenerator extends JsonGenerator {
+
+    private static final Logger LOG = LoggerFactory.getLogger(BPMNGraphGenerator.class);
 
     private final GraphObjectBuilderFactory bpmnGraphBuilderFactory;
     private final DefinitionManager definitionManager;
@@ -257,9 +261,9 @@ public class BPMNGraphGenerator extends JsonGenerator {
 
     // For local testing...
     private void logBuilders() {
-        log("Logging builders at creation time...");
+        LOG.debug("Logging builders at creation time...");
         for (GraphObjectBuilder<?, ?> builder : builders) {
-            log(builder.toString());
+            LOG.debug("{}", builder);
         }
     }
 
@@ -598,10 +602,6 @@ public class BPMNGraphGenerator extends JsonGenerator {
         @Override
         public void writeEndArray() {
         }
-    }
-
-    private void log(final String message) {
-        System.out.println(message);
     }
 
     /***********************************************************************************
