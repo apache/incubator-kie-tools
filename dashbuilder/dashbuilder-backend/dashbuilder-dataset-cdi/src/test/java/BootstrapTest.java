@@ -28,6 +28,7 @@ import org.dashbuilder.dataset.json.DataSetDefJSONMarshaller;
 import org.dashbuilder.test.BaseCDITest;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.commons.services.cdi.Startup;
@@ -37,6 +38,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(Arquillian.class)
+@Ignore("see https://issues.jboss.org/browse/RHPAM-832")
 public class BootstrapTest extends BaseCDITest {
 
     public static final String CSV_JSON = "{\n" +

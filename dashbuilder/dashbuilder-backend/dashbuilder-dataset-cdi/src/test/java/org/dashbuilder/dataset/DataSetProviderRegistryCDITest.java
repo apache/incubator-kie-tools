@@ -23,12 +23,14 @@ import org.dashbuilder.dataprovider.*;
 import org.dashbuilder.test.BaseCDITest;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 
 @RunWith(Arquillian.class)
+@Ignore("see https://issues.jboss.org/browse/RHPAM-832")
 public class DataSetProviderRegistryCDITest extends BaseCDITest {
 
     @Inject

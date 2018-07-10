@@ -24,12 +24,14 @@ import org.dashbuilder.dataprovider.sql.SQLDataSourceLocator;
 import org.dashbuilder.dataset.def.SQLDataSourceDef;
 import org.dashbuilder.test.BaseCDITest;
 import org.jboss.arquillian.junit.Arquillian;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 
 @RunWith(Arquillian.class)
+@Ignore("see https://issues.jboss.org/browse/RHPAM-832")
 public class SQLDataSourceLocatorCDITest extends BaseCDITest {
 
     @Inject

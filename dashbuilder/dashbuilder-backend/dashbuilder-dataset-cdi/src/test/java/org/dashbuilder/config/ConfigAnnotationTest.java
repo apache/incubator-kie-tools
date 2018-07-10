@@ -25,6 +25,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,6 +35,7 @@ import org.dashbuilder.pojo.BeanExt;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Arquillian.class)
+@Ignore("see https://issues.jboss.org/browse/RHPAM-832")
 public class ConfigAnnotationTest extends BaseCDITest {
 
     @Inject

@@ -29,6 +29,7 @@ import org.dashbuilder.scheduler.SchedulerCDI;
 import org.dashbuilder.test.BaseCDITest;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -40,6 +41,7 @@ import org.uberfire.java.nio.file.StandardDeleteOption;
 import static org.mockito.Mockito.*;
 
 @RunWith(Arquillian.class)
+@Ignore("see https://issues.jboss.org/browse/RHPAM-832")
 public class DataSetDefRegistryCDITest extends BaseCDITest {
 
     @Mock
