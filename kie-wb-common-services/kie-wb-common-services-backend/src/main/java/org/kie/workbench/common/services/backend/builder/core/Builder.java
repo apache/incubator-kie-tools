@@ -70,6 +70,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.EncodingUtil;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
@@ -398,7 +399,7 @@ public class Builder implements Serializable {
     }
 
     private String destinationPath(final Path resource) {
-        final String destinationPath = resource.toUri().toString().substring(projectPrefix.length());
+        final String destinationPath = EncodingUtil.decode(resource.toUri().toString().substring(projectPrefix.length()));
 
         if (destinationPath.startsWith("/")) {
             // File in sub module

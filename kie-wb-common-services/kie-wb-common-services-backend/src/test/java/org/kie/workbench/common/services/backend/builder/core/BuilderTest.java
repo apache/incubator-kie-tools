@@ -30,7 +30,6 @@ import com.google.common.io.Resources;
 import org.drools.core.rule.TypeMetaInfo;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
-import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
@@ -57,9 +56,14 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BuilderTest
@@ -77,7 +81,6 @@ public class BuilderTest
     private ProjectImportsService importsService;
     private LRUModuleDependenciesClassLoaderCache dependenciesClassLoaderCache;
     private LRUPomModelCache pomModelCache;
-    private BuildService buildService;
     private DefaultGenericKieValidator validator;
 
     @Before
@@ -93,7 +96,6 @@ public class BuilderTest
         importsService = getReference(ProjectImportsService.class);
         dependenciesClassLoaderCache = getReference(LRUModuleDependenciesClassLoaderCache.class);
         pomModelCache = getReference(LRUPomModelCache.class);
-        buildService = getReference(BuildService.class);
         validator = getReference(DefaultGenericKieValidator.class);
     }
 
@@ -344,6 +346,32 @@ public class BuilderTest
         final KieSession kieSession1 = kieContainer1.newKieSession();
         kieSession1.setGlobal("list",
                               new ArrayList<String>());
+    }
+
+    @Test
+    public void buildDetectsFilesWithSpecialCharacters() throws Exception {
+        LRUPomModelCache pomModelCache = getReference(LRUPomModelCache.class);
+
+        URL url = this.getClass().getResource("/ModuleBuildTestFileWithSpecialCharacter");
+        SimpleFileSystemProvider p = new SimpleFileSystemProvider();
+        org.uberfire.java.nio.file.Path path = p.getPath(url.toURI());
+
+        final Module module = moduleService.resolveModule(Paths.convert(path));
+
+        final Builder builder = new Builder(module,
+                                            ioService,
+                                            moduleService,
+                                            importsService,
+                                            new ArrayList<>(),
+                                            dependenciesClassLoaderCache,
+                                            pomModelCache,
+                                            getPackageNameWhiteListService(),
+                                            alwaysTrue);
+
+        BuildResults buildResults = builder.build();
+        List<BuildMessage> errorMessages = buildResults.getErrorMessages();
+        assertEquals(2, errorMessages.size());
+        assertTrue(errorMessages.get(0).getText().contains("mismatched input 'Build' expecting one of the following tokens:"));
     }
 
     private PackageNameWhiteListService getPackageNameWhiteListService() {
