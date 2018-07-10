@@ -78,8 +78,16 @@ public class PomMigrationTool implements MigrationTool {
 
     private void migrate() {
         MigrationSetup.configureProperties(system, config.getTarget());
-        PromptPomMigrationService promptPomMigrationService = new PromptPomMigrationService(system);
-        String jsonPath = promptPomMigrationService.promptForExternalConfiguration();
+
+        String jsonPath;
+
+        if (config.isBatch()) {
+            jsonPath = "";
+        } else {
+            PromptPomMigrationService promptPomMigrationService = new PromptPomMigrationService(system);
+            jsonPath = promptPomMigrationService.promptForExternalConfiguration();
+        }
+
         final ContainerHandler container = new ContainerHandler(() -> new Weld().initialize());
         container.run(MigrationServicesCDIWrapper.class,
                       cdiWrapper -> cdiWrapper.getWorkspaceProjectService().getAllWorkspaceProjects().forEach(pr -> processWorkspaceProject(pr, jsonPath, cdiWrapper)),
