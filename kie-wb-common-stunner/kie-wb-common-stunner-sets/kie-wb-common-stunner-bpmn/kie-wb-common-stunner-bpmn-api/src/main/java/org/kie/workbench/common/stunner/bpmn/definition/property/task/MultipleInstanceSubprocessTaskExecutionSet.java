@@ -54,8 +54,15 @@ public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertyS
 
     @Property
     @FormField(
-            type = ListBoxFieldType.class,
             afterElement = "multipleInstanceCollectionInput"
+    )
+    @Valid
+    private MultipleInstanceDataInput multipleInstanceDataInput;
+
+    @Property
+    @FormField(
+            type = ListBoxFieldType.class,
+            afterElement = "multipleInstanceDataInput"
     )
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.CLIENT,
@@ -67,13 +74,6 @@ public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertyS
     @Property
     @FormField(
             afterElement = "multipleInstanceCollectionOutput"
-    )
-    @Valid
-    private MultipleInstanceDataInput multipleInstanceDataInput;
-
-    @Property
-    @FormField(
-            afterElement = "multipleInstanceDataInput"
     )
     @Valid
     private MultipleInstanceDataOutput multipleInstanceDataOutput;

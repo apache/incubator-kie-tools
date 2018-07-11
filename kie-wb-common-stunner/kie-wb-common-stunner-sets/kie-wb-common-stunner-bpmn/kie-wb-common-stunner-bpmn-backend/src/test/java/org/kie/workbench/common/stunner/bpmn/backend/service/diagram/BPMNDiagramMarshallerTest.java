@@ -2603,8 +2603,8 @@ public class BPMNDiagramMarshallerTest {
         assertTrue(result.contains("<bpmn2:multiInstanceLoopCharacteristics"));
         assertTrue(result.contains("<bpmn2:loopDataInputRef>_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_input</bpmn2:loopDataInputRef>"));
         assertTrue(result.contains("<bpmn2:loopDataOutputRef>_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_output</bpmn2:loopDataOutputRef>"));
-        assertTrue(result.contains("<bpmn2:inputDataItem xsi:type=\"bpmn2:tDataInput\" id=\"dataInput\"/>"));
-        assertTrue(result.contains("<bpmn2:outputDataItem xsi:type=\"bpmn2:tDataOutput\" id=\"dataOutput\" itemSubjectRef=\"_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_multiInstanceItemType\"/>"));
+        assertTrue(result.contains("<bpmn2:inputDataItem xsi:type=\"bpmn2:tDataInput\" id=\"dataInput\" itemSubjectRef=\"_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_multiInstanceInputItemType\"/>"));
+        assertTrue(result.contains("<bpmn2:outputDataItem xsi:type=\"bpmn2:tDataOutput\" id=\"dataOutput\" itemSubjectRef=\"_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_multiInstanceOutputItemType\"/>"));
         assertTrue(result.contains("<bpmn2:completionCondition xsi:type=\"bpmn2:tFormalExpression\""));
         assertTrue(result.contains("a=b</bpmn2:completionCondition>"));
         assertTrue(result.contains("</bpmn2:multiInstanceLoopCharacteristics>"));

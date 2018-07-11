@@ -3028,32 +3028,45 @@ public class Bpmn2JsonMarshaller {
             }
             if (taskmi.getInputDataItem() != null) {
                 List<DataInput> taskDataInputs = subProcess.getIoSpecification().getDataInputs();
-                for (DataInput din : taskDataInputs) {
-                    if (din.getItemSubjectRef() == null) {
-                        // for backward compatibility as the where only input supported
-                        properties.put(MULTIPLEINSTANCEDATAINPUT,
-                                       taskmi.getInputDataItem().getId());
+                if (taskDataInputs != null) {
+                    for (DataInput din : taskDataInputs) {
+                        if (din.getItemSubjectRef() == null) {
+                            // for backward compatibility as the where only input supported
+                            properties.put(MULTIPLEINSTANCEDATAINPUT,
+                                           taskmi.getInputDataItem().getId());
+                            break;
+                        }
+                        if (din.getItemSubjectRef() != null && din.getItemSubjectRef().getId().equals(taskmi.getInputDataItem().getItemSubjectRef().getId())) {
+                            properties.put(MULTIPLEINSTANCEDATAINPUT,
+                                           din.getName());
+                            break;
+                        }
                     }
-                    if (din.getItemSubjectRef() != null && din.getItemSubjectRef().getId().equals(taskmi.getInputDataItem().getItemSubjectRef().getId())) {
-                        properties.put(MULTIPLEINSTANCEDATAINPUT,
-                                       din.getName());
-                        break;
-                    }
+                }
+                if (properties.get(MULTIPLEINSTANCEDATAINPUT) == null) {
+                    properties.put(MULTIPLEINSTANCEDATAINPUT,
+                                   taskmi.getInputDataItem().getId());
                 }
             }
             if (taskmi.getOutputDataItem() != null) {
                 List<DataOutput> taskDataOutputs = subProcess.getIoSpecification().getDataOutputs();
-                for (DataOutput dout : taskDataOutputs) {
-                    if (dout.getItemSubjectRef() == null) {
-                        properties.put(MULTIPLEINSTANCEDATAOUTPUT,
-                                       taskmi.getOutputDataItem().getId());
-                        break;
+                if (taskDataOutputs != null) {
+                    for (DataOutput dout : taskDataOutputs) {
+                        if (dout.getItemSubjectRef() == null) {
+                            properties.put(MULTIPLEINSTANCEDATAOUTPUT,
+                                           taskmi.getOutputDataItem().getId());
+                            break;
+                        }
+                        if (dout.getItemSubjectRef() != null && dout.getItemSubjectRef().getId().equals(taskmi.getOutputDataItem().getItemSubjectRef().getId())) {
+                            properties.put(MULTIPLEINSTANCEDATAOUTPUT,
+                                           dout.getName());
+                            break;
+                        }
                     }
-                    if (dout.getItemSubjectRef() != null && dout.getItemSubjectRef().getId().equals(taskmi.getOutputDataItem().getItemSubjectRef().getId())) {
-                        properties.put(MULTIPLEINSTANCEDATAOUTPUT,
-                                       dout.getName());
-                        break;
-                    }
+                }
+                if (properties.get(MULTIPLEINSTANCEDATAOUTPUT) == null) {
+                    properties.put(MULTIPLEINSTANCEDATAOUTPUT,
+                                   taskmi.getOutputDataItem().getId());
                 }
             }
             if (taskmi.getCompletionCondition() != null) {
