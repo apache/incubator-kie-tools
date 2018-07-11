@@ -16,9 +16,12 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
+import org.eclipse.bpmn2.FormalExpression;
+import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
 import org.eclipse.bpmn2.SubProcess;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 
@@ -38,5 +41,22 @@ public class MultipleInstanceSubProcessPropertyWriterTest {
             p.createDataOutput(null);
             p.setCompletionCondition(null);
         }).doesNotThrowAnyException();
+    }
+
+    @Test
+    public void completionConditionMustBeWrappedInCdata() {
+        String expression = "x<1";
+        String expected = "x&lt;1";
+        SubProcess subProcess = bpmn2.createSubProcess();
+        MultipleInstanceSubProcessPropertyWriter p =
+                new MultipleInstanceSubProcessPropertyWriter(
+                        subProcess, new FlatVariableScope());
+        p.setCompletionCondition(expression);
+        MultiInstanceLoopCharacteristics loopCharacteristics =
+                (MultiInstanceLoopCharacteristics) subProcess.getLoopCharacteristics();
+        FormalExpression completionCondition =
+                (FormalExpression) loopCharacteristics.getCompletionCondition();
+
+        assertThat(expected).isEqualTo(completionCondition.getBody());
     }
 }
