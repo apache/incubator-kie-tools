@@ -1,0 +1,11 @@
+package org.kiegroup;
+
+rule 'Numerical Types Rule'
+dialect 'mvel'
+when
+    $numTypes : NumericalTypes(
+        bigDecimalField == 3.141592653589793238462643383279502B,
+        bigIntegerField == 9876543210987654321098765432109876543210I)
+then
+    $numTypes.result = $numTypes.bigDecimalField.add(new java.math.BigDecimal($numTypes.bigIntegerField)).toPlainString();
+end
