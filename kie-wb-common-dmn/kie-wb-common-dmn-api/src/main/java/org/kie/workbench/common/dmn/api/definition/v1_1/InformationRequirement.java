@@ -42,6 +42,8 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED, defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)})
 @CanConnect(startRole = "decision", endRole = "decision")
 @CanConnect(startRole = "input-data", endRole = "decision")
+@CanConnect(startRole = "business-knowledge-model", endRole = "business-knowledge-model")
+@CanConnect(startRole = "input-data", endRole = "business-knowledge-model")
 @RuleExtension(handler = AcyclicDirectedGraphRule.class, typeArguments = {InformationRequirement.class})
 @RuleExtension(handler = SingleConnectorPerTypeGraphRule.class, typeArguments = {InformationRequirement.class})
 @NoValidation
