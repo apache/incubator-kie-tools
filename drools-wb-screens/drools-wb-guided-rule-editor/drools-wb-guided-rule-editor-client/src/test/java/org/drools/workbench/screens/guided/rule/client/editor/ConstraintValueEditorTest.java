@@ -37,6 +37,7 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.widget.LiteralTextBox;
 import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.services.shared.preferences.ApplicationPreferences.DATE_FORMAT;
@@ -155,12 +156,27 @@ public class ConstraintValueEditorTest {
         verify(oracle).getEnums(eq(factType), eq(factField), anyMap());
     }
 
+    @Test
+    public void testInitializationOrder() {
+        // DROOLS-2662
+        // Call refresh() before ConstraintValueEditorHelper is constructed
+        // This ensures dropDownData is not null
+        final SingleFieldConstraint singleFieldConstraint = mock(SingleFieldConstraint.class);
+        final ConstraintValueEditor editor = spy(createEditor(singleFieldConstraint));
+
+        editor.init();
+
+        final InOrder inOrder = Mockito.inOrder(editor);
+        inOrder.verify(editor).refresh();
+        inOrder.verify(editor).constructConstraintValueEditorHelper();
+    }
+
     private ConstraintValueEditor createEditor(final BaseSingleFieldConstraint baseConstraint) {
-        return new ConstraintValueEditor(baseConstraint,
-                                         mock(CompositeFieldConstraint.class),
-                                         ruleModeller,
-                                         mock(EventBus.class),
-                                         false) {
+        final ConstraintValueEditor editor = new ConstraintValueEditor(baseConstraint,
+                                                                       mock(CompositeFieldConstraint.class),
+                                                                       ruleModeller,
+                                                                       mock(EventBus.class),
+                                                                       false) {
             @Override
             void setBoxSize(final TextBox box) {
                 //do nothing - avoid calling JavaScriptObject.cast()
@@ -181,5 +197,9 @@ public class ConstraintValueEditorTest {
                 return templateKeyTextBox;
             }
         };
+
+        editor.init();
+
+        return editor;
     }
 }

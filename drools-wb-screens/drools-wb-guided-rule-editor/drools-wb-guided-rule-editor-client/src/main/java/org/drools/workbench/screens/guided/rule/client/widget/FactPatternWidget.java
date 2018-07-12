@@ -634,6 +634,7 @@ public class FactPatternWidget extends RuleModellerWidget {
     ConstraintValueEditor createValueEditor(final SingleFieldConstraint constraint) {
 
         constraintValueEditor = constraintValueEditor(constraint);
+        constraintValueEditor.init();
 
         //If any literal value changes set to dirty and refresh dependent enumerations
         constraintValueEditor.setOnValueChangeCommand(new Command() {

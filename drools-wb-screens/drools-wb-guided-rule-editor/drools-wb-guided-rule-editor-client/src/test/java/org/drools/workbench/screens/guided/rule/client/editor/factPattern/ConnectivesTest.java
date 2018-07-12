@@ -20,12 +20,17 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import org.drools.workbench.screens.guided.rule.client.OperatorsBaseTest;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPOperatorsDropdown;
+import org.drools.workbench.screens.guided.rule.client.editor.ConstraintValueEditor;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
+import org.uberfire.client.callbacks.Callback;
 
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @WithClassesToStub({GuidedRuleEditorImages508.class, CEPOperatorsDropdown.class})
@@ -50,5 +55,17 @@ public class ConnectivesTest extends OperatorsBaseTest {
         connectives.connectives(singleFieldConstraint);
         verify(connectives).getDropdown(OperatorsOracle.COMPARABLE_CONNECTIVES,
                                         connectiveConstraint);
+    }
+
+    @Test
+    public void testConstraintValueEditorInitialization() {
+        final ConstraintValueEditor editor = mock(ConstraintValueEditor.class);
+        doReturn(editor).when(connectives).connectiveValueEditor(connectiveConstraint);
+
+        connectives.connectives(singleFieldConstraint);
+        verify(connectives).connectiveOperatorDropDown(eq(connectiveConstraint),
+                                                       isA(Callback.class));
+
+        verify(editor).init();
     }
 }

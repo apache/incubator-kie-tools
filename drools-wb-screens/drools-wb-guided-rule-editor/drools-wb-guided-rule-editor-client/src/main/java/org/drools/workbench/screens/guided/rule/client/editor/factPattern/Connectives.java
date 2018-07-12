@@ -86,7 +86,10 @@ public class Connectives {
                                                @Override
                                                public void callback(final Widget w) {
                                                    hp.add(w);
-                                                   hp.add(connectiveValueEditor(con));
+
+                                                   final ConstraintValueEditor editor = connectiveValueEditor(con);
+                                                   editor.init();
+                                                   hp.add(editor);
 
                                                    if (!isReadOnly) {
                                                        Image clear = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
@@ -103,7 +106,7 @@ public class Connectives {
         return hp;
     }
 
-    private Widget connectiveValueEditor(final BaseSingleFieldConstraint con) {
+    ConstraintValueEditor connectiveValueEditor(final BaseSingleFieldConstraint con) {
 
         return new ConstraintValueEditor(con,
                                          pattern.getConstraintList(),
@@ -112,8 +115,8 @@ public class Connectives {
                                          isReadOnly);
     }
 
-    private void connectiveOperatorDropDown(final ConnectiveConstraint cc,
-                                            final Callback<Widget> callback) {
+    void connectiveOperatorDropDown(final ConnectiveConstraint cc,
+                                    final Callback<Widget> callback) {
 
         if (!isReadOnly) {
 
@@ -128,7 +131,7 @@ public class Connectives {
                                                                                final CEPOperatorsDropdown dropdown = getDropdown(operators,
                                                                                                                                  cc);
                                                                                dropdown.addPlaceholder(GuidedRuleEditorResources.CONSTANTS.pleaseChoose(),
-                                                                                                "");
+                                                                                                       "");
                                                                                dropdown.addValueChangeHandler(new ValueChangeHandler<OperatorSelection>() {
 
                                                                                    public void onValueChange(ValueChangeEvent<OperatorSelection> event) {

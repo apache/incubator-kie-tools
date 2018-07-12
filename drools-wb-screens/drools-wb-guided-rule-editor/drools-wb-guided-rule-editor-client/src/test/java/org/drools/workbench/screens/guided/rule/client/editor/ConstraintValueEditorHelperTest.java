@@ -81,7 +81,7 @@ public class ConstraintValueEditorHelperTest {
         SingleFieldConstraint constraint = new SingleFieldConstraint();
         constraint.setFactType("House");
         constraint.setFieldName("this");
-        constraint.setFieldName("org.mortgages.House");
+        constraint.setFieldType("org.mortgages.House");
         pattern2.addConstraint(constraint);
         model.addLhsItem(pattern);
 
@@ -144,6 +144,84 @@ public class ConstraintValueEditorHelperTest {
                                                    assertTrue(result);
                                                }
                                            });
+    }
+
+    @Test
+    public void testBoundFieldOfDifferentType() throws Exception {
+        final AsyncPackageDataModelOracle oracle = mock(AsyncPackageDataModelOracle.class);
+
+        final FactPattern pattern = new FactPattern();
+        final SingleFieldConstraint isFinished = new SingleFieldConstraint();
+        isFinished.setFieldBinding("$finished");
+        isFinished.setFactType("House");
+        isFinished.setFieldName("finished");
+        isFinished.setFieldType("java.time.LocalDate");
+        isFinished.setOperator("!= null");
+        pattern.addConstraint(isFinished);
+        model.addLhsItem(pattern);
+
+        final SingleFieldConstraint isFinishedAfter = new SingleFieldConstraint();
+        isFinishedAfter.setFactType("House");
+        isFinishedAfter.setFieldName("cost");
+        isFinishedAfter.setFieldType("java.util.BigDecimal");
+        isFinishedAfter.setOperator("==");
+        pattern.addConstraint(isFinishedAfter);
+        model.addLhsItem(pattern);
+
+        when(oracle.getFieldClassName("House",
+                                      "finished")).thenReturn("java.time.LocalDate");
+        when(oracle.getFieldClassName("House",
+                                      "cost")).thenReturn("java.util.BigDecimal");
+
+        ConstraintValueEditorHelper helper = new ConstraintValueEditorHelper(model,
+                                                                             oracle,
+                                                                             "House",
+                                                                             "cost",
+                                                                             isFinished,
+                                                                             "LocalDate",
+                                                                             new DropDownData());
+
+        helper.isApplicableBindingsInScope("$finished",
+                                           result -> assertFalse(result));
+    }
+
+    @Test
+    public void testBoundFieldOfSameType() throws Exception {
+        final AsyncPackageDataModelOracle oracle = mock(AsyncPackageDataModelOracle.class);
+
+        final FactPattern pattern = new FactPattern();
+        final SingleFieldConstraint isFinished = new SingleFieldConstraint();
+        isFinished.setFieldBinding("$finished");
+        isFinished.setFactType("House");
+        isFinished.setFieldName("finished");
+        isFinished.setFieldType("java.time.LocalDate");
+        isFinished.setOperator("!= null");
+        pattern.addConstraint(isFinished);
+        model.addLhsItem(pattern);
+
+        final SingleFieldConstraint isFinishedAfter = new SingleFieldConstraint();
+        isFinishedAfter.setFactType("House");
+        isFinishedAfter.setFieldName("bought");
+        isFinishedAfter.setFieldType("java.time.LocalDate");
+        isFinishedAfter.setOperator("==");
+        pattern.addConstraint(isFinishedAfter);
+        model.addLhsItem(pattern);
+
+        when(oracle.getFieldClassName("House",
+                                      "finished")).thenReturn("java.time.LocalDate");
+        when(oracle.getFieldClassName("House",
+                                      "bought")).thenReturn("java.time.LocalDate");
+
+        ConstraintValueEditorHelper helper = new ConstraintValueEditorHelper(model,
+                                                                             oracle,
+                                                                             "House",
+                                                                             "bought",
+                                                                             isFinished,
+                                                                             "LocalDate",
+                                                                             new DropDownData());
+
+        helper.isApplicableBindingsInScope("$finished",
+                                           result -> assertTrue(result));
     }
 
     @Test
@@ -357,5 +435,11 @@ public class ConstraintValueEditorHelperTest {
         final DropDownData dropDownData = mock(DropDownData.class);
         doReturn(new String[]{"a", "b", "c"}).when(dropDownData).getFixedList();
         Assertions.assertThat(ConstraintValueEditorHelper.isEnumEquivalent(new String[]{"a", "b", "c"}, dropDownData)).isTrue();
+    }
+
+    @Test
+    public void isEnumEquivalentNullDropDownData() throws Exception {
+        final DropDownData dropDownData = null;
+        Assertions.assertThat(ConstraintValueEditorHelper.isEnumEquivalent(new String[]{"a", "b", "c"}, dropDownData)).isFalse();
     }
 }

@@ -109,6 +109,9 @@ public class FactPatternWidgetTest extends OperatorsBaseTest {
         factPatternWidget.createValueEditor(constraint);
         factPatternWidget.createValueEditor(constraintTwo);
 
+        verify(editor).init();
+        verify(editorTwo).init();
+
         verify(editor).setOnValueChangeCommand(commandCaptor.capture());
         commandCaptor.getValue().execute();
 

@@ -86,7 +86,7 @@ public class ConstraintValueEditor extends Composite {
     private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
     private static final DateTimeFormat DATE_FORMATTER = DateTimeFormat.getFormat(DATE_FORMAT);
 
-    private final ConstraintValueEditorHelper helper;
+    private ConstraintValueEditorHelper helper;
     private WorkingSetManager workingSetManager = null;
 
     private String factType;
@@ -115,11 +115,11 @@ public class ConstraintValueEditor extends Composite {
                 }
             });
 
-    public ConstraintValueEditor(BaseSingleFieldConstraint con,
-                                 CompositeFieldConstraint constraintList,
-                                 RuleModeller modeller,
-                                 EventBus eventBus,
-                                 boolean readOnly) {
+    public ConstraintValueEditor(final BaseSingleFieldConstraint con,
+                                 final CompositeFieldConstraint constraintList,
+                                 final RuleModeller modeller,
+                                 final EventBus eventBus,
+                                 final boolean readOnly) {
         this.constraint = con;
         this.constraintList = constraintList;
         this.oracle = modeller.getDataModelOracle();
@@ -128,18 +128,15 @@ public class ConstraintValueEditor extends Composite {
         this.modeller = modeller;
         this.eventBus = eventBus;
         this.readOnly = readOnly;
+    }
 
+    public void init() {
         setUpConstraint();
 
-        helper = new ConstraintValueEditorHelper(model,
-                                                 oracle,
-                                                 factType,
-                                                 fieldName,
-                                                 constraint,
-                                                 fieldType,
-                                                 dropDownData);
-
         refresh();
+
+        constructConstraintValueEditorHelper();
+
         initWidget(panel);
     }
 
@@ -628,7 +625,7 @@ public class ConstraintValueEditor extends Composite {
                 final Button bindingButton = new Button(GuidedRuleEditorResources.CONSTANTS.BoundVariable());
 
                 //This Set is used as a 1flag to know whether the button has been added; due to use of callbacks
-                final Set<Button> bindingButtonContainer = new HashSet<Button>();
+                final Set<Button> bindingButtonContainer = new HashSet<>();
 
                 for (String var : bindingsInScope) {
                     helper.isApplicableBindingsInScope(var,
@@ -773,5 +770,15 @@ public class ConstraintValueEditor extends Composite {
 
     Widget getConstraintWidget() {
         return constraintWidget;
+    }
+
+    void constructConstraintValueEditorHelper() {
+        helper = new ConstraintValueEditorHelper(model,
+                                                 oracle,
+                                                 factType,
+                                                 fieldName,
+                                                 constraint,
+                                                 fieldType,
+                                                 dropDownData);
     }
 }

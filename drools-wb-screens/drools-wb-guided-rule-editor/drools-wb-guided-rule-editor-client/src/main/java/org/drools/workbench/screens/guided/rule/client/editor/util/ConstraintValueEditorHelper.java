@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.rule.client.editor.util;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
@@ -108,7 +109,7 @@ public class ConstraintValueEditorHelper {
                                              if (lhsBoundField != null) {
                                                  final String boundClassName = oracle.getFieldClassName(lhsBoundField.getFactType(), lhsBoundField.getFieldName());
 
-                                                 if (getFieldTypeClazz().equals(boundClassName)) {
+                                                 if (Objects.equals(getFieldTypeClazz(), boundClassName)) {
                                                      callback.callback(true);
                                                      return;
                                                  }
@@ -220,8 +221,8 @@ public class ConstraintValueEditorHelper {
         String boundFieldType = this.model.getLHSBindingType(boundVariable);
 
         //If the fieldTypes are SuggestionCompletionEngine.TYPE_COMPARABLE check the enums are equivalent
-        if (boundFieldType.equals(DataType.TYPE_COMPARABLE)) {
-            if (!this.fieldType.equals(DataType.TYPE_COMPARABLE)) {
+        if (Objects.equals(boundFieldType, DataType.TYPE_COMPARABLE)) {
+            if (!Objects.equals(fieldType, DataType.TYPE_COMPARABLE)) {
                 callback.callback(false);
                 return;
             }
@@ -239,7 +240,12 @@ public class ConstraintValueEditorHelper {
     }
 
     public static boolean isEnumEquivalent(final String[] values, final DropDownData dropDownData) {
-        return Arrays.equals(values, dropDownData.getFixedList());
+        if (dropDownData != null) {
+            return Arrays.equals(values, dropDownData.getFixedList());
+        } else {
+            // dropDownData is null, so check if also values are null
+            return values == null;
+        }
     }
 
     private void isLHSFactTypeEquivalent(final String boundVariable,
@@ -336,7 +342,7 @@ public class ConstraintValueEditorHelper {
     private boolean checkSuperTypes(List<String> superTypes) {
         if (superTypes != null) {
             for (String superType : superTypes) {
-                if (getFieldTypeClazz().equals(superType)) {
+                if (Objects.equals(getFieldTypeClazz(), superType)) {
                     return true;
                 }
             }
