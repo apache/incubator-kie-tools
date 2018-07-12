@@ -23,7 +23,9 @@ import org.uberfire.java.nio.IOException;
 
 /**
  * Default Error handler for all Portable Exceptions
+ * @deprecated Please use GenericErrorPopup instead.
  */
+@Deprecated
 public class DefaultErrorCallback implements ErrorCallback<Message> {
 
     @Override

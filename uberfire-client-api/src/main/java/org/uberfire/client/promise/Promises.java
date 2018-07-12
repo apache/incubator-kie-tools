@@ -26,14 +26,15 @@ import java.util.function.Supplier;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
-import elemental2.dom.DomGlobal;
 import elemental2.promise.Promise;
-import elemental2.promise.Promise.PromiseExecutorCallbackFn.RejectCallbackFn;
+import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 
+import static org.jboss.errai.bus.client.framework.AbstractRpcProxy.DEFAULT_RPC_ERROR_CALLBACK;
 import static org.uberfire.client.promise.PromisePolyfillBootstrapper.ensurePromiseApiIsAvailable;
 
 @Dependent
@@ -56,7 +57,7 @@ public class Promises {
     }
 
     /**
-     * Maps the objects to Promises using the provided function then behaves just like {@link Promises#all}.
+     * Maps the objects to Promises using the provided function then behaves just like {@link org.uberfire.client.promise.Promises#all}.
      */
     public <T, O> Promise<O> all(final List<T> objects, final Function<T, Promise<O>> f) {
         return objects.stream().map(f).reduce(resolve(), (p1, p2) -> p1.then(ignore -> p2));
@@ -80,7 +81,7 @@ public class Promises {
     }
 
     /**
-     * Behaves just like {@link Promises#reduceLazily} but exposes a reference to the Promise chain as a
+     * Behaves just like {@link org.uberfire.client.promise.Promises#reduceLazily} but exposes a reference to the Promise chain as a
      * parameter to the mapping function.
      */
     public <T, O> Promise<O> reduceLazilyChaining(final List<T> objects,
@@ -104,53 +105,90 @@ public class Promises {
 
     /**
      * Promisifies a {@link Caller} remote call. If an exception is thrown inside the call function, the
-     * resulting Promise is rejected with a {@link Promises.Error} instance.
+     * resulting Promise is rejected with a {@link org.uberfire.client.promise.Promises.Error} instance.
      */
     public <T, S> Promise<S> promisify(final Caller<T> caller,
                                        final Function<T, S> call) {
 
         return create((resolve, reject) -> call.apply(caller.call(
                 (RemoteCallback<S>) resolve::onInvoke,
-                defaultErrorCallback(reject))));
+                defaultRpcErrorCallback(reject))));
     }
 
     /**
      * Promisifies a {@link Caller} remote call. If an exception is thrown inside the call function, the
-     * resulting Promise is rejected with a {@link Promises.Error} instance.
+     * resulting Promise is rejected with a {@link org.uberfire.client.promise.Promises.Error} instance.
      */
     public <T, S> Promise<S> promisify(final Caller<T> caller,
                                        final Consumer<T> call) {
 
         return create((resolve, reject) -> call.accept(caller.call(
                 (RemoteCallback<S>) resolve::onInvoke,
-                defaultErrorCallback(reject))));
+                defaultRpcErrorCallback(reject))));
     }
 
-    private <M> ErrorCallback<M> defaultErrorCallback(final RejectCallbackFn reject) {
+    private <M> ErrorCallback<M> defaultRpcErrorCallback(final Promise.PromiseExecutorCallbackFn.RejectCallbackFn reject) {
         return (final M o, final Throwable throwable) -> {
-            reject.onInvoke(new Error<>(o, throwable));
-            return true;
+            reject.onInvoke(new Promises.Error<>(o, throwable));
+            return false;
         };
     }
 
     /**
      * To be used inside {@link Promise#catch_} blocks. Decides whether to process a RuntimeException that
-     * caused a prior Promise rejection or to process an expected object rejected by a prior Promise.
+     * caused a prior Promise rejection or to process an expected object rejected by a prior Promise. To proceed
+     * with default error handlers, reject the untreated exception inside the catchBlock function.
      */
     @SuppressWarnings("unchecked")
     public <V, T> Promise<T> catchOrExecute(final Object o,
-                                            final Function<RuntimeException, Promise<T>> c,
-                                            final Function<V, Promise<T>> f) {
+                                            final Function<RuntimeException, Promise<T>> catchBlock,
+                                            final Function<V, Promise<T>> expectedRejectionHandler) {
 
         if (o instanceof JavaScriptObject) {
             // A RuntimeException occurred inside a promise and was transformed in a JavaScriptObject
-            DomGlobal.console.error(o);
-            return c.apply(new RuntimeException(o.toString()));
-        } else if (o instanceof RuntimeException) {
-            return c.apply((RuntimeException) o);
-        } else {
-            return f.apply((V) o);
+            return resolve()
+                    .then(i -> catchBlock.apply(new RuntimeException("Client-side exception inside Promise: " + o.toString())))
+                    .catch_(this::handleCatchBlockExceptions);
         }
+
+        if (o instanceof RuntimeException) {
+            return resolve()
+                    .then(i -> catchBlock.apply((RuntimeException) o))
+                    .catch_(this::handleCatchBlockExceptions);
+        }
+
+        if (o instanceof Promises.Error) {
+            return resolve()
+                    .then(i -> catchBlock.apply((RuntimeException) ((Error) o).getThrowable()))
+                    .catch_(i -> handleCatchBlockExceptions(o));
+        }
+
+        return expectedRejectionHandler.apply((V) o);
+    }
+
+    private <T> Promise<T> handleCatchBlockExceptions(final Object rejectedObject) {
+
+        if (rejectedObject instanceof Error) {
+            final Error error = (Error) rejectedObject;
+
+            if (!(error.getObject() instanceof Message)) {
+                GWT.getUncaughtExceptionHandler().onUncaughtException(
+                        new RuntimeException("Promise.Error did not contain a Message. " +
+                                                     "Something's not right."));
+
+                return resolve();
+            }
+
+            DEFAULT_RPC_ERROR_CALLBACK.error((Message) error.getObject(), error.getThrowable());
+            return resolve();
+        }
+
+        if (rejectedObject instanceof Throwable) {
+            GWT.getUncaughtExceptionHandler().onUncaughtException((Throwable) rejectedObject);
+            return resolve();
+        }
+
+        return reject(rejectedObject);
     }
 
     public <T> Promise<T> resolve() {
@@ -175,16 +213,16 @@ public class Promises {
 
         private final Throwable throwable;
 
-        public Error(final T o, final Throwable throwable) {
+        private Error(final T o, final Throwable throwable) {
             this.o = o;
             this.throwable = throwable;
         }
 
-        public T getObject() {
+        private T getObject() {
             return o;
         }
 
-        public Throwable getThrowable() {
+        private Throwable getThrowable() {
             return throwable;
         }
     }
