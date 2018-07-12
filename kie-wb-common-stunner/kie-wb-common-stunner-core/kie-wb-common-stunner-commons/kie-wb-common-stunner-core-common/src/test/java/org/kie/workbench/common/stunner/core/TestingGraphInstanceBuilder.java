@@ -155,10 +155,10 @@ public class TestingGraphInstanceBuilder {
      * --------------------------------------------
      * |                     |                     |
      * startNode --(edge1)--> intermNode --(edge2)--> endNode
-     * |
-     * (edge3)
-     * |
-     * dockedNode
+     *                           |
+     *                        (edge3)
+     *                           |
+     *                       dockedNode
      */
     public static class TestGraph4 extends TestGraph2 {
 

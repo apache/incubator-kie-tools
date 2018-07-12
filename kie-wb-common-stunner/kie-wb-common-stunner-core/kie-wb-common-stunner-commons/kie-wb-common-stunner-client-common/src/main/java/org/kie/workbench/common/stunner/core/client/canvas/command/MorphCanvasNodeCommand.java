@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -23,7 +24,6 @@ import org.kie.workbench.common.stunner.core.client.shape.EdgeShape;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -50,24 +50,23 @@ public class MorphCanvasNodeCommand extends AbstractCanvasCommand {
     @Override
     @SuppressWarnings("unchecked")
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
-        final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> builder = new CompositeCommand.Builder<>();
-        // Deregister the existing shape.
-        Node parent = getParent();
-        if (null != parent) {
-            context.removeChild(parent,
-                                candidate);
+        final Optional<Node> dockParentOptional = GraphUtils.getDockParent(candidate);
+        final Optional<Node> parentOptional = getParent();
+
+        // Removing parent from morphed node
+        if (dockParentOptional.isPresent()) {
+            context.undock(dockParentOptional.get(), candidate);
+        } else {
+            parentOptional.ifPresent(parent -> context.removeChild(parent, candidate));
         }
+
+        // Deregister the existing shape.
         context.deregister(candidate);
 
         // Register the shape for the new morphed element.
-        context.register(shapeSetId,
-                         candidate);
-        if (null != parent) {
-            context.addChild(parent,
-                             candidate);
-        }
-        context.applyElementMutation(candidate,
-                                     MutationContext.STATIC);
+        context.register(shapeSetId, candidate);
+
+        context.applyElementMutation(candidate, MutationContext.STATIC);
 
         // Update incoming connections for new shape ( so magnets, connectors, etc on view side ).
         final List<Edge> inEdges = candidate.getInEdges();
@@ -97,11 +96,14 @@ public class MorphCanvasNodeCommand extends AbstractCanvasCommand {
             }
         }
 
-        GraphUtils.getDockParent(candidate).ifPresent(dockParent-> {
-            builder.addCommand(new CanvasDockNodeCommand(dockParent , candidate));
-        });
+        // Adding parent to the new morphed node
+        if (dockParentOptional.isPresent()) {
+            context.dock(dockParentOptional.get(), candidate);
+        } else {
+            parentOptional.ifPresent(parent -> context.addChild(parent, candidate));
+        }
 
-        return builder.build().execute(context);
+        return buildResult();
     }
 
     @Override
@@ -125,16 +127,16 @@ public class MorphCanvasNodeCommand extends AbstractCanvasCommand {
         }
     }
 
-    private Node getParent() {
+    private Optional<Node> getParent() {
         List<Edge> inEdges = candidate.getInEdges();
         if (null != inEdges && !inEdges.isEmpty()) {
             for (final Edge edge : inEdges) {
                 if (isChildEdge(edge) || isDockEdge(edge)) {
-                    return edge.getSourceNode();
+                    return Optional.ofNullable(edge.getSourceNode());
                 }
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     private boolean isChildEdge(final Edge edge) {
@@ -151,7 +153,7 @@ public class MorphCanvasNodeCommand extends AbstractCanvasCommand {
 
     @Override
     public String toString() {
-        final Node parent = getParent();
+        final Node parent = getParent().orElse(null);
         return getClass().getName() +
                 " [parent=" + (null != parent ? parent.getUUID() : "null") + "," +
                 " candidate=" + getUUID(candidate) + "," +

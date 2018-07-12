@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
@@ -69,6 +70,9 @@ public class MorphNodeActionTest {
 
     @Mock
     private EventSourceMock<CanvasSelectionEvent> canvasElementSelectedEvent;
+
+    @Mock
+    private EventSourceMock<CanvasClearSelectionEvent> canvasClearSelectionEventEventSourceMock;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -119,9 +123,11 @@ public class MorphNodeActionTest {
                                           sessionCommandManager,
                                           commandFactory,
                                           translationService,
-                                          canvasElementSelectedEvent)
+                                          canvasElementSelectedEvent,
+                                          canvasClearSelectionEventEventSourceMock)
                 .setMorphDefinition(morphDefinition)
                 .setTargetDefinitionId(MORPH_TARGET_ID);
+        tested.commandDelay = 0;
     }
 
     @Test
