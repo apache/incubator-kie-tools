@@ -27,7 +27,6 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
 import elemental2.promise.Promise;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
@@ -35,7 +34,6 @@ import org.guvnor.common.services.project.client.repositories.ConflictingReposit
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.client.settings.sections.SettingsSections;
@@ -48,7 +46,6 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -172,7 +169,10 @@ public class SettingsPresenter {
             } else {
                 return sectionManager.goToFirstAvailable();
             }
-        }).catch_(e -> promises.catchOrExecute(e, this::defaultErrorResolution, i -> {
+        }).catch_(o -> promises.catchOrExecute(o, e -> {
+            view.hideBusyIndicator();
+            return promises.reject(e);
+        }, i -> {
             notificationEvent.fire(new NotificationEvent(view.getLoadErrorMessage(), ERROR));
             view.hideBusyIndicator();
             return promises.resolve();
@@ -217,18 +217,19 @@ public class SettingsPresenter {
             sectionManager.validateAll().then(i -> {
                 savePopUpPresenter.show(this::save);
                 return promises.resolve();
-            }).catch_(e -> promises.catchOrExecute(e,
-                                                   this::defaultErrorResolution,
-                                                   (final Section<ProjectScreenModel> section) -> {
-                                                       view.hideBusyIndicator();
-                                                       return sectionManager.goTo(section);
-                                                   }));
+            }).catch_(o -> promises.catchOrExecute(o, e -> {
+                view.hideBusyIndicator();
+                return promises.reject(e);
+            }, (final Section<ProjectScreenModel> section) -> {
+                view.hideBusyIndicator();
+                return sectionManager.goTo(section);
+            }));
         }
     }
 
     void save(final String comment) {
         promises.reduceLazilyChaining(getSavingSteps(comment), this::executeSavingStep)
-                .catch_(e -> promises.catchOrExecute(e, this::defaultErrorResolution, sectionManager::goTo));
+                .catch_(o -> promises.catchOrExecute(o, promises::reject, sectionManager::goTo));
     }
 
     private Promise<Void> executeSavingStep(final Supplier<Promise<Void>> chain,
@@ -270,21 +271,17 @@ public class SettingsPresenter {
         }).then(workspaceProject -> {
             projectContext.updateProjectModule(workspaceProject.getMainModule());
             return promises.resolve();
-        }).catch_(e -> promises.catchOrExecute(e, this::defaultErrorResolution, (final Promises.Error<Message> error) -> {
-            DomGlobal.console.info(e);
-            return handleSaveProjectScreenModelError(comment, chain, error.getThrowable());
+        }).catch_(o -> promises.catchOrExecute(o, e -> {
+            if (e instanceof GAVAlreadyExistsException) {
+                return handlePomConcurrentUpdate(comment, chain, (GAVAlreadyExistsException) e);
+            } else {
+                view.hideBusyIndicator();
+                return promises.resolve();
+            }
+        }, x -> {
+            view.hideBusyIndicator();
+            return promises.reject(x);
         }));
-    }
-
-    Promise<Void> handleSaveProjectScreenModelError(final String comment,
-                                                    final Supplier<Promise<Void>> chain,
-                                                    final Throwable throwable) {
-
-        if (throwable instanceof GAVAlreadyExistsException) {
-            return handlePomConcurrentUpdate(comment, chain, (GAVAlreadyExistsException) throwable);
-        } else {
-            return defaultErrorResolution(throwable);
-        }
     }
 
     void handlePomConcurrentUpdate(final String comment,
@@ -319,12 +316,6 @@ public class SettingsPresenter {
         concurrentPomUpdateInfo = null;
         conflictingRepositoriesPopup.hide();
         saveProjectScreenModel(comment, DeploymentMode.FORCED, chain).then(i -> chain.get());
-    }
-
-    Promise<Void> defaultErrorResolution(final Throwable e) {
-        new DefaultErrorCallback().error(null, e);
-        view.hideBusyIndicator();
-        return promises.resolve();
     }
 
     public void onSettingsSectionChanged(@Observes final SettingsSectionChange<ProjectScreenModel> settingsSectionChange) {

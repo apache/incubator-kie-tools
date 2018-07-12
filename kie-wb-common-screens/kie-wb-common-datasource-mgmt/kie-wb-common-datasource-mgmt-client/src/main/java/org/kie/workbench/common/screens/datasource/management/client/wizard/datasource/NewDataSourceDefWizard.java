@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.datasource.management.client.wizard.dat
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -36,7 +37,6 @@ import org.kie.workbench.common.screens.datasource.management.model.DataSourceDe
 import org.kie.workbench.common.screens.datasource.management.service.DataSourceDefEditorService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.core.client.wizards.AbstractWizard;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
@@ -163,15 +163,11 @@ public class NewDataSourceDefWizard
     }
 
     private ErrorCallback<?> getCreateErrorCallback() {
-        return new DefaultErrorCallback() {
-            @Override
-            public boolean error(Message message,
-                                 Throwable throwable) {
-                popupsUtil.showErrorPopup(translationService.format(
-                        DataSourceManagementConstants.NewDataSourceDefWizard_DataSourceCreateErrorMessage,
-                        buildOnCreateErrorMessage(throwable)));
-                return false;
-            }
+        return (Message message, Throwable throwable) -> {
+            popupsUtil.showErrorPopup(translationService.format(
+                    DataSourceManagementConstants.NewDataSourceDefWizard_DataSourceCreateErrorMessage,
+                    buildOnCreateErrorMessage(throwable)));
+            return false;
         };
     }
 

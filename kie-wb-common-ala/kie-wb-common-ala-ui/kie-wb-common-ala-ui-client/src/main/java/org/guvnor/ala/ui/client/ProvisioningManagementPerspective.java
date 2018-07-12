@@ -89,8 +89,7 @@ public class ProvisioningManagementPerspective {
     protected void onAddNewProviderType(@Observes final AddNewProviderTypeEvent event) {
         providerTypeService.call((Map<ProviderType, ProviderTypeStatus> result) -> {
                                      enableProviderTypeWizard.start(buildProviderStatusList(result));
-                                 },
-                                 new DefaultErrorCallback()).getProviderTypesStatus();
+                                 }).getProviderTypesStatus();
     }
 
     protected void onAddNewProvider(@Observes final AddNewProviderEvent event) {
@@ -104,8 +103,7 @@ public class ProvisioningManagementPerspective {
             runtimeService.call((Collection<PipelineKey> result) -> {
                                     newDeployWizard.start(event.getProvider(),
                                                           result);
-                                },
-                                new DefaultErrorCallback()).getPipelines(event.getProvider().getKey().getProviderTypeKey());
+                                }).getPipelines(event.getProvider().getKey().getProviderTypeKey());
         }
     }
 

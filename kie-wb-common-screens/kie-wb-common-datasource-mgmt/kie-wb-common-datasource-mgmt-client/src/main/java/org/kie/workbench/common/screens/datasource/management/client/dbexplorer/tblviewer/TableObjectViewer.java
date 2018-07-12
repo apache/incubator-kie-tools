@@ -70,7 +70,7 @@ public class TableObjectViewer
             public void callback( DisplayerSettings displayerSettings ) {
                 initializeDisplayer( displayerSettings );
             }
-        }, new DefaultErrorCallback( ) ).getDisplayerSettings( settings.dataSourceUuid( ),
+        }).getDisplayerSettings( settings.dataSourceUuid( ),
                 settings.schemaName( ), settings.tableName( ) );
     }
 

@@ -46,7 +46,6 @@ public class OpenShiftClientValidationService {
                                         } else {
                                             callback.onFailure();
                                         }
-                                    },
-                                    new DefaultErrorCallback()).isValidProjectName(projectName);
+                                    }).isValidProjectName(projectName);
     }
 }

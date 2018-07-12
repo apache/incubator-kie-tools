@@ -128,8 +128,7 @@ public class ProviderPresenter {
 
     private void load(final ProviderKey providerKey) {
         providerStatusPresenter.clear();
-        provisioningScreensService.call(getLoadRuntimesInfoSuccessCallback(),
-                                        new DefaultErrorCallback()).getRuntimesInfo(providerKey);
+        provisioningScreensService.call(getLoadRuntimesInfoSuccessCallback()).getRuntimesInfo(providerKey);
     }
 
     private RemoteCallback<RuntimesInfo> getLoadRuntimesInfoSuccessCallback() {
@@ -156,8 +155,7 @@ public class ProviderPresenter {
     }
 
     public void onRemoveProvider() {
-        provisioningScreensService.call(getRuntimesCheckSuccessCallback(),
-                                        new DefaultErrorCallback()).hasRuntimes(provider.getKey());
+        provisioningScreensService.call(getRuntimesCheckSuccessCallback()).hasRuntimes(provider.getKey());
     }
 
     private RemoteCallback<Boolean> getRuntimesCheckSuccessCallback() {

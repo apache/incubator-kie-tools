@@ -26,6 +26,7 @@ import org.kie.workbench.common.widgets.client.handlers.workbench.configuration.
 import org.kie.workbench.common.widgets.client.handlers.workbench.configuration.WorkbenchConfigurationPresenter;
 import org.kie.workbench.common.workbench.client.admin.DefaultAdminPageHelper;
 import org.kie.workbench.common.workbench.client.entrypoint.DefaultWorkbenchEntryPoint;
+import org.kie.workbench.common.workbench.client.error.DefaultWorkbenchErrorCallback;
 import org.kie.workbench.common.workbench.client.menu.DefaultWorkbenchFeaturesMenusHelper;
 import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PlaceManager;
@@ -66,9 +67,11 @@ public class StunnerProjectShowcaseEntryPoint extends DefaultWorkbenchEntryPoint
                                             final DefaultAdminPageHelper adminPageHelper,
                                             final PreferenceScopeFactory scopeFactory,
                                             final WorkbenchConfigurationPresenter workbenchConfigurationPresenter,
-                                            final LanguageConfigurationHandler languageConfigurationHandler) {
+                                            final LanguageConfigurationHandler languageConfigurationHandler,
+                                            final DefaultWorkbenchErrorCallback defaultWorkbenchErrorCallback) {
         super(appConfigService,
-              activityBeansCache);
+              activityBeansCache,
+              defaultWorkbenchErrorCallback);
         this.placeManager = placeManager;
         this.menusHelper = menusHelper;
         this.menuBar = menuBar;

@@ -387,14 +387,12 @@ public class SettingsPresenterTest {
 
         doThrow(testException).when(section1).save(any(), any());
         doReturn(promises.resolve()).when(section2).save(any(), any());
-        doReturn(promises.resolve()).when(presenter).defaultErrorResolution(testException);
         doReturn(new ArrayList<>(Arrays.asList(section1, section2))).when(sectionManager).getSections();
 
         presenter.save("Test comment");
 
         verify(section1).save(eq("Test comment"), any());
         verify(section2, never()).save(any(), any());
-        verify(presenter).defaultErrorResolution(eq(testException));
         verify(presenter, never()).saveProjectScreenModel(any(), any(), any());
         verify(sectionManager, never()).resetDirtyIndicator(any());
         verify(presenter, never()).displaySuccessMessage();
@@ -437,12 +435,6 @@ public class SettingsPresenterTest {
         verify(presenter,
                never()).handlePomConcurrentUpdate(any(),
                                                   any());
-        verify(presenter,
-               never()).defaultErrorResolution(any());
-        verify(presenter,
-               never()).handleSaveProjectScreenModelError(any(),
-                                                          any(),
-                                                          any());
     }
 
     @Test
@@ -458,7 +450,6 @@ public class SettingsPresenterTest {
             fail("Promise should've not been resolved!");
             return promises.resolve();
         });
-        ;
 
         verify(projectScreenService,
                never()).save(any(),
@@ -467,12 +458,6 @@ public class SettingsPresenterTest {
                              any());
         verify(presenter).handlePomConcurrentUpdate(eq("Test comment"),
                                                     any());
-        verify(presenter,
-               never()).defaultErrorResolution(any());
-        verify(presenter,
-               never()).handleSaveProjectScreenModelError(any(),
-                                                          any(),
-                                                          any());
     }
 
     @Test
@@ -483,9 +468,6 @@ public class SettingsPresenterTest {
                                                                any(),
                                                                any(),
                                                                any());
-        doReturn(promises.resolve()).when(presenter).handleSaveProjectScreenModelError(any(),
-                                                                                       any(),
-                                                                                       any());
 
         presenter.saveProjectScreenModel("Test comment",
                                          DeploymentMode.VALIDATED,
@@ -501,48 +483,6 @@ public class SettingsPresenterTest {
         verify(presenter,
                never()).handlePomConcurrentUpdate(any(),
                                                   any());
-        verify(presenter,
-               never()).defaultErrorResolution(any());
-        verify(presenter).handleSaveProjectScreenModelError(any(),
-                                                            any(),
-                                                            any());
-    }
-
-    @Test
-    public void testHandleSaveProjectScreenModelAnyException() {
-        doReturn(promises.resolve()).when(presenter).defaultErrorResolution(any());
-        doReturn(promises.resolve()).when(presenter).handlePomConcurrentUpdate(any(),
-                                                                               any(),
-                                                                               any());
-
-        final RuntimeException testException = new RuntimeException();
-        presenter.handleSaveProjectScreenModelError("Test comment",
-                                                    null,
-                                                    testException);
-
-        verify(presenter).defaultErrorResolution(eq(testException));
-        verify(presenter,
-               never()).handlePomConcurrentUpdate(any(),
-                                                  any(),
-                                                  any());
-    }
-
-    @Test
-    public void testHandleSaveProjectScreenModelGavAlreadyExistsException() {
-        doReturn(promises.resolve()).when(presenter).defaultErrorResolution(any());
-        doReturn(promises.resolve()).when(presenter).handlePomConcurrentUpdate(any(),
-                                                                               any(),
-                                                                               any());
-
-        final GAVAlreadyExistsException testException = new GAVAlreadyExistsException();
-        presenter.handleSaveProjectScreenModelError("Test comment",
-                                                    null,
-                                                    testException);
-
-        verify(presenter, never()).defaultErrorResolution(any());
-        verify(presenter).handlePomConcurrentUpdate(eq("Test comment"),
-                                                    any(),
-                                                    eq(testException));
     }
 
     @Test

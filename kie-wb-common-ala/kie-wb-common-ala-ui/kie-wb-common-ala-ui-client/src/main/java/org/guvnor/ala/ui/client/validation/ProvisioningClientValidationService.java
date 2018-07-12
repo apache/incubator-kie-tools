@@ -45,7 +45,6 @@ public class ProvisioningClientValidationService {
                                    } else {
                                        callback.onFailure();
                                    }
-                               },
-                               new DefaultErrorCallback()).isValidContainerName(containerName);
+                               }).isValidContainerName(containerName);
     }
 }

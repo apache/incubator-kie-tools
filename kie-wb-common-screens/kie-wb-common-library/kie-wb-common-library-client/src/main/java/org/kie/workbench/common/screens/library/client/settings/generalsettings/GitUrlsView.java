@@ -53,8 +53,7 @@ public class GitUrlsView implements GitUrlsPresenter.View {
 
     @EventHandler("copy-to-clipboard-button")
     public void onCopyToClipboardButtonClicked(@ForEvent("click") final MouseEvent e) {
-        url.select();
-        presenter.copyToClipboard();
+        presenter.copyToClipboard(url);
     }
 
     @Override

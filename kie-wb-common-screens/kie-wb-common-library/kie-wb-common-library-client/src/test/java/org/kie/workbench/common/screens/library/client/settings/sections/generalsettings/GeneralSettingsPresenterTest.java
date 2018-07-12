@@ -1,5 +1,6 @@
 package org.kie.workbench.common.screens.library.client.settings.sections.generalsettings;
 
+import com.google.gwt.core.client.GWT;
 import org.guvnor.common.services.project.client.preferences.ProjectScopedResolutionStrategySupplier;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
@@ -28,11 +29,13 @@ import org.uberfire.promise.SyncPromises;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GeneralSettingsPresenterTest {
@@ -292,14 +295,14 @@ public class GeneralSettingsPresenterTest {
     @Test
     public void testShowErrorAndRejectWithException() {
         final RuntimeException testException = new RuntimeException("Test message");
+        doNothing().when(view).showError(any());
 
         generalSettingsPresenter.showErrorAndReject(testException).then(i -> {
             Assert.fail("Promise should've not been resolved!");
             return promises.resolve();
         }).catch_(e -> {
             verify(view).showError(eq("Test message"));
-            Assert.assertEquals(e,
-                                generalSettingsPresenter);
+            Assert.assertEquals(e, generalSettingsPresenter);
             return promises.resolve();
         });
     }

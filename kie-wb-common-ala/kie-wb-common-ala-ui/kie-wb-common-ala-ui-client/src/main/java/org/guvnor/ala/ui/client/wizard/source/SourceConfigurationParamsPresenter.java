@@ -260,8 +260,7 @@ public class SourceConfigurationParamsPresenter
                                view.clearRepositories();
                                view.clearBranches();
                                clearModules();
-                           },
-                           new DefaultErrorCallback()
+                           }
         ).getOrganizationUnits();
     }
 
@@ -271,8 +270,7 @@ public class SourceConfigurationParamsPresenter
                                repos.forEach(view::addRepository);
                                view.clearBranches();
                                clearModules();
-                           },
-                           new DefaultErrorCallback()
+                           }
         ).getRepositories(ou);
     }
 
@@ -281,8 +279,7 @@ public class SourceConfigurationParamsPresenter
                                view.clearBranches();
                                branches.forEach(view::addBranch);
                                clearModules();
-                           },
-                           new DefaultErrorCallback()
+                           }
         ).getBranches(space, repository);
     }
 

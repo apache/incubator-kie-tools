@@ -95,13 +95,10 @@ public class ImportRepositoryPopUpPresenter {
                                     libraryPlaces.goToExternalImportPresenter(projects);
                                 }
 
-        }, new DefaultErrorCallback() {
-            @Override
-            public boolean error(Message message, Throwable throwable) {
+        }, (Message message, Throwable throwable) -> {
                 view.hideBusyIndicator();
                 view.showError(view.getNoProjectsToImportMessage());
                 return false;
-            }
         }).getProjects(repositoryUrl, view.getUserName(), view.getPassword());
     }
 

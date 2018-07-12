@@ -144,16 +144,12 @@ public class DataSourceSelector
     }
 
     private ErrorCallback<?> getLoadErrorCallback() {
-        return new DefaultErrorCallback() {
-            @Override
-            public boolean error(Message message,
-                                 Throwable throwable) {
+        return (Message message, Throwable throwable) -> {
                 popupsUtil.showErrorPopup(
                         translationService.format(
                                 DataSourceManagementConstants.DataSourceSelector_DataSourcesLoadError));
                 onClose();
                 return false;
-            }
         };
     }
 

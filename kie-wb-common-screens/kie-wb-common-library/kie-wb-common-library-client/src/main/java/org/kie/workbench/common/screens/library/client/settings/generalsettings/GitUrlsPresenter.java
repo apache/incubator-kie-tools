@@ -24,11 +24,13 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.projecteditor.model.GitUrl;
 import org.kie.workbench.common.widgets.client.widget.KieSelectElement;
 import org.uberfire.client.mvp.UberElemental;
+import org.uberfire.client.util.Clipboard;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static java.util.function.Function.identity;
@@ -47,20 +49,24 @@ public class GitUrlsPresenter {
     private final Event<NotificationEvent> notificationEventEvent;
     private final TranslationService translationService;
     private final KieSelectElement protocolSelect;
+    private final Clipboard clipboard;
 
     Map<String, GitUrl> gitUrlsByProtocol;
     String selectedProtocol;
+
 
     @Inject
     public GitUrlsPresenter(final View view,
                             final Event<NotificationEvent> notificationEventEvent,
                             final KieSelectElement protocolSelect,
-                            final TranslationService translationService) {
+                            final TranslationService translationService,
+                            final Clipboard clipboard) {
 
         this.view = view;
         this.notificationEventEvent = notificationEventEvent;
         this.protocolSelect = protocolSelect;
         this.translationService = translationService;
+        this.clipboard = clipboard;
     }
 
     @PostConstruct
@@ -93,8 +99,8 @@ public class GitUrlsPresenter {
         view.setUrl(gitUrlsByProtocol.get(selectedProtocol).getUrl());
     }
 
-    public void copyToClipboard() {
-        if (copy()) {
+    public void copyToClipboard(final HTMLInputElement element) {
+        if (clipboard.copy(element)) {
             notificationEventEvent.fire(new NotificationEvent(
                     translationService.format(GitUrlSuccessfullyCopiedToClipboard), SUCCESS));
         } else {
@@ -102,14 +108,6 @@ public class GitUrlsPresenter {
                     translationService.format(GitUrlFailedToBeCopiedToClipboard), WARNING));
         }
     }
-
-    boolean copy() {
-        return copyNative();
-    }
-
-    private native boolean copyNative() /*-{
-        return $doc.execCommand("Copy");
-    }-*/;
 
     public View getView() {
         return view;

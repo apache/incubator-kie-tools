@@ -22,7 +22,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.kie.workbench.common.screens.library.client.settings.util.modal.Elemental2Modal;
+import org.uberfire.ext.editor.commons.client.file.popups.elemental2.Elemental2Modal;
 
 @Dependent
 public class AddDoubleValueModal extends Elemental2Modal<AddDoubleValueModal.View> {

@@ -157,15 +157,11 @@ public class NewDriverDefWizard
     }
 
     private ErrorCallback<?> getCreateErrorCallback() {
-        return new DefaultErrorCallback() {
-            @Override
-            public boolean error(Message message,
-                                 Throwable throwable) {
+        return (Message message, Throwable throwable) -> {
                 popupsUtil.showErrorPopup(
                         translationService.format(DataSourceManagementConstants.NewDriverDefWizard_DriverCreateErrorMessage,
                                                   buildOnCreateErrorMessage(throwable)));
                 return false;
-            }
         };
     }
 

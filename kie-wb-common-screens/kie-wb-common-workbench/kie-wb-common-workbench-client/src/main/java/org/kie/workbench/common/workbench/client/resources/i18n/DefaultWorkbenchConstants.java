@@ -18,6 +18,7 @@ package org.kie.workbench.common.workbench.client.resources.i18n;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
+import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 
 public interface DefaultWorkbenchConstants
         extends
@@ -158,5 +159,9 @@ public interface DefaultWorkbenchConstants
     String SessionTimeout();
 
     String LayoutEditorComponentPalette();
+
+    String ErrorDetailsSuccessfullyCopiedToClipboard();
+
+    String ErrorDetailsFailedToBeCopiedToClipboard();
 
 }

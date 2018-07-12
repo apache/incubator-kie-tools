@@ -2,6 +2,7 @@ package org.kie.workbench.common.screens.library.client.settings.sections.persis
 
 import java.util.Arrays;
 import java.util.Optional;
+
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
@@ -21,9 +22,9 @@ import org.kie.workbench.common.screens.datamodeller.model.persistence.Transacti
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.PersistenceDescriptorEditorService;
 import org.kie.workbench.common.screens.library.client.settings.SettingsSectionChange;
-import org.kie.workbench.common.screens.library.client.settings.util.sections.MenuItem;
 import org.kie.workbench.common.screens.library.client.settings.util.modal.doublevalue.AddDoubleValueModal;
 import org.kie.workbench.common.screens.library.client.settings.util.modal.single.AddSingleValueModal;
+import org.kie.workbench.common.screens.library.client.settings.util.sections.MenuItem;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -37,7 +38,13 @@ import org.uberfire.workbench.events.NotificationEvent;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PersistencePresenterTest {
@@ -155,16 +162,10 @@ public class PersistencePresenterTest {
         persistencePresenter.setup(mock(ProjectScreenModel.class)).then(i -> {
             Assert.fail("Promise should've not been resolved!");
             return promises.resolve();
-        }).catch_(e -> promises.catchOrExecute(e,
-                                               e1 -> {
-                                                   Assert.fail("Promise should've not thrown exception outside Caller");
-                                                   return promises.resolve();
-                                               },
-                                               (final Promises.Error<?> e1) -> {
-                                                   Assert.assertEquals(e1.getThrowable(),
-                                                                       testException);
-                                                   return promises.resolve();
-                                               }));
+        }).catch_(o -> promises.catchOrExecute(o, e -> promises.resolve(), e -> {
+            Assert.fail("RPC failed so default RPC error handler was called.");
+            return promises.resolve();
+        }));
     }
 
     @Test

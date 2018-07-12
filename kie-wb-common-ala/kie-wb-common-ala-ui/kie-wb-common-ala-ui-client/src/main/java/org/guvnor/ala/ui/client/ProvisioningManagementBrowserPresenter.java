@@ -17,6 +17,7 @@
 package org.guvnor.ala.ui.client;
 
 import java.util.Collection;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -44,7 +45,6 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.lifecycle.OnOpen;
 
 import static org.guvnor.ala.ui.client.ProvisioningManagementBrowserPresenter.IDENTIFIER;
@@ -157,8 +157,7 @@ public class ProvisioningManagementBrowserPresenter {
     private void refreshProviderTypes(ProviderTypeKey selectProviderTypeKey) {
         providerTypeService.call((Collection<ProviderType> providerTypes) ->
                                          setupProviderTypes(providerTypes,
-                                                            selectProviderTypeKey),
-                                 new DefaultErrorCallback()).getEnabledProviderTypes();
+                                                            selectProviderTypeKey)).getEnabledProviderTypes();
     }
 
     private void selectProviderType(final ProviderTypeKey providerTypeKey,
@@ -166,8 +165,7 @@ public class ProvisioningManagementBrowserPresenter {
         provisioningScreensService.call((ProvidersInfo providersInfo) ->
                                                 setupProviderType(providersInfo.getProviderType(),
                                                                   providersInfo.getProvidersKey(),
-                                                                  selectedProviderId),
-                                        new DefaultErrorCallback()
+                                                                  selectedProviderId)
         ).getProvidersInfo(providerTypeKey);
     }
 

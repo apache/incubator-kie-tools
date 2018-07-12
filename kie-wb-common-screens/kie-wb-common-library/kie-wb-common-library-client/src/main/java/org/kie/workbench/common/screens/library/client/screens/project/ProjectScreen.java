@@ -356,13 +356,13 @@ public class ProjectScreen {
         }
     }
 
-    private Promise<Object> onError(final Object object) {
-        return promises.catchOrExecute(object, e -> {
-            new HasBusyIndicatorDefaultErrorCallback(view).error(null, e);
-            return promises.resolve();
-        }, (final Promises.Error<Message> e) -> {
-            new HasBusyIndicatorDefaultErrorCallback(view).error(e.getObject(), e.getThrowable());
-            return promises.resolve();
+    private Promise<Object> onError(final Object o) {
+        return promises.catchOrExecute(o, e -> {
+            view.hideBusyIndicator();
+            return promises.reject(e);
+        }, x -> {
+            view.hideBusyIndicator();
+            return promises.reject(x);
         });
     }
 
