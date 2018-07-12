@@ -73,7 +73,7 @@ public class EditableHeaderGridWidgetMouseDoubleClickHandler extends BaseGridWid
         if (column == null) {
             return false;
         }
-        if (!hasEditableHeader(column)) {
+        if (!EditableHeaderUtilities.hasEditableHeader(column)) {
             return false;
         }
 
@@ -84,8 +84,8 @@ public class EditableHeaderGridWidgetMouseDoubleClickHandler extends BaseGridWid
         if (uiHeaderRowIndex == null) {
             return false;
         }
-        if (!isEditableHeader(column,
-                              uiHeaderRowIndex)) {
+        if (!EditableHeaderUtilities.isEditableHeader(column,
+                                                      uiHeaderRowIndex)) {
             return false;
         }
 
@@ -99,14 +99,5 @@ public class EditableHeaderGridWidgetMouseDoubleClickHandler extends BaseGridWid
         headerMetaData.edit(context);
 
         return true;
-    }
-
-    private boolean hasEditableHeader(final GridColumn<?> column) {
-        return column.getHeaderMetaData().stream().anyMatch(md -> md instanceof EditableHeaderMetaData);
-    }
-
-    private boolean isEditableHeader(final GridColumn<?> column,
-                                     final Integer uiHeaderRowIndex) {
-        return column.getHeaderMetaData().get(uiHeaderRowIndex) instanceof EditableHeaderMetaData;
     }
 }

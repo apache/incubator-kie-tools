@@ -17,11 +17,16 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,9 +69,12 @@ import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseBounds;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
@@ -93,7 +101,9 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -117,10 +127,19 @@ public class ContextGridTest {
     private GridCellValueTuple tupleWithValue;
 
     @Mock
+    private Viewport viewport;
+
+    @Mock
+    private Transform transform;
+
+    @Mock
     private DMNGridPanel gridPanel;
 
     @Mock
     private DMNGridLayer gridLayer;
+
+    @Mock
+    private AbsolutePanel gridLayerDomElementContainer;
 
     @Mock
     private GridWidget gridWidget;
@@ -255,6 +274,12 @@ public class ContextGridTest {
         doReturn(canvasHandler).when(session).getCanvasHandler();
 
         when(gridWidget.getModel()).thenReturn(new BaseGridData(false));
+        when(gridLayer.getDomElementContainer()).thenReturn(gridLayerDomElementContainer);
+        when(gridLayerDomElementContainer.iterator()).thenReturn(mock(Iterator.class));
+        when(gridLayer.getVisibleBounds()).thenReturn(new BaseBounds(0, 0, 100, 200));
+        when(gridLayer.getViewport()).thenReturn(viewport);
+        when(viewport.getTransform()).thenReturn(transform);
+
         when(canvasHandler.getGraphIndex()).thenReturn(index);
         when(index.get(anyString())).thenReturn(element);
         when(element.getContent()).thenReturn(mock(Definition.class));
@@ -567,12 +592,38 @@ public class ContextGridTest {
         verify(parent).onResize();
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
-        verify(gridLayer).batch(redrawCommandCaptor.capture());
+        verify(gridLayer, times(2)).batch(redrawCommandCaptor.capture());
+        verify(grid).selectCell(eq(0), eq(ContextUIModelMapperHelper.NAME_COLUMN_INDEX), eq(false), eq(false));
+        verify(grid).startEditingCell(eq(0), eq(ContextUIModelMapperHelper.NAME_COLUMN_INDEX));
 
-        final GridLayerRedrawManager.PrioritizedCommand redrawCommand = redrawCommandCaptor.getValue();
-        redrawCommand.execute();
+        final List<GridLayerRedrawManager.PrioritizedCommand> redrawCommands = redrawCommandCaptor.getAllValues();
+
+        //First call displays the inline editor for the new row
+        final GridLayerRedrawManager.PrioritizedCommand redrawCommand0 = redrawCommands.get(0);
+        redrawCommand0.execute();
+
+        verify(gridLayerDomElementContainer).add(any(Widget.class));
+
+        //Second call redraws grid following addition of new row
+        final GridLayerRedrawManager.PrioritizedCommand redrawCommand1 = redrawCommands.get(1);
+        redrawCommand1.execute();
 
         verify(gridLayer).draw();
+    }
+
+    @Test
+    public void testAddContextEntryAutoEditContextEntryName() {
+        setupGrid(0);
+        final InOrder inOrder = Mockito.inOrder(grid);
+
+        // add entries
+        addContextEntry(0);
+        // needed because util method addContextEntry assumes just one invocation in test method
+        reset(sessionCommandManager);
+        addContextEntry(1);
+
+        inOrder.verify(grid).startEditingCell(0, ContextUIModelMapperHelper.NAME_COLUMN_INDEX);
+        inOrder.verify(grid).startEditingCell(1, ContextUIModelMapperHelper.NAME_COLUMN_INDEX);
     }
 
     private void addContextEntry(final int index) {

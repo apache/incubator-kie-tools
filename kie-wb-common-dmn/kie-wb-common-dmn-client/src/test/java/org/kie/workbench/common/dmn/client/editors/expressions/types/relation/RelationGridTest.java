@@ -17,9 +17,14 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Optional;
 
+import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +37,6 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.List;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
-import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationColumnCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationRowCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationColumnCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationRowCommand;
@@ -54,6 +58,7 @@ import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -62,6 +67,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseBounds;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
@@ -82,6 +88,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -121,10 +128,19 @@ public class RelationGridTest {
     private HasExpression hasExpression;
 
     @Mock
+    private Viewport viewport;
+
+    @Mock
+    private Transform transform;
+
+    @Mock
     private DMNGridPanel gridPanel;
 
     @Mock
     private DMNGridLayer gridLayer;
+
+    @Mock
+    private AbsolutePanel gridLayerDomElementContainer;
 
     @Mock
     private GridWidget gridWidget;
@@ -160,9 +176,6 @@ public class RelationGridTest {
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
 
     @Captor
-    private ArgumentCaptor<AddRelationColumnCommand> addColumnCommand;
-
-    @Captor
     private ArgumentCaptor<DeleteRelationColumnCommand> deleteColumnCommand;
 
     @Captor
@@ -170,6 +183,9 @@ public class RelationGridTest {
 
     @Captor
     private ArgumentCaptor<DeleteRelationRowCommand> deleteRowCommand;
+
+    @Captor
+    private ArgumentCaptor<GridLayerRedrawManager.PrioritizedCommand> redrawCommandCaptor;
 
     private GridCellTuple parent;
 
@@ -184,6 +200,7 @@ public class RelationGridTest {
     private RelationGrid grid;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         tupleWithoutValue = new GridCellTuple(0, 1, gridWidget);
         tupleWithValue = new GridCellValueTuple<>(0, 1, gridWidget, new BaseGridCellValue<>("value"));
@@ -212,6 +229,11 @@ public class RelationGridTest {
         parent = spy(new GridCellTuple(0, 0, parentGridWidget));
 
         when(gridWidget.getModel()).thenReturn(new BaseGridData(false));
+        when(gridLayer.getDomElementContainer()).thenReturn(gridLayerDomElementContainer);
+        when(gridLayerDomElementContainer.iterator()).thenReturn(mock(Iterator.class));
+        when(gridLayer.getVisibleBounds()).thenReturn(new BaseBounds(0, 0, 100, 200));
+        when(gridLayer.getViewport()).thenReturn(viewport);
+        when(viewport.getTransform()).thenReturn(transform);
 
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
     }
@@ -369,6 +391,7 @@ public class RelationGridTest {
     @Test
     public void testOnItemSelectedInsertColumnBefore() {
         setupGrid(0);
+        mockInsertColumnCommandExecution();
 
         final java.util.List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_COLUMN_BEFORE);
@@ -382,6 +405,7 @@ public class RelationGridTest {
     @Test
     public void testOnItemSelectedInsertColumnAfter() {
         setupGrid(0);
+        mockInsertColumnCommandExecution();
 
         final java.util.List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_COLUMN_AFTER);
@@ -540,17 +564,38 @@ public class RelationGridTest {
 
         verify(parent).proposeContainingColumnWidth(grid.getWidth() + grid.getPadding() * 2);
         verify(parentGridColumn).setWidth(grid.getWidth() + grid.getPadding() * 2);
-        verify(gridLayer).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
+        verify(gridLayer, times(2)).batch(redrawCommandCaptor.capture());
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
+
+        final java.util.List<GridLayerRedrawManager.PrioritizedCommand> redrawCommands = redrawCommandCaptor.getAllValues();
+
+        //First call redraws grid following addition of new row
+        final GridLayerRedrawManager.PrioritizedCommand redrawCommand0 = redrawCommands.get(0);
+        redrawCommand0.execute();
+
+        verify(gridLayer).draw();
+
+        //Second call displays the inline editor for the new row
+        final GridLayerRedrawManager.PrioritizedCommand redrawCommand1 = redrawCommands.get(1);
+        redrawCommand1.execute();
+
+        verify(gridLayerDomElementContainer).add(any(Widget.class));
     }
 
     private void addColumn(final int index) {
+        mockInsertColumnCommandExecution();
+
         grid.addColumn(index);
+    }
 
-        verify(sessionCommandManager).execute(eq(canvasHandler), addColumnCommand.capture());
-
-        addColumnCommand.getValue().execute(canvasHandler);
+    private void mockInsertColumnCommandExecution() {
+        when(sessionCommandManager.execute(eq(canvasHandler),
+                                           any(AbstractCanvasGraphCommand.class))).thenAnswer((i) -> {
+            final AbstractCanvasHandler handler = (AbstractCanvasHandler) i.getArguments()[0];
+            final AbstractCanvasGraphCommand command = (AbstractCanvasGraphCommand) i.getArguments()[1];
+            return command.execute(handler);
+        });
     }
 
     @Test

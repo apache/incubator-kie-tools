@@ -50,6 +50,7 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
     private final int uiColumnIndex;
     private final DecisionTableUIModelMapper uiModelMapper;
     private final org.uberfire.mvp.Command canvasOperation;
+    private final String name;
 
     public AddInputClauseCommand(final DecisionTable dtable,
                                  final InputClause inputClause,
@@ -65,6 +66,7 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
         this.uiColumnIndex = uiColumnIndex;
         this.uiModelMapper = uiModelMapper;
         this.canvasOperation = canvasOperation;
+        this.name = DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable);
     }
 
     @Override
@@ -80,7 +82,7 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
                 final int clauseIndex = uiColumnIndex - DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT;
                 dtable.getInput().add(clauseIndex, inputClause);
                 final LiteralExpression le = inputClause.getInputExpression();
-                le.setText(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
+                le.setText(name);
 
                 dtable.getRule().forEach(rule -> {
                     final UnaryTests ut = new UnaryTests();

@@ -28,6 +28,7 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.List;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationColumnCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationRowCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationColumnCommand;
@@ -48,7 +49,10 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
@@ -213,15 +217,20 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
         expression.ifPresent(relation -> {
             final InformationItem informationItem = new InformationItem();
             final RelationColumn relationColumn = makeRelationColumn(informationItem);
+            informationItem.setName(new Name());
 
-            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                          new AddRelationColumnCommand(relation,
-                                                                       informationItem,
-                                                                       model,
-                                                                       relationColumn,
-                                                                       index,
-                                                                       uiModelMapper,
-                                                                       this::resize));
+            final CommandResult<CanvasViolation> result = sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                                                                        new AddRelationColumnCommand(relation,
+                                                                                                                     informationItem,
+                                                                                                                     model,
+                                                                                                                     relationColumn,
+                                                                                                                     index,
+                                                                                                                     uiModelMapper,
+                                                                                                                     this::resize));
+
+            if (!CommandUtils.isError(result)) {
+                relationColumn.startEditingHeaderCell(0);
+            }
         });
     }
 

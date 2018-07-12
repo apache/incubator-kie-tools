@@ -50,6 +50,7 @@ public class AddContextEntryCommand extends AbstractCanvasGraphCommand implement
     private final int uiRowIndex;
     private final ContextUIModelMapper uiModelMapper;
     private final org.uberfire.mvp.Command canvasOperation;
+    private final String name;
 
     public AddContextEntryCommand(final Context context,
                                   final ContextEntry contextEntry,
@@ -65,6 +66,7 @@ public class AddContextEntryCommand extends AbstractCanvasGraphCommand implement
         this.uiRowIndex = uiRowIndex;
         this.uiModelMapper = uiModelMapper;
         this.canvasOperation = canvasOperation;
+        this.name = ContextEntryDefaultValueUtilities.getNewContextEntryName(context);
     }
 
     @Override
@@ -79,7 +81,7 @@ public class AddContextEntryCommand extends AbstractCanvasGraphCommand implement
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
                 context.getContextEntry().add(uiRowIndex, contextEntry);
                 final InformationItem informationItem = contextEntry.getVariable();
-                informationItem.getName().setValue(ContextEntryDefaultValueUtilities.getNewContextEntryName(context));
+                informationItem.getName().setValue(name);
 
                 contextEntry.setParent(context);
                 contextEntry.getVariable().setParent(contextEntry);

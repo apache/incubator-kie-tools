@@ -16,11 +16,16 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,8 +39,6 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.AddDecisionRuleCommand;
-import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.AddInputClauseCommand;
-import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.AddOutputClauseCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.DeleteDecisionRuleCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.DeleteInputClauseCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.DeleteOutputClauseCommand;
@@ -61,6 +64,7 @@ import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPropertyCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -77,6 +81,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseBounds;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
@@ -99,6 +104,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -124,10 +130,19 @@ public class DecisionTableGridTest {
     private static final String NODE_UUID = "uuid";
 
     @Mock
+    private Viewport viewport;
+
+    @Mock
+    private Transform transform;
+
+    @Mock
     private DMNGridPanel gridPanel;
 
     @Mock
     private DMNGridLayer gridLayer;
+
+    @Mock
+    private AbsolutePanel gridLayerDomElementContainer;
 
     @Mock
     private GridWidget gridWidget;
@@ -190,13 +205,7 @@ public class DecisionTableGridTest {
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
 
     @Captor
-    private ArgumentCaptor<AddInputClauseCommand> addInputClauseCommandCaptor;
-
-    @Captor
     private ArgumentCaptor<DeleteInputClauseCommand> deleteInputClauseCommandCaptor;
-
-    @Captor
-    private ArgumentCaptor<AddOutputClauseCommand> addOutputClauseCommandCaptor;
 
     @Captor
     private ArgumentCaptor<DeleteOutputClauseCommand> deleteOutputClauseCommandCaptor;
@@ -215,6 +224,9 @@ public class DecisionTableGridTest {
 
     @Captor
     private ArgumentCaptor<SetOrientationCommand> setOrientationCommandCaptor;
+
+    @Captor
+    private ArgumentCaptor<GridLayerRedrawManager.PrioritizedCommand> redrawCommandCaptor;
 
     private Optional<DecisionTable> expression = Optional.empty();
 
@@ -244,6 +256,12 @@ public class DecisionTableGridTest {
         doReturn(graphCommandContext).when(canvasHandler).getGraphExecutionContext();
 
         when(gridWidget.getModel()).thenReturn(new BaseGridData(false));
+        when(gridLayer.getDomElementContainer()).thenReturn(gridLayerDomElementContainer);
+        when(gridLayerDomElementContainer.iterator()).thenReturn(mock(Iterator.class));
+        when(gridLayer.getVisibleBounds()).thenReturn(new BaseBounds(0, 0, 1000, 2000));
+        when(gridLayer.getViewport()).thenReturn(viewport);
+        when(viewport.getTransform()).thenReturn(transform);
+
         when(canvasHandler.getGraphIndex()).thenReturn(index);
         when(index.get(anyString())).thenReturn(element);
         when(element.getContent()).thenReturn(mock(Definition.class));
@@ -414,6 +432,7 @@ public class DecisionTableGridTest {
     @Test
     public void testGetItemsInputClauseColumn() {
         setupGrid(makeHasNameForDecision(), 0);
+        mockInsertColumnCommandExecution();
 
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 1);
 
@@ -444,6 +463,7 @@ public class DecisionTableGridTest {
     @Test
     public void testGetItemsOutputClauseColumn() {
         setupGrid(makeHasNameForDecision(), 0);
+        mockInsertColumnCommandExecution();
 
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 2);
 
@@ -621,17 +641,22 @@ public class DecisionTableGridTest {
         addInputClause(1);
 
         verify(parent).proposeContainingColumnWidth(eq(grid.getWidth() + grid.getPadding() * 2));
-        verifyGridPanelRefresh();
+        verifyGridPanelRefreshAndEditHeaderCell();
     }
 
     private void addInputClause(final int index) {
+        mockInsertColumnCommandExecution();
+
         grid.addInputClause(index);
+    }
 
-        verify(sessionCommandManager).execute(eq(canvasHandler),
-                                              addInputClauseCommandCaptor.capture());
-
-        final AddInputClauseCommand addInputClauseCommand = addInputClauseCommandCaptor.getValue();
-        addInputClauseCommand.execute(canvasHandler);
+    private void mockInsertColumnCommandExecution() {
+        when(sessionCommandManager.execute(eq(canvasHandler),
+                                           any(AbstractCanvasGraphCommand.class))).thenAnswer((i) -> {
+            final AbstractCanvasHandler handler = (AbstractCanvasHandler) i.getArguments()[0];
+            final AbstractCanvasGraphCommand command = (AbstractCanvasGraphCommand) i.getArguments()[1];
+            return command.execute(handler);
+        });
     }
 
     @Test
@@ -657,17 +682,13 @@ public class DecisionTableGridTest {
         addOutputClause(2);
 
         verify(parent).proposeContainingColumnWidth(eq(grid.getWidth() + grid.getPadding() * 2));
-        verifyGridPanelRefresh();
+        verifyGridPanelRefreshAndEditHeaderCell();
     }
 
     private void addOutputClause(final int index) {
+        mockInsertColumnCommandExecution();
+
         grid.addOutputClause(index);
-
-        verify(sessionCommandManager).execute(eq(canvasHandler),
-                                              addOutputClauseCommandCaptor.capture());
-
-        final AddOutputClauseCommand addOutputClauseCommand = addOutputClauseCommandCaptor.getValue();
-        addOutputClauseCommand.execute(canvasHandler);
     }
 
     @Test
@@ -785,6 +806,26 @@ public class DecisionTableGridTest {
         verify(gridLayer).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
+    }
+
+    private void verifyGridPanelRefreshAndEditHeaderCell() {
+        verify(gridLayer, times(2)).batch(redrawCommandCaptor.capture());
+        verify(gridPanel).refreshScrollPosition();
+        verify(gridPanel).updatePanelSize();
+
+        final java.util.List<GridLayerRedrawManager.PrioritizedCommand> redrawCommands = redrawCommandCaptor.getAllValues();
+
+        //First call redraws grid following addition of new row
+        final GridLayerRedrawManager.PrioritizedCommand redrawCommand0 = redrawCommands.get(0);
+        redrawCommand0.execute();
+
+        verify(gridLayer).draw();
+
+        //Second call displays the inline editor for the new row
+        final GridLayerRedrawManager.PrioritizedCommand redrawCommand1 = redrawCommands.get(1);
+        redrawCommand1.execute();
+
+        verify(gridLayerDomElementContainer).add(any(Widget.class));
     }
 
     @Test

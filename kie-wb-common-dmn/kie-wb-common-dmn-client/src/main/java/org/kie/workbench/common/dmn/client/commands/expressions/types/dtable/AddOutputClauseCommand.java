@@ -49,6 +49,7 @@ public class AddOutputClauseCommand extends AbstractCanvasGraphCommand implement
     private final int uiColumnIndex;
     private final DecisionTableUIModelMapper uiModelMapper;
     private final org.uberfire.mvp.Command canvasOperation;
+    private final String name;
 
     public AddOutputClauseCommand(final DecisionTable dtable,
                                   final OutputClause outputClause,
@@ -64,6 +65,7 @@ public class AddOutputClauseCommand extends AbstractCanvasGraphCommand implement
         this.uiColumnIndex = uiColumnIndex;
         this.uiModelMapper = uiModelMapper;
         this.canvasOperation = canvasOperation;
+        this.name = DecisionTableDefaultValueUtilities.getNewOutputClauseName(dtable);
     }
 
     @Override
@@ -78,7 +80,7 @@ public class AddOutputClauseCommand extends AbstractCanvasGraphCommand implement
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
                 final int clauseIndex = uiColumnIndex - DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT - dtable.getInput().size();
                 dtable.getOutput().add(clauseIndex, outputClause);
-                outputClause.setName(DecisionTableDefaultValueUtilities.getNewOutputClauseName(dtable));
+                outputClause.setName(name);
 
                 dtable.getRule().forEach(rule -> {
                     final LiteralExpression le = new LiteralExpression();

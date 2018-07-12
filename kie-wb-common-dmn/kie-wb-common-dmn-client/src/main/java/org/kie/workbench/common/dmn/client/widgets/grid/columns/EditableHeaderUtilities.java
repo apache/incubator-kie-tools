@@ -69,6 +69,26 @@ public class EditableHeaderUtilities {
         return uiHeaderRowIndex;
     }
 
+    public static boolean hasEditableHeader(final GridColumn<?> column) {
+        return column.getHeaderMetaData().stream().anyMatch(md -> md instanceof EditableHeaderMetaData);
+    }
+
+    public static boolean isEditableHeader(final GridColumn<?> column,
+                                           final Integer uiHeaderRowIndex) {
+        return column.getHeaderMetaData().get(uiHeaderRowIndex) instanceof EditableHeaderMetaData;
+    }
+
+    public static GridBodyCellEditContext makeRenderContext(final GridWidget gridWidget,
+                                                            final BaseGridRendererHelper.RenderingInformation ri,
+                                                            final BaseGridRendererHelper.ColumnInformation ci,
+                                                            final int uiHeaderRowIndex) {
+        return makeRenderContext(gridWidget,
+                                 ri,
+                                 ci,
+                                 null,
+                                 uiHeaderRowIndex);
+    }
+
     public static GridBodyCellEditContext makeRenderContext(final GridWidget gridWidget,
                                                             final BaseGridRendererHelper.RenderingInformation ri,
                                                             final BaseGridRendererHelper.ColumnInformation ci,
@@ -138,7 +158,7 @@ public class EditableHeaderUtilities {
                                            floatingBlockInformation.getColumns().contains(column),
                                            gridWidget.getViewport().getTransform(),
                                            renderer,
-                                           Optional.of(rp));
+                                           Optional.ofNullable(rp));
     }
 
     private static boolean isSameHeaderMetaData(final GridColumn.HeaderMetaData clickedHeaderMetaData,

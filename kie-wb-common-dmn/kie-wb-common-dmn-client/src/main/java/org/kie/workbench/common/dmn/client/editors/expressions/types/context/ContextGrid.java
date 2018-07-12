@@ -30,6 +30,7 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.AddContextEntryCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.DeleteContextEntryCommand;
@@ -50,7 +51,10 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
@@ -242,15 +246,23 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
     void addContextEntry(final int index) {
         expression.ifPresent(c -> {
             final ContextEntry ce = new ContextEntry();
-            ce.setVariable(new InformationItem());
-            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                          new AddContextEntryCommand(c,
-                                                                     ce,
-                                                                     model,
-                                                                     new DMNGridRow(),
-                                                                     index,
-                                                                     uiModelMapper,
-                                                                     this::resize));
+            final InformationItem informationItem = new InformationItem();
+            informationItem.setName(new Name());
+            ce.setVariable(informationItem);
+
+            final CommandResult<CanvasViolation> result = sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                                                                        new AddContextEntryCommand(c,
+                                                                                                                   ce,
+                                                                                                                   model,
+                                                                                                                   new DMNGridRow(),
+                                                                                                                   index,
+                                                                                                                   uiModelMapper,
+                                                                                                                   this::resize));
+
+            if (!CommandUtils.isError(result)) {
+                selectCell(index, ContextUIModelMapperHelper.NAME_COLUMN_INDEX, false, false);
+                startEditingCell(index, ContextUIModelMapperHelper.NAME_COLUMN_INDEX);
+            }
         });
     }
 

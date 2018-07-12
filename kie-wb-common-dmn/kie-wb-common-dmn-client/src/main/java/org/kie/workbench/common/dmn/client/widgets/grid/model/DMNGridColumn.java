@@ -20,11 +20,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderUtilities;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
 public abstract class DMNGridColumn<G extends GridWidget, T> extends BaseGridColumn<T> {
 
@@ -65,5 +69,26 @@ public abstract class DMNGridColumn<G extends GridWidget, T> extends BaseGridCol
                 parentColumn.setWidth(beg.getWidth() + beg.getPadding() * 2);
             }
         }
+    }
+
+    public void startEditingHeaderCell(final int uiHeaderRowIndex) {
+        if (!EditableHeaderUtilities.hasEditableHeader(this)) {
+            return;
+        }
+        if (!EditableHeaderUtilities.isEditableHeader(this,
+                                                      uiHeaderRowIndex)) {
+            return;
+        }
+
+        final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
+        final BaseGridRendererHelper.RenderingInformation ri = rendererHelper.getRenderingInformation();
+        final double columnXCoordinate = rendererHelper.getColumnOffset(this) + this.getWidth() / 2;
+        final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(columnXCoordinate);
+        final EditableHeaderMetaData headerMetaData = (EditableHeaderMetaData) this.getHeaderMetaData().get(uiHeaderRowIndex);
+        final GridBodyCellEditContext context = EditableHeaderUtilities.makeRenderContext(gridWidget,
+                                                                                          ri,
+                                                                                          ci,
+                                                                                          uiHeaderRowIndex);
+        headerMetaData.edit(context);
     }
 }

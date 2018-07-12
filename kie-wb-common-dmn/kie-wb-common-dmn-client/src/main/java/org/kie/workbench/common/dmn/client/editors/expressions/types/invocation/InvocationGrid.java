@@ -55,7 +55,10 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
@@ -242,16 +245,22 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
         expression.ifPresent(invocation -> {
             final Binding binding = new Binding();
             final InformationItem parameter = new InformationItem();
-            parameter.setName(new Name("p" + invocation.getBinding().size()));
+            parameter.setName(new Name());
             binding.setParameter(parameter);
-            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                          new AddParameterBindingCommand(invocation,
-                                                                         binding,
-                                                                         model,
-                                                                         new DMNGridRow(),
-                                                                         index,
-                                                                         uiModelMapper,
-                                                                         this::resize));
+
+            final CommandResult<CanvasViolation> result = sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                                                                        new AddParameterBindingCommand(invocation,
+                                                                                                                       binding,
+                                                                                                                       model,
+                                                                                                                       new DMNGridRow(),
+                                                                                                                       index,
+                                                                                                                       uiModelMapper,
+                                                                                                                       this::resize));
+
+            if (!CommandUtils.isError(result)) {
+                selectCell(index, InvocationUIModelMapper.BINDING_PARAMETER_COLUMN_INDEX, false, false);
+                startEditingCell(index, InvocationUIModelMapper.BINDING_PARAMETER_COLUMN_INDEX);
+            }
         });
     }
 

@@ -49,6 +49,7 @@ public class AddRelationColumnCommand extends AbstractCanvasGraphCommand impleme
     private final int uiColumnIndex;
     private final RelationUIModelMapper uiModelMapper;
     private final org.uberfire.mvp.Command canvasOperation;
+    private final String name;
 
     public AddRelationColumnCommand(final Relation relation,
                                     final InformationItem informationItem,
@@ -64,6 +65,7 @@ public class AddRelationColumnCommand extends AbstractCanvasGraphCommand impleme
         this.uiColumnIndex = uiColumnIndex;
         this.uiModelMapper = uiModelMapper;
         this.canvasOperation = canvasOperation;
+        this.name = RelationDefaultValueUtilities.getNewColumnName(relation);
     }
 
     @Override
@@ -78,7 +80,7 @@ public class AddRelationColumnCommand extends AbstractCanvasGraphCommand impleme
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
                 final int iiIndex = uiColumnIndex - RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT;
                 relation.getColumn().add(iiIndex, informationItem);
-                informationItem.getName().setValue(RelationDefaultValueUtilities.getNewColumnName(relation));
+                informationItem.getName().setValue(name);
 
                 relation.getRow().forEach(row -> {
                     final LiteralExpression le = new LiteralExpression();

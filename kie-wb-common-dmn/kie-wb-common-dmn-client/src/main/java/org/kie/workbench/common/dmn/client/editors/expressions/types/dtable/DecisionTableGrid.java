@@ -65,7 +65,9 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
@@ -345,18 +347,20 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
     void addInputClause(final int index) {
         expression.ifPresent(dtable -> {
             final InputClause clause = new InputClause();
-            final LiteralExpression le = new LiteralExpression();
-            le.setText("input");
-            clause.setInputExpression(le);
+            final InputClauseColumn inputClauseColumn = makeInputClauseColumn(clause);
 
-            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                          new AddInputClauseCommand(dtable,
-                                                                    clause,
-                                                                    model,
-                                                                    makeInputClauseColumn(clause),
-                                                                    index,
-                                                                    uiModelMapper,
-                                                                    this::resize));
+            final CommandResult<CanvasViolation> result = sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                                                                        new AddInputClauseCommand(dtable,
+                                                                                                                  clause,
+                                                                                                                  model,
+                                                                                                                  inputClauseColumn,
+                                                                                                                  index,
+                                                                                                                  uiModelMapper,
+                                                                                                                  this::resize));
+
+            if (!CommandUtils.isError(result)) {
+                inputClauseColumn.startEditingHeaderCell(0);
+            }
         });
     }
 
@@ -374,16 +378,20 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
     void addOutputClause(final int index) {
         expression.ifPresent(dtable -> {
             final OutputClause clause = new OutputClause();
-            clause.setName("output");
+            final OutputClauseColumn outputClauseColumn = makeOutputClauseColumn(clause);
 
-            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                          new AddOutputClauseCommand(dtable,
-                                                                     clause,
-                                                                     model,
-                                                                     makeOutputClauseColumn(clause),
-                                                                     index,
-                                                                     uiModelMapper,
-                                                                     this::resize));
+            final CommandResult<CanvasViolation> result = sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                                                                        new AddOutputClauseCommand(dtable,
+                                                                                                                   clause,
+                                                                                                                   model,
+                                                                                                                   outputClauseColumn,
+                                                                                                                   index,
+                                                                                                                   uiModelMapper,
+                                                                                                                   this::resize));
+
+            if (!CommandUtils.isError(result)) {
+                outputClauseColumn.startEditingHeaderCell(1);
+            }
         });
     }
 

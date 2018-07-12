@@ -50,6 +50,7 @@ public class AddParameterBindingCommand extends AbstractCanvasGraphCommand imple
     private final int uiRowIndex;
     private final InvocationUIModelMapper uiModelMapper;
     private final org.uberfire.mvp.Command canvasOperation;
+    private final String name;
 
     public AddParameterBindingCommand(final Invocation invocation,
                                       final Binding binding,
@@ -65,6 +66,7 @@ public class AddParameterBindingCommand extends AbstractCanvasGraphCommand imple
         this.uiRowIndex = uiRowIndex;
         this.uiModelMapper = uiModelMapper;
         this.canvasOperation = canvasOperation;
+        this.name = InvocationDefaultValueUtilities.getNewParameterName(invocation);
     }
 
     @Override
@@ -79,7 +81,7 @@ public class AddParameterBindingCommand extends AbstractCanvasGraphCommand imple
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
                 invocation.getBinding().add(uiRowIndex, binding);
                 final InformationItem informationItem = binding.getParameter();
-                informationItem.getName().setValue(InvocationDefaultValueUtilities.getNewParameterName(invocation));
+                informationItem.getName().setValue(name);
 
                 binding.setParent(invocation);
                 binding.getParameter().setParent(binding);

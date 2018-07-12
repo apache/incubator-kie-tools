@@ -27,27 +27,24 @@ public class ContextUIModelMapperHelperTest {
     @Test
     public void testGetSectionNone() {
         assertEquals(ContextSection.NONE,
-                     getSection(ContextUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT +
-                                        ContextUIModelMapperHelper.NAME_COLUMN_COUNT +
-                                        ContextUIModelMapperHelper.EXPRESSION_COLUMN_COUNT + 1));
+                     getSection(ContextUIModelMapperHelper.EXPRESSION_COLUMN_INDEX + 1));
     }
 
     @Test
     public void testGetSectionRowNumberColumn() {
         assertEquals(ContextSection.ROW_INDEX,
-                     getSection(0));
+                     getSection(ContextUIModelMapperHelper.ROW_COLUMN_INDEX));
     }
 
     @Test
     public void testGetSectionNameColumn() {
         assertEquals(ContextSection.NAME,
-                     getSection(ContextUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT));
+                     getSection(ContextUIModelMapperHelper.NAME_COLUMN_INDEX));
     }
 
     @Test
     public void testGetSectionExpressionColumn() {
         assertEquals(ContextSection.EXPRESSION,
-                     getSection(ContextUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT +
-                                        ContextUIModelMapperHelper.NAME_COLUMN_COUNT));
+                     getSection(ContextUIModelMapperHelper.EXPRESSION_COLUMN_INDEX));
     }
 }
