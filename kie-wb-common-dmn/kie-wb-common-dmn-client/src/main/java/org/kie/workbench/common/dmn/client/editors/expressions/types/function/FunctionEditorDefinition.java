@@ -101,11 +101,19 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
 
     @Override
     public Optional<FunctionDefinition> getModelClass() {
-        final FunctionDefinition function = new FunctionDefinition();
-        KindUtilities.setKind(function,
-                              FunctionDefinition.Kind.FEEL);
-        function.setExpression(new LiteralExpression());
-        return Optional.of(function);
+        return Optional.of(new FunctionDefinition());
+    }
+
+    @Override
+    public void enrich(final Optional<String> nodeUUID,
+                       final Optional<FunctionDefinition> expression) {
+        expression.ifPresent(function -> {
+            KindUtilities.setKind(function,
+                                  FunctionDefinition.Kind.FEEL);
+            final LiteralExpression le = new LiteralExpression();
+            function.setExpression(le);
+            le.setParent(function);
+        });
     }
 
     @Override

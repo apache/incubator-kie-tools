@@ -242,6 +242,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNG
                 editor = expressionGridCache.getExpressionGrid(uuid);
             }
             if (!editor.isPresent()) {
+                ed.enrich(nodeUUID, expression);
                 editor = ed.getEditor(parent,
                                       nodeUUID,
                                       hasExpression,

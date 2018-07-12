@@ -24,7 +24,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 
-public interface ExpressionEditorDefinition<T extends Expression> {
+public interface ExpressionEditorDefinition<T extends Expression> extends ExpressionEditorModelEnricher<T> {
 
     ExpressionType getType();
 

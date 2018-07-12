@@ -245,6 +245,7 @@ public class ContextGridTest {
                                                  expressionEditorDefinitionsSupplier);
 
         expression = definition.getModelClass();
+        definition.enrich(Optional.empty(), expression);
 
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add((ExpressionEditorDefinition) definition);

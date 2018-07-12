@@ -51,6 +51,7 @@ import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyEditorView;
+import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
@@ -247,9 +248,12 @@ public class DecisionTableGridTest {
                                                             cellEditorControls,
                                                             listSelector,
                                                             translationService,
-                                                            hitPolicyEditor);
+                                                            hitPolicyEditor,
+                                                            new DecisionTableEditorDefinitionEnricher(sessionManager,
+                                                                                                      new DMNGraphUtils(sessionManager)));
 
         expression = definition.getModelClass();
+        definition.enrich(Optional.empty(), expression);
 
         doReturn(session).when(sessionManager).getCurrentSession();
         doReturn(canvasHandler).when(session).getCanvasHandler();

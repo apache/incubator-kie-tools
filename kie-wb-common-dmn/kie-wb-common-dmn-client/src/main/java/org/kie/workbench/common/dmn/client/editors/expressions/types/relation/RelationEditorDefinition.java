@@ -89,21 +89,26 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
 
     @Override
     public Optional<Relation> getModelClass() {
-        final Relation relation = new Relation();
-        final InformationItem column = new InformationItem();
-        column.getName().setValue(RelationDefaultValueUtilities.getNewColumnName(relation));
-        final org.kie.workbench.common.dmn.api.definition.v1_1.List row = new org.kie.workbench.common.dmn.api.definition.v1_1.List();
-        final LiteralExpression literalExpression = new LiteralExpression();
-        row.getExpression().add(literalExpression);
-        relation.getColumn().add(column);
-        relation.getRow().add(row);
+        return Optional.of(new Relation());
+    }
 
-        //Setup parent relationships
-        column.setParent(relation);
-        row.setParent(relation);
-        literalExpression.setParent(row);
+    @Override
+    public void enrich(final Optional<String> nodeUUID,
+                       final Optional<Relation> expression) {
+        expression.ifPresent(relation -> {
+            final InformationItem column = new InformationItem();
+            column.getName().setValue(RelationDefaultValueUtilities.getNewColumnName(relation));
+            final org.kie.workbench.common.dmn.api.definition.v1_1.List row = new org.kie.workbench.common.dmn.api.definition.v1_1.List();
+            final LiteralExpression literalExpression = new LiteralExpression();
+            row.getExpression().add(literalExpression);
+            relation.getColumn().add(column);
+            relation.getRow().add(row);
 
-        return Optional.of(relation);
+            //Setup parent relationships
+            column.setParent(relation);
+            row.setParent(relation);
+            literalExpression.setParent(row);
+        });
     }
 
     @Override

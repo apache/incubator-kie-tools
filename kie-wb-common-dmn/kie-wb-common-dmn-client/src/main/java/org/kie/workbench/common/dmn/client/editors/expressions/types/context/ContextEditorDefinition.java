@@ -96,27 +96,31 @@ public class ContextEditorDefinition extends BaseEditorDefinition<Context, Conte
 
     @Override
     public Optional<Context> getModelClass() {
-        //Add one ContextEntry for the User to start with
-        final Context context = new Context();
-        final ContextEntry contextEntry = new ContextEntry();
-        final InformationItem informationItem = new InformationItem();
-        informationItem.getName().setValue(ContextEntryDefaultValueUtilities.getNewContextEntryName(context));
-        contextEntry.setVariable(informationItem);
-        context.getContextEntry().add(contextEntry);
+        return Optional.of(new Context());
+    }
 
-        //Add (default) "result" entry
-        final ContextEntry resultEntry = new ContextEntry();
-        final LiteralExpression literalExpression = new LiteralExpression();
-        resultEntry.setExpression(literalExpression);
-        context.getContextEntry().add(resultEntry);
+    @Override
+    public void enrich(final Optional<String> nodeUUID,
+                       final Optional<Context> expression) {
+        expression.ifPresent(context -> {
+            final ContextEntry contextEntry = new ContextEntry();
+            final InformationItem informationItem = new InformationItem();
+            informationItem.getName().setValue(ContextEntryDefaultValueUtilities.getNewContextEntryName(context));
+            contextEntry.setVariable(informationItem);
+            context.getContextEntry().add(contextEntry);
 
-        //Setup parent relationships
-        contextEntry.setParent(context);
-        informationItem.setParent(contextEntry);
-        resultEntry.setParent(context);
-        literalExpression.setParent(resultEntry);
+            //Add (default) "result" entry
+            final ContextEntry resultEntry = new ContextEntry();
+            final LiteralExpression literalExpression = new LiteralExpression();
+            resultEntry.setExpression(literalExpression);
+            context.getContextEntry().add(resultEntry);
 
-        return Optional.of(context);
+            //Setup parent relationships
+            contextEntry.setParent(context);
+            informationItem.setParent(contextEntry);
+            resultEntry.setParent(context);
+            literalExpression.setParent(resultEntry);
+        });
     }
 
     @Override

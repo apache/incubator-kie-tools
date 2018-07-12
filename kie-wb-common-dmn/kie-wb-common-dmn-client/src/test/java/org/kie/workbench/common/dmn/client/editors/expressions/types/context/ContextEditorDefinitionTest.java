@@ -139,6 +139,12 @@ public class ContextEditorDefinitionTest {
     public void testModelDefinition() {
         final Optional<Context> oModel = definition.getModelClass();
         assertTrue(oModel.isPresent());
+    }
+
+    @Test
+    public void testModelEnrichment() {
+        final Optional<Context> oModel = definition.getModelClass();
+        definition.enrich(Optional.empty(), oModel);
 
         final Context model = oModel.get();
         assertEquals(2,

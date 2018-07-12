@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.graph;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -27,13 +27,9 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.AbstractTreeTraverseCallback;
-import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
-import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 
 @Dependent
 public class DMNGraphUtils {
@@ -51,7 +47,6 @@ public class DMNGraphUtils {
 
     @SuppressWarnings("unchecked")
     public Definitions getDefinitions() {
-        final List<Definitions> definitions = new ArrayList<>();
         final ClientSession session = sessionManager.getCurrentSession();
         if (session == null) {
             return null;
@@ -62,26 +57,15 @@ public class DMNGraphUtils {
         }
         final Graph<?, Node> graph = canvasHandler.getDiagram().getGraph();
 
-        final TreeWalkTraverseProcessor walker = new TreeWalkTraverseProcessorImpl();
-        walker.traverse(graph,
-                        new AbstractTreeTraverseCallback<Graph, Node, Edge>() {
+        final Optional<DMNDiagram> diagram = StreamSupport.stream(graph.nodes().spliterator(), false)
+                .map(Node::getContent)
+                .filter(c -> c instanceof Definition)
+                .map(c -> (Definition) c)
+                .map(Definition::getDefinition)
+                .filter(d -> d instanceof DMNDiagram)
+                .map(d -> (DMNDiagram) d)
+                .findFirst();
 
-                            @Override
-                            public boolean startNodeTraversal(final Node node) {
-                                final Object c = node.getContent();
-                                if (c instanceof View) {
-                                    final View v = (View) c;
-                                    final Object d = v.getDefinition();
-                                    if (d instanceof DMNDiagram) {
-                                        final DMNDiagram diagram = (DMNDiagram) d;
-                                        definitions.add(diagram.getDefinitions());
-                                        return false;
-                                    }
-                                }
-                                return true;
-                            }
-                        });
-
-        return definitions.isEmpty() ? null : definitions.get(0);
+        return diagram.isPresent() ? diagram.get().getDefinitions() : null;
     }
 }

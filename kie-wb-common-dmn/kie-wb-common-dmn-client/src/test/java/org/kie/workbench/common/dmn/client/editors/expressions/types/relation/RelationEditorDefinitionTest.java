@@ -125,6 +125,12 @@ public class RelationEditorDefinitionTest {
     public void testModelDefinition() {
         final Optional<Relation> oModel = definition.getModelClass();
         assertThat(oModel).isPresent();
+    }
+
+    @Test
+    public void testModelEnrichment() {
+        final Optional<Relation> oModel = definition.getModelClass();
+        definition.enrich(Optional.empty(), oModel);
 
         final Relation model = oModel.get();
 

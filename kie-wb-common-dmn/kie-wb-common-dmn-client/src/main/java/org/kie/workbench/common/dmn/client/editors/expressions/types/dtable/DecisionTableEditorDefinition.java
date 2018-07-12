@@ -25,15 +25,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
-import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
-import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
-import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
@@ -58,6 +50,7 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 public class DecisionTableEditorDefinition extends BaseEditorDefinition<DecisionTable, DecisionTableGridData> {
 
     private HitPolicyEditorView.Presenter hitPolicyEditor;
+    private DecisionTableEditorDefinitionEnricher enricher;
 
     public DecisionTableEditorDefinition() {
         //CDI proxy
@@ -74,7 +67,8 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
                                          final CellEditorControlsView.Presenter cellEditorControls,
                                          final ListSelectorView.Presenter listSelector,
                                          final TranslationService translationService,
-                                         final HitPolicyEditorView.Presenter hitPolicyEditor) {
+                                         final HitPolicyEditorView.Presenter hitPolicyEditor,
+                                         final DecisionTableEditorDefinitionEnricher enricher) {
         super(gridPanel,
               gridLayer,
               definitionUtils,
@@ -86,6 +80,7 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
               listSelector,
               translationService);
         this.hitPolicyEditor = hitPolicyEditor;
+        this.enricher = enricher;
     }
 
     @Override
@@ -100,44 +95,13 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
 
     @Override
     public Optional<DecisionTable> getModelClass() {
-        final DecisionTable dtable = new DecisionTable();
-        dtable.setHitPolicy(HitPolicy.ANY);
-        dtable.setPreferredOrientation(DecisionTableOrientation.RULE_AS_ROW);
+        return Optional.of(new DecisionTable());
+    }
 
-        final InputClause ic = new InputClause();
-        final LiteralExpression le = new LiteralExpression();
-        le.setText(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
-        ic.setInputExpression(le);
-        dtable.getInput().add(ic);
-
-        final OutputClause oc = new OutputClause();
-        oc.setName(DecisionTableDefaultValueUtilities.getNewOutputClauseName(dtable));
-        dtable.getOutput().add(oc);
-
-        final DecisionRule dr = new DecisionRule();
-        final UnaryTests drut = new UnaryTests();
-        drut.setText(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT);
-        dr.getInputEntry().add(drut);
-
-        final LiteralExpression drle = new LiteralExpression();
-        drle.setText(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT);
-        dr.getOutputEntry().add(drle);
-
-        final Description d = new Description();
-        d.setValue(DecisionTableDefaultValueUtilities.RULE_DESCRIPTION);
-        dr.setDescription(d);
-
-        dtable.getRule().add(dr);
-
-        //Setup parent relationships
-        ic.setParent(dtable);
-        oc.setParent(dtable);
-        dr.setParent(dtable);
-        le.setParent(ic);
-        drut.setParent(dr);
-        drle.setParent(dr);
-
-        return Optional.of(dtable);
+    @Override
+    public void enrich(final Optional<String> nodeUUID,
+                       final Optional<DecisionTable> expression) {
+        enricher.enrich(nodeUUID, expression);
     }
 
     @Override

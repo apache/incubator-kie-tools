@@ -138,6 +138,12 @@ public class JavaFunctionEditorDefinitionTest {
     public void testModelDefinition() {
         final Optional<Context> oModel = definition.getModelClass();
         assertTrue(oModel.isPresent());
+    }
+
+    @Test
+    public void testModelEnrichment() {
+        final Optional<Context> oModel = definition.getModelClass();
+        definition.enrich(Optional.empty(), oModel);
 
         final Context model = oModel.get();
         assertEquals(2,
@@ -146,10 +152,12 @@ public class JavaFunctionEditorDefinitionTest {
         assertEquals(JavaFunctionEditorDefinition.VARIABLE_CLASS,
                      model.getContextEntry().get(0).getVariable().getName().getValue());
         assertTrue(model.getContextEntry().get(0).getExpression() instanceof LiteralExpression);
+        assertEquals(model, model.getContextEntry().get(0).getParent());
 
         assertEquals(JavaFunctionEditorDefinition.VARIABLE_METHOD_SIGNATURE,
                      model.getContextEntry().get(1).getVariable().getName().getValue());
         assertTrue(model.getContextEntry().get(1).getExpression() instanceof LiteralExpression);
+        assertEquals(model, model.getContextEntry().get(1).getParent());
     }
 
     @Test

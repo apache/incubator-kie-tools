@@ -269,6 +269,7 @@ public class FunctionGridTest {
                                                                                       translationService));
 
         expression = definition.getModelClass();
+        definition.enrich(Optional.empty(), expression);
         expression.get().getFormalParameter().add(parameter);
         parameter.getName().setValue(PARAMETER_NAME);
 
@@ -568,7 +569,8 @@ public class FunctionGridTest {
         //Since we're using a concrete LiteralExpressionEditorDefinition we can only check the model is present
         assertTrue(literalExpression.isPresent());
 
-        assertSetKind(FunctionDefinition.Kind.FEEL,
+        assertSetKind(literalExpressionEditorDefinition,
+                      FunctionDefinition.Kind.FEEL,
                       LiteralExpression.class,
                       LiteralExpressionGrid.class);
     }
@@ -593,7 +595,8 @@ public class FunctionGridTest {
         assertTrue(contextExpression.isPresent());
         assertEquals(supplementaryLiteralExpression, contextExpression.get());
 
-        assertSetKind(FunctionDefinition.Kind.JAVA,
+        assertSetKind(supplementaryLiteralExpressionEditorDefinition,
+                      FunctionDefinition.Kind.JAVA,
                       Context.class,
                       FunctionSupplementaryGrid.class);
     }
@@ -618,18 +621,22 @@ public class FunctionGridTest {
         assertTrue(contextExpression.isPresent());
         assertEquals(supplementaryLiteralExpression, contextExpression.get());
 
-        assertSetKind(FunctionDefinition.Kind.PMML,
+        assertSetKind(supplementaryLiteralExpressionEditorDefinition,
+                      FunctionDefinition.Kind.PMML,
                       Context.class,
                       FunctionSupplementaryGrid.class);
     }
 
-    private void assertSetKind(final FunctionDefinition.Kind expectedKind,
+    @SuppressWarnings("unchecked")
+    private void assertSetKind(final ExpressionEditorDefinition definition,
+                               final FunctionDefinition.Kind expectedKind,
                                final Class<?> expectedExpressionType,
                                final Class<?> expectedEditorType) {
         verify(grid).doSetKind(eq(expectedKind),
                                eq(expression.get()),
                                expressionCaptor.capture(),
                                gridWidgetCaptor.capture());
+        verify(definition).enrich(any(Optional.class), any(Optional.class));
         assertTrue(expectedExpressionType.isAssignableFrom(expressionCaptor.getValue().get().getClass()));
         assertTrue(expectedEditorType.isAssignableFrom(gridWidgetCaptor.getValue().get().getClass()));
 

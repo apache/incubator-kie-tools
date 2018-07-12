@@ -148,6 +148,12 @@ public class FunctionEditorDefinitionTest {
     public void testModelDefinition() {
         final Optional<FunctionDefinition> oModel = definition.getModelClass();
         assertTrue(oModel.isPresent());
+    }
+
+    @Test
+    public void testModelEnrichment() {
+        final Optional<FunctionDefinition> oModel = definition.getModelClass();
+        definition.enrich(Optional.empty(), oModel);
 
         final FunctionDefinition model = oModel.get();
         assertEquals(Namespace.KIE.getUri(),
