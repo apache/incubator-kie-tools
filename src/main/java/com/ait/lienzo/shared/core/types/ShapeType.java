@@ -43,6 +43,8 @@ public class ShapeType implements IStringValued
 
     public static final ShapeType PICTURE             = new ShapeType("Picture");
 
+    public static final ShapeType IMAGE               = new ShapeType("Image");
+
     public static final ShapeType POLYGON             = new ShapeType("Polygon");
 
     public static final ShapeType POLYLINE            = new ShapeType("Polyline");

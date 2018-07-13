@@ -52,7 +52,7 @@ import com.google.gwt.json.client.JSONString;
 /**
  * A Container capable of holding a collection of T objects
  */
-public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>> extends ContainerNode<T, C>implements IPrimitive<C>
+public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>> extends ContainerNode<T, C>implements IPrimitive<C>, IDestroyable
 {
     private GroupType                   m_type = null;
 
@@ -742,6 +742,22 @@ public abstract class GroupOf <T extends IPrimitive<?>, C extends GroupOf<T, C>>
         super.removeAll();
 
         return cast();
+    }
+
+    @Override
+    public void destroy() {
+        destroy(this);
+    }
+
+    public static <T extends IPrimitive<?>, C extends GroupOf<T, C>> void destroy(final GroupOf<T, C> group) {
+        final NFastArrayList<T> children = group.getChildNodes();
+        for (final T child : children) {
+            if (child instanceof IDestroyable) {
+                ((IDestroyable) child).destroy();
+            }
+        }
+        group.removeAll();
+        group.removeFromParent();
     }
 
     /**

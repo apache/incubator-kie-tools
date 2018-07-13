@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.config;
 
+import com.ait.lienzo.client.core.image.Image;
 import com.ait.lienzo.client.core.image.filter.AlphaScaleColorImageDataFilter;
 import com.ait.lienzo.client.core.image.filter.AverageGrayScaleImageDataFilter;
 import com.ait.lienzo.client.core.image.filter.BrightnessImageDataFilter;
@@ -168,6 +169,14 @@ final class LienzoCorePlugin extends AbstractLienzoCorePlugin
             public IFactory<?> get()
             {
                 return new Picture.PictureFactory();
+            }
+        });
+        addFactorySupplier(ShapeType.IMAGE, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Image.ImageFactory();
             }
         });
         addFactorySupplier(ShapeType.POLYGON, new Supplier<IFactory<?>>()

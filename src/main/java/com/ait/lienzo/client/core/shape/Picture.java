@@ -59,7 +59,7 @@ import com.google.gwt.resources.client.ImageResource;
  * The upside is that it will not need to generate a separate Image for the Selection Layer,
  * which saves memory and time, both for generating the selection layer Image and when drawing the Picture.
  */
-public class Picture extends AbstractImageShape<Picture> implements ImageDataFilterable<Picture>
+public class Picture extends AbstractImageShape<Picture> implements ImageDataFilterable<Picture>, IDestroyable
 {
     protected Picture(JSONObject node, ValidationContext ctx) throws ValidationException
     {
@@ -1706,6 +1706,12 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     public List<Attribute> getBoundingBoxAttributes()
     {
         return asAttributes(Attribute.URL, Attribute.CLIPPED_IMAGE_START_X, Attribute.CLIPPED_IMAGE_START_Y, Attribute.CLIPPED_IMAGE_WIDTH, Attribute.CLIPPED_IMAGE_HEIGHT, Attribute.CLIPPED_IMAGE_DESTINATION_WIDTH, Attribute.CLIPPED_IMAGE_DESTINATION_HEIGHT);
+    }
+
+    @Override
+    public void destroy() {
+        getImageProxy().destroy();
+        removeFromParent();
     }
 
     public static class PictureFactory extends ShapeFactory<Picture>
