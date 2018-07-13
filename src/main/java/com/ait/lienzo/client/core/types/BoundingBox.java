@@ -28,7 +28,7 @@ public final class BoundingBox
 
     public BoundingBox()
     {
-        this(Double.MAX_VALUE, Double.MAX_VALUE, -Double.MAX_VALUE, -Double.MAX_VALUE);
+        this(BoundingBoxJSO.make(Double.MAX_VALUE, Double.MAX_VALUE, -Double.MAX_VALUE, -Double.MAX_VALUE));
     }
 
     public BoundingBox(final BoundingBox bbox)
@@ -40,7 +40,8 @@ public final class BoundingBox
 
     public BoundingBox(final double minx, final double miny, final double maxx, final double maxy)
     {
-        this(BoundingBoxJSO.make(minx, miny, maxx, maxy));
+        this(new Point2D(minx, miny), new Point2D(maxx, maxy));
+//        this(BoundingBoxJSO.make(minx, miny, maxx, maxy));
     }
 
     public BoundingBox(final Point2D point, final Point2D... points)
