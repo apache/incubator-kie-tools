@@ -16,9 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
-import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
+import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
-import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
@@ -39,6 +38,6 @@ public final class SequenceFlowConnectorDef
     @Override
     public Glyph getGlyph(final Class type,
                           final String defId) {
-        return ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.sequenceFlow().getSafeUri());
+        return BPMNGlyphFactory.SEQUENCE_FLOW;
     }
 }

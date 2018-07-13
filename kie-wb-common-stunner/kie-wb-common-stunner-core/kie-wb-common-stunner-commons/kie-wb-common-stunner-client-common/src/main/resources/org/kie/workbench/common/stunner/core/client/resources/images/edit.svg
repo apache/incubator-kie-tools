@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2018 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" width="611.038px" height="611.038px"
 		 viewBox="0 0 611.038 611.038" style="enable-background:new 0 0 611.038 611.038;"
 	 xml:space="preserve">
@@ -8,7 +24,7 @@
 		<path d="M518.902,15.802l-39.12,39.129l76.338,76.323l39.12-39.13c21.042-21.081,21.08-55.242,0-76.323
 			C574.164-5.274,539.978-5.26,518.902,15.802z"/>
 		<polygon points="139.299,471.76 269.536,416.857 193.681,342.719"/>
-		<polygon points="533.825,224.092 460.198,296.681 460.198,536.465 71.324,536.465 71.324,149.184 315.961,149.184 384.094,77.217 
+		<polygon points="533.825,224.092 460.198,296.681 460.198,536.465 71.324,536.465 71.324,149.184 315.961,149.184 384.094,77.217
 			0.002,77.217 0.002,611.038 533.825,611.038"/>
 	</g>
 </g>

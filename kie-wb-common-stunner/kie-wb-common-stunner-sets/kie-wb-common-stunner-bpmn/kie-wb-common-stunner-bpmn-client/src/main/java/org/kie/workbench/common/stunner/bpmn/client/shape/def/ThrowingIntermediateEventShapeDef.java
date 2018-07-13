@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGGlyphFactory;
+import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseThrowingIntermediateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventThrowing;
@@ -40,8 +40,8 @@ public class ThrowingIntermediateEventShapeDef
 
     public static final Map<Class<? extends BaseThrowingIntermediateEvent>, Glyph> GLYPHS =
             new HashMap<Class<? extends BaseThrowingIntermediateEvent>, Glyph>() {{
-                put(IntermediateSignalEventThrowing.class, BPMNSVGGlyphFactory.INTERMEDIATE_SIGNAL_EVENT_THROWING_GLYPH);
-                put(IntermediateMessageEventThrowing.class, BPMNSVGGlyphFactory.INTERMEDIATE_MESSAGE_EVENT_THROWING_GLYPH);
+                put(IntermediateSignalEventThrowing.class, BPMNGlyphFactory.EVENT_INTERMEDIATE_THROWING_SIGNAL);
+                put(IntermediateMessageEventThrowing.class, BPMNGlyphFactory.EVENT_INTERMEDIATE_THROWING_MESSAGE);
             }};
 
     @Override

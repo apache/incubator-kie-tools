@@ -22,17 +22,10 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasContro
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.kie.workbench.common.stunner.core.util.UUID;
 import org.uberfire.mvp.Command;
 
 public abstract class AbstractSession<C extends AbstractCanvas, H extends AbstractCanvasHandler>
         implements ClientSession<C, H> {
-
-    private final String uuid;
-
-    protected AbstractSession() {
-        this.uuid = UUID.uuid();
-    }
 
     public abstract void init(Metadata metadata,
                               Command callback);
@@ -61,11 +54,6 @@ public abstract class AbstractSession<C extends AbstractCanvas, H extends Abstra
     }
 
     @Override
-    public String getSessionUUID() {
-        return uuid;
-    }
-
-    @Override
     public boolean equals(final Object o) {
         if (this == o) {
             return true;
@@ -74,11 +62,11 @@ public abstract class AbstractSession<C extends AbstractCanvas, H extends Abstra
             return false;
         }
         AbstractSession that = (AbstractSession) o;
-        return uuid.equals(that.uuid);
+        return getSessionUUID().equals(that.getSessionUUID());
     }
 
     @Override
     public int hashCode() {
-        return uuid == null ? 0 : ~~uuid.hashCode();
+        return getSessionUUID() == null ? 0 : ~~getSessionUUID().hashCode();
     }
 }

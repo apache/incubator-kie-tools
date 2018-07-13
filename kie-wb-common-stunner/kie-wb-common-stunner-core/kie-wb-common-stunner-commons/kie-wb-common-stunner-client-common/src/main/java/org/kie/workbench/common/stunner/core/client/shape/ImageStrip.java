@@ -14,26 +14,34 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.lienzo.util;
+package org.kie.workbench.common.stunner.core.client.shape;
 
-import com.ait.lienzo.client.core.shape.Group;
-import com.ait.lienzo.client.core.shape.IDrawable;
+import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.ImageResource;
 
-public class LienzoGroupUtils {
+public interface ImageStrip {
 
-    public static void removeChildren(final Group group) {
-        group.getChildNodes().forEach(LienzoGroupUtils::remove);
+    ImageResource getImage();
+
+    StripCssResource getCss();
+
+    int getWide();
+
+    int getHigh();
+
+    int getPadding();
+
+    Orientation getOrientation();
+
+    enum Orientation {
+        HORIZONTAL,
+        VERTICAL;
     }
 
-    public static void removeAll(final Group group) {
-        group.getChildNodes().forEach(LienzoGroupUtils::remove);
-        group.removeFromParent();
-    }
+    interface StripCssResource {
 
-    private static void remove(final IDrawable item) {
-        if (item instanceof Group) {
-            removeAll((Group) item);
-        }
-        item.removeFromParent();
+        CssResource getCssResource();
+
+        String getClassName();
     }
 }

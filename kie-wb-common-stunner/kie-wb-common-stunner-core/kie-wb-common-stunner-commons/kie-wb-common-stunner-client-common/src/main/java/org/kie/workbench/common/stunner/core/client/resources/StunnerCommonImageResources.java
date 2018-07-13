@@ -26,17 +26,23 @@ public interface StunnerCommonImageResources extends ClientBundleWithLookup {
 
     StunnerCommonImageResources INSTANCE = GWT.create(StunnerCommonImageResources.class);
 
-    @ClientBundle.Source("images/check.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource check();
-
-    @ClientBundle.Source("images/delete.png")
-    ImageResource delete();
-
-    @ClientBundle.Source("images/edit.svg")
+    @Source("images/edit.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource edit();
 
-    @ClientBundle.Source("images/gears.png")
+    @Source("images/delete.png")
+    ImageResource delete();
+
+    @Source("images/gears.png")
     ImageResource gears();
+
+    @Source("images/form.png")
+    ImageResource form();
+
+    // Sprite - png 16x16px, 5px, vertical
+    @Source("images/common-icons-sprite.png")
+    ImageResource commonIconsSprite();
+
+    @ClientBundle.Source("images/common-icons-sprite.css")
+    StunnerCommonCssResource commonIconsSpriteCss();
 }

@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.forms.client.resources.images;
+package org.kie.workbench.common.stunner.core.client.resources;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundleWithLookup;
-import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.CssResource;
 
-public interface FormsImageResources extends ClientBundleWithLookup {
+public interface StunnerCommonCssResource extends CssResource {
 
-    public static final FormsImageResources INSTANCE = GWT.create(FormsImageResources.class);
-
-    @Source("form.png")
-    ImageResource form();
+    String commonIconsSpriteClass();
 }

@@ -22,21 +22,17 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ToolboxAction;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
+import org.kie.workbench.common.stunner.core.client.resources.StunnerCommonIconsGlyphFactory;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.forms.client.gen.ClientFormGenerationManager;
 import org.kie.workbench.common.stunner.forms.client.resources.i18n.FormsClientConstants;
-import org.kie.workbench.common.stunner.forms.client.resources.images.FormsImageResources;
 
 @Dependent
 public class FormGenerationToolboxAction implements ToolboxAction<AbstractCanvasHandler> {
 
     private final ClientTranslationService translationService;
     private final ClientFormGenerationManager formGenerationManager;
-
-    private static final ImageDataUriGlyph GLYPH =
-            ImageDataUriGlyph.create(FormsImageResources.INSTANCE.form().getSafeUri());
 
     @Inject
     public FormGenerationToolboxAction(final ClientTranslationService translationService,
@@ -48,7 +44,7 @@ public class FormGenerationToolboxAction implements ToolboxAction<AbstractCanvas
     @Override
     public Glyph getGlyph(final AbstractCanvasHandler canvasHandler,
                           final String uuid) {
-        return GLYPH;
+        return StunnerCommonIconsGlyphFactory.FORM;
     }
 
     @Override

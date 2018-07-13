@@ -34,9 +34,9 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.select.Multi
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
-import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistryLoader;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ManagedSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.SessionLoader;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -47,7 +47,6 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.spy;
@@ -70,7 +69,7 @@ public abstract class BaseDMNSessionTest<S extends AbstractSession<AbstractCanva
     protected DefinitionUtils definitionUtils;
 
     @Mock
-    protected StunnerPreferencesRegistryLoader stunnerPreferencesLoader;
+    protected SessionLoader sessionLoader;
 
     @Mock
     protected StunnerPreferences stunnerPreferences;
@@ -134,11 +133,11 @@ public abstract class BaseDMNSessionTest<S extends AbstractSession<AbstractCanva
         this.canvasHandlerControlRegistrations.entrySet().forEach(e -> when(canvasHandlerControlInstances.select(eq(e.getValue()), Mockito.<Annotation>anyVararg())).thenReturn(new ManagedInstanceStub<>(e.getKey())));
 
         this.managedSession = spy(new ManagedSession(definitionUtils,
+                                                     sessionLoader,
                                                      canvasInstances,
                                                      canvasHandlerInstances,
                                                      canvasControlInstances,
-                                                     canvasHandlerControlInstances,
-                                                     stunnerPreferencesLoader));
+                                                     canvasHandlerControlInstances));
 
         this.session = getSession();
 
@@ -146,7 +145,7 @@ public abstract class BaseDMNSessionTest<S extends AbstractSession<AbstractCanva
             final ParameterizedCommand<StunnerPreferences> callback = (ParameterizedCommand) i.getArguments()[1];
             callback.execute(stunnerPreferences);
             return null;
-        }).when(stunnerPreferencesLoader).load(anyString(), any(ParameterizedCommand.class), any(ParameterizedCommand.class));
+        }).when(sessionLoader).load(eq(metadata), any(ParameterizedCommand.class), any(ParameterizedCommand.class));
     }
 
     protected abstract S getSession();

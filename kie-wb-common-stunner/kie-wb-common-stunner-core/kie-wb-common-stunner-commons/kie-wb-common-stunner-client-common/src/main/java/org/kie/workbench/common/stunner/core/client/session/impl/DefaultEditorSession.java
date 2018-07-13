@@ -143,6 +143,11 @@ public class DefaultEditorSession
     }
 
     @Override
+    public String getSessionUUID() {
+        return session.getSessionUUID();
+    }
+
+    @Override
     public AbstractCanvas getCanvas() {
         return session.getCanvas();
     }

@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGGlyphFactory;
+import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseEndEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
@@ -53,15 +53,15 @@ public class EndEventShapeDef
     public static final Map<Class<? extends BaseEndEvent>, Glyph> GLYPHS =
             new HashMap<Class<? extends BaseEndEvent>, Glyph>() {{
                 put(EndNoneEvent.class,
-                    BPMNSVGGlyphFactory.END_NONE_EVENT_GLYPH);
+                    BPMNGlyphFactory.EVENT_END_NONE);
                 put(EndSignalEvent.class,
-                    BPMNSVGGlyphFactory.END_SIGNAL_EVENT_GLYPH);
+                    BPMNGlyphFactory.EVENT_END_SIGNAL);
                 put(EndMessageEvent.class,
-                    BPMNSVGGlyphFactory.END_MESSAGE_EVENT_GLYPH);
+                    BPMNGlyphFactory.EVENT_END_MESSAGE);
                 put(EndTerminateEvent.class,
-                    BPMNSVGGlyphFactory.END_TERMINATE_EVENT_GLYPH);
+                    BPMNGlyphFactory.EVENT_END_TERMINATE);
                 put(EndErrorEvent.class,
-                    BPMNSVGGlyphFactory.END_ERROR_EVENT_GLYPH);
+                    BPMNGlyphFactory.EVENT_END_ERROR);
             }};
 
     @Override

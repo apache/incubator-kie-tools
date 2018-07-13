@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.util;
 
-import com.ait.lienzo.client.core.shape.Picture;
+import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.LinearGradient;
@@ -24,16 +24,16 @@ import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 
 public class LienzoShapeUtils {
 
-    public static void scalePicture(final Picture picture,
-                                    final double width,
-                                    final double height) {
-        final BoundingBox bb = picture.getBoundingBox();
+    public static void scale(final Shape shape,
+                             final double width,
+                             final double height) {
+        final BoundingBox bb = shape.getBoundingBox();
         final double[] scale = LienzoUtils.getScaleFactor(bb.getWidth(),
                                                           bb.getHeight(),
                                                           width,
                                                           height);
-        picture.setScale(scale[0],
-                         scale[1]);
+        shape.setScale(scale[0],
+                       scale[1]);
     }
 
     public static WiresLayoutContainer.Layout getWiresLayout(final HasChildren.Layout layout) {

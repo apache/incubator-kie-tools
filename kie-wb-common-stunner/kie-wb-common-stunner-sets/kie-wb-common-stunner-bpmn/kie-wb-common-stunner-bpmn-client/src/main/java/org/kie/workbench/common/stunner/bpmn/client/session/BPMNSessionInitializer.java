@@ -16,40 +16,35 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.session;
 
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientRegistry;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.impl.DefaultViewerSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.ManagedSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.SessionInitializer;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.uberfire.mvp.Command;
 
-@Dependent
 @BPMN
-public class BPMNViewerSession
-        extends DefaultViewerSession {
+@ApplicationScoped
+public class BPMNSessionInitializer implements SessionInitializer {
 
     private final WorkItemDefinitionClientRegistry workItemDefinitionService;
 
+    // CDI proxy.
+    protected BPMNSessionInitializer() {
+        this(null);
+    }
+
     @Inject
-    public BPMNViewerSession(final ManagedSession session,
-                             final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
-                             final WorkItemDefinitionClientRegistry workItemDefinitionService) {
-        super(session, canvasCommandManager);
+    public BPMNSessionInitializer(final WorkItemDefinitionClientRegistry workItemDefinitionService) {
         this.workItemDefinitionService = workItemDefinitionService;
     }
 
     @Override
     public void init(final Metadata metadata,
-                     final Command callback) {
-        super.init(metadata,
-                   () -> {
-                       workItemDefinitionService.load(metadata,
-                                                      callback);
-                   });
+                     final Command completeCallback) {
+        workItemDefinitionService.load(metadata,
+                                       completeCallback);
     }
 }

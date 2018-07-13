@@ -16,18 +16,34 @@
 
 package org.kie.workbench.common.stunner.cm.client.shape.def;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gwt.safehtml.shared.SafeUri;
-import org.kie.workbench.common.stunner.bpmn.client.shape.def.TaskShapeDef;
+import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
+import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
+import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
+import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
+import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.cm.client.shape.view.ActivityView;
+import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 
 public final class CaseManagementTaskShapeDef
         implements CaseManagementActivityShapeDef<BaseTask, ActivityView> {
 
+    public static final Map<Class<? extends BaseTask>, ImageDataUriGlyph> GLYPHS =
+            new HashMap<Class<? extends BaseTask>, ImageDataUriGlyph>() {{
+                put(NoneTask.class, ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.task().getSafeUri()));
+                put(UserTask.class, ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.taskUser().getSafeUri()));
+                put(ScriptTask.class, ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.taskScript().getSafeUri()));
+                put(BusinessRuleTask.class, ImageDataUriGlyph.create(BPMNImageResources.INSTANCE.taskBusinessRule().getSafeUri()));
+            }};
+
     @Override
     public SafeUri getIconUri(final Class<? extends BaseTask> task) {
-        return TaskShapeDef.GLYPHS.get(task).getUri();
+        return GLYPHS.get(task).getUri();
     }
 
     @Override

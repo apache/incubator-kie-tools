@@ -16,18 +16,21 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.components.glyph;
 
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Picture;
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.util.SvgDataUriGenerator;
 
 @Dependent
-public class LienzoSvgDataUriGlyphRenderer implements LienzoGlyphRenderer<SvgDataUriGlyph> {
+public class LienzoSvgDataUriGlyphRenderer extends AbstractLienzoShapeGlyphRenderer<SvgDataUriGlyph, Picture> {
 
     private final SvgDataUriGenerator svgDataUriUtil;
-    private final LienzoPictureGlyphRenderer pictureGlyphRenderer;
+    private final BiConsumer<String, Consumer<Picture>> pictureBuilder;
 
     protected LienzoSvgDataUriGlyphRenderer() {
         this(null,
@@ -35,10 +38,16 @@ public class LienzoSvgDataUriGlyphRenderer implements LienzoGlyphRenderer<SvgDat
     }
 
     @Inject
-    public LienzoSvgDataUriGlyphRenderer(final SvgDataUriGenerator svgDataUriUtil,
-                                         final LienzoPictureGlyphRenderer pictureGlyphRenderer) {
+    public LienzoSvgDataUriGlyphRenderer(final SvgDataUriGenerator svgDataUriUtil) {
+        this(svgDataUriUtil,
+             (uri, consumer) -> new Picture(uri,
+                                            consumer::accept));
+    }
+
+    LienzoSvgDataUriGlyphRenderer(final SvgDataUriGenerator svgDataUriUtil,
+                                  final BiConsumer<String, Consumer<Picture>> pictureBuilder) {
         this.svgDataUriUtil = svgDataUriUtil;
-        this.pictureGlyphRenderer = pictureGlyphRenderer;
+        this.pictureBuilder = pictureBuilder;
     }
 
     @Override
@@ -47,17 +56,16 @@ public class LienzoSvgDataUriGlyphRenderer implements LienzoGlyphRenderer<SvgDat
     }
 
     @Override
-    public Group render(final SvgDataUriGlyph glyph,
-                        final double width,
-                        final double height) {
+    protected void getShape(final SvgDataUriGlyph glyph,
+                            final double width,
+                            final double height,
+                            final Consumer<Picture> shapeConsumer) {
         final String content = svgDataUriUtil
                 .generate(glyph.getSvg(),
                           glyph.getDefs(),
                           glyph.getValidUseRefIds());
         final String encoded = SvgDataUriGenerator.encodeBase64(content);
-        return pictureGlyphRenderer
-                .render(encoded,
-                        width,
-                        height);
+        pictureBuilder.accept(encoded,
+                              shapeConsumer::accept);
     }
 }

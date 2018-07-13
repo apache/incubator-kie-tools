@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGGlyphFactory;
+import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
@@ -45,11 +45,11 @@ public class GatewayShapeDef
     public static final Map<Class<? extends BaseGateway>, Glyph> GLYPHS =
             new HashMap<Class<? extends BaseGateway>, Glyph>() {{
                 put(ParallelGateway.class,
-                    BPMNSVGGlyphFactory.PARALLEL_MULTIPLE_GATEWAY_GLYPH);
+                    BPMNGlyphFactory.GATEWAY_PARALLEL_MULTIPLE);
                 put(ExclusiveGateway.class,
-                    BPMNSVGGlyphFactory.EXCLUSIVE_GATEWAY_GLYPH);
+                    BPMNGlyphFactory.GATEWAY_EXCLUSIVE);
                 put(InclusiveGateway.class,
-                    BPMNSVGGlyphFactory.INCLUSIVE_GATEWAY_GLYPH);
+                    BPMNGlyphFactory.GATEWAY_INCLUSIVE);
             }};
 
     @Override

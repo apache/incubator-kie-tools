@@ -25,9 +25,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.client.resources.StunnerCommonImageResources;
+import org.kie.workbench.common.stunner.core.client.resources.StunnerCommonIconsGlyphFactory;
 import org.kie.workbench.common.stunner.core.client.session.Session;
-import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -44,8 +43,6 @@ public class DeleteNodeAction implements ToolboxAction<AbstractCanvasHandler> {
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
     private final Predicate<DeleteNodeAction> confirmDelete;
-    private static final ImageDataUriGlyph GLYPH =
-            ImageDataUriGlyph.create(StunnerCommonImageResources.INSTANCE.delete().getSafeUri());
 
     @Inject
     public DeleteNodeAction(final ClientTranslationService translationService,
@@ -70,7 +67,7 @@ public class DeleteNodeAction implements ToolboxAction<AbstractCanvasHandler> {
     @Override
     public Glyph getGlyph(final AbstractCanvasHandler canvasHandler,
                           final String uuid) {
-        return GLYPH;
+        return StunnerCommonIconsGlyphFactory.DELETE;
     }
 
     @Override

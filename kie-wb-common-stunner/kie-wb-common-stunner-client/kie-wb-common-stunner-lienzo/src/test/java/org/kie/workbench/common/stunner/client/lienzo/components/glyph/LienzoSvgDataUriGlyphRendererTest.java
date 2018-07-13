@@ -16,13 +16,16 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.components.glyph;
 
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
 import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Picture;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.safehtml.shared.SafeUri;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.util.SvgDataUriGenerator;
 import org.mockito.ArgumentCaptor;
@@ -30,9 +33,6 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyDouble;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,7 +47,7 @@ public class LienzoSvgDataUriGlyphRendererTest {
     private SafeUri uri;
 
     @Mock
-    private LienzoPictureGlyphRenderer lienzoPictureGlyphRenderer;
+    private BiConsumer<String, Consumer<Picture>> pictureBuilder;
 
     @Mock
     private Group group;
@@ -59,15 +59,9 @@ public class LienzoSvgDataUriGlyphRendererTest {
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         when(uri.asString()).thenReturn(URI_B64);
-        when(lienzoPictureGlyphRenderer.render(any(ImageDataUriGlyph.class),
-                                               anyDouble(),
-                                               anyDouble())).thenReturn(group);
-        when(lienzoPictureGlyphRenderer.render(anyString(),
-                                               anyDouble(),
-                                               anyDouble())).thenReturn(group);
         this.glyph = SvgDataUriGlyph.Builder.build(uri);
         this.tested = new LienzoSvgDataUriGlyphRenderer(DATA_URI_UTIL,
-                                                        lienzoPictureGlyphRenderer);
+                                                        pictureBuilder);
     }
 
     @Test
@@ -79,16 +73,13 @@ public class LienzoSvgDataUriGlyphRendererTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testRender() {
-        final Group glyphView = tested.render(glyph,
-                                              100,
-                                              200);
-        assertEquals(group,
-                     glyphView);
+        tested.render(glyph,
+                      100,
+                      200);
         final ArgumentCaptor<String> imageGlyphCaptor = ArgumentCaptor.forClass(String.class);
-        verify(lienzoPictureGlyphRenderer,
-               times(1)).render(imageGlyphCaptor.capture(),
-                                eq(100d),
-                                eq(200d));
+        verify(pictureBuilder,
+               times(1)).accept(imageGlyphCaptor.capture(),
+                                any(Consumer.class));
         assertEquals(URI_B64,
                      imageGlyphCaptor.getValue());
     }

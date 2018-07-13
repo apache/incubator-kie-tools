@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
 import java.util.Optional;
 
-import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGGlyphFactory;
+import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
@@ -59,6 +59,6 @@ public class LaneShapeDef extends BaseDimensionedShapeDef
     @Override
     public Glyph getGlyph(final Class<? extends Lane> type,
                           final String defId) {
-        return BPMNSVGGlyphFactory.LANE_GLYPH;
+        return BPMNGlyphFactory.LANE;
     }
 }

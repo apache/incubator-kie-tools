@@ -34,6 +34,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -156,11 +157,14 @@ public class GroupItemTest {
 
     @Test
     public void testDestroy() {
-        IPrimitive<?> p = mock(IPrimitive.class);
+        group = spy(new Group());
+        tested = new GroupItem(group);
+        IPrimitive<?> p = spy(new Group());
         NFastArrayList<IPrimitive<?>> children = new NFastArrayList<>();
         children.add(p);
         when(group.getChildNodes()).thenReturn(children);
         tested.destroy();
         verify(p, times(1)).removeFromParent();
+        verify(group, times(1)).removeFromParent();
     }
 }

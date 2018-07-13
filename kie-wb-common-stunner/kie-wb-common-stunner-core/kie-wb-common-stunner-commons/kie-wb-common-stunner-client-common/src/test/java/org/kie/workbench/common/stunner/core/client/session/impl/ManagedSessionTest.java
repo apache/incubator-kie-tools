@@ -29,7 +29,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasShapeListener;
-import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistryLoader;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
@@ -43,7 +42,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -72,9 +70,7 @@ public class ManagedSessionTest {
     private CanvasControl<AbstractCanvasHandler> canvasHandlerControl;
     private ManagedInstance<CanvasControl<AbstractCanvasHandler>> canvasHandlerControlInstances;
     @Mock
-    private StunnerPreferencesRegistryLoader preferencesRegistryLoader;
-    @Mock
-    private StunnerPreferences preferences;
+    private SessionLoader sessionLoader;
     @Mock
     private Diagram diagram;
     @Mock
@@ -94,17 +90,17 @@ public class ManagedSessionTest {
         when(metadata.getDefinitionSetId()).thenReturn(DEF_SET_ID);
         when(definitionUtils.getQualifier(eq(DEF_SET_ID))).thenReturn(qualifier);
         doAnswer(invocation -> {
-            ((ParameterizedCommand) invocation.getArguments()[1]).execute(preferences);
+            ((ParameterizedCommand) invocation.getArguments()[1]).execute(mock(StunnerPreferences.class));
             return null;
-        }).when(preferencesRegistryLoader).load(anyString(),
-                                                any(ParameterizedCommand.class),
-                                                any(ParameterizedCommand.class));
+        }).when(sessionLoader).load(any(Metadata.class),
+                                    any(ParameterizedCommand.class),
+                                    any(ParameterizedCommand.class));
         tested = new ManagedSession(definitionUtils,
+                                    sessionLoader,
                                     canvasInstances,
                                     canvasHandlerInstances,
                                     canvasControlInstances,
-                                    canvasHandlerControlInstances,
-                                    preferencesRegistryLoader);
+                                    canvasHandlerControlInstances);
     }
 
     @Test
@@ -123,6 +119,9 @@ public class ManagedSessionTest {
         assertEquals(canvasHandler, tested.getCanvasHandler());
         assertEquals(canvasControl, tested.getCanvasControls().get(0));
         assertEquals(canvasHandlerControl, tested.getCanvasHandlerControls().get(0));
+        verify(sessionLoader, times(1)).load(eq(metadata),
+                                             any(ParameterizedCommand.class),
+                                             any(ParameterizedCommand.class));
         verify(canvasInstances, times(1)).select(eq(qualifier));
         verify(canvasHandlerInstances, times(1)).select(eq(qualifier));
         verify(canvasControlInstances, times(1)).select(eq(SomeTestControl.class),
@@ -131,9 +130,6 @@ public class ManagedSessionTest {
                                                                eq(qualifier));
         verify(canvasControlConsumer, times(1)).accept(eq(canvasControl));
         verify(canvasHandlerControlConsumer, times(1)).accept(eq(canvasHandlerControl));
-        verify(preferencesRegistryLoader, times(1)).load(eq(DEF_SET_ID),
-                                                         any(ParameterizedCommand.class),
-                                                         any(ParameterizedCommand.class));
         verify(callback, times(1)).execute();
     }
 

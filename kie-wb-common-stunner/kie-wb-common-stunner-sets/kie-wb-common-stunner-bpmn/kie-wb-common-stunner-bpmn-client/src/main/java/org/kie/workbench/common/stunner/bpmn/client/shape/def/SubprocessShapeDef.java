@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGGlyphFactory;
+import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
@@ -48,11 +48,11 @@ public class SubprocessShapeDef extends BaseDimensionedShapeDef
 
     public static final Map<Class<? extends BaseSubprocess>, Glyph> GLYPHS =
             new HashMap<Class<? extends BaseSubprocess>, Glyph>() {{
-                put(ReusableSubprocess.class, BPMNSVGGlyphFactory.REUSABLE_SUBPROCESS_GLYPH);
-                put(EmbeddedSubprocess.class, BPMNSVGGlyphFactory.EMBEDDED_SUBPROCESS_GLYPH);
-                put(EventSubprocess.class, BPMNSVGGlyphFactory.EVENT_SUBPROCESS_GLYPH);
-                put(AdHocSubprocess.class, BPMNSVGGlyphFactory.ADHOC_SUBPROCESS_GLYPH);
-                put(MultipleInstanceSubprocess.class, BPMNSVGGlyphFactory.MULTIPLE_INSTANCE_SUBPROCESS_GLYPH);
+                put(ReusableSubprocess.class, BPMNGlyphFactory.SUBPROCESS_RESUABLE);
+                put(EmbeddedSubprocess.class, BPMNGlyphFactory.SUBPROCESS_EMBEDDED);
+                put(EventSubprocess.class, BPMNGlyphFactory.SUBPROCESS_EVENT);
+                put(AdHocSubprocess.class, BPMNGlyphFactory.SUBPROCESS_ADHOC);
+                put(MultipleInstanceSubprocess.class, BPMNGlyphFactory.SUBPROCESS_MULTIPLE_INSTANCE);
             }};
 
     private static HasTitle.Position getSubprocessTextPosition(final BaseSubprocess bean) {

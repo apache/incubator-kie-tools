@@ -34,7 +34,6 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.TextEnterEv
 import org.kie.workbench.common.stunner.core.client.shape.view.event.TextExitEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
-import org.kie.workbench.common.stunner.lienzo.util.LienzoGroupUtils;
 
 /**
  * A helper class for handling the wires shapes' text primitive
@@ -273,7 +272,7 @@ public class WiresTextDecorator {
             text.removeFromParent();
             this.text = null;
         }
-        LienzoGroupUtils.removeAll(textContainer);
+        textContainer.destroy();
         deregisterHandler(textOverHandlerViewHandler);
         deregisterHandler(textOutEventViewHandler);
         deregisterHandler(textClickEventViewHandler);

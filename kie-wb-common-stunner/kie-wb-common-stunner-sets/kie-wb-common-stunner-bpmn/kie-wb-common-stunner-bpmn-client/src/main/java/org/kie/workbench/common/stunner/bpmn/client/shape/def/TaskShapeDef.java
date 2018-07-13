@@ -20,14 +20,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGGlyphFactory;
+import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
-import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.svg.client.shape.factory.SVGShapeViewResources;
@@ -43,12 +42,12 @@ public class TaskShapeDef extends BaseDimensionedShapeDef
                     .put(ScriptTask.class, BPMNSVGViewFactory::scriptTask)
                     .put(BusinessRuleTask.class, BPMNSVGViewFactory::businessRuleTask);
 
-    public static final Map<Class<? extends BaseTask>, ImageDataUriGlyph> GLYPHS =
-            new HashMap<Class<? extends BaseTask>, ImageDataUriGlyph>() {{
-                put(NoneTask.class, BPMNSVGGlyphFactory.NONE_TASK_GLYPH);
-                put(UserTask.class, BPMNSVGGlyphFactory.USER_TASK_GLYPH);
-                put(ScriptTask.class, BPMNSVGGlyphFactory.SCRIPT_TASK_GLYPH);
-                put(BusinessRuleTask.class, BPMNSVGGlyphFactory.BUSINESS_RULE_TASK_GLYPH);
+    public static final Map<Class<? extends BaseTask>, Glyph> GLYPHS =
+            new HashMap<Class<? extends BaseTask>, Glyph>() {{
+                put(NoneTask.class, BPMNGlyphFactory.TASK);
+                put(UserTask.class, BPMNGlyphFactory.TASK_USER);
+                put(ScriptTask.class, BPMNGlyphFactory.TASK_SCRIPT);
+                put(BusinessRuleTask.class, BPMNGlyphFactory.TASK_BUSINESS_RULE);
             }};
 
     @Override

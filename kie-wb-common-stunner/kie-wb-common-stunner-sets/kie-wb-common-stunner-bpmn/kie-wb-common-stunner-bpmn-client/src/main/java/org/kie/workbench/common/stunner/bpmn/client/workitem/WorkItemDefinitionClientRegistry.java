@@ -115,6 +115,11 @@ public class WorkItemDefinitionClientRegistry implements WorkItemDefinitionRegis
         }).execute(metadata);
     }
 
+    public void removeRegistry(final Metadata metadata) {
+        WorkItemDefinitionCacheRegistry registry = index.remove(metadata);
+        registry.clear();
+    }
+
     @PreDestroy
     public void destroy() {
         index.clear();
@@ -142,10 +147,6 @@ public class WorkItemDefinitionClientRegistry implements WorkItemDefinitionRegis
                       registryInstanceSupplier.get());
         }
         return index.registries().apply(metadata);
-    }
-
-    private void removeRegistry(final Metadata metadata) {
-        index.remove(metadata);
     }
 
     @SuppressWarnings("all")

@@ -71,7 +71,16 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     @DataResource.MimeType("image/svg+xml")
     DataResource categoryServiceTasks();
 
-    // ******* Task *******
+    // **** Icons Sprite ****
+
+    @ClientBundle.Source("images/icons/bpmn-icons-sprite.png")
+    ImageResource bpmnIconsSprite();
+
+    @ClientBundle.Source("images/icons/bpmn-icons-sprite.css")
+    BPMNCssResource bpmnIconsSpriteCss();
+
+    // ******* Misc *******
+
     @ClientBundle.Source("images/icons/task/task.png")
     ImageResource task();
 
@@ -83,115 +92,6 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
 
     @ClientBundle.Source("images/icons/task/task-business-rule.png")
     ImageResource taskBusinessRule();
-
-    @ClientBundle.Source("images/icons/task/task-manual.png")
-    ImageResource taskManual();
-
-    @ClientBundle.Source("images/icons/task/task-service.png")
-    ImageResource taskService();
-
-    // ******* Event *******
-    @ClientBundle.Source("images/icons/event/event-end.png")
-    ImageResource eventEnd();
-
-    @ClientBundle.Source("images/icons/event/event-end-none.png")
-    ImageResource eventEndNone();
-
-    @ClientBundle.Source("images/icons/event/event-end-signal.png")
-    ImageResource eventEndSignal();
-
-    @ClientBundle.Source("images/icons/event/event-end-message.png")
-    ImageResource eventEndMessage();
-
-    @ClientBundle.Source("images/icons/event/event-end-terminate.png")
-    ImageResource eventEndTerminate();
-
-    @ClientBundle.Source("images/icons/event/event-end-error.png")
-    ImageResource eventEndError();
-
-    @ClientBundle.Source("images/icons/event/event-intermediate-message.png")
-    ImageResource eventIntermediateMessage();
-
-    @ClientBundle.Source("images/icons/event/event-intermediate-error.png")
-    ImageResource eventIntermediateError();
-
-    @ClientBundle.Source("images/icons/event/event-intermediate-timer.png")
-    ImageResource eventIntermediateTimer();
-
-    @ClientBundle.Source("images/icons/event/event-intermediate-signal.png")
-    ImageResource eventIntermediateSignal();
-
-    @ClientBundle.Source("images/icons/event/event-intermediate-signal-throwing.png")
-    ImageResource eventIntermediateSignalThrowing();
-
-    @ClientBundle.Source("images/icons/event/event-intermediate-message-throwing.png")
-    ImageResource eventIntermediateMessageThrowing();
-
-    @ClientBundle.Source("images/icons/event/event-start-none.png")
-    ImageResource eventStartNone();
-
-    @ClientBundle.Source("images/icons/event/event-start-error.png")
-    ImageResource eventStartError();
-
-    @ClientBundle.Source("images/icons/event/event-start-signal.png")
-    ImageResource eventStartSignal();
-
-    @ClientBundle.Source("images/icons/event/event-start-message.png")
-    ImageResource eventStartMessage();
-
-    @ClientBundle.Source("images/icons/event/event-start-timer.png")
-    ImageResource eventStartTimer();
-
-    // ******* Gateway *******
-    @ClientBundle.Source("images/icons/gateway/parallel-event.png")
-    ImageResource gatewayParallelEvent();
-
-    @ClientBundle.Source("images/icons/gateway/parallel-multiple.png")
-    ImageResource gatewayParallelMultiple();
-
-    @ClientBundle.Source("images/icons/gateway/exclusive.png")
-    ImageResource gatewayExclusive();
-
-    @ClientBundle.Source("images/icons/gateway/complex.png")
-    ImageResource gatewayComplex();
-
-    @ClientBundle.Source("images/icons/gateway/event.png")
-    ImageResource gatewayEvent();
-
-    @ClientBundle.Source("images/icons/gateway/inclusive.png")
-    ImageResource gatewayInclusive();
-
-    // ******* Containers *******
-
-    @ClientBundle.Source("images/icons/lane_icon.png")
-    ImageResource lane();
-
-    // ******* Subprocesses *******
-    @ClientBundle.Source("images/icons/subprocess/subprocess.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource subProcess();
-
-    @ClientBundle.Source("images/icons/subprocess/subprocess-reusable.png")
-    ImageResource subProcessReusable();
-
-    @ClientBundle.Source("images/icons/subprocess/subprocess-adhoc.png")
-    ImageResource subProcessAdHoc();
-
-    @ClientBundle.Source("images/icons/subprocess/subprocess-event.png")
-    ImageResource subProcessEvent();
-
-    @ClientBundle.Source("images/icons/subprocess/subprocess-embedded.png")
-    ImageResource subProcessEmbedded();
-
-    @ClientBundle.Source("images/icons/subprocess/subprocess-multiple-instance.png")
-    ImageResource subProcessMultipleInstance();
-
-    // ******* Connectors *******
-
-    @ClientBundle.Source("images/icons/connectors/sequence.png")
-    ImageResource sequenceFlow();
-
-    // ******* Misc *******
 
     @ClientBundle.Source("images/icons/default-service-node-icon.png")
     ImageResource serviceNodeIcon();

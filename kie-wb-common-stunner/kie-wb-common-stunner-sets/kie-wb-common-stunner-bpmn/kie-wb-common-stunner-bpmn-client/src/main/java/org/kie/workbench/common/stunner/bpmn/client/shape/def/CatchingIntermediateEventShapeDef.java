@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGGlyphFactory;
+import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.EventCancelActivityViewHandler;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseCatchingIntermediateEvent;
@@ -53,13 +53,13 @@ public class CatchingIntermediateEventShapeDef
     public static final Map<Class<? extends BaseCatchingIntermediateEvent>, Glyph> GLYPHS =
             new HashMap<Class<? extends BaseCatchingIntermediateEvent>, Glyph>() {{
                 put(IntermediateTimerEvent.class,
-                    BPMNSVGGlyphFactory.INTERMEDIATE_TIMER_EVENT_GLYPH);
+                    BPMNGlyphFactory.EVENT_INTERMEDIATE_TIMER);
                 put(IntermediateSignalEventCatching.class,
-                    BPMNSVGGlyphFactory.INTERMEDIATE_SIGNAL_EVENT_GLYPH);
+                    BPMNGlyphFactory.EVENT_INTERMEDIATE_SIGNAL);
                 put(IntermediateErrorEventCatching.class,
-                    BPMNSVGGlyphFactory.INTERMEDIATE_ERROR_EVENT_GLYPH);
+                    BPMNGlyphFactory.EVENT_INTERMEDIATE_ERROR);
                 put(IntermediateMessageEventCatching.class,
-                    BPMNSVGGlyphFactory.INTERMEDIATE_MESSAGE_EVENT_GLYPH);
+                    BPMNGlyphFactory.EVENT_INTERMEDIATE_MESSAGE);
             }};
 
     @Override

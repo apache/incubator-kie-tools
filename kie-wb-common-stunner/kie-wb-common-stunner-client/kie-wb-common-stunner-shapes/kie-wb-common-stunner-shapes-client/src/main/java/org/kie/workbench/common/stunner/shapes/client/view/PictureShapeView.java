@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.client.lienzo.shape.util.LienzoPictureUt
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresContainerShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 
-import static org.kie.workbench.common.stunner.client.lienzo.util.LienzoShapeUtils.scalePicture;
+import static org.kie.workbench.common.stunner.client.lienzo.util.LienzoShapeUtils.scale;
 
 /**
  * The lienzo view implementation for the Picture shape.
@@ -46,9 +46,9 @@ public class PictureShapeView<T extends PictureShapeView>
                       .setFillAlpha(0));
         this.picture = new Picture(uri,
                                    picture -> {
-                                       scalePicture(picture,
-                                                    width,
-                                                    height);
+                                       scale(picture,
+                                             width,
+                                             height);
                                        addChild(picture);
                                        refresh();
                                    });

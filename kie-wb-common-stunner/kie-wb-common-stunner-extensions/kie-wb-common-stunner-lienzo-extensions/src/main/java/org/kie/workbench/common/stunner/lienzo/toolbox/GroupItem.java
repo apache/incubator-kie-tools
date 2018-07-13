@@ -20,7 +20,6 @@ import java.util.function.BiConsumer;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import org.kie.workbench.common.stunner.lienzo.util.LienzoGroupUtils;
 import org.uberfire.mvp.Command;
 
 public class GroupItem extends AbstractItem<GroupItem, Group> implements Item<GroupItem> {
@@ -100,7 +99,7 @@ public class GroupItem extends AbstractItem<GroupItem, Group> implements Item<Gr
 
     @Override
     public void destroy() {
-        LienzoGroupUtils.removeAll(group);
+        group.destroy();
     }
 
     @Override

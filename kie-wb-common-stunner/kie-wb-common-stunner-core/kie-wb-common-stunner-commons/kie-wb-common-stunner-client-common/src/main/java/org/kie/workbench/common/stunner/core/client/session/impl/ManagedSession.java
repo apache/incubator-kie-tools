@@ -37,9 +37,9 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasShapeListener;
-import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistryLoader;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.util.UUID;
 import org.uberfire.mvp.Command;
 
 import static org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils.lookup;
@@ -51,13 +51,14 @@ public class ManagedSession
     private static Logger LOGGER = Logger.getLogger(ManagedSession.class.getName());
 
     private final DefinitionUtils definitionUtils;
+    private final SessionLoader sessionLoader;
     private final ManagedInstance<AbstractCanvas> canvasInstances;
     private final ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances;
     private final ManagedInstance<CanvasControl<AbstractCanvas>> canvasControlInstances;
     private final ManagedInstance<CanvasControl<AbstractCanvasHandler>> canvasHandlerControlInstances;
-    private final StunnerPreferencesRegistryLoader preferencesRegistryLoader;
 
     // Session's state.
+    private final String uuid;
     private AbstractCanvas canvas;
     private AbstractCanvasHandler canvasHandler;
     private final List<ControlRegistrationEntry<AbstractCanvas>> canvasControlRegistrationEntries;
@@ -76,18 +77,19 @@ public class ManagedSession
 
     @Inject
     public ManagedSession(final DefinitionUtils definitionUtils,
+                          final SessionLoader sessionLoader,
                           final @Any ManagedInstance<AbstractCanvas> canvasInstances,
                           final @Any ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances,
                           final @Any ManagedInstance<CanvasControl<AbstractCanvas>> canvasControlInstances,
-                          final @Any ManagedInstance<CanvasControl<AbstractCanvasHandler>> canvasHandlerControlInstances,
-                          final StunnerPreferencesRegistryLoader preferencesRegistryLoader) {
+                          final @Any ManagedInstance<CanvasControl<AbstractCanvasHandler>> canvasHandlerControlInstances) {
         super();
         this.definitionUtils = definitionUtils;
+        this.sessionLoader = sessionLoader;
+        this.uuid = UUID.uuid();
         this.canvasInstances = canvasInstances;
         this.canvasHandlerInstances = canvasHandlerInstances;
         this.canvasControlInstances = canvasControlInstances;
         this.canvasHandlerControlInstances = canvasHandlerControlInstances;
-        this.preferencesRegistryLoader = preferencesRegistryLoader;
         this.canvasControlRegistrationEntries = new LinkedList<>();
         this.canvasHandlerControlRegistrationEntries = new LinkedList<>();
         this.canvasControls = new LinkedList<>();
@@ -164,29 +166,28 @@ public class ManagedSession
         if (null != canvas) {
             throw new IllegalStateException("Session is already loaded!");
         }
-        // Load the preferences.
-        preferencesRegistryLoader.load(metadata.getDefinitionSetId(),
-                                       prefs -> {
-                                           // Obtain the right qualified types.
-                                           final Annotation qualifier = definitionUtils.getQualifier(metadata.getDefinitionSetId());
-                                           canvas = lookup(canvasInstances, qualifier);
-                                           canvasHandler = lookup(canvasHandlerInstances, qualifier);
-                                           canvasControlRegistrationEntries
-                                                   .forEach(entry -> registerCanvasControlEntry(entry,
-                                                                                                qualifier));
-                                           canvasHandlerControlRegistrationEntries
-                                                   .forEach(entry -> registerCanvasHandlerControlEntry(entry,
-                                                                                                       qualifier));
-                                           callback.execute();
-                                       },
-                                       throwable -> {
-                                           if (LogConfiguration.loggingIsEnabled()) {
-                                               LOGGER.log(Level.SEVERE,
-                                                          "An error was produced during StunnerPreferences initialization.",
-                                                          throwable);
-                                           }
-                                           throw new RuntimeException(throwable);
-                                       });
+        sessionLoader.load(metadata,
+                           prefs -> {
+                               // Obtain the right qualified types.
+                               final Annotation qualifier = definitionUtils.getQualifier(metadata.getDefinitionSetId());
+                               canvas = lookup(canvasInstances, qualifier);
+                               canvasHandler = lookup(canvasHandlerInstances, qualifier);
+                               canvasControlRegistrationEntries
+                                       .forEach(entry -> registerCanvasControlEntry(entry,
+                                                                                    qualifier));
+                               canvasHandlerControlRegistrationEntries
+                                       .forEach(entry -> registerCanvasHandlerControlEntry(entry,
+                                                                                           qualifier));
+                               callback.execute();
+                           },
+                           throwable -> {
+                               if (LogConfiguration.loggingIsEnabled()) {
+                                   LOGGER.log(Level.SEVERE,
+                                              "An error was produced during StunnerPreferences initialization.",
+                                              throwable);
+                               }
+                               throw new RuntimeException(throwable);
+                           });
     }
 
     @Override
@@ -201,6 +202,7 @@ public class ManagedSession
 
     @Override
     public void destroy() {
+        sessionLoader.destroy();
         // Destroy listeners.
         removeListeners();
         // Destroy controls.
@@ -224,6 +226,11 @@ public class ManagedSession
         canvasControlDestroyed = null;
         canvasHandlerControlRegistered = null;
         canvasHandlerControlDestroyed = null;
+    }
+
+    @Override
+    public String getSessionUUID() {
+        return uuid;
     }
 
     @Override
