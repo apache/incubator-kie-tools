@@ -18,13 +18,17 @@ package org.kie.workbench.common.stunner.core.command.impl;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 import java.util.function.Supplier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 
 /**
  * This type composites several commands but defers the creation of the command instances
@@ -37,6 +41,8 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
  */
 @Portable
 public class DeferredCompositeCommand<T, V> extends AbstractCompositeCommand<T, V> {
+
+    private static Logger LOGGER = Logger.getLogger(AbstractCompositeCommand.class.getName());
 
     private final boolean reverse;
 
@@ -64,6 +70,34 @@ public class DeferredCompositeCommand<T, V> extends AbstractCompositeCommand<T, 
     protected CommandResult<V> doUndo(final T context,
                                       final Command<T, V> command) {
         return command.undo(context);
+    }
+
+    @Override
+    protected CommandResult<V> executeCommands(final T context) {
+        final Stack<Command<T, V>> executedCommands = new Stack<>();
+        final List<CommandResult<V>> results = new LinkedList<>();
+        CommandResult<V> violations;
+        for (final Command<T, V> command : commands) {
+            violations = doAllow(context,
+                                 command);
+            LOGGER.log(Level.FINEST,
+                       "Allow of command [" + command + "] finished - Violations [" + violations + "]");
+            if (!CommandUtils.isError(violations)) {
+                violations = doExecute(context,
+                                       command);
+                executedCommands.push(command);
+            }
+
+            LOGGER.log(Level.FINEST,
+                       "Execution of command [" + command + "] finished - Violations [" + violations + "]");
+            results.add(violations);
+            if (CommandUtils.isError(violations)) {
+                undoMultipleExecutedCommands(context,
+                                             executedCommands);
+                break;
+            }
+        }
+        return buildResult(results);
     }
 
     @Override
