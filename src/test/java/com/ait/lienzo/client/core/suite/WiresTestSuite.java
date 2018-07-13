@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Ahome' Innovation Technologies. All rights reserved.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-package com.ait.lienzo.client.core.shape.wires.suite;
+package com.ait.lienzo.client.core.suite;
 
+import com.ait.lienzo.client.core.shape.AbstractOffsetMultiPointShapeTest;
+import com.ait.lienzo.client.core.shape.wires.MagnetManagerTest;
+import com.ait.lienzo.client.core.shape.wires.SelectionManagerTest;
 import com.ait.lienzo.client.core.shape.wires.WiresConnectorTest;
 import com.ait.lienzo.client.core.shape.wires.WiresContainerTest;
 import com.ait.lienzo.client.core.shape.wires.WiresManagerTest;
@@ -26,6 +29,7 @@ import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresCompositeShapeH
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectorControlImplTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresDockingControlImplTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresParentPickerControlImplTest;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlImplTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeLocationControlImplTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -39,17 +43,21 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+        AbstractOffsetMultiPointShapeTest.class,
+        MagnetManagerTest.class,
+        SelectionManagerTest.class,
         WiresCompositeShapeHandlerTest.class,
         WiresConnectorControlImplTest.class,
+        WiresConnectorTest.class,
         WiresContainerTest.class,
         WiresDockingControlImplTest.class,
         WiresManagerTest.class,
         WiresParentPickerControlImplTest.class,
         WiresShapeControlHandleListTest.class,
+        WiresShapeControlImplTest.class,
         WiresShapeHandlerImplTest.class,
         WiresShapeLocationControlImplTest.class,
-        WiresShapeTest.class,
-        WiresConnectorTest.class
+        WiresShapeTest.class
 })
 public class WiresTestSuite {
 
