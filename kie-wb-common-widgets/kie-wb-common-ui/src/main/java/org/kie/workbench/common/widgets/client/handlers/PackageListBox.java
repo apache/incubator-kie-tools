@@ -21,44 +21,41 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.SimplePanel;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
-import org.gwtbootstrap3.extras.select.client.ui.Option;
-import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.IsElement;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;
 
 /**
  * A ListBox that shows a list of Packages from which the user can select
  */
 @Dependent
-public class PackageListBox extends Composite {
+public class PackageListBox
+        implements IsElement {
 
+    private PackageListBoxView view;
     private WorkspaceProjectContext projectContext;
     protected Caller<KieModuleService> moduleService;
-    private SimplePanel panel = new SimplePanel();
-    private Select select;
     private Map<String, Package> packages;
+    private String selectedPackage = null;
 
     @Inject
-    public PackageListBox(final WorkspaceProjectContext projectContext,
+    public PackageListBox(final PackageListBoxView view,
+                          final WorkspaceProjectContext projectContext,
                           final Caller<KieModuleService> moduleService) {
+        this.view = view;
         this.projectContext = projectContext;
         this.moduleService = moduleService;
-        initWidget(panel);
-        getElement().getStyle().setMarginBottom(15,
-                                                Style.Unit.PX);
         packages = new HashMap<>();
+        view.setPresenter(this);
     }
 
     public void setUp(final boolean includeDefaultPackage) {
@@ -68,99 +65,100 @@ public class PackageListBox extends Composite {
 
     public void setUp(final boolean includeDefaultPackage,
                       final Command packagesLoadedCommand) {
-        noPackage();
+
         packages.clear();
 
-        // Disable and set default content if Module is not selected
+        showListOfPackages(includeDefaultPackage,
+                           packagesLoadedCommand);
+    }
+
+    private void showListOfPackages(final boolean includeDefaultPackage,
+                                    final Command packagesLoadedCommand) {
         final Module activeModule = projectContext.getActiveModule().orElse(null);
         if (activeModule == null) {
             return;
+        } else {
+            moduleService.call((Set<Package> pkgs) -> {
+                moduleService.call((Package activePackage) -> {
+                    //Sort by caption
+                    final List<Package> sortedPackages = getSortedPackages(includeDefaultPackage,
+                                                                           pkgs);
+
+                    // Disable and set default content if no Packages available
+                    if (sortedPackages.isEmpty()) {
+                        return;
+                    }
+                    addPackagesToSelect(sortedPackages,
+                                        activePackage);
+
+                    if (packagesLoadedCommand != null) {
+                        packagesLoadedCommand.execute();
+                    }
+                }).resolveDefaultWorkspacePackage(activeModule);
+            }).resolvePackages(activeModule);
         }
+    }
 
-        // Otherwise show list of packages
-        moduleService.call((Set<Package> pkgs) -> {
-            moduleService.call((Package activePackage) -> {
-                //Sort by caption
-                final List<Package> sortedPackages = new ArrayList<>();
-                sortedPackages.addAll(pkgs);
-                Collections.sort(sortedPackages,
-                                 (p1, p2) -> p1.getCaption().compareTo(p2.getCaption()));
+    private List<Package> getSortedPackages(final boolean includeDefaultPackage,
+                                            final Set<Package> pkgs) {
+        final List<Package> sortedPackages = new ArrayList<>(pkgs);
+        Collections.sort(sortedPackages,
+                         (p1, p2) -> p1.getCaption().compareTo(p2.getCaption()));
 
-                // Remove default package, if not required (after sorting it is guaranteed to be at index 0)
-                if (!includeDefaultPackage) {
-                    sortedPackages.remove(0);
-                }
+        // Remove default package, if not required (after sorting it is guaranteed to be at index 0)
 
-                // Disable and set default content if no Packages available
-                if (sortedPackages.size() == 0) {
-                    return;
-                }
-
-                addPackagesToSelect(sortedPackages,
-                                    activePackage);
-
-                if (packagesLoadedCommand != null) {
-                    packagesLoadedCommand.execute();
-                }
-            }).resolveDefaultWorkspacePackage(activeModule);
-        }).resolvePackages(activeModule);
+        if (!includeDefaultPackage
+                && !sortedPackages.isEmpty()
+                && "".equals(sortedPackages.get(0).getPackageName())) {
+            sortedPackages.remove(0);
+        }
+        return sortedPackages;
     }
 
     private void addPackagesToSelect(final List<Package> sortedPackages,
                                      final Package activePackage) {
-        clearSelect();
+
+        final Map<String, String> packageNames = new HashMap<>();
 
         for (Package pkg : sortedPackages) {
-            addPackage(pkg,
-                       activePackage);
+            packageNames.put(pkg.getCaption(),
+                             pkg.getPackageName());
+            packages.put(pkg.getCaption(),
+                         pkg);
         }
 
-        refreshSelect();
+        selectedPackage = getSelectedPackage(activePackage,
+                                             packageNames);
+
+        view.setUp(selectedPackage,
+                   packageNames);
+    }
+
+    private String getSelectedPackage(final Package activePackage,
+                                      final Map<String, String> packageNames) {
+        if (packageNames.containsKey(activePackage.getCaption())) {
+            return activePackage.getCaption();
+        } else if (!packageNames.isEmpty()) {
+            return packageNames.keySet().iterator().next();
+        } else {
+            return null;
+        }
     }
 
     public Package getSelectedPackage() {
-        if (packages.size() == 0 || select == null) {
+
+        if (packages.isEmpty()) {
             return null;
         }
-        return packages.get(select.getValue());
+        return packages.get(selectedPackage);
     }
 
-    void addPackage(final Package pkg,
-                    final Package activePackage) {
-        final Option option = new Option();
-        option.setText(pkg.getCaption());
-        select.add(option);
-        packages.put(pkg.getCaption(),
-                     pkg);
-        if (pkg.equals(activePackage)) {
-            select.setValue(pkg.getCaption());
-        }
+    @Override
+    public HTMLElement getElement() {
+        return view.getElement();
     }
 
-    void noPackage() {
-        clearSelect();
-        final Option option = new Option();
-        option.setText(CommonConstants.INSTANCE.ItemUndefinedPath());
-
-        select.add(option);
-        select.setEnabled(false);
-        refreshSelect();
+    public void onPackageSelected(final String selectedPackage) {
+        this.selectedPackage = selectedPackage;
     }
-
-    void clearSelect() {
-        if (select != null) {
-            select.removeFromParent();
-            removeSelect(select.getElement());
-        }
-        select = new Select();
-        panel.setWidget(select);
-    }
-
-    void refreshSelect() {
-        select.refresh();
-    }
-
-    private native void removeSelect(final Element e) /*-{
-        $wnd.jQuery(e).selectpicker('destroy');
-    }-*/;
 }

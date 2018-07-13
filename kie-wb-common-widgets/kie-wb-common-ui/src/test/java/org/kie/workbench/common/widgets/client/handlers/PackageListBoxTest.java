@@ -18,6 +18,7 @@ package org.kie.workbench.common.widgets.client.handlers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.dev.util.collect.HashSet;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -28,15 +29,37 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
 
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class PackageListBoxTest {
 
+    @Mock
     private KieModuleService moduleService;
+
+    @Mock
+    private PackageListBoxView view;
+
+    @Captor
+    private ArgumentCaptor<Package> packageArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<Map> mapArgumentCaptor;
+
     private CallerMock<KieModuleService> moduleServiceCaller;
 
     private WorkspaceProjectContext moduleContext;
@@ -45,69 +68,135 @@ public class PackageListBoxTest {
 
     @Before
     public void setup() {
-        setupModuleService();
+        moduleServiceCaller = new CallerMock<>(moduleService);
         setupWorkspaceProjectContext();
-        setupPackageListBox();
+        packageListBox = spy(new PackageListBox(view,
+                                                moduleContext,
+                                                moduleServiceCaller));
+    }
+
+    private void setupPackageList() {
+        final List<Package> packages = new ArrayList<>();
+        packages.add(createPackage(""));
+        packages.add(createPackage("com"));
+        packages.add(createPackage("com.myteam"));
+        final Package defaultPackage = createPackage("com.myteam.mymodule");
+        packages.add(defaultPackage);
+        packages.add(createPackage("com.myteam.mymodule.mypackage"));
+
+        doReturn(new HashSet<>(packages)).when(moduleService).resolvePackages(any(Module.class));
+        doReturn(defaultPackage).when(moduleService).resolveDefaultWorkspacePackage(any());
     }
 
     @Test
     public void setContextTest() {
-        final List<Package> packages = new ArrayList<>();
-        packages.add(createPackage("com"));
-        packages.add(createPackage("com.myteam"));
-        packages.add(createPackage("com.myteam.mymodule"));
-        packages.add(createPackage("com.myteam.mymodule.mypackage"));
+        setupPackageList();
 
         final Command packagesLoadedCommand = mock(Command.class);
-
-        doReturn(new HashSet<>(packages)).when(moduleService).resolvePackages(any(Module.class));
-        doReturn(packages.get(2)).when(moduleService).resolveDefaultWorkspacePackage(any());
 
         packageListBox.setUp(true,
                              packagesLoadedCommand);
 
-        verify(packageListBox,
-               times(4)).addPackage(any(),
-                                    any());
-        verify(packageListBox).addPackage(packages.get(0),
-                                          packages.get(2));
-        verify(packageListBox).addPackage(packages.get(1),
-                                          packages.get(2));
-        verify(packageListBox).addPackage(packages.get(2),
-                                          packages.get(2));
-        verify(packageListBox).addPackage(packages.get(3),
-                                          packages.get(2));
+        verify(view).setUp(eq("com.myteam.mymodule"),
+                           mapArgumentCaptor.capture());
+
+        final Map map = mapArgumentCaptor.getValue();
+        assertEquals(5, map.size());
+        assertTrue(map.keySet().contains(""));
+        assertTrue(map.keySet().contains("com"));
+        assertTrue(map.keySet().contains("com.myteam"));
+        assertTrue(map.keySet().contains("com.myteam.mymodule"));
+        assertTrue(map.keySet().contains("com.myteam.mymodule.mypackage"));
+
+        verify(packagesLoadedCommand).execute();
+    }
+
+    @Test
+    public void setContextTestDropDefaultPackage() {
+        setupPackageList();
+
+        final Command packagesLoadedCommand = mock(Command.class);
+
+        packageListBox.setUp(false,
+                             packagesLoadedCommand);
+
+        verify(view).setUp(eq("com.myteam.mymodule"),
+                           mapArgumentCaptor.capture());
+
+        final Map map = mapArgumentCaptor.getValue();
+        assertEquals(4, map.size());
+        assertFalse(map.keySet().contains(""));
+        assertTrue(map.keySet().contains("com"));
+        assertTrue(map.keySet().contains("com.myteam"));
+        assertTrue(map.keySet().contains("com.myteam.mymodule"));
+        assertTrue(map.keySet().contains("com.myteam.mymodule.mypackage"));
+
+        verify(packagesLoadedCommand).execute();
+    }
+
+    @Test
+    public void setContextTestDropDefaultDefaultPackageInTheList() {
+        setupPackageList();
+        doReturn(mock(Package.class)).when(moduleService).resolveDefaultWorkspacePackage(any());
+
+        final Command packagesLoadedCommand = mock(Command.class);
+
+        packageListBox.setUp(true,
+                             packagesLoadedCommand);
+
+        verify(view).setUp(eq(""),
+                           mapArgumentCaptor.capture());
+
+        final Map map = mapArgumentCaptor.getValue();
+        assertEquals(5, map.size());
+        assertTrue(map.keySet().contains(""));
+        assertTrue(map.keySet().contains("com"));
+        assertTrue(map.keySet().contains("com.myteam"));
+        assertTrue(map.keySet().contains("com.myteam.mymodule"));
+        assertTrue(map.keySet().contains("com.myteam.mymodule.mypackage"));
+
+        verify(packagesLoadedCommand).execute();
+    }
+
+    @Test
+    public void setContextTestDropDefaultNoDefaultPackageInTheList() {
+        setupPackageList();
+        doReturn(mock(Package.class)).when(moduleService).resolveDefaultWorkspacePackage(any());
+
+        final Command packagesLoadedCommand = mock(Command.class);
+
+        packageListBox.setUp(false,
+                             packagesLoadedCommand);
+
+        verify(view).setUp(eq("com"),
+                           mapArgumentCaptor.capture());
+
+        final Map map = mapArgumentCaptor.getValue();
+        assertEquals(4, map.size());
+        assertFalse(map.keySet().contains(""));
+        assertTrue(map.keySet().contains("com"));
+        assertTrue(map.keySet().contains("com.myteam"));
+        assertTrue(map.keySet().contains("com.myteam.mymodule"));
+        assertTrue(map.keySet().contains("com.myteam.mymodule.mypackage"));
+
         verify(packagesLoadedCommand).execute();
     }
 
     private Package createPackage(String caption) {
-        final Package p = mock(Package.class);
-        doReturn(caption).when(p).getCaption();
-
-        return p;
-    }
-
-    private void setupModuleService() {
-        moduleService = mock(KieModuleService.class);
-        moduleServiceCaller = new CallerMock<>(moduleService);
+        final Package pkg = mock(Package.class);
+        doReturn(caption).when(pkg).getCaption();
+        doReturn(caption).when(pkg).getPackageName();
+        return pkg;
     }
 
     private void setupWorkspaceProjectContext() {
         moduleContext = new WorkspaceProjectContext() {
             {
                 setActiveModule(mock(Module.class));
-                setActivePackage(mock(Package.class));
+                Package activePackage = mock(Package.class);
+                doReturn("com").when(activePackage).getCaption();
+                setActivePackage(activePackage);
             }
         };
-    }
-
-    private void setupPackageListBox() {
-        packageListBox = spy(new PackageListBox(moduleContext,
-                                                moduleServiceCaller));
-        doNothing().when(packageListBox).addPackage(any(Package.class),
-                                                    any(Package.class));
-        doNothing().when(packageListBox).noPackage();
-        doNothing().when(packageListBox).clearSelect();
-        doNothing().when(packageListBox).refreshSelect();
     }
 }
