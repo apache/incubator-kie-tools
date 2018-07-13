@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.items.DefinitionPaletteItemWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.items.DefinitionPaletteItemWidgetView;
+import org.kie.workbench.common.stunner.core.client.components.palette.AbstractPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteItem;
 import org.kie.workbench.common.stunner.core.client.components.palette.PaletteItemMouseEvent;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
@@ -69,7 +70,7 @@ public class DefinitionPaletteItemWidgetTest {
         when(item.getDefinitionId()).thenReturn(ITEM_DEFINITION_ID);
         when(item.getIconSize()).thenReturn(ITEM_ICON_SIZE);
         when(item.getId()).thenReturn(ITEM_ID);
-        when(shapeFactory.getGlyph(ITEM_DEFINITION_ID)).thenReturn(glyph);
+        when(shapeFactory.getGlyph(ITEM_DEFINITION_ID, AbstractPalette.PaletteGlyphConsumer.class)).thenReturn(glyph);
         itemMouseEventCaptor = ArgumentCaptor.forClass(PaletteItemMouseEvent.class);
 
         widget = new DefinitionPaletteItemWidget(view);
@@ -83,6 +84,8 @@ public class DefinitionPaletteItemWidgetTest {
         widget.initialize(item,
                           shapeFactory,
                           itemMouseDownCallback);
+        verify(shapeFactory).getGlyph(ITEM_DEFINITION_ID,
+                                      AbstractPalette.PaletteGlyphConsumer.class);
         verify(view,
                times(1)).render(glyph,
                                 ITEM_ICON_SIZE,

@@ -32,17 +32,17 @@ public class DMNPictureProvider implements PictureProvider<DMNPictures> {
     private static final Map<DMNPictures, SafeUri> PICTURE_URIS =
             new HashMap<DMNPictures, SafeUri>() {{
                 put(DMNPictures.DIAGRAM,
-                    DMNImageResources.INSTANCE.diagram().getSafeUri());
+                    DMNImageResources.INSTANCE.diagramToolbox().getSafeUri());
                 put(DMNPictures.INPUT_DATA,
-                    DMNImageResources.INSTANCE.inputData().getSafeUri());
+                    DMNImageResources.INSTANCE.inputDataToolbox().getSafeUri());
                 put(DMNPictures.KNOWLEDGE_SOURCE,
-                    DMNImageResources.INSTANCE.knowledgeSource().getSafeUri());
+                    DMNImageResources.INSTANCE.knowledgeSourceToolbox().getSafeUri());
                 put(DMNPictures.BUSINESS_KNOWLEDGE_MODEL,
-                    DMNImageResources.INSTANCE.businessKnowledgeModel().getSafeUri());
+                    DMNImageResources.INSTANCE.businessKnowledgeModelToolbox().getSafeUri());
                 put(DMNPictures.DECISION,
-                    DMNImageResources.INSTANCE.decision().getSafeUri());
+                    DMNImageResources.INSTANCE.decisionToolbox().getSafeUri());
                 put(DMNPictures.TEXT_ANNOTATION,
-                    DMNImageResources.INSTANCE.textAnnotation().getSafeUri());
+                    DMNImageResources.INSTANCE.textAnnotationToolbox().getSafeUri());
             }};
 
     @Override

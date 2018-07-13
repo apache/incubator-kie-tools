@@ -24,6 +24,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.kie.workbench.common.stunner.core.client.components.palette.AbstractPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteItem;
 import org.kie.workbench.common.stunner.core.client.components.palette.PaletteItemMouseEvent;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
@@ -58,7 +59,8 @@ public class DefinitionPaletteItemWidget implements DefinitionPaletteItemWidgetV
                            ShapeFactory<?, ?> shapeFactory,
                            Consumer<PaletteItemMouseEvent> itemMouseDownCallback) {
         this.item = item;
-        final Glyph glyph = shapeFactory.getGlyph(item.getDefinitionId());
+        final Glyph glyph = shapeFactory.getGlyph(item.getDefinitionId(),
+                                                  AbstractPalette.PaletteGlyphConsumer.class);
         this.itemMouseDownCallback = itemMouseDownCallback;
         view.render(glyph,
                     item.getIconSize(),

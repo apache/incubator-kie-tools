@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.client.widgets.palette.categories.items.
 import org.kie.workbench.common.stunner.core.client.ShapeSet;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
+import org.kie.workbench.common.stunner.core.client.components.palette.AbstractPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteCategory;
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteDefinition;
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteItem;
@@ -59,6 +60,7 @@ public class BS3PaletteWidgetImplTest {
     private static final int CATEGORY_ITEMS_COUNT = 6;
     private static final int SIMPLE_ITEMS_COUNT = 8;
     private static final String DEFINITION_SET_ID = "DEFINITION_SET_ID";
+    private static final String DEFINITION_ID = "DEFINITION_ID";
 
     @Mock
     private ShapeManager shapeManager;
@@ -250,7 +252,28 @@ public class BS3PaletteWidgetImplTest {
 
         createdCategoryWidgets.forEach(categoryWidget -> verify(categoryWidget,
                                                                 times(1)).setAutoHidePanel(eq(true)));
+    }
+
+    @Test
+    public void testGetGlyph() {
         when(paletteDefinition.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
+
+        palette.bind(paletteDefinition);
+
+        palette.getShapeGlyph(DEFINITION_ID);
+
+        verify(shapeFactory).getGlyph(eq(DEFINITION_ID), eq(AbstractPalette.PaletteGlyphConsumer.class));
+    }
+
+    @Test
+    public void testGetShapeDragProxyGlyph() {
+        when(paletteDefinition.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
+
+        palette.bind(paletteDefinition);
+
+        palette.getShapeDragProxyGlyph(DEFINITION_ID);
+
+        verify(shapeFactory).getGlyph(eq(DEFINITION_ID), eq(AbstractPalette.PaletteDragProxyGlyphConsumer.class));
     }
 
     private List<DefaultPaletteItem> mockSimpleItems(int size) {

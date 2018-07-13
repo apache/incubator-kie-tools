@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.definition.shape;
 
+import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
+
 /**
  * The Shape Definition type.
  * - Shape Definitions act as the bridge between the model structure and properties and a given Shape.
@@ -35,5 +37,12 @@ public interface ShapeDef<W> {
     default Glyph getGlyph(final Class<? extends W> type,
                            final String defId) {
         return ShapeGlyph.create();
+    }
+
+    @SuppressWarnings("unused")
+    default Glyph getGlyph(final Class<? extends W> type,
+                           final Class<? extends ShapeFactory.GlyphConsumer> consumer,
+                           final String defId) {
+        return getGlyph(type, defId);
     }
 }

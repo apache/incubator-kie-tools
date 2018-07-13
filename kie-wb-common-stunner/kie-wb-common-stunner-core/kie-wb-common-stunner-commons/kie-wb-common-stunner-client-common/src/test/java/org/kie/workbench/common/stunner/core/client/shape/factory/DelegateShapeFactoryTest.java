@@ -72,12 +72,20 @@ public class DelegateShapeFactoryTest {
         assertNotNull(shape);
         assertEquals(shape1,
                      shape);
+
         final ShapeGlyph glyph = (ShapeGlyph) tested.getGlyph(definition1Id);
         assertNotNull(glyph);
         assertEquals(definition1Id,
                      glyph.getDefinitionId());
         assertEquals(tested,
                      glyph.getFactorySupplier().get());
+
+        final ShapeGlyph glyph2 = (ShapeGlyph) tested.getGlyph(definition1Id, ShapeFactory.GlyphConsumer.class);
+        assertNotNull(glyph2);
+        assertEquals(definition1Id,
+                     glyph2.getDefinitionId());
+        assertEquals(tested,
+                     glyph2.getFactorySupplier().get());
     }
 
     @Test
@@ -91,12 +99,20 @@ public class DelegateShapeFactoryTest {
         assertNotNull(shape);
         assertEquals(shape2,
                      shape);
+
         final ShapeGlyph glyph = (ShapeGlyph) tested.getGlyph(definition2Id);
         assertNotNull(glyph);
         assertEquals(definition2Id,
                      glyph.getDefinitionId());
         assertEquals(tested,
                      glyph.getFactorySupplier().get());
+
+        final ShapeGlyph glyph2 = (ShapeGlyph) tested.getGlyph(definition2Id, ShapeFactory.GlyphConsumer.class);
+        assertNotNull(glyph2);
+        assertEquals(definition2Id,
+                     glyph2.getDefinitionId());
+        assertEquals(tested,
+                     glyph2.getFactorySupplier().get());
     }
 
     @Test(expected = RuntimeException.class)

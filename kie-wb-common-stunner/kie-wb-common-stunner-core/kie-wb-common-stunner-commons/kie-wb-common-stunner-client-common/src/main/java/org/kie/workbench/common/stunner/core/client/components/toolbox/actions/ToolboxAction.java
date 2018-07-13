@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 /**
  * It describes and performs an action/operation that can be done
  * from a Toolbox.
- * <p/>
+ * <p>
  * It's displayed as a button for the ActionsToolbox.
  * @param <H> The canvas handler type.
  */
@@ -35,8 +35,8 @@ public interface ToolboxAction<H extends CanvasHandler> {
      * @param uuid The toolbox' element identifier.
      * @return The glyph definition that will be rendered as for the toolbox button's shape/icon.
      */
-    public Glyph getGlyph(H canvasHandler,
-                          String uuid);
+    Glyph getGlyph(H canvasHandler,
+                   String uuid);
 
     /**
      * The title to display for the toolbox' button.
@@ -44,8 +44,8 @@ public interface ToolboxAction<H extends CanvasHandler> {
      * @param uuid The toolbox' element identifier.
      * @return The title to display for the toolbox' button.
      */
-    public String getTitle(H canvasHandler,
-                           String uuid);
+    String getTitle(H canvasHandler,
+                    String uuid);
 
     /**
      * The operation to perform once cliking on the toolbox' button.
@@ -53,7 +53,7 @@ public interface ToolboxAction<H extends CanvasHandler> {
      * @param uuid The toolbox' element identifier.
      * @return This instance (cascade).
      */
-    public ToolboxAction<H> onMouseClick(H canvasHandler,
-                                         String uuid,
-                                         MouseClickEvent event);
+    ToolboxAction<H> onMouseClick(H canvasHandler,
+                                  String uuid,
+                                  MouseClickEvent event);
 }

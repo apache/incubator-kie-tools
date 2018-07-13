@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
+import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -64,6 +65,9 @@ public class MorphNodeActionTest {
 
     @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+
+    @Mock
+    private ShapeFactory shapeFactory;
 
     @Mock
     private CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
@@ -114,6 +118,7 @@ public class MorphNodeActionTest {
         when(canvasHandler.getGraphIndex()).thenReturn(graphIndex);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
+        when(canvasHandler.getShapeFactory(eq(SSID_UUID))).thenReturn(shapeFactory);
         when(canvas.getLayer()).thenReturn(layer);
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getShapeSetId()).thenReturn(SSID_UUID);
@@ -136,6 +141,19 @@ public class MorphNodeActionTest {
                         E_UUID);
         verify(translationService,
                times(1)).getValue(eq(MorphNodeAction.KEY_TITLE));
+    }
+
+    @Test
+    public void testGlyph() {
+        assertEquals(MORPH_TARGET_ID,
+                     tested.getGlyphId(canvasHandler,
+                                       E_UUID));
+
+        tested.getGlyph(canvasHandler,
+                        E_UUID);
+
+        verify(shapeFactory).getGlyph(MORPH_TARGET_ID,
+                                      AbstractToolboxAction.ToolboxGlyphConsumer.class);
     }
 
     @Test

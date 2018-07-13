@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.dmn.client.shape.def;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
@@ -23,7 +26,11 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
+import org.kie.workbench.common.dmn.client.resources.DMNSVGGlyphFactory;
 import org.kie.workbench.common.dmn.client.resources.DMNSVGViewFactory;
+import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
+import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
+import org.kie.workbench.common.stunner.core.definition.shape.ShapeGlyph;
 import org.kie.workbench.common.stunner.svg.client.shape.factory.SVGShapeViewResources;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
@@ -31,12 +38,48 @@ public class DMNSVGShapeDefImpl implements DMNSVGShapeDef<DMNViewDefinition> {
 
     public static final SVGShapeViewResources<DMNViewDefinition, DMNSVGViewFactory> VIEW_RESOURCES =
             new SVGShapeViewResources<DMNViewDefinition, DMNSVGViewFactory>()
-                    .put(BusinessKnowledgeModel.class, DMNSVGViewFactory::businessKnowledgeModel)
-                    .put(Decision.class, DMNSVGViewFactory::decision)
-                    .put(DMNDiagram.class, DMNSVGViewFactory::diagram)
-                    .put(InputData.class, DMNSVGViewFactory::inputData)
-                    .put(KnowledgeSource.class, DMNSVGViewFactory::knowledgeSource)
-                    .put(TextAnnotation.class, DMNSVGViewFactory::textAnnotation);
+                    .put(BusinessKnowledgeModel.class,
+                         DMNSVGViewFactory::businessKnowledgeModel)
+                    .put(Decision.class,
+                         DMNSVGViewFactory::decision)
+                    .put(DMNDiagram.class,
+                         DMNSVGViewFactory::diagram)
+                    .put(InputData.class,
+                         DMNSVGViewFactory::inputData)
+                    .put(KnowledgeSource.class,
+                         DMNSVGViewFactory::knowledgeSource)
+                    .put(TextAnnotation.class,
+                         DMNSVGViewFactory::textAnnotation);
+
+    public static final Map<Class<? extends DMNViewDefinition>, Glyph> GLYPHS_TOOLBOX =
+            new HashMap<Class<? extends DMNViewDefinition>, Glyph>() {{
+                put(BusinessKnowledgeModel.class,
+                    DMNSVGGlyphFactory.BUSINESS_KNOWLEDGE_MODEL_TOOLBOX);
+                put(Decision.class,
+                    DMNSVGGlyphFactory.DECISION_TOOLBOX);
+                put(DMNDiagram.class,
+                    DMNSVGGlyphFactory.DIAGRAM_TOOLBOX);
+                put(InputData.class,
+                    DMNSVGGlyphFactory.INPUT_DATA_TOOLBOX);
+                put(KnowledgeSource.class,
+                    DMNSVGGlyphFactory.KNOWLEDGE_SOURCE_TOOLBOX);
+                put(TextAnnotation.class,
+                    DMNSVGGlyphFactory.TEXT_ANNOTATION_TOOLBOX);
+            }};
+
+    public static final Map<Class<? extends DMNViewDefinition>, Glyph> GLYPHS_PALETTE =
+            new HashMap<Class<? extends DMNViewDefinition>, Glyph>() {{
+                put(BusinessKnowledgeModel.class,
+                    DMNSVGGlyphFactory.BUSINESS_KNOWLEDGE_MODEL_PALETTE);
+                put(Decision.class,
+                    DMNSVGGlyphFactory.DECISION_PALETTE);
+                put(InputData.class,
+                    DMNSVGGlyphFactory.INPUT_DATA_PALETTE);
+                put(KnowledgeSource.class,
+                    DMNSVGGlyphFactory.KNOWLEDGE_SOURCE_PALETTE);
+                put(TextAnnotation.class,
+                    DMNSVGGlyphFactory.TEXT_ANNOTATION_PALETTE);
+            }};
 
     @Override
     public SVGShapeView<?> newViewInstance(final DMNSVGViewFactory factory,
@@ -44,5 +87,21 @@ public class DMNSVGShapeDefImpl implements DMNSVGShapeDef<DMNViewDefinition> {
         return VIEW_RESOURCES
                 .getResource(factory, bean)
                 .build(true);
+    }
+
+    @Override
+    public Glyph getGlyph(final Class<? extends DMNViewDefinition> type,
+                          final String defId) {
+        return GLYPHS_TOOLBOX.computeIfAbsent(type, (t) -> ShapeGlyph.create());
+    }
+
+    @Override
+    public Glyph getGlyph(final Class<? extends DMNViewDefinition> type,
+                          final Class<? extends ShapeFactory.GlyphConsumer> consumer,
+                          final String defId) {
+        if (org.kie.workbench.common.stunner.core.client.components.palette.AbstractPalette.PaletteGlyphConsumer.class.equals(consumer)) {
+            return GLYPHS_PALETTE.computeIfAbsent(type, (t) -> getGlyph(t, defId));
+        }
+        return getGlyph(type, defId);
     }
 }

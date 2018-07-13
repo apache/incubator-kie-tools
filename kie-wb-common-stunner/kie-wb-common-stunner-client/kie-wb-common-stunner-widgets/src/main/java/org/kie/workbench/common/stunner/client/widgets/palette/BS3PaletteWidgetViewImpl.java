@@ -64,12 +64,13 @@ public class BS3PaletteWidgetViewImpl implements BS3PaletteWidgetView,
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void showDragProxy(String itemId,
                               double x,
                               double y,
                               double width,
                               double height) {
-        final Glyph glyph = presenter.getShapeGlyph(itemId);
+        final Glyph glyph = presenter.getShapeDragProxyGlyph(itemId);
         itemDragProxy = shapeGlyphDragHandler.show(new ShapeGlyphDragHandler.Item() {
                                                        @Override
                                                        public Glyph getShape() {

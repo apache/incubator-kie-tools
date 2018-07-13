@@ -238,7 +238,14 @@ public class BS3PaletteWidgetImpl
 
     @Override
     public Glyph getShapeGlyph(final String definitionId) {
-        return getShapeFactory().getGlyph(definitionId);
+        return getShapeFactory().getGlyph(definitionId,
+                                          AbstractPalette.PaletteGlyphConsumer.class);
+    }
+
+    @Override
+    public Glyph getShapeDragProxyGlyph(final String definitionId) {
+        return getShapeFactory().getGlyph(definitionId,
+                                          AbstractPalette.PaletteDragProxyGlyphConsumer.class);
     }
 
     private void handleMouseDownEvent(final DefaultPaletteItem item,

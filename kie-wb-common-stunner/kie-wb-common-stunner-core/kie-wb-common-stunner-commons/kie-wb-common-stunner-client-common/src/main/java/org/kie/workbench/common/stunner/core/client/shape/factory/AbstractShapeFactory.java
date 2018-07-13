@@ -22,16 +22,32 @@ import org.kie.workbench.common.stunner.core.definition.shape.ShapeGlyph;
 
 public abstract class AbstractShapeFactory<W, S extends Shape> implements ShapeFactory<W, S> {
 
-    protected abstract Glyph getGlyphFor(String definitionId);
+    protected abstract Glyph getGlyphFor(final String definitionId);
+
+    protected abstract Glyph getGlyphFor(final String definitionId,
+                                         final Class<? extends GlyphConsumer> consumer);
 
     @Override
     public Glyph getGlyph(final String definitionId) {
         final Glyph glyph = getGlyphFor(definitionId);
+        initialiseGlyph(glyph, definitionId);
+        return glyph;
+    }
+
+    @Override
+    public Glyph getGlyph(final String definitionId,
+                          final Class<? extends GlyphConsumer> consumer) {
+        final Glyph glyph = getGlyphFor(definitionId, consumer);
+        initialiseGlyph(glyph, definitionId);
+        return glyph;
+    }
+
+    private void initialiseGlyph(final Glyph glyph,
+                                 final String definitionId) {
         if (ShapeGlyph.class.equals(glyph.getClass())) {
             final ShapeGlyph shapeGlyph = (ShapeGlyph) glyph;
             shapeGlyph.setDefinitionId(definitionId);
             shapeGlyph.setFactorySupplier(() -> this);
         }
-        return glyph;
     }
 }

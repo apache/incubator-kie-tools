@@ -69,6 +69,17 @@ public class DelegateShapeFactory<W, S extends Shape> extends AbstractShapeFacto
                                           definitionId);
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Glyph getGlyphFor(final String definitionId,
+                                final Class<? extends GlyphConsumer> consumer) {
+        final DefinitionTypeBindings bindings = definitionTypeBindings.get(definitionId);
+        final Class defType = bindings.defType;
+        return bindings.shapeDef.getGlyph(defType,
+                                          consumer,
+                                          definitionId);
+    }
+
     private class DefinitionTypeBindings {
 
         final Class<?> defType;

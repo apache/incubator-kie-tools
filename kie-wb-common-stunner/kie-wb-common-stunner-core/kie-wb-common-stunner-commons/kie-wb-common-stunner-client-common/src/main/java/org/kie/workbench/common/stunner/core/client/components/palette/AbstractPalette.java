@@ -19,9 +19,18 @@ package org.kie.workbench.common.stunner.core.client.components.palette;
 import java.util.function.Consumer;
 
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.uberfire.mvp.Command;
 
 public abstract class AbstractPalette<D extends PaletteDefinition> implements Palette<D> {
+
+    public interface PaletteGlyphConsumer extends ShapeFactory.GlyphConsumer {
+        //Marker interface
+    }
+
+    public interface PaletteDragProxyGlyphConsumer extends ShapeFactory.GlyphConsumer {
+        //Marker interface
+    }
 
     protected final ShapeManager shapeManager;
 

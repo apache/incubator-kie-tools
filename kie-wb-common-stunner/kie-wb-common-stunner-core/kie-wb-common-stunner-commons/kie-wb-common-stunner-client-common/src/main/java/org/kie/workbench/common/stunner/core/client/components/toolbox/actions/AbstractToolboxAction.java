@@ -29,6 +29,10 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 public abstract class AbstractToolboxAction implements ToolboxAction<AbstractCanvasHandler> {
 
+    public interface ToolboxGlyphConsumer extends ShapeFactory.GlyphConsumer {
+        //Marker interface
+    }
+
     private final DefinitionUtils definitionUtils;
     private final ClientTranslationService translationService;
 
@@ -63,8 +67,8 @@ public abstract class AbstractToolboxAction implements ToolboxAction<AbstractCan
                           final String uuid) {
         final String ssid = canvasHandler.getDiagram().getMetadata().getShapeSetId();
         final ShapeFactory shapeFactory = canvasHandler.getShapeFactory(ssid);
-        return shapeFactory.getGlyph(getGlyphId(canvasHandler,
-                                                uuid));
+        return shapeFactory.getGlyph(getGlyphId(canvasHandler, uuid),
+                                     ToolboxGlyphConsumer.class);
     }
 
     public static Element<?> getElement(final AbstractCanvasHandler canvasHandler,

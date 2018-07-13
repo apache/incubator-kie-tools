@@ -200,6 +200,12 @@ public class CreateConnectorActionTest {
         assertEquals(EDGE_ID,
                      tested.getGlyphId(canvasHandler,
                                        NODE_UUID));
+
+        tested.getGlyph(canvasHandler,
+                        NODE_UUID);
+
+        verify(shapeFactory).getGlyph(EDGE_ID,
+                                      AbstractToolboxAction.ToolboxGlyphConsumer.class);
     }
 
     @Test

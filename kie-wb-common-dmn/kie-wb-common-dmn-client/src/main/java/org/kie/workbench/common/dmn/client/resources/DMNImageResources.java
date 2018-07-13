@@ -19,41 +19,82 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ClientBundleWithLookup;
 import com.google.gwt.resources.client.DataResource;
+import com.google.gwt.resources.client.ImageResource;
 
 public interface DMNImageResources extends ClientBundleWithLookup {
 
+    //Connectors
+    String ASSOCIATION_TOOLBOX = "images/icons/association-toolbox.png";
+
+    String AUTHORITY_REQUIREMENT_TOOLBOX = "images/icons/authority-requirement-toolbox.png";
+
+    String INFORMATION_REQUIREMENT_TOOLBOX = "images/icons/information-requirement-toolbox.png";
+
+    String KNOWLEDGE_REQUIREMENT_TOOLBOX = "images/icons/knowledge-requirement-toolbox.png";
+
+    //Nodes
+    String BUSINESS_KNOWLEDGE_MODEL_TOOLBOX = "images/icons/business-knowledge-model-toolbox.png";
+
+    String DECISION_TOOLBOX = "images/icons/decision-toolbox.png";
+
+    String INPUT_DATA_TOOLBOX = "images/icons/input-data-toolbox.png";
+
+    String KNOWLEDGE_SOURCE_TOOLBOX = "images/icons/knowledge-source-toolbox.png";
+
+    String TEXT_ANNOTATION_TOOLBOX = "images/icons/text-annotation-toolbox.png";
+
     DMNImageResources INSTANCE = GWT.create(DMNImageResources.class);
+
     String SVG_MIME_TYPE = "image/svg+xml";
 
     @ClientBundle.Source(DMNSVGViewFactory.DIAGRAM)
     @DataResource.MimeType(SVG_MIME_TYPE)
-    DataResource nodes();
+    DataResource diagramToolbox();
 
-    @ClientBundle.Source(DMNSVGViewFactory.DIAGRAM)
-    @DataResource.MimeType(SVG_MIME_TYPE)
-    DataResource connectors();
+    @ClientBundle.Source(BUSINESS_KNOWLEDGE_MODEL_TOOLBOX)
+    ImageResource businessKnowledgeModelToolbox();
 
-    @ClientBundle.Source(DMNSVGViewFactory.DIAGRAM)
-    @DataResource.MimeType(SVG_MIME_TYPE)
-    DataResource diagram();
+    @ClientBundle.Source(DECISION_TOOLBOX)
+    ImageResource decisionToolbox();
 
-    @ClientBundle.Source(DMNSVGViewFactory.INPUT_DATA)
-    @DataResource.MimeType(SVG_MIME_TYPE)
-    DataResource inputData();
+    @ClientBundle.Source(INPUT_DATA_TOOLBOX)
+    ImageResource inputDataToolbox();
 
-    @ClientBundle.Source(DMNSVGViewFactory.KNOWLEDGE_SOURCE)
-    @DataResource.MimeType(SVG_MIME_TYPE)
-    DataResource knowledgeSource();
+    @ClientBundle.Source(KNOWLEDGE_SOURCE_TOOLBOX)
+    ImageResource knowledgeSourceToolbox();
 
-    @ClientBundle.Source(DMNSVGViewFactory.BUSINESS_KNOWLEDGE_MODEL)
-    @DataResource.MimeType(SVG_MIME_TYPE)
-    DataResource businessKnowledgeModel();
+    @ClientBundle.Source(TEXT_ANNOTATION_TOOLBOX)
+    ImageResource textAnnotationToolbox();
 
-    @ClientBundle.Source(DMNSVGViewFactory.DECISION)
-    @DataResource.MimeType(SVG_MIME_TYPE)
-    DataResource decision();
+    @ClientBundle.Source(ASSOCIATION_TOOLBOX)
+    ImageResource associationToolbox();
 
-    @ClientBundle.Source(DMNSVGViewFactory.TEXT_ANNOTATION)
+    @ClientBundle.Source(AUTHORITY_REQUIREMENT_TOOLBOX)
+    ImageResource authorityRequirementToolbox();
+
+    @ClientBundle.Source(INFORMATION_REQUIREMENT_TOOLBOX)
+    ImageResource informationRequirementToolbox();
+
+    @ClientBundle.Source(KNOWLEDGE_REQUIREMENT_TOOLBOX)
+    ImageResource knowledgeRequirementToolbox();
+
+    @ClientBundle.Source(DMNSVGViewFactory.BUSINESS_KNOWLEDGE_MODEL_PALETTE)
     @DataResource.MimeType(SVG_MIME_TYPE)
-    DataResource textAnnotation();
+    DataResource businessKnowledgeModelPalette();
+
+    @ClientBundle.Source(DMNSVGViewFactory.DECISION_PALETTE)
+    @DataResource.MimeType(SVG_MIME_TYPE)
+    DataResource decisionPalette();
+
+    @ClientBundle.Source(DMNSVGViewFactory.INPUT_DATA_PALETTE)
+    @DataResource.MimeType(SVG_MIME_TYPE)
+    DataResource inputDataPalette();
+
+    @ClientBundle.Source(DMNSVGViewFactory.KNOWLEDGE_SOURCE_PALETTE)
+    @DataResource.MimeType(SVG_MIME_TYPE)
+    DataResource knowledgeSourcePalette();
+
+    @ClientBundle.Source(DMNSVGViewFactory.TEXT_ANNOTATION_PALETTE)
+    @DataResource.MimeType(SVG_MIME_TYPE)
+    DataResource textAnnotationPalette();
 }

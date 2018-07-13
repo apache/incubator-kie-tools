@@ -43,4 +43,6 @@ public interface PaletteWidget<D extends PaletteDefinition>
     HTMLElement getElement();
 
     Glyph getShapeGlyph(String definitionId);
+
+    Glyph getShapeDragProxyGlyph(String definitionId);
 }

@@ -50,4 +50,24 @@ public interface ShapeFactory<W, S extends Shape> {
      * @return
      */
     Glyph getGlyph(String definitionId);
+
+    /**
+     * Returns the glyph (thumbnail/miniature) for the specified Definition identifier and consumer.
+     * This allows different consumers to receive different Glyphs for the same Definition identifier.
+     * @param definitionId
+     * @param consumer
+     * @return
+     */
+    @SuppressWarnings("unused")
+    default Glyph getGlyph(String definitionId, Class<? extends GlyphConsumer> consumer) {
+        return getGlyph(definitionId);
+    }
+
+    /**
+     * Marker interface for different consumers of Glyphs.
+     * Different consumers should extend this marker.
+     */
+    interface GlyphConsumer {
+
+    }
 }

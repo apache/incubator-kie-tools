@@ -211,6 +211,12 @@ public class CreateNodeActionTest {
         assertEquals(TARGET_NODE_ID,
                      tested.getGlyphId(canvasHandler,
                                        NODE_UUID));
+
+        tested.getGlyph(canvasHandler,
+                        NODE_UUID);
+
+        verify(shapeFactory).getGlyph(TARGET_NODE_ID,
+                                      AbstractToolboxAction.ToolboxGlyphConsumer.class);
     }
 
     @Test

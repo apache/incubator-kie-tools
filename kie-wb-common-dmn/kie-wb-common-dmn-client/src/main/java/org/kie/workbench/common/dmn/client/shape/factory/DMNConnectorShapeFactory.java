@@ -40,25 +40,25 @@ public class DMNConnectorShapeFactory implements ShapeDefFactory<DMNDefinition, 
     private final Map<Class<? extends DMNDefinition>, Function<Double[], WiresConnectorViewExt>> VIEW_FACTORIES =
             new HashMap<Class<? extends DMNDefinition>, Function<Double[], WiresConnectorViewExt>>() {{
                 put(Association.class,
-                    points -> getDmnConnectorShapeViewFactory()
+                    points -> getDMNConnectorShapeViewFactory()
                             .association(points[0],
                                          points[1],
                                          points[2],
                                          points[3]));
                 put(InformationRequirement.class,
-                    points -> getDmnConnectorShapeViewFactory()
+                    points -> getDMNConnectorShapeViewFactory()
                             .informationRequirement(points[0],
                                                     points[1],
                                                     points[2],
                                                     points[3]));
                 put(KnowledgeRequirement.class,
-                    points -> getDmnConnectorShapeViewFactory()
+                    points -> getDMNConnectorShapeViewFactory()
                             .knowledgeRequirement(points[0],
                                                   points[1],
                                                   points[2],
                                                   points[3]));
                 put(AuthorityRequirement.class,
-                    points -> getDmnConnectorShapeViewFactory()
+                    points -> getDMNConnectorShapeViewFactory()
                             .authorityRequirement(points[0],
                                                   points[1],
                                                   points[2],
@@ -81,13 +81,11 @@ public class DMNConnectorShapeFactory implements ShapeDefFactory<DMNDefinition, 
     public Shape newShape(final DMNDefinition instance,
                           final DMNShapeDef shapeDef) {
         final DMNConnectorShapeDef dmnShapeDef = (DMNConnectorShapeDef) shapeDef;
-        final WiresConnectorViewExt view =
-                VIEW_FACTORIES.get(instance.getClass()).apply(new Double[]{0d, 0d, 100d, 100d});
-        return new DMNConnectorShape(dmnShapeDef,
-                                     view);
+        final WiresConnectorViewExt view = VIEW_FACTORIES.get(instance.getClass()).apply(new Double[]{0d, 0d, 100d, 100d});
+        return new DMNConnectorShape(dmnShapeDef, view);
     }
 
-    public DMNConnectorShapeViewFactory getDmnConnectorShapeViewFactory() {
+    public DMNConnectorShapeViewFactory getDMNConnectorShapeViewFactory() {
         return dmnConnectorShapeViewFactory;
     }
 }

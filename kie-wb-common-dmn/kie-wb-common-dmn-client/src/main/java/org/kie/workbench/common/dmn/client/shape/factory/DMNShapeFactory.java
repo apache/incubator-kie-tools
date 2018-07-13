@@ -78,13 +78,13 @@ public class DMNShapeFactory implements ShapeFactory<DMNDefinition, Shape> {
                 .delegate(Association.class,
                           new DMNConnectorShapeDefImpl(),
                           () -> dmnConnectorShapeFactory)
+                .delegate(AuthorityRequirement.class,
+                          new DMNConnectorShapeDefImpl(),
+                          () -> dmnConnectorShapeFactory)
                 .delegate(InformationRequirement.class,
                           new DMNConnectorShapeDefImpl(),
                           () -> dmnConnectorShapeFactory)
                 .delegate(KnowledgeRequirement.class,
-                          new DMNConnectorShapeDefImpl(),
-                          () -> dmnConnectorShapeFactory)
-                .delegate(AuthorityRequirement.class,
                           new DMNConnectorShapeDefImpl(),
                           () -> dmnConnectorShapeFactory);
     }
@@ -97,5 +97,11 @@ public class DMNShapeFactory implements ShapeFactory<DMNDefinition, Shape> {
     @Override
     public Glyph getGlyph(final String definitionId) {
         return delegateShapeFactory.getGlyph(definitionId);
+    }
+
+    @Override
+    public Glyph getGlyph(final String definitionId,
+                          final Class<? extends GlyphConsumer> consumer) {
+        return delegateShapeFactory.getGlyph(definitionId, consumer);
     }
 }
