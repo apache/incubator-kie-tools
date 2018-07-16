@@ -187,6 +187,11 @@ public class EnumEditorPresenterTest {
             }
 
             @Override
+            public void addDownloadMenuItem(final FileMenuBuilder fileMenuBuilder) {
+                // Do nothing.
+            }
+
+            @Override
             protected Command getSaveAndRename() {
                 return mock(Command.class);
             }

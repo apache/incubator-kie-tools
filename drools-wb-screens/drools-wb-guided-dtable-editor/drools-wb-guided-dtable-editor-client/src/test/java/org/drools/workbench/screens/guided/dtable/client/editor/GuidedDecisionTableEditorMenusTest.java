@@ -68,6 +68,7 @@ import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilderImpl;
+import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItem;
 import org.uberfire.ext.editor.commons.client.menu.RestoreVersionCommandProvider;
 import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
@@ -251,6 +252,12 @@ public class GuidedDecisionTableEditorMenusTest {
     protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
 
     @Mock
+    protected DownloadMenuItem downloadMenuItem;
+
+    @Mock
+    protected MenuItem downloadMenuItemButton;
+
+    @Mock
     protected MenuItem alertsButtonMenuItem;
 
     private GuidedDecisionTableEditorPresenter presenter;
@@ -287,6 +294,7 @@ public class GuidedDecisionTableEditorMenusTest {
 
     @Before
     public void setup() {
+        when(downloadMenuItem.build(any())).thenReturn(downloadMenuItemButton);
         when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
         when(modeller.getView()).thenReturn(modellerView);
         when(versionRecordManager.newSaveMenuItem(any(Command.class))).thenReturn(saveMenuItem);
@@ -343,7 +351,8 @@ public class GuidedDecisionTableEditorMenusTest {
                                                                                                   placeManager,
                                                                                                   columnsPage,
                                                                                                   saveAndRenameCommandBuilder,
-                                                                                                  alertsButtonMenuItemBuilder) {
+                                                                                                  alertsButtonMenuItemBuilder,
+                                                                                                  downloadMenuItem) {
             @Override
             protected Command getSaveAndRenameCommand() {
                 return mock(Command.class);

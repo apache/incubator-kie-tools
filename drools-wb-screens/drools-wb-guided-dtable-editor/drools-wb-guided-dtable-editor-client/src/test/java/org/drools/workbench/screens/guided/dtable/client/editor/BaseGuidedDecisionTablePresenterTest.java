@@ -71,6 +71,7 @@ import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilderImpl;
+import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItem;
 import org.uberfire.ext.editor.commons.client.menu.RestoreVersionCommandProvider;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
 import org.uberfire.ext.editor.commons.version.VersionService;
@@ -206,6 +207,12 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
     @Mock
     protected BusyIndicatorView busyIndicatorView;
 
+    @Mock
+    protected DownloadMenuItem downloadMenuItem;
+
+    @Mock
+    protected MenuItem downloadMenuItemButton;
+
     @Spy
     protected RestoreVersionCommandProvider restoreVersionCommandProvider = getRestoreVersionCommandProvider();
 
@@ -285,6 +292,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
 
         when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(Optional.empty());
         when(workbenchContext.getActiveWorkspaceProject()).thenReturn(Optional.empty());
+        when(downloadMenuItem.build(any())).thenReturn(downloadMenuItemButton);
 
         doReturn(alertsButtonMenuItem).when(alertsButtonMenuItemBuilder).build();
 

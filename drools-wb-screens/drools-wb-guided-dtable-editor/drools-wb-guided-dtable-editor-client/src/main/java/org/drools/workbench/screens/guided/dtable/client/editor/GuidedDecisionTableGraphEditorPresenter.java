@@ -63,6 +63,7 @@ import org.kie.soup.project.datamodel.imports.Imports;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
@@ -79,6 +80,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.SaveInProgressEvent;
 import org.uberfire.client.mvp.UpdatedLockStatusEvent;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItem;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
@@ -147,7 +149,8 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                                                    final LockManager lockManager,
                                                    final ColumnsPage columnsPage,
                                                    final SaveAndRenameCommandBuilder<List<GuidedDecisionTableEditorContent>, Metadata> saveAndRenameCommandBuilder,
-                                                   final AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder) {
+                                                   final AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder,
+                                                   final DownloadMenuItem downloadMenuItem) {
         super(view,
               service,
               notification,
@@ -162,7 +165,8 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
               beanManager,
               placeManager,
               columnsPage,
-              alertsButtonMenuItemBuilder);
+              alertsButtonMenuItemBuilder,
+              downloadMenuItem);
         this.graphService = graphService;
         this.moduleService = moduleService;
         this.saveInProgressEvent = saveInProgressEvent;
@@ -393,7 +397,7 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                                assetUpdateValidator);
         }
 
-        this.menus = fileMenuBuilder
+        final FileMenuBuilder fileMenuBuilder = this.fileMenuBuilder
                 .addValidate(() -> onValidate(getActiveDocument()))
                 .addNewTopLevelMenu(getEditMenuItem())
                 .addNewTopLevelMenu(getViewMenuItem())
@@ -401,8 +405,10 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                 .addNewTopLevelMenu(getRadarMenuItem())
                 .addNewTopLevelMenu(getRegisteredDocumentsMenuItem())
                 .addNewTopLevelMenu(getVersionManagerMenuItem())
-                .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build())
-                .build();
+                .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
+        addDownloadMenuItem(fileMenuBuilder);
+
+        this.menus = fileMenuBuilder.build();
     }
 
     protected Command getSaveAndRenameCommand() {

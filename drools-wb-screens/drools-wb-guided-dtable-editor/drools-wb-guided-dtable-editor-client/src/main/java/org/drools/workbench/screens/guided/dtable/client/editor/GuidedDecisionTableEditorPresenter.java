@@ -58,6 +58,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UpdatedLockStatusEvent;
+import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItem;
 import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnFocus;
@@ -95,7 +96,8 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
                                               final PlaceManager placeManager,
                                               final ColumnsPage columnsPage,
                                               final SaveAndRenameCommandBuilder<GuidedDecisionTable52, Metadata> saveAndRenameCommandBuilder,
-                                              final AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder) {
+                                              final AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder,
+                                              final DownloadMenuItem downloadMenuItem) {
         super(view,
               service,
               notification,
@@ -110,7 +112,8 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
               beanManager,
               placeManager,
               columnsPage,
-              alertsButtonMenuItemBuilder);
+              alertsButtonMenuItemBuilder,
+              downloadMenuItem);
 
         this.saveAndRenameCommandBuilder = saveAndRenameCommandBuilder;
     }
@@ -220,15 +223,17 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
                                assetUpdateValidator);
         }
 
-        this.menus = getFileMenuBuilder()
+        final FileMenuBuilder fileMenuBuilder = getFileMenuBuilder()
                 .addValidate(() -> onValidate(getActiveDocument()))
                 .addNewTopLevelMenu(getEditMenuItem())
                 .addNewTopLevelMenu(getViewMenuItem())
                 .addNewTopLevelMenu(getInsertMenuItem())
                 .addNewTopLevelMenu(getRadarMenuItem())
                 .addNewTopLevelMenu(getVersionManagerMenuItem())
-                .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build())
-                .build();
+                .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
+        addDownloadMenuItem(fileMenuBuilder);
+
+        this.menus = fileMenuBuilder.build();
     }
 
     protected Command getSaveAndRenameCommand() {

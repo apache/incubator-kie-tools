@@ -94,7 +94,8 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
                                                       placeManager,
                                                       columnsPage,
                                                       saveAndRenameCommandBuilder,
-                                                      alertsButtonMenuItemBuilder) {
+                                                      alertsButtonMenuItemBuilder,
+                                                      downloadMenuItem) {
             @Override
             protected Command getSaveAndRenameCommand() {
                 return mock(Command.class);

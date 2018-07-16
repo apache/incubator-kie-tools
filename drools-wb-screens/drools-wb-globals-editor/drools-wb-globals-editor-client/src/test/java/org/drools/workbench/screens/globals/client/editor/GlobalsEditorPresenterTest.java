@@ -59,9 +59,11 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -123,7 +125,7 @@ public class GlobalsEditorPresenterTest {
     @Before
     public void setUp() {
         when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
-        presenter = new GlobalsEditorPresenter(view) {
+        presenter = spy(new GlobalsEditorPresenter(view) {
             {
                 kieView = GlobalsEditorPresenterTest.this.kieView;
                 globalsEditorService = new CallerMock<>(GlobalsEditorPresenterTest.this.globalsEditorService);
@@ -145,7 +147,9 @@ public class GlobalsEditorPresenterTest {
             protected Command getSaveAndRename() {
                 return mock(Command.class);
             }
-        };
+        });
+
+        doNothing().when(presenter).addDownloadMenuItem(any());
     }
 
     @Test
@@ -248,6 +252,7 @@ public class GlobalsEditorPresenterTest {
         verify(fileMenuBuilder).addRename(any(Command.class));
         verify(fileMenuBuilder).addDelete(any(Command.class));
         verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
+        verify(presenter).addDownloadMenuItem(fileMenuBuilder);
     }
 
     @Test

@@ -62,6 +62,7 @@ import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -167,6 +168,7 @@ public class DecisionTableXLSEditorPresenterTest {
             }
         });
 
+        doNothing().when(presenter).addDownloadMenuItem(any());
         doReturn(mock(MenuItem.class)).when(presenter).getConvertMenu();
         when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(Optional.empty());
         when(workbenchContext.getActiveWorkspaceProject()).thenReturn(Optional.empty());
@@ -252,6 +254,8 @@ public class DecisionTableXLSEditorPresenterTest {
         verify(fileMenuBuilder).addDelete(any(Path.class),
                                           any(AssetUpdateValidator.class));
         verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
+        verify(presenter).addDownloadMenuItem(fileMenuBuilder);
+
     }
 
     @Test

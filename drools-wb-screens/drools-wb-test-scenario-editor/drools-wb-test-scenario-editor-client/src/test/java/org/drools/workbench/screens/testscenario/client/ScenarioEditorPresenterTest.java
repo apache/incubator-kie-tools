@@ -80,6 +80,7 @@ import static org.mockito.Matchers.notNull;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.eq;
@@ -190,6 +191,8 @@ public class ScenarioEditorPresenterTest {
                 return mock(Command.class);
             }
         });
+
+        doNothing().when(editor).addDownloadMenuItem(any());
 
         scenarioRunResult = new Scenario();
         scenario = new Scenario();
@@ -376,6 +379,7 @@ public class ScenarioEditorPresenterTest {
         verify(fileMenuBuilder).addDelete(any(Path.class),
                                           any(AssetUpdateValidator.class));
         verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
+        verify(editor).addDownloadMenuItem(fileMenuBuilder);
     }
 
     @Test

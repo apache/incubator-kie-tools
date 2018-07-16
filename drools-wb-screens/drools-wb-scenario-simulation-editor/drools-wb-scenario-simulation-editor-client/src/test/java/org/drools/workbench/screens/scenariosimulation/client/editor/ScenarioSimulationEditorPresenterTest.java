@@ -154,6 +154,11 @@ public class ScenarioSimulationEditorPresenterTest {
             }
 
             @Override
+            protected MenuItem downloadMenuItem() {
+                return mock(MenuItem.class);
+            }
+
+            @Override
             protected Command getSaveAndRename() {
                 return mock(Command.class);
             }

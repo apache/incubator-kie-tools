@@ -83,7 +83,8 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
                                                       placeManager,
                                                       columnsPage,
                                                       saveAndRenameCommandBuilder,
-                                                      alertsButtonMenuItemBuilder) {
+                                                      alertsButtonMenuItemBuilder,
+                                                      downloadMenuItem) {
             {
                 workbenchContext = GuidedDecisionTableEditorPresenterTest.this.workbenchContext;
                 projectController = GuidedDecisionTableEditorPresenterTest.this.projectController;

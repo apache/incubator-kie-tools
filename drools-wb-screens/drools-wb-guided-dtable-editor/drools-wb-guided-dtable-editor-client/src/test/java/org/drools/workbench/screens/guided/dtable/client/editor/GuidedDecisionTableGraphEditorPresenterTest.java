@@ -222,7 +222,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                                            lockManager,
                                                            columnsPage,
                                                            saveAndRenameCommandBuilder,
-                                                           alertsButtonMenuItemBuilder) {
+                                                           alertsButtonMenuItemBuilder,
+                                                           downloadMenuItem) {
             {
                 workbenchContext = GuidedDecisionTableGraphEditorPresenterTest.this.workbenchContext;
                 projectController = GuidedDecisionTableGraphEditorPresenterTest.this.projectController;
@@ -345,32 +346,19 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
 
     @Test
     public void testSetupMenuBar() {
-        verify(fileMenuBuilder,
-               times(1)).addSave(any(MenuItem.class));
-        verify(fileMenuBuilder,
-               times(1)).addCopy(any(BasicFileMenuBuilder.PathProvider.class),
-                                 eq(assetUpdateValidator));
-        verify(fileMenuBuilder,
-               times(1)).addRename(any(Command.class));
-        verify(fileMenuBuilder,
-               times(1)).addDelete(any(BasicFileMenuBuilder.PathProvider.class),
-                                   eq(assetUpdateValidator));
-        verify(fileMenuBuilder,
-               times(1)).addValidate(any(Command.class));
-        verify(fileMenuBuilder,
-               times(1)).addNewTopLevelMenu(eq(editMenuItem));
-        verify(fileMenuBuilder,
-               times(1)).addNewTopLevelMenu(eq(viewMenuItem));
-        verify(fileMenuBuilder,
-               times(1)).addNewTopLevelMenu(eq(insertMenuItem));
-        verify(fileMenuBuilder,
-               times(1)).addNewTopLevelMenu(eq(radarMenuItem));
-        verify(fileMenuBuilder,
-               times(1)).addNewTopLevelMenu(eq(versionManagerMenuItem));
-        verify(fileMenuBuilder,
-               times(1)).addNewTopLevelMenu(eq(registeredDocumentsMenuItem));
-        verify(fileMenuBuilder,
-               times(1)).addNewTopLevelMenu(alertsButtonMenuItem);
+        verify(fileMenuBuilder).addSave(any(MenuItem.class));
+        verify(fileMenuBuilder).addCopy(any(BasicFileMenuBuilder.PathProvider.class), eq(assetUpdateValidator));
+        verify(fileMenuBuilder).addRename(any(Command.class));
+        verify(fileMenuBuilder).addDelete(any(BasicFileMenuBuilder.PathProvider.class), eq(assetUpdateValidator));
+        verify(fileMenuBuilder).addValidate(any(Command.class));
+        verify(fileMenuBuilder).addNewTopLevelMenu(eq(editMenuItem));
+        verify(fileMenuBuilder).addNewTopLevelMenu(eq(viewMenuItem));
+        verify(fileMenuBuilder).addNewTopLevelMenu(eq(insertMenuItem));
+        verify(fileMenuBuilder).addNewTopLevelMenu(eq(radarMenuItem));
+        verify(fileMenuBuilder).addNewTopLevelMenu(eq(versionManagerMenuItem));
+        verify(fileMenuBuilder).addNewTopLevelMenu(eq(registeredDocumentsMenuItem));
+        verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
+        verify(fileMenuBuilder).addNewTopLevelMenu(downloadMenuItemButton);
     }
 
     @Test
@@ -1675,7 +1663,8 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                                            lockManager,
                                                            columnsPage,
                                                            saveAndRenameCommandBuilder,
-                                                           alertsButtonMenuItemBuilder);
+                                                           alertsButtonMenuItemBuilder,
+                                                           downloadMenuItem);
     }
 
     private static class OnSaveSetupDataHolder {

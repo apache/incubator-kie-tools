@@ -211,6 +211,8 @@ public class DecisionTableXLSEditorPresenter
                                assetUpdateValidator);
         }
 
+        addDownloadMenuItem(fileMenuBuilder);
+
         fileMenuBuilder
                 .addValidate(getValidateCommand())
                 .addNewTopLevelMenu(getConvertMenu())

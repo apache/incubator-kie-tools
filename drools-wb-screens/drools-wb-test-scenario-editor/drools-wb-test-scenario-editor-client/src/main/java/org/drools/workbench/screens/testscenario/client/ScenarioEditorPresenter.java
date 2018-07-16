@@ -257,6 +257,8 @@ public class ScenarioEditorPresenter
                                assetUpdateValidator);
         }
 
+        addDownloadMenuItem(fileMenuBuilder);
+
         fileMenuBuilder
                 .addNewTopLevelMenu(view.getRunScenarioMenuItem())
                 .addNewTopLevelMenu(view.getRunAllScenariosMenuItem())
