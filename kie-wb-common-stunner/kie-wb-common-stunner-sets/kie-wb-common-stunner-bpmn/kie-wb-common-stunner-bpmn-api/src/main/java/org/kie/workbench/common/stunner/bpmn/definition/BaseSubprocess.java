@@ -34,7 +34,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
-@MorphBase(defaultType = ReusableSubprocess.class, targets = {BaseTask.class})
+@MorphBase(defaultType = EmbeddedSubprocess.class)
 public abstract class BaseSubprocess implements BPMNViewDefinition {
 
     @Category

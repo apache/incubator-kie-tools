@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.EdgeShape;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -30,6 +31,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
+import org.kie.workbench.common.stunner.core.graph.content.relationship.Relationship;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
@@ -68,33 +70,7 @@ public class MorphCanvasNodeCommand extends AbstractCanvasCommand {
 
         context.applyElementMutation(candidate, MutationContext.STATIC);
 
-        // Update incoming connections for new shape ( so magnets, connectors, etc on view side ).
-        final List<Edge> inEdges = candidate.getInEdges();
-        if (null != inEdges && !inEdges.isEmpty()) {
-            for (final Edge inEdge : inEdges) {
-                if (isViewEdge(inEdge)) {
-                    final Node inNode = inEdge.getSourceNode();
-                    updateConnections(context,
-                                      inEdge,
-                                      inNode,
-                                      candidate);
-                }
-            }
-        }
-
-        // Update outgoing connections as well for new shape.
-        final List<Edge> outEdges = candidate.getOutEdges();
-        if (null != outEdges && !outEdges.isEmpty()) {
-            for (final Edge outEdge : outEdges) {
-                if (isViewEdge(outEdge)) {
-                    final Node targetNode = outEdge.getTargetNode();
-                    updateConnections(context,
-                                      outEdge,
-                                      candidate,
-                                      targetNode);
-                }
-            }
-        }
+        updateEdges(context, candidate);
 
         // Adding parent to the new morphed node
         if (dockParentOptional.isPresent()) {
@@ -104,6 +80,31 @@ public class MorphCanvasNodeCommand extends AbstractCanvasCommand {
         }
 
         return buildResult();
+    }
+
+    private void updateEdges(AbstractCanvasHandler context, Node<? extends Definition<?>, Edge> candidate) {
+        // Update incoming edges for the new shape
+        Optional.ofNullable(candidate.getInEdges())
+                .ifPresent(edges -> edges.stream()
+                        .filter(this::isViewEdge)
+                        .forEach(edge -> updateConnections(context, edge, edge.getSourceNode(), candidate)));
+
+        // Update outgoing edges for the new shape.
+        Optional.ofNullable(candidate.getOutEdges())
+                .ifPresent(edges -> edges.stream()
+                        .forEach(edge -> {
+                            if (isViewEdge(edge)) {
+                                updateConnections(context, edge, candidate, edge.getTargetNode());
+                            } else if (edge.getContent() instanceof Relationship) {
+                                updateChild(context, edge.getSourceNode(), edge.getTargetNode());
+                            }
+                        })
+                );
+    }
+
+    private void updateChild(AbstractCanvasHandler context, Node parent, Node child) {
+        context.addChild(parent, child);
+        ShapeUtils.moveViewConnectorsToTop(context, child);
     }
 
     @Override

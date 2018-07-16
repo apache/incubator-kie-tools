@@ -18,10 +18,12 @@ package org.kie.workbench.common.stunner.bpmn.client.components.palette;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -36,6 +38,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNCategories;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
@@ -64,8 +67,12 @@ import org.kie.workbench.common.stunner.core.client.components.palette.ExpandedP
 import org.kie.workbench.common.stunner.core.client.components.palette.PaletteDefinitionBuilder;
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph.Builder;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
+import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import static org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteDefinitionProviders.isType;
 
@@ -138,10 +145,12 @@ public class BPMNPaletteDefinitionBuilder
     private final StunnerTranslationService translationService;
     private final Supplier<WorkItemDefinitionRegistry> workItemDefinitionRegistry;
     private final Function<WorkItemDefinition, ServiceTask> serviceTaskBuilder;
+    private final DefinitionUtils definitionUtils;
 
     // CDI proxy.
     protected BPMNPaletteDefinitionBuilder() {
         this(null,
+             null,
              null,
              null,
              null);
@@ -151,24 +160,28 @@ public class BPMNPaletteDefinitionBuilder
     public BPMNPaletteDefinitionBuilder(final DefinitionManager definitionManager,
                                         final ExpandedPaletteDefinitionBuilder paletteDefinitionBuilder,
                                         final StunnerTranslationService translationService,
-                                        final ManagedInstance<WorkItemDefinitionRegistry> workItemDefinitionRegistry) {
+                                        final ManagedInstance<WorkItemDefinitionRegistry> workItemDefinitionRegistry,
+                                        final DefinitionUtils definitionUtils) {
         this(definitionManager,
              paletteDefinitionBuilder,
              translationService,
              workItemDefinitionRegistry::get,
-             wid -> new ServiceTaskFactory.ServiceTaskBuilder(wid).build());
+             wid -> new ServiceTaskFactory.ServiceTaskBuilder(wid).build(),
+             definitionUtils);
     }
 
     BPMNPaletteDefinitionBuilder(final DefinitionManager definitionManager,
                                  final ExpandedPaletteDefinitionBuilder paletteDefinitionBuilder,
                                  final StunnerTranslationService translationService,
                                  final Supplier<WorkItemDefinitionRegistry> workItemDefinitionRegistry,
-                                 final Function<WorkItemDefinition, ServiceTask> serviceTaskBuilder) {
+                                 final Function<WorkItemDefinition, ServiceTask> serviceTaskBuilder,
+                                 final DefinitionUtils definitionUtils) {
         this.definitionManager = definitionManager;
         this.paletteDefinitionBuilder = paletteDefinitionBuilder;
         this.translationService = translationService;
         this.workItemDefinitionRegistry = workItemDefinitionRegistry;
         this.serviceTaskBuilder = serviceTaskBuilder;
+        this.definitionUtils = definitionUtils;
     }
 
     @PostConstruct
@@ -180,7 +193,19 @@ public class BPMNPaletteDefinitionBuilder
                 .categoryGlyphProvider(CATEGORY_DEFINITION.glyphProvider())
                 .categoryMessages(CATEGORY_DEFINITION.categoryMessageProvider(translationService))
                 .customGroupIdProvider(CUSTOM_GROUPS::get)
-                .customGroupMessages(new DefaultPaletteDefinitionProviders.DefaultCustomGroupMessageProvider(translationService));
+                .customGroupMessages(new DefaultPaletteDefinitionProviders.DefaultCustomGroupMessageProvider(translationService))
+                .morphDefinitionProvider(this::getMorphDefinition);
+    }
+
+    private <T> MorphDefinition getMorphDefinition(final T definition) {
+        final MorphAdapter<Object> adapter = definitionManager.adapters().registry().getMorphAdapter(definition.getClass());
+        if (Objects.equals(BPMNCategories.SUB_PROCESSES, definitionManager.adapters().forDefinition().getCategory(definition))) {
+            //aggregate all sub-processes on the same morph definition, in this way they have the same palette group
+            final String subProcessId = BindableAdapterUtils.getDefinitionId(BaseSubprocess.class);
+            return Optional.ofNullable(adapter.getMorphDefinitions(subProcessId, subProcessId)).orElse(Collections.emptyList()).iterator().next();
+        } else {
+            return definitionUtils.getMorphDefinition(definition);
+        }
     }
 
     @Override

@@ -26,7 +26,6 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNCategories;
-import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
@@ -61,7 +60,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         startElement = "general",
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)}
 )
-public class ServiceTask extends BaseTask implements DataIOModel {
+public class ServiceTask extends BaseServiceTask implements DataIOModel {
 
     @PropertySet
     @FormField(

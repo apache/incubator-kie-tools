@@ -30,6 +30,11 @@ public interface MorphAdapter<S> extends Adapter {
     <T> Iterable<MorphDefinition> getMorphDefinitions(final T definition);
 
     /**
+     * Returns the morphing definitions for the given DefinitionId and BaseId
+     */
+    Iterable<MorphDefinition> getMorphDefinitions(final String id, final String baseId);
+
+    /**
      * Returns the morphing properties for the given Definition instance, if any.
      */
     <T> Iterable<MorphProperty> getMorphProperties(final T definition);

@@ -136,7 +136,8 @@ public class BPMNPaletteDefinitionBuilderTest {
                                                   paletteDefinitionBuilder,
                                                   translationService,
                                                   () -> workItemDefinitionRegistry,
-                                                  serviceTaskBuilder);
+                                                  serviceTaskBuilder,
+                                                  definitionUtils);
         tested.init();
     }
 

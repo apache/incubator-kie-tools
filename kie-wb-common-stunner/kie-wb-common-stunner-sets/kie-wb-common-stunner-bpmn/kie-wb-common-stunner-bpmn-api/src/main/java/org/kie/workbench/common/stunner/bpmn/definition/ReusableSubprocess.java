@@ -46,14 +46,14 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @Portable
 @Bindable
 @Definition(graphFactory = NodeFactory.class)
-@Morph(base = BaseSubprocess.class)
+@Morph(base = BaseNonContainerSubprocess.class)
 @CanDock(roles = {"IntermediateEventOnSubprocessBoundary"})
 @FormDefinition(
         startElement = "general",
         policy = FieldPolicy.ONLY_MARKED,
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)}
 )
-public class ReusableSubprocess extends BaseSubprocess implements DataIOModel {
+public class ReusableSubprocess extends BaseNonContainerSubprocess implements DataIOModel {
 
     @PropertySet
     @FormField(

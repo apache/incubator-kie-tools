@@ -57,8 +57,7 @@ public abstract class AbstractMorphAdapter<S> implements MorphAdapter<S> {
         return null;
     }
 
-    protected Iterable<MorphDefinition> getMorphDefinitions(final String id,
-                                                            final String baseId) {
+    public Iterable<MorphDefinition> getMorphDefinitions(final String id, final String baseId) {
         if (null != id) {
             final List<MorphDefinition> result = new LinkedList<>();
             for (MorphDefinition morphDefinition : morphDefinitions) {
