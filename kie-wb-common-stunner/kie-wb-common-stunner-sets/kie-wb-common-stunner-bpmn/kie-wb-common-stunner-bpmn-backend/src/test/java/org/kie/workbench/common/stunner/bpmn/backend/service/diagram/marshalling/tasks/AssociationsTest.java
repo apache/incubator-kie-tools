@@ -75,7 +75,7 @@ public class AssociationsTest extends BPMNDiagramMarshallerBase {
                 p.getFlowElements().stream().filter(e -> e.getId().equals(TASK_ID)).findFirst().get();
         List<DataInputAssociation> associations = flowElement.getDataInputAssociations();
         assertEquals("myprocvar", findVar(associations, "From"));
-        assertEquals("HELLO", findAssignment(associations, "Body"));
+        assertEquals("<![CDATA[HELLO]]>", findAssignment(associations, "Body"));
     }
 
     public String findVar(List<DataInputAssociation> associations, String varName) {

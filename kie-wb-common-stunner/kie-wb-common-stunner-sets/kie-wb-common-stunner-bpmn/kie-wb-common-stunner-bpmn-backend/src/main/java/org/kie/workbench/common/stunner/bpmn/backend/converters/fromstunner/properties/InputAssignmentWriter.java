@@ -16,16 +16,19 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 import org.eclipse.bpmn2.Assignment;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.FormalExpression;
-import org.eclipse.bpmn2.InputSet;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.Property;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.AssociationDeclaration;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.asCData;
 
 public class InputAssignmentWriter {
 
@@ -93,7 +96,10 @@ public class InputAssignmentWriter {
         assignment.setTo(toExpr);
 
         FormalExpression fromExpr = bpmn2.createFormalExpression();
-        fromExpr.setBody(expression);
+        // this should be handled **outside** the marshallers!
+        String decodedExpression = decode(expression);
+        String cdataExpression = asCData(decodedExpression);
+        fromExpr.setBody(cdataExpression);
         assignment.setFrom(fromExpr);
 
         dataInputAssociation
@@ -112,11 +118,15 @@ public class InputAssignmentWriter {
         return declarationWriter.getItemDefinition();
     }
 
-    public InputSet getInputSet() {
-        return declarationWriter.getInputSet();
-    }
-
     public DataInputAssociation getAssociation() {
         return association;
+    }
+
+    private String decode(String text) {
+        try {
+            return URLDecoder.decode(text, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException(text, e);
+        }
     }
 }

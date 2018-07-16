@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
 import org.eclipse.bpmn2.DataInput;
-import org.eclipse.bpmn2.InputSet;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.VariableDeclaration;
@@ -28,7 +27,6 @@ import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunn
 public class DeclarationWriter {
 
     private final String parentId;
-    private final InputSet inputSet;
     private final DataInput target;
     private final ItemDefinition typeDef;
     private final VariableDeclaration decl;
@@ -48,9 +46,6 @@ public class DeclarationWriter {
         // the value that we assign to `source`
         // e.g. myTarget
         this.target = readInputFrom(decl.getIdentifier(), typeDef);
-
-        this.inputSet = bpmn2.createInputSet();
-        this.inputSet.getDataInputRefs().add(target);
     }
 
     private ItemDefinition typedefInput(VariableDeclaration decl) {
@@ -76,10 +71,6 @@ public class DeclarationWriter {
 
     public ItemDefinition getItemDefinition() {
         return typeDef;
-    }
-
-    public InputSet getInputSet() {
-        return inputSet;
     }
 
     public String getVarId() {

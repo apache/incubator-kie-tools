@@ -16,11 +16,14 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties;
 
+import java.util.List;
+
 import org.eclipse.bpmn2.Assignment;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.InputOutputSpecification;
+import org.eclipse.bpmn2.InputSet;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.Task;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Ids;
@@ -65,7 +68,9 @@ public class CustomInput<T> {
             return;
         }
         DataInputAssociation input = input(value);
-        getIoSpecification(element).getDataInputs().add((DataInput) input.getTargetRef());
+        DataInput targetRef = (DataInput) input.getTargetRef();
+        getIoSpecification(element).getDataInputs().add(targetRef);
+        getIoSpecification(element).getInputSets().get(0).getDataInputRefs().add(targetRef);
         element.getDataInputAssociations().add(input);
     }
 
@@ -74,6 +79,10 @@ public class CustomInput<T> {
         if (ioSpecification == null) {
             ioSpecification = bpmn2.createInputOutputSpecification();
             element.setIoSpecification(ioSpecification);
+        }
+        List<InputSet> inputSets = ioSpecification.getInputSets();
+        if (inputSets.isEmpty()) {
+            inputSets.add(bpmn2.createInputSet());
         }
         return ioSpecification;
     }

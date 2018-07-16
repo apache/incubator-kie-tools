@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.pro
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.ItemDefinition;
-import org.eclipse.bpmn2.OutputSet;
 import org.eclipse.bpmn2.Property;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.VariableDeclaration;
@@ -32,7 +31,6 @@ public class OutputAssignmentWriter {
     private final String parentId;
     private final DataOutputAssociation association;
     private final VariableDeclaration decl;
-    private final OutputSet outputSet;
     private final DataOutput source;
     private ItemDefinition typeDef;
 
@@ -54,9 +52,6 @@ public class OutputAssignmentWriter {
         // then we create the actual association between the two
         // e.g. mySource := myTarget (or, to put it differently, myTarget -> mySource)
         this.association = associationOf(variable.getTypedIdentifier(), source);
-
-        this.outputSet = bpmn2.createOutputSet();
-        this.outputSet.getDataOutputRefs().add(source);
     }
 
     private DataOutputAssociation associationOf(Property source, DataOutput dataOutput) {
@@ -90,10 +85,6 @@ public class OutputAssignmentWriter {
 
     public DataOutput getDataOutput() {
         return source;
-    }
-
-    public OutputSet getOutputSet() {
-        return outputSet;
     }
 
     public DataOutputAssociation getAssociation() {

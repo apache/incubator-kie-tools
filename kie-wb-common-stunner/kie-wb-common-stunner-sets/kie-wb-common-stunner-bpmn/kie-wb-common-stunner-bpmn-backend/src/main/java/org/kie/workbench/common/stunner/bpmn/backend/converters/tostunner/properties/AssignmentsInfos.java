@@ -16,19 +16,16 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.eclipse.bpmn2.Assignment;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
-import org.eclipse.bpmn2.FormalExpression;
-import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Property;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.AssociationDeclaration;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.AssociationDeclaration.Direction;
@@ -109,35 +106,12 @@ public class AssignmentsInfos {
     }
 
     private static List<AssociationDeclaration> inAssociationDeclarations(List<DataInputAssociation> inputAssociations) {
-        List<AssociationDeclaration> result = new ArrayList<>();
-        for (DataInputAssociation in : inputAssociations) {
-            List<ItemAwareElement> sourceList = in.getSourceRef();
-            List<Assignment> assignmentList = in.getAssignment();
-            String targetName = ((DataInput) in.getTargetRef()).getName();
-            if (isReservedIdentifier(targetName)) {
-                continue;
-            }
-
-            if (!sourceList.isEmpty()) {
-                String propertyName = getPropertyName((Property) sourceList.get(0));
-                result.add(new AssociationDeclaration(
-                        Direction.Input,
-                        Type.SourceTarget,
-                        propertyName,
-                        targetName));
-            } else if (!assignmentList.isEmpty()) {
-                Assignment assignment = assignmentList.get(0);
-                result.add(new AssociationDeclaration(
-                        Direction.Input,
-                        Type.FromTo,
-                        ((FormalExpression) assignment.getFrom()).getBody(),
-                        targetName));
-            } else {
-                throw new IllegalArgumentException("Cannot find SourceRef or Assignment for Target " + targetName);
-            }
-        }
-
-        return result;
+        return inputAssociations
+                .stream()
+                .map(InputAssignmentReader::fromAssociation)
+                .filter(Objects::nonNull)
+                .map(InputAssignmentReader::getAssociationDeclaration)
+                .collect(Collectors.toList());
     }
 
     private static List<AssociationDeclaration> outAssociationDeclarations(List<DataOutputAssociation> outputAssociations) {

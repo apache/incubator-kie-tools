@@ -57,7 +57,7 @@ public class SequenceFlowConverter {
 
         if (pSrc == null || pTgt == null) {
             String msg = String.format("pSrc = %s, pTgt = %s", pSrc, pTgt);
-            LOG.warn(msg);
+            LOG.debug(msg);
             return Result.failure(msg);
         }
 
