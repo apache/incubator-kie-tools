@@ -2129,6 +2129,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                 if (isOriginalStateBatch && !fileSystem.isOnBatch()) {
                     fileSystem.setBatchCommitInfo(null);
                     firePostponedBatchEvents(fileSystem);
+                    postCommitHook(fileSystem.getGit().getRepository());
                 }
                 fileSystem.setHadCommitOnBatchState(false);
             } finally {
