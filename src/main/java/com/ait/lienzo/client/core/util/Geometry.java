@@ -70,22 +70,22 @@ public final class Geometry
     {
     }
 
-    public static final boolean closeEnough(final double a, final double b, final double slop)
+    public static boolean closeEnough(final double a, final double b, final double slop)
     {
         return (Math.abs(a - b) < slop);
     }
 
-    public static final boolean closeEnough(final double a, final double b)
+    public static boolean closeEnough(final double a, final double b)
     {
         return (Math.abs(a - b) < NRRF_PRECISION);
     }
 
-    private static boolean greaterOrCloseEnough(final double a, final double b)
+    public static boolean greaterOrCloseEnough(final double a, final double b)
     {
         return closeEnough(a, b) || (a > b);
     }
 
-    private static boolean lesserOrCloseEnough(final double a, final double b)
+    public static boolean lesserOrCloseEnough(final double a, final double b)
     {
         return closeEnough(a, b) || (a < b);
     }
@@ -372,7 +372,7 @@ public final class Geometry
 
         double[] xval = new double[4];
         double[] yval = new double[4];
-        for (int i = 0; i<cubicPoints.size(); i = i + 2)
+        for (int i = 0; i<(cubicPoints.size()/2); i = i + 2)
         {
             xval[i] = cubicPoints.get(i);
             yval[i] = cubicPoints.get(i+1);
@@ -450,7 +450,7 @@ public final class Geometry
         return quadraticRoots(a, b, c);
     }
 
-    private static double[] quadraticRoots(final double a, final double b, final double c)
+    public static double[] quadraticRoots(final double a, final double b, final double c)
     {
         final double[] roots;
         if (closeEnough(a, 0))
@@ -486,7 +486,7 @@ public final class Geometry
         return roots;
     }
 
-    private static double[] linearRoots(final double a, final double b)
+    public static double[] linearRoots(final double a, final double b)
     {
         final double[] roots = new double[] { -1, -1, -1 };
         if ( !closeEnough(a, 0))
@@ -527,7 +527,7 @@ public final class Geometry
         while (flip);
     }
 
-    public static final double[] bezierCoeffs(final double p0, final double p1, final double p2, final double p3)
+    public static double[] bezierCoeffs(final double p0, final double p1, final double p2, final double p3)
     {
         final double[] z = new double[4];
         z[0] = -p0 + (3 * p1) + (-3 * p2) + p3;

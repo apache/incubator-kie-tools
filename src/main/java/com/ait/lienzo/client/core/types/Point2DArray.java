@@ -230,7 +230,7 @@ public class Point2DArray implements IBoundedList<Point2D>
     @Override
     public final boolean isEmpty()
     {
-        return (size() > 0);
+        return (size() == 0);
     }
 
     @Override
