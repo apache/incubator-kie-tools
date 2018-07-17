@@ -35,7 +35,6 @@ import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
 import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
@@ -277,15 +276,15 @@ public abstract class KieEditor<T>
         addCommonActions(fileMenuBuilder);
     }
 
-    void addSave(final FileMenuBuilder fileMenuBuilder) {
+    protected void addSave(final FileMenuBuilder fileMenuBuilder) {
         fileMenuBuilder.addSave(versionRecordManager.newSaveMenuItem(getSaveActionCommand()));
     }
 
-    void addCopy(final FileMenuBuilder fileMenuBuilder) {
+    protected void addCopy(final FileMenuBuilder fileMenuBuilder) {
         fileMenuBuilder.addCopy(versionRecordManager.getCurrentPath(), assetUpdateValidator);
     }
 
-    void addRename(final FileMenuBuilder fileMenuBuilder) {
+    protected void addRename(final FileMenuBuilder fileMenuBuilder) {
 
         final Optional<? extends Caller<? extends SupportsSaveAndRename<T, Metadata>>> saveAndRenameServiceCaller =
                 Optional.ofNullable(getSaveAndRenameServiceCaller());
@@ -297,11 +296,11 @@ public abstract class KieEditor<T>
         }
     }
 
-    void addDelete(final FileMenuBuilder fileMenuBuilder) {
+    protected void addDelete(final FileMenuBuilder fileMenuBuilder) {
         fileMenuBuilder.addDelete(versionRecordManager.getPathToLatest(), assetUpdateValidator);
     }
 
-    void addCommonActions(final FileMenuBuilder fileMenuBuilder) {
+    protected void addCommonActions(final FileMenuBuilder fileMenuBuilder) {
         fileMenuBuilder
                 .addValidate(getValidateCommand())
                 .addNewTopLevelMenu(versionRecordManager.buildMenu())
