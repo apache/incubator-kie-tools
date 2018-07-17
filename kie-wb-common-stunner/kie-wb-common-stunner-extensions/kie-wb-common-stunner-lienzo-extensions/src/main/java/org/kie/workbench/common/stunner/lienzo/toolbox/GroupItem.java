@@ -20,13 +20,12 @@ import java.util.function.BiConsumer;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import org.uberfire.mvp.Command;
 
 public class GroupItem extends AbstractItem<GroupItem, Group> implements Item<GroupItem> {
 
     private final Group group;
-    private BiConsumer<Group, Command> showExecutor;
-    private BiConsumer<Group, Command> hideExecutor;
+    private BiConsumer<Group, Runnable> showExecutor;
+    private BiConsumer<Group, Runnable> hideExecutor;
 
     public GroupItem() {
         this(new Group());
@@ -39,12 +38,12 @@ public class GroupItem extends AbstractItem<GroupItem, Group> implements Item<Gr
         group.setAlpha(0);
     }
 
-    public GroupItem useShowExecutor(final BiConsumer<Group, Command> executor) {
+    public GroupItem useShowExecutor(final BiConsumer<Group, Runnable> executor) {
         this.showExecutor = executor;
         return this;
     }
 
-    public GroupItem useHideExecutor(final BiConsumer<Group, Command> executor) {
+    public GroupItem useHideExecutor(final BiConsumer<Group, Runnable> executor) {
         this.hideExecutor = executor;
         return this;
     }
@@ -75,19 +74,19 @@ public class GroupItem extends AbstractItem<GroupItem, Group> implements Item<Gr
         return this;
     }
 
-    public GroupItem show(final Command before,
-                          final Command after) {
+    public GroupItem show(final Runnable before,
+                          final Runnable after) {
         if (!isVisible()) {
-            before.execute();
+            before.run();
             doShow(after);
         }
         return this;
     }
 
-    public GroupItem hide(final Command before,
-                          final Command after) {
+    public GroupItem hide(final Runnable before,
+                          final Runnable after) {
         if (isVisible()) {
-            before.execute();
+            before.run();
             doHide(after);
         }
         return this;
@@ -107,12 +106,12 @@ public class GroupItem extends AbstractItem<GroupItem, Group> implements Item<Gr
         return group;
     }
 
-    private void doShow(final Command callback) {
+    private void doShow(final Runnable callback) {
         showExecutor.accept(group,
                             callback);
     }
 
-    private void doHide(final Command callback) {
+    private void doHide(final Runnable callback) {
         hideExecutor.accept(group,
                             callback);
     }

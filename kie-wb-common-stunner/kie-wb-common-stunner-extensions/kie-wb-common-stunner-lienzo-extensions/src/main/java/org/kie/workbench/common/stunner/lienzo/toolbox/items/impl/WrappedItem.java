@@ -27,7 +27,6 @@ import org.kie.workbench.common.stunner.lienzo.toolbox.items.AbstractDecoratedIt
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.DecoratedItem;
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.DecoratorItem;
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.TooltipItem;
-import org.uberfire.mvp.Command;
 
 public abstract class WrappedItem<T extends DecoratedItem>
         extends AbstractDecoratedItem<T> {
@@ -35,16 +34,16 @@ public abstract class WrappedItem<T extends DecoratedItem>
     protected abstract AbstractDecoratedItem<?> getWrapped();
 
     @Override
-    public T show(final Command before,
-                  final Command after) {
+    public T show(final Runnable before,
+                  final Runnable after) {
         getWrapped().show(before,
                           after);
         return cast();
     }
 
     @Override
-    public T hide(final Command before,
-                  final Command after) {
+    public T hide(final Runnable before,
+                  final Runnable after) {
         getWrapped().hide(before,
                           after);
         return cast();

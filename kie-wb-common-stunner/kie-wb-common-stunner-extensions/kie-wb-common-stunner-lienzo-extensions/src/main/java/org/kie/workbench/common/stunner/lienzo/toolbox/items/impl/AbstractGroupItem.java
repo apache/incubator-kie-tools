@@ -32,7 +32,6 @@ import org.kie.workbench.common.stunner.lienzo.toolbox.items.AbstractDecoratedIt
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.AbstractPrimitiveItem;
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.DecoratorItem;
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.TooltipItem;
-import org.uberfire.mvp.Command;
 
 public abstract class AbstractGroupItem<T extends AbstractGroupItem>
         extends AbstractDecoratedItem<T> {
@@ -101,12 +100,12 @@ public abstract class AbstractGroupItem<T extends AbstractGroupItem>
         }
     }
 
-    public T useShowExecutor(final BiConsumer<Group, Command> executor) {
+    public T useShowExecutor(final BiConsumer<Group, Runnable> executor) {
         this.groupItem.useShowExecutor(executor);
         return cast();
     }
 
-    public T useHideExecutor(final BiConsumer<Group, Command> executor) {
+    public T useHideExecutor(final BiConsumer<Group, Runnable> executor) {
         this.groupItem.useHideExecutor(executor);
         return cast();
     }

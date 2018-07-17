@@ -30,7 +30,6 @@ import org.kie.workbench.common.stunner.lienzo.toolbox.GroupItem;
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.DecoratorItem;
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.TooltipItem;
 import org.mockito.Mock;
-import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -56,10 +55,10 @@ public class GroupImplTest {
     private GroupItem groupItem;
 
     @Mock
-    private BiConsumer<Group, Command> showExecutor;
+    private BiConsumer<Group, Runnable> showExecutor;
 
     @Mock
-    private BiConsumer<Group, Command> hideExecutor;
+    private BiConsumer<Group, Runnable> hideExecutor;
 
     @Mock
     private Group group;
@@ -88,17 +87,17 @@ public class GroupImplTest {
         when(groupChildren.size()).thenReturn(1);
         when(boundingPoints.getBoundingBox()).thenReturn(boundingBox);
         doAnswer(invocationOnMock -> {
-            ((Command) invocationOnMock.getArguments()[0]).execute();
-            ((Command) invocationOnMock.getArguments()[1]).execute();
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
             return groupItem;
-        }).when(groupItem).show(any(Command.class),
-                                any(Command.class));
+        }).when(groupItem).show(any(Runnable.class),
+                                any(Runnable.class));
         doAnswer(invocationOnMock -> {
-            ((Command) invocationOnMock.getArguments()[0]).execute();
-            ((Command) invocationOnMock.getArguments()[1]).execute();
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
             return groupItem;
-        }).when(groupItem).hide(any(Command.class),
-                                any(Command.class));
+        }).when(groupItem).hide(any(Runnable.class),
+                                any(Runnable.class));
         tested = new GroupImpl(groupItem,
                                group)
                 .useHideExecutor(hideExecutor)
@@ -122,20 +121,20 @@ public class GroupImplTest {
 
     @Test
     public void testShow() {
-        final Command before = mock(Command.class);
-        final Command after = mock(Command.class);
+        final Runnable before = mock(Runnable.class);
+        final Runnable after = mock(Runnable.class);
         tested.show(before,
                     after);
         verify(groupItem,
-               times(1)).show(any(Command.class),
+               times(1)).show(any(Runnable.class),
                               eq(after));
         verify(groupItem,
-               never()).hide(any(Command.class),
-                             any(Command.class));
+               never()).hide(any(Runnable.class),
+                             any(Runnable.class));
         verify(before,
-               times(1)).execute();
+               times(1)).run();
         verify(after,
-               times(1)).execute();
+               times(1)).run();
         verify(decorator,
                times(1)).show();
         verify(tooltip,
@@ -144,20 +143,20 @@ public class GroupImplTest {
 
     @Test
     public void testHide() {
-        final Command before = mock(Command.class);
-        final Command after = mock(Command.class);
+        final Runnable before = mock(Runnable.class);
+        final Runnable after = mock(Runnable.class);
         tested.hide(before,
                     after);
         verify(groupItem,
                times(1)).hide(eq(before),
-                              any(Command.class));
+                              any(Runnable.class));
         verify(groupItem,
-               never()).show(any(Command.class),
-                             any(Command.class));
+               never()).show(any(Runnable.class),
+                             any(Runnable.class));
         verify(before,
-               times(1)).execute();
+               times(1)).run();
         verify(after,
-               times(1)).execute();
+               times(1)).run();
         verify(decorator,
                times(3)).hide();
         verify(tooltip,

@@ -26,7 +26,6 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.google.gwt.event.shared.HandlerRegistration;
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.ButtonItem;
-import org.uberfire.mvp.Command;
 
 public class ButtonItemImpl
         extends WrappedItem<ButtonItem>
@@ -50,12 +49,12 @@ public class ButtonItemImpl
         this.item = item;
     }
 
-    public ButtonItemImpl useShowExecutor(final BiConsumer<Group, Command> executor) {
+    public ButtonItemImpl useShowExecutor(final BiConsumer<Group, Runnable> executor) {
         this.getWrapped().useShowExecutor(executor);
         return this;
     }
 
-    public ButtonItemImpl useHideExecutor(final BiConsumer<Group, Command> executor) {
+    public ButtonItemImpl useHideExecutor(final BiConsumer<Group, Runnable> executor) {
         this.getWrapped().useHideExecutor(executor);
         return this;
     }

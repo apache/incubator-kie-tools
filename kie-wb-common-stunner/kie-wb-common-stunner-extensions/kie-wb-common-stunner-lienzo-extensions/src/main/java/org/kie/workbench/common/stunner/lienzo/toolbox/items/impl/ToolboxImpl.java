@@ -29,7 +29,6 @@ import org.kie.workbench.common.stunner.lienzo.toolbox.grid.Point2DGrid;
 import org.kie.workbench.common.stunner.lienzo.toolbox.grid.SizeConstrainedGrid;
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.DecoratedItem;
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.ItemsToolbox;
-import org.uberfire.mvp.Command;
 
 /**
  * An ItemsToolbox implementation.
@@ -45,9 +44,9 @@ public class ToolboxImpl
     private Direction at;
     private Point2D offset;
 
-    private final Command refreshExecutor = new Command() {
+    private final Runnable refreshExecutor = new Runnable() {
         @Override
-        public void execute() {
+        public void run() {
             if (null != items.getPrimitive().getLayer()) {
                 items.getPrimitive().getLayer().batch();
             }
@@ -110,34 +109,34 @@ public class ToolboxImpl
     }
 
     @Override
-    public ItemsToolbox show(final Command before,
-                             final Command after) {
+    public ItemsToolbox show(final Runnable before,
+                             final Runnable after) {
         return super.show(() -> {
                               reposition();
-                              before.execute();
+                              before.run();
                           },
                           () -> {
                               fireRefresh();
-                              after.execute();
+                              after.run();
                           });
     }
 
     @Override
-    public ItemsToolbox hide(final Command before,
-                             final Command after) {
+    public ItemsToolbox hide(final Runnable before,
+                             final Runnable after) {
         return super.hide(before,
                           () -> {
                               fireRefresh();
-                              after.execute();
+                              after.run();
                           });
     }
 
-    public ToolboxImpl useShowExecutor(final BiConsumer<Group, Command> executor) {
+    public ToolboxImpl useShowExecutor(final BiConsumer<Group, Runnable> executor) {
         this.getWrapped().useShowExecutor(executor);
         return this;
     }
 
-    public ToolboxImpl useHideExecutor(final BiConsumer<Group, Command> executor) {
+    public ToolboxImpl useHideExecutor(final BiConsumer<Group, Runnable> executor) {
         this.getWrapped().useHideExecutor(executor);
         return this;
     }
@@ -197,6 +196,6 @@ public class ToolboxImpl
     }
 
     private void fireRefresh() {
-        refreshExecutor.execute();
+        refreshExecutor.run();
     }
 }

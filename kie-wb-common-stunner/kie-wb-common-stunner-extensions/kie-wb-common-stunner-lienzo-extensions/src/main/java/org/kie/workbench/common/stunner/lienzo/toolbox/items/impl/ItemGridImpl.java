@@ -31,7 +31,6 @@ import org.kie.workbench.common.stunner.lienzo.toolbox.grid.Point2DGrid;
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.AbstractDecoratedItem;
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.AbstractPrimitiveItem;
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.DecoratedItem;
-import org.uberfire.mvp.Command;
 
 public class ItemGridImpl
         extends WrappedItem<ItemGridImpl>
@@ -40,7 +39,7 @@ public class ItemGridImpl
     private final AbstractGroupItem groupPrimitiveItem;
     private final List<AbstractDecoratedItem> items = new LinkedList<>();
     private Point2DGrid grid;
-    private Command refreshCallback;
+    private Runnable refreshCallback;
     private BoundingBox boundingBox;
 
     private Supplier<BoundingBox> boundingBoxSupplier = new Supplier<BoundingBox>() {
@@ -100,32 +99,32 @@ public class ItemGridImpl
     }
 
     @Override
-    public ItemGridImpl show(final Command before,
-                             final Command after) {
+    public ItemGridImpl show(final Runnable before,
+                             final Runnable after) {
         return super.show(() -> {
                               repositionItems();
                               for (final DecoratedItem button : items) {
                                   button.show();
                               }
-                              before.execute();
+                              before.run();
                           },
                           after);
     }
 
     @Override
-    public ItemGridImpl hide(final Command before,
-                             final Command after) {
+    public ItemGridImpl hide(final Runnable before,
+                             final Runnable after) {
         return super.hide(before,
                           () -> {
                               for (final DecoratedItem button : items) {
                                   button.hide();
                               }
-                              after.execute();
+                              after.run();
                               fireRefresh();
                           });
     }
 
-    public ItemGridImpl onRefresh(final Command refreshCallback) {
+    public ItemGridImpl onRefresh(final Runnable refreshCallback) {
         this.refreshCallback = refreshCallback;
         return this;
     }
@@ -138,12 +137,12 @@ public class ItemGridImpl
         return items.size();
     }
 
-    public ItemGridImpl useShowExecutor(final BiConsumer<Group, Command> executor) {
+    public ItemGridImpl useShowExecutor(final BiConsumer<Group, Runnable> executor) {
         this.getWrapped().useShowExecutor(executor);
         return this;
     }
 
-    public ItemGridImpl useHideExecutor(final BiConsumer<Group, Command> executor) {
+    public ItemGridImpl useHideExecutor(final BiConsumer<Group, Runnable> executor) {
         this.getWrapped().useHideExecutor(executor);
         return this;
     }
@@ -230,7 +229,7 @@ public class ItemGridImpl
 
     private void fireRefresh() {
         if (null != refreshCallback) {
-            refreshCallback.execute();
+            refreshCallback.run();
         }
     }
 

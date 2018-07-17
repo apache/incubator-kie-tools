@@ -20,7 +20,6 @@ import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import org.uberfire.mvp.Command;
 
 public abstract class AbstractDecoratedItem<T extends DecoratedItem>
         extends AbstractPrimitiveItem<T>
@@ -42,11 +41,11 @@ public abstract class AbstractDecoratedItem<T extends DecoratedItem>
                     });
     }
 
-    public abstract T show(Command before,
-                           Command after);
+    public abstract T show(Runnable before,
+                           Runnable after);
 
-    public abstract T hide(Command before,
-                           Command after);
+    public abstract T hide(Runnable before,
+                           Runnable after);
 
     public abstract IPrimitive<?> getPrimitive();
 

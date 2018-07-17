@@ -20,7 +20,6 @@ import com.ait.lienzo.client.core.animation.AnimationTweener;
 import com.google.gwt.user.client.Timer;
 import org.kie.workbench.common.stunner.lienzo.toolbox.GroupItem;
 import org.kie.workbench.common.stunner.lienzo.toolbox.ToolboxVisibilityExecutors;
-import org.uberfire.mvp.Command;
 
 public abstract class AbstractFocusableGroupItem<T extends AbstractFocusableGroupItem>
         extends AbstractGroupItem<T> {
@@ -86,20 +85,20 @@ public abstract class AbstractFocusableGroupItem<T extends AbstractFocusableGrou
     }
 
     @Override
-    public T show(final Command before,
-                  final Command after) {
+    public T show(final Runnable before,
+                  final Runnable after) {
         getGroupItem().show(before,
                             after);
         return cast();
     }
 
     @Override
-    public T hide(final Command before,
-                  final Command after) {
+    public T hide(final Runnable before,
+                  final Runnable after) {
         cancelTimers();
         getGroupItem().hide(() -> {
                                 unFocus();
-                                before.execute();
+                                before.run();
                             },
                             after);
         return cast();

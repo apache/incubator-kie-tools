@@ -34,7 +34,6 @@ import org.kie.workbench.common.stunner.lienzo.toolbox.grid.Point2DGrid;
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.DecoratedItem;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -61,10 +60,10 @@ public class ToolboxImplTest {
                                                             100d,
                                                             200d);
     @Mock
-    private BiConsumer<Group, Command> showExecutor;
+    private BiConsumer<Group, Runnable> showExecutor;
 
     @Mock
-    private BiConsumer<Group, Command> hideExecutor;
+    private BiConsumer<Group, Runnable> hideExecutor;
 
     @Mock
     private ItemGridImpl wrapped;
@@ -84,7 +83,7 @@ public class ToolboxImplTest {
     @SuppressWarnings("unchecked")
     public void setUp() {
         when(wrapped.getBoundingBox()).thenReturn(() -> boundingBox);
-        when(wrapped.onRefresh(any(Command.class))).thenReturn(wrapped);
+        when(wrapped.onRefresh(any(Runnable.class))).thenReturn(wrapped);
         when(wrapped.asPrimitive()).thenReturn(group);
         when(wrapped.getPrimitive()).thenReturn(primitive);
         when(group.getAlpha()).thenReturn(0d);
@@ -92,17 +91,17 @@ public class ToolboxImplTest {
         when(group.getBoundingBox()).thenReturn(boundingBox);
         when(boundingPoints.getBoundingBox()).thenReturn(boundingBox);
         doAnswer(invocationOnMock -> {
-            ((Command) invocationOnMock.getArguments()[0]).execute();
-            ((Command) invocationOnMock.getArguments()[1]).execute();
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
             return wrapped;
-        }).when(wrapped).show(any(Command.class),
-                              any(Command.class));
+        }).when(wrapped).show(any(Runnable.class),
+                              any(Runnable.class));
         doAnswer(invocationOnMock -> {
-            ((Command) invocationOnMock.getArguments()[0]).execute();
-            ((Command) invocationOnMock.getArguments()[1]).execute();
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
             return wrapped;
-        }).when(wrapped).hide(any(Command.class),
-                              any(Command.class));
+        }).when(wrapped).hide(any(Runnable.class),
+                              any(Runnable.class));
         tested = new ToolboxImpl(() -> shapeBoundingBox,
                                  wrapped)
                 .useHideExecutor(hideExecutor)
@@ -191,20 +190,20 @@ public class ToolboxImplTest {
 
     @Test
     public void testShow() {
-        final Command before = mock(Command.class);
-        final Command after = mock(Command.class);
+        final Runnable before = mock(Runnable.class);
+        final Runnable after = mock(Runnable.class);
         tested.show(before,
                     after);
         verify(wrapped,
-               times(1)).show(any(Command.class),
-                              any(Command.class));
+               times(1)).show(any(Runnable.class),
+                              any(Runnable.class));
         verify(wrapped,
-               never()).hide(any(Command.class),
-                             any(Command.class));
+               never()).hide(any(Runnable.class),
+                             any(Runnable.class));
         verify(before,
-               times(1)).execute();
+               times(1)).run();
         verify(after,
-               times(1)).execute();
+               times(1)).run();
         ArgumentCaptor<Point2D> pc = ArgumentCaptor.forClass(Point2D.class);
         verify(group,
                times(1)).setLocation(pc.capture());
@@ -219,20 +218,20 @@ public class ToolboxImplTest {
 
     @Test
     public void testHide() {
-        final Command before = mock(Command.class);
-        final Command after = mock(Command.class);
+        final Runnable before = mock(Runnable.class);
+        final Runnable after = mock(Runnable.class);
         tested.hide(before,
                     after);
         verify(wrapped,
                times(1)).hide(eq(before),
-                              any(Command.class));
+                              any(Runnable.class));
         verify(wrapped,
-               never()).show(any(Command.class),
-                             any(Command.class));
+               never()).show(any(Runnable.class),
+                             any(Runnable.class));
         verify(before,
-               times(1)).execute();
+               times(1)).run();
         verify(after,
-               times(1)).execute();
+               times(1)).run();
     }
 
     @Test

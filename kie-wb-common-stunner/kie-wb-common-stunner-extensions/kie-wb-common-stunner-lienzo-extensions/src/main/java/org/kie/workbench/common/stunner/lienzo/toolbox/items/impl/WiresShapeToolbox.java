@@ -37,7 +37,6 @@ import org.kie.workbench.common.stunner.lienzo.toolbox.items.DecoratedItem;
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.DecoratorItem;
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.LayerToolbox;
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.TooltipItem;
-import org.uberfire.mvp.Command;
 
 /**
  * A LayerToolbox implementation for WiresShape's.
@@ -127,12 +126,12 @@ public class WiresShapeToolbox
         return this;
     }
 
-    public WiresShapeToolbox useShowExecutor(final BiConsumer<Group, Command> executor) {
+    public WiresShapeToolbox useShowExecutor(final BiConsumer<Group, Runnable> executor) {
         toolbox.useShowExecutor(executor);
         return this;
     }
 
-    public WiresShapeToolbox useHideExecutor(final BiConsumer<Group, Command> executor) {
+    public WiresShapeToolbox useHideExecutor(final BiConsumer<Group, Runnable> executor) {
         toolbox.useHideExecutor(executor);
         return this;
     }

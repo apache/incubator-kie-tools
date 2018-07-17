@@ -40,7 +40,6 @@ import org.kie.workbench.common.stunner.lienzo.toolbox.items.AbstractPrimitiveIt
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.ButtonGridItem;
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.DecoratedItem;
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.DecoratorItem;
-import org.uberfire.mvp.Command;
 
 /**
  * A ButtonGridItem implementation.
@@ -123,8 +122,8 @@ public class ButtonGridItemImpl
             decoratorHandlers[0] = instance
                     .asPrimitive()
                     .setListening(true)
-                    .addNodeMouseEnterHandler(event -> itemFocusCallback.execute());
-            decoratorHandlers[1] = instance.asPrimitive().addNodeMouseExitHandler(event -> itemUnFocusCallback.execute());
+                    .addNodeMouseEnterHandler(event -> itemFocusCallback.run());
+            decoratorHandlers[1] = instance.asPrimitive().addNodeMouseExitHandler(event -> itemUnFocusCallback.run());
             registrations().register(decoratorHandlers[0]);
             registrations().register(decoratorHandlers[1]);
         }
@@ -132,20 +131,20 @@ public class ButtonGridItemImpl
     }
 
     @Override
-    public ButtonGridItemImpl show(final Command before,
-                                   final Command after) {
+    public ButtonGridItemImpl show(final Runnable before,
+                                   final Runnable after) {
         button.show(before,
                     after);
         return this;
     }
 
     @Override
-    public ButtonGridItemImpl hide(final Command before,
-                                   final Command after) {
+    public ButtonGridItemImpl hide(final Runnable before,
+                                   final Runnable after) {
         hideGrid(before,
                  () -> {
                      button.hide();
-                     after.execute();
+                     after.run();
                      batch();
                  });
         return this;
@@ -165,8 +164,8 @@ public class ButtonGridItemImpl
                         });
     }
 
-    private ButtonGridItemImpl hideGrid(final Command before,
-                                        final Command after) {
+    private ButtonGridItemImpl hideGrid(final Runnable before,
+                                        final Runnable after) {
         toolbox.hide(before,
                      after);
         return this;
@@ -233,12 +232,12 @@ public class ButtonGridItemImpl
         return button.getWrapped();
     }
 
-    public ButtonGridItemImpl useShowExecutor(final BiConsumer<Group, Command> executor) {
+    public ButtonGridItemImpl useShowExecutor(final BiConsumer<Group, Runnable> executor) {
         toolbox.getWrapped().useShowExecutor(executor);
         return this;
     }
 
-    public ButtonGridItemImpl useHideExecutor(final BiConsumer<Group, Command> executor) {
+    public ButtonGridItemImpl useHideExecutor(final BiConsumer<Group, Runnable> executor) {
         toolbox.getWrapped().useHideExecutor(executor);
         return this;
     }
@@ -264,18 +263,18 @@ public class ButtonGridItemImpl
     }
 
     private void registerItemFocusHandler(final AbstractDecoratedItem item,
-                                          final Command callback) {
+                                          final Runnable callback) {
         registrations()
                 .register(
-                        item.getPrimitive().addNodeMouseEnterHandler(event -> callback.execute())
+                        item.getPrimitive().addNodeMouseEnterHandler(event -> callback.run())
                 );
     }
 
     private void registerItemUnFocusHandler(final AbstractDecoratedItem item,
-                                            final Command callback) {
+                                            final Runnable callback) {
         registrations()
                 .register(
-                        item.getPrimitive().addNodeMouseExitHandler(event -> callback.execute())
+                        item.getPrimitive().addNodeMouseExitHandler(event -> callback.run())
                 );
     }
 
@@ -304,13 +303,13 @@ public class ButtonGridItemImpl
         return this;
     }
 
-    private final Command focusCallback = this::focus;
+    private final Runnable focusCallback = this::focus;
 
-    private final Command unFocusCallback = this::unFocus;
+    private final Runnable unFocusCallback = this::unFocus;
 
-    private final Command itemFocusCallback = this::focus;
+    private final Runnable itemFocusCallback = this::focus;
 
-    private final Command itemUnFocusCallback = this::unFocus;
+    private final Runnable itemUnFocusCallback = this::unFocus;
 
     private void scheduleTimer() {
         unFocusTimer.schedule(TIMER_DELAY_MILLIS);

@@ -22,7 +22,6 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import org.kie.workbench.common.stunner.lienzo.toolbox.GroupItem;
-import org.uberfire.mvp.Command;
 
 class GroupImpl extends AbstractGroupItem<GroupImpl> {
 
@@ -40,23 +39,23 @@ class GroupImpl extends AbstractGroupItem<GroupImpl> {
     }
 
     @Override
-    public GroupImpl show(final Command before,
-                          final Command after) {
+    public GroupImpl show(final Runnable before,
+                          final Runnable after) {
         getGroupItem().show(() -> {
                                 showAddOns();
-                                before.execute();
+                                before.run();
                             },
                             after);
         return this;
     }
 
     @Override
-    public GroupImpl hide(final Command before,
-                          final Command after) {
+    public GroupImpl hide(final Runnable before,
+                          final Runnable after) {
         getGroupItem().hide(before,
                             () -> {
                                 hideAddOns();
-                                after.execute();
+                                after.run();
                             });
         return this;
     }

@@ -26,7 +26,6 @@ import com.ait.lienzo.client.core.animation.IAnimation;
 import com.ait.lienzo.client.core.animation.IAnimationHandle;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.types.Point2D;
-import org.uberfire.mvp.Command;
 
 public class ToolboxVisibilityExecutors {
 
@@ -78,7 +77,7 @@ public class ToolboxVisibilityExecutors {
     }
 
     public abstract static class AnimatedGroupExecutor<T extends AnimatedGroupExecutor>
-            implements BiConsumer<Group, Command> {
+            implements BiConsumer<Group, Runnable> {
 
         private double animationDuration;
         private AnimationTweener animationTweener;
@@ -92,13 +91,13 @@ public class ToolboxVisibilityExecutors {
 
         @Override
         public void accept(final Group group,
-                           final Command callback) {
+                           final Runnable callback) {
             animate(group,
                     callback);
         }
 
         private void animate(final Group group,
-                             final Command callback) {
+                             final Runnable callback) {
             group.animate(animationTweener,
                           getProperties(),
                           animationDuration,
@@ -108,7 +107,7 @@ public class ToolboxVisibilityExecutors {
                                                   IAnimationHandle handle) {
                                   super.onClose(animation,
                                                 handle);
-                                  callback.execute();
+                                  callback.run();
                               }
                           });
         }
@@ -170,14 +169,14 @@ public class ToolboxVisibilityExecutors {
 
         @Override
         public void accept(final Group group,
-                           final Command callback) {
+                           final Runnable callback) {
             group
                     .setScale(getInitialScale())
                     .setAlpha(1);
             super.accept(group,
                          () -> {
                              group.setAlpha(alpha);
-                             callback.execute();
+                             callback.run();
                          });
         }
     }

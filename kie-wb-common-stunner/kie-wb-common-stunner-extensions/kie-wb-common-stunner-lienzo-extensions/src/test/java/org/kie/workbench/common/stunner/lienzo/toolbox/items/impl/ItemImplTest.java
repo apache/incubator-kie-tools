@@ -33,7 +33,6 @@ import org.kie.workbench.common.stunner.lienzo.toolbox.GroupItem;
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.AbstractDecoratorItem;
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.TooltipItem;
 import org.mockito.Mock;
-import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -63,7 +62,7 @@ public class ItemImplTest {
     private AbstractFocusableGroupItem.FocusGroupExecutor focusGroupExecutor;
 
     @Mock
-    private BiConsumer<Group, Command> hideExecutor;
+    private BiConsumer<Group, Runnable> hideExecutor;
 
     @Mock
     private Shape shape;
@@ -89,17 +88,17 @@ public class ItemImplTest {
         when(shape.getBoundingBox()).thenReturn(boundingBox);
         when(boundingPoints.getBoundingBox()).thenReturn(boundingBox);
         doAnswer(invocationOnMock -> {
-            ((Command) invocationOnMock.getArguments()[0]).execute();
-            ((Command) invocationOnMock.getArguments()[1]).execute();
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
             return groupItem;
-        }).when(groupItem).show(any(Command.class),
-                                any(Command.class));
+        }).when(groupItem).show(any(Runnable.class),
+                                any(Runnable.class));
         doAnswer(invocationOnMock -> {
-            ((Command) invocationOnMock.getArguments()[0]).execute();
-            ((Command) invocationOnMock.getArguments()[1]).execute();
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
             return groupItem;
-        }).when(groupItem).hide(any(Command.class),
-                                any(Command.class));
+        }).when(groupItem).hide(any(Runnable.class),
+                                any(Runnable.class));
         tested = new ItemImpl(groupItem,
                               shape)
                 .setFocusDelay(0)
@@ -131,45 +130,45 @@ public class ItemImplTest {
 
     @Test
     public void testShow() {
-        final Command before = mock(Command.class);
-        final Command after = mock(Command.class);
+        final Runnable before = mock(Runnable.class);
+        final Runnable after = mock(Runnable.class);
         tested.show(before,
                     after);
         verify(groupItem,
                times(1)).show(eq(before),
                               eq(after));
         verify(groupItem,
-               never()).hide(any(Command.class),
-                             any(Command.class));
+               never()).hide(any(Runnable.class),
+                             any(Runnable.class));
         verify(before,
-               times(1)).execute();
+               times(1)).run();
         verify(after,
-               times(1)).execute();
+               times(1)).run();
     }
 
     @Test
-    public void Command() {
-        final Command before = mock(Command.class);
-        final Command after = mock(Command.class);
+    public void Runnable() {
+        final Runnable before = mock(Runnable.class);
+        final Runnable after = mock(Runnable.class);
         tested.hide(before,
                     after);
         verify(groupItem,
-               times(1)).hide(any(Command.class),
+               times(1)).hide(any(Runnable.class),
                               eq(after));
         verify(groupItem,
-               never()).show(any(Command.class),
-                             any(Command.class));
+               never()).show(any(Runnable.class),
+                             any(Runnable.class));
         verify(before,
-               times(1)).execute();
+               times(1)).run();
         verify(after,
-               times(1)).execute();
+               times(1)).run();
         verify(focusGroupExecutor,
                times(1)).unFocus();
         verify(focusGroupExecutor,
                never()).focus();
         verify(focusGroupExecutor,
                never()).accept(any(Group.class),
-                               any(Command.class));
+                               any(Runnable.class));
     }
 
     @Test
@@ -181,7 +180,7 @@ public class ItemImplTest {
                never()).unFocus();
         verify(focusGroupExecutor,
                never()).accept(any(Group.class),
-                               any(Command.class));
+                               any(Runnable.class));
     }
 
     @Test
@@ -193,7 +192,7 @@ public class ItemImplTest {
                never()).focus();
         verify(focusGroupExecutor,
                never()).accept(any(Group.class),
-                               any(Command.class));
+                               any(Runnable.class));
     }
 
     @Test
@@ -225,10 +224,10 @@ public class ItemImplTest {
         final AbstractFocusableGroupItem<ItemImpl>.FocusGroupExecutor focusExecutor =
                 spy(tested.getFocusGroupExecutor());
         doAnswer(invocationOnMock -> {
-            ((Command) invocationOnMock.getArguments()[1]).execute();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
             return null;
         }).when(focusExecutor).accept(any(Group.class),
-                                      any(Command.class));
+                                      any(Runnable.class));
         focusExecutor.focus();
         verify(focusExecutor,
                times(1)).setAlpha(AbstractFocusableGroupItem.ALPHA_FOCUSED);
@@ -256,10 +255,10 @@ public class ItemImplTest {
         final AbstractFocusableGroupItem<ItemImpl>.FocusGroupExecutor focusExecutor =
                 spy(tested.getFocusGroupExecutor());
         doAnswer(invocationOnMock -> {
-            ((Command) invocationOnMock.getArguments()[1]).execute();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
             return null;
         }).when(focusExecutor).accept(any(Group.class),
-                                      any(Command.class));
+                                      any(Runnable.class));
         focusExecutor.unFocus();
         verify(focusExecutor,
                times(1)).setAlpha(AbstractFocusableGroupItem.ALPHA_UNFOCUSED);

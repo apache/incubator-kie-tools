@@ -26,7 +26,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -49,10 +48,10 @@ public class GroupItemTest {
     private IPrimitive<?> aPrimitive;
 
     @Mock
-    private BiConsumer<Group, Command> showExecutor;
+    private BiConsumer<Group, Runnable> showExecutor;
 
     @Mock
-    private BiConsumer<Group, Command> hideExecutor;
+    private BiConsumer<Group, Runnable> hideExecutor;
 
     private GroupItem tested;
 
@@ -90,69 +89,69 @@ public class GroupItemTest {
     @Test
     public void testShow() {
         when(group.getAlpha()).thenReturn(0d);
-        final Command before = mock(Command.class);
-        final Command after = mock(Command.class);
+        final Runnable before = mock(Runnable.class);
+        final Runnable after = mock(Runnable.class);
         tested.show(before,
                     after);
         verify(before,
-               times(1)).execute();
+               times(1)).run();
         verify(showExecutor,
                times(1)).accept(eq(group),
                                 eq(after));
         verify(hideExecutor,
                never()).accept(any(Group.class),
-                               any(Command.class));
+                               any(Runnable.class));
     }
 
     @Test
     public void testNoNeedToShow() {
         when(group.getAlpha()).thenReturn(1d);
-        final Command before = mock(Command.class);
-        final Command after = mock(Command.class);
+        final Runnable before = mock(Runnable.class);
+        final Runnable after = mock(Runnable.class);
         tested.show(before,
                     after);
         verify(before,
-               never()).execute();
+               never()).run();
         verify(showExecutor,
                never()).accept(any(Group.class),
-                               any(Command.class));
+                               any(Runnable.class));
         verify(hideExecutor,
                never()).accept(any(Group.class),
-                               any(Command.class));
+                               any(Runnable.class));
     }
 
     @Test
     public void testHide() {
         when(group.getAlpha()).thenReturn(1d);
-        final Command before = mock(Command.class);
-        final Command after = mock(Command.class);
+        final Runnable before = mock(Runnable.class);
+        final Runnable after = mock(Runnable.class);
         tested.hide(before,
                     after);
         verify(before,
-               times(1)).execute();
+               times(1)).run();
         verify(hideExecutor,
                times(1)).accept(eq(group),
                                 eq(after));
         verify(showExecutor,
                never()).accept(any(Group.class),
-                               any(Command.class));
+                               any(Runnable.class));
     }
 
     @Test
     public void testNoNeedToHide() {
         when(group.getAlpha()).thenReturn(0d);
-        final Command before = mock(Command.class);
-        final Command after = mock(Command.class);
+        final Runnable before = mock(Runnable.class);
+        final Runnable after = mock(Runnable.class);
         tested.hide(before,
                     after);
         verify(before,
-               never()).execute();
+               never()).run();
         verify(showExecutor,
                never()).accept(any(Group.class),
-                               any(Command.class));
+                               any(Runnable.class));
         verify(hideExecutor,
                never()).accept(any(Group.class),
-                               any(Command.class));
+                               any(Runnable.class));
     }
 
     @Test

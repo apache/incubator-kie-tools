@@ -44,7 +44,6 @@ import org.kie.workbench.common.stunner.lienzo.toolbox.grid.Point2DGrid;
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.DecoratedItem;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -65,10 +64,10 @@ public class WiresShapeToolboxTest {
                                                             100d,
                                                             200d);
     @Mock
-    private BiConsumer<Group, Command> showExecutor;
+    private BiConsumer<Group, Runnable> showExecutor;
 
     @Mock
-    private BiConsumer<Group, Command> hideExecutor;
+    private BiConsumer<Group, Runnable> hideExecutor;
 
     @Mock
     private WiresShape shape;
@@ -133,17 +132,17 @@ public class WiresShapeToolboxTest {
         when(shape.addWiresResizeStepHandler(any(WiresResizeStepHandler.class))).thenReturn(resizeStepRegistration);
         when(shape.addWiresResizeEndHandler(any(WiresResizeEndHandler.class))).thenReturn(resizeEndRegistration);
         doAnswer(invocationOnMock -> {
-            ((Command) invocationOnMock.getArguments()[0]).execute();
-            ((Command) invocationOnMock.getArguments()[1]).execute();
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
             return toolbox;
-        }).when(toolbox).show(any(Command.class),
-                              any(Command.class));
+        }).when(toolbox).show(any(Runnable.class),
+                              any(Runnable.class));
         doAnswer(invocationOnMock -> {
-            ((Command) invocationOnMock.getArguments()[0]).execute();
-            ((Command) invocationOnMock.getArguments()[1]).execute();
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
             return toolbox;
-        }).when(toolbox).hide(any(Command.class),
-                              any(Command.class));
+        }).when(toolbox).hide(any(Runnable.class),
+                              any(Runnable.class));
         tested = new WiresShapeToolbox(shape,
                                        toolbox,
                                        registrations)

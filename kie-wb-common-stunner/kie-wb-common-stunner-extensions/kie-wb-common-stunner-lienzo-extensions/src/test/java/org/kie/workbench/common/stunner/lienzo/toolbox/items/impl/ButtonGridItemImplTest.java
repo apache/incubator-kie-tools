@@ -42,7 +42,6 @@ import org.kie.workbench.common.stunner.lienzo.toolbox.items.AbstractDecoratedIt
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.DecoratedItem;
 import org.kie.workbench.common.stunner.lienzo.toolbox.items.decorator.BoxDecorator;
 import org.mockito.Mock;
-import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -70,10 +69,10 @@ public class ButtonGridItemImplTest {
                                                                    123d);
 
     @Mock
-    private BiConsumer<Group, Command> showExecutor;
+    private BiConsumer<Group, Runnable> showExecutor;
 
     @Mock
-    private BiConsumer<Group, Command> hideExecutor;
+    private BiConsumer<Group, Runnable> hideExecutor;
 
     @Mock
     private ButtonItemImpl button;
@@ -132,29 +131,29 @@ public class ButtonGridItemImplTest {
         when(toolboxWrap.getBoundingBox()).thenReturn(() -> toolboxBoundingBox);
         when(button1.getPrimitive()).thenReturn(button1Prim);
         doAnswer(invocationOnMock -> {
-            ((Command) invocationOnMock.getArguments()[0]).execute();
-            ((Command) invocationOnMock.getArguments()[1]).execute();
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
             return button;
-        }).when(button).show(any(Command.class),
-                             any(Command.class));
+        }).when(button).show(any(Runnable.class),
+                             any(Runnable.class));
         doAnswer(invocationOnMock -> {
-            ((Command) invocationOnMock.getArguments()[0]).execute();
-            ((Command) invocationOnMock.getArguments()[1]).execute();
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
             return button;
-        }).when(button).hide(any(Command.class),
-                             any(Command.class));
+        }).when(button).hide(any(Runnable.class),
+                             any(Runnable.class));
         doAnswer(invocationOnMock -> {
-            ((Command) invocationOnMock.getArguments()[0]).execute();
-            ((Command) invocationOnMock.getArguments()[1]).execute();
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
             return toolbox;
-        }).when(toolbox).show(any(Command.class),
-                              any(Command.class));
+        }).when(toolbox).show(any(Runnable.class),
+                              any(Runnable.class));
         doAnswer(invocationOnMock -> {
-            ((Command) invocationOnMock.getArguments()[0]).execute();
-            ((Command) invocationOnMock.getArguments()[1]).execute();
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            ((Runnable) invocationOnMock.getArguments()[1]).run();
             return toolbox;
-        }).when(toolbox).hide(any(Command.class),
-                              any(Command.class));
+        }).when(toolbox).hide(any(Runnable.class),
+                              any(Runnable.class));
         tested = new ButtonGridItemImpl(button,
                                         toolbox)
                 .useHideExecutor(hideExecutor)
@@ -249,82 +248,82 @@ public class ButtonGridItemImplTest {
 
     @Test
     public void testShow() {
-        final Command before = mock(Command.class);
-        final Command after = mock(Command.class);
+        final Runnable before = mock(Runnable.class);
+        final Runnable after = mock(Runnable.class);
         tested.show(before,
                     after);
         verify(button,
                times(1)).show(eq(before),
                               eq(after));
         verify(button,
-               never()).hide(any(Command.class),
-                             any(Command.class));
+               never()).hide(any(Runnable.class),
+                             any(Runnable.class));
         verify(toolbox,
-               never()).hide(any(Command.class),
-                             any(Command.class));
+               never()).hide(any(Runnable.class),
+                             any(Runnable.class));
         verify(toolbox,
-               never()).hide(any(Command.class),
-                             any(Command.class));
+               never()).hide(any(Runnable.class),
+                             any(Runnable.class));
         verify(before,
-               times(1)).execute();
+               times(1)).run();
         verify(after,
-               times(1)).execute();
+               times(1)).run();
     }
 
     @Test
     public void testHide() {
-        final Command before = mock(Command.class);
-        final Command after = mock(Command.class);
+        final Runnable before = mock(Runnable.class);
+        final Runnable after = mock(Runnable.class);
         tested.hide(before,
                     after);
         verify(toolbox,
-               times(1)).hide(any(Command.class),
-                              any(Command.class));
+               times(1)).hide(any(Runnable.class),
+                              any(Runnable.class));
         verify(toolbox,
-               never()).show(any(Command.class),
-                             any(Command.class));
+               never()).show(any(Runnable.class),
+                             any(Runnable.class));
         verify(button,
                times(1)).hide();
         verify(button,
-               never()).show(any(Command.class),
-                             any(Command.class));
+               never()).show(any(Runnable.class),
+                             any(Runnable.class));
         verify(before,
-               times(1)).execute();
+               times(1)).run();
         verify(after,
-               times(1)).execute();
+               times(1)).run();
     }
 
     @Test
     public void testShowGrid() {
         tested.showGrid();
         verify(button,
-               never()).show(any(Command.class),
-                             any(Command.class));
+               never()).show(any(Runnable.class),
+                             any(Runnable.class));
         verify(button,
-               never()).hide(any(Command.class),
-                             any(Command.class));
+               never()).hide(any(Runnable.class),
+                             any(Runnable.class));
         verify(toolbox,
                times(1)).show();
         verify(toolbox,
-               never()).hide(any(Command.class),
-                             any(Command.class));
+               never()).hide(any(Runnable.class),
+                             any(Runnable.class));
     }
 
     @Test
     public void testHideGrid() {
         tested.hideGrid();
         verify(button,
-               never()).show(any(Command.class),
-                             any(Command.class));
+               never()).show(any(Runnable.class),
+                             any(Runnable.class));
         verify(button,
-               never()).hide(any(Command.class),
-                             any(Command.class));
+               never()).hide(any(Runnable.class),
+                             any(Runnable.class));
         verify(toolbox,
-               never()).show(any(Command.class),
-                             any(Command.class));
+               never()).show(any(Runnable.class),
+                             any(Runnable.class));
         verify(toolbox,
-               times(1)).hide(any(Command.class),
-                              any(Command.class));
+               times(1)).hide(any(Runnable.class),
+                              any(Runnable.class));
     }
 
     @Test
