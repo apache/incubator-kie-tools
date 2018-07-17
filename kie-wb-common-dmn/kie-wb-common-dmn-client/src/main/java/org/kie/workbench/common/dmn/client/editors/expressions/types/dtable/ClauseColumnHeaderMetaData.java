@@ -19,12 +19,14 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import com.google.gwt.user.client.TakesValue;
+import com.google.gwt.user.client.ui.Focusable;
 import org.gwtbootstrap3.client.ui.base.ValueBoxBase;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableTextHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
 
-public abstract class ClauseColumnHeaderMetaData<W extends ValueBoxBase<String>, E extends BaseDOMElement<String, W>> extends EditableTextHeaderMetaData<W, E> {
+public abstract class ClauseColumnHeaderMetaData<W extends ValueBoxBase<String>, E extends BaseDOMElement<String, W> & TakesValue<String> & Focusable> extends EditableTextHeaderMetaData<W, E> {
 
     public ClauseColumnHeaderMetaData(final Supplier<String> titleGetter,
                                       final Consumer<String> titleSetter,

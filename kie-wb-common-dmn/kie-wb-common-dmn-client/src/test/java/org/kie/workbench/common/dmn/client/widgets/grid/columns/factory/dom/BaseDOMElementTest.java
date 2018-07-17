@@ -21,6 +21,8 @@ import java.util.function.Supplier;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.TakesValue;
+import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.Widget;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +33,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
+import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -45,11 +48,17 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public abstract class BaseDOMElementTest<W extends Widget, D extends BaseDOMElement> {
+public abstract class BaseDOMElementTest<W extends Widget & TakesValue<String> & Focusable, D extends BaseDOMElement & TakesValue<String> & Focusable> {
+
+    private static final String VALUE = "value";
+
+    private static final char KEY = 'a';
 
     @Mock
     private Element widgetElement;
@@ -114,6 +123,48 @@ public abstract class BaseDOMElementTest<W extends Widget, D extends BaseDOMElem
     }
 
     @Test
+    public void testSetValue() {
+        domElement.setValue(VALUE);
+        verify(widget).setValue(VALUE);
+    }
+
+    @Test
+    public void testGetValue() {
+        domElement.getValue();
+        verify(widget).getValue();
+    }
+
+    @Test
+    public void testGetTabIndex() {
+        domElement.getTabIndex();
+        verify(widget).getTabIndex();
+    }
+
+    @Test
+    public void testSetAccessKey() {
+        domElement.setAccessKey(KEY);
+        verify(widget).setAccessKey(KEY);
+    }
+
+    @Test
+    public void testSetFocus() {
+        domElement.setFocus(true);
+        verify(widget).setFocus(true);
+
+        domElement.setFocus(false);
+        verify(widget).setFocus(false);
+    }
+
+    @Test
+    public void testSetTabIndex() {
+        domElement.setTabIndex(0);
+        verify(widget).setTabIndex(0);
+
+        domElement.setTabIndex(1);
+        verify(widget).setTabIndex(1);
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
     public void checkFlushWithValue() {
         domElement.flush("value");
@@ -151,6 +202,17 @@ public abstract class BaseDOMElementTest<W extends Widget, D extends BaseDOMElem
 
         final Supplier<Optional<GridCellValue<?>>> valueSupplier = valueSupplierArgumentCaptor.getValue();
         assertFalse(valueSupplier.get().isPresent());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void checkFlushWithoutChangedValue() {
+        domElement.setValue(VALUE);
+
+        domElement.flush(VALUE);
+
+        verify(sessionCommandManager, never()).execute(any(AbstractCanvasHandler.class),
+                                                       any(Command.class));
     }
 
     protected abstract W getWidget();

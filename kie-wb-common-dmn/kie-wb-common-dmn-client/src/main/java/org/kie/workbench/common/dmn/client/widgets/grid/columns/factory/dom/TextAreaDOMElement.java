@@ -16,9 +16,12 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.TakesValue;
+import com.google.gwt.user.client.ui.Focusable;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
@@ -32,12 +35,15 @@ import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
-public class TextAreaDOMElement extends BaseDOMElement<String, TextArea> {
+public class TextAreaDOMElement extends BaseDOMElement<String, TextArea> implements TakesValue<String>,
+                                                                                    Focusable {
 
     private final SessionManager sessionManager;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final Function<GridCellTuple, Command> hasNoValueCommand;
     private final Function<GridCellValueTuple, Command> hasValueCommand;
+
+    private String originalValue;
 
     public TextAreaDOMElement(final TextArea widget,
                               final GridLayer gridLayer,
@@ -89,8 +95,43 @@ public class TextAreaDOMElement extends BaseDOMElement<String, TextArea> {
     }
 
     @Override
+    public void setValue(final String value) {
+        getWidget().setValue(value);
+        this.originalValue = value;
+    }
+
+    @Override
+    public String getValue() {
+        return getWidget().getValue();
+    }
+
+    @Override
+    public int getTabIndex() {
+        return getWidget().getTabIndex();
+    }
+
+    @Override
+    public void setAccessKey(final char key) {
+        getWidget().setAccessKey(key);
+    }
+
+    @Override
+    public void setFocus(final boolean focused) {
+        getWidget().setFocus(focused);
+    }
+
+    @Override
+    public void setTabIndex(final int index) {
+        getWidget().setTabIndex(index);
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public void flush(final String value) {
+        if (Objects.equals(value, originalValue)) {
+            return;
+        }
+
         final int rowIndex = context.getRowIndex();
         final int columnIndex = context.getColumnIndex();
 

@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.columns;
 
+import com.google.gwt.user.client.TakesValue;
 import com.google.gwt.user.client.ui.Focusable;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +42,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonDOMElementFactory, D extends BaseDOMElement, W extends Widget & HasValue & Focusable, C extends BaseGridColumn & HasSingletonDOMElementResource, G extends BaseExpressionGrid> {
+public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonDOMElementFactory, D extends BaseDOMElement & TakesValue<String> & Focusable, W extends Widget & TakesValue<String> & Focusable, C extends BaseGridColumn & HasSingletonDOMElementResource, G extends BaseExpressionGrid> {
 
     private static final String DEFAULT_VALUE = "";
 
@@ -147,11 +147,11 @@ public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonD
 
         final Callback<D> domElementOnCreationCallback = domElementOnCreationCallbackCaptor.getValue();
         domElementOnCreationCallback.callback(domElement);
-        verify(widget).setValue(eq(value));
+        verify(domElement).setValue(eq(value));
 
         final Callback<D> domElementOnDisplayCallback = domElementOnDisplayCallbackCaptor.getValue();
         domElementOnDisplayCallback.callback(domElement);
-        verify(widget).setFocus(eq(true));
+        verify(domElement).setFocus(eq(true));
     }
 
     @Test

@@ -65,8 +65,8 @@ public class NameColumn extends DMNSimpleGridColumn<ContextGrid, String> impleme
             return;
         }
         factory.attachDomElement(context,
-                                 (e) -> e.getWidget().setValue(assertCellValue(assertCell(cell).getValue()).getValue()),
-                                 (e) -> e.getWidget().setFocus(true));
+                                 (e) -> e.setValue(assertCellValue(assertCell(cell).getValue()).getValue()),
+                                 (e) -> e.setFocus(true));
     }
 
     @Override

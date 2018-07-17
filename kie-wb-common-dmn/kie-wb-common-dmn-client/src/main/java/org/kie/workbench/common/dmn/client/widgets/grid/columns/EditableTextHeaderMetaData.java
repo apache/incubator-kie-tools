@@ -19,12 +19,14 @@ package org.kie.workbench.common.dmn.client.widgets.grid.columns;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import com.google.gwt.user.client.TakesValue;
+import com.google.gwt.user.client.ui.Focusable;
 import org.gwtbootstrap3.client.ui.base.ValueBoxBase;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
 
-public abstract class EditableTextHeaderMetaData<W extends ValueBoxBase<String>, E extends BaseDOMElement<String, W>> implements EditableHeaderMetaData {
+public abstract class EditableTextHeaderMetaData<W extends ValueBoxBase<String>, E extends BaseDOMElement<String, W> & TakesValue<String> & Focusable> implements EditableHeaderMetaData {
 
     private static final String DEFAULT_COLUMN_GROUP = "";
 
@@ -80,8 +82,8 @@ public abstract class EditableTextHeaderMetaData<W extends ValueBoxBase<String>,
     @Override
     public void edit(final GridBodyCellEditContext context) {
         factory.attachDomElement(context,
-                                 (e) -> e.getWidget().setText(getTitle()),
-                                 (e) -> e.getWidget().setFocus(true));
+                                 (e) -> e.setValue(getTitle()),
+                                 (e) -> e.setFocus(true));
     }
 
     @Override

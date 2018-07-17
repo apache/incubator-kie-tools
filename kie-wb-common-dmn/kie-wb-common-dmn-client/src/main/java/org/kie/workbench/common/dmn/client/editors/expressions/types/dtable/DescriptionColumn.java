@@ -58,8 +58,8 @@ public class DescriptionColumn extends DMNSimpleGridColumn<DecisionTableGrid, St
                      final GridBodyCellRenderContext context,
                      final Callback<GridCellValue<String>> callback) {
         factory.attachDomElement(context,
-                                 (e) -> e.getWidget().setValue(assertCellValue(assertCell(cell).getValue()).getValue()),
-                                 (e) -> e.getWidget().setFocus(true));
+                                 (e) -> e.setValue(assertCellValue(assertCell(cell).getValue()).getValue()),
+                                 (e) -> e.setFocus(true));
     }
 
     @Override
