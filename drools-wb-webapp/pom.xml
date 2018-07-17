@@ -836,6 +836,21 @@
       <artifactId>drools-wb-workitems-editor-backend</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-scenario-simulation-editor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-scenario-simulation-editor-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-scenario-simulation-editor-backend</artifactId>
+    </dependency>
+
     <!-- UberFire PlugIn Extension -->
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -1169,6 +1184,9 @@
             <compileSourcesArtifact>org.drools:drools-wb-scorecard-xls-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-workitems-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-workitems-editor-client</compileSourcesArtifact>
+            <!-- scenario simulation -->
+            <compileSourcesArtifact>org.drools:drools-wb-scenario-simulation-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-wb-scenario-simulation-editor-client</compileSourcesArtifact>
 
             <!-- UberFire extensions -->
             <compileSourcesArtifact>org.uberfire:uberfire-social-activities-api</compileSourcesArtifact>

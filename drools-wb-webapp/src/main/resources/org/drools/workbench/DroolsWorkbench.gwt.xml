@@ -66,6 +66,11 @@
   <inherits name="org.drools.workbench.screens.scorecardxls.DroolsWorkbenchScoreCardXLSEditorClient"/>
   <inherits name="org.drools.workbench.screens.testscenario.DroolsWorkbenchTestScenarioEditorClient"/>
   <inherits name="org.drools.workbench.models.datamodel.DroolsWorkbenchDataModelAPI"/>
+  <!-- ScenarioSimulation -->
+  <inherits name="org.drools.workbench.screens.scenariosimulation.DroolsWorkbenchScenarioSimulationEditorAPI" />
+  <inherits name='org.drools.workbench.screens.scenariosimulation.DroolsWorkbenchScenarioSimulationEditorClient'/>
+
+
 
   <inherits name="org.kie.workbench.common.screens.defaulteditor.DroolsWorkbenchDefaultEditorClient"/>
   <inherits name="org.kie.workbench.common.screens.projecteditor.KieWorkbenchCommonProjectEditorClient"/>
@@ -91,6 +96,11 @@
 
   <set-property name="user.agent" value="gecko1_8,safari"/>
   <set-property name="locale" value="default"/>
+
+  <!-- To change the default logLevel -->
+  <set-property name="gwt.logging.logLevel" value="FINE"/>
+  <!-- To enable logging -->
+  <set-property name="gwt.logging.enabled" value="TRUE"/>
 
   <!-- Use the following properties to create GWT permutation(s) for specific language(s). -->
   <!--<extend-property name="locale" values="es_ES"/>-->

@@ -30,6 +30,7 @@
     <module>drools-wb-scorecard-xls-editor</module>
     <module>drools-wb-test-scenario-editor</module>
     <module>drools-wb-workitems-editor</module>
+    <module>drools-wb-scenario-simulation-editor</module>
   </modules>
 
 </project>

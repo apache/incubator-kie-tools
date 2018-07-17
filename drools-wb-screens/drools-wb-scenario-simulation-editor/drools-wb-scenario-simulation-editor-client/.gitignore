@@ -12,5 +12,3 @@
 
 # Repository wide ignore mac DS_Store files
 .DS_Store
-/**/gwt-unitCache
-gwt-unitCache
