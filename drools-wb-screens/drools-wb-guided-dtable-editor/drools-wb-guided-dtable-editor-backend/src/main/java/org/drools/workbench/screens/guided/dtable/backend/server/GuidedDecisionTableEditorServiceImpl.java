@@ -62,6 +62,7 @@ import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.rpc.SessionInfo;
@@ -290,10 +291,13 @@ public class GuidedDecisionTableEditorServiceImpl
 
     private void updateGraphElementPaths(final Path source,
                                          final Path destination) {
-        ioService.newDirectoryStream(getParentFolder(source),
-                                     new FileExtensionFilter(dtableGraphType.getSuffix())).forEach((path) -> updateGraphElementPath(source,
-                                                                                                                                    destination,
-                                                                                                                                    Paths.convert(path)));
+        try (final DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream =
+                     ioService.newDirectoryStream(getParentFolder(source),
+                                                  new FileExtensionFilter(dtableGraphType.getSuffix()))) {
+            directoryStream.forEach((path) -> updateGraphElementPath(source,
+                                                                     destination,
+                                                                     Paths.convert(path)));
+        }
     }
 
     private org.uberfire.java.nio.file.Path getParentFolder(final Path path) {

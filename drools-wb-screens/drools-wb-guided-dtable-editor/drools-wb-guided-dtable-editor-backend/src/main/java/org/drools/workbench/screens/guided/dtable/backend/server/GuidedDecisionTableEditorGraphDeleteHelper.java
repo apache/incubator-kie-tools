@@ -32,6 +32,7 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.backend.service.helper.DeleteHelper;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
 
 /**
@@ -51,11 +52,11 @@ public class GuidedDecisionTableEditorGraphDeleteHelper implements DeleteHelper 
     }
 
     @Inject
-    public GuidedDecisionTableEditorGraphDeleteHelper( final @Named("ioStrategy") IOService ioService,
-                                                       final GuidedDTableResourceTypeDefinition dtableType,
-                                                       final GuidedDTableGraphResourceTypeDefinition dtableGraphType,
-                                                       final GuidedDecisionTableGraphEditorService dtableGraphService,
-                                                       final CommentedOptionFactory commentedOptionFactory ) {
+    public GuidedDecisionTableEditorGraphDeleteHelper(final @Named("ioStrategy") IOService ioService,
+                                                      final GuidedDTableResourceTypeDefinition dtableType,
+                                                      final GuidedDTableGraphResourceTypeDefinition dtableGraphType,
+                                                      final GuidedDecisionTableGraphEditorService dtableGraphService,
+                                                      final CommentedOptionFactory commentedOptionFactory) {
         this.ioService = ioService;
         this.dtableType = dtableType;
         this.dtableGraphType = dtableGraphType;
@@ -64,30 +65,32 @@ public class GuidedDecisionTableEditorGraphDeleteHelper implements DeleteHelper 
     }
 
     @Override
-    public boolean supports( final Path destination ) {
-        return ( dtableType.accept( destination ) );
+    public boolean supports(final Path destination) {
+        return (dtableType.accept(destination));
     }
 
     @Override
-    public void postProcess( final Path path ) {
-        ioService.newDirectoryStream( getParentFolder( path ),
-                                      new FileExtensionFilter( dtableGraphType.getSuffix() ) ).forEach( ( p ) -> updateGraphReferences( path,
-                                                                                                                                        Paths.convert( p ) ) );
+    public void postProcess(final Path path) {
+        try (final DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream =
+                     ioService.newDirectoryStream(getParentFolder(path),
+                                                  new FileExtensionFilter(dtableGraphType.getSuffix()))) {
+            directoryStream.forEach((p) -> updateGraphReferences(path,
+                                                                 Paths.convert(p)));
+        }
     }
 
-    org.uberfire.java.nio.file.Path getParentFolder( final Path path ) {
-        org.uberfire.java.nio.file.Path nioFolderPath = Paths.convert( path );
-        return Files.isDirectory( nioFolderPath ) ? nioFolderPath : nioFolderPath.getParent();
+    org.uberfire.java.nio.file.Path getParentFolder(final Path path) {
+        org.uberfire.java.nio.file.Path nioFolderPath = Paths.convert(path);
+        return Files.isDirectory(nioFolderPath) ? nioFolderPath : nioFolderPath.getParent();
     }
 
-    void updateGraphReferences( final Path path,
-                                final Path graphPath ) {
-        final GuidedDecisionTableEditorGraphModel dtGraphModel = dtableGraphService.load( graphPath );
+    void updateGraphReferences(final Path path,
+                               final Path graphPath) {
+        final GuidedDecisionTableEditorGraphModel dtGraphModel = dtableGraphService.load(graphPath);
         final Set<GuidedDecisionTableEditorGraphModel.GuidedDecisionTableGraphEntry> dtGraphEntries = dtGraphModel.getEntries();
-        dtGraphEntries.removeIf( ( e ) -> e.getPathHead().equals( path ) );
-        ioService.write( Paths.convert( graphPath ),
-                         GuidedDTGraphXMLPersistence.getInstance().marshal( dtGraphModel ),
-                         commentedOptionFactory.makeCommentedOption( "File [" + path.toURI() + "] deleted." ) );
+        dtGraphEntries.removeIf((e) -> e.getPathHead().equals(path));
+        ioService.write(Paths.convert(graphPath),
+                        GuidedDTGraphXMLPersistence.getInstance().marshal(dtGraphModel),
+                        commentedOptionFactory.makeCommentedOption("File [" + path.toURI() + "] deleted."));
     }
-
 }

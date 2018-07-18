@@ -31,6 +31,7 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.backend.service.helper.RenameHelper;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
 
 /**
@@ -50,11 +51,11 @@ public class GuidedDecisionTableEditorGraphRenameHelper implements RenameHelper 
     }
 
     @Inject
-    public GuidedDecisionTableEditorGraphRenameHelper( final @Named("ioStrategy") IOService ioService,
-                                                       final GuidedDTableResourceTypeDefinition dtableType,
-                                                       final GuidedDTableGraphResourceTypeDefinition dtableGraphType,
-                                                       final GuidedDecisionTableGraphEditorService dtableGraphService,
-                                                       final CommentedOptionFactory commentedOptionFactory ) {
+    public GuidedDecisionTableEditorGraphRenameHelper(final @Named("ioStrategy") IOService ioService,
+                                                      final GuidedDTableResourceTypeDefinition dtableType,
+                                                      final GuidedDTableGraphResourceTypeDefinition dtableGraphType,
+                                                      final GuidedDecisionTableGraphEditorService dtableGraphService,
+                                                      final CommentedOptionFactory commentedOptionFactory) {
         this.ioService = ioService;
         this.dtableType = dtableType;
         this.dtableGraphType = dtableGraphType;
@@ -63,38 +64,40 @@ public class GuidedDecisionTableEditorGraphRenameHelper implements RenameHelper 
     }
 
     @Override
-    public boolean supports( final Path destination ) {
-        return ( dtableType.accept( destination ) );
+    public boolean supports(final Path destination) {
+        return (dtableType.accept(destination));
     }
 
     @Override
-    public void postProcess( final Path source,
-                             final Path destination ) {
-        ioService.newDirectoryStream( getParentFolder( source ),
-                                      new FileExtensionFilter( dtableGraphType.getSuffix() ) ).forEach( ( path ) -> updateGraphElementPath( source,
-                                                                                                                                            destination,
-                                                                                                                                            Paths.convert( path ) ) );
+    public void postProcess(final Path source,
+                            final Path destination) {
+        try (DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream =
+                     ioService.newDirectoryStream(getParentFolder(source),
+                                                  new FileExtensionFilter(dtableGraphType.getSuffix()))) {
+            directoryStream.forEach((path) -> updateGraphElementPath(source,
+                                                                     destination,
+                                                                     Paths.convert(path)));
+        }
     }
 
-    org.uberfire.java.nio.file.Path getParentFolder( final Path path ) {
-        org.uberfire.java.nio.file.Path nioFolderPath = Paths.convert( path );
-        return Files.isDirectory( nioFolderPath ) ? nioFolderPath : nioFolderPath.getParent();
+    org.uberfire.java.nio.file.Path getParentFolder(final Path path) {
+        org.uberfire.java.nio.file.Path nioFolderPath = Paths.convert(path);
+        return Files.isDirectory(nioFolderPath) ? nioFolderPath : nioFolderPath.getParent();
     }
 
-    void updateGraphElementPath( final Path source,
-                                 final Path destination,
-                                 final Path graphPath ) {
-        final GuidedDecisionTableEditorGraphModel dtGraphModel = dtableGraphService.load( graphPath );
+    void updateGraphElementPath(final Path source,
+                                final Path destination,
+                                final Path graphPath) {
+        final GuidedDecisionTableEditorGraphModel dtGraphModel = dtableGraphService.load(graphPath);
         final Set<GuidedDecisionTableEditorGraphModel.GuidedDecisionTableGraphEntry> dtGraphEntries = dtGraphModel.getEntries();
-        dtGraphEntries.forEach( ( e ) -> {
-            if ( e.getPathHead().equals( source ) ) {
-                e.setPathHead( destination );
-                e.setPathVersion( destination );
+        dtGraphEntries.forEach((e) -> {
+            if (e.getPathHead().equals(source)) {
+                e.setPathHead(destination);
+                e.setPathVersion(destination);
             }
-        } );
-        ioService.write( Paths.convert( graphPath ),
-                         GuidedDTGraphXMLPersistence.getInstance().marshal( dtGraphModel ),
-                         commentedOptionFactory.makeCommentedOption( "File [" + source.toURI() + "] renamed to [" + destination.toURI() + "]." ) );
+        });
+        ioService.write(Paths.convert(graphPath),
+                        GuidedDTGraphXMLPersistence.getInstance().marshal(dtGraphModel),
+                        commentedOptionFactory.makeCommentedOption("File [" + source.toURI() + "] renamed to [" + destination.toURI() + "]."));
     }
-
 }

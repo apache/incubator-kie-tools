@@ -279,11 +279,12 @@ public class GuidedDecisionTableGraphEditorServiceImpl
 
     private List<Path> findDecisionTables(final org.uberfire.java.nio.file.Path nioRootPath) {
         final List<Path> paths = new ArrayList<>();
-        final DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream = ioService.newDirectoryStream(nioRootPath);
-        for (org.uberfire.java.nio.file.Path nioPath : directoryStream) {
-            final Path path = Paths.convert(nioPath);
-            if (!dotFileFilter.accept(nioPath) && resourceType.accept(path)) {
-                paths.add(path);
+        try (final DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream = ioService.newDirectoryStream(nioRootPath)) {
+            for (org.uberfire.java.nio.file.Path nioPath : directoryStream) {
+                final Path path = Paths.convert(nioPath);
+                if (!dotFileFilter.accept(nioPath) && resourceType.accept(path)) {
+                    paths.add(path);
+                }
             }
         }
         return paths;

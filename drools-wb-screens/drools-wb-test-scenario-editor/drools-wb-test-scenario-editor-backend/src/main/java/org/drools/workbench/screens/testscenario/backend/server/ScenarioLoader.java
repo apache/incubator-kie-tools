@@ -38,7 +38,7 @@ public class ScenarioLoader {
 
     @Inject
     @Named("ioStrategy")
-    private IOService                 ioService;
+    private IOService ioService;
 
     @Inject
     private ScenarioTestEditorService scenarioTestEditorService;
@@ -71,13 +71,14 @@ public class ScenarioLoader {
         FileExtensionFilter fileExtensionFilter = new FileExtensionFilter(".scenario");
 
         // Get list of immediate children
-        final DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream = ioService.newDirectoryStream(pPath);
-        for (final org.uberfire.java.nio.file.Path p : directoryStream) {
-            if (filter.accept(p) && fileExtensionFilter.accept(p)) {
-                if (Files.isRegularFile(p)) {
-                    items.add(Paths.convert(p));
-                } else if (Files.isDirectory(p)) {
-                    items.add(Paths.convert(p));
+        try (final DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream = ioService.newDirectoryStream(pPath)) {
+            for (final org.uberfire.java.nio.file.Path p : directoryStream) {
+                if (filter.accept(p) && fileExtensionFilter.accept(p)) {
+                    if (Files.isRegularFile(p)) {
+                        items.add(Paths.convert(p));
+                    } else if (Files.isDirectory(p)) {
+                        items.add(Paths.convert(p));
+                    }
                 }
             }
         }
