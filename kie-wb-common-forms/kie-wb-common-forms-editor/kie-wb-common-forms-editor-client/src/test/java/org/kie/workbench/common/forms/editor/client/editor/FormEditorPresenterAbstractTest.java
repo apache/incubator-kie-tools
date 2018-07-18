@@ -173,6 +173,9 @@ public class FormEditorPresenterAbstractTest {
     @Mock
     protected ErrorMessageDisplayer errorMessageDisplayer;
 
+    @Mock
+    protected MenuItem downloadMenuItem;
+
     protected TestFieldManager fieldManager;
 
     protected List<Path> assetUsages = new ArrayList<>();
@@ -291,6 +294,11 @@ public class FormEditorPresenterAbstractTest {
                 alertsButtonMenuItemBuilder = FormEditorPresenterAbstractTest.this.alertsButtonMenuItemBuilder;
                 formEditorContext = mock(FormEditorContext.class);
                 copyPopUpPresenter = FormEditorPresenterAbstractTest.this.copyPopUpPresenter;
+            }
+
+            @Override
+            protected MenuItem downloadMenuItem() {
+                return downloadMenuItem;
             }
 
             @Override

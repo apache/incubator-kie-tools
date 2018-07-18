@@ -108,6 +108,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -347,6 +348,7 @@ public class AbstractProjectDiagramEditorTest {
 
         final Command saveAndRenameCommand = mock(Command.class);
 
+        doNothing().when(presenter).addDownloadMenuItem(any());
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
         doReturn(true).when(projectController).canUpdateProject(any());
         doReturn(saveAndRenameCommand).when(presenter).getSaveAndRename();
@@ -360,10 +362,12 @@ public class AbstractProjectDiagramEditorTest {
         verify(fileMenuBuilder).addRename(saveAndRenameCommand);
         verify(fileMenuBuilder).addDelete(any(Path.class),
                                           any(AssetUpdateValidator.class));
+        verify(presenter).addDownloadMenuItem(fileMenuBuilder);
     }
 
     @Test
     public void testMakeMenuBarWithoutUpdateProjectPermission() {
+        doNothing().when(presenter).addDownloadMenuItem(any());
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
         doReturn(false).when(projectController).canUpdateProject(any());
 

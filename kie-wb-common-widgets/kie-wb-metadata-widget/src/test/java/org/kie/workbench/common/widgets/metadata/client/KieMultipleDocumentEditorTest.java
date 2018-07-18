@@ -52,8 +52,19 @@ import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 @WithClassesToStub({BasicFileMenuBuilderImpl.class})
@@ -70,21 +81,13 @@ public class KieMultipleDocumentEditorTest
 
         editor.setupMenuBar();
 
-        verify(fileMenuBuilder,
-               times(1)).addSave(any(MenuItem.class));
-        verify(fileMenuBuilder,
-               times(1)).addCopy(any(BasicFileMenuBuilder.PathProvider.class),
-                                 eq(assetUpdateValidator));
-        verify(fileMenuBuilder,
-               times(1)).addRename(any(BasicFileMenuBuilder.PathProvider.class),
-                                   eq(assetUpdateValidator));
-        verify(fileMenuBuilder,
-               times(1)).addDelete(any(BasicFileMenuBuilder.PathProvider.class),
-                                   eq(assetUpdateValidator));
-        verify(fileMenuBuilder,
-               times(1)).addValidate(any(Command.class));
-        verify(fileMenuBuilder,
-               times(2)).addNewTopLevelMenu(any(MenuItem.class));
+        verify(fileMenuBuilder).addSave(any(MenuItem.class));
+        verify(fileMenuBuilder).addCopy(any(BasicFileMenuBuilder.PathProvider.class), eq(assetUpdateValidator));
+        verify(fileMenuBuilder).addRename(any(BasicFileMenuBuilder.PathProvider.class), eq(assetUpdateValidator));
+        verify(fileMenuBuilder).addDelete(any(BasicFileMenuBuilder.PathProvider.class), eq(assetUpdateValidator));
+        verify(fileMenuBuilder).addValidate(any(Command.class));
+        verify(fileMenuBuilder).addNewTopLevelMenu(downloadMenuItemButton);
+        verify(fileMenuBuilder, times(3)).addNewTopLevelMenu(any(MenuItem.class));
     }
 
     @Test
@@ -94,21 +97,13 @@ public class KieMultipleDocumentEditorTest
 
         editor.setupMenuBar();
 
-        verify(fileMenuBuilder,
-               never()).addSave(any(MenuItem.class));
-        verify(fileMenuBuilder,
-               never()).addCopy(any(BasicFileMenuBuilder.PathProvider.class),
-                                eq(assetUpdateValidator));
-        verify(fileMenuBuilder,
-               never()).addRename(any(BasicFileMenuBuilder.PathProvider.class),
-                                  eq(assetUpdateValidator));
-        verify(fileMenuBuilder,
-               never()).addDelete(any(BasicFileMenuBuilder.PathProvider.class),
-                                  eq(assetUpdateValidator));
-        verify(fileMenuBuilder,
-               times(1)).addValidate(any(Command.class));
-        verify(fileMenuBuilder,
-               times(2)).addNewTopLevelMenu(any(MenuItem.class));
+        verify(fileMenuBuilder, never()).addSave(any(MenuItem.class));
+        verify(fileMenuBuilder, never()).addCopy(any(BasicFileMenuBuilder.PathProvider.class), eq(assetUpdateValidator));
+        verify(fileMenuBuilder, never()).addRename(any(BasicFileMenuBuilder.PathProvider.class), eq(assetUpdateValidator));
+        verify(fileMenuBuilder, never()).addDelete(any(BasicFileMenuBuilder.PathProvider.class), eq(assetUpdateValidator));
+        verify(fileMenuBuilder).addValidate(any(Command.class));
+        verify(fileMenuBuilder).addNewTopLevelMenu(downloadMenuItemButton);
+        verify(fileMenuBuilder, times(3)).addNewTopLevelMenu(any(MenuItem.class));
     }
 
     @Test(expected = IllegalArgumentException.class)

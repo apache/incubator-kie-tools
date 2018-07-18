@@ -36,7 +36,6 @@ import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidato
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -93,6 +92,8 @@ public class GuvnorDefaultEditorPresenter
                     .addDelete(versionRecordManager.getCurrentPath(),
                                assetUpdateValidator);
         }
+
+        addDownloadMenuItem(fileMenuBuilder);
 
         fileMenuBuilder
                 .addNewTopLevelMenu(versionRecordManager.buildMenu())

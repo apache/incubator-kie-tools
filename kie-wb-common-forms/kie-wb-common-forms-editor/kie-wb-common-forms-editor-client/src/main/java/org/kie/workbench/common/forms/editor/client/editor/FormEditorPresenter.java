@@ -291,6 +291,7 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
                     .addRename(this::safeRename)
                     .addDelete(this::safeDelete);
         }
+        addDownloadMenuItem(fileMenuBuilder);
 
         fileMenuBuilder
                 .addNewTopLevelMenu(versionRecordManager.buildMenu())

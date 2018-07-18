@@ -466,6 +466,7 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
         verify(menuBuilderMock).addRename(any(Command.class));
         verify(menuBuilderMock).addDelete(any(Command.class));
         verify(menuBuilderMock).addNewTopLevelMenu(alertsButtonMenuItem);
+        verify(menuBuilderMock).addNewTopLevelMenu(downloadMenuItem);
 
         assertNotNull(presenter.getMenus());
         verify(menuBuilderMock,

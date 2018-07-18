@@ -69,7 +69,7 @@ public class GuvnorDefaultEditorPresenterTest {
     @Before
     public void setup() {
         doReturn(alertsButtonMenuItem).when(alertsButtonMenuItemBuilder).build();
-        presenter = new GuvnorDefaultEditorPresenter(mock(GuvnorDefaultEditorView.class)) {
+        presenter = spy(new GuvnorDefaultEditorPresenter(mock(GuvnorDefaultEditorView.class)) {
             {
                 fileMenuBuilder = GuvnorDefaultEditorPresenterTest.this.fileMenuBuilder;
                 projectController = GuvnorDefaultEditorPresenterTest.this.projectController;
@@ -77,7 +77,9 @@ public class GuvnorDefaultEditorPresenterTest {
                 versionRecordManager = GuvnorDefaultEditorPresenterTest.this.versionRecordManager;
                 alertsButtonMenuItemBuilder = GuvnorDefaultEditorPresenterTest.this.alertsButtonMenuItemBuilder;
             }
-        };
+        });
+
+        doNothing().when(presenter).addDownloadMenuItem(any());
     }
 
     @Test
@@ -94,6 +96,7 @@ public class GuvnorDefaultEditorPresenterTest {
         verify(fileMenuBuilder).addDelete(any(Path.class),
                                           any(AssetUpdateValidator.class));
         verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
+        verify(presenter).addDownloadMenuItem(fileMenuBuilder);
     }
 
     @Test
@@ -113,5 +116,6 @@ public class GuvnorDefaultEditorPresenterTest {
                never()).addDelete(any(Path.class),
                                   any(AssetUpdateValidator.class));
         verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
+        verify(presenter).addDownloadMenuItem(fileMenuBuilder);
     }
 }

@@ -61,6 +61,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -189,6 +190,7 @@ public class ProjectImportsScreenPresenterTest {
         verify(menuBuilder).addRename(any(Command.class));
         verify(menuBuilder).addDelete(any(Path.class), any(AssetUpdateValidator.class));
         verify(menuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
+        verify(presenter).addDownloadMenuItem(menuBuilder);
     }
 
     @Test
@@ -227,11 +229,17 @@ public class ProjectImportsScreenPresenterTest {
 
     private ProjectImportsScreenPresenter makeProjectImportsScreen() {
 
-        return new ProjectImportsScreenPresenter(view, serviceCaller, new Others()) {
+        return spy(new ProjectImportsScreenPresenter(view, serviceCaller, new Others()) {
+
+            @Override
+            public void addDownloadMenuItem(final FileMenuBuilder fileMenuBuilder) {
+                // Do nothing.
+            }
+
             @Override
             protected Command getSaveAndRename() {
                 return mock(Command.class);
             }
-        };
+        });
     }
 }

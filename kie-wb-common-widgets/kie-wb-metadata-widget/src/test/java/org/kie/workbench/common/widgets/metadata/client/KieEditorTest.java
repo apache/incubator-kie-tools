@@ -115,6 +115,7 @@ public class KieEditorTest {
         verify(presenter).addCopy(fileMenuBuilder);
         verify(presenter).addRename(fileMenuBuilder);
         verify(presenter).addDelete(fileMenuBuilder);
+        verify(presenter).addDownloadMenuItem(fileMenuBuilder);
         verify(presenter).addCommonActions(fileMenuBuilder);
     }
 
@@ -196,6 +197,18 @@ public class KieEditorTest {
         presenter.addDelete(fileMenuBuilder);
 
         verify(fileMenuBuilder).addDelete(observablePath, assetUpdateValidator);
+    }
+
+    @Test
+    public void testAddDownloadMenuItem() {
+
+        final MenuItem menuItem = mock(MenuItem.class);
+
+        doReturn(menuItem).when(presenter).downloadMenuItem();
+
+        presenter.addDownloadMenuItem(fileMenuBuilder);
+
+        verify(fileMenuBuilder).addNewTopLevelMenu(menuItem);
     }
 
     @Test
@@ -292,6 +305,11 @@ public class KieEditorTest {
         @Override
         protected Caller<? extends SupportsSaveAndRename<String, Metadata>> getSaveAndRenameServiceCaller() {
             return super.getSaveAndRenameServiceCaller();
+        }
+
+        @Override
+        protected MenuItem downloadMenuItem() {
+            return mock(MenuItem.class);
         }
     }
 }

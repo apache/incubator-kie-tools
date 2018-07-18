@@ -114,6 +114,8 @@ public class ProjectImportsScreenPresenter
                     .addDelete(versionRecordManager.getPathToLatest(), getRenameValidator());
         }
 
+        addDownloadMenuItem(fileMenuBuilder);
+
         fileMenuBuilder
                 .addNewTopLevelMenu(versionRecordManager.buildMenu())
                 .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());

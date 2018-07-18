@@ -39,7 +39,6 @@ import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextResourceType;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.model.menu.Menus;
@@ -98,6 +97,8 @@ public abstract class KieTextEditorPresenter
                     .addDelete(versionRecordManager.getPathToLatest(),
                                assetUpdateValidator);
         }
+
+        addDownloadMenuItem(fileMenuBuilder);
 
         fileMenuBuilder
                 .addNewTopLevelMenu(versionRecordManager.buildMenu())

@@ -596,6 +596,9 @@ public class DataModelerScreenPresenterTest
 
     @Test
     public void testMakeMenuBar() {
+
+        final DataModelerScreenPresenter presenter = spy(this.presenter);
+
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
         doReturn(true).when(projectController).canUpdateProject(any());
 
@@ -606,6 +609,7 @@ public class DataModelerScreenPresenterTest
         verify(fileMenuBuilder).addRename(any(Command.class));
         verify(fileMenuBuilder).addDelete(any(Command.class));
         verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
+        verify(presenter).addDownloadMenuItem(fileMenuBuilder);
     }
 
     @Test

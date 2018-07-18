@@ -56,6 +56,7 @@ import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
+import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItem;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
@@ -88,6 +89,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     protected Event<ChangeTitleWidgetEvent> changeTitleEvent;
     protected WorkspaceProjectContext workbenchContext;
     protected SavePopUpPresenter savePopUpPresenter;
+    protected DownloadMenuItem downloadMenuItem;
 
     protected FileMenuBuilder fileMenuBuilder;
     protected VersionRecordManager versionRecordManager;
@@ -153,6 +155,11 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     @Inject
     protected void setSavePopUpPresenter(final SavePopUpPresenter savePopUpPresenter) {
         this.savePopUpPresenter = savePopUpPresenter;
+    }
+
+    @Inject
+    protected void setDownloadMenuItem(final DownloadMenuItem downloadMenuItem) {
+        this.downloadMenuItem = downloadMenuItem;
     }
 
     @Inject
@@ -483,11 +490,21 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
                                assetUpdateValidator);
         }
 
+        addDownloadMenuItem(fileMenuBuilder);
+
         this.menus = fileMenuBuilder
                 .addValidate(() -> onValidate(getActiveDocument()))
                 .addNewTopLevelMenu(getRegisteredDocumentsMenuItem())
                 .addNewTopLevelMenu(getVersionManagerMenuItem())
                 .build();
+    }
+
+    protected void addDownloadMenuItem(final FileMenuBuilder menuBuilder) {
+        menuBuilder.addNewTopLevelMenu(downloadMenuItem());
+    }
+
+    private MenuItem downloadMenuItem() {
+        return downloadMenuItem.build(() -> getActiveDocument().getLatestPath());
     }
 
     protected boolean canUpdateProject() {

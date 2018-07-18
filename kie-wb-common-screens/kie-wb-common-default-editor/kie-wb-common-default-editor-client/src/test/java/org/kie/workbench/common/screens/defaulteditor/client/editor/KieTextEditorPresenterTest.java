@@ -30,6 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorService;
+import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
 import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
 import org.mockito.InjectMocks;
@@ -42,9 +43,14 @@ import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class KieTextEditorPresenterTest {
@@ -93,6 +99,11 @@ public class KieTextEditorPresenterTest {
             }
 
             @Override
+            public void addDownloadMenuItem(final FileMenuBuilder fileMenuBuilder) {
+                // Do nothing.
+            }
+
+            @Override
             protected Command getSaveAndRename() {
                 return mock(Command.class);
             }
@@ -101,6 +112,8 @@ public class KieTextEditorPresenterTest {
 
     @Test
     public void testMakeMenuBar() {
+
+        final KieTextEditorPresenter presenter = spy(this.presenter);
 
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
         doReturn(true).when(projectController).canUpdateProject(any());
@@ -112,6 +125,7 @@ public class KieTextEditorPresenterTest {
         verify(fileMenuBuilder).addRename(any(Command.class));
         verify(fileMenuBuilder).addDelete(any(Path.class), any(AssetUpdateValidator.class));
         verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
+        verify(presenter).addDownloadMenuItem(fileMenuBuilder);
     }
 
     @Test

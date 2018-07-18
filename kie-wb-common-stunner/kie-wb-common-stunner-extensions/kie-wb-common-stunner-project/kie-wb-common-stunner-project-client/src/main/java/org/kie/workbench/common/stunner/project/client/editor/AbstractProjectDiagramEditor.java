@@ -496,6 +496,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                         .addDelete(versionRecordManager.getPathToLatest(),
                                    assetUpdateValidator);
             }
+
+            addDownloadMenuItem(fileMenuBuilder);
+
             fileMenuBuilder
                     .addNewTopLevelMenu(versionRecordManager.buildMenu())
                     .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());

@@ -1247,6 +1247,8 @@ public class DataModelerScreenPresenter
                     });
         }
 
+        addDownloadMenuItem(fileMenuBuilder);
+
         fileMenuBuilder
                 .addValidate(
                         getValidateCommand()

@@ -56,6 +56,7 @@ import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.refactoring.client.usages.ShowAssetUsagesDisplayer;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
+import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
@@ -277,6 +278,11 @@ public abstract class DataModelerScreenPresenterTestBase {
                 when(workbenchContext.getActiveModule()).thenReturn(Optional.empty());
                 when(workbenchContext.getActiveRepositoryRoot()).thenReturn(Optional.empty());
                 when(workbenchContext.getActivePackage()).thenReturn(Optional.empty());
+            }
+
+            @Override
+            public void addDownloadMenuItem(final FileMenuBuilder fileMenuBuilder) {
+                // Do nothing.
             }
 
             @Override
