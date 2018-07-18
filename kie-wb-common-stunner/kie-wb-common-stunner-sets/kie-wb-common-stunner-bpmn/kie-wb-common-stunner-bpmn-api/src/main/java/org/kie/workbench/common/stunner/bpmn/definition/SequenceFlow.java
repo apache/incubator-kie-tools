@@ -54,8 +54,6 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 // **** Cardinality rules for connectors ****
 // No incoming sequence flows for start events.
 @EdgeOccurrences(role = "Startevents_all", type = EdgeOccurrences.EdgeType.INCOMING, max = 0)
-// Only single outgoing sequence flow for start events.
-@EdgeOccurrences(role = "Startevents_outgoing_all", type = EdgeOccurrences.EdgeType.OUTGOING, max = 1)
 // No outgoing sequence flows for end events.
 @EdgeOccurrences(role = "Endevents_all", type = EdgeOccurrences.EdgeType.OUTGOING, max = 0)
 // A single outgoing sequence flows for message flow_start roles, such as Tasks or Subprocess.
