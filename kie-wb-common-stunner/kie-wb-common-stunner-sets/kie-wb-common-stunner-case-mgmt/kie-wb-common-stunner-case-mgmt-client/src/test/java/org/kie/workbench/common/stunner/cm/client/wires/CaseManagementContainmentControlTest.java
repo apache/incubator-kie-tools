@@ -25,6 +25,7 @@ import com.ait.lienzo.client.core.shape.wires.ILayoutHandler;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresContainmentControlImpl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresParentPickerControlImpl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeLocationControlImpl;
@@ -97,6 +98,17 @@ public class CaseManagementContainmentControlTest {
         when(shape.getWiresManager()).thenReturn(wiresManager);
         when(shape.getGhost()).thenReturn(ghost);
         when(wiresManager.getContainmentAcceptor()).thenReturn(containmentAcceptor);
+        when(parentPickerControl.getIndex()).thenReturn(new WiresParentPickerControl.Index() {
+            @Override
+            public void addShapeToSkip(final WiresContainer shape) {
+                PICKER_OPTIONS.getShapesToSkip().add(shape);
+            }
+
+            @Override
+            public void clear() {
+                PICKER_OPTIONS.getShapesToSkip().clear();
+            }
+        });
         when(parentPickerControl.getPickerOptions()).thenReturn(PICKER_OPTIONS);
         when(parentPickerControl.getShapeLocationControl()).thenReturn(shapeLocationControl);
         when(containmentControl.getParentPickerControl()).thenReturn(parentPickerControl);
