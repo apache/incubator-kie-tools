@@ -16,11 +16,11 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.columns;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiCell;
 import org.gwtbootstrap3.client.ui.CheckBox;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
@@ -48,11 +48,11 @@ public class BooleanUiColumn extends BaseMultipleDOMElementUiColumn<Boolean, Che
     @Override
     public void edit( final GridCell<Boolean> cell,
                       final GridBodyCellRenderContext context,
-                      final Callback<GridCellValue<Boolean>> callback ) {
+                      final Consumer<GridCellValue<Boolean>> callback ) {
         if ( !isEditable() ) {
             return;
         }
-        callback.callback( new GuidedDecisionTableUiCell<>( !cell.getValue().getValue() ) );
+        callback.accept( new GuidedDecisionTableUiCell<>( !cell.getValue().getValue() ) );
     }
 
 }

@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.columns;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox.MultiValueDOMElement;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox.MultiValueSingletonDOMElementFactory;
@@ -25,14 +26,13 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.do
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.SingleValueSingletonDOMElementFactory;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.common.client.common.DatePicker;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 
 /**
- * Factory for common callbacks used by the different columns.
+ * Factory for common consumers used by the different columns.
  */
-public class CallbackFactory {
+public class ConsumerFactory {
 
     static final int MAX_VISIBLE_ROWS = 10;
 
@@ -42,7 +42,7 @@ public class CallbackFactory {
      * @param cell The Cell to be rendered.
      * @return
      */
-    public static <T, W extends TextBox, E extends SingleValueDOMElement<T, W>, F extends SingleValueSingletonDOMElementFactory<T, W, E>> Callback<E> makeOnCreationCallback(final F factory,
+    public static <T, W extends TextBox, E extends SingleValueDOMElement<T, W>, F extends SingleValueSingletonDOMElementFactory<T, W, E>> Consumer<E> makeOnCreationCallback(final F factory,
                                                                                                                                                                              final GridCell<T> cell) {
         return (e) -> {
             if (hasValue(cell)) {
@@ -57,7 +57,7 @@ public class CallbackFactory {
      * Callback to set the Focus on the TextBox.
      * @return
      */
-    public static <T, W extends TextBox, E extends SingleValueDOMElement<T, W>> Callback<E> makeOnDisplayTextBoxCallback() {
+    public static <T, W extends TextBox, E extends SingleValueDOMElement<T, W>> Consumer<E> makeOnDisplayTextBoxCallback() {
         return (e) -> e.getWidget().setFocus(true);
     }
 
@@ -67,7 +67,7 @@ public class CallbackFactory {
      * @param cell The Cell to be rendered.
      * @return
      */
-    public static <T, W extends ListBox, E extends MultiValueDOMElement<T, W>, F extends MultiValueSingletonDOMElementFactory<T, W, E>> Callback<E> makeOnCreationCallback(final F factory,
+    public static <T, W extends ListBox, E extends MultiValueDOMElement<T, W>, F extends MultiValueSingletonDOMElementFactory<T, W, E>> Consumer<E> makeOnCreationCallback(final F factory,
                                                                                                                                                                            final GridCell<T> cell,
                                                                                                                                                                            final Map<String, String> enumLookups) {
         return (e) -> {
@@ -91,7 +91,7 @@ public class CallbackFactory {
      * Callback to set the Focus on the ListBox.
      * @return
      */
-    public static <T, W extends ListBox, E extends MultiValueDOMElement<T, W>> Callback<E> makeOnDisplayListBoxCallback() {
+    public static <T, W extends ListBox, E extends MultiValueDOMElement<T, W>> Consumer<E> makeOnDisplayListBoxCallback() {
         return (e) -> e.getWidget().setFocus(true);
     }
 
@@ -100,7 +100,7 @@ public class CallbackFactory {
      * @param cell The Cell to be rendered.
      * @return
      */
-    public static <E extends SingleValueDOMElement<Date, DatePicker>> Callback<E> makeOnCreationCallback(final GridCell<Date> cell) {
+    public static <E extends SingleValueDOMElement<Date, DatePicker>> Consumer<E> makeOnCreationCallback(final GridCell<Date> cell) {
         return (e) -> {
             final DatePicker widget = e.getWidget();
             if (hasValue(cell)) {
@@ -115,7 +115,7 @@ public class CallbackFactory {
      * Callback to set the Focus on the DatePicker.
      * @return
      */
-    public static <E extends SingleValueDOMElement<Date, DatePicker>> Callback<E> makeOnDisplayDatePickerCallback() {
+    public static <E extends SingleValueDOMElement<Date, DatePicker>> Consumer<E> makeOnDisplayDatePickerCallback() {
         return (e) -> e.getWidget().setFocus(true);
     }
 

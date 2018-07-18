@@ -57,20 +57,20 @@ public class EnumSingleSelectIntegerUiColumn extends BaseEnumSingleSelectUiColum
     protected void initialiseMultiValueDomElement( final GridCell<Integer> cell,
                                                    final GridBodyCellRenderContext context,
                                                    final Map<String, String> enumLookups ) {
-        factory.attachDomElement( context,
-                                  CallbackFactory.makeOnCreationCallback( factory,
-                                                                          cell,
-                                                                          enumLookups ),
-                                  CallbackFactory.makeOnDisplayListBoxCallback() );
+        factory.attachDomElement(context,
+                                 ConsumerFactory.makeOnCreationCallback(factory,
+                                                                        cell,
+                                                                        enumLookups ),
+                                 ConsumerFactory.makeOnDisplayListBoxCallback() );
     }
 
     @Override
     protected void initialiseSingleValueDomElement( final GridCell<Integer> cell,
                                                     final GridBodyCellRenderContext context ) {
-        singleValueFactory.attachDomElement( context,
-                                             CallbackFactory.makeOnCreationCallback( singleValueFactory,
-                                                                                     cell ),
-                                             CallbackFactory.makeOnDisplayTextBoxCallback() );
+        singleValueFactory.attachDomElement(context,
+                                            ConsumerFactory.makeOnCreationCallback(singleValueFactory,
+                                                                                   cell ),
+                                            ConsumerFactory.makeOnDisplayTextBoxCallback() );
     }
 
 }

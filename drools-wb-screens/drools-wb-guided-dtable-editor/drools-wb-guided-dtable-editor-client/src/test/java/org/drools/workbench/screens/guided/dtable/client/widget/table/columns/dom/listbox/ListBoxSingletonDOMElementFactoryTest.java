@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox;
 
 import java.util.Collections;
+import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.dom.client.Style;
@@ -36,7 +37,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
@@ -132,8 +132,8 @@ public class ListBoxSingletonDOMElementFactoryTest {
         final InOrder order = inOrder(factory);
 
         final GridBodyCellRenderContext context = mock(GridBodyCellRenderContext.class);
-        final Callback<ListBoxDOMElement<String, ListBox>> onCreation = mock(Callback.class);
-        final Callback<ListBoxDOMElement<String, ListBox>> onDisplay = mock(Callback.class);
+        final Consumer<ListBoxDOMElement<String, ListBox>> onCreation = mock(Consumer.class);
+        final Consumer<ListBoxDOMElement<String, ListBox>> onDisplay = mock(Consumer.class);
         when(context.getTransform()).thenReturn(mock(Transform.class));
 
         factory.attachDomElement(context,

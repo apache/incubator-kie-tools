@@ -17,6 +17,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.columns;
 
 import java.util.Date;
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.shape.Text;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -24,7 +25,6 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDeci
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.datepicker.DatePickerDOMElement;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.datepicker.DatePickerSingletonDOMElementFactory;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.common.client.common.DatePicker;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
@@ -60,10 +60,10 @@ public class DateUiColumn extends BaseSingletonDOMElementUiColumn<Date, DatePick
     @Override
     public void doEdit( final GridCell<Date> cell,
                         final GridBodyCellRenderContext context,
-                        final Callback<GridCellValue<Date>> callback ) {
-        factory.attachDomElement( context,
-                                  CallbackFactory.makeOnCreationCallback( cell ),
-                                  CallbackFactory.makeOnDisplayDatePickerCallback() );
+                        final Consumer<GridCellValue<Date>> callback ) {
+        factory.attachDomElement(context,
+                                 ConsumerFactory.makeOnCreationCallback(cell ),
+                                 ConsumerFactory.makeOnDisplayDatePickerCallback() );
     }
 
 }

@@ -16,10 +16,10 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.columns;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxIntegerSingletonDOMElementFactory;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
@@ -47,7 +47,7 @@ public class SalienceUiColumn extends IntegerUiColumn {
     @Override
     public void doEdit( final GridCell<Integer> cell,
                         final GridBodyCellRenderContext context,
-                        final Callback<GridCellValue<Integer>> callback ) {
+                        final Consumer<GridCellValue<Integer>> callback ) {
         if ( useRowNumber ) {
             return;
         }

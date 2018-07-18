@@ -16,13 +16,13 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.columns;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.shape.Text;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox.ListBoxDOMElement;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox.ListBoxSingletonDOMElementFactory;
 import org.gwtbootstrap3.client.ui.ListBox;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
@@ -54,19 +54,15 @@ public class DialectUiColumn extends BaseSingletonDOMElementUiColumn<String, Lis
     @Override
     public void doEdit( final GridCell<String> cell,
                         final GridBodyCellRenderContext context,
-                        final Callback<GridCellValue<String>> callback ) {
-        factory.attachDomElement( context,
-                                  new Callback<ListBoxDOMElement<String, ListBox>>() {
-                                      @Override
-                                      public void callback( final ListBoxDOMElement<String, ListBox> e ) {
+                        final Consumer<GridCellValue<String>> callback ) {
+        factory.attachDomElement(context, ( ListBoxDOMElement<String, ListBox> e ) -> {
                                           final ListBox widget = e.getWidget();
                                           widget.addItem( "java" );
                                           widget.addItem( "mvel" );
                                           factory.toWidget( cell,
                                                             e.getWidget() );
-                                      }
-                                  },
-                                  CallbackFactory.makeOnDisplayListBoxCallback() );
+                                      },
+                                 ConsumerFactory.makeOnDisplayListBoxCallback() );
     }
 
 }

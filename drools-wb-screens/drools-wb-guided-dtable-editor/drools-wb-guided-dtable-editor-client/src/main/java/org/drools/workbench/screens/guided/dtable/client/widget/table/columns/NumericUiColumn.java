@@ -16,12 +16,12 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.columns;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.shape.Text;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxDOMElement;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxNumericSingletonDOMElementFactory;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.common.client.common.NumericBigDecimalTextBox;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
@@ -54,11 +54,11 @@ public class NumericUiColumn extends BaseSingletonDOMElementUiColumn<Number, Num
     @Override
     public void doEdit( final GridCell<Number> cell,
                         final GridBodyCellRenderContext context,
-                        final Callback<GridCellValue<Number>> callback ) {
-        factory.attachDomElement( context,
-                                  CallbackFactory.makeOnCreationCallback( factory,
-                                                                          cell ),
-                                  CallbackFactory.makeOnDisplayTextBoxCallback() );
+                        final Consumer<GridCellValue<Number>> callback ) {
+        factory.attachDomElement(context,
+                                 ConsumerFactory.makeOnCreationCallback(factory,
+                                                                        cell ),
+                                 ConsumerFactory.makeOnDisplayTextBoxCallback() );
     }
 
 }

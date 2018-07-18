@@ -17,6 +17,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.columns;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -27,7 +28,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 
 import static org.mockito.Mockito.anyInt;
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class CallbackFactoryTest {
+public class ConsumerFactoryTest {
 
     private static final String KEY = "key";
 
@@ -66,15 +66,15 @@ public class CallbackFactoryTest {
     @Test
     @SuppressWarnings("unchecked")
     public void makeOnCreationCallbackListBoxSingleSelect() {
-        setupMultipleSelectTest(CallbackFactory.MAX_VISIBLE_ROWS,
+        setupMultipleSelectTest(ConsumerFactory.MAX_VISIBLE_ROWS,
                                 false);
 
-        final Callback callback = CallbackFactory.makeOnCreationCallback(factory,
+        final Consumer callback = ConsumerFactory.makeOnCreationCallback(factory,
                                                                          cell,
                                                                          enumLookups);
-        callback.callback(multiValueDOMElement);
+        callback.accept(multiValueDOMElement);
 
-        verifyMultipleSelectTest(CallbackFactory.MAX_VISIBLE_ROWS);
+        verifyMultipleSelectTest(ConsumerFactory.MAX_VISIBLE_ROWS);
 
         verify(multiValueWidget,
                never()).setVisibleItemCount(anyInt());
@@ -83,32 +83,32 @@ public class CallbackFactoryTest {
     @Test
     @SuppressWarnings("unchecked")
     public void makeOnCreationCallbackListBoxMultipleSelect() {
-        setupMultipleSelectTest(CallbackFactory.MAX_VISIBLE_ROWS,
+        setupMultipleSelectTest(ConsumerFactory.MAX_VISIBLE_ROWS,
                                 true);
 
-        final Callback callback = CallbackFactory.makeOnCreationCallback(factory,
+        final Consumer callback = ConsumerFactory.makeOnCreationCallback(factory,
                                                                          cell,
                                                                          enumLookups);
-        callback.callback(multiValueDOMElement);
+        callback.accept(multiValueDOMElement);
 
-        verifyMultipleSelectTest(CallbackFactory.MAX_VISIBLE_ROWS);
+        verifyMultipleSelectTest(ConsumerFactory.MAX_VISIBLE_ROWS);
 
-        verify(multiValueWidget).setVisibleItemCount(eq(CallbackFactory.MAX_VISIBLE_ROWS));
+        verify(multiValueWidget).setVisibleItemCount(eq(ConsumerFactory.MAX_VISIBLE_ROWS));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void makeOnCreationCallbackListBoxMultipleSelectMoreThanMaximum() {
-        setupMultipleSelectTest(CallbackFactory.MAX_VISIBLE_ROWS + 1,
+        setupMultipleSelectTest(ConsumerFactory.MAX_VISIBLE_ROWS + 1,
                                 true);
 
-        final Callback callback = CallbackFactory.makeOnCreationCallback(factory,
+        final Consumer callback = ConsumerFactory.makeOnCreationCallback(factory,
                                                                          cell,
                                                                          enumLookups);
-        callback.callback(multiValueDOMElement);
+        callback.accept(multiValueDOMElement);
 
-        verify(multiValueWidget).setVisibleItemCount(eq(CallbackFactory.MAX_VISIBLE_ROWS));
-        verifyMultipleSelectTest(CallbackFactory.MAX_VISIBLE_ROWS + 1);
+        verify(multiValueWidget).setVisibleItemCount(eq(ConsumerFactory.MAX_VISIBLE_ROWS));
+        verifyMultipleSelectTest(ConsumerFactory.MAX_VISIBLE_ROWS + 1);
     }
 
     private void setupMultipleSelectTest(final int enumLookupSize,

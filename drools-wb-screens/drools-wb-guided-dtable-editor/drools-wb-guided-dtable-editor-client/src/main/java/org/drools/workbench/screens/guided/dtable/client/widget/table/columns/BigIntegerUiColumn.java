@@ -17,12 +17,12 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.columns;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.shape.Text;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxBigIntegerSingletonDOMElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxDOMElement;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.common.client.common.NumericBigIntegerTextBox;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
@@ -55,11 +55,11 @@ public class BigIntegerUiColumn extends BaseSingletonDOMElementUiColumn<BigInteg
     @Override
     public void doEdit( final GridCell<BigInteger> cell,
                         final GridBodyCellRenderContext context,
-                        final Callback<GridCellValue<BigInteger>> callback ) {
-        factory.attachDomElement( context,
-                                  CallbackFactory.makeOnCreationCallback( factory,
-                                                                          cell ),
-                                  CallbackFactory.makeOnDisplayTextBoxCallback() );
+                        final Consumer<GridCellValue<BigInteger>> callback ) {
+        factory.attachDomElement(context,
+                                 ConsumerFactory.makeOnCreationCallback(factory,
+                                                                        cell ),
+                                 ConsumerFactory.makeOnDisplayTextBoxCallback() );
     }
 
 }

@@ -16,13 +16,13 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.columns;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.shape.Text;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxDOMElement;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxSingletonDOMElementFactory;
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
@@ -54,11 +54,11 @@ public class StringUiColumn extends BaseSingletonDOMElementUiColumn<String, Text
     @Override
     public void doEdit( final GridCell<String> cell,
                         final GridBodyCellRenderContext context,
-                        final Callback<GridCellValue<String>> callback ) {
-        factory.attachDomElement( context,
-                                  CallbackFactory.makeOnCreationCallback( factory,
-                                                                          cell ),
-                                  CallbackFactory.makeOnDisplayTextBoxCallback() );
+                        final Consumer<GridCellValue<String>> callback ) {
+        factory.attachDomElement(context,
+                                 ConsumerFactory.makeOnCreationCallback(factory,
+                                                                        cell ),
+                                 ConsumerFactory.makeOnDisplayTextBoxCallback() );
     }
 
 }

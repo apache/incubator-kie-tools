@@ -17,6 +17,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.columns;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.shape.Text;
 import com.google.gwt.user.client.ui.Widget;
@@ -125,7 +126,7 @@ public abstract class BaseEnumSingleSelectUiColumn<T, MVW extends ListBox, SVW e
     @Override
     public void doEdit( final GridCell<T> cell,
                         final GridBodyCellRenderContext context,
-                        final Callback<GridCellValue<T>> callback ) {
+                        final Consumer<GridCellValue<T>> callback ) {
 
         //We need to get the list of potential values to lookup the "Display" value from the "Stored" value.
         //Since the content of the list may be different for each cell (dependent enumerations) the list
@@ -134,10 +135,7 @@ public abstract class BaseEnumSingleSelectUiColumn<T, MVW extends ListBox, SVW e
                                   this.factField,
                                   new DependentEnumsUtilities.Context( context.getRowIndex(),
                                                                        context.getColumnIndex() ),
-                                  new Callback<Map<String, String>>() {
-
-                                      @Override
-                                      public void callback( final Map<String, String> enumLookups ) {
+                                  ( Map<String, String> enumLookups ) -> {
                                           if ( !( enumLookups == null || enumLookups.isEmpty() ) ) {
                                               initialiseMultiValueDomElement( cell,
                                                                               context,
@@ -146,9 +144,7 @@ public abstract class BaseEnumSingleSelectUiColumn<T, MVW extends ListBox, SVW e
                                               initialiseSingleValueDomElement( cell,
                                                                                context );
                                           }
-                                      }
-
-                                  } );
+                                      });
     }
 
     protected abstract void initialiseMultiValueDomElement( final GridCell<T> cell,

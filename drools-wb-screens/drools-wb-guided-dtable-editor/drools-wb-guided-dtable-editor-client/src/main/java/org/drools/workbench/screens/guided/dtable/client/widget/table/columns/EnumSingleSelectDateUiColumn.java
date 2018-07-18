@@ -58,19 +58,19 @@ public class EnumSingleSelectDateUiColumn extends BaseEnumSingleSelectUiColumn<D
     protected void initialiseMultiValueDomElement( final GridCell<Date> cell,
                                                    final GridBodyCellRenderContext context,
                                                    final Map<String, String> enumLookups ) {
-        factory.attachDomElement( context,
-                                  CallbackFactory.makeOnCreationCallback( factory,
-                                                                          cell,
-                                                                          enumLookups ),
-                                  CallbackFactory.makeOnDisplayListBoxCallback() );
+        factory.attachDomElement(context,
+                                 ConsumerFactory.makeOnCreationCallback(factory,
+                                                                        cell,
+                                                                        enumLookups ),
+                                 ConsumerFactory.makeOnDisplayListBoxCallback() );
     }
 
     @Override
     protected void initialiseSingleValueDomElement( final GridCell<Date> cell,
                                                     final GridBodyCellRenderContext context ) {
-        singleValueFactory.attachDomElement( context,
-                                             CallbackFactory.makeOnCreationCallback( cell ),
-                                             CallbackFactory.makeOnDisplayDatePickerCallback() );
+        singleValueFactory.attachDomElement(context,
+                                            ConsumerFactory.makeOnCreationCallback(cell ),
+                                            ConsumerFactory.makeOnDisplayDatePickerCallback() );
     }
 
 }

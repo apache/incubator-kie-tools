@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.columns;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Text;
@@ -23,7 +24,6 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiCell;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
@@ -63,7 +63,7 @@ public abstract class BaseSingletonDOMElementUiColumn<T, W extends Widget, E ext
     @Override
     public void edit( final GridCell<T> cell,
                       final GridBodyCellRenderContext context,
-                      final Callback<GridCellValue<T>> callback ) {
+                      final Consumer<GridCellValue<T>> callback ) {
         if ( !isEditable() ) {
             return;
         }
@@ -84,7 +84,7 @@ public abstract class BaseSingletonDOMElementUiColumn<T, W extends Widget, E ext
 
     protected abstract void doEdit( final GridCell<T> cell,
                                     final GridBodyCellRenderContext context,
-                                    final Callback<GridCellValue<T>> callback );
+                                    final Consumer<GridCellValue<T>> callback );
 
     protected abstract static class CellRenderer<T, W extends Widget, E extends BaseDOMElement> extends BaseGridColumnSingletonDOMElementRenderer<T, W, E> {
 

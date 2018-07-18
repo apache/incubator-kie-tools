@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.columns;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.shape.Text;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
@@ -104,7 +105,7 @@ public class EnumMultiSelectUiColumn extends BaseSingletonDOMElementUiColumn<Str
     @Override
     public void doEdit( final GridCell<String> cell,
                         final GridBodyCellRenderContext context,
-                        final Callback<GridCellValue<String>> callback ) {
+                        final Consumer<GridCellValue<String>> callback ) {
         final String value = extractValue( cell );
 
         //We need to get the list of potential values to lookup the "Display" value from the "Stored" value.
@@ -114,14 +115,9 @@ public class EnumMultiSelectUiColumn extends BaseSingletonDOMElementUiColumn<Str
                                   this.factField,
                                   new DependentEnumsUtilities.Context( context.getRowIndex(),
                                                                        context.getColumnIndex() ),
-                                  new Callback<Map<String, String>>() {
-
-                                      @Override
-                                      public void callback( final Map<String, String> enumLookups ) {
-                                          factory.attachDomElement( context,
-                                                                    new Callback<ListBoxDOMElement<String, ListBox>>() {
-                                                                        @Override
-                                                                        public void callback( final ListBoxDOMElement<String, ListBox> e ) {
+                                  ( Map<String, String> enumLookups ) -> {
+                                          factory.attachDomElement(context,
+                                                                   ( ListBoxDOMElement<String, ListBox> e ) -> {
                                                                             final ListBox widget = e.getWidget();
                                                                             for ( Map.Entry<String, String> lookup : enumLookups.entrySet() ) {
                                                                                 widget.addItem( lookup.getValue(),
@@ -134,11 +130,9 @@ public class EnumMultiSelectUiColumn extends BaseSingletonDOMElementUiColumn<Str
                                                                             }
                                                                             factory.toWidget( cell,
                                                                                               widget );
-                                                                        }
-                                                                    },
-                                                                    CallbackFactory.makeOnDisplayListBoxCallback() );
-                                      }
-                                  } );
+                                                                        },
+                                                                   ConsumerFactory.makeOnDisplayListBoxCallback() );
+                                      });
 
     }
 

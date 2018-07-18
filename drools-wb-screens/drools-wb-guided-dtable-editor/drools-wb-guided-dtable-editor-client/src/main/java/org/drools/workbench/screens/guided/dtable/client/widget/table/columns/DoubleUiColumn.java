@@ -16,12 +16,12 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.columns;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.shape.Text;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxDOMElement;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxDoubleSingletonDOMElementFactory;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.common.client.common.NumericDoubleTextBox;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
@@ -54,11 +54,11 @@ public class DoubleUiColumn extends BaseSingletonDOMElementUiColumn<Double, Nume
     @Override
     public void doEdit( final GridCell<Double> cell,
                         final GridBodyCellRenderContext context,
-                        final Callback<GridCellValue<Double>> callback ) {
-        factory.attachDomElement( context,
-                                  CallbackFactory.makeOnCreationCallback( factory,
-                                                                          cell ),
-                                  CallbackFactory.makeOnDisplayTextBoxCallback() );
+                        final Consumer<GridCellValue<Double>> callback ) {
+        factory.attachDomElement(context,
+                                 ConsumerFactory.makeOnCreationCallback(factory,
+                                                                        cell ),
+                                 ConsumerFactory.makeOnDisplayTextBoxCallback() );
     }
 
 }
