@@ -15,6 +15,7 @@ public class WiresParentPickerControlImpl implements WiresParentPickerControl,
 
     private final WiresShapeLocationControlImpl shapeLocationControl;
     private final ColorMapBackedPickerProvider colorMapBackedPickerProvider;
+    private final ColorMapBackendPickerIndex index;
     private WiresContainer m_parent;
     private ColorMapBackedPicker m_picker;
     private PickerPart m_parentPart;
@@ -30,12 +31,14 @@ public class WiresParentPickerControlImpl implements WiresParentPickerControl,
                                         ColorMapBackedPicker.PickerOptions pickerOptions) {
         this.shapeLocationControl = shapeLocationControl;
         this.colorMapBackedPickerProvider = new ColorMapBackedPickerProviderImpl(pickerOptions);
+        this.index = new ColorMapBackendPickerIndex();
     }
 
     public WiresParentPickerControlImpl(WiresShapeLocationControlImpl shapeLocationControl,
                                  ColorMapBackedPickerProvider colorMapBackedPickerProvider) {
         this.shapeLocationControl = shapeLocationControl;
         this.colorMapBackedPickerProvider = colorMapBackedPickerProvider;
+        this.index = new ColorMapBackendPickerIndex();
     }
 
     @Override
@@ -187,19 +190,26 @@ public class WiresParentPickerControlImpl implements WiresParentPickerControl,
         return null != m_parentPart ? m_parentPart.getShapePart() : null;
     }
 
+    @Override
+    public Index getIndex()
+    {
+        return index;
+    }
+
     public WiresShapeLocationControlImpl getShapeLocationControl() {
         return shapeLocationControl;
     }
 
-    public ColorMapBackedPicker.PickerOptions getPickerOptions() {
-        return colorMapBackedPickerProvider.getOptions();
-    }
     public WiresLayer getWiresLayer() {
         return getShape().getWiresManager().getLayer();
     }
 
     public WiresContainer getInitialParent() {
         return initialParent;
+    }
+
+    public ColorMapBackedPicker.PickerOptions getPickerOptions() {
+        return colorMapBackedPickerProvider.getOptions();
     }
 
     public interface ColorMapBackedPickerProvider {
@@ -229,6 +239,22 @@ public class WiresParentPickerControlImpl implements WiresParentPickerControl,
         @Override
         public ColorMapBackedPicker.PickerOptions getOptions() {
             return pickerOptions;
+        }
+    }
+
+    private class ColorMapBackendPickerIndex implements WiresParentPickerControl.Index {
+
+
+        @Override
+        public void addShapeToSkip(final WiresContainer shape)
+        {
+            getPickerOptions().getShapesToSkip().add(shape);
+        }
+
+        @Override
+        public void clear()
+        {
+            getPickerOptions().getShapesToSkip().clear();
         }
     }
 }

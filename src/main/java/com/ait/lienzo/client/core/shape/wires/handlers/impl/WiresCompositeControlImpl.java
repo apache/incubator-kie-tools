@@ -12,6 +12,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.MouseEvent;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresCompositeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorHandler;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.types.Point2D;
 
@@ -48,6 +49,11 @@ public class WiresCompositeControlImpl
 
         Map<String, WiresConnector> connectors = new HashMap<String, WiresConnector>();
 
+        for (WiresShape shape : selectedShapes)
+        {
+            setShapesToSkipFromIndex(shape);
+        }
+
         for (WiresShape shape : selectedShapes) {
 
             ShapeControlUtils.collectionSpecialConnectors(shape,
@@ -75,6 +81,13 @@ public class WiresCompositeControlImpl
             handler.getControl().onMoveStart(x,
                                              y); // records the start position of all the points
             WiresConnector.updateHeadTailForRefreshedConnector(connector);
+        }
+    }
+
+    private void setShapesToSkipFromIndex(final WiresShape shape) {
+        final WiresParentPickerControl.Index index = shape.getControl().getParentPickerControl().getIndex();
+        for (WiresShape candidate : selectedShapes) {
+            index.addShapeToSkip(candidate);
         }
     }
 
@@ -135,17 +148,17 @@ public class WiresCompositeControlImpl
         return false;
     }
 
-    private Point2D getCandidateShapeLocationRelativeToInitialParent(final WiresShape shape) {
+    static Point2D getCandidateShapeLocationRelativeToInitialParent(final WiresShape shape) {
         final Point2D candidate = shape.getControl().getContainmentControl().getCandidateLocation();
         final WiresParentPickerControlImpl parentPickerControl =
                 (WiresParentPickerControlImpl) shape.getControl().getParentPickerControl();
-        final Point2D io = null != parentPickerControl.getInitialParent() ?
-                parentPickerControl.getInitialParent().getComputedLocation() :
-                new Point2D(0, 0);
-        final Point2D co = null != parentPickerControl.getParent() ?
-                parentPickerControl.getParent().getComputedLocation() :
-                new Point2D(0, 0);
-        return co.add(candidate).minus(io);
+        Point2D co = null != parentPickerControl.getParent() ?
+                parentPickerControl.getParent().getComputedLocation().add(candidate) :
+                candidate;
+        if (null != parentPickerControl.getInitialParent()) {
+            co = co.minus(parentPickerControl.getInitialParent().getComputedLocation());
+        }
+        return co;
     }
 
     public boolean isAllowed() {
@@ -177,7 +190,6 @@ public class WiresCompositeControlImpl
         boolean completeResult = true;
         final Collection<WiresShape> shapes = selectedShapes;
         if (!shapes.isEmpty()) {
-            final WiresManager wiresManager = shapes.iterator().next().getWiresManager();
             int i = 0;
             for (WiresShape shape : shapes) {
                 if (!shape.getControl().onMoveComplete()) {

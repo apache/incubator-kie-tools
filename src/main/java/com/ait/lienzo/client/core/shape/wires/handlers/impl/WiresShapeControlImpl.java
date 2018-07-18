@@ -1,22 +1,17 @@
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
-import java.util.Collection;
-
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.handlers.AlignAndDistributeControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.MouseEvent;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresContainmentControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresMagnetsControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.*;
 import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+
+import java.util.Collection;
 
 /**
  * The default WiresShapeControl implementation.
@@ -71,13 +66,11 @@ public class WiresShapeControlImpl
         // Important - skip the shape and its children, if any, from the picker.
         // Otherwise children or the shape itself are being processed by the parent picker
         // and it ends up with wrong parent-child nested issues.
-        final NFastArrayList<WiresShape> shapesToSkip =
-                parentPickerControl.getPickerOptions().getShapesToSkip();
-        shapesToSkip.clear();
-        shapesToSkip.add(getShape());
+        final WiresParentPickerControl.Index index = parentPickerControl.getIndex();
+        index.addShapeToSkip(getShape());
         final NFastArrayList<WiresShape> children = getShape().getChildShapes();
         for (int i = 0; i < children.size(); i++) {
-            shapesToSkip.add(children.get(i));
+            index.addShapeToSkip(children.get(i));
         }
 
         // Delegate mvoe start to the shape's docking control
@@ -264,6 +257,7 @@ public class WiresShapeControlImpl
     @Override
     public void clear() {
         parentPickerControl.clear();
+        parentPickerControl.getIndex().clear();
         if (null != m_dockingAndControl) {
             m_dockingAndControl.clear();
         }

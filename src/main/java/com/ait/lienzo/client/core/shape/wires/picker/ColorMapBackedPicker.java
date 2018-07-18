@@ -17,12 +17,8 @@
 package com.ait.lienzo.client.core.shape.wires.picker;
 
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.shape.wires.BackingColorMapUtils;
-import com.ait.lienzo.client.core.shape.wires.PickerPart;
-import com.ait.lienzo.client.core.shape.wires.WiresLayer;
-import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.shape.wires.*;
 import com.ait.lienzo.client.core.types.ColorKeyRotor;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -135,18 +131,18 @@ public class ColorMapBackedPicker
     }
 
     public static final class PickerOptions {
-        private final NFastArrayList<WiresShape> shapesToSkip;
-        private final boolean hotspotsEnabled;
-        private final double hotspotWidth;
+        private final NFastArrayList<WiresContainer> shapesToSkip;
+        private final boolean                        hotspotsEnabled;
+        private final double                         hotspotWidth;
 
         public PickerOptions(final boolean hotspotsEnabled,
                              final double hotspotWidth) {
-            this.shapesToSkip = new NFastArrayList<WiresShape>();
+            this.shapesToSkip = new NFastArrayList<WiresContainer>();
             this.hotspotsEnabled = hotspotsEnabled;
             this.hotspotWidth = hotspotWidth;
         }
 
-        public NFastArrayList<WiresShape> getShapesToSkip() {
+        public NFastArrayList<WiresContainer> getShapesToSkip() {
             return shapesToSkip;
         }
 

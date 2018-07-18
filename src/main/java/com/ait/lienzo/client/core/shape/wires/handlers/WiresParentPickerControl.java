@@ -8,4 +8,13 @@ public interface WiresParentPickerControl extends WiresShapeLocationControl {
     public WiresContainer getParent();
 
     public PickerPart.ShapePart getParentShapePart();
+
+    public Index getIndex();
+
+    public interface Index {
+
+        public void addShapeToSkip(WiresContainer shape);
+
+        public void clear();
+    }
 }

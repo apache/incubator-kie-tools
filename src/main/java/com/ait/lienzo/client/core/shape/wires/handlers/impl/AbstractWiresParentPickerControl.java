@@ -124,6 +124,12 @@ public abstract class AbstractWiresParentPickerControl implements WiresParentPic
         return parentPickerControl.getParentShapePart();
     }
 
+    @Override
+    public Index getIndex()
+    {
+        return parentPickerControl.getIndex();
+    }
+
     public WiresParentPickerControlImpl getParentPickerControl() {
         return parentPickerControl;
     }
