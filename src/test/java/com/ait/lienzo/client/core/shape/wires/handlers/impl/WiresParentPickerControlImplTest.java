@@ -23,6 +23,7 @@ import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
@@ -31,7 +32,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -97,4 +101,14 @@ public class WiresParentPickerControlImplTest {
         tested.onMove(dx, dy);
         assertEquals(manager.getLayer(), tested.getParent());
     }
+
+    @Test
+    public void testIndex() {
+        final WiresParentPickerControl.Index index = tested.getIndex();
+        index.clear();
+        assertTrue(pickerOptions.getShapesToSkip().isEmpty());
+        index.addShapeToSkip(mock(WiresShape.class));
+        assertFalse(pickerOptions.getShapesToSkip().isEmpty());
+    }
+
 }

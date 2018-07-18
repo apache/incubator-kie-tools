@@ -25,6 +25,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.shape.wires.handlers.AlignAndDistributeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorHandler;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresContainmentControl;
@@ -41,14 +42,19 @@ import org.mockito.Mock;
 
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyDouble;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresShapeControlImplTest extends AbstractWiresControlTest {
 
-    private WiresShapeControlImpl wiresShapeControl;
+    private WiresShapeControlImpl tested;
+
+    @Mock
+    private AlignAndDistributeControl alignAndDistributeControl;
 
     @Mock
     private WiresMagnetsControl m_magnetsControl;
@@ -131,28 +137,50 @@ public class WiresShapeControlImplTest extends AbstractWiresControlTest {
         when(connector.getTail()).thenReturn(tail);
         when(head.getLocation()).thenReturn(new Point2D(1, 1));
         when(tail.getLocation()).thenReturn(new Point2D(2, 2));
-        shape.getChildShapes().add(childWiresShape);
 
-        wiresShapeControl = new WiresShapeControlImpl(parentPicker, m_magnetsControl, m_dockingAndControl, m_containmentControl);
+        tested = new WiresShapeControlImpl(parentPicker, m_magnetsControl, m_dockingAndControl, m_containmentControl);
+        tested.setAlignAndDistributeControl(alignAndDistributeControl);
     }
 
     @Test
-    public void moveWithNoChildrenTest() {
-        shape.getChildShapes().clear();
+    public void testClear() {
+        tested.clear();
+        verify(parentPicker, times(1)).clear();
+        verify(index, times(1)).clear();
+        verify(m_dockingAndControl, times(1)).clear();
+        verify(m_containmentControl, times(1)).clear();
+    }
 
-        wiresShapeControl.onMoveStart(0, 0);
+    @Test
+    public void testOnMoveStart() {
+        shape.getChildShapes().add(childWiresShape);
+        tested.onMoveStart(2, 7);
+        verify(index, never()).clear();
+        verify(index, times(1)).addShapeToSkip(eq(shape));
+        verify(index, times(1)).addShapeToSkip(eq(childWiresShape));
+        verify(m_dockingAndControl, times(1)).onMoveStart(eq(2d), eq(7d));
+        verify(m_containmentControl, times(1)).onMoveStart(eq(2d), eq(7d));
+        verify(alignAndDistributeControl, times(1)).dragStart();
+    }
+
+    @Test
+    public void testConnectionsMoveWithNoChildren() {
+
+        tested.onMoveStart(0, 0);
         verify(connectorControl, never()).onMoveStart(anyDouble(), anyDouble());
 
-        wiresShapeControl.onMove(10, 10);
+        tested.onMove(10, 10);
         verify(connectorControl, never()).move(anyDouble(), anyDouble(), anyBoolean(), anyBoolean());
     }
 
     @Test
-    public void moveWithChildrenTest() {
-        wiresShapeControl.onMoveStart(1, 1);
+    public void testConnectionsMoveWithChildren() {
+        shape.getChildShapes().add(childWiresShape);
+
+        tested.onMoveStart(1, 1);
         verify(connectorControl).onMoveStart(1, 1);
 
-        wiresShapeControl.onMove(10, 10);
+        tested.onMove(10, 10);
         verify(connectorControl).move(10, 10, true, true);
     }
 }

@@ -3,6 +3,7 @@ package com.ait.lienzo.client.core.shape.wires;
 import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
 import com.ait.lienzo.client.core.event.OnEventHandlers;
 import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -20,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -36,6 +38,12 @@ public class SelectionManagerTest
 
     @Mock
     private WiresManager wiresManager;
+
+    @Mock
+    private SelectionManager.SelectionShapeProvider selectionShapeProvider;
+
+    @Mock
+    private Shape<?> selectionShape;
 
     @Mock
     private NodeMouseDownEvent mouseEvent;
@@ -78,8 +86,12 @@ public class SelectionManagerTest
         when(viewport.getOnEventHandlers()).thenReturn(onEventHandlers);
         when(viewport.getOverLayer()).thenReturn(overLayer);
         when(viewport.getTransform()).thenReturn(transform);
+        when(selectionShapeProvider.setLocation(any(Point2D.class))).thenReturn(selectionShapeProvider);
+        when(selectionShapeProvider.setSize(anyDouble(), anyDouble())).thenReturn(selectionShapeProvider);
+        when(selectionShapeProvider.getShape()).thenReturn(selectionShape);
 
         manager = spy(new SelectionManager(wiresManager));
+        manager.setSelectionShapeProvider(selectionShapeProvider);
 
         verify(onEventHandlers).setOnMouseMoveEventHandle(onMouseXEventHandlerArgumentCaptor.capture());
 
@@ -120,12 +132,12 @@ public class SelectionManagerTest
         doReturn(x).when(manager).relativeStartX();
         doReturn(y).when(manager).relativeStartY();
         doReturn(manager).when(onMouseXEventHandler).getSelectionManager();
-        doNothing().when(manager).drawSelectionShape(anyInt(), anyInt(), anyInt(), anyInt(), any(Layer.class));
 
         onMouseXEventHandler.drawSelectionShape(mouseEvent);
 
         verify(manager).drawSelectionShape(eq(expectedX), eq(expectedY), eq(expectedWidth), eq(expectedHeight), eq(overLayer));
         verify(overLayer).draw();
+        verify(selectionShape, times(1)).moveToTop();
     }
 
     @Test

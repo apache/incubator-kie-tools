@@ -22,6 +22,7 @@ import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.mockito.Mock;
@@ -43,6 +44,9 @@ public class AbstractWiresControlTest {
 
     @Mock
     protected WiresParentPickerCachedControl parentPicker;
+
+    @Mock
+    protected WiresParentPickerControl.Index index;
 
     @Mock
     protected IDockingAcceptor dockingAcceptor;
@@ -72,5 +76,6 @@ public class AbstractWiresControlTest {
         when(parentPicker.getCurrentLocation()).thenReturn(parent.getLocation());
         when(parentPicker.onMove(anyDouble(), anyDouble())).thenReturn(true);
         when(parentPicker.getPickerOptions()).thenReturn(pickerOptions);
+        when(parentPicker.getIndex()).thenReturn(index);
     }
 }
