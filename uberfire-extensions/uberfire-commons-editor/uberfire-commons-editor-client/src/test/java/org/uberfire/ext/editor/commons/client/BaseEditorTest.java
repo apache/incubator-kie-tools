@@ -34,6 +34,7 @@ import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
+import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItem;
 import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.file.DefaultMetadata;
@@ -59,6 +60,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.uberfire.ext.editor.commons.client.menu.MenuItems.COPY;
 import static org.uberfire.ext.editor.commons.client.menu.MenuItems.DELETE;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.DOWNLOAD;
 import static org.uberfire.ext.editor.commons.client.menu.MenuItems.HISTORY;
 import static org.uberfire.ext.editor.commons.client.menu.MenuItems.RENAME;
 import static org.uberfire.ext.editor.commons.client.menu.MenuItems.SAVE;
@@ -80,6 +82,9 @@ public class BaseEditorTest {
 
     @Mock
     private EventSourceMock<ChangeTitleWidgetEvent> changeTitleNotification;
+
+    @Mock
+    private DownloadMenuItem downloadMenuItem;
 
     private SaveAndRenameCommandBuilder<String, DefaultMetadata> builder = spy(makeBuilder());
 
@@ -343,8 +348,11 @@ public class BaseEditorTest {
         final Validator copyValidator = mock(Validator.class);
         final Caller copyServiceCaller = mock(Caller.class);
         final Caller deleteServiceCaller = mock(Caller.class);
+        final MenuItem downloadMenuItemButton = mock(MenuItem.class);
 
-        editor.menuItems = new HashSet<>(Arrays.asList(SAVE, COPY, RENAME, DELETE, VALIDATE, HISTORY));
+        when(downloadMenuItem.build(any())).thenReturn(downloadMenuItemButton);
+
+        editor.menuItems = new HashSet<>(Arrays.asList(SAVE, COPY, RENAME, DELETE, VALIDATE, HISTORY, DOWNLOAD));
 
         doReturn(path).when(versionRecordManager).getCurrentPath();
         doReturn(menuItem).when(versionRecordManager).buildMenu();
@@ -364,6 +372,7 @@ public class BaseEditorTest {
         verify(menuBuilder).addDelete(path, deleteServiceCaller);
         verify(menuBuilder).addValidate(onValidate);
         verify(menuBuilder).addNewTopLevelMenu(menuItem);
+        verify(menuBuilder).addNewTopLevelMenu(downloadMenuItemButton);
     }
 
     @Test

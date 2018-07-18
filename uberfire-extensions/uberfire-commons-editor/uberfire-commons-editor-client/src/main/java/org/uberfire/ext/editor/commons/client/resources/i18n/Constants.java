@@ -256,4 +256,7 @@ public class Constants {
 
     @TranslationKey(defaultValue = "")
     public static final String HtmlEditorView_TableColumns = "HtmlEditorView.TableColumns";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DownloadMenuItem_Download = "DownloadMenuItem.Download";
 }

@@ -44,6 +44,7 @@ import org.uberfire.ext.editor.commons.client.event.ConcurrentRenameAcceptedEven
 import org.uberfire.ext.editor.commons.client.event.ConcurrentRenameIgnoredEvent;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
+import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItem;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
@@ -59,10 +60,12 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
 import static org.uberfire.ext.editor.commons.client.menu.MenuItems.COPY;
 import static org.uberfire.ext.editor.commons.client.menu.MenuItems.DELETE;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.DOWNLOAD;
 import static org.uberfire.ext.editor.commons.client.menu.MenuItems.HISTORY;
 import static org.uberfire.ext.editor.commons.client.menu.MenuItems.RENAME;
 import static org.uberfire.ext.editor.commons.client.menu.MenuItems.SAVE;
@@ -117,12 +120,16 @@ public abstract class BaseEditor<T, M> {
     @Inject
     protected Event<ConcurrentRenameIgnoredEvent> concurrentRenameIgnoredEvent;
 
+    @Inject
+    private DownloadMenuItem downloadMenuItem;
+
     protected Set<MenuItems> menuItems = new HashSet<>();
 
     protected PlaceRequest place;
     protected ClientResourceType type;
     protected Integer originalHash;
     protected Integer metadataOriginalHash;
+    protected boolean isValidationRunning = false;
     private boolean displayShowMoreVersions;
     private ObservablePath path;
 
@@ -247,6 +254,17 @@ public abstract class BaseEditor<T, M> {
         if (menuItems.contains(HISTORY)) {
             menuBuilder.addNewTopLevelMenu(versionRecordManager.buildMenu());
         }
+        if (menuItems.contains(DOWNLOAD)) {
+            addDownloadMenuItem(menuBuilder);
+        }
+    }
+
+    protected void addDownloadMenuItem(final BasicFileMenuBuilder menuBuilder) {
+        menuBuilder.addNewTopLevelMenu(downloadMenuItem());
+    }
+
+    protected MenuItem downloadMenuItem() {
+        return downloadMenuItem.build(getPathSupplier());
     }
 
     Command getOnSave() {
@@ -580,8 +598,6 @@ public abstract class BaseEditor<T, M> {
             menus.getItemsMap().get(menuItem).setEnabled(false);
         }
     }
-
-    protected boolean isValidationRunning = false;
 
     public Command getValidateCommand() {
 

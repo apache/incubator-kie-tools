@@ -24,5 +24,6 @@ public enum MenuItems {
     VALIDATE,
     RESTORE,
     CUSTOM,
-    HISTORY
+    HISTORY,
+    DOWNLOAD
 }

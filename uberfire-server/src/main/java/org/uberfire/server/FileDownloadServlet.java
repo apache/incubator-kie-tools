@@ -18,6 +18,8 @@ package org.uberfire.server;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.ServletException;
@@ -47,10 +49,7 @@ public class FileDownloadServlet
             throws ServletException, IOException {
 
         try {
-
-            //See https://bugzilla.redhat.com/show_bug.cgi?id=1202926
-            final String encodedPath = FileServletUtil.encodeFileNamePart(request.getParameter("path").replaceAll("\\s", "%20"));
-            final URI uri = new URI(encodedPath);
+            final URI uri = makeURI(request.getParameter("path"));
 
             if (!validateAccess(uri,
                                 response)) {
@@ -75,5 +74,10 @@ public class FileDownloadServlet
             logger.error("Failed to download a file.",
                          e);
         }
+    }
+
+    URI makeURI(final String path) throws URISyntaxException {
+        final String encodedPath = FileServletUtil.encodeFileNamePart(path);
+        return new URI(encodedPath);
     }
 }

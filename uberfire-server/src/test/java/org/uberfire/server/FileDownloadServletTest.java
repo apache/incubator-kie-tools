@@ -17,6 +17,7 @@
 package org.uberfire.server;
 
 import java.net.URI;
+
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,8 +32,12 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.server.util.FileServletUtil;
 
 import static java.lang.String.format;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FileDownloadServletTest {
@@ -40,8 +45,6 @@ public class FileDownloadServletTest {
     private static final String PARAM_PATH = "path";
 
     private static final String TEST_ROOT_PATH = "default://master@test-repository/test-project/src/main/resources/test";
-    private static final String TEST_ROOT_PATH_WITH_SPACES = "default://master@mtest-repository/my test project/src/main/resources/test";
-
 
     @Mock
     private IOService ioService;
@@ -69,22 +72,13 @@ public class FileDownloadServletTest {
                          fileContent);
     }
 
-    /**
-     * Tests the downloading of a file given the following parameters:
-     * <p>
-     * 1) the file path on the server side of a file with blank spaces in the name.
-     */
     @Test
-    public void downloadByPathWithSpaces() throws Exception {
+    public void testMakeURI() throws Exception {
 
-        //test the the download of a file name with blank spaces.
-        String fileName = "File Name With Spaces.some extension";
-        String fileContent = "the local file content";
+        final String pathURI = "default://master@MySpace/aa/src/main/resources/com/myspace/aa/vv vv.drl";
+        final URI uri = downloadServlet.makeURI(pathURI);
 
-
-        doDownloadByPath(TEST_ROOT_PATH_WITH_SPACES,
-                         fileName,
-                         fileContent);
+        assertEquals("/aa/src/main/resources/com/myspace/aa/vv+vv.drl", uri.getRawPath());
     }
 
     private void doDownloadByPath(String sourceFolder,
@@ -109,7 +103,7 @@ public class FileDownloadServletTest {
         when(pathFileName.toString()).thenReturn(sourceFileName);
 
         //Expected URI
-        URI expectedURI = new URI(FileServletUtil.encodeFileNamePart(sourcePath.replaceAll("\\s", "%20")));
+        URI expectedURI = new URI(FileServletUtil.encodeFileNamePart(sourcePath));
 
         //mock the path generation
         when(ioService.get(expectedURI)).thenReturn(path);
