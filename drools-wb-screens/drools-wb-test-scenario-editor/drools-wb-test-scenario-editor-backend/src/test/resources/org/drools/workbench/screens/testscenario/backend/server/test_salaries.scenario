@@ -1,0 +1,35 @@
+<scenario>
+  <name>test_salaries.scenario</name>
+  <maxRuleFirings>100000</maxRuleFirings>
+  <globals/>
+  <fixtures>
+    <fact-data>
+      <type>Employee</type>
+      <fieldData/>
+      <name>e</name>
+      <isModify>false</isModify>
+    </fact-data>
+    <execution-trace/>
+    <expect-rule>
+      <ruleName>Row 1 check_salary</ruleName>
+      <expectedFire>false</expectedFire>
+      <successResult>false</successResult>
+    </expect-rule>
+  </fixtures>
+  <rules/>
+  <inclusive>false</inclusive>
+  <packageName>org.drools.workbench.screens.testscenario.backend.server</packageName>
+  <imports>
+        <imports>
+          <org.kie.soup.project.datamodel.imports.Import>
+            <type>org.drools.workbench.screens.testscenario.backend.server.model.Salary</type>
+          </org.kie.soup.project.datamodel.imports.Import>
+          <org.kie.soup.project.datamodel.imports.Import>
+            <type>org.drools.workbench.screens.testscenario.backend.server.model.Employee</type>
+          </org.kie.soup.project.datamodel.imports.Import>
+        </imports>
+      </imports>
+  <ksessions>
+    <string>defaultKieSession</string>
+  </ksessions>
+</scenario>

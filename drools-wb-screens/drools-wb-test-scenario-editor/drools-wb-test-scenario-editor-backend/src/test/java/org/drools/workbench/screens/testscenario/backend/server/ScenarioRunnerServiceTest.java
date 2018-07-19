@@ -231,6 +231,12 @@ public class ScenarioRunnerServiceTest {
                      argumentCaptor.getValue().getIdentifier());
     }
 
+    @Test
+    public void testNullPointerDueToInnerAttributesCheck() throws Exception {
+        initKieSession("check_salary.gdst");
+        testScenario("test_salaries.scenario", false);
+    }
+
     private void testScenario(String scenarioName, boolean isExpectedSuccess) throws Exception {
         final KieModule module = mock(KieModule.class);
 
