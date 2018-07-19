@@ -18,7 +18,6 @@
   <inherits name="org.uberfire.ext.preferences.UberfirePreferences"/>
   <inherits name="org.uberfire.UberfireBackend"/>
 
-
   <!-- Guvnor dependencies -->
   <inherits name='org.guvnor.structure.GuvnorStructureClient'/>
   <inherits name="org.guvnor.m2repo.GuvnorM2RepoEditorAPI"/>
@@ -41,7 +40,7 @@
   <inherits name="org.kie.workbench.common.workbench.KieDefaultWorkbenchClient"/>
 
   <!-- Common Services -->
-  <inherits name="org.kie.workbench.common.services.datamodeller.DataModellerCore" />
+  <inherits name="org.kie.workbench.common.services.datamodeller.DataModellerCore"/>
   <inherits name='org.kie.workbench.common.services.KieWorkbenchCommonServicesAPI'/>
   <inherits name='org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI'/>
   <inherits name='org.kie.workbench.common.services.refactoring.KieWorkbenchCommonRefactoringAPI'/>
@@ -75,6 +74,16 @@
   <inherits name="org.kie.workbench.common.screens.defaulteditor.DroolsWorkbenchDefaultEditorClient"/>
   <inherits name="org.kie.workbench.common.screens.projecteditor.KieWorkbenchCommonProjectEditorClient"/>
   <inherits name="org.kie.workbench.common.screens.projectimportsscreen.KieWorkbenchCommonProjectImportsScreenClient"/>
+
+  <!-- Stunner -->
+  <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
+
+  <!-- Form modeler -->
+  <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient"/>
+  <inherits name="org.kie.workbench.common.forms.dynamic.DynamicFormsClient"/>
+
+  <!-- DMN Editor -->
+  <inherits name="org.kie.workbench.common.dmn.project.DMNProjectClient"/>
 
   <!-- Social Home page -->
   <inherits name="org.kie.workbench.common.screens.social.hp.SocialHomePageClient"/>
