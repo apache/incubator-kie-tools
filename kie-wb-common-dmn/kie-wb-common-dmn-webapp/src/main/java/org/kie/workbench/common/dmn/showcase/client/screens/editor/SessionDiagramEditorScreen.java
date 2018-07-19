@@ -31,6 +31,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
+import org.kie.workbench.common.dmn.client.editors.toolbar.ToolbarStateHandler;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNEditorToolbar;
 import org.kie.workbench.common.dmn.showcase.client.perspectives.AuthoringPerspective;
@@ -298,7 +299,8 @@ public class SessionDiagramEditorScreen {
                 .displayNotifications(type -> true)
                 .open(diagram,
                       new ScreenPresenterCallback(() -> {
-                          expressionEditor.init(presenter);
+                          final ToolbarStateHandler toolbarStateHandler = new StandaloneToolbarStateHandler((DMNEditorToolbar) presenter.getToolbar());
+                          expressionEditor.setToolbarStateHandler(toolbarStateHandler);
                           openDock(presenter.getInstance());
                           callback.execute();
                       }));

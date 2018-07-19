@@ -25,7 +25,6 @@ import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.project.client.type.DMNDiagramResourceType;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
@@ -153,7 +152,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         open();
 
-        verify(expressionEditor).init(eq(sessionEditorPresenter));
+        verify(expressionEditor).setToolbarStateHandler(any(ProjectToolbarStateHandler.class));
         verify(decisionNavigatorDock).setupContent(eq(canvasHandler));
         verify(decisionNavigatorDock).open();
     }
@@ -163,7 +162,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     public void testOnDiagramLoadWhenCanvasHandlerIsNull() {
         diagramEditor.onDiagramLoad();
 
-        verify(expressionEditor, never()).init(any(SessionPresenter.class));
+        verify(expressionEditor, never()).setToolbarStateHandler(any(ProjectToolbarStateHandler.class));
         verify(decisionNavigatorDock, never()).setupContent(any());
         verify(decisionNavigatorDock, never()).open();
     }

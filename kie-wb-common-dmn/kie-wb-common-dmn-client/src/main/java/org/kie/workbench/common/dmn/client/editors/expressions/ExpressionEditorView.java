@@ -22,9 +22,7 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import org.jboss.errai.common.client.api.IsElement;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.dmn.client.editors.toolbar.ToolbarStateHandler;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.mvp.Command;
 
@@ -35,7 +33,7 @@ public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.ap
 
     interface Presenter extends IsElement {
 
-        void init(final SessionPresenter<? extends ClientSession, ?, Diagram> presenter);
+        void setToolbarStateHandler(final ToolbarStateHandler toolbarStateHandler);
 
         void setExpression(final String nodeUUID,
                            final HasExpression hasExpression,

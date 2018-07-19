@@ -25,12 +25,8 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
-import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNEditorToolbar;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;
+import org.kie.workbench.common.dmn.client.editors.toolbar.ToolbarStateHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.uberfire.mvp.Command;
 
 @Dependent
@@ -40,7 +36,7 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
 
     private Optional<Command> exitCommand = Optional.empty();
 
-    private Optional<ToolbarCommandStateHandler> toolbarCommandStateHandler = Optional.empty();
+    private Optional<ToolbarStateHandler> toolbarStateHandler;
 
     private DecisionNavigatorPresenter decisionNavigator;
 
@@ -68,9 +64,8 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
     }
 
     @Override
-    public void init(final SessionPresenter<? extends ClientSession, ?, Diagram> presenter) {
-        final Optional<DMNEditorToolbar> toolbar = Optional.ofNullable((DMNEditorToolbar) presenter.getToolbar());
-        toolbar.ifPresent(t -> this.toolbarCommandStateHandler = Optional.of(new ToolbarCommandStateHandler(t)));
+    public void setToolbarStateHandler(final ToolbarStateHandler toolbarStateHandler) {
+        this.toolbarStateHandler = Optional.ofNullable(toolbarStateHandler);
     }
 
     @Override
@@ -81,7 +76,7 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
                            hasExpression,
                            hasName);
 
-        toolbarCommandStateHandler.ifPresent(ToolbarCommandStateHandler::enter);
+        toolbarStateHandler.ifPresent(ToolbarStateHandler::enterGridView);
     }
 
     @Override
@@ -93,7 +88,7 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
     public void exit() {
         exitCommand.ifPresent(command -> {
             decisionNavigator.clearSelections();
-            toolbarCommandStateHandler.ifPresent(ToolbarCommandStateHandler::exit);
+            toolbarStateHandler.ifPresent(ToolbarStateHandler::enterGraphView);
             command.execute();
             exitCommand = Optional.empty();
         });
@@ -105,122 +100,5 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
 
     Optional<Command> getExitCommand() {
         return exitCommand;
-    }
-
-    //Package-protected for Unit Tests
-    ToolbarCommandStateHandler getToolbarCommandStateHandler() {
-        return toolbarCommandStateHandler.get();
-    }
-
-    @SuppressWarnings("unchecked")
-    static class ToolbarCommandStateHandler {
-
-        private DMNEditorToolbar toolbar;
-
-        //Package-protected for Unit Tests
-        boolean visitGraphToolbarCommandEnabled = false;
-        boolean clearToolbarCommandEnabled = false;
-        boolean deleteSelectionToolbarCommandEnabled = false;
-        boolean switchGridToolbarCommandEnabled = false;
-        boolean undoToolbarCommandEnabled = false;
-        boolean redoToolbarCommandEnabled = false;
-        boolean validateToolbarCommandEnabled = false;
-        boolean exportToPngToolbarCommandEnabled = false;
-        boolean exportToJpgToolbarCommandEnabled = false;
-        boolean exportToPdfToolbarCommandEnabled = false;
-        boolean copyCommandEnabled = false;
-        boolean cutCommandEnabled = false;
-        boolean pasteCommandEnabled = false;
-        boolean saveCommandEnabled = false;
-
-        private ToolbarCommandStateHandler(final DMNEditorToolbar toolbar) {
-            this.toolbar = toolbar;
-        }
-
-        private void enter() {
-            this.visitGraphToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getVisitGraphToolbarCommand());
-            this.clearToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getClearToolbarCommand());
-            this.deleteSelectionToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getDeleteSelectionToolbarCommand());
-            this.switchGridToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getSwitchGridToolbarCommand());
-            this.undoToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getUndoToolbarCommand());
-            this.redoToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getRedoToolbarCommand());
-            this.validateToolbarCommandEnabled = toolbar.isEnabled(toolbar.getValidateCommand());
-            this.exportToPngToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getExportToPngToolbarCommand());
-            this.exportToJpgToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getExportToJpgToolbarCommand());
-            this.exportToPdfToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getExportToPdfToolbarCommand());
-            this.copyCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getCopyToolbarCommand());
-            this.cutCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getCutToolbarCommand());
-            this.pasteCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getPasteToolbarCommand());
-            this.saveCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getSaveToolbarCommand());
-
-            enableToolbarCommand(toolbar.getVisitGraphToolbarCommand(),
-                                 false);
-            enableToolbarCommand(toolbar.getClearToolbarCommand(),
-                                 false);
-            enableToolbarCommand(toolbar.getDeleteSelectionToolbarCommand(),
-                                 false);
-            enableToolbarCommand(toolbar.getSwitchGridToolbarCommand(),
-                                 false);
-            enableToolbarCommand(toolbar.getUndoToolbarCommand(),
-                                 false);
-            enableToolbarCommand(toolbar.getRedoToolbarCommand(),
-                                 false);
-            enableToolbarCommand(toolbar.getValidateCommand(),
-                                 false);
-            enableToolbarCommand(toolbar.getExportToPngToolbarCommand(),
-                                 false);
-            enableToolbarCommand(toolbar.getExportToJpgToolbarCommand(),
-                                 false);
-            enableToolbarCommand(toolbar.getExportToPdfToolbarCommand(),
-                                 false);
-            enableToolbarCommand(toolbar.getCopyToolbarCommand(),
-                                 false);
-            enableToolbarCommand(toolbar.getCutToolbarCommand(),
-                                 false);
-            enableToolbarCommand(toolbar.getPasteToolbarCommand(),
-                                 false);
-            enableToolbarCommand(toolbar.getSaveToolbarCommand(),
-                                 false);
-        }
-
-        private void exit() {
-            enableToolbarCommand(toolbar.getVisitGraphToolbarCommand(),
-                                 visitGraphToolbarCommandEnabled);
-            enableToolbarCommand(toolbar.getClearToolbarCommand(),
-                                 clearToolbarCommandEnabled);
-            enableToolbarCommand(toolbar.getDeleteSelectionToolbarCommand(),
-                                 deleteSelectionToolbarCommandEnabled);
-            enableToolbarCommand(toolbar.getSwitchGridToolbarCommand(),
-                                 switchGridToolbarCommandEnabled);
-            enableToolbarCommand(toolbar.getUndoToolbarCommand(),
-                                 undoToolbarCommandEnabled);
-            enableToolbarCommand(toolbar.getRedoToolbarCommand(),
-                                 redoToolbarCommandEnabled);
-            enableToolbarCommand(toolbar.getValidateCommand(),
-                                 validateToolbarCommandEnabled);
-            enableToolbarCommand(toolbar.getExportToPngToolbarCommand(),
-                                 exportToPngToolbarCommandEnabled);
-            enableToolbarCommand(toolbar.getExportToJpgToolbarCommand(),
-                                 exportToJpgToolbarCommandEnabled);
-            enableToolbarCommand(toolbar.getExportToPdfToolbarCommand(),
-                                 exportToPdfToolbarCommandEnabled);
-            enableToolbarCommand(toolbar.getCopyToolbarCommand(),
-                                 copyCommandEnabled);
-            enableToolbarCommand(toolbar.getCutToolbarCommand(),
-                                 cutCommandEnabled);
-            enableToolbarCommand(toolbar.getPasteToolbarCommand(),
-                                 pasteCommandEnabled);
-            enableToolbarCommand(toolbar.getSaveToolbarCommand(),
-                                 saveCommandEnabled);
-        }
-
-        private void enableToolbarCommand(final ToolbarCommand command,
-                                          final boolean enabled) {
-            if (enabled) {
-                toolbar.enable(command);
-            } else {
-                toolbar.disable(command);
-            }
-        }
     }
 }

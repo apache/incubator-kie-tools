@@ -162,7 +162,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         final Optional<CanvasHandler> canvasHandler = Optional.ofNullable(getCanvasHandler());
 
         canvasHandler.ifPresent(c -> {
-            expressionEditor.init(getSessionPresenter());
+            expressionEditor.setToolbarStateHandler(new ProjectToolbarStateHandler(getMenuSessionItems()));
             decisionNavigatorDock.setupContent(c);
             decisionNavigatorDock.open();
         });

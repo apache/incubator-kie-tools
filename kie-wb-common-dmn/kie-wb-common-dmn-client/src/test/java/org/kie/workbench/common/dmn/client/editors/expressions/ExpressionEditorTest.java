@@ -25,11 +25,10 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
+import org.kie.workbench.common.dmn.client.editors.toolbar.ToolbarStateHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCacheImpl;
-import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNEditorToolbar;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.ManagedSession;
@@ -37,9 +36,7 @@ import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -61,7 +58,7 @@ public class ExpressionEditorTest {
     private DecisionNavigatorPresenter decisionNavigator;
 
     @Mock
-    private DMNEditorToolbar editorToolbar;
+    private ToolbarStateHandler toolbarStateHandler;
 
     @Mock
     private HasName hasName;
@@ -86,38 +83,31 @@ public class ExpressionEditorTest {
 
         testedEditor = spy(new ExpressionEditor(view,
                                                 decisionNavigator));
-        when(sessionPresenter.getToolbar()).thenReturn(editorToolbar);
-        when(editorToolbar.isEnabled(any(ToolbarCommand.class))).thenReturn(true);
         when(session.getCanvasControl(eq(ExpressionGridCache.class))).thenReturn(expressionGridCache);
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testInit() {
-        testedEditor.init(sessionPresenter);
-
-        verify(sessionPresenter).getToolbar();
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
     public void testSetExpression() {
-        setupExpression();
+        setupExpression(toolbarStateHandler);
 
-        verify(editorToolbar, atLeast(1)).disable(any(ToolbarCommand.class));
+        verify(view).setExpression(eq(NODE_UUID),
+                                   eq(hasExpression),
+                                   eq(Optional.of(hasName)));
+        verify(toolbarStateHandler).enterGridView();
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testExitWithCommand() {
-        setupExpression();
+        setupExpression(toolbarStateHandler);
 
         testedEditor.setExitCommand(command);
 
         testedEditor.exit();
 
         verify(decisionNavigator).clearSelections();
-        verify(editorToolbar, atLeast(1)).enable(any(ToolbarCommand.class));
+        verify(toolbarStateHandler).enterGraphView();
         verify(command).execute();
         assertEquals(Optional.empty(), testedEditor.getExitCommand());
     }
@@ -125,33 +115,29 @@ public class ExpressionEditorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testSetExpressionWithoutToolbar() {
-        when(sessionPresenter.getToolbar()).thenReturn(null);
+        setupExpression(null);
 
-        setupExpression();
-
-        verifyNoMoreInteractions(editorToolbar);
+        verifyNoMoreInteractions(toolbarStateHandler);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testExitWithCommandWithoutToolbar() {
-        when(sessionPresenter.getToolbar()).thenReturn(null);
-
-        setupExpression();
+        setupExpression(null);
 
         testedEditor.setExitCommand(command);
 
         testedEditor.exit();
 
         verify(decisionNavigator).clearSelections();
-        verifyNoMoreInteractions(editorToolbar);
+        verifyNoMoreInteractions(toolbarStateHandler);
         verify(command).execute();
         assertEquals(Optional.empty(), testedEditor.getExitCommand());
     }
 
     @SuppressWarnings("unchecked")
-    private void setupExpression() {
-        testedEditor.init(sessionPresenter);
+    private void setupExpression(final ToolbarStateHandler toolbarStateHandler) {
+        testedEditor.setToolbarStateHandler(toolbarStateHandler);
 
         testedEditor.setExpression(NODE_UUID,
                                    hasExpression,
@@ -164,7 +150,6 @@ public class ExpressionEditorTest {
 
     @Test
     public void testOnCanvasFocusedSelectionEvent() {
-
         final CanvasHandler canvasHandler = mock(CanvasHandler.class);
         final String uuid = "uuid";
         final CanvasSelectionEvent event = new CanvasSelectionEvent(canvasHandler, uuid);

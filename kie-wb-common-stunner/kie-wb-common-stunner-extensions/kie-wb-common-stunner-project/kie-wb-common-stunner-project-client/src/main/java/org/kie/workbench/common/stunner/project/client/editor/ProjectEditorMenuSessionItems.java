@@ -209,7 +209,13 @@ public class ProjectEditorMenuSessionItems {
 
     public void setItemEnabled(final Class<? extends ClientSessionCommand> type,
                                final boolean enabled) {
-        menuItems.get(type).setEnabled(enabled);
+        if (menuItems.containsKey(type)) {
+            menuItems.get(type).setEnabled(enabled);
+        }
+    }
+
+    public boolean isItemEnabled(final Class<? extends ClientSessionCommand> type) {
+        return menuItems.containsKey(type) && menuItems.get(type).isEnabled();
     }
 
     private void menu_clear() {
