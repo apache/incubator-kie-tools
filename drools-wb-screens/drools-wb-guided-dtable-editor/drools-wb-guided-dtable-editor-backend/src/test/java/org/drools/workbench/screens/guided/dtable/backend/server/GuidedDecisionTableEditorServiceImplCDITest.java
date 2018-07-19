@@ -49,6 +49,13 @@ public class GuidedDecisionTableEditorServiceImplCDITest extends CDITestSetup {
     }
 
     @Test
+    public void testFromAccumulate() throws Exception {
+        final Path path = getPath("rhpam-1288/src/main/resources/com/myspace/rhpam_1288/applicants.gdst");
+        final List<ValidationMessage> validationMessages = testedService.validate(path, testedService.load(path));
+        Assertions.assertThat(validationMessages).isEmpty();
+    }
+
+    @Test
     public void testFunctionFromDrl() throws Exception {
         final Path path = getPath("rhba370/src/main/resources/com/sample/dtissuesampleproject/UseFunctionFromDrl.gdst");
         final List<ValidationMessage> validationMessages = testedService.validate(path, testedService.load(path));

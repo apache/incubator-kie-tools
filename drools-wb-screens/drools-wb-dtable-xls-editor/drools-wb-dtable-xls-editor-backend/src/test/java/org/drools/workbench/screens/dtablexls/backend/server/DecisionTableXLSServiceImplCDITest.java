@@ -31,7 +31,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.uberfire.backend.server.util.Paths;
@@ -130,7 +129,6 @@ public class DecisionTableXLSServiceImplCDITest extends CDITestSetup {
      * Covers RHDM-216 - From accumulate causes validation errors
      */
     @Test
-    @Ignore("Ignored due to RHDM-216")
     public void testFromAccumulate() throws Exception {
         final String resourcePath = "forest/src/main/resources/com/redhat/sample/ForestHealth.xls";
         final List<ValidationMessage> messages = validateResource(resourcePath);
