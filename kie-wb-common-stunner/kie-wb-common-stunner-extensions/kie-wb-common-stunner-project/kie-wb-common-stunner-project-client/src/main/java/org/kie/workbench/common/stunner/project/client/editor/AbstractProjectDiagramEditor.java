@@ -571,7 +571,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         }
     }
 
-    private boolean isSameSession(final ClientSession other) {
+    protected boolean isSameSession(final ClientSession other) {
         return null != other && null != getSession() && other.equals(getSession());
     }
 

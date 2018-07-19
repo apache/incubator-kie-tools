@@ -33,7 +33,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
@@ -47,7 +47,7 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
     static final NoOperationGraphCommand NOP_GRAPH_COMMAND = new NoOperationGraphCommand();
 
     protected final ExpressionEditorView.Presenter editor;
-    protected final SessionPresenter<EditorSession, ?, Diagram> presenter;
+    protected final SessionPresenter<? extends ClientSession, ?, Diagram> presenter;
     protected final SessionManager sessionManager;
     protected final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     protected final String nodeUUID;
@@ -55,7 +55,7 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
     protected final Optional<HasName> hasName;
 
     public BaseNavigateCommand(final ExpressionEditorView.Presenter editor,
-                               final SessionPresenter<EditorSession, ?, Diagram> presenter,
+                               final SessionPresenter<? extends ClientSession, ?, Diagram> presenter,
                                final SessionManager sessionManager,
                                final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                final String nodeUUID,

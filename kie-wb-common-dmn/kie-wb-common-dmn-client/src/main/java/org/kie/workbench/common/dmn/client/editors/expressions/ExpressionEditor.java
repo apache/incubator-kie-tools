@@ -29,7 +29,7 @@ import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNEditorToolbar;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.uberfire.mvp.Command;
 
@@ -40,7 +40,7 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
 
     private Optional<Command> exitCommand = Optional.empty();
 
-    private ToolbarCommandStateHandler toolbarCommandStateHandler;
+    private Optional<ToolbarCommandStateHandler> toolbarCommandStateHandler = Optional.empty();
 
     private DecisionNavigatorPresenter decisionNavigator;
 
@@ -68,8 +68,9 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
     }
 
     @Override
-    public void init(final SessionPresenter<EditorSession, ?, Diagram> presenter) {
-        this.toolbarCommandStateHandler = new ToolbarCommandStateHandler((DMNEditorToolbar) presenter.getToolbar());
+    public void init(final SessionPresenter<? extends ClientSession, ?, Diagram> presenter) {
+        final Optional<DMNEditorToolbar> toolbar = Optional.ofNullable((DMNEditorToolbar) presenter.getToolbar());
+        toolbar.ifPresent(t -> this.toolbarCommandStateHandler = Optional.of(new ToolbarCommandStateHandler(t)));
     }
 
     @Override
@@ -80,7 +81,7 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
                            hasExpression,
                            hasName);
 
-        toolbarCommandStateHandler.enter();
+        toolbarCommandStateHandler.ifPresent(ToolbarCommandStateHandler::enter);
     }
 
     @Override
@@ -92,7 +93,7 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
     public void exit() {
         exitCommand.ifPresent(command -> {
             decisionNavigator.clearSelections();
-            toolbarCommandStateHandler.exit();
+            toolbarCommandStateHandler.ifPresent(ToolbarCommandStateHandler::exit);
             command.execute();
             exitCommand = Optional.empty();
         });
@@ -108,7 +109,7 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
 
     //Package-protected for Unit Tests
     ToolbarCommandStateHandler getToolbarCommandStateHandler() {
-        return toolbarCommandStateHandler;
+        return toolbarCommandStateHandler.get();
     }
 
     @SuppressWarnings("unchecked")

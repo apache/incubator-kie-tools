@@ -20,7 +20,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.project.categories.Process;
+import org.guvnor.common.services.project.categories.Decision;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.resource.DMNDefinitionSetResourceType;
 import org.kie.workbench.common.dmn.project.client.resources.DMNProjectImageResources;
@@ -40,7 +40,7 @@ public class DMNDiagramResourceType extends AbstractStunnerClientResourceType<DM
 
     @Inject
     public DMNDiagramResourceType(final DMNDefinitionSetResourceType definitionSetResourceType,
-                                  final Process category,
+                                  final Decision category,
                                   final TranslationService translationService) {
         super(definitionSetResourceType, category);
 

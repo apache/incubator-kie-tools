@@ -20,9 +20,15 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
+import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
+import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.project.client.type.DMNDiagramResourceType;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditorTest;
 import org.kie.workbench.common.workbench.client.PerspectiveIds;
@@ -50,7 +56,19 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     private AbstractCanvasHandler canvasHandler;
 
     @Mock
+    private SessionManager sessionManager;
+
+    @Mock
+    private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+
+    @Mock
+    private ExpressionEditorView.Presenter expressionEditor;
+
+    @Mock
     private DecisionNavigatorDock decisionNavigatorDock;
+
+    @Mock
+    private EditExpressionEvent editExpressionEvent;
 
     private DMNDiagramEditor diagramEditor;
 
@@ -88,6 +106,9 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                                                  translationService,
                                                  xmlEditorView,
                                                  projectDiagramResourceServiceCaller,
+                                                 sessionManager,
+                                                 sessionCommandManager,
+                                                 expressionEditor,
                                                  decisionNavigatorDock) {
             {
                 fileMenuBuilder = DMNDiagramEditorTest.this.fileMenuBuilder;
@@ -132,14 +153,17 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         open();
 
+        verify(expressionEditor).init(eq(sessionEditorPresenter));
         verify(decisionNavigatorDock).setupContent(eq(canvasHandler));
         verify(decisionNavigatorDock).open();
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testOnDiagramLoadWhenCanvasHandlerIsNull() {
         diagramEditor.onDiagramLoad();
 
+        verify(expressionEditor, never()).init(any(SessionPresenter.class));
         verify(decisionNavigatorDock, never()).setupContent(any());
         verify(decisionNavigatorDock, never()).open();
     }
@@ -152,6 +176,20 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         verify(diagramEditor).superDoFocus();
         verify(diagramEditor).onDiagramLoad();
+    }
+
+    @Test
+    public void testOnEditExpressionEvent() {
+        when(editExpressionEvent.getSession()).thenReturn(editorSession);
+        when(sessionManager.getCurrentSession()).thenReturn(editorSession);
+        when(editorSession.getCanvasHandler()).thenReturn(canvasHandler);
+
+        open();
+
+        diagramEditor.onEditExpressionEvent(editExpressionEvent);
+
+        verify(sessionCommandManager).execute(eq(canvasHandler),
+                                              any(NavigateToExpressionEditorCommand.class));
     }
 
     @Override

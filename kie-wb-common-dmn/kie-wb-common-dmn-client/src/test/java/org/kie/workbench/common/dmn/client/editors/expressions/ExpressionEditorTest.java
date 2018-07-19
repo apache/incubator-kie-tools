@@ -43,6 +43,7 @@ import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -101,6 +102,55 @@ public class ExpressionEditorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testSetExpression() {
+        setupExpression();
+
+        verify(editorToolbar, atLeast(1)).disable(any(ToolbarCommand.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testExitWithCommand() {
+        setupExpression();
+
+        testedEditor.setExitCommand(command);
+
+        testedEditor.exit();
+
+        verify(decisionNavigator).clearSelections();
+        verify(editorToolbar, atLeast(1)).enable(any(ToolbarCommand.class));
+        verify(command).execute();
+        assertEquals(Optional.empty(), testedEditor.getExitCommand());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSetExpressionWithoutToolbar() {
+        when(sessionPresenter.getToolbar()).thenReturn(null);
+
+        setupExpression();
+
+        verifyNoMoreInteractions(editorToolbar);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testExitWithCommandWithoutToolbar() {
+        when(sessionPresenter.getToolbar()).thenReturn(null);
+
+        setupExpression();
+
+        testedEditor.setExitCommand(command);
+
+        testedEditor.exit();
+
+        verify(decisionNavigator).clearSelections();
+        verifyNoMoreInteractions(editorToolbar);
+        verify(command).execute();
+        assertEquals(Optional.empty(), testedEditor.getExitCommand());
+    }
+
+    @SuppressWarnings("unchecked")
+    private void setupExpression() {
         testedEditor.init(sessionPresenter);
 
         testedEditor.setExpression(NODE_UUID,
@@ -110,24 +160,6 @@ public class ExpressionEditorTest {
         verify(view).setExpression(eq(NODE_UUID),
                                    eq(hasExpression),
                                    eq(Optional.of(hasName)));
-        verify(editorToolbar, atLeast(1)).disable(any(ToolbarCommand.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testExitWithCommand() {
-        testedEditor.init(sessionPresenter);
-        testedEditor.setExpression(NODE_UUID,
-                                   hasExpression,
-                                   Optional.of(hasName));
-        testedEditor.setExitCommand(command);
-
-        testedEditor.exit();
-
-        verify(decisionNavigator).clearSelections();
-        verify(editorToolbar, atLeast(1)).enable(any(ToolbarCommand.class));
-        verify(command).execute();
-        assertEquals(Optional.empty(), testedEditor.getExitCommand());
     }
 
     @Test

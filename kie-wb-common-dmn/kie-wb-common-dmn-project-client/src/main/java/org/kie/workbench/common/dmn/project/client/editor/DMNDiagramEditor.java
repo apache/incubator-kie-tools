@@ -19,20 +19,28 @@ import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.api.factory.DMNGraphFactory;
+import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
+import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
+import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.project.client.type.DMNDiagramResourceType;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
+import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
@@ -70,6 +78,9 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
 
     public static final String EDITOR_ID = "DMNDiagramEditor";
 
+    private final SessionManager sessionManager;
+    private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+    private final ExpressionEditorView.Presenter expressionEditor;
     private final DecisionNavigatorDock decisionNavigatorDock;
 
     @Inject
@@ -90,6 +101,9 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
                             final ClientTranslationService translationService,
                             final TextEditorView xmlEditorView,
                             final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller,
+                            final SessionManager sessionManager,
+                            final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                            final ExpressionEditorView.Presenter expressionEditor,
                             final DecisionNavigatorDock decisionNavigatorDock) {
         super(view,
               placeManager,
@@ -108,6 +122,9 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
               translationService,
               xmlEditorView,
               projectDiagramResourceServiceCaller);
+        this.sessionManager = sessionManager;
+        this.sessionCommandManager = sessionCommandManager;
+        this.expressionEditor = expressionEditor;
         this.decisionNavigatorDock = decisionNavigatorDock;
     }
 
@@ -142,10 +159,10 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
 
     @Override
     protected void onDiagramLoad() {
-
         final Optional<CanvasHandler> canvasHandler = Optional.ofNullable(getCanvasHandler());
 
         canvasHandler.ifPresent(c -> {
+            expressionEditor.init(getSessionPresenter());
             decisionNavigatorDock.setupContent(c);
             decisionNavigatorDock.open();
         });
@@ -194,6 +211,19 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
     @Override
     protected String getEditorIdentifier() {
         return EDITOR_ID;
+    }
+
+    void onEditExpressionEvent(final @Observes EditExpressionEvent event) {
+        if (isSameSession(event.getSession())) {
+            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                          new NavigateToExpressionEditorCommand(expressionEditor,
+                                                                                getSessionPresenter(),
+                                                                                sessionManager,
+                                                                                sessionCommandManager,
+                                                                                event.getNodeUUID(),
+                                                                                event.getHasExpression(),
+                                                                                event.getHasName()));
+        }
     }
 
     void superDoFocus() {

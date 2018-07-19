@@ -19,7 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.categories.Process;
+import org.guvnor.common.services.project.categories.Decision;
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
 import org.kie.workbench.common.stunner.core.definition.AbstractDefinitionSetResourceType;
 import org.uberfire.workbench.annotations.VisibleAsset;
@@ -30,9 +30,9 @@ import org.uberfire.workbench.category.Category;
 @ApplicationScoped
 public class DMNDefinitionSetResourceType extends AbstractDefinitionSetResourceType {
 
-    private static final String DMN_EXTENSION = "dmn";
-    private static final String NAME = "DMN (Preview)";
-    private static final String DESCRIPTION = "DMN (Preview)";
+    static final String DMN_EXTENSION = "dmn";
+    static final String NAME = "DMN (Preview)";
+    static final String DESCRIPTION = "DMN (Preview)";
 
     private Category category;
 
@@ -41,7 +41,7 @@ public class DMNDefinitionSetResourceType extends AbstractDefinitionSetResourceT
     }
 
     @Inject
-    public DMNDefinitionSetResourceType(final Process category) {
+    public DMNDefinitionSetResourceType(final Decision category) {
         this.category = category;
     }
 
