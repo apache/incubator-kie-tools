@@ -36,8 +36,8 @@
   <logger name="org.drools">
     <level value="INFO"/>
   </logger>
-  <logger name="org.uberfire.backend">
-    <level value="DEBUG"/>
+  <logger name="org.infinispan.protostream">
+    <level value="ERROR"/>
   </logger>
   <root>
     <priority value="ERROR"/>
