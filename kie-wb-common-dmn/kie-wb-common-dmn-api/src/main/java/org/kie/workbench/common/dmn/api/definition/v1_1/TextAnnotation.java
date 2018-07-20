@@ -117,6 +117,7 @@ public class TextAnnotation extends Artifact implements DMNViewDefinition {
         return stunnerLabels;
     }
 
+    @Override
     public BackgroundSet getBackgroundSet() {
         return backgroundSet;
     }
@@ -125,6 +126,7 @@ public class TextAnnotation extends Artifact implements DMNViewDefinition {
         this.backgroundSet = backgroundSet;
     }
 
+    @Override
     public FontSet getFontSet() {
         return fontSet;
     }
@@ -133,6 +135,7 @@ public class TextAnnotation extends Artifact implements DMNViewDefinition {
         this.fontSet = fontSet;
     }
 
+    @Override
     public RectangleDimensionsSet getDimensionsSet() {
         return dimensionsSet;
     }

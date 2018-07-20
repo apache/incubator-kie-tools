@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.shape.def;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kie.workbench.common.dmn.api.definition.DMNDefinition;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
@@ -36,8 +37,8 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
 public class DMNSVGShapeDefImpl implements DMNSVGShapeDef<DMNViewDefinition> {
 
-    public static final SVGShapeViewResources<DMNViewDefinition, DMNSVGViewFactory> VIEW_RESOURCES =
-            new SVGShapeViewResources<DMNViewDefinition, DMNSVGViewFactory>()
+    public static final SVGShapeViewResources<DMNDefinition, DMNSVGViewFactory> VIEW_RESOURCES =
+            new SVGShapeViewResources<DMNDefinition, DMNSVGViewFactory>()
                     .put(BusinessKnowledgeModel.class,
                          DMNSVGViewFactory::businessKnowledgeModel)
                     .put(Decision.class,
@@ -51,8 +52,8 @@ public class DMNSVGShapeDefImpl implements DMNSVGShapeDef<DMNViewDefinition> {
                     .put(TextAnnotation.class,
                          DMNSVGViewFactory::textAnnotation);
 
-    public static final Map<Class<? extends DMNViewDefinition>, Glyph> GLYPHS_TOOLBOX =
-            new HashMap<Class<? extends DMNViewDefinition>, Glyph>() {{
+    public static final Map<Class<? extends DMNDefinition>, Glyph> GLYPHS_TOOLBOX =
+            new HashMap<Class<? extends DMNDefinition>, Glyph>() {{
                 put(BusinessKnowledgeModel.class,
                     DMNSVGGlyphFactory.BUSINESS_KNOWLEDGE_MODEL_TOOLBOX);
                 put(Decision.class,
@@ -67,8 +68,8 @@ public class DMNSVGShapeDefImpl implements DMNSVGShapeDef<DMNViewDefinition> {
                     DMNSVGGlyphFactory.TEXT_ANNOTATION_TOOLBOX);
             }};
 
-    public static final Map<Class<? extends DMNViewDefinition>, Glyph> GLYPHS_PALETTE =
-            new HashMap<Class<? extends DMNViewDefinition>, Glyph>() {{
+    public static final Map<Class<? extends DMNDefinition>, Glyph> GLYPHS_PALETTE =
+            new HashMap<Class<? extends DMNDefinition>, Glyph>() {{
                 put(BusinessKnowledgeModel.class,
                     DMNSVGGlyphFactory.BUSINESS_KNOWLEDGE_MODEL_PALETTE);
                 put(Decision.class,
@@ -100,7 +101,7 @@ public class DMNSVGShapeDefImpl implements DMNSVGShapeDef<DMNViewDefinition> {
                           final Class<? extends ShapeFactory.GlyphConsumer> consumer,
                           final String defId) {
         if (org.kie.workbench.common.stunner.core.client.components.palette.AbstractPalette.PaletteGlyphConsumer.class.equals(consumer)) {
-            return GLYPHS_PALETTE.computeIfAbsent(type, (t) -> getGlyph(t, defId));
+            return GLYPHS_PALETTE.computeIfAbsent(type, (t) -> ShapeGlyph.create());
         }
         return getGlyph(type, defId);
     }

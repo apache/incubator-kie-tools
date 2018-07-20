@@ -114,6 +114,7 @@ public class InputData extends DRGElement implements DMNViewDefinition {
         return stunnerLabels;
     }
 
+    @Override
     public BackgroundSet getBackgroundSet() {
         return backgroundSet;
     }
@@ -122,6 +123,7 @@ public class InputData extends DRGElement implements DMNViewDefinition {
         this.backgroundSet = backgroundSet;
     }
 
+    @Override
     public FontSet getFontSet() {
         return fontSet;
     }
@@ -130,6 +132,7 @@ public class InputData extends DRGElement implements DMNViewDefinition {
         this.fontSet = fontSet;
     }
 
+    @Override
     public RectangleDimensionsSet getDimensionsSet() {
         return dimensionsSet;
     }

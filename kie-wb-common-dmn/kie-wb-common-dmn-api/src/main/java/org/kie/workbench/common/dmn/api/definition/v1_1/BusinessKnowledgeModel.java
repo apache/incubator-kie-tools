@@ -119,6 +119,7 @@ public class BusinessKnowledgeModel extends DRGElement implements DMNViewDefinit
         return stunnerLabels;
     }
 
+    @Override
     public BackgroundSet getBackgroundSet() {
         return backgroundSet;
     }
@@ -127,6 +128,7 @@ public class BusinessKnowledgeModel extends DRGElement implements DMNViewDefinit
         this.backgroundSet = backgroundSet;
     }
 
+    @Override
     public FontSet getFontSet() {
         return fontSet;
     }
@@ -135,6 +137,7 @@ public class BusinessKnowledgeModel extends DRGElement implements DMNViewDefinit
         this.fontSet = fontSet;
     }
 
+    @Override
     public RectangleDimensionsSet getDimensionsSet() {
         return dimensionsSet;
     }

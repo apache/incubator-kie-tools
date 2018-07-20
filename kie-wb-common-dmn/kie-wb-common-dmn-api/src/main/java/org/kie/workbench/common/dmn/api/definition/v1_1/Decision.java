@@ -140,6 +140,7 @@ public class Decision extends DRGElement implements HasExpression,
         return stunnerLabels;
     }
 
+    @Override
     public BackgroundSet getBackgroundSet() {
         return backgroundSet;
     }
@@ -148,6 +149,7 @@ public class Decision extends DRGElement implements HasExpression,
         this.backgroundSet = backgroundSet;
     }
 
+    @Override
     public FontSet getFontSet() {
         return fontSet;
     }
@@ -156,6 +158,7 @@ public class Decision extends DRGElement implements HasExpression,
         this.fontSet = fontSet;
     }
 
+    @Override
     public RectangleDimensionsSet getDimensionsSet() {
         return dimensionsSet;
     }
