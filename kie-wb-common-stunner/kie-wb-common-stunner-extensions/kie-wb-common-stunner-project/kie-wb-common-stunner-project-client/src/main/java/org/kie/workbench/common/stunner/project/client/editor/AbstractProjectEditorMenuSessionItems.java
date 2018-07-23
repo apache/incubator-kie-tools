@@ -23,8 +23,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.annotation.PreDestroy;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
@@ -52,10 +50,9 @@ import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
 
-@Dependent
-public class ProjectEditorMenuSessionItems {
+public abstract class AbstractProjectEditorMenuSessionItems<BUILDER extends AbstractProjectDiagramEditorMenuItemsBuilder> {
 
-    private final ProjectDiagramEditorMenuItemsBuilder itemsBuilder;
+    private final BUILDER itemsBuilder;
     private final Map<Class<? extends ClientSessionCommand>, MenuItem> menuItems;
     private final EditorSessionCommands sessionCommands;
 
@@ -63,9 +60,8 @@ public class ProjectEditorMenuSessionItems {
     private Command loadingCompleted;
     private Consumer<String> errorConsumer;
 
-    @Inject
-    public ProjectEditorMenuSessionItems(final ProjectDiagramEditorMenuItemsBuilder itemsBuilder,
-                                         final EditorSessionCommands sessionCommands) {
+    public AbstractProjectEditorMenuSessionItems(final BUILDER itemsBuilder,
+                                                 final EditorSessionCommands sessionCommands) {
         this.itemsBuilder = itemsBuilder;
         this.sessionCommands = sessionCommands;
         this.menuItems = new HashMap<>(20);
@@ -77,17 +73,17 @@ public class ProjectEditorMenuSessionItems {
         };
     }
 
-    public ProjectEditorMenuSessionItems setLoadingStarts(final Command loadingStarts) {
+    public AbstractProjectEditorMenuSessionItems<BUILDER> setLoadingStarts(final Command loadingStarts) {
         this.loadingStarts = loadingStarts;
         return this;
     }
 
-    public ProjectEditorMenuSessionItems setLoadingCompleted(final Command loadingCompleted) {
+    public AbstractProjectEditorMenuSessionItems<BUILDER> setLoadingCompleted(final Command loadingCompleted) {
         this.loadingCompleted = loadingCompleted;
         return this;
     }
 
-    public ProjectEditorMenuSessionItems setErrorConsumer(final Consumer<String> errorConsumer) {
+    public AbstractProjectEditorMenuSessionItems<BUILDER> setErrorConsumer(final Consumer<String> errorConsumer) {
         this.errorConsumer = errorConsumer;
         return this;
     }
@@ -202,7 +198,7 @@ public class ProjectEditorMenuSessionItems {
 
             @Override
             public void onError(final Collection<DiagramElementViolation<RuleViolation>> violations) {
-                ProjectEditorMenuSessionItems.this.onError(violations.toString());
+                AbstractProjectEditorMenuSessionItems.this.onError(violations.toString());
             }
         });
     }

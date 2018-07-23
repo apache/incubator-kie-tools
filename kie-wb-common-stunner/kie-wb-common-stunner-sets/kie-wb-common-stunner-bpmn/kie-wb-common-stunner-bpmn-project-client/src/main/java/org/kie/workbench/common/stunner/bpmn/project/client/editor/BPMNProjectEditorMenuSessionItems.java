@@ -35,22 +35,21 @@ import org.kie.workbench.common.stunner.client.widgets.menu.MenuUtils;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
-import org.kie.workbench.common.stunner.project.client.editor.ProjectDiagramEditorMenuItemsBuilder;
-import org.kie.workbench.common.stunner.project.client.editor.ProjectEditorMenuSessionItems;
+import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectEditorMenuSessionItems;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 @Dependent
 @Typed(BPMNProjectEditorMenuSessionItems.class)
-public class BPMNProjectEditorMenuSessionItems extends ProjectEditorMenuSessionItems {
+public class BPMNProjectEditorMenuSessionItems extends AbstractProjectEditorMenuSessionItems<BPMNProjectDiagramEditorMenuItemsBuilder> {
 
     private Command onMigrate;
     private MenuItem migrateMenuItem;
     private MenuItem formsItem;
 
     @Inject
-    public BPMNProjectEditorMenuSessionItems(final ProjectDiagramEditorMenuItemsBuilder itemsBuilder,
+    public BPMNProjectEditorMenuSessionItems(final BPMNProjectDiagramEditorMenuItemsBuilder itemsBuilder,
                                              final BPMNEditorSessionCommands sessionCommands) {
         super(itemsBuilder,
               sessionCommands);

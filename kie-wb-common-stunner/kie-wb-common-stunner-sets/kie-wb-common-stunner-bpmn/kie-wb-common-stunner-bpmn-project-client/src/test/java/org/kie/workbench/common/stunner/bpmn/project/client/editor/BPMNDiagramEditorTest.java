@@ -30,7 +30,7 @@ import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditorTest;
-import org.kie.workbench.common.stunner.project.client.editor.ProjectEditorMenuSessionItems;
+import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectEditorMenuSessionItems;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -107,7 +107,7 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     }
 
     @Override
-    protected ProjectEditorMenuSessionItems getMenuSessionItems() {
+    protected AbstractProjectEditorMenuSessionItems getMenuSessionItems() {
         return bpmnMenuSessionItems;
     }
 

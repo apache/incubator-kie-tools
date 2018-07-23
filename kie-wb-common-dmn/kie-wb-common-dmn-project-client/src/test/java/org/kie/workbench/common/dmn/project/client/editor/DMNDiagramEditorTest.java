@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditorTest;
+import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectEditorMenuSessionItems;
 import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.mockito.Mock;
 import org.uberfire.mvp.PlaceRequest;
@@ -69,6 +70,9 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     @Mock
     private EditExpressionEvent editExpressionEvent;
 
+    @Mock
+    private DMNProjectEditorMenuSessionItems dmnProjectMenuSessionItems;
+
     private DMNDiagramEditor diagramEditor;
 
     @Override
@@ -97,7 +101,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                                                  clientProjectDiagramService,
                                                  sessionEditorPresenters,
                                                  sessionViewerPresenters,
-                                                 getMenuSessionItems(),
+                                                 (DMNProjectEditorMenuSessionItems) getMenuSessionItems(),
                                                  onDiagramFocusEvent,
                                                  onDiagramLostFocusEvent,
                                                  projectMessagesListener,
@@ -123,6 +127,11 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         });
 
         return diagramEditor;
+    }
+
+    @Override
+    protected AbstractProjectEditorMenuSessionItems getMenuSessionItems() {
+        return dmnProjectMenuSessionItems;
     }
 
     @Test

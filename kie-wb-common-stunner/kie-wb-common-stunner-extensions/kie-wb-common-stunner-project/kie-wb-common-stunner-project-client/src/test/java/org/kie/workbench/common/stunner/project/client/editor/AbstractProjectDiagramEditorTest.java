@@ -157,7 +157,7 @@ public class AbstractProjectDiagramEditorTest {
     protected ManagedInstance<SessionViewerPresenter<ViewerSession>> sessionViewerPresenters;
 
     @Mock
-    protected ProjectEditorMenuSessionItems projectMenuSessionItems;
+    protected AbstractProjectEditorMenuSessionItems projectMenuSessionItems;
 
     @Mock
     protected EventSourceMock<OnDiagramFocusEvent> onDiagramFocusEvent;
@@ -292,7 +292,7 @@ public class AbstractProjectDiagramEditorTest {
         return resourceType;
     }
 
-    protected ProjectEditorMenuSessionItems getMenuSessionItems() {
+    protected AbstractProjectEditorMenuSessionItems getMenuSessionItems() {
         return projectMenuSessionItems;
     }
 

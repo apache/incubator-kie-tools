@@ -25,4 +25,7 @@ public interface DMNProjectClientConstants {
 
     @TranslationKey(defaultValue = "")
     String DMNDiagramResourceTypeDescription = "DMNDiagramResourceType.description";
+
+    @TranslationKey(defaultValue = "")
+    String DMNDiagramResourceTypeDownload = "DMNDiagramResourceType.download";
 }

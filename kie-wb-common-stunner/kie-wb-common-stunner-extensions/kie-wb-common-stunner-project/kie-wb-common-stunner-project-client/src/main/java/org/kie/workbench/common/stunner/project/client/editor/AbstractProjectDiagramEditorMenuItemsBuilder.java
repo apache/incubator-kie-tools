@@ -15,9 +15,7 @@
  */
 package org.kie.workbench.common.stunner.project.client.editor;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Button;
@@ -36,21 +34,19 @@ import org.kie.workbench.common.stunner.project.client.resources.i18n.StunnerPro
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
 
-@Dependent
-public class ProjectDiagramEditorMenuItemsBuilder {
+public abstract class AbstractProjectDiagramEditorMenuItemsBuilder {
 
-    private final ClientTranslationService translationService;
+    protected final ClientTranslationService translationService;
 
-    private final PopupUtil popupUtil;
+    protected final PopupUtil popupUtil;
 
-    protected ProjectDiagramEditorMenuItemsBuilder() {
+    protected AbstractProjectDiagramEditorMenuItemsBuilder() {
         this(null,
              null);
     }
 
-    @Inject
-    public ProjectDiagramEditorMenuItemsBuilder(final ClientTranslationService translationService,
-                                                final PopupUtil popupUtil) {
+    public AbstractProjectDiagramEditorMenuItemsBuilder(final ClientTranslationService translationService,
+                                                        final PopupUtil popupUtil) {
         this.translationService = translationService;
         this.popupUtil = popupUtil;
     }
@@ -99,10 +95,10 @@ public class ProjectDiagramEditorMenuItemsBuilder {
                     setIcon(IconType.ERASER);
                     setTitle(translationService.getValue(CoreTranslationMessages.CLEAR_DIAGRAM));
                     addClickHandler(clickEvent ->
-                                            ProjectDiagramEditorMenuItemsBuilder.this.executeWithConfirm(command,
-                                                                                                         translationService.getValue(CoreTranslationMessages.CLEAR_DIAGRAM),
-                                                                                                         translationService.getValue(CoreTranslationMessages.CLEAR_DIAGRAM),
-                                                                                                         translationService.getValue(CoreTranslationMessages.CONFIRM_CLEAR_DIAGRAM)));
+                                            AbstractProjectDiagramEditorMenuItemsBuilder.this.executeWithConfirm(command,
+                                                                                                                 translationService.getValue(CoreTranslationMessages.CLEAR_DIAGRAM),
+                                                                                                                 translationService.getValue(CoreTranslationMessages.CLEAR_DIAGRAM),
+                                                                                                                 translationService.getValue(CoreTranslationMessages.CONFIRM_CLEAR_DIAGRAM)));
                 }});
     }
 
@@ -198,55 +194,48 @@ public class ProjectDiagramEditorMenuItemsBuilder {
                                    final Command exportJPGCommand,
                                    final Command exportSVGCommand,
                                    final Command exportPDFCommand,
-                                   final Command exportBPMNCommand) {
-        final DropDownMenu menu = new DropDownMenu() {{
-            setPull(Pull.RIGHT);
-        }};
-        menu.add(new AnchorListItem(translationService.getValue(CoreTranslationMessages.EXPORT_PNG)) {{
-            setIcon(IconType.FILE_IMAGE_O);
-            setIconPosition(IconPosition.LEFT);
-            setTitle(translationService.getValue(CoreTranslationMessages.EXPORT_PNG));
-            addClickHandler(event -> exportPNGCommand.execute());
-        }});
-        menu.add(new AnchorListItem(translationService.getValue(CoreTranslationMessages.EXPORT_JPG)) {{
-            setIcon(IconType.FILE_IMAGE_O);
-            setIconPosition(IconPosition.LEFT);
-            setTitle(translationService.getValue(CoreTranslationMessages.EXPORT_JPG));
-            addClickHandler(event -> exportJPGCommand.execute());
-        }});
-        menu.add(new AnchorListItem(translationService.getValue(CoreTranslationMessages.EXPORT_SVG)) {{
-            setIcon(IconType.FILE_IMAGE_O);
-            setIconPosition(IconPosition.LEFT);
-            setTitle(translationService.getValue(CoreTranslationMessages.EXPORT_SVG));
-            addClickHandler(event -> exportSVGCommand.execute());
-        }});
-        menu.add(new AnchorListItem(translationService.getValue(CoreTranslationMessages.EXPORT_PDF)) {{
-            setIcon(IconType.FILE_PDF_O);
-            setIconPosition(IconPosition.LEFT);
-            setTitle(translationService.getValue(CoreTranslationMessages.EXPORT_PDF));
-            addClickHandler(event -> exportPDFCommand.execute());
-        }});
-        menu.add(new AnchorListItem(translationService.getValue(CoreTranslationMessages.EXPORT_BPMN)) {{
-            setIcon(IconType.FILE_TEXT_O);
-            setIconPosition(IconPosition.LEFT);
-            setTitle(translationService.getValue(CoreTranslationMessages.EXPORT_BPMN));
-            addClickHandler(event -> exportBPMNCommand.execute());
-        }});
+                                   final Command exportAsRawCommand) {
+        final DropDownMenu menu = GWT.create(DropDownMenu.class);
+        menu.setPull(Pull.RIGHT);
 
-        final Button button = new Button() {{
-            setToggleCaret(true);
-            setDataToggle(Toggle.DROPDOWN);
-            setIcon(IconType.DOWNLOAD);
-            setSize(ButtonSize.SMALL);
-            setTitle(translationService.getValue(StunnerProjectClientConstants.DOWNLOAD_DIAGRAM));
-        }};
-        final IsWidget group = MenuUtils.buildHasEnabledWidget(new ButtonGroup() {{
-                                                                   add(button);
-                                                                   add(menu);
-                                                               }},
+        menu.add(makeExportMenuItemWidget(translationService.getValue(CoreTranslationMessages.EXPORT_PNG),
+                                          exportPNGCommand));
+        menu.add(makeExportMenuItemWidget(translationService.getValue(CoreTranslationMessages.EXPORT_JPG),
+                                          exportJPGCommand));
+        menu.add(makeExportMenuItemWidget(translationService.getValue(CoreTranslationMessages.EXPORT_SVG),
+                                          exportSVGCommand));
+        menu.add(makeExportMenuItemWidget(translationService.getValue(CoreTranslationMessages.EXPORT_PDF),
+                                          exportPDFCommand));
+        menu.add(makeExportMenuItemWidget(getExportAsRawLabel(),
+                                          exportAsRawCommand));
+
+        final Button button = GWT.create(Button.class);
+        final ButtonGroup buttonGroup = GWT.create(ButtonGroup.class);
+        buttonGroup.add(button);
+        buttonGroup.add(menu);
+        button.setToggleCaret(true);
+        button.setDataToggle(Toggle.DROPDOWN);
+        button.setIcon(IconType.DOWNLOAD);
+        button.setSize(ButtonSize.SMALL);
+        button.setTitle(translationService.getValue(StunnerProjectClientConstants.DOWNLOAD_DIAGRAM));
+
+        final IsWidget group = MenuUtils.buildHasEnabledWidget(buttonGroup,
                                                                button);
         return buildItem(group);
     }
+
+    private AnchorListItem makeExportMenuItemWidget(final String caption,
+                                                    final Command onClickCommand) {
+        final AnchorListItem exportMenuItemWidget = GWT.create(AnchorListItem.class);
+        exportMenuItemWidget.setIcon(IconType.FILE_IMAGE_O);
+        exportMenuItemWidget.setIconPosition(IconPosition.LEFT);
+        exportMenuItemWidget.setText(caption);
+        exportMenuItemWidget.setTitle(caption);
+        exportMenuItemWidget.addClickHandler(event -> onClickCommand.execute());
+        return exportMenuItemWidget;
+    }
+
+    protected abstract String getExportAsRawLabel();
 
     public MenuItem newValidateItem(final Command command) {
         return buildItem(buildValidateItem(command));

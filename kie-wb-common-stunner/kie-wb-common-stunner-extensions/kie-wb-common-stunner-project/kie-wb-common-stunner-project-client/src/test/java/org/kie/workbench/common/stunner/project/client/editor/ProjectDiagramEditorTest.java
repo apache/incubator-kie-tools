@@ -146,7 +146,7 @@ public class ProjectDiagramEditorTest {
     private SessionPresenter.View presenterView;
 
     @Mock
-    private ProjectEditorMenuSessionItems sessionItems;
+    private AbstractProjectEditorMenuSessionItems sessionItems;
 
     @Mock
     private EditorSessionCommands editorSessionCommands;

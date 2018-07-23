@@ -41,7 +41,7 @@ import static org.mockito.Mockito.when;
 public class ProjectEditorMenuSessionItemsTest {
 
     @Mock
-    private ProjectDiagramEditorMenuItemsBuilder itemsBuilder;
+    private AbstractProjectDiagramEditorMenuItemsBuilder itemsBuilder;
 
     @Mock
     private EditorSessionCommands sessionCommands;
@@ -49,12 +49,21 @@ public class ProjectEditorMenuSessionItemsTest {
     @Mock
     private FileMenuBuilder fileMenuBuilder;
 
-    private ProjectEditorMenuSessionItems editorMenuSessionItems;
+    private AbstractProjectEditorMenuSessionItems editorMenuSessionItems;
+
+    private static class TestAbstractProjectEditorMenuSessionItems extends AbstractProjectEditorMenuSessionItems<AbstractProjectDiagramEditorMenuItemsBuilder> {
+
+        public TestAbstractProjectEditorMenuSessionItems(final AbstractProjectDiagramEditorMenuItemsBuilder itemsBuilder,
+                                                         final EditorSessionCommands sessionCommands) {
+            super(itemsBuilder,
+                  sessionCommands);
+        }
+    }
 
     @Before
     public void setup() {
-        editorMenuSessionItems = new ProjectEditorMenuSessionItems(itemsBuilder,
-                                                                   sessionCommands);
+        editorMenuSessionItems = new TestAbstractProjectEditorMenuSessionItems(itemsBuilder,
+                                                                               sessionCommands);
         when(fileMenuBuilder.addNewTopLevelMenu(any(MenuItem.class))).thenReturn(fileMenuBuilder);
     }
 

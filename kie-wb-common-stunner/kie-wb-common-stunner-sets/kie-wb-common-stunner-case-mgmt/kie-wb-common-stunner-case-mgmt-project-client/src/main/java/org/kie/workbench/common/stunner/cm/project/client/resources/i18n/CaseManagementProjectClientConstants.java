@@ -25,4 +25,7 @@ public interface CaseManagementProjectClientConstants {
 
     @TranslationKey(defaultValue = "")
     String CaseManagementDiagramResourceTypeDescription = "CaseManagementDiagramResourceType.description";
+
+    @TranslationKey(defaultValue = "")
+    String CaseManagementDiagramResourceTypeDownload = "CaseManagementDiagramResourceType.download";
 }

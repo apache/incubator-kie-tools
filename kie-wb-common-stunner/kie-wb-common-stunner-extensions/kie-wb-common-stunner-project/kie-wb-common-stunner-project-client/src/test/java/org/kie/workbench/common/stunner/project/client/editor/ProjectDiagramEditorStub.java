@@ -51,7 +51,7 @@ class ProjectDiagramEditorStub extends AbstractProjectDiagramEditor<ClientResour
                                     final ClientProjectDiagramService projectDiagramServices,
                                     final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
                                     final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
-                                    final ProjectEditorMenuSessionItems menuSessionItems,
+                                    final AbstractProjectEditorMenuSessionItems menuSessionItems,
                                     final Event<OnDiagramFocusEvent> onDiagramFocusEvent,
                                     final Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent,
                                     final ProjectMessagesListener projectMessagesListener,

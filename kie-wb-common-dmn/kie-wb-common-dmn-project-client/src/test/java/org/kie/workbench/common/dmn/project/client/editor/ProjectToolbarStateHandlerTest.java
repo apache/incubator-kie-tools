@@ -26,7 +26,6 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.DeleteS
 import org.kie.workbench.common.stunner.core.client.session.command.impl.PasteSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SwitchGridSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGraphSessionCommand;
-import org.kie.workbench.common.stunner.project.client.editor.ProjectEditorMenuSessionItems;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -37,7 +36,7 @@ import static org.mockito.Mockito.when;
 public class ProjectToolbarStateHandlerTest {
 
     @Mock
-    private ProjectEditorMenuSessionItems editorMenuSessionItems;
+    private DMNProjectEditorMenuSessionItems editorMenuSessionItems;
 
     private ProjectToolbarStateHandler toolbarStateHandler;
 
