@@ -68,7 +68,10 @@ public class PackageListBoxViewImpl
         return options;
     }
 
-    KieSelectElement.Option newOption(final String name, final String value) {
+    KieSelectElement.Option newOption(final String name, String value) {
+        if (value.isEmpty()) {
+            value = name;
+        }
         return new KieSelectElement.Option(name, value);
     }
 
