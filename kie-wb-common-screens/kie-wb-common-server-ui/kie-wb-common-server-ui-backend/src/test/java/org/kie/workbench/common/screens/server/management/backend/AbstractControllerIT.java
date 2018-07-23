@@ -55,9 +55,11 @@ import static org.junit.Assert.*;
 
 public abstract class AbstractControllerIT {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractControllerIT.class);
+
     protected static final String USER = "admin";
     protected static final String PASSWORD = "admin";
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractControllerIT.class);
+    protected static final String SERVER_TEMPLATE_ID = "it-test-kie-server";
 
     @Inject
     SpecManagementService specManagementService;
@@ -182,7 +184,7 @@ public abstract class AbstractControllerIT {
         assertNotNull(serverTemplateList.getServerTemplates());
         assertEquals(1,
                      serverTemplateList.getServerTemplates().length);
-        assertEquals("it-test-kie-server",
+        assertEquals(SERVER_TEMPLATE_ID,
                      serverTemplateList.getServerTemplates()[0].getId());
     }
 

@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.server.management.backend;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -27,13 +28,20 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.server.api.model.KieContainerStatus;
+import org.kie.server.api.model.ReleaseId;
+import org.kie.server.controller.api.model.runtime.ContainerList;
+import org.kie.server.controller.api.model.runtime.ServerInstanceKeyList;
+import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.server.controller.api.model.spec.ServerTemplateList;
 import org.kie.server.controller.client.KieServerControllerClient;
 import org.kie.server.controller.client.KieServerControllerClientFactory;
 import org.kie.server.controller.client.event.EventHandler;
+import org.kie.server.integrationtests.shared.KieServerDeployer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +54,12 @@ public class EmbeddedControllerIT extends AbstractControllerIT {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EmbeddedControllerIT.class);
 
+    protected static final ReleaseId RELEASE_ID = new ReleaseId("org.kie.server.testing",
+                                                                "stateless-session-kjar",
+                                                                "1.0.0");
+    protected static final String CONTAINER_ID = "kie-concurrent";
+    protected static final String CONTAINER_NAME = "containerName";
+
     @Deployment(name = "workbench", order = 1)
     public static WebArchive createEmbeddedControllerWarDeployment() {
         return createWorkbenchWar();
@@ -54,6 +68,11 @@ public class EmbeddedControllerIT extends AbstractControllerIT {
     @Deployment(name = "kie-server", order = 2, testable = false)
     public static WebArchive createKieServerWarDeployment() {
         return createKieServerWar();
+    }
+
+    @BeforeClass
+    public static void setup() {
+        KieServerDeployer.createAndDeployKJar(RELEASE_ID);
     }
 
     @Test
@@ -79,7 +98,7 @@ public class EmbeddedControllerIT extends AbstractControllerIT {
     @Test
     @RunAsClient
     @OperateOnDeployment("workbench")
-    public void testEmbeddedNotificationsUsingWebSocket(final @ArquillianResource URL baseURL) throws Exception {
+    public void testEmbeddedNotificationsUsingWebSocket(final @ArquillianResource URL baseURL) {
         EventHandler eventHandler = mock(EventHandler.class);
         client = KieServerControllerClientFactory.newWebSocketClient(getWebSocketUrl(baseURL),
                                                                      USER,
@@ -115,7 +134,7 @@ public class EmbeddedControllerIT extends AbstractControllerIT {
         verifyNoMoreInteractions(eventHandler);
     }
 
-    protected void runAsync(final Runnable runnable) throws Exception {
+    protected void runAsync(final Runnable runnable) {
         final ExecutorService service = Executors.newSingleThreadExecutor();
         service.submit(runnable);
         service.shutdown();
@@ -124,8 +143,33 @@ public class EmbeddedControllerIT extends AbstractControllerIT {
     protected void testEmbeddedEndpoints(final KieServerControllerClient client) {
         try {
             final ServerTemplateList serverTemplateList = client.listServerTemplates();
-
             assertServerTemplateList(serverTemplateList);
+
+            final ServerInstanceKeyList instances = client.getServerInstances(serverTemplateList.getServerTemplates()[0].getId());
+            assertNotNull(instances);
+            assertEquals(1, instances.getServerInstanceKeys().length);
+            final ServerTemplate serverTemplate = serverTemplateList.getServerTemplates()[0];
+
+            // Deploy container for kie server instance.
+            ContainerSpec containerToDeploy = new ContainerSpec(CONTAINER_ID,
+                                                                CONTAINER_NAME,
+                                                                serverTemplate,
+                                                                RELEASE_ID,
+                                                                KieContainerStatus.STARTED,
+                                                                new HashMap());
+            client.saveContainerSpec(serverTemplate.getId(),
+                                                    containerToDeploy);
+
+            ContainerList containers = client.getContainers(instances.getServerInstanceKeys()[0]);
+            assertNotNull(containers);
+            assertEquals(1,
+                         containers.getContainers().length);
+
+            client.deleteContainerSpec(serverTemplate.getId(), containerToDeploy.getId());
+            containers = client.getContainers(instances.getServerInstanceKeys()[0]);
+            assertNotNull(containers);
+            assertEquals(0,
+                         containers.getContainers().length);
         } finally {
             if (client != null) {
                 try {

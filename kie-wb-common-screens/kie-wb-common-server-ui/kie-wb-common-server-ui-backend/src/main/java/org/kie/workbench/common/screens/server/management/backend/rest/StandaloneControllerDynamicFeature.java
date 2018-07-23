@@ -22,6 +22,7 @@ import javax.ws.rs.core.FeatureContext;
 import javax.ws.rs.ext.Provider;
 
 import org.kie.server.controller.rest.RestKieServerControllerImpl;
+import org.kie.server.controller.rest.RestRuntimeManagementServiceImpl;
 import org.kie.server.controller.rest.RestSpecManagementServiceImpl;
 import org.kie.workbench.common.screens.server.management.backend.utils.ControllerUtils;
 import org.slf4j.Logger;
@@ -43,6 +44,9 @@ public class StandaloneControllerDynamicFeature implements DynamicFeature {
             registerFilter(resourceInfo.getResourceClass(),
                            context);
         } else if (resourceInfo.getResourceClass().isAssignableFrom(RestSpecManagementServiceImpl.class)) {
+            registerFilter(resourceInfo.getResourceClass(),
+                           context);
+        } else if (resourceInfo.getResourceClass().isAssignableFrom(RestRuntimeManagementServiceImpl.class)) {
             registerFilter(resourceInfo.getResourceClass(),
                            context);
         }

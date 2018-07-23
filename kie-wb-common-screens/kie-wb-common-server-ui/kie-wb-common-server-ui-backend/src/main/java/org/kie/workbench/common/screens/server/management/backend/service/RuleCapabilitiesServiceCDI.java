@@ -29,8 +29,9 @@ import org.kie.workbench.common.screens.server.management.service.RuleCapabiliti
 @ApplicationScoped
 public class RuleCapabilitiesServiceCDI implements RuleCapabilitiesService {
 
-    @Inject @Any
-    org.kie.server.controller.api.service.RuleCapabilitiesService service;
+    @Inject
+    @Any
+    private org.kie.server.controller.api.service.RuleCapabilitiesService service;
 
     @Override
     public void scanNow(final ContainerSpecKey containerSpecKey) {

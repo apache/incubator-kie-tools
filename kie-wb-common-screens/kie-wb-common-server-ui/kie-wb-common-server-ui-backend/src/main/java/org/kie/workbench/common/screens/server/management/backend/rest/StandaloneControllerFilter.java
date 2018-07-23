@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.screens.server.management.backend.rest;
 
-import java.io.IOException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Response;
@@ -29,7 +28,7 @@ public class StandaloneControllerFilter implements ContainerRequestFilter {
     private static final Logger LOGGER = LoggerFactory.getLogger(StandaloneControllerFilter.class);
 
     @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
+    public void filter(ContainerRequestContext requestContext) {
         LOGGER.debug("Standalone controller in use, returning 404/NotFound for request url: {}",
                      requestContext.getUriInfo().getRequestUri().getPath());
         requestContext.abortWith(Response.status(Response.Status.NOT_FOUND).build());

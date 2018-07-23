@@ -21,12 +21,13 @@ import javax.enterprise.inject.Produces;
 
 import org.kie.server.controller.api.service.NotificationService;
 import org.kie.server.controller.api.service.RuleCapabilitiesService;
-import org.kie.server.controller.api.service.RuntimeManagementService;
 import org.kie.server.controller.api.storage.KieServerTemplateStorage;
 import org.kie.server.controller.impl.KieServerInstanceManager;
 import org.kie.server.controller.impl.service.RuleCapabilitiesServiceImpl;
 import org.kie.server.controller.impl.service.RuntimeManagementServiceImpl;
+import org.kie.server.controller.impl.service.SpecManagementServiceImpl;
 import org.kie.server.controller.rest.RestKieServerControllerImpl;
+import org.kie.server.controller.rest.RestRuntimeManagementServiceImpl;
 import org.kie.server.controller.rest.RestSpecManagementServiceImpl;
 import org.kie.workbench.common.screens.server.management.backend.utils.EmbeddedController;
 import org.slf4j.Logger;
@@ -54,11 +55,11 @@ public class KieServerEmbeddedControllerProducer {
 
     @Produces
     @ApplicationScoped
-    public RestSpecManagementServiceImpl produceSpecManagementService(final @EmbeddedController KieServerInstanceManager instanceManager,
-                                                                      final @EmbeddedController NotificationService notificationService,
-                                                                      final @EmbeddedController KieServerTemplateStorage kieServerTemplateStorage) {
-        LOGGER.debug("Creating RestSpecManagementServiceImpl...");
-        final RestSpecManagementServiceImpl service = new RestSpecManagementServiceImpl();
+    public SpecManagementServiceImpl produceSpecManagementService(final @EmbeddedController KieServerInstanceManager instanceManager,
+                                                                  final @EmbeddedController NotificationService notificationService,
+                                                                  final @EmbeddedController KieServerTemplateStorage kieServerTemplateStorage) {
+        LOGGER.debug("Creating SpecManagementServiceImpl...");
+        final SpecManagementServiceImpl service = new SpecManagementServiceImpl();
         service.setNotificationService(notificationService);
         service.setTemplateStorage(kieServerTemplateStorage);
         service.setKieServerInstanceManager(instanceManager);
@@ -67,9 +68,23 @@ public class KieServerEmbeddedControllerProducer {
 
     @Produces
     @ApplicationScoped
-    @EmbeddedController
-    public RuntimeManagementService produceRuntimeManagementService(final @EmbeddedController KieServerInstanceManager instanceManager,
-                                                                    final @EmbeddedController KieServerTemplateStorage kieServerTemplateStorage) {
+    public RestSpecManagementServiceImpl produceRestSpecManagementService(final @EmbeddedController NotificationService notificationService,
+                                                                          final @EmbeddedController KieServerTemplateStorage kieServerTemplateStorage) {
+        LOGGER.debug("Creating RestSpecManagementServiceImpl...");
+        final SpecManagementServiceImpl service = new SpecManagementServiceImpl();
+        service.setNotificationService(notificationService);
+        service.setTemplateStorage(kieServerTemplateStorage);
+        service.setKieServerInstanceManager(KieServerInstanceManager.getInstance());
+
+        final RestSpecManagementServiceImpl restSpecManagementService = new RestSpecManagementServiceImpl();
+        restSpecManagementService.setSpecManagementService(service);
+        return restSpecManagementService;
+    }
+
+    @Produces
+    @ApplicationScoped
+    public RuntimeManagementServiceImpl produceRuntimeManagementService(final @EmbeddedController KieServerInstanceManager instanceManager,
+                                                                        final @EmbeddedController KieServerTemplateStorage kieServerTemplateStorage) {
         LOGGER.debug("Creating RuntimeManagementServiceImpl...");
         final RuntimeManagementServiceImpl service = new RuntimeManagementServiceImpl();
         service.setTemplateStorage(kieServerTemplateStorage);
@@ -79,8 +94,21 @@ public class KieServerEmbeddedControllerProducer {
 
     @Produces
     @ApplicationScoped
-    public RestKieServerControllerImpl produceKieServerController(final @EmbeddedController NotificationService notificationService,
-                                                                  final @EmbeddedController KieServerTemplateStorage kieServerTemplateStorage) {
+    public RestRuntimeManagementServiceImpl produceRestRuntimeManagementService(final @EmbeddedController KieServerTemplateStorage kieServerTemplateStorage) {
+        LOGGER.debug("Creating RestRuntimeManagementServiceImpl...");
+        final RuntimeManagementServiceImpl service = new RuntimeManagementServiceImpl();
+        service.setTemplateStorage(kieServerTemplateStorage);
+        service.setKieServerInstanceManager(KieServerInstanceManager.getInstance());
+
+        RestRuntimeManagementServiceImpl restRuntimeManagementService = new RestRuntimeManagementServiceImpl();
+        restRuntimeManagementService.setRuntimeManagementService(service);
+        return restRuntimeManagementService;
+    }
+
+    @Produces
+    @ApplicationScoped
+    public RestKieServerControllerImpl produceRestKieServerController(final @EmbeddedController NotificationService notificationService,
+                                                                      final @EmbeddedController KieServerTemplateStorage kieServerTemplateStorage) {
         LOGGER.debug("Creating RestKieServerControllerImpl...");
         final RestKieServerControllerImpl controller = new RestKieServerControllerImpl();
         controller.setNotificationService(notificationService);
