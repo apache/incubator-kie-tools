@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.bpmn.workitem.service.WorkItemDefinition
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.client.session.event.SessionDestroyedEvent;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.Mock;
@@ -40,6 +41,7 @@ import org.uberfire.mvp.Command;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -67,6 +69,9 @@ public class WorkItemDefinitionClientRegistryTest {
     @Mock
     private Metadata metadata;
 
+    @Mock
+    private SessionDestroyedEvent sessionDestroyedEvent;
+
     private WorkItemDefinitionClientRegistry tested;
     private Caller<WorkItemDefinitionLookupService> serviceCaller;
 
@@ -75,6 +80,8 @@ public class WorkItemDefinitionClientRegistryTest {
     public void init() {
         when(index.registries()).thenReturn(m -> metadata.equals(m) ? registry : null);
         when(service.execute(eq(metadata))).thenReturn(Collections.singleton(WID));
+        when(sessionDestroyedEvent.getMetadata()).thenReturn(metadata);
+        when(index.remove(metadata)).thenReturn(registry);
         serviceCaller = new CallerMock<>(service);
         tested = new WorkItemDefinitionClientRegistry(serviceCaller,
                                                       sessionManager,
@@ -119,5 +126,22 @@ public class WorkItemDefinitionClientRegistryTest {
     public void testDestroy() {
         tested.destroy();
         verify(index, times(1)).clear();
+    }
+
+    @Test
+    public void testOnSessionDestroyed() {
+        tested.onSessionDestroyed(sessionDestroyedEvent);
+        verify(index).remove(metadata);
+        verify(registry).clear();
+    }
+
+    @Test
+    public void testOnSessionDestroyedNullRegistry() {
+        when(index.remove(metadata)).thenReturn(null);
+
+        tested.onSessionDestroyed(sessionDestroyedEvent);
+
+        verify(index).remove(metadata);
+        verify(registry, never()).clear();
     }
 }

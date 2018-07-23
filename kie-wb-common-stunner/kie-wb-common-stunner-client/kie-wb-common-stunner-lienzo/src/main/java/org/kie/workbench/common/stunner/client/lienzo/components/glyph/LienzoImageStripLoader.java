@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.client.lienzo.components.glyph;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -45,6 +46,8 @@ public class LienzoImageStripLoader implements SessionInitializer {
     private final BiConsumer<com.ait.lienzo.client.core.image.ImageStrip[], Runnable> lienzoStripRegistration;
     private final Consumer<String> lienzoStripRemoval;
     private final Set<String> registered;
+
+    private static ImageStrips imageStrips = ImageStrips.get();
 
     @Inject
     public LienzoImageStripLoader(final DefinitionUtils definitionUtils,
@@ -104,12 +107,11 @@ public class LienzoImageStripLoader implements SessionInitializer {
 
     private static void registerIntoLienzo(final com.ait.lienzo.client.core.image.ImageStrip[] instances,
                                            final Runnable callback) {
-        ImageStrips.get().register(instances,
-                                   callback);
+       imageStrips.register(instances, callback);
     }
 
-    private static void removeFromLienzo(final String name) {
-        ImageStrips.get().remove(name);
+    protected static void removeFromLienzo(final String name) {
+        Optional.ofNullable(imageStrips.get(name)).ifPresent(imageStrip -> imageStrips.remove(name));
     }
 
     private static com.ait.lienzo.client.core.image.ImageStrip convert(final ImageStrip strip) {
@@ -125,6 +127,10 @@ public class LienzoImageStripLoader implements SessionInitializer {
         return ImageStrip.Orientation.HORIZONTAL.equals(orientation) ?
                 com.ait.lienzo.client.core.image.ImageStrip.Orientation.HORIZONTAL :
                 com.ait.lienzo.client.core.image.ImageStrip.Orientation.VERTICAL;
+    }
+
+    protected static void setImageStrips(ImageStrips imageStrips) {
+        LienzoImageStripLoader.imageStrips = imageStrips;
     }
 
     Set<String> getRegistered() {

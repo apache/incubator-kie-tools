@@ -20,6 +20,7 @@ import java.lang.annotation.Annotation;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import com.ait.lienzo.client.core.image.ImageStrips;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
@@ -44,6 +45,8 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -167,5 +170,22 @@ public class LienzoImageStripLoaderTest {
         tested.destroy();
         assertTrue(tested.getRegistered().isEmpty());
         verify(lienzoStripRemoval, times(1)).accept(anyString());
+    }
+
+    @Test
+    public void testRemoveFromLienzo() {
+        final String name = "name";
+        final ImageStrips imageStrips = mock(ImageStrips.class);
+        final com.ait.lienzo.client.core.image.ImageStrip imageStrip = mock(com.ait.lienzo.client.core.image.ImageStrip.class);
+        when(imageStrip.getName()).thenReturn(name);
+        when(imageStrips.get(name)).thenReturn(imageStrip);
+        LienzoImageStripLoader.setImageStrips(imageStrips);
+        tested.removeFromLienzo(name);
+        verify(imageStrips).remove(name);
+
+        //testing null imageStrip
+        reset(imageStrips);
+        tested.removeFromLienzo(name);
+        verify(imageStrips, never()).remove(name);
     }
 }
