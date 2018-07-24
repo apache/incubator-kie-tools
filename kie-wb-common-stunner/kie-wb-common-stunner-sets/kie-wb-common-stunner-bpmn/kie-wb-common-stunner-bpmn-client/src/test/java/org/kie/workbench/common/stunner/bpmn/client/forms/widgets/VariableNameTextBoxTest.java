@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
@@ -32,6 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -50,7 +50,6 @@ import static org.mockito.Mockito.when;
 @RunWith(Parameterized.class)
 public class VariableNameTextBoxTest {
 
-    private static final String ALPHA_NUM_REGEXP = "^[a-zA-Z0-9\\-\\.\\_]*$";
     private static final String ERROR_MESSAGE = "some error";
     private static final String ERROR_REMOVED = "some error reg exp";
     private static final String ERROR_TYPED = "some error reg exp2";
@@ -67,9 +66,6 @@ public class VariableNameTextBoxTest {
 
     @Mock
     private KeyPressEvent keyPressEvent;
-
-    @Mock
-    private NativeEvent nativeEvent;
 
     private boolean caseSensitive;
 
@@ -104,13 +100,14 @@ public class VariableNameTextBoxTest {
         doCallRealMethod().when(textBox).setup();
         doCallRealMethod().when(textBox).addBlurHandler(any(BlurHandler.class));
         doCallRealMethod().when(textBox).addKeyPressHandler(any(KeyPressHandler.class));
-        textBox.setRegExp(ALPHA_NUM_REGEXP,
+        textBox.setRegExp(StringUtils.ALPHA_NUM_REGEXP,
                           ERROR_REMOVED,
                           ERROR_TYPED);
         INVALID_VALUES.clear();
         INVALID_VALUES.add("abc");
         INVALID_VALUES.add("CdE");
         INVALID_VALUES.add("a#$%1");
+        INVALID_VALUES.add("a.");
         textBox.setInvalidValues(INVALID_VALUES,
                                  caseSensitive,
                                  ERROR_MESSAGE);
@@ -179,6 +176,9 @@ public class VariableNameTextBoxTest {
         makeValidResult = textBox.makeValidValue("a#b$2%1");
         assertEquals("ab21",
                      makeValidResult);
+        makeValidResult = textBox.makeValidValue("a#b$2%1.3-4_5");
+        assertEquals("ab213-4_5",
+                     makeValidResult);
     }
 
     @Test
@@ -189,6 +189,22 @@ public class VariableNameTextBoxTest {
         assertEquals(null,
                      isValidResult);
         isValidResult = textBox.isValidValue("a",
+                                             false);
+        assertEquals(null,
+                     isValidResult);
+        isValidResult = textBox.isValidValue("-",
+                                             true);
+        assertEquals(null,
+                     isValidResult);
+        isValidResult = textBox.isValidValue("-",
+                                             false);
+        assertEquals(null,
+                     isValidResult);
+        isValidResult = textBox.isValidValue("_",
+                                             true);
+        assertEquals(null,
+                     isValidResult);
+        isValidResult = textBox.isValidValue("_",
                                              false);
         assertEquals(null,
                      isValidResult);
@@ -220,6 +236,16 @@ public class VariableNameTextBoxTest {
         isValidResult = textBox.isValidValue("a#$%1",
                                              false);
         assertEquals(ERROR_TYPED + ": #$%",
+                     isValidResult);
+
+        isValidResult = textBox.isValidValue("a.",
+                                             true);
+        assertEquals(ERROR_MESSAGE,
+                     isValidResult);
+
+        isValidResult = textBox.isValidValue("a.",
+                                             false);
+        assertEquals(ERROR_TYPED + ": .",
                      isValidResult);
     }
 }

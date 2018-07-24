@@ -43,6 +43,7 @@ import org.kie.workbench.common.stunner.bpmn.client.StunnerSpecific;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable.VariableType;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.ComboBox;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.ComboBoxView;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.VariableNameTextBox;
@@ -154,7 +155,7 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
                               true,
                               CUSTOM_PROMPT,
                               ENTER_TYPE_PROMPT);
-        name.setRegExp("^[a-zA-Z0-9\\-\\.\\_]*$",
+        name.setRegExp(StringUtils.ALPHA_NUM_REGEXP,
                        "Removed invalid characters from name",
                        "Invalid character in name");
         customDataType.addKeyDownHandler(new KeyDownHandler() {

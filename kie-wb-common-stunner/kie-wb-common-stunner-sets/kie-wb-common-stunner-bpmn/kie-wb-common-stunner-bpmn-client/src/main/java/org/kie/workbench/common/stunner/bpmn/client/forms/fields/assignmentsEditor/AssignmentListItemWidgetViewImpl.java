@@ -46,6 +46,7 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFor
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable.VariableType;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.ComboBox;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.ComboBoxView;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.VariableNameTextBox;
@@ -62,7 +63,6 @@ import org.uberfire.workbench.events.NotificationEvent;
 @Templated("ActivityDataIOEditorWidget.html#assignment")
 public class AssignmentListItemWidgetViewImpl extends Composite implements AssignmentListItemWidgetView,
                                                                            ComboBoxView.ModelPresenter {
-
     /**
      * Errai's data binding module will automatically bind the provided instance
      * of the model (see {@link #setModel(AssignmentRow)}) to all fields annotated
@@ -207,7 +207,7 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
                                 true,
                                 CONSTANT_PROMPT,
                                 ENTER_CONSTANT_PROMPT);
-        name.setRegExp("^[a-zA-Z0-9\\-\\.\\_]*$",
+        name.setRegExp(StringUtils.ALPHA_NUM_REGEXP,
                        StunnerFormsClientFieldsConstants.INSTANCE.Removed_invalid_characters_from_name(),
                        StunnerFormsClientFieldsConstants.INSTANCE.Invalid_character_in_name());
         customDataType.addKeyDownHandler(new KeyDownHandler() {
