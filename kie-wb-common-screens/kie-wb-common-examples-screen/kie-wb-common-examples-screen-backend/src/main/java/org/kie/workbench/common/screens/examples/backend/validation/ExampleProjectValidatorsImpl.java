@@ -17,7 +17,9 @@
 
 package org.kie.workbench.common.screens.examples.backend.validation;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -36,7 +38,12 @@ public class ExampleProjectValidatorsImpl implements ExampleProjectValidators {
 
     @Inject
     public ExampleProjectValidatorsImpl(Instance<ExampleProjectValidator> validators) {
-        this.validators = Lists.newArrayList(validators);
+
+        if (validators == null) {
+            this.validators = new ArrayList<>();
+        } else {
+            this.validators = Lists.newArrayList(validators);
+        }
     }
 
     @Override
