@@ -30,7 +30,7 @@ import static junit.framework.Assert.*;
 /**
  * Tests for DynamicData
  */
-public class DynamicDataTestsWithHiddenColumns2 {
+public class DynamicDataWithHiddenColumns1Test {
 
     protected DynamicData data = new DynamicData();
 
@@ -42,10 +42,10 @@ public class DynamicDataTestsWithHiddenColumns2 {
 
         data.addColumn( 0,
                         EMPTY_COLUMN,
-                        true );
+                        false );
         data.addColumn( 1,
                         EMPTY_COLUMN,
-                        false );
+                        true );
         data.addColumn( 2,
                         EMPTY_COLUMN,
                         true );
@@ -186,7 +186,7 @@ public class DynamicDataTestsWithHiddenColumns2 {
         assertEquals( c.getRow(),
                       0 );
         assertEquals( c.getCol(),
-                      0 );
+                      1 );
         c = data.get( 0 ).get( 1 ).getPhysicalCoordinate();
         assertEquals( c.getRow(),
                       0 );
@@ -202,7 +202,7 @@ public class DynamicDataTestsWithHiddenColumns2 {
         assertEquals( c.getRow(),
                       1 );
         assertEquals( c.getCol(),
-                      0 );
+                      1 );
         c = data.get( 1 ).get( 1 ).getPhysicalCoordinate();
         assertEquals( c.getRow(),
                       1 );
@@ -218,7 +218,7 @@ public class DynamicDataTestsWithHiddenColumns2 {
         assertEquals( c.getRow(),
                       2 );
         assertEquals( c.getCol(),
-                      0 );
+                      1 );
         c = data.get( 2 ).get( 1 ).getPhysicalCoordinate();
         assertEquals( c.getRow(),
                       2 );

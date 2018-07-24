@@ -15,13 +15,13 @@
  */
 package org.kie.workbench.common.widgets.decoratedgrid.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicData;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicDataRow;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Tests for DynamicData

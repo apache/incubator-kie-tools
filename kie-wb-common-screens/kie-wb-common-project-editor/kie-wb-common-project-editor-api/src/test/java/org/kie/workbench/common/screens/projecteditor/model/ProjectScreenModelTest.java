@@ -27,7 +27,7 @@ import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import static org.jgroups.util.Util.assertTrue;
 import static org.junit.Assert.*;
 
-public class ProjectScreenModelTests {
+public class ProjectScreenModelTest {
 
     @Test
     public void testHashCode() {

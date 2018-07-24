@@ -29,7 +29,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class FormEditorPresenterModelErrors extends FormEditorPresenterAbstractTest {
+public class FormEditorPresenterModelErrorsTest extends FormEditorPresenterAbstractTest {
 
     private final String MODEL_ERROR_MESSAGE = "model error";
     private final String UNEXPECTED_ERROR_MESSAGE = "unexpected error";

@@ -24,7 +24,7 @@ import static junit.framework.Assert.assertEquals;
 /**
  * Tests for DynamicData
  */
-public class DynamicDataTestsWithMergingColumnDeletions extends BaseDynamicDataTests {
+public class DynamicDataWithMergingColumnAdditionsTest extends BaseDynamicDataTests {
 
     @Before
     public void setup() {
@@ -103,19 +103,21 @@ public class DynamicDataTestsWithMergingColumnDeletions extends BaseDynamicDataT
         assertEquals( c.getCol(),
                       2 );
 
-        data.deleteColumn( 2 );
+        data.addColumn( 3,
+                        makeCellValueList(),
+                        true );
         assertEquals( data.size(),
                       3 );
         assertEquals( data.get( 0 ).size(),
-                      2 );
+                      4 );
         assertEquals( data.get( 1 ).size(),
-                      2 );
+                      4 );
         assertEquals( data.get( 2 ).size(),
-                      2 );
+                      4 );
 
-        //[1][-][3][-] --> [0,0][0,1]
-        //[1][2][3][-] --> [1,0][1,1]
-        //[-][2][3][-] --> [2,0][2,1]
+        //[1][-][3][-] --> [0,0][0,1][0,2][0,3]
+        //[1][2][3][-] --> [1,0][1,1][1,2][1,3]
+        //[-][2][3][-] --> [2,0][2,1][2,2][2,3]
         c = data.get( 0 ).get( 0 ).getCoordinate();
         assertEquals( c.getRow(),
                       0 );
@@ -126,6 +128,16 @@ public class DynamicDataTestsWithMergingColumnDeletions extends BaseDynamicDataT
                       0 );
         assertEquals( c.getCol(),
                       1 );
+        c = data.get( 0 ).get( 2 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      2 );
+        c = data.get( 0 ).get( 3 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      3 );
 
         c = data.get( 1 ).get( 0 ).getCoordinate();
         assertEquals( c.getRow(),
@@ -137,6 +149,16 @@ public class DynamicDataTestsWithMergingColumnDeletions extends BaseDynamicDataT
                       1 );
         assertEquals( c.getCol(),
                       1 );
+        c = data.get( 1 ).get( 2 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      2 );
+        c = data.get( 1 ).get( 3 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      3 );
 
         c = data.get( 2 ).get( 0 ).getCoordinate();
         assertEquals( c.getRow(),
@@ -148,6 +170,16 @@ public class DynamicDataTestsWithMergingColumnDeletions extends BaseDynamicDataT
                       2 );
         assertEquals( c.getCol(),
                       1 );
+        c = data.get( 2 ).get( 2 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      2 );
+        assertEquals( c.getCol(),
+                      2 );
+        c = data.get( 2 ).get( 3 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      2 );
+        assertEquals( c.getCol(),
+                      3 );
 
     }
 
@@ -207,19 +239,21 @@ public class DynamicDataTestsWithMergingColumnDeletions extends BaseDynamicDataT
         assertEquals( c.getCol(),
                       2 );
 
-        data.deleteColumn( 2 );
+        data.addColumn( 3,
+                        makeCellValueList(),
+                        true );
         assertEquals( data.size(),
                       3 );
         assertEquals( data.get( 0 ).size(),
-                      2 );
+                      4 );
         assertEquals( data.get( 1 ).size(),
-                      2 );
+                      4 );
         assertEquals( data.get( 2 ).size(),
-                      2 );
+                      4 );
 
-        //[1][-][3] --> [0,0][0,1]
-        //[1][2][3] --> [0,0][1,0]
-        //[-][2][3] --> [2,0][1,0]
+        //[1][-][3][-] --> [0,0][0,1][0,2][0,3]
+        //[1][2][3][-] --> [0,0][1,0][0,2][0,3]
+        //[-][2][3][-] --> [2,0][1,0][0,2][0,3]
         c = data.get( 0 ).get( 0 ).getHtmlCoordinate();
         assertEquals( c.getRow(),
                       0 );
@@ -230,6 +264,16 @@ public class DynamicDataTestsWithMergingColumnDeletions extends BaseDynamicDataT
                       0 );
         assertEquals( c.getCol(),
                       1 );
+        c = data.get( 0 ).get( 2 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      2 );
+        c = data.get( 0 ).get( 3 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      3 );
 
         c = data.get( 1 ).get( 0 ).getHtmlCoordinate();
         assertEquals( c.getRow(),
@@ -241,6 +285,16 @@ public class DynamicDataTestsWithMergingColumnDeletions extends BaseDynamicDataT
                       1 );
         assertEquals( c.getCol(),
                       0 );
+        c = data.get( 1 ).get( 2 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      2 );
+        c = data.get( 1 ).get( 3 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      3 );
 
         c = data.get( 2 ).get( 0 ).getHtmlCoordinate();
         assertEquals( c.getRow(),
@@ -252,6 +306,16 @@ public class DynamicDataTestsWithMergingColumnDeletions extends BaseDynamicDataT
                       1 );
         assertEquals( c.getCol(),
                       0 );
+        c = data.get( 2 ).get( 2 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      2 );
+        c = data.get( 2 ).get( 3 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      3 );
 
     }
 
@@ -291,19 +355,21 @@ public class DynamicDataTestsWithMergingColumnDeletions extends BaseDynamicDataT
         assertEquals( c.getCol(),
                       0 );
 
-        data.deleteColumn( 2 );
+        data.addColumn( 3,
+                        makeCellValueList(),
+                        true );
         assertEquals( data.size(),
                       3 );
         assertEquals( data.get( 0 ).size(),
-                      2 );
+                      4 );
         assertEquals( data.get( 1 ).size(),
-                      2 );
+                      4 );
         assertEquals( data.get( 2 ).size(),
-                      2 );
+                      4 );
 
-        //[1][-][3] --> [0,0][0,1] --> [0,0][0,1]
-        //[1][2][3] --> [0,0][1,0] --> [1,1][-,-]
-        //[-][2][3] --> [2,0][1,0] --> [2,0][-,-]
+        //[1][-][3][-] --> [0,0][0,1][0,2][0,3] --> [0,0][0,1][0,2][0,3]
+        //[1][2][3][-] --> [0,0][1,0][0,2][0,3] --> [1,1][-,-][-,-][-,-]
+        //[-][2][3][-] --> [2,0][1,0][0,2][0,3] --> [2,0][-,-][-,-][-,-]
         c = data.get( 0 ).get( 0 ).getPhysicalCoordinate();
         assertEquals( c.getRow(),
                       0 );
@@ -314,6 +380,16 @@ public class DynamicDataTestsWithMergingColumnDeletions extends BaseDynamicDataT
                       0 );
         assertEquals( c.getCol(),
                       1 );
+        c = data.get( 0 ).get( 2 ).getPhysicalCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      2 );
+        c = data.get( 0 ).get( 3 ).getPhysicalCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      3 );
 
         c = data.get( 1 ).get( 0 ).getPhysicalCoordinate();
         assertEquals( c.getRow(),

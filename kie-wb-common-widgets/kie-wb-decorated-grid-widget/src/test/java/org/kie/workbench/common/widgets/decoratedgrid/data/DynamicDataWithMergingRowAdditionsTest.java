@@ -25,7 +25,7 @@ import static junit.framework.Assert.assertEquals;
 /**
  * Tests for DynamicData
  */
-public class DynamicDataTestsWithMergingRowAdditions extends BaseDynamicDataTests {
+public class DynamicDataWithMergingRowAdditionsTest extends BaseDynamicDataTests {
 
     @Before
     public void setup() {

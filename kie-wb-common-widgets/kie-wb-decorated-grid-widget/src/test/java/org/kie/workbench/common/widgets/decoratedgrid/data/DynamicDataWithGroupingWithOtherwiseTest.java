@@ -15,65 +15,100 @@
  */
 package org.kie.workbench.common.widgets.decoratedgrid.data;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue.CellState;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue.GroupedCellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicData;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicDataRow;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 /**
  * Tests for DynamicData
  */
-public class DynamicDataTestsWithHiddenColumns3 {
-
-    protected DynamicData data = new DynamicData();
-
-    protected static final List<CellValue<? extends Comparable<?>>> EMPTY_COLUMN = new ArrayList<CellValue<? extends Comparable<?>>>();
+public class DynamicDataWithGroupingWithOtherwiseTest extends BaseDynamicDataTests {
 
     @Before
     public void setup() {
-        data.clear();
+        super.setup();
 
-        data.addColumn( 0,
-                        EMPTY_COLUMN,
-                        true );
-        data.addColumn( 1,
-                        EMPTY_COLUMN,
-                        true );
-        data.addColumn( 2,
-                        EMPTY_COLUMN,
-                        false );
+        //Setup date to merge
+        //[1][-][3]
+        //[1][2][*]
+        //[-][2][3]
+        data.get( 0 ).get( 0 ).setValue( "1" );
+        data.get( 0 ).get( 1 ).setValue( "-" );
+        data.get( 0 ).get( 2 ).setValue( "3" );
 
-        data.addRow( makeRow() );
-        data.addRow( makeRow() );
-        data.addRow( makeRow() );
+        data.get( 1 ).get( 0 ).setValue( "1" );
+        data.get( 1 ).get( 1 ).setValue( "2" );
+        data.get( 1 ).get( 2 ).addState( CellState.OTHERWISE );
 
+        data.get( 2 ).get( 0 ).setValue( "-" );
+        data.get( 2 ).get( 1 ).setValue( "2" );
+        data.get( 2 ).get( 2 ).setValue( "3" );
     }
 
-    protected DynamicDataRow makeRow() {
-        DynamicDataRow row = new DynamicDataRow();
-        for ( CellValue<?> cell : makeCellValueList() ) {
-            row.add( cell );
-        }
-        return row;
-    }
+    @Test
+    @SuppressWarnings("rawtypes")
+    public void testDataGrouping() {
+        //[1][-][3] --> [1][x][x]
+        //[1][2][*] --> [-][2][3]
+        //[-][2][3] -->
+        GroupedCellValue gcv;
+        CellValue<? extends Comparable<?>> cv = data.get( 0 ).get( 0 );
 
-    protected List<CellValue<? extends Comparable<?>>> makeCellValueList() {
-        List<CellValue<? extends Comparable<?>>> row = new ArrayList<CellValue<? extends Comparable<?>>>();
-        row.add( new CellValue<String>( "" ) );
-        row.add( new CellValue<String>( "" ) );
-        row.add( new CellValue<String>( "" ) );
-        return row;
+        data.setMerged( true );
+        data.applyModelGrouping( cv );
+
+        assertEquals( data.size(),
+                      2 );
+
+        cv = data.get( 0 ).get( 0 );
+        assertTrue( cv instanceof GroupedCellValue );
+        gcv = (GroupedCellValue) cv;
+        assertFalse( gcv.hasMultipleValues() );
+        assertEquals( cv.getValue(),
+                      "1" );
+        cv = data.get( 0 ).get( 1 );
+        assertTrue( cv instanceof GroupedCellValue );
+        gcv = (GroupedCellValue) cv;
+        assertTrue( gcv.hasMultipleValues() );
+        cv = data.get( 0 ).get( 2 );
+        assertTrue( cv instanceof GroupedCellValue );
+        gcv = (GroupedCellValue) cv;
+        assertTrue( gcv.hasMultipleValues() );
+        assertEquals( cv.getValue(),
+                      "3" );
+
+        cv = data.get( 1 ).get( 0 );
+        assertFalse( cv instanceof GroupedCellValue );
+        assertEquals( cv.getValue(),
+                      "-" );
+        cv = data.get( 1 ).get( 1 );
+        assertFalse( cv instanceof GroupedCellValue );
+        assertEquals( cv.getValue(),
+                      "2" );
+        cv = data.get( 1 ).get( 2 );
+        assertFalse( cv instanceof GroupedCellValue );
+        assertEquals( cv.getValue(),
+                      "3" );
+
     }
 
     @Test
     public void testIndexing_DataCoordinates() {
+        //[1][-][3] --> [1][x][x] --> [0,0][0,1][0,2]
+        //[1][2][*] --> [-][2][3] --> [1,0][1,1][1,2]
+        //[-][2][3] -->
+        CellValue<? extends Comparable<?>> cv = data.get( 0 ).get( 0 );
+
+        data.setMerged( true );
+        data.applyModelGrouping( cv );
+
+        assertEquals( data.size(),
+                      2 );
 
         Coordinate c;
         c = data.get( 0 ).get( 0 ).getCoordinate();
@@ -108,25 +143,20 @@ public class DynamicDataTestsWithHiddenColumns3 {
         assertEquals( c.getCol(),
                       2 );
 
-        c = data.get( 2 ).get( 0 ).getCoordinate();
-        assertEquals( c.getRow(),
-                      2 );
-        assertEquals( c.getCol(),
-                      0 );
-        c = data.get( 2 ).get( 1 ).getCoordinate();
-        assertEquals( c.getRow(),
-                      2 );
-        assertEquals( c.getCol(),
-                      1 );
-        c = data.get( 2 ).get( 2 ).getCoordinate();
-        assertEquals( c.getRow(),
-                      2 );
-        assertEquals( c.getCol(),
-                      2 );
     }
 
     @Test
     public void testIndexing_HtmlCoordinates() {
+        //[1][-][3] --> [1][x][x] --> [0,0][0,1][0,2]
+        //[1][2][*] --> [-][2][3] --> [1,0][1,1][1,2]
+        //[-][2][3] -->
+        CellValue<? extends Comparable<?>> cv = data.get( 0 ).get( 0 );
+
+        data.setMerged( true );
+        data.applyModelGrouping( cv );
+
+        assertEquals( data.size(),
+                      2 );
 
         Coordinate c;
         c = data.get( 0 ).get( 0 ).getHtmlCoordinate();
@@ -143,7 +173,7 @@ public class DynamicDataTestsWithHiddenColumns3 {
         assertEquals( c.getRow(),
                       0 );
         assertEquals( c.getCol(),
-                      1 );
+                      2 );
 
         c = data.get( 1 ).get( 0 ).getHtmlCoordinate();
         assertEquals( c.getRow(),
@@ -159,27 +189,22 @@ public class DynamicDataTestsWithHiddenColumns3 {
         assertEquals( c.getRow(),
                       1 );
         assertEquals( c.getCol(),
-                      1 );
+                      2 );
 
-        c = data.get( 2 ).get( 0 ).getHtmlCoordinate();
-        assertEquals( c.getRow(),
-                      2 );
-        assertEquals( c.getCol(),
-                      0 );
-        c = data.get( 2 ).get( 1 ).getHtmlCoordinate();
-        assertEquals( c.getRow(),
-                      2 );
-        assertEquals( c.getCol(),
-                      1 );
-        c = data.get( 2 ).get( 2 ).getHtmlCoordinate();
-        assertEquals( c.getRow(),
-                      2 );
-        assertEquals( c.getCol(),
-                      1 );
     }
 
     @Test
     public void testIndexing_PhysicalCoordinates() {
+        //[1][-][3] --> [1][x][x] --> [0,0][0,1][0,2] --> [0,0][0,1][0,2]
+        //[1][2][*] --> [-][2][3] --> [1,0][1,1][1,2] --> [1,0][1,1][1,2]
+        //[-][2][3] -->
+        CellValue<? extends Comparable<?>> cv = data.get( 0 ).get( 0 );
+
+        data.setMerged( true );
+        data.applyModelGrouping( cv );
+
+        assertEquals( data.size(),
+                      2 );
 
         Coordinate c;
         c = data.get( 0 ).get( 0 ).getPhysicalCoordinate();
@@ -214,27 +239,21 @@ public class DynamicDataTestsWithHiddenColumns3 {
         assertEquals( c.getCol(),
                       2 );
 
-        c = data.get( 2 ).get( 0 ).getPhysicalCoordinate();
-        assertEquals( c.getRow(),
-                      2 );
-        assertEquals( c.getCol(),
-                      0 );
-        c = data.get( 2 ).get( 1 ).getPhysicalCoordinate();
-        assertEquals( c.getRow(),
-                      2 );
-        assertEquals( c.getCol(),
-                      1 );
-        c = data.get( 2 ).get( 2 ).getPhysicalCoordinate();
-        assertEquals( c.getRow(),
-                      2 );
-        assertEquals( c.getCol(),
-                      2 );
     }
 
     @Test
     public void testIndexing_RowSpans() {
+        //[1][-][3] --> [1][x][x] --> [0,0][0,1][0,2] --> [1][1][1]
+        //[1][2][*] --> [-][2][3] --> [1,0][1,1][1,2] --> [1][1][1]
+        //[-][2][3] -->
+        CellValue<? extends Comparable<?>> cv = data.get( 0 ).get( 0 );
 
-        CellValue<? extends Comparable<?>> cv;
+        data.setMerged( true );
+        data.applyModelGrouping( cv );
+
+        assertEquals( data.size(),
+                      2 );
+
         cv = data.get( 0 ).get( 0 );
         assertEquals( cv.getRowSpan(),
                       1 );
@@ -255,15 +274,6 @@ public class DynamicDataTestsWithHiddenColumns3 {
         assertEquals( cv.getRowSpan(),
                       1 );
 
-        cv = data.get( 2 ).get( 0 );
-        assertEquals( cv.getRowSpan(),
-                      1 );
-        cv = data.get( 2 ).get( 1 );
-        assertEquals( cv.getRowSpan(),
-                      1 );
-        cv = data.get( 2 ).get( 2 );
-        assertEquals( cv.getRowSpan(),
-                      1 );
     }
 
 }

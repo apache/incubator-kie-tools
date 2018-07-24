@@ -24,7 +24,7 @@ import static org.jgroups.util.Util.assertTrue;
 /**
  * DataEnumLoader tests
  */
-public class DataEnumLoaderTests {
+public class DataEnumLoaderTest {
 
     @Test
     public void testSimpleEnum() {

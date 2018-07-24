@@ -24,7 +24,7 @@ import static junit.framework.Assert.assertEquals;
 /**
  * Tests for DynamicData
  */
-public class DynamicDataTestsWithoutMergingRowAdditions extends BaseDynamicDataTests {
+public class DynamicDataWithoutMergingRowDeletionsTest extends BaseDynamicDataTests {
 
     @Test
     public void testIndexing_DataCoordinates() {
@@ -78,10 +78,9 @@ public class DynamicDataTestsWithoutMergingRowAdditions extends BaseDynamicDataT
         assertEquals( c.getCol(),
                       2 );
 
-        data.addRow( 1,
-                     makeRow() );
+        data.deleteRow( 1 );
         assertEquals( data.size(),
-                      4 );
+                      2 );
 
         c = data.get( 0 ).get( 0 ).getCoordinate();
         assertEquals( c.getRow(),
@@ -112,38 +111,6 @@ public class DynamicDataTestsWithoutMergingRowAdditions extends BaseDynamicDataT
         c = data.get( 1 ).get( 2 ).getCoordinate();
         assertEquals( c.getRow(),
                       1 );
-        assertEquals( c.getCol(),
-                      2 );
-
-        c = data.get( 2 ).get( 0 ).getCoordinate();
-        assertEquals( c.getRow(),
-                      2 );
-        assertEquals( c.getCol(),
-                      0 );
-        c = data.get( 2 ).get( 1 ).getCoordinate();
-        assertEquals( c.getRow(),
-                      2 );
-        assertEquals( c.getCol(),
-                      1 );
-        c = data.get( 2 ).get( 2 ).getCoordinate();
-        assertEquals( c.getRow(),
-                      2 );
-        assertEquals( c.getCol(),
-                      2 );
-
-        c = data.get( 3 ).get( 0 ).getCoordinate();
-        assertEquals( c.getRow(),
-                      3 );
-        assertEquals( c.getCol(),
-                      0 );
-        c = data.get( 3 ).get( 1 ).getCoordinate();
-        assertEquals( c.getRow(),
-                      3 );
-        assertEquals( c.getCol(),
-                      1 );
-        c = data.get( 3 ).get( 2 ).getCoordinate();
-        assertEquals( c.getRow(),
-                      3 );
         assertEquals( c.getCol(),
                       2 );
 
@@ -201,10 +168,9 @@ public class DynamicDataTestsWithoutMergingRowAdditions extends BaseDynamicDataT
         assertEquals( c.getCol(),
                       2 );
 
-        data.addRow( 1,
-                     makeRow() );
+        data.deleteRow( 1 );
         assertEquals( data.size(),
-                      4 );
+                      2 );
 
         c = data.get( 0 ).get( 0 ).getHtmlCoordinate();
         assertEquals( c.getRow(),
@@ -235,38 +201,6 @@ public class DynamicDataTestsWithoutMergingRowAdditions extends BaseDynamicDataT
         c = data.get( 1 ).get( 2 ).getHtmlCoordinate();
         assertEquals( c.getRow(),
                       1 );
-        assertEquals( c.getCol(),
-                      2 );
-
-        c = data.get( 2 ).get( 0 ).getHtmlCoordinate();
-        assertEquals( c.getRow(),
-                      2 );
-        assertEquals( c.getCol(),
-                      0 );
-        c = data.get( 2 ).get( 1 ).getHtmlCoordinate();
-        assertEquals( c.getRow(),
-                      2 );
-        assertEquals( c.getCol(),
-                      1 );
-        c = data.get( 2 ).get( 2 ).getHtmlCoordinate();
-        assertEquals( c.getRow(),
-                      2 );
-        assertEquals( c.getCol(),
-                      2 );
-
-        c = data.get( 3 ).get( 0 ).getHtmlCoordinate();
-        assertEquals( c.getRow(),
-                      3 );
-        assertEquals( c.getCol(),
-                      0 );
-        c = data.get( 3 ).get( 1 ).getHtmlCoordinate();
-        assertEquals( c.getRow(),
-                      3 );
-        assertEquals( c.getCol(),
-                      1 );
-        c = data.get( 3 ).get( 2 ).getHtmlCoordinate();
-        assertEquals( c.getRow(),
-                      3 );
         assertEquals( c.getCol(),
                       2 );
 
@@ -324,10 +258,9 @@ public class DynamicDataTestsWithoutMergingRowAdditions extends BaseDynamicDataT
         assertEquals( c.getCol(),
                       2 );
 
-        data.addRow( 1,
-                     makeRow() );
+        data.deleteRow( 1 );
         assertEquals( data.size(),
-                      4 );
+                      2 );
 
         c = data.get( 0 ).get( 0 ).getPhysicalCoordinate();
         assertEquals( c.getRow(),
@@ -361,37 +294,6 @@ public class DynamicDataTestsWithoutMergingRowAdditions extends BaseDynamicDataT
         assertEquals( c.getCol(),
                       2 );
 
-        c = data.get( 2 ).get( 0 ).getPhysicalCoordinate();
-        assertEquals( c.getRow(),
-                      2 );
-        assertEquals( c.getCol(),
-                      0 );
-        c = data.get( 2 ).get( 1 ).getPhysicalCoordinate();
-        assertEquals( c.getRow(),
-                      2 );
-        assertEquals( c.getCol(),
-                      1 );
-        c = data.get( 2 ).get( 2 ).getPhysicalCoordinate();
-        assertEquals( c.getRow(),
-                      2 );
-        assertEquals( c.getCol(),
-                      2 );
-
-        c = data.get( 3 ).get( 0 ).getPhysicalCoordinate();
-        assertEquals( c.getRow(),
-                      3 );
-        assertEquals( c.getCol(),
-                      0 );
-        c = data.get( 3 ).get( 1 ).getPhysicalCoordinate();
-        assertEquals( c.getRow(),
-                      3 );
-        assertEquals( c.getCol(),
-                      1 );
-        c = data.get( 3 ).get( 2 ).getPhysicalCoordinate();
-        assertEquals( c.getRow(),
-                      3 );
-        assertEquals( c.getCol(),
-                      2 );
     }
 
     @Test
@@ -428,10 +330,9 @@ public class DynamicDataTestsWithoutMergingRowAdditions extends BaseDynamicDataT
         assertEquals( cv.getRowSpan(),
                       1 );
 
-        data.addRow( 1,
-                     makeRow() );
+        data.deleteRow( 1 );
         assertEquals( data.size(),
-                      4 );
+                      2 );
 
         cv = data.get( 0 ).get( 0 );
         assertEquals( cv.getRowSpan(),
@@ -450,26 +351,6 @@ public class DynamicDataTestsWithoutMergingRowAdditions extends BaseDynamicDataT
         assertEquals( cv.getRowSpan(),
                       1 );
         cv = data.get( 1 ).get( 2 );
-        assertEquals( cv.getRowSpan(),
-                      1 );
-
-        cv = data.get( 2 ).get( 0 );
-        assertEquals( cv.getRowSpan(),
-                      1 );
-        cv = data.get( 2 ).get( 1 );
-        assertEquals( cv.getRowSpan(),
-                      1 );
-        cv = data.get( 2 ).get( 2 );
-        assertEquals( cv.getRowSpan(),
-                      1 );
-
-        cv = data.get( 3 ).get( 0 );
-        assertEquals( cv.getRowSpan(),
-                      1 );
-        cv = data.get( 3 ).get( 1 );
-        assertEquals( cv.getRowSpan(),
-                      1 );
-        cv = data.get( 3 ).get( 2 );
         assertEquals( cv.getRowSpan(),
                       1 );
 

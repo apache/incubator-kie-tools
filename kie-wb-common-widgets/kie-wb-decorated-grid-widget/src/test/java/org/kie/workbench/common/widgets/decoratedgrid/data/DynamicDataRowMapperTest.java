@@ -15,12 +15,12 @@
  */
 package org.kie.workbench.common.widgets.decoratedgrid.data;
 
+import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.RowMapper;
-
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Tests for DynamicData
  */
-public class DynamicDataRowMapperTests extends BaseDynamicDataTests {
+public class DynamicDataRowMapperTest extends BaseDynamicDataTests {
 
     @Before
     public void setup() {

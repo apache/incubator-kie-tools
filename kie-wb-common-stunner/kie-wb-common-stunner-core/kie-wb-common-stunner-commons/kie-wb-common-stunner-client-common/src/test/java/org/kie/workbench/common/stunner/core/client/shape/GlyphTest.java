@@ -33,7 +33,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class GlyphTests {
+public class GlyphTest {
 
     private static final String IMAGE_JPG_URI = "data:image/jpeg;base64,9j/4AAQSkZJRgABAQEASABIAAD";
     private static final String IMAGE_SVG_URI = "data:image/svg+xml;base64,c3ZnLWNvbnRlbnQ=";

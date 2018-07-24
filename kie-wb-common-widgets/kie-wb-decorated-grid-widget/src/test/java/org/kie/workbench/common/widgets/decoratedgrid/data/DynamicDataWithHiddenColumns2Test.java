@@ -15,16 +15,62 @@
  */
 package org.kie.workbench.common.widgets.decoratedgrid.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicData;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicDataRow;
 
-import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.*;
 
 /**
  * Tests for DynamicData
  */
-public class DynamicDataTestsWithoutMerging extends BaseDynamicDataTests {
+public class DynamicDataWithHiddenColumns2Test {
+
+    protected DynamicData data = new DynamicData();
+
+    protected static final List<CellValue<? extends Comparable<?>>> EMPTY_COLUMN = new ArrayList<CellValue<? extends Comparable<?>>>();
+
+    @Before
+    public void setup() {
+        data.clear();
+
+        data.addColumn( 0,
+                        EMPTY_COLUMN,
+                        true );
+        data.addColumn( 1,
+                        EMPTY_COLUMN,
+                        false );
+        data.addColumn( 2,
+                        EMPTY_COLUMN,
+                        true );
+
+        data.addRow( makeRow() );
+        data.addRow( makeRow() );
+        data.addRow( makeRow() );
+
+    }
+
+    protected DynamicDataRow makeRow() {
+        DynamicDataRow row = new DynamicDataRow();
+        for ( CellValue<?> cell : makeCellValueList() ) {
+            row.add( cell );
+        }
+        return row;
+    }
+
+    protected List<CellValue<? extends Comparable<?>>> makeCellValueList() {
+        List<CellValue<? extends Comparable<?>>> row = new ArrayList<CellValue<? extends Comparable<?>>>();
+        row.add( new CellValue<String>( "" ) );
+        row.add( new CellValue<String>( "" ) );
+        row.add( new CellValue<String>( "" ) );
+        return row;
+    }
 
     @Test
     public void testIndexing_DataCoordinates() {
@@ -92,12 +138,12 @@ public class DynamicDataTestsWithoutMerging extends BaseDynamicDataTests {
         assertEquals( c.getRow(),
                       0 );
         assertEquals( c.getCol(),
-                      1 );
+                      0 );
         c = data.get( 0 ).get( 2 ).getHtmlCoordinate();
         assertEquals( c.getRow(),
                       0 );
         assertEquals( c.getCol(),
-                      2 );
+                      1 );
 
         c = data.get( 1 ).get( 0 ).getHtmlCoordinate();
         assertEquals( c.getRow(),
@@ -108,12 +154,12 @@ public class DynamicDataTestsWithoutMerging extends BaseDynamicDataTests {
         assertEquals( c.getRow(),
                       1 );
         assertEquals( c.getCol(),
-                      1 );
+                      0 );
         c = data.get( 1 ).get( 2 ).getHtmlCoordinate();
         assertEquals( c.getRow(),
                       1 );
         assertEquals( c.getCol(),
-                      2 );
+                      1 );
 
         c = data.get( 2 ).get( 0 ).getHtmlCoordinate();
         assertEquals( c.getRow(),
@@ -124,12 +170,12 @@ public class DynamicDataTestsWithoutMerging extends BaseDynamicDataTests {
         assertEquals( c.getRow(),
                       2 );
         assertEquals( c.getCol(),
-                      1 );
+                      0 );
         c = data.get( 2 ).get( 2 ).getHtmlCoordinate();
         assertEquals( c.getRow(),
                       2 );
         assertEquals( c.getCol(),
-                      2 );
+                      1 );
     }
 
     @Test
@@ -145,7 +191,7 @@ public class DynamicDataTestsWithoutMerging extends BaseDynamicDataTests {
         assertEquals( c.getRow(),
                       0 );
         assertEquals( c.getCol(),
-                      1 );
+                      2 );
         c = data.get( 0 ).get( 2 ).getPhysicalCoordinate();
         assertEquals( c.getRow(),
                       0 );
@@ -161,7 +207,7 @@ public class DynamicDataTestsWithoutMerging extends BaseDynamicDataTests {
         assertEquals( c.getRow(),
                       1 );
         assertEquals( c.getCol(),
-                      1 );
+                      2 );
         c = data.get( 1 ).get( 2 ).getPhysicalCoordinate();
         assertEquals( c.getRow(),
                       1 );
@@ -177,7 +223,7 @@ public class DynamicDataTestsWithoutMerging extends BaseDynamicDataTests {
         assertEquals( c.getRow(),
                       2 );
         assertEquals( c.getCol(),
-                      1 );
+                      2 );
         c = data.get( 2 ).get( 2 ).getPhysicalCoordinate();
         assertEquals( c.getRow(),
                       2 );

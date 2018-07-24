@@ -27,10 +27,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopScoreDocCollector;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
@@ -39,17 +36,16 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.valueterm
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.mockito.ArgumentMatcher;
 import org.slf4j.LoggerFactory;
-import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.*;
 
-public class IndexDrlInvalidDrl extends BaseIndexingTest<TestDrlFileTypeDefinition> {
+public class IndexDrlInvalidDrlTest extends BaseIndexingTest<TestDrlFileTypeDefinition> {
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testIndexDrlInvalidRuleName() throws IOException, InterruptedException, ExecutionException {
         //Setup logging
         final Logger root = (Logger) LoggerFactory.getLogger( Logger.ROOT_LOGGER_NAME );
@@ -68,25 +64,14 @@ public class IndexDrlInvalidDrl extends BaseIndexingTest<TestDrlFileTypeDefiniti
 
         {
             final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "org.kie.workbench.common.services.refactoring.backend.server.drl.classes.Applicant", ResourceType.JAVA ) ).build();
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
-
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-            assertEquals( 0,
-                          hits.length );
-
+            searchFor(index, query, 0);
             verify( mockAppender ).doAppend( argThat( new ArgumentMatcher<ILoggingEvent>() {
 
                 @Override
                 public boolean matches( final Object argument ) {
                     return ( (ILoggingEvent) argument ).getMessage().startsWith( "Unable to parse DRL" );
                 }
-
             } ) );
-
-            ( (LuceneIndex) index ).nrtRelease( searcher );
         }
 
     }
