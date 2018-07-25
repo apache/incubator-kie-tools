@@ -142,7 +142,8 @@ public abstract class BaseSubprocess implements BPMNViewDefinition {
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(Objects.hashCode(general),
+        return HashUtil.combineHashCodes(Objects.hashCode(getClass()),
+                                         Objects.hashCode(general),
                                          Objects.hashCode(backgroundSet),
                                          Objects.hashCode(fontSet),
                                          Objects.hashCode(simulationSet),

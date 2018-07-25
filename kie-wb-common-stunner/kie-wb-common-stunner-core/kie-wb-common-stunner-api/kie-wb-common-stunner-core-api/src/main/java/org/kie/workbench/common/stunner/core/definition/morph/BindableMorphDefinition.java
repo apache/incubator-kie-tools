@@ -50,7 +50,7 @@ public abstract class BindableMorphDefinition implements MorphDefinition {
 
     @Override
     public ClonePolicy getPolicy() {
-        return ClonePolicy.DEFAULT;
+        return ClonePolicy.ALL;
     }
 
     public boolean canMorphType(final Class<?> type) {

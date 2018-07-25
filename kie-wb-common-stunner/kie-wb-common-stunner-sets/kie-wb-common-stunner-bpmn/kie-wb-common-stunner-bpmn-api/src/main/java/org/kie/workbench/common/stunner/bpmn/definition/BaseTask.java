@@ -184,13 +184,14 @@ public abstract class BaseTask implements BPMNViewDefinition {
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(general.hashCode(),
-                                         taskType.hashCode(),
-                                         backgroundSet.hashCode(),
-                                         fontSet.hashCode(),
-                                         simulationSet.hashCode(),
-                                         dimensionsSet.hashCode(),
-                                         labels.hashCode());
+        return HashUtil.combineHashCodes(Objects.hashCode(getClass()),
+                                         Objects.hashCode(general),
+                                         Objects.hashCode(taskType),
+                                         Objects.hashCode(backgroundSet),
+                                         Objects.hashCode(fontSet),
+                                         Objects.hashCode(simulationSet),
+                                         Objects.hashCode(dimensionsSet),
+                                         Objects.hashCode(labels));
     }
 
     @Override

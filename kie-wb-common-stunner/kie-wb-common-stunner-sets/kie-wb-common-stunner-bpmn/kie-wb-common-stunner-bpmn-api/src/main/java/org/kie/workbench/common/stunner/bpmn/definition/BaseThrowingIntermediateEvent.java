@@ -167,12 +167,13 @@ public abstract class BaseThrowingIntermediateEvent
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(general.hashCode(),
-                                         dataIOSet.hashCode(),
-                                         backgroundSet.hashCode(),
-                                         fontSet.hashCode(),
-                                         dimensionsSet.hashCode(),
-                                         labels.hashCode());
+        return HashUtil.combineHashCodes(Objects.hashCode(getClass()),
+                                         Objects.hashCode(general),
+                                         Objects.hashCode(dataIOSet),
+                                         Objects.hashCode(backgroundSet),
+                                         Objects.hashCode(fontSet),
+                                         Objects.hashCode(dimensionsSet),
+                                         Objects.hashCode(labels));
     }
 
     @Override

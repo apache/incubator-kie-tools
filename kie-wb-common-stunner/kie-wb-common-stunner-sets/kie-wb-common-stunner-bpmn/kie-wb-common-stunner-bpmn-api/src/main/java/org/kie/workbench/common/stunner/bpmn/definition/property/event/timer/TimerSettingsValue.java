@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.event.timer;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -79,32 +81,21 @@ public class TimerSettingsValue {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+        if (o instanceof TimerSettingsValue) {
+            TimerSettingsValue other = (TimerSettingsValue) o;
+            return Objects.equals(timeDate, other.timeDate) &&
+                    Objects.equals(timeDuration, other.timeDuration) &&
+                    Objects.equals(timeCycle, other.timeCycle) &&
+                    Objects.equals(timeCycleLanguage, other.timeCycleLanguage);
         }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        TimerSettingsValue that = (TimerSettingsValue) o;
-
-        if (timeDate != null ? !timeDate.equals(that.timeDate) : that.timeDate != null) {
-            return false;
-        }
-        if (timeDuration != null ? !timeDuration.equals(that.timeDuration) : that.timeDuration != null) {
-            return false;
-        }
-        if (timeCycle != null ? !timeCycle.equals(that.timeCycle) : that.timeCycle != null) {
-            return false;
-        }
-        return timeCycleLanguage != null ? timeCycleLanguage.equals(that.timeCycleLanguage) : that.timeCycleLanguage == null;
+        return false;
     }
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(timeDate != null ? timeDate.hashCode() : 0,
-                                         timeDuration != null ? timeDuration.hashCode() : 0,
-                                         timeCycle != null ? timeCycle.hashCode() : 0,
-                                         timeCycleLanguage != null ? timeCycleLanguage.hashCode() : 0);
+        return HashUtil.combineHashCodes(Objects.hashCode(timeDate),
+                                         Objects.hashCode(timeDuration),
+                                         Objects.hashCode(timeCycle),
+                                         Objects.hashCode(timeCycleLanguage));
     }
 }

@@ -54,6 +54,10 @@ public class OnExitAction implements BPMNProperty {
         this.value = value;
     }
 
+    public PropertyType getType() {
+        return type;
+    }
+
     public ScriptTypeListValue getValue() {
         return value;
     }

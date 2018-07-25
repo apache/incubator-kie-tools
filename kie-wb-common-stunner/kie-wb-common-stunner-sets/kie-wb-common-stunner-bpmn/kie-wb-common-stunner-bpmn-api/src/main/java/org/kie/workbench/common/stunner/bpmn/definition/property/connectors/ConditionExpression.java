@@ -51,6 +51,10 @@ public class ConditionExpression implements BPMNProperty {
         this.value = value;
     }
 
+    public PropertyType getType() {
+        return type;
+    }
+
     public ScriptTypeValue getValue() {
         return value;
     }

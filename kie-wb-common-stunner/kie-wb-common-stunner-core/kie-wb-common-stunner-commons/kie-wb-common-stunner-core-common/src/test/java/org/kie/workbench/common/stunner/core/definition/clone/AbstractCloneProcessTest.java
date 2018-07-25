@@ -20,6 +20,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.jboss.errai.databinding.client.BindableProxy;
+import org.jboss.errai.databinding.client.BindableProxyFactory;
+import org.jboss.errai.databinding.client.BindableProxyProvider;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -34,6 +37,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -88,6 +92,15 @@ public abstract class AbstractCloneProcessTest {
 
     protected final Boolean booleanValue = true;
 
+    protected final Object bindableProperty = new Object();
+
+    protected final BindableTypeMock bindablePropertyValue = mock(BindableTypeMock.class);
+
+    protected final String bindablePropertyId = "bindablePropertyId";
+
+    protected final BindableTypeMock bindableClonedValue = mock(BindableTypeMock.class);
+
+    @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws Exception {
         when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
@@ -101,20 +114,24 @@ public abstract class AbstractCloneProcessTest {
         when(propertyAdapter.getValue(nameProperty1)).thenReturn(nameValue);
         when(propertyAdapter.getValue(textProperty1)).thenReturn(textValue);
         when(propertyAdapter.getValue(booleanProperty1)).thenReturn(booleanValue);
+        when(propertyAdapter.getValue(bindableProperty)).thenReturn(bindablePropertyValue);
         when(factoryManager.newDefinition(Object.class)).thenReturn(def2);
 
         when(definitionAdapter.getProperties(def1)).thenReturn(buildSet(nameProperty1,
                                                                         textProperty1,
-                                                                        booleanProperty1));
+                                                                        booleanProperty1,
+                                                                        bindableProperty));
         when(definitionAdapter.getProperties(def2)).thenReturn(buildSet(nameProperty2,
                                                                         textProperty2,
-                                                                        booleanProperty2));
+                                                                        booleanProperty2,
+                                                                        bindableProperty));
         when(definitionAdapter.getProperties(def3)).thenReturn(buildSet(nameProperty3,
                                                                         textProperty3,
                                                                         booleanProperty3));
         when(propertyAdapter.isReadOnly(nameProperty1)).thenReturn(false);
         when(propertyAdapter.isReadOnly(textProperty1)).thenReturn(false);
         when(propertyAdapter.isReadOnly(booleanProperty1)).thenReturn(false);
+        when(propertyAdapter.isReadOnly(bindableProperty)).thenReturn(false);
         when(propertyAdapter.getId(nameProperty1)).thenReturn(nameId);
         when(propertyAdapter.getId(nameProperty2)).thenReturn(nameId);
         when(propertyAdapter.getId(nameProperty3)).thenReturn(nameId);
@@ -124,6 +141,10 @@ public abstract class AbstractCloneProcessTest {
         when(propertyAdapter.getId(booleanProperty1)).thenReturn(booleanId);
         when(propertyAdapter.getId(booleanProperty2)).thenReturn(booleanId);
         when(propertyAdapter.getId(booleanProperty3)).thenReturn(booleanId);
+        when(propertyAdapter.getId(bindableProperty)).thenReturn(bindablePropertyId);
+        BindableProxyFactory.addBindableProxy(bindablePropertyValue.getClass(), mock(BindableProxyProvider.class));
+        when(bindablePropertyValue.unwrap()).thenReturn(bindableClonedValue);
+        when(bindablePropertyValue.deepUnwrap()).thenReturn(bindableClonedValue);
     }
 
     private <T> Set<T> buildSet(T... objects) {
@@ -142,4 +163,6 @@ public abstract class AbstractCloneProcessTest {
         assertEquals(expectedValue,
                      nameArgumentCaptor.getValue());
     }
+
+    interface BindableTypeMock extends BindableProxy {}
 }

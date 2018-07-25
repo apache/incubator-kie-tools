@@ -1140,49 +1140,6 @@ public class HashCodeAndEqualityTest {
     }
 
     @Test
-    public void testScriptTypeValueEqualsAndHashCode() {
-        TestCaseBuilder.newTestCase()
-                .addTrueCase(new ScriptTypeValue(),
-                             new ScriptTypeValue())
-
-                .addTrueCase(new ScriptTypeValue(null,
-                                                 null),
-                             new ScriptTypeValue(null,
-                                                 null))
-
-                .addTrueCase(new ScriptTypeValue("a",
-                                                 "b"),
-                             new ScriptTypeValue("a",
-                                                 "b"))
-
-                .addTrueCase(new ScriptTypeValue("a",
-                                                 null),
-                             new ScriptTypeValue("a",
-                                                 null))
-
-                .addTrueCase(new ScriptTypeValue(null,
-                                                 "b"),
-                             new ScriptTypeValue(null,
-                                                 "b"))
-
-                .addFalseCase(new ScriptTypeValue("a",
-                                                  "b"),
-                              new ScriptTypeValue("X",
-                                                  "b"))
-
-                .addFalseCase(new ScriptTypeValue("a",
-                                                  "b"),
-                              new ScriptTypeValue("a",
-                                                  "Y"))
-
-                .addFalseCase(new ScriptTypeValue("a",
-                                                  "b"),
-                              new ScriptTypeValue("X",
-                                                  "Y"))
-                .test();
-    }
-
-    @Test
     public void testSequenceFlowExecutionSetEqualsAndHashCode() {
         TestCaseBuilder.newTestCase()
                 .addTrueCase(new SequenceFlowExecutionSet(),
@@ -1375,52 +1332,6 @@ public class HashCodeAndEqualityTest {
 
                              new ScriptTaskExecutionSet(new Script(),
                                                         new IsAsync()))
-                .test();
-    }
-
-    @Test
-    public void testScriptTypeListValueEqualsAndHashCode() {
-        TestCaseBuilder.newTestCase()
-                .addTrueCase(new ScriptTypeListValue(),
-                             new ScriptTypeListValue())
-
-                .addTrueCase(new ScriptTypeListValue().addValue(new ScriptTypeValue()),
-                             new ScriptTypeListValue().addValue(new ScriptTypeValue()))
-
-                .addTrueCase(new ScriptTypeListValue().addValue(new ScriptTypeValue(null,
-                                                                                    null)),
-                             new ScriptTypeListValue().addValue(new ScriptTypeValue(null,
-                                                                                    null)))
-
-                .addTrueCase(new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
-                                                                                    "b")),
-                             new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
-                                                                                    "b")))
-
-                .addTrueCase(new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
-                                                                                    null)),
-                             new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
-                                                                                    null)))
-
-                .addTrueCase(new ScriptTypeListValue().addValue(new ScriptTypeValue(null,
-                                                                                    "b")),
-                             new ScriptTypeListValue().addValue(new ScriptTypeValue(null,
-                                                                                    "b")))
-
-                .addFalseCase(new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
-                                                                                     "b")),
-                              new ScriptTypeListValue().addValue(new ScriptTypeValue("X",
-                                                                                     "b")))
-
-                .addFalseCase(new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
-                                                                                     "b")),
-                              new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
-                                                                                     "Y")))
-
-                .addFalseCase(new ScriptTypeListValue().addValue(new ScriptTypeValue("a",
-                                                                                     "b")),
-                              new ScriptTypeListValue().addValue(new ScriptTypeValue("X",
-                                                                                     "Y")))
                 .test();
     }
 

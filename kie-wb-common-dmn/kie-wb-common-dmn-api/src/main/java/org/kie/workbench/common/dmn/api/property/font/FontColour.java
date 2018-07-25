@@ -50,6 +50,10 @@ public class FontColour implements DMNProperty {
         this.value = value;
     }
 
+    public PropertyType getType() {
+        return type;
+    }
+
     public String getValue() {
         return value;
     }

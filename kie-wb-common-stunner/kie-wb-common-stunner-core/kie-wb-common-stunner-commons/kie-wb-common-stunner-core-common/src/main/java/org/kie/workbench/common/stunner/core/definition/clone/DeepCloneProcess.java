@@ -23,6 +23,8 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.jboss.errai.databinding.client.BindableProxy;
+import org.jboss.errai.databinding.client.BindableProxyFactory;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.util.ClassUtils;
@@ -68,14 +70,26 @@ public class DeepCloneProcess extends AbstractCloneProcess {
                 .forEach(entry -> {
                     Object value = adapterManager.forProperty().getValue(entry.getKey());
                     adapterManager.forProperty().setValue(entry.getValue(),
-                                                          value);
+                                                          cloneValue(value));
                 });
 
         return target;
     }
 
     private boolean isAllowedToClone(Object value) {
-        return Objects.nonNull(value) &&
-                ((value instanceof String) || (classUtils.isPrimitiveClass(value.getClass())));
+        return Objects.nonNull(value) && (isSimpleValue(value) || BindableProxyFactory.isBindableType(value));
+    }
+
+    private boolean isSimpleValue(Object value) {
+        return (value instanceof String) || classUtils.isPrimitiveClass(value.getClass());
+    }
+
+    private Object cloneValue(Object value) {
+        if (value == null || isSimpleValue(value)) {
+            return value;
+        } else {
+            BindableProxy bindableProxy = (BindableProxy) BindableProxyFactory.getBindableProxy(value);
+            return bindableProxy.deepUnwrap();
+        }
     }
 }
