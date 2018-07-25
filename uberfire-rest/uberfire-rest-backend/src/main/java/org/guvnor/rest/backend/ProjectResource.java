@@ -78,7 +78,12 @@ import static org.guvnor.rest.backend.PermissionConstants.REST_ROLE;
 public class ProjectResource {
 
     private static final Logger logger = LoggerFactory.getLogger(ProjectResource.class);
-    private static Variant defaultVariant = Variant.mediaTypes(MediaType.APPLICATION_JSON_TYPE).add().build().get(0);
+    private Variant defaultVariant = getDefaultVariant();
+
+    protected Variant getDefaultVariant() {
+        return Variant.mediaTypes(MediaType.APPLICATION_JSON_TYPE).add().build().get(0);
+    }
+
     @Context
     protected UriInfo uriInfo;
     @Inject
@@ -88,8 +93,6 @@ public class ProjectResource {
     private OrganizationalUnitService organizationalUnitService;
     @Inject
     private WorkspaceProjectService workspaceProjectService;
-    @Inject
-    private SpacesAPI spaces;
     @Inject
     private JobRequestScheduler jobRequestObserver;
     @Inject
@@ -103,6 +106,7 @@ public class ProjectResource {
         JobResult jobResult = new JobResult();
         jobResult.setJobId(jobId);
         jobResult.setStatus(JobStatus.ACCEPTED);
+        jobManager.putJob(jobResult);
     }
 
     @GET
@@ -501,16 +505,16 @@ public class ProjectResource {
         return createAcceptedStatusResponse(jobRequest);
     }
 
-    private void assertObjectExists(final Object o,
-                                    final String objectInfo,
-                                    final String objectName) {
+    protected void assertObjectExists(final Object o,
+                                      final String objectInfo,
+                                      final String objectName) {
         if (o == null) {
             throw new WebApplicationException(String.format("Could not find %s with name %s.", objectInfo, objectName),
                                               Response.status(Status.NOT_FOUND).build());
         }
     }
 
-    private Response createAcceptedStatusResponse(final JobRequest jobRequest) {
+    protected Response createAcceptedStatusResponse(final JobRequest jobRequest) {
         return Response.status(Status.ACCEPTED).entity(jobRequest).variant(defaultVariant).build();
     }
 
