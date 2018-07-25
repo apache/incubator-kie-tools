@@ -46,7 +46,7 @@
         <bpmn2:loopDataOutputRef>_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_output</bpmn2:loopDataOutputRef>
         <bpmn2:inputDataItem xsi:type="bpmn2:tDataInput" id="dataInput"/>
         <bpmn2:outputDataItem xsi:type="bpmn2:tDataOutput" id="dataOutput" itemSubjectRef="_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_multiInstanceItemType"/>
-        <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_bwXzVxrUEeimVt3vJ1biTA">a=b</bpmn2:completionCondition>
+        <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_bwXzVxrUEeimVt3vJ1biTA"><![CDATA[a=b]]></bpmn2:completionCondition>
       </bpmn2:multiInstanceLoopCharacteristics>
     </bpmn2:subProcess>
   </bpmn2:process>
