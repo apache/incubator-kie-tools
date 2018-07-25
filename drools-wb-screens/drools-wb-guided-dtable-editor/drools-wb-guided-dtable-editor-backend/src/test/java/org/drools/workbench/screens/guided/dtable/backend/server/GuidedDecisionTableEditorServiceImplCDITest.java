@@ -18,9 +18,11 @@ package org.drools.workbench.screens.guided.dtable.backend.server;
 
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.test.CDITestSetup;
@@ -34,6 +36,7 @@ import org.uberfire.backend.vfs.Path;
 public class GuidedDecisionTableEditorServiceImplCDITest extends CDITestSetup {
 
     private GuidedDecisionTableEditorService testedService;
+    private GuidedDecisionTableEditorService testedServiceWithDifferentTimeZone;
 
     @Override
     @Before
@@ -50,7 +53,7 @@ public class GuidedDecisionTableEditorServiceImplCDITest extends CDITestSetup {
 
     @Test
     public void testFromAccumulate() throws Exception {
-        final Path path = getPath("rhpam-1288/src/main/resources/com/myspace/rhpam_1288/applicants.gdst");
+        final Path path = getPath("rhpam-issues/src/main/resources/com/myspace/rhpam_issues/applicants-rhpam-1288.gdst");
         final List<ValidationMessage> validationMessages = testedService.validate(path, testedService.load(path));
         Assertions.assertThat(validationMessages).isEmpty();
     }
@@ -71,6 +74,29 @@ public class GuidedDecisionTableEditorServiceImplCDITest extends CDITestSetup {
         Assertions.assertThat(validationMessages)
                 .extracting("text", String.class)
                 .allMatch(text -> text.contains("[KBase: defaultKieBase]: Unable to Analyse Expression  isNotEmptyUndeclaredFunction(userCode)"));
+    }
+
+    @Test
+    public void testTimeInTimeZones() throws Exception {
+        final String timeZoneKey = "user.timezone";
+        final String timeZoneToPreserve = System.getProperty(timeZoneKey);
+
+        try {
+            final Path path = getPath("rhpam-issues/src/main/resources/com/myspace/rhpam_issues/time-rhdm-693.gdst");
+
+            final GuidedDecisionTable52 modelInFirstTimeZone = testedService.load(path);
+            final Date dateInFirstTimeZone = modelInFirstTimeZone.getData().get(0).get(2).getDateValue();
+
+            System.setProperty(timeZoneKey, "Europe/Moscow");
+
+            testedServiceWithDifferentTimeZone = getReference(GuidedDecisionTableEditorService.class);
+            final GuidedDecisionTable52 modelInSecondTimeZone = testedServiceWithDifferentTimeZone.load(path);
+            final Date dateInSecondTimeZone = modelInSecondTimeZone.getData().get(0).get(2).getDateValue();
+
+            Assertions.assertThat(dateInFirstTimeZone).isEqualTo(dateInSecondTimeZone);
+        } finally {
+            System.setProperty(timeZoneKey, timeZoneToPreserve);
+        }
     }
 
     private Path getPath(String resource) throws URISyntaxException {

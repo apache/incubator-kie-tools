@@ -159,7 +159,7 @@
       </org.kie.soup.project.datamodel.imports.Import>
     </imports>
   </imports>
-  <packageName>com.myspace.rhpam_1288</packageName>
+  <packageName>com.myspace.rhpam_issues</packageName>
   <tableFormat>EXTENDED_ENTRY</tableFormat>
   <hitPolicy>NONE</hitPolicy>
   <data>
