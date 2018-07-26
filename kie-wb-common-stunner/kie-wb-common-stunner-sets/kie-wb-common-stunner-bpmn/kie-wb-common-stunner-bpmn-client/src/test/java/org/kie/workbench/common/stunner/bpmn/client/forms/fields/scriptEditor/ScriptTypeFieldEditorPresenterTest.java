@@ -96,6 +96,12 @@ public class ScriptTypeFieldEditorPresenterTest
                               "mvel");
     }
 
+    @Test
+    public void testSetDroolsConditionScriptMode() {
+        editor.setMode(ScriptTypeMode.DROOLS_CONDITION);
+        verifyOptionsWhereSet("drools");
+    }
+
     private void verifyOptionsWhereSet(String... options) {
         List<Pair<String, String>> optionsList = Arrays.stream(options).map(option -> new Pair<>(option,
                                                                                                  option)).collect(Collectors.toList());

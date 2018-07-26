@@ -37,6 +37,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Circ
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.CancelActivity;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.conditional.CancellingConditionalEventExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.conditional.InterruptingConditionalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.CancellingMessageEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.InterruptingMessageEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageEventExecutionSet;
@@ -1507,6 +1509,133 @@ public class HashCodeAndEqualityTest {
                                                      new CircleDimensionSet(),
                                                      new SimulationAttributeSet()),
                               new BaseStartEventStub())
+                .test();
+    }
+
+    @Test
+    public void testCancellingConditionalEventExecutionSetEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new CancellingConditionalEventExecutionSet(),
+                             new CancellingConditionalEventExecutionSet())
+
+                .addTrueCase(new CancellingConditionalEventExecutionSet(new CancelActivity(false), new ConditionExpression()),
+                             new CancellingConditionalEventExecutionSet(new CancelActivity(false), new ConditionExpression()))
+
+                .addTrueCase(new CancellingConditionalEventExecutionSet(new CancelActivity(false), new ConditionExpression(new ScriptTypeValue("drools", "script"))),
+                             new CancellingConditionalEventExecutionSet(new CancelActivity(false), new ConditionExpression(new ScriptTypeValue("drools", "script"))))
+
+                .addFalseCase(new CancellingConditionalEventExecutionSet(),
+                             null)
+
+                .addFalseCase(new CancellingConditionalEventExecutionSet(new CancelActivity(false), new ConditionExpression(new ScriptTypeValue("drools", "script"))),
+                             new CancellingConditionalEventExecutionSet(new CancelActivity(true), new ConditionExpression(new ScriptTypeValue("drools", "script"))))
+
+                .addFalseCase(new CancellingConditionalEventExecutionSet(new CancelActivity(false), new ConditionExpression(new ScriptTypeValue("drools", "script"))),
+                              new CancellingConditionalEventExecutionSet(new CancelActivity(false), new ConditionExpression(new ScriptTypeValue("drools1", "script"))))
+
+                .addFalseCase(new CancellingConditionalEventExecutionSet(new CancelActivity(false), new ConditionExpression(new ScriptTypeValue("drools", "script"))),
+                              new CancellingConditionalEventExecutionSet(new CancelActivity(false), new ConditionExpression(new ScriptTypeValue("drools", "script1"))))
+
+                .addFalseCase(new CancellingConditionalEventExecutionSet(new CancelActivity(false), new ConditionExpression(new ScriptTypeValue("drools", "script"))),
+                              new CancellingConditionalEventExecutionSet(new CancelActivity(false), new ConditionExpression(new ScriptTypeValue("drools1", "script"))))
+
+                .addFalseCase(new CancellingConditionalEventExecutionSet(new CancelActivity(false), new ConditionExpression(new ScriptTypeValue("drools", "script"))),
+                              new CancellingConditionalEventExecutionSet(new CancelActivity(false), null))
+
+                .test();
+    }
+
+    @Test
+    public void testInterruptingConditionalEventExecutionSetEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new InterruptingConditionalEventExecutionSet(),
+                             new InterruptingConditionalEventExecutionSet())
+
+                .addTrueCase(new InterruptingConditionalEventExecutionSet(new IsInterrupting(false), new ConditionExpression()),
+                             new InterruptingConditionalEventExecutionSet(new IsInterrupting(false), new ConditionExpression()))
+
+                .addTrueCase(new InterruptingConditionalEventExecutionSet(new IsInterrupting(false), new ConditionExpression(new ScriptTypeValue("drools", "script"))),
+                             new InterruptingConditionalEventExecutionSet(new IsInterrupting(false), new ConditionExpression(new ScriptTypeValue("drools", "script"))))
+
+                .addFalseCase(new InterruptingConditionalEventExecutionSet(),
+                              null)
+
+                .addFalseCase(new InterruptingConditionalEventExecutionSet(new IsInterrupting(false), new ConditionExpression(new ScriptTypeValue("drools", "script"))),
+                              new InterruptingConditionalEventExecutionSet(new IsInterrupting(true), new ConditionExpression(new ScriptTypeValue("drools", "script"))))
+
+                .addFalseCase(new InterruptingConditionalEventExecutionSet(new IsInterrupting(false), new ConditionExpression(new ScriptTypeValue("drools", "script"))),
+                              new InterruptingConditionalEventExecutionSet(new IsInterrupting(false), new ConditionExpression(new ScriptTypeValue("drools1", "script"))))
+
+                .addFalseCase(new InterruptingConditionalEventExecutionSet(new IsInterrupting(false), new ConditionExpression(new ScriptTypeValue("drools", "script"))),
+                              new InterruptingConditionalEventExecutionSet(new IsInterrupting(false), new ConditionExpression(new ScriptTypeValue("drools", "script1"))))
+
+                .addFalseCase(new InterruptingConditionalEventExecutionSet(new IsInterrupting(false), new ConditionExpression(new ScriptTypeValue("drools", "script"))),
+                              new InterruptingConditionalEventExecutionSet(new IsInterrupting(false), new ConditionExpression(new ScriptTypeValue("drools1", "script"))))
+
+                .addFalseCase(new InterruptingConditionalEventExecutionSet(new IsInterrupting(false), new ConditionExpression(new ScriptTypeValue("drools", "script"))),
+                              new InterruptingConditionalEventExecutionSet(new IsInterrupting(false), null))
+
+                .test();
+    }
+
+    @Test
+    public void testStartConditionalEventEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new StartConditionalEvent(),
+                             new StartConditionalEvent())
+
+                .addTrueCase(new StartConditionalEvent(new BPMNGeneralSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingConditionalEventExecutionSet()),
+                             new StartConditionalEvent(new BPMNGeneralSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingConditionalEventExecutionSet()))
+
+                .addFalseCase(new StartConditionalEvent(),
+                             null)
+
+                .addFalseCase(new StartConditionalEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingConditionalEventExecutionSet()),
+                             new StartConditionalEvent(new BPMNGeneralSet("name1", "doc1"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingConditionalEventExecutionSet()))
+
+                .addFalseCase(new StartConditionalEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingConditionalEventExecutionSet(new IsInterrupting(false), new ConditionExpression(new ScriptTypeValue("drools", "script")))),
+                              new StartConditionalEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingConditionalEventExecutionSet()))
+
+                .addFalseCase(new StartConditionalEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingConditionalEventExecutionSet(new IsInterrupting(false), new ConditionExpression(new ScriptTypeValue("drools", "script")))),
+                              new StartConditionalEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingConditionalEventExecutionSet(new IsInterrupting(true), new ConditionExpression(new ScriptTypeValue("drools", "script")))))
+
+                .addFalseCase(new StartConditionalEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingConditionalEventExecutionSet(new IsInterrupting(false), new ConditionExpression(new ScriptTypeValue("drools", "script")))),
+                              new StartConditionalEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingConditionalEventExecutionSet(new IsInterrupting(false), new ConditionExpression(new ScriptTypeValue("drools1", "script")))))
+
+                .addFalseCase(new StartConditionalEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingConditionalEventExecutionSet(new IsInterrupting(false), new ConditionExpression(new ScriptTypeValue("drools", "script")))),
+                              new StartConditionalEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingConditionalEventExecutionSet(new IsInterrupting(false), new ConditionExpression(new ScriptTypeValue("drools", "script1")))))
+
+                .test();
+    }
+
+    @Test
+    public void testIntermediateConditionalEventEqualsAndHashCode() {
+
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new IntermediateConditionalEvent(),
+                             new IntermediateConditionalEvent())
+
+                .addTrueCase(new IntermediateConditionalEvent(new BPMNGeneralSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingConditionalEventExecutionSet()),
+                             new IntermediateConditionalEvent(new BPMNGeneralSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingConditionalEventExecutionSet()))
+
+                .addFalseCase(new IntermediateConditionalEvent(),
+                              null)
+
+                .addFalseCase(new IntermediateConditionalEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingConditionalEventExecutionSet()),
+                              new IntermediateConditionalEvent(new BPMNGeneralSet("name1", "doc1"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingConditionalEventExecutionSet()))
+
+                .addFalseCase(new IntermediateConditionalEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingConditionalEventExecutionSet(new CancelActivity(false), new ConditionExpression(new ScriptTypeValue("drools", "script")))),
+                              new IntermediateConditionalEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingConditionalEventExecutionSet()))
+
+                .addFalseCase(new IntermediateConditionalEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingConditionalEventExecutionSet(new CancelActivity(false), new ConditionExpression(new ScriptTypeValue("drools", "script")))),
+                              new IntermediateConditionalEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingConditionalEventExecutionSet(new CancelActivity(true), new ConditionExpression(new ScriptTypeValue("drools", "script")))))
+
+                .addFalseCase(new IntermediateConditionalEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingConditionalEventExecutionSet(new CancelActivity(false), new ConditionExpression(new ScriptTypeValue("drools", "script")))),
+                              new IntermediateConditionalEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingConditionalEventExecutionSet(new CancelActivity(false), new ConditionExpression(new ScriptTypeValue("drools1", "script")))))
+
+                .addFalseCase(new IntermediateConditionalEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingConditionalEventExecutionSet(new CancelActivity(false), new ConditionExpression(new ScriptTypeValue("drools", "script")))),
+                              new IntermediateConditionalEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingConditionalEventExecutionSet(new CancelActivity(false), new ConditionExpression(new ScriptTypeValue("drools", "script1")))))
+
                 .test();
     }
 

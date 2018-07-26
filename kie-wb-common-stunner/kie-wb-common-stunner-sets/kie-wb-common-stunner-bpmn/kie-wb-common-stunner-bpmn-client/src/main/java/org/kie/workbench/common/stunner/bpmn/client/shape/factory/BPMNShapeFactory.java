@@ -47,6 +47,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.InclusiveGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventThrowing;
@@ -60,6 +61,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
+import org.kie.workbench.common.stunner.bpmn.definition.StartConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
@@ -150,6 +152,9 @@ public class BPMNShapeFactory
                 .delegate(StartErrorEvent.class,
                           new StartEventShapeDef(),
                           () -> svgShapeFactory)
+                .delegate(StartConditionalEvent.class,
+                          new StartEventShapeDef(),
+                          () -> svgShapeFactory)
                 .delegate(ParallelGateway.class,
                           new GatewayShapeDef(),
                           () -> svgShapeFactory)
@@ -193,6 +198,9 @@ public class BPMNShapeFactory
                           new EndEventShapeDef(),
                           () -> svgShapeFactory)
                 .delegate(IntermediateTimerEvent.class,
+                          new CatchingIntermediateEventShapeDef(),
+                          () -> svgShapeFactory)
+                .delegate(IntermediateConditionalEvent.class,
                           new CatchingIntermediateEventShapeDef(),
                           () -> svgShapeFactory)
                 .delegate(IntermediateSignalEventCatching.class,

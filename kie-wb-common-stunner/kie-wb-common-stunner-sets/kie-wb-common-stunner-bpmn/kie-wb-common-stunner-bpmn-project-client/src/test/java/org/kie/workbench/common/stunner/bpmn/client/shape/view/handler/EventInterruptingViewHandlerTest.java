@@ -20,6 +20,7 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.definition.StartConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
@@ -95,6 +96,26 @@ public class EventInterruptingViewHandlerTest extends EventViewHandlerTestBase {
     @SuppressWarnings("unchecked")
     public void testHandleSignalEventIsInterrupting() {
         final StartSignalEvent bean = new StartSignalEvent();
+        bean.getExecutionSet().getIsInterrupting().setValue(true);
+        tested.handle(bean, view);
+        verify(prim1).setFillAlpha(eq(1d));
+        verify(prim1).setStrokeAlpha(eq(0d));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testHandleConditionalIsNotInterrupting() {
+        final StartConditionalEvent bean = new StartConditionalEvent();
+        bean.getExecutionSet().getIsInterrupting().setValue(false);
+        tested.handle(bean, view);
+        verify(prim1).setFillAlpha(eq(0d));
+        verify(prim1).setStrokeAlpha(eq(1d));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testHandleConditionalIsInterrupting() {
+        final StartConditionalEvent bean = new StartConditionalEvent();
         bean.getExecutionSet().getIsInterrupting().setValue(true);
         tested.handle(bean, view);
         verify(prim1).setFillAlpha(eq(1d));

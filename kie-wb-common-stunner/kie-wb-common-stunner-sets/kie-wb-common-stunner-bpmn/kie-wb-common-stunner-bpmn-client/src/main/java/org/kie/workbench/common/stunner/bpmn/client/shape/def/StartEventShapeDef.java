@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.EventInterruptingViewHandler;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
@@ -52,7 +53,10 @@ public class StartEventShapeDef
                     .put(StartMessageEvent.class,
                          BPMNSVGViewFactory::startMessageEvent)
                     .put(StartErrorEvent.class,
-                         BPMNSVGViewFactory::startErrorEvent);
+                         BPMNSVGViewFactory::startErrorEvent)
+                    .put(StartConditionalEvent.class,
+                         BPMNSVGViewFactory::startConditionalEvent);
+
 
     public static final Map<Class<? extends BaseStartEvent>, Glyph> GLYPHS =
             new HashMap<Class<? extends BaseStartEvent>, Glyph>() {{
@@ -66,6 +70,8 @@ public class StartEventShapeDef
                     BPMNGlyphFactory.EVENT_START_MESSAGE);
                 put(StartErrorEvent.class,
                     BPMNGlyphFactory.EVENT_START_ERROR);
+                put(StartConditionalEvent.class,
+                    BPMNGlyphFactory.EVENT_START_CONDITIONAL);
             }};
 
     @Override

@@ -245,6 +245,24 @@
     fill: #4aa241;
 }
 
+#startConditionalEvent #event-background {
+    opacity: 1;
+    fill: #e8fae6;
+}
+#startConditionalEvent #start {
+    opacity: 1;
+    fill-opacity: 1;
+    fill: #4aa241;
+    stroke-opacity: 0;
+    stroke-dasharray: 15, 15;
+    stroke-width: 5px;
+    stroke: #4aa241;
+}
+#startConditionalEvent #conditional-catching {
+    opacity: 1;
+    fill: #4aa241;
+}
+
 #intermediateTimerEvent #event-background {
     opacity: 1;
     fill: #fbefcf;
@@ -260,6 +278,25 @@
 
 }
 #intermediateTimerEvent #wait {
+    opacity: 1;
+    fill: #e5a000;
+}
+
+#intermediateConditionalEvent #event-background {
+    opacity: 1;
+    fill: #fbefcf;
+}
+#intermediateConditionalEvent #intermediate {
+    opacity: 1;
+    fill-opacity: 1;
+    fill: #e5a000;
+    stroke-opacity: 0;
+    stroke-dasharray: 15, 15;
+    stroke-width: 5px;
+    stroke: #e5a000;
+
+}
+#intermediateConditionalEvent #conditional-catching {
     opacity: 1;
     fill: #e5a000;
 }

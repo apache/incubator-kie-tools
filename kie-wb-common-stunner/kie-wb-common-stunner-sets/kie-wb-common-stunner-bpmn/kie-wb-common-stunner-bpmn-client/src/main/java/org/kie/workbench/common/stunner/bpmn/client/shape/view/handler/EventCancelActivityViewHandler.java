@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.client.shape.view.handler;
 
 import org.kie.workbench.common.stunner.bpmn.definition.BaseCatchingIntermediateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
@@ -40,6 +41,8 @@ public class EventCancelActivityViewHandler
             isCancelActivity = ((IntermediateTimerEvent) bean).getExecutionSet().getCancelActivity().getValue();
         } else if (bean instanceof IntermediateMessageEventCatching) {
             isCancelActivity = ((IntermediateMessageEventCatching) bean).getExecutionSet().getCancelActivity().getValue();
+        } else if (bean instanceof IntermediateConditionalEvent) {
+            isCancelActivity = ((IntermediateConditionalEvent) bean).getExecutionSet().getCancelActivity().getValue();
         }
         if (null != isCancelActivity) {
             // Cancel -> Normal
@@ -52,4 +55,3 @@ public class EventCancelActivityViewHandler
         }
     }
 }
-

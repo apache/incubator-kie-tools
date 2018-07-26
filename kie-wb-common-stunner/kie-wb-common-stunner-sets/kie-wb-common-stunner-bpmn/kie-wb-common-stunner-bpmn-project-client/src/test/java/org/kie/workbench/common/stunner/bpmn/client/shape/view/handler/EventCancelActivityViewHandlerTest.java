@@ -20,6 +20,7 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
@@ -116,4 +117,31 @@ public class EventCancelActivityViewHandlerTest extends EventViewHandlerTestBase
         verify(prim1).setFillAlpha(eq(1d));
         verify(prim1).setStrokeAlpha(eq(0d));
     }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testHandleConditionalIsNotCancel() {
+        final IntermediateConditionalEvent bean =
+                new IntermediateConditionalEvent();
+
+        bean.getExecutionSet().getCancelActivity().setValue(false);
+        tested.handle(bean, view);
+
+        verify(prim1).setFillAlpha(eq(0d));
+        verify(prim1).setStrokeAlpha(eq(1d));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testHandleConditionalIsCancel() {
+        final IntermediateConditionalEvent bean =
+                new IntermediateConditionalEvent();
+
+        bean.getExecutionSet().getCancelActivity().setValue(true);
+        tested.handle(bean, view);
+
+        verify(prim1).setFillAlpha(eq(1d));
+        verify(prim1).setStrokeAlpha(eq(0d));
+    }
+
 }

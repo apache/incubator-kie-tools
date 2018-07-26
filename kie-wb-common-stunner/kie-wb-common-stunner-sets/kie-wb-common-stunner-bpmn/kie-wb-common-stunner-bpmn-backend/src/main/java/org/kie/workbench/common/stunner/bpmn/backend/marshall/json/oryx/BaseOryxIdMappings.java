@@ -36,6 +36,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.InclusiveGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventThrowing;
@@ -46,6 +47,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.MultipleInstanceSubproce
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
+import org.kie.workbench.common.stunner.bpmn.definition.StartConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
@@ -340,11 +342,19 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
             startErrorEventPropertiesMap.put(AssignmentsInfo.class,
                                              "assignmentsinfo");
 
+            Map<Class<?>, String> startConditionalEventPropertiesMap = new HashMap<Class<?>, String>();
+            put(StartConditionalEvent.class,
+                startConditionalEventPropertiesMap);
+
             Map<Class<?>, String> intermediateTimerEventPropertiesMap = new HashMap<Class<?>, String>();
             put(IntermediateTimerEvent.class,
                 intermediateTimerEventPropertiesMap);
             intermediateTimerEventPropertiesMap.put(AssignmentsInfo.class,
                                                     "assignmentsinfo");
+
+            Map<Class<?>, String> intermediateConditionalEventPropertiesMap = new HashMap<Class<?>, String>();
+            put(IntermediateConditionalEvent.class,
+                intermediateConditionalEventPropertiesMap);
 
             Map<Class<?>, String> intermediateSignalEventCatchingPropertiesMap = new HashMap<Class<?>, String>();
             put(IntermediateSignalEventCatching.class,

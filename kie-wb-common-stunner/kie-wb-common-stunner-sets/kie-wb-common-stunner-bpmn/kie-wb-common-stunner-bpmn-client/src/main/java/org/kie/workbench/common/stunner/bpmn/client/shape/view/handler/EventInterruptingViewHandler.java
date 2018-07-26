@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.client.shape.view.handler;
 
 import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
@@ -40,6 +41,8 @@ public class EventInterruptingViewHandler
             isInterrupting = ((StartTimerEvent) bean).getExecutionSet().getIsInterrupting().getValue();
         } else if (bean instanceof StartSignalEvent) {
             isInterrupting = ((StartSignalEvent) bean).getExecutionSet().getIsInterrupting().getValue();
+        } else if (bean instanceof StartConditionalEvent) {
+            isInterrupting = ((StartConditionalEvent) bean).getExecutionSet().getIsInterrupting().getValue();
         }
         if (null != isInterrupting) {
             // Interrupting -> Normal

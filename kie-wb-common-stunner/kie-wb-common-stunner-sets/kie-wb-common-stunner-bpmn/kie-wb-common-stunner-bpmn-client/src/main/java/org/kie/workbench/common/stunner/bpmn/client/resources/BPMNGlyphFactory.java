@@ -55,4 +55,6 @@ public interface BPMNGlyphFactory {
     ImageStripGlyph TASK_SCRIPT = ImageStripGlyph.create(BPMNIconsStrip.class, 32);
     ImageStripGlyph TASK_SERVICE = ImageStripGlyph.create(BPMNIconsStrip.class, 33);
     ImageStripGlyph TASK_USER = ImageStripGlyph.create(BPMNIconsStrip.class, 34);
+    ImageStripGlyph EVENT_START_CONDITIONAL = ImageStripGlyph.create(BPMNIconsStrip.class, 35);
+    ImageStripGlyph EVENT_INTERMEDIATE_CONDITIONAL = ImageStripGlyph.create(BPMNIconsStrip.class, 36);
 }

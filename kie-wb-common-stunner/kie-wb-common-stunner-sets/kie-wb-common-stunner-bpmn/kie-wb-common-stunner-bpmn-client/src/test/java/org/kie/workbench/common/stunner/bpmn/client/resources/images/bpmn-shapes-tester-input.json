@@ -237,6 +237,18 @@
       }
     },
     {
+      "id": "startConditionalEvent",
+      "name": "Start Event - Conditional",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-start-conditional.svg"
+      }
+    },
+    {
       "id": "intermediateTimerEvent",
       "name": "Intermediate Event - Timer",
       "shape": {
@@ -271,6 +283,18 @@
       "icon": {
         "path": "icons/event/",
         "file": "event-intermediate-message.svg"
+      }
+    },
+    {
+      "id": "intermediateConditionalEvent",
+      "name": "Catching Intermediate Event - Conditional",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate-conditional.svg"
       }
     },
     {

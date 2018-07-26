@@ -30,6 +30,7 @@ import org.uberfire.commons.data.Pair;
 
 import static org.kie.workbench.common.stunner.bpmn.forms.model.ScriptTypeMode.ACTION_SCRIPT;
 import static org.kie.workbench.common.stunner.bpmn.forms.model.ScriptTypeMode.COMPLETION_CONDITION;
+import static org.kie.workbench.common.stunner.bpmn.forms.model.ScriptTypeMode.DROOLS_CONDITION;
 import static org.kie.workbench.common.stunner.bpmn.forms.model.ScriptTypeMode.FLOW_CONDITION;
 
 public class ScriptTypeFieldEditorPresenter
@@ -113,6 +114,9 @@ public class ScriptTypeFieldEditorPresenter
                                    JAVASCRIPT));
             options.add(new Pair<>(MVEL,
                                    MVEL));
+            options.add(new Pair<>(DROOLS,
+                                   DROOLS));
+        } else if (mode == DROOLS_CONDITION) {
             options.add(new Pair<>(DROOLS,
                                    DROOLS));
         }

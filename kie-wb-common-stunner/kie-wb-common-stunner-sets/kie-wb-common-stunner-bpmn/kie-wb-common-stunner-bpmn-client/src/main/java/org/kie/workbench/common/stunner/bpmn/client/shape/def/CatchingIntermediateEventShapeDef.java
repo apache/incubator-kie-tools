@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.EventCancelActivityViewHandler;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseCatchingIntermediateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
@@ -48,7 +49,9 @@ public class CatchingIntermediateEventShapeDef
                     .put(IntermediateErrorEventCatching.class,
                          BPMNSVGViewFactory::intermediateErrorCatchingEvent)
                     .put(IntermediateMessageEventCatching.class,
-                         BPMNSVGViewFactory::intermediateMessageCatchingEvent);
+                         BPMNSVGViewFactory::intermediateMessageCatchingEvent)
+                    .put(IntermediateConditionalEvent.class,
+                         BPMNSVGViewFactory::intermediateConditionalEvent);
 
     public static final Map<Class<? extends BaseCatchingIntermediateEvent>, Glyph> GLYPHS =
             new HashMap<Class<? extends BaseCatchingIntermediateEvent>, Glyph>() {{
@@ -60,6 +63,8 @@ public class CatchingIntermediateEventShapeDef
                     BPMNGlyphFactory.EVENT_INTERMEDIATE_ERROR);
                 put(IntermediateMessageEventCatching.class,
                     BPMNGlyphFactory.EVENT_INTERMEDIATE_MESSAGE);
+                put(IntermediateConditionalEvent.class,
+                    BPMNGlyphFactory.EVENT_INTERMEDIATE_CONDITIONAL);
             }};
 
     @Override

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:drools="http://www.jboss.org/drools" id="_LlzK4IteEeizhO_vgEO6EQ" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" exporter="jBPM Designer" exporterVersion="1.0" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:process id="src.StartConditionalEvent" drools:packageName="com.myspace.test" drools:version="1.0" name="StartConditionalEvent" isExecutable="true">
+    <bpmn2:startEvent id="_8F9C10C4-F1EE-4B49-B4CE-3059ADD4B391" drools:selectable="true" color:background-color="#9acd32" color:border-color="#000000" color:color="#000000" name="StartConditionalEventName">
+      <bpmn2:documentation id="_Llzx8IteEeizhO_vgEO6EQ"><![CDATA[StartConditionalEventDocumentation]]></bpmn2:documentation>
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[StartConditionalEventName]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:conditionalEventDefinition id="_Llzx8YteEeizhO_vgEO6EQ">
+        <bpmn2:condition xsi:type="bpmn2:tFormalExpression" id="_Llzx8oteEeizhO_vgEO6EQ" language="http://www.jboss.org/drools/rule"><![CDATA[StartConditionalEventConditionExpression]]></bpmn2:condition>
+      </bpmn2:conditionalEventDefinition>
+    </bpmn2:startEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_Llzx84teEeizhO_vgEO6EQ">
+    <bpmndi:BPMNPlane id="_Llzx9IteEeizhO_vgEO6EQ" bpmnElement="src.StartConditionalEvent">
+      <bpmndi:BPMNShape id="_Llzx9YteEeizhO_vgEO6EQ" bpmnElement="_8F9C10C4-F1EE-4B49-B4CE-3059ADD4B391">
+        <dc:Bounds height="30.0" width="30.0" x="95.0" y="111.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmn2:relationship id="_Llzx9oteEeizhO_vgEO6EQ" type="BPSimData">
+    <bpmn2:extensionElements>
+      <bpsim:BPSimData>
+        <bpsim:Scenario xsi:type="bpsim:Scenario" id="default" name="Simulationscenario">
+          <bpsim:ScenarioParameters xsi:type="bpsim:ScenarioParameters" baseTimeUnit="min"/>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_8F9C10C4-F1EE-4B49-B4CE-3059ADD4B391" id="_Llzx94teEeizhO_vgEO6EQ">
+            <bpsim:TimeParameters xsi:type="bpsim:TimeParameters">
+              <bpsim:ProcessingTime xsi:type="bpsim:Parameter">
+                <bpsim:UniformDistribution max="10.0" min="5.0"/>
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+            <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
+              <bpsim:Probability xsi:type="bpsim:Parameter">
+                <bpsim:FloatingParameter value="100.0"/>
+              </bpsim:Probability>
+            </bpsim:ControlParameters>
+          </bpsim:ElementParameters>
+        </bpsim:Scenario>
+      </bpsim:BPSimData>
+    </bpmn2:extensionElements>
+    <bpmn2:source>_LlzK4IteEeizhO_vgEO6EQ</bpmn2:source>
+    <bpmn2:target>_LlzK4IteEeizhO_vgEO6EQ</bpmn2:target>
+  </bpmn2:relationship>
+</bpmn2:definitions>
