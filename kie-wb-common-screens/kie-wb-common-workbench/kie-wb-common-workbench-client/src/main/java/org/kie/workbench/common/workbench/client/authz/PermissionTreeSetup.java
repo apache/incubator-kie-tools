@@ -26,6 +26,7 @@ import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbench
 import org.uberfire.client.authz.EditorTreeProvider;
 import org.uberfire.client.authz.PerspectiveTreeProvider;
 
+import static org.kie.workbench.common.workbench.client.EditorIds.DMN_DESIGNER;
 import static org.kie.workbench.common.workbench.client.EditorIds.GUIDED_DECISION_TREE;
 import static org.kie.workbench.common.workbench.client.EditorIds.GUIDED_SCORE_CARD;
 import static org.kie.workbench.common.workbench.client.EditorIds.STUNNER_DESIGNER;
@@ -128,6 +129,8 @@ public class PermissionTreeSetup {
                                           i18n.XLSScoreCard());
         editorTreeProvider.registerEditor(STUNNER_DESIGNER,
                                           i18n.StunnerDesigner());
+        editorTreeProvider.registerEditor(DMN_DESIGNER,
+                                          i18n.DMNDesigner());
 
         // Set the desired display order
         workbenchTreeProvider.setRootNodePosition(0);
