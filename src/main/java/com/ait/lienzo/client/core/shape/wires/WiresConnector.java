@@ -17,61 +17,23 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
-import com.ait.lienzo.client.core.shape.Group;
-import com.ait.lienzo.client.core.shape.IDirectionalMultiPointShape;
-import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.shape.MultiPath;
-import com.ait.lienzo.client.core.shape.MultiPathDecorator;
-import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorHandler;
-import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.shape.*;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
+import com.ait.lienzo.client.core.types.*;
 import com.ait.lienzo.client.core.util.Geometry;
+import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.ArrowEnd;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
+import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 
 import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.POINT;
 
 public class WiresConnector
 {
-    public static boolean updateHeadTailForRefreshedConnector(WiresConnector c)
-    {
-        // Iterate each refreshed line and get the new points for the decorators
-        if (c.getLine().asShape().getPathPartList().size() < 1)
-        {
-            // only do this for lines that have had refresh called
-            IDirectionalMultiPointShape<?> line = c.getLine();
-
-            if ( c.isSpecialConnection() && line.asShape().getPathPartList().size() == 0)
-            {
-                // if getPathPartList is empty, it was refreshed due to a point change
-                c.updateForSpecialConnections(false);
-            }
-
-            final boolean prepared = line.isPathPartListPrepared(c.getLine().getAttributes());
-
-            if (!prepared)
-            {
-                return true;
-            }
-
-            Point2DArray points     = line.getPoint2DArray();
-            Point2D      p0         = points.get(0);
-            Point2D      p1         = line.getHeadOffsetPoint();
-            Point2DArray headPoints = new Point2DArray(p1, p0);
-            c.getHeadDecorator().draw(headPoints);
-
-            p0 = points.get(points.size() - 1);
-            p1 = line.getTailOffsetPoint();
-            Point2DArray tailPoints = new Point2DArray(p1, p0);
-            c.getTailDecorator().draw(tailPoints);
-        }
-        return false;
-    }
+    public static final int MINIMUM_STROKE_WITH = 4;
 
     private WiresConnection                       m_headConnection;
 
@@ -79,9 +41,7 @@ public class WiresConnector
 
     private IControlHandleList                    m_pointHandles;
 
-    private HandlerRegistrationManager            m_HandlerRegistrationManager;
-
-    private IDirectionalMultiPointShape<?> m_line;
+    private IDirectionalMultiPointShape<?>        m_line;
 
     private MultiPathDecorator                    m_headDecorator;
 
@@ -89,9 +49,7 @@ public class WiresConnector
 
     private Group                                 m_group;
 
-    private IConnectionAcceptor                   m_connectionAcceptor = IConnectionAcceptor.ALL;
-
-    private WiresConnectorHandler                 m_wiresConnectorHandler;
+    private WiresConnectorControl                 m_connectorControl;
 
     public WiresConnector(IDirectionalMultiPointShape<?> line, MultiPathDecorator headDecorator, MultiPathDecorator tailDecorator)
     {
@@ -149,69 +107,30 @@ public class WiresConnector
 
     public void select()
     {
-        m_wiresConnectorHandler.getControl().showControlPoints();
+        m_connectorControl.showControlPoints();
         m_group.getLayer().batch();
     }
 
     public void unselect()
     {
-        m_wiresConnectorHandler.getControl().hideControlPoints();
+        m_connectorControl.hideControlPoints();
         m_group.getLayer().batch();
     }
 
-    public IConnectionAcceptor getConnectionAcceptor()
+    public void setControl( final WiresConnectorControl control)
     {
-        return m_connectionAcceptor;
+        this.m_connectorControl = control;
     }
 
-    public void setConnectionAcceptor(IConnectionAcceptor connectionAcceptor)
+    public WiresConnectorControl getControl()
     {
-        m_connectionAcceptor = connectionAcceptor;
-    }
-
-    public void setWiresConnectorHandler( final HandlerRegistrationManager m_registrationManager,
-                                          final WiresConnectorHandler handler )
-    {
-
-        final Group group = getGroup();
-
-        m_registrationManager.register(group.addNodeDragStartHandler(handler));
-        m_registrationManager.register(group.addNodeDragMoveHandler(handler));
-        m_registrationManager.register(group.addNodeDragEndHandler(handler));
-
-        if (m_HandlerRegistrationManager != null)
-        {
-            m_HandlerRegistrationManager.removeHandler();
-        }
-        m_HandlerRegistrationManager = new HandlerRegistrationManager();
-        m_HandlerRegistrationManager.register(getLine().addNodeMouseClickHandler(handler));
-        m_HandlerRegistrationManager.register(getLine().addNodeMouseDoubleClickHandler(handler));
-        m_HandlerRegistrationManager.register(getHead().addNodeMouseClickHandler(handler));
-        m_HandlerRegistrationManager.register(getTail().addNodeMouseClickHandler(handler));
-
-        m_wiresConnectorHandler = handler;
-    }
-
-    public WiresConnectorHandler getWiresConnectorHandler()
-    {
-        return m_wiresConnectorHandler;
+        return m_connectorControl;
     }
 
     public void destroy()
     {
         destroyPointHandles();
-        removeHandlers();
         removeFromLayer();
-    }
-
-    private void removeHandlers()
-    {
-
-        if (null != m_HandlerRegistrationManager)
-        {
-            m_HandlerRegistrationManager.removeHandler();
-        }
-
     }
 
     public void addToLayer(Layer layer)
@@ -412,17 +331,19 @@ public class WiresConnector
     private boolean executeHeadConnectionOperation(final WiresShape shape,
                                                    final WiresMagnet magnet,
                                                    final boolean isAcceptOp) {
+        final IConnectionAcceptor connectionAcceptor = shape.getWiresManager().getConnectionAcceptor();
         return isAcceptOp ?
-                getConnectionAcceptor().acceptHead(getHeadConnection(), magnet) :
-                getConnectionAcceptor().headConnectionAllowed(getHeadConnection(), shape);
+                connectionAcceptor.acceptHead(getHeadConnection(), magnet) :
+               connectionAcceptor.headConnectionAllowed(getHeadConnection(), shape);
     }
 
     private boolean executeTailConnectionOperation(final WiresShape shape,
                                                    final WiresMagnet magnet,
                                                    final boolean isAcceptOp) {
+        final IConnectionAcceptor connectionAcceptor = shape.getWiresManager().getConnectionAcceptor();
         return isAcceptOp ?
-                getConnectionAcceptor().acceptTail(getTailConnection(), magnet) :
-                getConnectionAcceptor().tailConnectionAllowed(getTailConnection(), shape);
+               connectionAcceptor.acceptTail(getTailConnection(), magnet) :
+               connectionAcceptor.tailConnectionAllowed(getTailConnection(), shape);
     }
 
     /**
@@ -731,6 +652,221 @@ public class WiresConnector
         return m_line.getPoint2DArray();
     }
 
+    public void addControlPoint(final double x,
+                               final double y,
+                               final int index) {
+        if (index > -1) {
+            final Point2D actual = getControlPoints().get(index);
+            if (actual.getX() == x && actual.getY() == y) {
+                return;
+            }
+            final Point2DArray oldPoints = getControlPoints();
+            final Point2DArray newPoints = new Point2DArray();
+            for (int i = 0; i < oldPoints.size(); i++) {
+                if (i == index) {
+                    newPoints.push(new Point2D(x, y));
+                }
+                newPoints.push(oldPoints.get(i));
+            }
+            m_line.setPoint2DArray(newPoints);
+        }
+    }
+
+    public void destroyControlPoints(final int[] indexes) {
+        final Point2DArray oldPoints = getLine().getPoint2DArray();
+        final Point2DArray newPoints = new Point2DArray();
+        for (int i = 0; i < oldPoints.size(); i++) {
+            if (!contains(indexes, i)) {
+                newPoints.push(oldPoints.get(i));
+            }
+        }
+        getLine().setPoint2DArray(newPoints);
+    }
+
+    private static boolean contains(final int[] indexes,
+                                    final int index) {
+        for (int i : indexes) {
+            if (i == index) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void moveControlPoint(final int index,
+                                 final Point2D location) {
+        getControlPoints().get(index).set(location);
+        final IPrimitive<?> point = getControlPoint(index);
+        if (null != point) {
+            point.setLocation(location);
+        }
+    }
+
+    private IPrimitive<?> getControlPoint(final int index) {
+        return index < getPointHandles().size() ?
+                getPointHandles().getHandle(index).getControl() :
+                null;
+    }
+
+    public int getControlPointIndex(final double x,
+                                     final double y) {
+        int i = 0;
+        for (IControlHandle handle : getPointHandles()) {
+            if (handle.getControl().getX() == x &&
+                    handle.getControl().getY() == y) {
+                return i;
+            }
+            i++;
+        }
+        return -1;
+    }
+
+    public int getIndexForSelectedSegment(final int x,
+                                          final int y) {
+        return getIndexForSelectedSegment(this, x, y, getControlPoints());
+    }
+
+    public static int getIndexForSelectedSegment(final WiresConnector connector,
+                                                 final int mouseX,
+                                                 final int mouseY,
+                                                 final Point2DArray oldPoints) {
+        NFastStringMap<Integer> colorMap = new NFastStringMap<Integer>();
+
+        IDirectionalMultiPointShape<?> line = connector.getLine();
+        ScratchPad scratch = line.getScratchPad();
+        scratch.clear();
+        PathPartList path = line.asShape().getPathPartList();
+        int pointsIndex = 1;
+        String color = MagnetManager.m_c_rotor.next();
+        colorMap.put(color,
+                     pointsIndex);
+        Context2D ctx = scratch.getContext();
+        double strokeWidth = line.asShape().getStrokeWidth();
+        //setting a minimum stroke width to make finding a close point to the connector easier
+        ctx.setStrokeWidth((strokeWidth < MINIMUM_STROKE_WITH ? MINIMUM_STROKE_WITH : strokeWidth));
+
+        Point2D absolutePos = connector.getLine().getComputedLocation();
+        double offsetX = absolutePos.getX();
+        double offsetY = absolutePos.getY();
+
+        Point2D pathStart = new Point2D(offsetX,
+                                        offsetY);
+        Point2D segmentStart = pathStart;
+
+        for (int i = 0; i < path.size(); i++) {
+            PathPartEntryJSO entry = path.get(i);
+            NFastDoubleArrayJSO points = entry.getPoints();
+
+            switch (entry.getCommand()) {
+                case PathPartEntryJSO.MOVETO_ABSOLUTE: {
+                    double x0 = points.get(0) + offsetX;
+                    double y0 = points.get(1) + offsetY;
+                    Point2D m = new Point2D(x0,
+                                            y0);
+                    if (i == 0) {
+                        // this is position is needed, if we close the path.
+                        pathStart = m;
+                    }
+                    segmentStart = m;
+                    break;
+                }
+                case PathPartEntryJSO.LINETO_ABSOLUTE: {
+                    points = entry.getPoints();
+                    double x0 = points.get(0) + offsetX;
+                    double y0 = points.get(1) + offsetY;
+                    Point2D end = new Point2D(x0,
+                                              y0);
+
+                    if (oldPoints.get(pointsIndex).equals(segmentStart)) {
+                        pointsIndex++;
+                        color = MagnetManager.m_c_rotor.next();
+                        colorMap.put(color,
+                                     pointsIndex);
+                    }
+                    ctx.setStrokeColor(color);
+
+                    ctx.beginPath();
+                    ctx.moveTo(segmentStart.getX(),
+                               segmentStart.getY());
+                    ctx.lineTo(x0,
+                               y0);
+                    ctx.stroke();
+                    segmentStart = end;
+                    break;
+                }
+                case PathPartEntryJSO.CLOSE_PATH_PART: {
+                    double x0 = pathStart.getX() + offsetX;
+                    double y0 = pathStart.getY() + offsetY;
+                    Point2D end = new Point2D(x0,
+                                              y0);
+                    if (oldPoints.get(pointsIndex).equals(segmentStart)) {
+                        pointsIndex++;
+                        color = MagnetManager.m_c_rotor.next();
+                        colorMap.put(color,
+                                     pointsIndex);
+                    }
+                    ctx.setStrokeColor(color);
+                    ctx.beginPath();
+                    ctx.moveTo(segmentStart.getX(),
+                               segmentStart.getY());
+                    ctx.lineTo(x0,
+                               y0);
+                    ctx.stroke();
+                    segmentStart = end;
+                    break;
+                }
+                case PathPartEntryJSO.CANVAS_ARCTO_ABSOLUTE: {
+                    points = entry.getPoints();
+
+                    double x0 = points.get(0) + offsetX;
+                    double y0 = points.get(1) + offsetY;
+                    Point2D p0 = new Point2D(x0,
+                                             y0);
+
+                    double x1 = points.get(2) + offsetX;
+                    double y1 = points.get(3) + offsetY;
+                    double r = points.get(4);
+
+                    if (p0.equals(oldPoints.get(pointsIndex))) {
+                        pointsIndex++;
+                        color = MagnetManager.m_c_rotor.next();
+                        colorMap.put(color,
+                                     pointsIndex);
+                    }
+                    ctx.setStrokeColor(color);
+                    ctx.beginPath();
+                    ctx.moveTo(segmentStart.getX(),
+                               segmentStart.getY());
+                    ctx.arcTo(x0,
+                              y0,
+                              x1,
+                              y1,
+                              r);
+                    ctx.stroke();
+
+                    segmentStart = new Point2D(x1,
+                                               y1);
+                    break;
+                }
+            }
+        }
+
+        BoundingBox box = connector.getLine().getBoundingBox();
+
+        // Keep the ImageData small by clipping just the visible line area
+        // But remember the mouse must be offset for this clipped area.
+        int sx = (int) (box.getX() - strokeWidth - offsetX);
+        int sy = (int) (box.getY() - strokeWidth - offsetY);
+        ImageData backing = ctx.getImageData(sx,
+                                             sy,
+                                             (int) (box.getWidth() + strokeWidth + strokeWidth),
+                                             (int) (box.getHeight() + strokeWidth + strokeWidth));
+        color = BackingColorMapUtils.findColorAtPoint(backing,
+                                                      mouseX - sx,
+                                                      mouseY - sy);
+        return null != color ? colorMap.get(color) : -1;
+    }
+
     @Override public boolean equals(Object o)
     {
         if (this == o)
@@ -744,11 +880,46 @@ public class WiresConnector
 
         WiresConnector that = (WiresConnector) o;
 
-        return getGroup().uuid() == that.getGroup().uuid();
+        return getGroup().uuid().equals(that.getGroup().uuid());
     }
 
     @Override public int hashCode()
     {
         return getGroup().uuid().hashCode();
+    }
+
+    public static boolean updateHeadTailForRefreshedConnector(WiresConnector c)
+    {
+        // Iterate each refreshed line and get the new points for the decorators
+        if (c.getLine().asShape().getPathPartList().size() < 1)
+        {
+            // only do this for lines that have had refresh called
+            IDirectionalMultiPointShape<?> line = c.getLine();
+
+            if ( c.isSpecialConnection() && line.asShape().getPathPartList().size() == 0)
+            {
+                // if getPathPartList is empty, it was refreshed due to a point change
+                c.updateForSpecialConnections(false);
+            }
+
+            final boolean prepared = line.isPathPartListPrepared(c.getLine().getAttributes());
+
+            if (!prepared)
+            {
+                return true;
+            }
+
+            Point2DArray points     = line.getPoint2DArray();
+            Point2D      p0         = points.get(0);
+            Point2D      p1         = line.getHeadOffsetPoint();
+            Point2DArray headPoints = new Point2DArray(p1, p0);
+            c.getHeadDecorator().draw(headPoints);
+
+            p0 = points.get(points.size() - 1);
+            p1 = line.getTailOffsetPoint();
+            Point2DArray tailPoints = new Point2DArray(p1, p0);
+            c.getTailDecorator().draw(tailPoints);
+        }
+        return false;
     }
 }

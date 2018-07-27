@@ -85,7 +85,9 @@ public class WiresCompositeShapeHandler
 
         shapeControl.onMove(dx, dy);
 
-        if (shapeControl.onMoveComplete() && shapeControl.accept()) {
+        final boolean isComplete = shapeControl.onMoveComplete();
+        final boolean isAccept = isComplete && shapeControl.accept();
+        if (isAccept) {
             shapeControl.execute();
         } else {
             reset();

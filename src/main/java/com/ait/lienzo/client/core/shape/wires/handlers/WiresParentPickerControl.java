@@ -11,10 +11,23 @@ public interface WiresParentPickerControl extends WiresShapeLocationControl {
 
     public Index getIndex();
 
+    /**
+     * An indexed shape part picker for the given control's layer.
+     */
     public interface Index {
+        /**
+         * Excludes the given shape from the resulting index.
+         */
+        public void exclude(WiresContainer shape);
 
-        public void addShapeToSkip(WiresContainer shape);
+        /**
+         * Returns the picker part for the shape located at the given coordinates, if any.
+         */
+        PickerPart findShapeAt(int x, int y);
 
+        /**
+         * Clears the index.
+         */
         public void clear();
     }
 }

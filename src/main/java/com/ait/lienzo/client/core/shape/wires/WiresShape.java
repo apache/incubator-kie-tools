@@ -31,7 +31,6 @@ import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartHandler;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepHandler;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeHandler;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
@@ -146,7 +145,7 @@ public class WiresShape extends WiresContainer
         }
     }
 
-    public void setWiresShapeControl( final WiresShapeControl control ) {
+    public void setControl( final WiresShapeControl control ) {
         m_control = control;
     }
 

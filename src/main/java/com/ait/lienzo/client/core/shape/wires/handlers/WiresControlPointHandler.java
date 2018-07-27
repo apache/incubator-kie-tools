@@ -3,6 +3,7 @@ package com.ait.lienzo.client.core.shape.wires.handlers;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
 import com.ait.lienzo.client.core.event.NodeDragStartHandler;
+import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
 
 /**
@@ -11,6 +12,7 @@ import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
  * when adding control points to a connector.
  */
 public interface WiresControlPointHandler extends NodeMouseDoubleClickHandler,
+                                                  NodeMouseClickHandler,
                                                   NodeDragStartHandler,
                                                   NodeDragEndHandler,
                                                   NodeDragMoveHandler {

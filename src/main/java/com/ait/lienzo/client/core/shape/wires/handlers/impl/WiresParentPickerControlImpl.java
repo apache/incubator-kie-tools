@@ -246,9 +246,15 @@ public class WiresParentPickerControlImpl implements WiresParentPickerControl,
 
 
         @Override
-        public void addShapeToSkip(final WiresContainer shape)
+        public void exclude(final WiresContainer shape)
         {
             getPickerOptions().getShapesToSkip().add(shape);
+        }
+
+        @Override
+        public PickerPart findShapeAt(int x, int y)
+        {
+            return m_picker.findShapeAt(x, y);
         }
 
         @Override

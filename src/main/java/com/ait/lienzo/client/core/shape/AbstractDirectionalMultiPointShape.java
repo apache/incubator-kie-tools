@@ -100,7 +100,7 @@ public abstract class AbstractDirectionalMultiPointShape<T extends AbstractDirec
 
     @Override
     public Point2D adjustPoint(double x, double y, double deltaX, double deltaY) {
-        return null;
+        return new Point2D(x, y);
     }
 
     protected static abstract class AbstractDirectionalMultiPointShapeFactory<T extends AbstractDirectionalMultiPointShape<T>> extends AbstractOffsetMultiPointShapeFactory<T>

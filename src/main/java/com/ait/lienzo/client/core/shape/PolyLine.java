@@ -33,7 +33,7 @@ import com.google.gwt.json.client.JSONObject;
 
 /**
  * PolyLine is a continuous line composed of one or more line segments.
- * To create a dashed PolyLine, use one of the setDashArray() methods. 
+ * To create a dashed PolyLine, use one of the setDashArray() methods.
  */
 public class PolyLine extends AbstractDirectionalMultiPointShape<PolyLine>
 {
@@ -45,7 +45,7 @@ public class PolyLine extends AbstractDirectionalMultiPointShape<PolyLine>
 
     /**
      * Constructor. Creates an instance of a polyline.
-     * 
+     *
      * @param points a {@link Point2DArray} containing 2 or more points.
      */
     public PolyLine(final Point2DArray points)

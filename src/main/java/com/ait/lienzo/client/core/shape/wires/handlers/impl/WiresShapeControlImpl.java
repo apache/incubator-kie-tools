@@ -1,17 +1,26 @@
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.handlers.*;
+import com.ait.lienzo.client.core.shape.wires.handlers.AlignAndDistributeControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.MouseEvent;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresContainmentControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresMagnetsControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.util.Geometry;
+import com.ait.tooling.common.api.java.util.function.Consumer;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
-
-import java.util.Collection;
 
 /**
  * The default WiresShapeControl implementation.
@@ -56,8 +65,8 @@ public class WiresShapeControlImpl
     }
 
     @Override
-    public void onMoveStart(double x,
-                            double y) {
+    public void onMoveStart(final double x,
+                            final double y) {
         shapeBounds = getShape().getGroup().getComputedBoundingPoints().getBoundingBox();
         m_adjust = new Point2D(0, 0);
         d_accept = false;
@@ -67,10 +76,10 @@ public class WiresShapeControlImpl
         // Otherwise children or the shape itself are being processed by the parent picker
         // and it ends up with wrong parent-child nested issues.
         final WiresParentPickerControl.Index index = parentPickerControl.getIndex();
-        index.addShapeToSkip(getShape());
+        index.exclude(getShape());
         final NFastArrayList<WiresShape> children = getShape().getChildShapes();
         for (int i = 0; i < children.size(); i++) {
-            index.addShapeToSkip(children.get(i));
+            index.exclude(children.get(i));
         }
 
         // Delegate mvoe start to the shape's docking control
@@ -94,18 +103,18 @@ public class WiresShapeControlImpl
         m_connectorsWithSpecialConnections = ShapeControlUtils.collectionSpecialConnectors(getShape());
 
         //setting the child connectors that should be moved with the Shape
-        if(getShape().getChildShapes() != null && !getShape().getChildShapes().isEmpty()) {
-            m_connectors = setConnectorsMoveStart(ShapeControlUtils.getChildConnectorWithinShape(getShape()).values(), x, y);
-        }
-    }
+        m_connectors = getShape().getChildShapes() != null && !getShape().getChildShapes().isEmpty() ?
+                       ShapeControlUtils.lookupChildrenConnectorsToUpdate(getShape()).values() :
+                       Collections.<WiresConnector>emptyList();
 
-    private Collection<WiresConnector> setConnectorsMoveStart(Collection<WiresConnector> connectors, double x, double y) {
-        if (connectors != null && !connectors.isEmpty()) {
-            for (WiresConnector connector : connectors) {
-                connector.getWiresConnectorHandler().getControl().onMoveStart(x, y);
+        forEachConnectorControl(new Consumer<WiresConnectorControl>() {
+            @Override
+            public void accept(WiresConnectorControl control)
+            {
+                control.onMoveStart(x, y);
             }
-        }
-        return  connectors;
+        });
+
     }
 
     @Override
@@ -130,8 +139,8 @@ public class WiresShapeControlImpl
 
 
     @Override
-    public boolean onMove(double dx,
-                          double dy) {
+    public boolean onMove(final double dx,
+                          final double dy) {
 
         if (isOutOfBounds(dx, dy)) {
             return true;
@@ -178,8 +187,10 @@ public class WiresShapeControlImpl
                 && (dxy.getX() != dx || dxy.getY() != dy)) {
             BoundingBox box = getShape().getPath().getBoundingBox();
 
-            PickerPart part = getPicker().findShapeAt((int) (shapeBounds.getMinX() + dxy.getX() + (box.getWidth() / 2)),
-                                                      (int) (shapeBounds.getMinY() + dxy.getY() + (box.getHeight() / 2)));
+            PickerPart part = parentPickerControl
+                    .getIndex()
+                    .findShapeAt((int) (shapeBounds.getMinX() + dxy.getX() + (box.getWidth() / 2)),
+                                 (int) (shapeBounds.getMinY() + dxy.getY() + (box.getHeight() / 2)));
 
             if (part == null || part.getShapePart() != PickerPart.ShapePart.BORDER) {
                 dxy.setX(dx);
@@ -192,9 +203,17 @@ public class WiresShapeControlImpl
         m_adjust = dxy;
         parentPickerControl.onMoveAdjusted(m_adjust);
 
-        ShapeControlUtils.updateConnectors(m_connectors, dx, dy);
-
         shapeUpdated(false);
+
+        forEachConnectorControl(new Consumer<WiresConnectorControl>() {
+            @Override
+            public void accept(WiresConnectorControl control)
+            {
+                control.onMove(dx,
+                               dy);
+            }
+        });
+
         ShapeControlUtils.checkForAndApplyLineSplice(getWiresManager(),
                                                      getShape());
 
@@ -230,7 +249,20 @@ public class WiresShapeControlImpl
         if (m_alignAndDistributeControl != null) {
             m_alignAndDistributeControl.dragEnd();
         }
-        return dcompleted && ccompleted;
+        if (dcompleted && ccompleted) {
+            final boolean[] accept = new boolean[] {true};
+            forEachConnectorControl(new Consumer<WiresConnectorControl>() {
+                @Override
+                public void accept(WiresConnectorControl control)
+                {
+                    if (!control.onMoveComplete()) {
+                        accept[0] = false;
+                    }
+                }
+            });
+            return accept[0];
+        }
+        return false;
     }
 
     @Override
@@ -247,10 +279,20 @@ public class WiresShapeControlImpl
         } else {
             getContainmentControl().execute();
         }
+
         getParentPickerControl().setShapeLocation(location);
+        shapeUpdated(true);
+
+        forEachConnectorControl(new Consumer<WiresConnectorControl>() {
+            @Override
+            public void accept(WiresConnectorControl control)
+            {
+                control.execute();
+            }
+        });
+
         ShapeControlUtils.checkForAndApplyLineSplice(getWiresManager(),
                                                      getShape());
-        shapeUpdated(true);
         clear();
     }
 
@@ -264,6 +306,13 @@ public class WiresShapeControlImpl
         if (null != m_containmentControl) {
             m_containmentControl.clear();
         }
+        forEachConnectorControl(new Consumer<WiresConnectorControl>() {
+            @Override
+            public void accept(WiresConnectorControl control)
+            {
+                control.clear();
+            }
+        });
         clearState();
     }
 
@@ -280,16 +329,19 @@ public class WiresShapeControlImpl
             m_alignAndDistributeControl.dragEnd();
         }
         getShape().shapeMoved();
+        forEachConnectorControl(new Consumer<WiresConnectorControl>() {
+            @Override
+            public void accept(WiresConnectorControl control)
+            {
+                control.reset();
+            }
+        });
         clearState();
     }
 
     @Override
     public void onMouseClick(MouseEvent event) {
         parentPickerControl.onMouseClick(event);
-        if (getWiresManager().getSelectionManager() != null) {
-            getWiresManager().getSelectionManager().selected(getShape(),
-                                                             event.isShiftKeyDown());
-        }
     }
 
     @Override
@@ -347,6 +399,14 @@ public class WiresShapeControlImpl
         shapeBounds = null;
         m_adjust = new Point2D(0, 0);
         m_connectorsWithSpecialConnections = null;
+    }
+
+    private void forEachConnectorControl(final Consumer<WiresConnectorControl> consumer) {
+        if (m_connectors != null && !m_connectors.isEmpty()) {
+            for (WiresConnector connector : m_connectors) {
+                consumer.accept(connector.getControl());
+            }
+        }
     }
 
     private WiresShape getShape() {
