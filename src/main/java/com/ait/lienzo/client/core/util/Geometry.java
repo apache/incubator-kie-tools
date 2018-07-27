@@ -246,6 +246,13 @@ public final class Geometry
         return true;
     }
 
+    /**
+     * @param xval x coordinate values for [0]=segment_start [1]=cp1 [2]=cp2 [3]=segment_end
+     * @param yval y coordinate values for [0]=segment_start [1]=cp1 [2]=cp2 [3]=segment_end
+     * @param lx x coordinate values for [0]=line-start [1]=line_ed
+     * @param ly y coordinate values for [0]=line-start [1]=line_ed
+     * @return The intersection points in the cartesian axis
+     */
     public static final Point2DArray intersectLineCurve(final double[] xval, final double[] yval, final double[] lx, final double[] ly)
     {
         final Point2DArray intersections = new Point2DArray();
@@ -285,13 +292,18 @@ public final class Geometry
                 s = (iy - ly[0]) / (ly[1] - ly[0]);
             }
 
-            if (greaterOrCloseEnough(t, 0) && lesserOrCloseEnough(t, 1) && greaterOrCloseEnough(s, 0) && lesserOrCloseEnough(s, 1))
+            if (isBetween(0, t, 1) && isBetween(0, s, 1))
             {
                 intersections.push(new Point2D(ix, iy));
             }
         }
 
         return intersections;
+    }
+
+    public static boolean isBetween(final double min, final double value, final double max)
+    {
+        return greaterOrCloseEnough(value, min) && lesserOrCloseEnough(value, max);
     }
 
     public static double[] cubicRoots(final double[] p)

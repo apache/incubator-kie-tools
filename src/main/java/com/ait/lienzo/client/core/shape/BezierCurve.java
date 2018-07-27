@@ -93,13 +93,7 @@ public class BezierCurve extends AbstractMultiPointShape<BezierCurve>
         final double[] xvals = new double[]{x0, x1, x2, x3};
         final double[] yvals = new double[]{y0, y1, y2, y3};
 
-        final BoundingBox bbox = Geometry.getBoundingBoxOfCubicCurve(xvals, yvals);
-
-        if (null != bbox)
-        {
-            return bbox;
-        }
-        return new BoundingBox(0, 0, 0, 0);
+        return Geometry.getBoundingBoxOfCubicCurve(xvals, yvals);
     }
 
     /**
