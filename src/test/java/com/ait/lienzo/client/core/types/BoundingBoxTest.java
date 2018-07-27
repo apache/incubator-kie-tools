@@ -17,6 +17,8 @@
 package com.ait.lienzo.client.core.types;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,9 +33,34 @@ public class BoundingBoxTest
     {
         final BoundingBox box = new BoundingBox(-1000, -200, -100, 300);
 
-        assertEquals(box.getX(), -1000d, Double.MIN_VALUE);
-        assertEquals(box.getY(), -200d, Double.MIN_VALUE);
-        assertEquals(box.getWidth(), 900d, Double.MIN_VALUE);
-        assertEquals(box.getHeight(), 500d, Double.MIN_VALUE);
+        assertEquals(box.getX(), -1000d, 0);
+        assertEquals(box.getY(), -200d, 0);
+        assertEquals(box.getWidth(), 900d, 0);
+        assertEquals(box.getHeight(), 500d, 0);
     }
+
+    @Test
+    public void testIntersect()
+    {
+        BoundingBox box1 = new BoundingBox(0, 0, 100, 100);
+        BoundingBox box2 = new BoundingBox(50, 50, 150, 150);
+        BoundingBox box3 = new BoundingBox(100, 100, 0, 0);
+        BoundingBox box4 = new BoundingBox(200, 200, 0, 0);
+        BoundingBox box5 = new BoundingBox(10, 10, 25, 25);
+        assertTrue(box1.intersects(box2));
+        assertTrue(box2.intersects(box1));
+        assertTrue(box3.intersects(box2));
+        assertTrue(box3.intersects(box1));
+        assertTrue(box4.intersects(box2));
+        assertTrue(box4.intersects(box1));
+        assertTrue(box5.intersects(box1));
+        assertFalse(box5.intersects(box2));
+        assertTrue(box5.intersects(box3));
+        assertTrue(box5.intersects(box4));
+        assertTrue(box1.intersects(box5));
+        assertFalse(box2.intersects(box5));
+        assertTrue(box3.intersects(box5));
+        assertTrue(box4.intersects(box5));
+    }
+
 }

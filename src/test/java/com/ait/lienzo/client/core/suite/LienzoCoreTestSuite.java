@@ -19,11 +19,14 @@ package com.ait.lienzo.client.core.suite;
 import com.ait.lienzo.client.core.image.ImageElementProxyTest;
 import com.ait.lienzo.client.core.image.ImageStripsTest;
 import com.ait.lienzo.client.core.image.ImageTest;
+import com.ait.lienzo.client.core.shape.BezierCurveTest;
+import com.ait.lienzo.client.core.shape.BoundingBoxComputationsTest;
 import com.ait.lienzo.client.core.shape.MultiPathTest;
 import com.ait.lienzo.client.core.shape.PolyLineTest;
 import com.ait.lienzo.client.core.shape.TextBoundsWrapTest;
 import com.ait.lienzo.client.core.shape.TextLineBreakWrapTest;
 import com.ait.lienzo.client.core.types.BoundingBoxTest;
+import com.ait.lienzo.client.core.util.GeometryTest;
 import com.ait.lienzo.client.widget.LienzoHandlerManagerTest;
 import com.ait.lienzo.client.widget.LienzoPanelTest;
 import org.junit.AfterClass;
@@ -33,7 +36,9 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+        GeometryTest.class,
         BoundingBoxTest.class,
+        BoundingBoxComputationsTest.class,
         ImageElementProxyTest.class,
         ImageStripsTest.class,
         ImageTest.class,
@@ -41,6 +46,7 @@ import org.junit.runners.Suite;
         LienzoPanelTest.class,
         MultiPathTest.class,
         PolyLineTest.class,
+        BezierCurveTest.class,
         TextBoundsWrapTest.class,
         TextLineBreakWrapTest.class
 })
