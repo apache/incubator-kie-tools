@@ -19,9 +19,6 @@
 package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
-import com.ait.lienzo.client.core.event.NodeDragEndHandler;
-import com.ait.lienzo.client.core.event.NodeMouseDownHandler;
-import com.ait.lienzo.client.core.event.NodeMouseUpHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
@@ -32,9 +29,7 @@ import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartHandler;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepHandler;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeHandler;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.dom.client.DomEvent;
@@ -134,20 +129,6 @@ public class WiresShapeTest
 
         tested.setDraggable(true);
         assertTrue(tested.getGroup().isDraggable());
-    }
-
-    @Test
-    public void testDraggableHandlers()
-    {
-        final WiresShapeHandler handler = mock(WiresShapeHandler.class);
-        WiresManager.setWiresShapeHandler(tested,
-                                          handlerRegistrationManager,
-                                          handler);
-        verify(group, times(1)).addNodeMouseDownHandler(any(NodeMouseDownHandler.class));
-        verify(group, times(1)).addNodeMouseUpHandler(any(NodeMouseUpHandler.class));
-        verify(group, times(1)).setDragConstraints(any(DragConstraintEnforcer.class));
-        verify(group, times(1)).addNodeDragEndHandler(any(NodeDragEndHandler.class));
-        verify(handlerRegistrationManager, times(4)).register(any(HandlerRegistration.class));
     }
 
     @Test

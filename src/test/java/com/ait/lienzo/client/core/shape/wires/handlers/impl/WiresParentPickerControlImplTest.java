@@ -107,7 +107,7 @@ public class WiresParentPickerControlImplTest {
         final WiresParentPickerControl.Index index = tested.getIndex();
         index.clear();
         assertTrue(pickerOptions.getShapesToSkip().isEmpty());
-        index.addShapeToSkip(mock(WiresShape.class));
+        index.exclude(mock(WiresShape.class));
         assertFalse(pickerOptions.getShapesToSkip().isEmpty());
     }
 

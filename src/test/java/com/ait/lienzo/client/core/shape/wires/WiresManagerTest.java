@@ -109,7 +109,7 @@ public class WiresManagerTest
         final WiresShapeControl shapeControl = spied.register(shape);
         assertNotNull(shapeControl);
         assertNotNull(tested.getShape(shape.uuid()));
-        verify(shape, times(1)).setWiresShapeControl(any(WiresShapeControl.class));
+        verify(shape, times(1)).setControl(any(WiresShapeControl.class));
         verify(layer, times(1)).add(eq(shape.getGroup()));
         verify(handlerRegistrationManager, times(4)).register(any(HandlerRegistration.class));
     }
@@ -200,8 +200,7 @@ public class WiresManagerTest
         final WiresConnectorControl connectorControl = spied.register(connector);
         assertNotNull(connectorControl);
         assertFalse(spied.getConnectorList().isEmpty());
-        verify(connector, times(1)).setConnectionAcceptor(eq(connectionAcceptor));
-        verify(connector, times(1)).setWiresConnectorHandler(eq(handlerRegistrationManager), any(WiresConnectorHandler.class));
+        verify(connector, times(1)).setControl(any(WiresConnectorControl.class));
         verify(connector, times(1)).addToLayer(eq(layer));
         verify(wiresHandlerFactory, times(1)).newConnectorHandler(connector, spied);
     }

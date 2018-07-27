@@ -19,6 +19,7 @@ package com.ait.lienzo.client.core.shape.wires;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
 import com.ait.lienzo.client.core.shape.PolyLine;
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
@@ -26,12 +27,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresConnectorTest {
+
+    private static final Point2D CP0 = new Point2D(0, 50);
+    private static final Point2D CP1 = new Point2D(50, 50);
+    private static final Point2D CP2 = new Point2D(100, 50);
+    private static final MultiPath headPath = new MultiPath().circle(10);
+    private static final MultiPath tailPath = new MultiPath().circle(10);
 
     @Mock
     private MultiPathDecorator headDecorator;
@@ -40,16 +48,13 @@ public class WiresConnectorTest {
     private MultiPathDecorator tailDecorator;
 
     private PolyLine line;
-    private static MultiPath headPath = new MultiPath().circle(10);
-    private static MultiPath tailPath = new MultiPath().circle(10);
     private WiresConnector tested;
 
     @Before
     public void setup() {
         when(headDecorator.getPath()).thenReturn(headPath);
         when(tailDecorator.getPath()).thenReturn(tailPath);
-        Point2DArray points = new Point2DArray(10, 20);
-        line = new PolyLine(points);
+        line = new PolyLine(CP0, CP1, CP2);
         tested = new WiresConnector(line,
                                     headDecorator,
                                     tailDecorator);
@@ -65,4 +70,43 @@ public class WiresConnectorTest {
         assertNull(magnets[0]);
         assertNull(magnets[1]);
     }
+
+    @Test
+    public void testAddControlpoint() {
+        final Point2D point = new Point2D(25, 50);
+        tested.addControlPoint(point.getX(), point.getY(), 1);
+        final Point2DArray points = line.getPoints();
+        assertEquals(4, points.size());
+        assertEquals(CP0, points.get(0));
+        assertEquals(point, points.get(1));
+        assertEquals(CP1, points.get(2));
+        assertEquals(CP2, points.get(3));
+    }
+
+    @Test
+    public void testMoveControlpoint() {
+        final Point2D point = new Point2D(25, 50);
+        tested.moveControlPoint(0, point);
+        final Point2DArray points = line.getPoints();
+        assertEquals(3, points.size());
+        assertEquals(point, points.get(0));
+        assertEquals(CP1, points.get(1));
+        assertEquals(CP2, points.get(2));
+    }
+
+    @Test
+    public void testDestroyControlpoint() {
+        tested.destroyControlPoints(new int[]{0, 2});
+        final Point2DArray points = line.getPoints();
+        assertEquals(1, points.size());
+        assertEquals(CP1, points.get(0));
+    }
+
+    @Test
+    public void testGetControlPointIndex() {
+        assertEquals(0, tested.getControlPointIndex(CP0.getX(), CP0.getY()));
+        assertEquals(1, tested.getControlPointIndex(CP1.getX(), CP1.getY()));
+        assertEquals(2, tested.getControlPointIndex(CP2.getX(), CP2.getY()));
+    }
+
 }

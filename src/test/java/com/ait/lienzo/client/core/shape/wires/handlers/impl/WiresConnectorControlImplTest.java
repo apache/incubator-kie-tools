@@ -17,32 +17,18 @@
  */
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
-import java.util.Iterator;
-
-import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
-import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.shape.Node;
-import com.ait.lienzo.client.core.shape.Shape;
-import com.ait.lienzo.client.core.shape.wires.IControlHandle;
+import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.MultiPathDecorator;
+import com.ait.lienzo.client.core.shape.PolyLine;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
-import com.ait.lienzo.client.core.shape.wires.WiresConnection;
+import com.ait.lienzo.client.core.shape.wires.IControlPointsAcceptor;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
+import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlPointHandler;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresHandlerFactory;
-import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.types.ImageData;
-import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
-import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-import com.google.gwt.event.shared.HandlerRegistration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,7 +36,15 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyDouble;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -58,187 +52,173 @@ import static org.mockito.Mockito.when;
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresConnectorControlImplTest {
 
-    private WiresConnectorControl wiresConnectorControl;
+    private static final MultiPath headPath = new MultiPath().circle(10);
+    private static final MultiPath tailPath = new MultiPath().circle(10);
 
     @Mock
+    private WiresLayer wiresLayer;
+
+    @Mock
+    private MultiPathDecorator headDecorator;
+
+    @Mock
+    private MultiPathDecorator tailDecorator;
+
     private WiresManager wiresManager;
-
-    @Mock
-    private WiresConnector connector;
-
-    @Mock
-    private AbstractDirectionalMultiPointShape line;
-
-    @Mock
-    private Shape<?> lineShape;
-
-    @Mock
-    private ScratchPad scratchPad;
-
-    @Mock
-    private PathPartList pathPartList;
-
-    @Mock
-    private Context2D context;
-
-    @Mock
-    private Point2D location;
-
-    @Mock
-    private BoundingBox boundingBox;
-
-    @Mock
-    private ImageData backImage;
-
-    @Mock
-    private IControlHandleList pointHandles;
-
-    @Mock
-    private HandlerRegistrationManager handlerRegistration;
-
-    @Mock
-    private WiresControlFactory controlFactory;
-
-    @Mock
-    private WiresConnectorControl connectorControl;
-
-    @Mock
-    private WiresConnection headConnection;
-
-    @Mock
-    private IPrimitive headControl;
-
-    @Mock
-    private IPrimitive pointControl;
-
-    @Mock
-    private Shape headShape;
-
-    @Mock
-    private WiresConnection tailConnection;
-
-    @Mock
-    private IPrimitive tailControl;
-
-    @Mock
-    private Shape tailShape;
-
-    @Mock
-    private Shape pointShape;
-
-    @Mock
-    private WiresHandlerFactory wiresHandlerFactory;
-
-    @Mock
-    private WiresControlPointHandler connectorControlHandler;
-
-    private Point2D head;
-
-    private Point2D tail;
-
-    private Point2DArray lineArray;
-
-    @Mock
-    private Iterator<IControlHandle> pointHandlesIterator;
-
-    @Mock
-    private IControlHandle pointHandle;
-
-    @Mock
     private Layer layer;
+    private PolyLine line;
+    private WiresConnector connector;
+    private Point2D CP0 = new Point2D(0, 50);
+    private Point2D CP1 = new Point2D(50, 50);
+    private Point2D CP2 = new Point2D(100, 50);
 
-    @Mock
-    private HandlerRegistration controlPointRegistration;
+    private WiresConnectorControlImpl tested;
 
     @Before
     public void setup() {
-        wiresConnectorControl = new WiresConnectorControlImpl(connector, wiresManager);
-
-        head = new Point2D(0, 0);
-        tail = new Point2D(100, 0);
-        lineArray = new Point2DArray(head, tail);
-
-        when(line.getPoint2DArray()).thenReturn(lineArray);
-        when(line.getScratchPad()).thenReturn(scratchPad);
-        when(line.getPathPartList()).thenReturn(pathPartList);
-        when(line.getComputedLocation()).thenReturn(location);
-        when(line.getBoundingBox()).thenReturn(boundingBox);
-        when(line.asShape()).thenReturn(lineShape);
-        when(lineShape.getPathPartList()).thenReturn(pathPartList);
-        when(connector.getLine()).thenReturn(line);
-        when(scratchPad.getContext()).thenReturn(context);
-        when(context.getImageData(anyInt(), anyInt(), anyInt(), anyInt())).thenReturn(backImage);
-        when(connector.getPointHandles()).thenReturn(pointHandles);
-        when(pointHandles.getHandlerRegistrationManager()).thenReturn(handlerRegistration);
-        when(wiresManager.getControlFactory()).thenReturn(controlFactory);
-        when(wiresManager.getWiresHandlerFactory()).thenReturn(wiresHandlerFactory);
-        when(controlFactory.newConnectorControl(connector, wiresManager)).thenReturn(connectorControl);
-        when(connector.getHeadConnection()).thenReturn(headConnection);
-        when(headConnection.getControl()).thenReturn(headControl);
-        when(headControl.asShape()).thenReturn(headShape);
-        when(pointControl.asShape()).thenReturn(pointShape);
-        when(connector.getTailConnection()).thenReturn(tailConnection);
-        when(tailConnection.getControl()).thenReturn(tailControl);
-        when(tailControl.asShape()).thenReturn(tailShape);
-        when(wiresHandlerFactory.newControlPointHandler(connector, wiresConnectorControl)).thenReturn(connectorControlHandler);
-        when(line.getLayer()).thenReturn(layer);
-        when(pointHandles.iterator()).thenReturn(pointHandlesIterator);
-        when(pointHandlesIterator.hasNext()).thenReturn(true, true, true, false);
-        when(pointHandlesIterator.next()).thenReturn(pointHandle);
-        when(pointHandle.getControl()).thenReturn(headControl, pointControl, tailControl);
-        when(pointShape.addNodeMouseDoubleClickHandler(connectorControlHandler)).thenReturn(controlPointRegistration);
-        when(pointShape.addNodeDragStartHandler(connectorControlHandler)).thenReturn(controlPointRegistration);
-        when(pointShape.addNodeDragEndHandler(connectorControlHandler)).thenReturn(controlPointRegistration);
-        when(pointShape.addNodeDragMoveHandler(connectorControlHandler)).thenReturn(controlPointRegistration);
-        when(headShape.addNodeMouseDoubleClickHandler(connectorControlHandler)).thenReturn(controlPointRegistration);
-        when(headShape.addNodeDragStartHandler(connectorControlHandler)).thenReturn(controlPointRegistration);
-        when(headShape.addNodeDragEndHandler(connectorControlHandler)).thenReturn(controlPointRegistration);
-        when(headShape.addNodeDragMoveHandler(connectorControlHandler)).thenReturn(controlPointRegistration);
-        when(tailShape.addNodeMouseDoubleClickHandler(connectorControlHandler)).thenReturn(controlPointRegistration);
-        when(tailShape.addNodeDragStartHandler(connectorControlHandler)).thenReturn(controlPointRegistration);
-        when(tailShape.addNodeDragEndHandler(connectorControlHandler)).thenReturn(controlPointRegistration);
-        when(tailShape.addNodeDragMoveHandler(connectorControlHandler)).thenReturn(controlPointRegistration);
+        layer = new Layer();
+        wiresManager = WiresManager.get(layer);
+        wiresManager.setControlPointsAcceptor(IControlPointsAcceptor.ALL);
+        when(wiresLayer.getLayer()).thenReturn(layer);
+        when(headDecorator.getPath()).thenReturn(headPath);
+        when(tailDecorator.getPath()).thenReturn(tailPath);
+        CP0 = new Point2D(0, 50);
+        CP1 = new Point2D(50, 50);
+        CP2 = new Point2D(100, 50);
+        line = new PolyLine(CP0, CP1, CP2);
+        connector = spy(new WiresConnector(line,
+                                           headDecorator,
+                                           tailDecorator));
+        connector.addToLayer(layer);
+        tested = new WiresConnectorControlImpl(connector, wiresManager);
     }
 
     @Test
-    public void testAddControlPointToLineAndRemove() {
-        final double x = 10;
-        final double y = 0;
-        final int index = 1;
-
-        ArgumentCaptor<Point2DArray> linePoint2DArrayArgumentCaptor = ArgumentCaptor.forClass(Point2DArray.class);
-        ArgumentCaptor<Node> nodeArgumentCaptor= ArgumentCaptor.forClass(Node.class);
-
-        //add
-        wiresConnectorControl.addControlPointToLine(x, y, index);
-        verify(line, times(1)).setPoint2DArray(linePoint2DArrayArgumentCaptor.capture());
-        verify(pointShape).addNodeMouseDoubleClickHandler(connectorControlHandler);
-        verify(pointShape).addNodeDragStartHandler(connectorControlHandler);
-        verify(pointShape).addNodeDragEndHandler(connectorControlHandler);
-        verify(pointShape).addNodeDragMoveHandler(connectorControlHandler);
-        //4 times for each point (head, point, tail)
-        verify(handlerRegistration, times(3 * 4)).register(controlPointRegistration);
-        Point2D point2D = linePoint2DArrayArgumentCaptor.getValue().get(index);
-        assertEquals(point2D.getX(), x, 0);
-        assertEquals(point2D.getY(), y, 0);
-        assertEquals(linePoint2DArrayArgumentCaptor.getValue().size(), 3);
-
-        //remove
-        wiresConnectorControl.removeControlPoint(x, y);
-        verify(line, times(2)).setPoint2DArray(linePoint2DArrayArgumentCaptor.capture());
-        Point2DArray newLineArray = linePoint2DArrayArgumentCaptor.getValue();
-        assertEquals(newLineArray.size(), 2);
-        assertEquals(newLineArray.get(0), head);
-        assertEquals(newLineArray.get(1), tail);
+    public void testAddControlPoint() {
+        final Point2D point = new Point2D(25, 50);
+        tested.addControlPoint(point.getX(), point.getY(), 1);
+        ;
+        verify(connector, times(1)).addControlPoint(point.getX(), point.getY(), 1);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testAddControlPointToLineInvalidIndex() {
-        wiresConnectorControl.addControlPointToLine(10, 0, 0);
+    @Test
+    public void testAddControlPointNotAccept() {
+        wiresManager.setControlPointsAcceptor(IControlPointsAcceptor.NONE);
+        tested.addControlPoint(11, 22, 1);
+        ;
+        verify(connector, never()).addControlPoint(anyDouble(), anyDouble(), anyInt());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testAddControlPointToLineInvalidIndex2() {
-        wiresConnectorControl.addControlPointToLine(10, 0, lineArray.size());
+    @Test
+    public void testAddControlPointAlreadyExist() {
+        assertEquals(0, tested.addControlPoint(CP0.getX(), CP0.getY()));
+        assertEquals(1, tested.addControlPoint(CP1.getX(), CP1.getY()));
+        assertEquals(2, tested.addControlPoint(CP2.getX(), CP2.getY()));
+        verify(connector, never()).addControlPoint(anyDouble(), anyDouble(), anyInt());
+    }
+
+    @Test
+    public void testMoveControlPoint() {
+        Point2D p0 = new Point2D(1, 50);
+        Point2D p1 = new Point2D(51, 50);
+        Point2D p2 = new Point2D(101, 50);
+        boolean moved1 = tested.moveControlPoint(0, p0);
+        boolean moved2 = tested.moveControlPoint(1, p1);
+        boolean moved3 = tested.moveControlPoint(2, p2);
+        assertTrue(moved1);
+        assertEquals(new Point2D(0, 50), CP0);
+        assertTrue(moved2);
+        assertEquals(p1, CP1);
+        assertTrue(moved3);
+        assertEquals(new Point2D(100, 50), CP2);
+        verify(connector, times(1)).moveControlPoint(eq(1),
+                                                     eq(p1));
+    }
+
+    @Test
+    public void testMoveControlPointFailed() {
+        wiresManager.setControlPointsAcceptor(IControlPointsAcceptor.NONE);
+        Point2D p0 = new Point2D(1, 50);
+        Point2D p1 = new Point2D(51, 50);
+        Point2D p2 = new Point2D(101, 50);
+        boolean moved1 = tested.moveControlPoint(0, p0);
+        boolean moved2 = tested.moveControlPoint(1, p1);
+        boolean moved3 = tested.moveControlPoint(2, p2);
+        assertTrue(moved1);
+        assertEquals(new Point2D(0, 50), CP0);
+        assertFalse(moved2);
+        assertEquals(new Point2D(50, 50), CP1);
+        assertTrue(moved3);
+        assertEquals(new Point2D(100, 50), CP2);
+        verify(connector, never()).moveControlPoint(anyInt(), any(Point2D.class));
+    }
+
+    @Test
+    public void testDestroyControlPoint() {
+        tested.destroyControlPoint(1);
+        verify(connector, times(1)).destroyControlPoints(new int[]{1});
+    }
+
+    @Test
+    public void testDestroyControlPointFailed() {
+        wiresManager.setControlPointsAcceptor(IControlPointsAcceptor.NONE);
+        tested.destroyControlPoint(1);
+        verify(connector, never()).destroyControlPoints((int[]) any());
+    }
+
+    @Test
+    public void testMove() {
+        tested.onMoveStart(50, 50);
+        tested.onMove(5, 0);
+        tested.onMoveComplete();
+        IControlHandleList pointHandles = connector.getPointHandles();
+        assertEquals(5, pointHandles.getHandle(0).getControl().getX(), 0);
+        assertEquals(50, pointHandles.getHandle(0).getControl().getY(), 0);
+        assertEquals(55, pointHandles.getHandle(1).getControl().getX(), 0);
+        assertEquals(50, pointHandles.getHandle(1).getControl().getY(), 0);
+        assertEquals(105, pointHandles.getHandle(2).getControl().getX(), 0);
+        assertEquals(50, pointHandles.getHandle(2).getControl().getY(), 0);
+    }
+
+    @Test
+    public void testReset() {
+        tested.onMoveStart(50, 50);
+        tested.onMove(5, 0);
+        tested.onMoveComplete();
+        tested.reset();
+        IControlHandleList pointHandles = connector.getPointHandles();
+        assertEquals(0, pointHandles.getHandle(0).getControl().getX(), 0);
+        assertEquals(50, pointHandles.getHandle(0).getControl().getY(), 0);
+        assertEquals(50, pointHandles.getHandle(1).getControl().getX(), 0);
+        assertEquals(50, pointHandles.getHandle(1).getControl().getY(), 0);
+        assertEquals(100, pointHandles.getHandle(2).getControl().getX(), 0);
+        assertEquals(50, pointHandles.getHandle(2).getControl().getY(), 0);
+    }
+
+    @Test
+    public void testClear() {
+        tested.onMoveStart(50, 50);
+        tested.clear();
+        IControlHandleList pointHandles = connector.getPointHandles();
+        assertEquals(0, pointHandles.getHandle(0).getControl().getX(), 0);
+        assertEquals(50, pointHandles.getHandle(0).getControl().getY(), 0);
+        assertEquals(50, pointHandles.getHandle(1).getControl().getX(), 0);
+        assertEquals(50, pointHandles.getHandle(1).getControl().getY(), 0);
+        assertEquals(100, pointHandles.getHandle(2).getControl().getX(), 0);
+        assertEquals(50, pointHandles.getHandle(2).getControl().getY(), 0);
+    }
+
+    @Test
+    public void testExecute() {
+        IControlPointsAcceptor acceptor = mock(IControlPointsAcceptor.class);
+        wiresManager.setControlPointsAcceptor(acceptor);
+        ArgumentCaptor<Point2DArray> pointCaptor = ArgumentCaptor.forClass(Point2DArray.class);
+        tested.execute();
+        verify(acceptor, times(1)).move(eq(connector),
+                                        pointCaptor.capture());
+        Point2DArray poitns = pointCaptor.getValue();
+        assertEquals(CP0, poitns.get(0));
+        assertEquals(CP1, poitns.get(1));
+        assertEquals(CP2, poitns.get(2));
     }
 }

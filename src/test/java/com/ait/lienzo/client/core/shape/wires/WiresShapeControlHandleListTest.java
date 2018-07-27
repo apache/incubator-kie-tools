@@ -167,9 +167,6 @@ public class WiresShapeControlHandleListTest
     {
         final WiresShape realShape = new WiresShape(new MultiPath().rect(0, 0, 10, 10));
         tested = new WiresShapeControlHandleList(realShape, IControlHandle.ControlHandleStandardType.RESIZE, controlHandleList, handlerRegistrationManager);
-        WiresManager.setWiresShapeHandler(realShape,
-                                          handlerRegistrationManager,
-                                          handler);
 
         setCPLocations(1, 2, 11, 12, 3, 13, 14, 4);
 

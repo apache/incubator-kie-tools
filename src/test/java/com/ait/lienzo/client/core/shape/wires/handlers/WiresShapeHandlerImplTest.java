@@ -23,6 +23,7 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeHandlerImpl;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -83,7 +84,8 @@ public class WiresShapeHandlerImplTest {
         when(parentPickerControl.getShape()).thenReturn(shape);
         when(parentPickerControl.getParent()).thenReturn(parent);
         when(parentPickerControl.getParentShapePart()).thenReturn(PickerPart.ShapePart.BODY);
-        tested = spy(new WiresShapeHandlerImpl(control, highlight, manager));
+        shape.setControl(control);
+        tested = spy(new WiresShapeHandlerImpl(shape, highlight, manager));
     }
 
     @Test

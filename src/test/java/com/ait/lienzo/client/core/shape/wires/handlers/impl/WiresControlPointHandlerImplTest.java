@@ -17,17 +17,17 @@
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
+import com.ait.lienzo.client.core.shape.IDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
+import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
-import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -38,7 +38,13 @@ import static org.mockito.Mockito.when;
 public class WiresControlPointHandlerImplTest {
 
     @Mock
+    private WiresManager wiresManager;
+
+    @Mock
     private WiresConnector m_connector;
+
+    @Mock
+    private IDirectionalMultiPointShape line;
 
     @Mock
     private WiresConnectorControl m_connectorControl;
@@ -46,8 +52,11 @@ public class WiresControlPointHandlerImplTest {
     private WiresControlPointHandlerImpl tested;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() {
-        tested = new WiresControlPointHandlerImpl(m_connector, m_connectorControl);
+        when(m_connector.getControl()).thenReturn(m_connectorControl);
+        when(m_connector.getLine()).thenReturn(line);
+        tested = new WiresControlPointHandlerImpl(m_connector, wiresManager);
     }
 
     @Test
@@ -60,18 +69,9 @@ public class WiresControlPointHandlerImplTest {
         when(primitive.getY()).thenReturn(17d);
         when(event.getSource()).thenReturn(primitive);
         tested.onNodeDragMove(event);
-        verify(m_connectorControl, times(1)).adjustControlPointAt(eq(12d),
-                                                                  eq(17d),
-                                                                  eq(2d),
-                                                                  eq(7d));
-        Point2D point = new Point2D(0.1d, 0.3d);
-        when(m_connectorControl.adjustControlPointAt(anyDouble(),
-                                                anyDouble(),
-                                                anyDouble(),
-                                                anyDouble()))
-                .thenReturn(point);
-        tested.onNodeDragMove(event);
-        verify(primitive, times(1)).setX(eq(0.1d));
-        verify(primitive, times(1)).setY(eq(0.3d));
+        verify(line, times(1)).adjustPoint(eq(12d),
+                                           eq(17d),
+                                           eq(2d),
+                                           eq(7d));
     }
 }

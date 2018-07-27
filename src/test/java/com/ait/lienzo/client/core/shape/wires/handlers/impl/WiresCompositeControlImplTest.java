@@ -16,19 +16,15 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
+import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.MultiPathDecorator;
+import com.ait.lienzo.client.core.shape.PolyLine;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresCompositeControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresContainmentControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.*;
 import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import org.junit.Before;
@@ -36,15 +32,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresCompositeControlImplTest extends AbstractWiresControlTest {
+
     @Mock
     private WiresShapeControl shapeControl;
 
@@ -73,7 +70,9 @@ public class WiresCompositeControlImplTest extends AbstractWiresControlTest {
     private WiresContainmentControl containmentControl1;
 
     private Collection<WiresShape> selectionShapes;
+    private Collection<WiresConnector> selectionConnectors;
     private WiresCompositeControl.Context context;
+    private WiresConnector connector;
 
     private WiresCompositeControlImpl tested;
 
@@ -83,7 +82,7 @@ public class WiresCompositeControlImplTest extends AbstractWiresControlTest {
         when(shapeControl.getParentPickerControl()).thenReturn(parentPicker);
         when(shapeControl.getDockingControl()).thenReturn(dockingControl);
         when(shapeControl.getContainmentControl()).thenReturn(containmentControl);
-        shape.setWiresShapeControl(shapeControl);
+        shape.setControl(shapeControl);
         when(shape1.getChildShapes()).thenReturn(new NFastArrayList<WiresShape>());
         final Point2D location1 = new Point2D(11d, 22d);
         when(shape1.getLocation()).thenReturn(location1);
@@ -94,6 +93,7 @@ public class WiresCompositeControlImplTest extends AbstractWiresControlTest {
         when(shapeControl1.getContainmentControl()).thenReturn(containmentControl1);
         when(parentPicker1.getIndex()).thenReturn(index1);
         selectionShapes = Arrays.asList(shape, shape1);
+        selectionConnectors = Collections.emptyList();
         context = spy(new WiresCompositeControl.Context() {
             @Override
             public Collection<WiresShape> getShapes() {
@@ -102,19 +102,27 @@ public class WiresCompositeControlImplTest extends AbstractWiresControlTest {
 
             @Override
             public Collection<WiresConnector> getConnectors() {
-                return Collections.emptyList();
+                return selectionConnectors;
             }
         });
+
+        final Point2DArray points = new Point2DArray(new Point2D(10, 20),
+                                                     new Point2D(30, 40));
+        final PolyLine line = new PolyLine(points);
+        connector = new WiresConnector(line,
+                                    new MultiPathDecorator(new MultiPath().circle(10)),
+                                       new MultiPathDecorator(new MultiPath().circle(10)));
+
         tested = new WiresCompositeControlImpl(context);
     }
 
     @Test
     public void testSkipAllSelectedShapesOnStart() {
         tested.onMoveStart(2d, 7d);
-        verify(index, times(1)).addShapeToSkip(shape);
-        verify(index, times(1)).addShapeToSkip(shape1);
-        verify(index1, times(1)).addShapeToSkip(shape);
-        verify(index1, times(1)).addShapeToSkip(shape1);
+        verify(index, times(1)).exclude(shape);
+        verify(index, times(1)).exclude(shape1);
+        verify(index1, times(1)).exclude(shape);
+        verify(index1, times(1)).exclude(shape1);
     }
 
     @Test
@@ -132,4 +140,17 @@ public class WiresCompositeControlImplTest extends AbstractWiresControlTest {
         assertEquals(10.55d, result.getX(), 0);
         assertEquals(19.77, result.getY(), 0);
     }
+
+    @Test
+    public void testAcceptForConnectors() {
+        selectionShapes = Collections.emptyList();
+        selectionConnectors = Collections.emptyList();
+        tested.onMoveStart(2d, 7d);
+        assertFalse(tested.accept());
+        connector.setControl(mock(WiresConnectorControl.class));
+        selectionConnectors = Collections.singletonList(connector);
+        tested.onMoveStart(2d, 7d);
+        assertTrue(tested.accept());
+    }
+
 }
