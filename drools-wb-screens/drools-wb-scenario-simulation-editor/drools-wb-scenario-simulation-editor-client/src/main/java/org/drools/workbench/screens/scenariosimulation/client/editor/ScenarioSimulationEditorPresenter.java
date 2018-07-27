@@ -28,7 +28,10 @@ import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationM
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
+import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -48,11 +51,17 @@ import org.uberfire.workbench.model.menu.Menus;
 public class ScenarioSimulationEditorPresenter
         extends KieEditor<ScenarioSimulationModel> {
 
+    private ImportsWidgetPresenter importsWidget;
+
+    private AsyncPackageDataModelOracleFactory oracleFactory;
+
     private ScenarioSimulationView view;
     private ScenarioSimulationModel model;
     private Caller<ScenarioSimulationService> service;
 
     private ScenarioSimulationResourceType type;
+
+    private AsyncPackageDataModelOracle oracle;
 
     public ScenarioSimulationEditorPresenter() {
         //Zero-parameter constructor for CDI proxies
@@ -61,11 +70,15 @@ public class ScenarioSimulationEditorPresenter
     @Inject
     public ScenarioSimulationEditorPresenter(final ScenarioSimulationView baseView,
                                              final Caller<ScenarioSimulationService> service,
-                                             final ScenarioSimulationResourceType type) {
+                                             final ScenarioSimulationResourceType type,
+                                             final ImportsWidgetPresenter importsWidget,
+                                             final AsyncPackageDataModelOracleFactory oracleFactory) {
         super(baseView);
         this.view = baseView;
         this.service = service;
         this.type = type;
+        this.importsWidget = importsWidget;
+        this.oracleFactory = oracleFactory;
     }
 
     @OnStartup
@@ -95,9 +108,19 @@ public class ScenarioSimulationEditorPresenter
 
             resetEditorPages(content.getOverview());
 
-            view.hideBusyIndicator();
-
             model = content.getModel();
+
+            oracle = oracleFactory.makeAsyncPackageDataModelOracle(versionRecordManager.getCurrentPath(),
+                                                                   model,
+                                                                   content.getDataModel());
+
+            importsWidget.setContent(oracle,
+                                     model.getImports(),
+                                     isReadOnly);
+
+            addImportsTab(importsWidget);
+
+            view.hideBusyIndicator();
 
             createOriginalHash(model.hashCode());
         };

@@ -19,6 +19,7 @@ package org.drools.workbench.screens.scenariosimulation.model;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 
 @Portable
 public class ScenarioSimulationModelContent {
@@ -27,15 +28,20 @@ public class ScenarioSimulationModelContent {
 
     private Overview overview;
 
+    private PackageDataModelOracleBaselinePayload dataModel;
+
     public ScenarioSimulationModelContent() {
     }
 
-    public ScenarioSimulationModelContent(ScenarioSimulationModel model,
-                                          Overview overview) {
+    public ScenarioSimulationModelContent(final ScenarioSimulationModel model,
+                                          final Overview overview,
+                                          final PackageDataModelOracleBaselinePayload dataModel) {
         this.model = PortablePreconditions.checkNotNull("model",
                                                         model);
         this.overview = PortablePreconditions.checkNotNull("overview",
                                                            overview);
+        this.dataModel = PortablePreconditions.checkNotNull("dataModel",
+                                                            dataModel);
     }
 
     public ScenarioSimulationModel getModel() {
@@ -44,5 +50,9 @@ public class ScenarioSimulationModelContent {
 
     public Overview getOverview() {
         return overview;
+    }
+
+    public PackageDataModelOracleBaselinePayload getDataModel() {
+        return dataModel;
     }
 }

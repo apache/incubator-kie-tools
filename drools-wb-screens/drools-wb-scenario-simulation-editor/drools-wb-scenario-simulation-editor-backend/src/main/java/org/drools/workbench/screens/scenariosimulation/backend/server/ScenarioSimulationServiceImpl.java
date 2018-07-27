@@ -16,6 +16,10 @@
 
 package org.drools.workbench.screens.scenariosimulation.backend.server;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -32,7 +36,11 @@ import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.backend.service.KieService;
+import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
+import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
@@ -74,6 +82,9 @@ public class ScenarioSimulationServiceImpl
 
     @Inject
     private SaveAndRenameServiceImpl<ScenarioSimulationModel, Metadata> saveAndRenameService;
+
+    @Inject
+    private DataModelService dataModelService;
 
     private SafeSessionInfo safeSessionInfo;
 
@@ -125,14 +136,37 @@ public class ScenarioSimulationServiceImpl
     }
 
     @Override
-    protected ScenarioSimulationModelContent constructContent(Path path,
-                                                              Overview overview) {
+    protected ScenarioSimulationModelContent constructContent(final Path path,
+                                                              final Overview overview) {
+
+        final PackageDataModelOracle oracle = dataModelService.getDataModel(path);
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+
+        final Set<String> consumedFQCNs = new HashSet<>();
+
+        //Get FQCN's used by Globals
+        consumedFQCNs.addAll(oracle.getPackageGlobals().values());
+
+        //Get FQCN's of collections defined in project settings
+        //they can be used in From Collect expressions
+        consumedFQCNs.addAll(oracle.getModuleCollectionTypes()
+                                     .entrySet()
+                                     .stream()
+                                     .filter(entry -> entry.getValue())
+                                     .map(entry -> entry.getKey())
+                                     .collect(Collectors.toSet()));
+
+        DataModelOracleUtilities.populateDataModel(oracle,
+                                                   dataModel,
+                                                   consumedFQCNs);
+
         //Signal opening to interested parties
         resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
                                                          safeSessionInfo));
 
         return new ScenarioSimulationModelContent(load(path),
-                                                  overview);
+                                                  overview,
+                                                  dataModel);
     }
 
     @Override

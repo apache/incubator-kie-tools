@@ -15,15 +15,11 @@
  */
 package org.drools.workbench.screens.scenariosimulation.backend.server;
 
-import javax.enterprise.event.Event;
-
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.backend.service.KieServiceOverviewLoader;
@@ -40,7 +36,6 @@ import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
-import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
@@ -67,9 +62,6 @@ public class ScenarioSimulationServiceImplTest {
 
     @Mock
     protected KieServiceOverviewLoader overviewLoader;
-
-    @Mock
-    private Event<ResourceOpenedEvent> resourceOpenedEvent;
 
     @Mock
     protected MetadataServerSideService metadataService;
@@ -150,17 +142,6 @@ public class ScenarioSimulationServiceImplTest {
                                                    metadata,
                                                    model,
                                                    "comment");
-    }
-
-    @Test
-    public void loadContent() throws Exception {
-        doReturn("").when(ioService).readAllString(any());
-        doReturn(false).when(pathResolver).isDotFile(any());
-        doReturn(mock(Overview.class)).when(overviewLoader).loadOverview(any());
-        final ScenarioSimulationModelContent scenarioSimulationModelContent = service.loadContent(path);
-
-        assertNotNull(scenarioSimulationModelContent);
-        verify(resourceOpenedEvent).fire(any(ResourceOpenedEvent.class));
     }
 
     @Test

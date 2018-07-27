@@ -17,11 +17,16 @@
 package org.drools.workbench.screens.scenariosimulation.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.project.datamodel.imports.HasImports;
+import org.kie.soup.project.datamodel.imports.Imports;
 
 @Portable
-public class ScenarioSimulationModel {
+public class ScenarioSimulationModel
+        implements HasImports {
 
     private String scesims;
+
+    private Imports imports = new Imports();
 
     public ScenarioSimulationModel() {
 
@@ -31,4 +36,13 @@ public class ScenarioSimulationModel {
         this.scesims = scesims;
     }
 
+    @Override
+    public Imports getImports() {
+        return imports;
+    }
+
+    @Override
+    public void setImports(Imports imports) {
+        this.imports = imports;
+    }
 }

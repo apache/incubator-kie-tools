@@ -32,8 +32,12 @@ import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuIt
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
+import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.mockito.ArgumentCaptor;
@@ -51,6 +55,7 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -109,6 +114,12 @@ public class ScenarioSimulationEditorPresenterTest {
     @Mock
     private EventSourceMock<NotificationEvent> mockNotification;
 
+    @Mock
+    private ImportsWidgetPresenter importsWidget;
+
+    @Mock
+    private AsyncPackageDataModelOracleFactory oracleFactory;
+
     private ScenarioSimulationResourceType type;
 
     private ScenarioSimulationEditorPresenter presenter;
@@ -135,13 +146,16 @@ public class ScenarioSimulationEditorPresenterTest {
 
         this.model = new ScenarioSimulationModel();
         this.content = new ScenarioSimulationModelContent(model,
-                                                          overview);
+                                                          overview,
+                                                          mock(PackageDataModelOracleBaselinePayload.class));
 
         when(scenarioSimulationService.loadContent(path)).thenReturn(content);
 
         this.presenter = spy(new ScenarioSimulationEditorPresenter(view,
                                                                    new CallerMock<>(scenarioSimulationService),
-                                                                   type) {
+                                                                   type,
+                                                                   importsWidget,
+                                                                   oracleFactory) {
             {
                 this.kieView = mockKieView;
                 this.overviewWidget = mockOverviewWidget;
@@ -167,9 +181,20 @@ public class ScenarioSimulationEditorPresenterTest {
 
     @Test
     public void testOnStartup() {
+
+        final AsyncPackageDataModelOracle oracle = mock(AsyncPackageDataModelOracle.class);
+
+        when(oracleFactory.makeAsyncPackageDataModelOracle(any(),
+                                                           eq(model),
+                                                           eq(content.getDataModel()))).thenReturn(oracle);
+
         presenter.onStartup(mock(ObservablePath.class),
                             mock(PlaceRequest.class));
 
+        verify(importsWidget).setContent(oracle,
+                                         model.getImports(),
+                                         false);
+        verify(mockKieView).addImportsTab(importsWidget);
         verify(view).showLoading();
         verify(view).hideBusyIndicator();
     }
