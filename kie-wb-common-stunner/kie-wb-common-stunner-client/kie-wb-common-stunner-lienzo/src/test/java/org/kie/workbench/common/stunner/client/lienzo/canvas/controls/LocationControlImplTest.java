@@ -45,7 +45,6 @@ import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShap
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
-import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateControlPointPositionCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPositionCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.event.ShapeLocationsChangedEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
@@ -70,7 +69,6 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
-import org.kie.workbench.common.stunner.core.graph.content.view.ControlPointImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
@@ -85,6 +83,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -118,6 +117,9 @@ public class LocationControlImplTest {
 
     @Mock
     private WiresCanvas canvas;
+
+    @Mock
+    private WiresCanvas.View canvasView;
 
     @Mock
     private Layer layer;
@@ -192,10 +194,12 @@ public class LocationControlImplTest {
         when(diagram.getGraph()).thenReturn(graph);
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getCanvasRootUUID()).thenReturn(ROOT_UUID);
+        when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvas.getLayer()).thenReturn(layer);
         when(canvas.getShape(eq(ELEMENT_UUID))).thenReturn(shape);
         when(canvas.getShapes()).thenReturn(Collections.singletonList(shape));
+        when(canvas.getView()).thenReturn(canvasView);
         when(canvas.getWiresManager()).thenReturn(wiresManager);
         when(shape.getUUID()).thenReturn(ELEMENT_UUID);
         when(shape.getShapeView()).thenReturn(shapeView);
@@ -211,7 +215,7 @@ public class LocationControlImplTest {
     public void testInit() {
         tested.init(canvasHandler);
         ArgumentCaptor<ILocationAcceptor> locationAcceptorArgumentCaptor = ArgumentCaptor.forClass(ILocationAcceptor.class);
-        verify(wiresManager, times(1)).setLocationAcceptor(locationAcceptorArgumentCaptor.capture());
+        verify(canvasView, times(1)).setLocationAcceptor(locationAcceptorArgumentCaptor.capture());
         assertEquals(tested.LOCATION_ACCEPTOR, locationAcceptorArgumentCaptor.getValue());
     }
 
@@ -258,7 +262,7 @@ public class LocationControlImplTest {
         final Edge connectorEdge = mock(Edge.class);
         final com.ait.lienzo.client.core.types.Point2D controlPointLienzo = new com.ait.lienzo.client.core.types.Point2D(100, 100);
         final Point2DArray controlPointsLienzo = new Point2DArray(controlPointLienzo);
-        final ControlPoint controlPoint = new ControlPointImpl(new Point2D(0, 0), 0);
+        final ControlPoint controlPoint = ControlPoint.build(new Point2D(0, 0), 0);
         final List<ControlPoint> controlPoints = Arrays.asList(controlPoint);
         final ViewConnector viewConnector = mock(ViewConnector.class);
         Group parentGroup = mock(Group.class);
@@ -308,12 +312,6 @@ public class LocationControlImplTest {
         UpdateElementPositionCommand updateElementPositionCommand = (UpdateElementPositionCommand) command.getCommands().get(0);
         assertEquals(element, updateElementPositionCommand.getElement());
         assertEquals(location, updateElementPositionCommand.getLocation());
-
-        //assert child connector control point move
-        final UpdateControlPointPositionCommand controlPointCommand = (UpdateControlPointPositionCommand) command.getCommands().get(1);
-        assertEquals(controlPoint, controlPointCommand.getControlPoint());
-        assertEquals(new Point2D(controlPointLienzo.getX(), controlPointLienzo.getY()), controlPointCommand.getPosition());
-        assertEquals(connectorEdge, controlPointCommand.getCandidate());
     }
 
     @Test
@@ -322,7 +320,7 @@ public class LocationControlImplTest {
         tested.init(canvasHandler);
         tested.register(element);
         ArgumentCaptor<ILocationAcceptor> locationAcceptorArgumentCaptor = ArgumentCaptor.forClass(ILocationAcceptor.class);
-        verify(wiresManager, times(1)).setLocationAcceptor(locationAcceptorArgumentCaptor.capture());
+        verify(canvasView, times(1)).setLocationAcceptor(locationAcceptorArgumentCaptor.capture());
         final ILocationAcceptor locationAcceptor = locationAcceptorArgumentCaptor.getValue();
         final WiresShapeView wiresContainer = mock(WiresShapeView.class);
         when(wiresContainer.getUUID()).thenReturn(ELEMENT_UUID);
@@ -354,7 +352,7 @@ public class LocationControlImplTest {
     public void testClear() {
         tested.init(canvasHandler);
         tested.clear();
-        verify(selectionManager).getControl();
+        verify(selectionManager, atLeastOnce()).getControl();
         verify(wiresCompositeControl).setBoundsConstraint(null);
     }
 
@@ -363,9 +361,10 @@ public class LocationControlImplTest {
         tested.init(canvasHandler);
         tested.destroy();
         verify(selectionManager,
-               times(2)).getControl();
+               atLeastOnce()).getControl();
         verify(wiresCompositeControl,
-               times(2)).setBoundsConstraint(null);
-        verify(wiresManager).setLocationAcceptor(ILocationAcceptor.ALL);
+               atLeastOnce()).setBoundsConstraint(null);
+        verify(canvasView,
+               atLeastOnce()).setLocationAcceptor(eq(ILocationAcceptor.ALL));
     }
 }

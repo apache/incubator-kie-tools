@@ -36,8 +36,10 @@ public abstract class AbstractSelectedNodeDevCommand
     @Override
     protected void execute(final Collection<Element<? extends View<?>>> items) {
         if (1 == items.size()) {
-            final Node<? extends View<?>, Edge> node = items.iterator().next().asNode();
-            execute(node);
+            final Element<? extends View<?>> e = items.iterator().next();
+            if (null != e.asNode()) {
+                execute(e.asNode());
+            }
         }
     }
 }

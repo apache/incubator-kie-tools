@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.graph.content.view;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -56,9 +58,6 @@ public class Point2DConnection implements Connection {
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes((null != location) ? HashUtil.combineHashCodes(1,
-                                                                                        Double.hashCode(location.getX()),
-                                                                                        Double.hashCode(location.getY()))
-                                                 : 0);
+        return HashUtil.combineHashCodes((null != location) ? Objects.hashCode(location) : 0);
     }
 }

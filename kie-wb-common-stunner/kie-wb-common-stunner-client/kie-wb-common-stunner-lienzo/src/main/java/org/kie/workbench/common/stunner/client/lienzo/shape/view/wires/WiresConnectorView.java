@@ -36,7 +36,6 @@ import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.types.Shadow;
 import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
@@ -48,7 +47,6 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
-import org.kie.workbench.common.stunner.core.graph.content.view.ControlPointImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.DiscreteConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
@@ -61,7 +59,6 @@ public class WiresConnectorView<T> extends WiresConnector
         HasManageableControlPoints<T> {
 
     protected String uuid;
-    private WiresConnectorControl connectorControl;
 
     public WiresConnectorView(final AbstractDirectionalMultiPointShape<?> line,
                               final MultiPathDecorator headDecorator,
@@ -103,55 +100,62 @@ public class WiresConnectorView<T> extends WiresConnector
         return uuid;
     }
 
-    @SuppressWarnings("unchecked")
-    public T setControl(final WiresConnectorControl connectorControl) {
-        this.connectorControl = connectorControl;
-        return cast();
-    }
-
-    public WiresConnectorControl getControl() {
-        return connectorControl;
-    }
-
     @Override
-    public List<ControlPoint> addControlPoint(ControlPoint... controlPoint) {
+    public List<ControlPoint> addControlPoints(final ControlPoint... controlPoint) {
         if (validateControlPointShape()) {
-            return Stream.of(controlPoint)
+            final List<ControlPoint> result = Stream.of(controlPoint)
                     .map(cp -> {
                         double x = cp.getLocation().getX();
                         double y = cp.getLocation().getY();
-                        if (Objects.isNull(cp.getIndex()) || Objects.equals(cp.getIndex(), 0)) {
-                            int index = connectorControl.addControlPoint(x, y);
-                            cp.setIndex(Objects.equals(index, -1) ? null : index);
-                        } else {
-                            connectorControl.addControlPointToLine(x, y, cp.getIndex());
-                        }
+                        addControlPoint(x, y, cp.getIndex() + 1);
                         return cp;
                     }).collect(Collectors.toList());
+            refrehControlPoints();
+            return result;
         }
         return Collections.emptyList();
     }
 
-    private boolean validateControlPointShape() {
-        return Objects.nonNull(connectorControl) && getLine().isControlPointShape();
+    @Override
+    public T updateControlPoint(final ControlPoint controlPoint) {
+        if (validateControlPointShape()) {
+            final Point2D location = controlPoint.getLocation();
+            moveControlPoint(controlPoint.getIndex() + 1,
+                             new com.ait.lienzo.client.core.types.Point2D(location.getX(),
+                                                                          location.getY()));
+            refrehControlPoints();
+        }
+        return cast();
+    }
+
+    private void refrehControlPoints() {
+        getLine().refresh();
+        if (null != getGroup().getLayer()) {
+            getGroup().getLayer().batch();
+        }
     }
 
     @Override
-    public T removeControlPoint(ControlPoint... cps) {
+    public T removeControlPoints(final ControlPoint... cps) {
         if (validateControlPointShape()) {
-            Arrays.stream(cps)
+            final int[] indexes = Arrays.stream(cps)
                     .filter(Objects::nonNull)
-                    .map(ControlPoint::getLocation)
-                    .forEach(cp -> connectorControl.removeControlPoint(cp.getX(), cp.getY()));
+                    .mapToInt(cp -> cp.getIndex() + 1)
+                    .toArray();
+            destroyControlPoints(indexes);
         }
         return cast();
+    }
+
+    private boolean validateControlPointShape() {
+        return getLine().isControlPointShape();
     }
 
     @Override
     public List<ControlPoint> getShapeControlPoints() {
         Counter counter = new Counter(-1);
         return StreamSupport.stream(getControlPoints().spliterator(), false)
-                .map(point -> new ControlPointImpl(new Point2D(point.getX(), point.getY()), counter.increment()))
+                .map(point -> ControlPoint.build(new Point2D(point.getX(), point.getY()), counter.increment()))
                 .sequential()
                 .collect(Collectors.toList());
     }
@@ -406,13 +410,6 @@ public class WiresConnectorView<T> extends WiresConnector
     public void removeFromParent() {
         // Remove the main line.
         super.removeFromLayer();
-    }
-
-    @Override
-    public void destroy() {
-        // Remove me.
-        super.destroy();
-        this.connectorControl = null;
     }
 
     private WiresConnector applyHeadLocation(final Point2D location) {

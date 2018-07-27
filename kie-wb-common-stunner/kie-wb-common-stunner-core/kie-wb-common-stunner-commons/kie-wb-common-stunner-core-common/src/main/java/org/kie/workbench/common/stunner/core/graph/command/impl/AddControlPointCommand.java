@@ -16,9 +16,9 @@
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
@@ -35,21 +35,16 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 @Portable
 public class AddControlPointCommand extends AbstractControlPointCommand {
 
-    public AddControlPointCommand() {
-        this(null, null);
-    }
-
-    public AddControlPointCommand(final Edge edge,
-                                  final ControlPoint... controlPoints) {
+    public AddControlPointCommand(final @MapsTo("edge") Edge edge,
+                                  final @MapsTo("controlPoints") ControlPoint... controlPoints) {
         super(edge, controlPoints);
     }
 
     @Override
-    protected CommandResult<RuleViolation> check(GraphCommandExecutionContext context) {
-        if (edge.getContent() instanceof HasControlPoints && validateControlPoints()) {
-            return GraphCommandResultBuilder.SUCCESS;
-        }
-        return GraphCommandResultBuilder.FAILED;
+    protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
+        return validateControlPoints() ?
+                GraphCommandResultBuilder.SUCCESS :
+                GraphCommandResultBuilder.FAILED;
     }
 
     private boolean validateControlPoints() {
@@ -57,12 +52,7 @@ public class AddControlPointCommand extends AbstractControlPointCommand {
     }
 
     @Override
-    public CommandResult<RuleViolation> execute(GraphCommandExecutionContext context) {
-        if (checkExistingControlPoints(getEdgeContent().getControlPoints())) {
-            //skipping in case adding already existing control points
-            return GraphCommandResultBuilder.SUCCESS;
-        }
-
+    public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
         CommandResult<RuleViolation> allowResult = allow(context);
         if (CommandUtils.isError(allowResult)) {
             return allowResult;
@@ -75,10 +65,8 @@ public class AddControlPointCommand extends AbstractControlPointCommand {
 
         //add on the right index position on the list
         getControlPointList().stream().forEach(cp -> {
-            //the effective index should not consider the head point that is a control point on the connector
-            int effectiveIndex = cp.getIndex() - 1;
-            if (edgeContent.getControlPoints().size() > effectiveIndex) {
-                edgeContent.getControlPoints().add(effectiveIndex, cp);
+            if (edgeContent.getControlPoints().size() > cp.getIndex()) {
+                edgeContent.getControlPoints().add(cp.getIndex(), cp);
             } else {
                 edgeContent.getControlPoints().add(cp);
             }
@@ -88,16 +76,6 @@ public class AddControlPointCommand extends AbstractControlPointCommand {
         updateControlPointsIndex(edgeContent.getControlPoints());
 
         return GraphCommandResultBuilder.SUCCESS;
-    }
-
-    private boolean checkExistingControlPoints(List<ControlPoint> currentControlPoints) {
-        return Objects.nonNull(currentControlPoints) && !currentControlPoints.isEmpty() &&
-                getControlPointList().stream().allMatch(cp -> getEdgeContent().getControlPoints().contains(cp));
-    }
-
-    @Override
-    public CommandResult<RuleViolation> undo(GraphCommandExecutionContext context) {
-        return newUndoCommand().execute(context);
     }
 
     @Override

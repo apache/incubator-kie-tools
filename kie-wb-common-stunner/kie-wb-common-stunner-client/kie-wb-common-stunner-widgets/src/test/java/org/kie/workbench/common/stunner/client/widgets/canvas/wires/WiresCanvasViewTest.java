@@ -19,6 +19,12 @@ package org.kie.workbench.common.stunner.client.widgets.canvas.wires;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
 import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
+import com.ait.lienzo.client.core.shape.wires.IConnectionAcceptor;
+import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
+import com.ait.lienzo.client.core.shape.wires.IControlPointsAcceptor;
+import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
+import com.ait.lienzo.client.core.shape.wires.ILocationAcceptor;
+import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.LienzoPanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -42,8 +48,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresCanvasViewTest {
@@ -70,7 +81,7 @@ public class WiresCanvasViewTest {
     }
 
     @Test
-    public void testInit(){
+    public void testInit() {
         ArgumentCaptor<com.ait.lienzo.client.core.shape.Layer> layerArgumentCaptor
                 = ArgumentCaptor.forClass(com.ait.lienzo.client.core.shape.Layer.class);
         verify(wiresManagerFactory).newWiresManager(layerArgumentCaptor.capture());
@@ -124,6 +135,21 @@ public class WiresCanvasViewTest {
 
         assertEquals(WiresCanvas.WIRES_CANVAS_GROUP_ID,
                      WiresUtils.getShapeGroup(view.getGroup()));
+    }
+
+    @Test
+    public void testConfigureWires() {
+        final WiresManager wiresManager = mock(WiresManager.class);
+        final WiresManagerFactory factory = mock(WiresManagerFactory.class);
+        when(factory.newWiresManager(any(com.ait.lienzo.client.core.shape.Layer.class)))
+                .thenReturn(wiresManager);
+        new WiresCanvasView(factory).init();
+        verify(wiresManager, times(1)).setSpliceEnabled(eq(false));
+        verify(wiresManager, times(1)).setLocationAcceptor(eq(ILocationAcceptor.NONE));
+        verify(wiresManager, times(1)).setContainmentAcceptor(eq(IContainmentAcceptor.NONE));
+        verify(wiresManager, times(1)).setDockingAcceptor(eq(IDockingAcceptor.NONE));
+        verify(wiresManager, times(1)).setConnectionAcceptor(eq(IConnectionAcceptor.NONE));
+        verify(wiresManager, times(1)).setControlPointsAcceptor(eq(IControlPointsAcceptor.NONE));
     }
 
     @SuppressWarnings("unchecked")

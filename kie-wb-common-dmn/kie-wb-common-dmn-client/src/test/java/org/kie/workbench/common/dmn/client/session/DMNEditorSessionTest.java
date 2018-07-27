@@ -31,7 +31,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Node
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.Observer;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ControlPointControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.LocationControl;
@@ -98,9 +97,6 @@ public class DMNEditorSessionTest extends BaseDMNSessionTest<DMNEditorSession> {
     private EdgeBuilderControl edgeBuilderControl;
 
     @Mock
-    private ControlPointControl controlPointControl;
-
-    @Mock
     private KeyboardControl keyboardControl;
 
     @Mock
@@ -148,7 +144,6 @@ public class DMNEditorSessionTest extends BaseDMNSessionTest<DMNEditorSession> {
         canvasHandlerControls.put(elementBuilderControl, ElementBuilderControl.class);
         canvasHandlerControls.put(nodeBuilderControl, NodeBuilderControl.class);
         canvasHandlerControls.put(edgeBuilderControl, EdgeBuilderControl.class);
-        canvasHandlerControls.put(controlPointControl, ControlPointControl.class);
         return canvasHandlerControls;
     }
 

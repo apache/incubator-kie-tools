@@ -22,7 +22,6 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
-import org.kie.workbench.common.stunner.core.graph.content.view.ControlPointImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -34,18 +33,18 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AddControlPointCommandTest extends AbstractControlPointCommandTest{
+public class AddControlPointCommandTest extends AbstractControlPointCommandTest {
 
-    private AddControlPointCommand addControlPointCommand;
+    private AddControlPointCommand tested;
     protected ControlPoint controlPointEmptyIndex;
     protected ControlPoint controlPointNew;
 
     @Before
     public void setUp() {
         super.setUp();
-        controlPointNew = new ControlPointImpl(newLocation, 2);
-        controlPointEmptyIndex = new ControlPointImpl(newLocation);
-        addControlPointCommand = spy(new AddControlPointCommand(edge, controlPointNew));
+        controlPointNew = ControlPoint.build(newLocation, 2);
+        controlPointEmptyIndex = ControlPoint.build(newLocation);
+        tested = spy(new AddControlPointCommand(edge, controlPointNew));
     }
 
     @Test
@@ -56,7 +55,7 @@ public class AddControlPointCommandTest extends AbstractControlPointCommandTest{
 
     @Test
     public void testCheck() {
-        CommandResult<RuleViolation> result = addControlPointCommand.check(graphCommandExecutionContext);
+        CommandResult<RuleViolation> result = tested.check(graphCommandExecutionContext);
         assertFalse(CommandUtils.isError(result));
     }
 
@@ -64,29 +63,29 @@ public class AddControlPointCommandTest extends AbstractControlPointCommandTest{
     public void testExecuteEmpty() {
         controlPointList.clear();
         assertEquals(controlPointList.size(), 0);
-        addControlPointCommand.execute(graphCommandExecutionContext);
+        tested.execute(graphCommandExecutionContext);
         verify(viewConnector, atLeastOnce()).getControlPoints();
         assertEquals(controlPointList.size(), 1);
         assertEquals(controlPointList.get(0), controlPointNew);
-        assertEquals(controlPointNew.getIndex(), 1, 0);
+        assertEquals(controlPointNew.getIndex(), 0, 0);
     }
 
     @Test
     public void testExecute() {
         assertEquals(controlPointList.size(), 3);
-        addControlPointCommand.execute(graphCommandExecutionContext);
+        tested.execute(graphCommandExecutionContext);
         verify(viewConnector, atLeastOnce()).getControlPoints();
         assertEquals(controlPointList.size(), 4);
-        assertEquals(controlPointList.get(1), controlPointNew);
+        assertEquals(controlPointList.get(2), controlPointNew);
         assertEquals(controlPointNew.getIndex(), 2, 0);
-        assertEquals(controlPoint1.getIndex(), 1, 0);
-        assertEquals(controlPoint2.getIndex(), 3, 0);
-        assertEquals(controlPoint3.getIndex(), 4, 0);
+        assertEquals(controlPoint1.getIndex(), 0, 0);
+        assertEquals(controlPoint2.getIndex(), 1, 0);
+        assertEquals(controlPoint3.getIndex(), 3, 0);
     }
 
     @Test
     public void undo() {
-        addControlPointCommand.undo(graphCommandExecutionContext);
-        verify(addControlPointCommand).newUndoCommand();
+        tested.undo(graphCommandExecutionContext);
+        verify(tested).newUndoCommand();
     }
 }

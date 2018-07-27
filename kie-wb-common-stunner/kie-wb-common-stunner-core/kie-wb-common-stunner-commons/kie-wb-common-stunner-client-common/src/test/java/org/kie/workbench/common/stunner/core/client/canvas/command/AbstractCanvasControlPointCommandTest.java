@@ -24,7 +24,6 @@ import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
-import org.kie.workbench.common.stunner.core.graph.content.view.ControlPointImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.util.UUID;
@@ -35,6 +34,10 @@ import static org.mockito.Mockito.when;
 public abstract class AbstractCanvasControlPointCommandTest extends AbstractCanvasCommandTest {
 
     protected ControlPoint controlPoint1;
+
+    protected ControlPoint controlPoint2;
+
+    protected Point2D location1;
 
     private static final String EDGE_UUID = UUID.uuid();
 
@@ -55,9 +58,9 @@ public abstract class AbstractCanvasControlPointCommandTest extends AbstractCanv
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        Point2D location1 = new Point2D(0, 0);
-        controlPoint1 = new ControlPointImpl(location1);
-        ControlPoint controlPoint2 = new ControlPointImpl(location1, 1);
+        location1 = new Point2D(0, 0);
+        controlPoint1 = ControlPoint.build(location1);
+        controlPoint2 = ControlPoint.build(location1, 1);
         controlPointList = Arrays.asList(controlPoint1);
 
         when(shape.getShapeView()).thenReturn(shapeView);

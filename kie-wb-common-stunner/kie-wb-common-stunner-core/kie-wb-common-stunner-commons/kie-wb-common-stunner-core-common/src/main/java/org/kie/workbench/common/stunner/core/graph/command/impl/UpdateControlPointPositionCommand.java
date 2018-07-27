@@ -15,15 +15,15 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.impl.AbstractCompositeCommand;
-import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
-import org.kie.workbench.common.stunner.core.graph.content.view.ControlPointImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
@@ -31,52 +31,50 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
  * A Command to update a given {@link ControlPoint} position on graph.
  */
 @Portable
-public class UpdateControlPointPositionCommand extends AbstractGraphCompositeCommand {
+public class UpdateControlPointPositionCommand extends AbstractControlPointCommand {
 
-    private final Edge candidate;
-    private final ControlPoint controlPoint;
     private final Point2D position;
-    private final ControlPoint positionedControlPoint;
+    private transient Point2D oldPosition;
 
-    public UpdateControlPointPositionCommand() {
-        this(null, null, null);
-    }
-
-    public UpdateControlPointPositionCommand(final Edge candidate,
-                                             final ControlPoint controlPoint,
-                                             final Point2D position) {
-
-        this.candidate = PortablePreconditions.checkNotNull("candidate", candidate);
-        this.controlPoint = PortablePreconditions.checkNotNull("controlPoint", controlPoint);
+    public UpdateControlPointPositionCommand(final @MapsTo("candidate") Edge candidate,
+                                             final @MapsTo("controlPoint") ControlPoint controlPoint,
+                                             final @MapsTo("position") Point2D position) {
+        super(candidate, controlPoint);
         this.position = PortablePreconditions.checkNotNull("position", position);
-        this.positionedControlPoint = getUpdatedControlPoint(position);
     }
 
     @Override
-    protected AbstractCompositeCommand<GraphCommandExecutionContext, RuleViolation> initialize(GraphCommandExecutionContext context) {
-        addCommand(new DeleteControlPointCommand(candidate, controlPoint));
-        addCommand(new AddControlPointCommand(candidate, positionedControlPoint));
-        return this;
-    }
-
-    private ControlPointImpl getUpdatedControlPoint(Point2D position) {
-        return new ControlPointImpl(position, controlPoint.getIndex());
+    protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
+        return checkArguments();
     }
 
     @Override
-    public CommandResult<RuleViolation> undo(GraphCommandExecutionContext context) {
-        return newUndoCommand().execute(context);
+    public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
+        if (areArgumentsValid()) {
+            final int index = getControlPoint().getIndex();
+            oldPosition = Point2D.clone(getControlPoint().getLocation());
+            getEdgeContent().getControlPoints().get(index).setLocation(position);
+            return GraphCommandResultBuilder.SUCCESS;
+        }
+        return GraphCommandResultBuilder.FAILED;
     }
 
-    protected CompositeCommand<GraphCommandExecutionContext, RuleViolation> newUndoCommand() {
-        return new CompositeCommand.Builder<GraphCommandExecutionContext, RuleViolation>()
-                .addCommand(new DeleteControlPointCommand(candidate, positionedControlPoint))
-                .addCommand(new AddControlPointCommand(candidate, controlPoint))
-                .build();
+    private ControlPoint getControlPoint() {
+        return controlPoints[0];
+    }
+
+    public Point2D getPosition() {
+        return position;
+    }
+
+    Point2D getOldPosition() {
+        return oldPosition;
     }
 
     @Override
-    protected boolean delegateRulesContextToChildren() {
-        return false;
+    protected Command<GraphCommandExecutionContext, RuleViolation> newUndoCommand() {
+        return new UpdateControlPointPositionCommand(edge,
+                                                     getControlPoint(),
+                                                     oldPosition);
     }
 }

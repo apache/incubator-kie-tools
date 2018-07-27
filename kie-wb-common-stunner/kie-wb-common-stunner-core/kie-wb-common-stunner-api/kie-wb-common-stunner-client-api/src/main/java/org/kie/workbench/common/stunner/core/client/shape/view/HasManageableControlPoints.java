@@ -22,9 +22,11 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 
 public interface HasManageableControlPoints<T> extends HasControlPoints<T> {
 
-    List<ControlPoint> addControlPoint(ControlPoint... controlPoint);
+    List<ControlPoint> addControlPoints(ControlPoint... controlPoint);
 
     List<ControlPoint> getShapeControlPoints();
 
-    T removeControlPoint(ControlPoint... controlPoint);
+    T updateControlPoint(ControlPoint controlPoint);
+
+    T removeControlPoints(ControlPoint... controlPoint);
 }

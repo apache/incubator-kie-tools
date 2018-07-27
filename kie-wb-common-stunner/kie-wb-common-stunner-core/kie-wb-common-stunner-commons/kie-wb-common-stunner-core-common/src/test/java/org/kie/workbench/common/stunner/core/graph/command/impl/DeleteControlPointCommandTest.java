@@ -53,8 +53,8 @@ public class DeleteControlPointCommandTest extends AbstractControlPointCommandTe
         assertEquals(controlPointList.size(), 2);
         assertEquals(controlPointList.get(0), controlPoint2);
         assertEquals(controlPointList.get(1), controlPoint3);
-        assertEquals(controlPoint2.getIndex(), 1, 0);
-        assertEquals(controlPoint3.getIndex(), 2, 0);
+        assertEquals(controlPoint2.getIndex(), 0, 0);
+        assertEquals(controlPoint3.getIndex(), 1, 0);
     }
 
     @Test

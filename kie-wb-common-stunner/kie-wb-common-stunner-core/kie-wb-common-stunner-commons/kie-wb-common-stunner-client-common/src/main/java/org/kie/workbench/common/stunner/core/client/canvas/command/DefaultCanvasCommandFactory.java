@@ -154,7 +154,7 @@ public class DefaultCanvasCommandFactory implements CanvasCommandFactory<Abstrac
     public CanvasCommand<AbstractCanvasHandler> updateDockNode(final Node parent,
                                                                final Node candidate,
                                                                final boolean adjustPosition) {
-        return new UpdateDockNodeCommand(parent,candidate, adjustPosition);
+        return new UpdateDockNodeCommand(parent, candidate, adjustPosition);
     }
 
     @Override

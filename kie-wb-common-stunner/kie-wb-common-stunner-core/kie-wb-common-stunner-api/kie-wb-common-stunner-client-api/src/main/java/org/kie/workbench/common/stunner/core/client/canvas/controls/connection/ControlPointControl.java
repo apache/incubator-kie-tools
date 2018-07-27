@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.connection;
 
+import java.util.Map;
+
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
@@ -30,9 +32,9 @@ import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 public interface ControlPointControl<H extends CanvasHandler> extends CanvasRegistrationControl<H, Element>,
                                                                       RequiresCommandManager<H> {
 
-    void addControlPoint(Edge candidate, ControlPoint... controlPoint);
+    void addControlPoints(Edge candidate, ControlPoint... controlPoints);
 
-    void moveControlPoint(ControlPoint controlPoint, Point2D position);
+    void moveControlPoints(Edge candidate, Map<ControlPoint, Point2D> pointsLocation);
 
-    void removeControlPoint(ControlPoint selectedControlPoint);
+    void removeControlPoint(Edge candidate, ControlPoint controlPoint);
 }

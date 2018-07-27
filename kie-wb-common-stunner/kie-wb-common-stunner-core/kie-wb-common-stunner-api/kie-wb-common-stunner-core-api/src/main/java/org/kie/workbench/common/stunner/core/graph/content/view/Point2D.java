@@ -36,6 +36,11 @@ public final class Point2D {
                            y);
     }
 
+    public static Point2D clone(final Point2D point) {
+        return new Point2D(point.getX(),
+                           point.getY());
+    }
+
     public Point2D(final @MapsTo("x") double x,
                    final @MapsTo("y") double y) {
         this.x = x;

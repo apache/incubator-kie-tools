@@ -16,56 +16,96 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
-import java.util.List;
+import java.util.Collections;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnectorImpl;
+import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class UpdateControlPointPositionCommandTest extends AbstractControlPointCommandTest {
+public class UpdateControlPointPositionCommandTest {
 
-    private UpdateControlPointPositionCommand updateControlPointPositionCommand;
+    private static final Point2D TARGET_LOCATION = Point2D.create(7, 5);
+
+    @Mock
+    private GraphCommandExecutionContext commandExecutionContext;
+
+    @Mock
+    private RuleManager ruleManager;
+
+    private Edge edge;
+    private ViewConnectorImpl content;
+    private ControlPoint controlPoint;
+
+    private UpdateControlPointPositionCommand tested;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() {
-        super.setUp();
-        updateControlPointPositionCommand = spy(new UpdateControlPointPositionCommand(edge, controlPoint1, newLocation));
+        controlPoint = ControlPoint.build(1, 4, 0);
+        when(commandExecutionContext.getRuleManager()).thenReturn(ruleManager);
+        content = new ViewConnectorImpl<>(mock(Object.class),
+                                          BoundsImpl.build(0, 0, 10, 10));
+        edge = new EdgeImpl<>("edge1");
+        edge.setContent(content);
+        content.setControlPoints(Collections.singletonList(controlPoint));
+        tested = new UpdateControlPointPositionCommand(edge,
+                                                       controlPoint,
+                                                       TARGET_LOCATION);
     }
 
     @Test
-    public void initialize() {
-        updateControlPointPositionCommand.initialize(graphCommandExecutionContext);
-        List<Command<GraphCommandExecutionContext, RuleViolation>> commands = updateControlPointPositionCommand.getCommands();
-        assertEquals(commands.size(), 2, 0);
-        assertCommandsByPosition(commands.get(0), controlPoint1.getLocation(), commands.get(1), newLocation);
-    }
-
-    private void assertCommandsByPosition(Command<GraphCommandExecutionContext, RuleViolation> firstCommand,
-                                          Point2D firstPosition,
-                                          Command<GraphCommandExecutionContext, RuleViolation> secondCommand,
-                                          Point2D secondPosition) {
-        assertTrue(firstCommand instanceof DeleteControlPointCommand);
-        assertEquals(((DeleteControlPointCommand) firstCommand).getControlPoints()[0].getLocation(), firstPosition);
-        assertTrue(secondCommand instanceof AddControlPointCommand);
-        assertEquals(((AddControlPointCommand) secondCommand).getControlPoints()[0].getLocation(), secondPosition);
+    public void testAllow() {
+        final CommandResult<RuleViolation> allow1 = tested.allow(commandExecutionContext);
+        assertFalse(CommandUtils.isError(allow1));
+        content.setControlPoints(Collections.singletonList(mock(ControlPoint.class)));
+        final CommandResult<RuleViolation> allow2 = tested.allow(commandExecutionContext);
+        assertTrue(CommandUtils.isError(allow2));
     }
 
     @Test
-    public void undo() {
-        updateControlPointPositionCommand.undo(graphCommandExecutionContext);
-        verify(updateControlPointPositionCommand).newUndoCommand();
-        List<Command<GraphCommandExecutionContext, RuleViolation>> commands = updateControlPointPositionCommand.newUndoCommand().getCommands();
-        assertCommandsByPosition(commands.get(0), newLocation, commands.get(1), controlPoint1.getLocation());
+    public void testExecute() {
+        final CommandResult<RuleViolation> result = tested.execute(commandExecutionContext);
+        assertFalse(CommandUtils.isError(result));
+        assertEquals(7, controlPoint.getLocation().getX(), 0);
+        assertEquals(5, controlPoint.getLocation().getY(), 0);
+        assertEquals(Point2D.create(1, 4), tested.getOldPosition());
+    }
+
+    @Test
+    public void testExecuteInvalid() {
+        content.setControlPoints(Collections.singletonList(mock(ControlPoint.class)));
+        final CommandResult<RuleViolation> result = tested.execute(commandExecutionContext);
+        assertTrue(CommandUtils.isError(result));
+        assertEquals(1, controlPoint.getLocation().getX(), 0);
+        assertEquals(4, controlPoint.getLocation().getY(), 0);
+    }
+
+    @Test
+    public void testUndo() {
+        tested.execute(commandExecutionContext);
+        final CommandResult<RuleViolation> result = tested.undo(commandExecutionContext);
+        assertFalse(CommandUtils.isError(result));
+        assertEquals(1, controlPoint.getLocation().getX(), 0);
+        assertEquals(4, controlPoint.getLocation().getY(), 0);
     }
 }

@@ -17,6 +17,7 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.List;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -32,20 +33,14 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 @Portable
 public class DeleteControlPointCommand extends AbstractControlPointCommand {
 
-    public DeleteControlPointCommand() {
-        this(null, null);
-    }
-
-    public DeleteControlPointCommand(final Edge edge, final ControlPoint... controlPoints) {
+    public DeleteControlPointCommand(final @MapsTo("edge") Edge edge,
+                                     final @MapsTo("controlPoints") ControlPoint... controlPoints) {
         super(edge, controlPoints);
     }
 
     @Override
     protected CommandResult<RuleViolation> check(GraphCommandExecutionContext context) {
-        if (edge.getContent() instanceof HasControlPoints) {
-            return GraphCommandResultBuilder.SUCCESS;
-        }
-        return GraphCommandResultBuilder.FAILED;
+        return checkArguments();
     }
 
     @Override
@@ -59,11 +54,6 @@ public class DeleteControlPointCommand extends AbstractControlPointCommand {
         updateControlPointsIndex(connectorControlPoints);
 
         return GraphCommandResultBuilder.SUCCESS;
-    }
-
-    @Override
-    public CommandResult<RuleViolation> undo(GraphCommandExecutionContext context) {
-        return newUndoCommand().execute(context);
     }
 
     @Override

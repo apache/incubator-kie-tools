@@ -25,7 +25,9 @@ import javax.enterprise.event.Event;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.wires.IConnectionAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
+import com.ait.lienzo.client.core.shape.wires.IControlPointsAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
+import com.ait.lienzo.client.core.shape.wires.ILocationAcceptor;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.widget.LienzoPanel;
 import com.google.gwt.logging.client.LogConfiguration;
@@ -60,6 +62,10 @@ public abstract class WiresCanvas extends AbstractCanvas<WiresCanvas.View> {
         View setContainmentAcceptor(final IContainmentAcceptor containmentAcceptor);
 
         View setDockingAcceptor(final IDockingAcceptor dockingAcceptor);
+
+        View setLocationAcceptor(final ILocationAcceptor locationAcceptor);
+
+        View setControlPointsAcceptor(final IControlPointsAcceptor controlPointsAcceptor);
 
         WiresManager getWiresManager();
 

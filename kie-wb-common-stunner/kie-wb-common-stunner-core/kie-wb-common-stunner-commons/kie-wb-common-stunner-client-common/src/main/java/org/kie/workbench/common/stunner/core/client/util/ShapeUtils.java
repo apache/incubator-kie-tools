@@ -77,15 +77,21 @@ public class ShapeUtils {
         getConnectorShape(edge, canvasHandler).removeControlPoints(controlPoints);
     }
 
+    public static void updateControlPoint(final Edge edge,
+                                          final CanvasHandler canvasHandler,
+                                          final ControlPoint controlPoint) {
+        getConnectorShape(edge, canvasHandler).updateControlPoint(controlPoint);
+    }
+
     public static List<ControlPoint> getControlPoints(final Edge edge, final CanvasHandler canvasHandler) {
         return getConnectorShape(edge, canvasHandler).getControlPoints();
     }
 
-    public static void hideControlPoints(final Edge edge, final CanvasHandler canvasHandler){
+    public static void hideControlPoints(final Edge edge, final CanvasHandler canvasHandler) {
         getConnectorShape(edge, canvasHandler).applyState(ShapeState.NONE);
     }
 
-    public static void showControlPoints(final Edge edge, final CanvasHandler canvasHandler){
+    public static void showControlPoints(final Edge edge, final CanvasHandler canvasHandler) {
         getConnectorShape(edge, canvasHandler).applyState(ShapeState.SELECTED);
     }
 

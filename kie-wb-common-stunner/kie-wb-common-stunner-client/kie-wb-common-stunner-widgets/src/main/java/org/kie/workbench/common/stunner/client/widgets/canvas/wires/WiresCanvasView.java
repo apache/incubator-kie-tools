@@ -22,16 +22,16 @@ import javax.inject.Inject;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.wires.IConnectionAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
+import com.ait.lienzo.client.core.shape.wires.IControlPointsAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
+import com.ait.lienzo.client.core.shape.wires.ILocationAcceptor;
 import com.ait.lienzo.client.core.shape.wires.MagnetManager;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.shared.core.types.Direction;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresConnectorView;
 import org.kie.workbench.common.stunner.client.lienzo.wires.WiresManagerFactory;
 import org.kie.workbench.common.stunner.client.widgets.canvas.view.CanvasView;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
@@ -57,6 +57,13 @@ public class WiresCanvasView extends CanvasView implements WiresCanvas.View {
         super.init();
         wiresManager = wiresManagerFactory.newWiresManager(getCanvasLayer());
         wiresManager.setSpliceEnabled(false);
+        // Set the default NONE acceptors for wires capabilities.
+        // Each of these ones is being handled by each of the canvas controls associated
+        wiresManager.setLocationAcceptor(ILocationAcceptor.NONE);
+        wiresManager.setContainmentAcceptor(IContainmentAcceptor.NONE);
+        wiresManager.setDockingAcceptor(IDockingAcceptor.NONE);
+        wiresManager.setConnectionAcceptor(IConnectionAcceptor.NONE);
+        wiresManager.setControlPointsAcceptor(IControlPointsAcceptor.NONE);
     }
 
     @Override
@@ -70,10 +77,7 @@ public class WiresCanvasView extends CanvasView implements WiresCanvas.View {
                                         WiresCanvas.WIRES_CANVAS_GROUP_ID);
         } else if (WiresUtils.isWiresConnector(shapeView)) {
             WiresConnector wiresConnector = (WiresConnector) shapeView;
-            final WiresConnectorControl connectorControl = wiresManager.register(wiresConnector);
-            if (shapeView instanceof WiresConnectorView) {
-                ((WiresConnectorView) shapeView).setControl(connectorControl);
-            }
+            wiresManager.register(wiresConnector);
             WiresUtils.assertShapeGroup(wiresConnector.getGroup(),
                                         WiresCanvas.WIRES_CANVAS_GROUP_ID);
         } else {
@@ -111,6 +115,18 @@ public class WiresCanvasView extends CanvasView implements WiresCanvas.View {
     @Override
     public WiresCanvas.View setDockingAcceptor(final IDockingAcceptor dockingAcceptor) {
         wiresManager.setDockingAcceptor(dockingAcceptor);
+        return this;
+    }
+
+    @Override
+    public WiresCanvas.View setLocationAcceptor(final ILocationAcceptor locationAcceptor) {
+        wiresManager.setLocationAcceptor(locationAcceptor);
+        return this;
+    }
+
+    @Override
+    public WiresCanvas.View setControlPointsAcceptor(final IControlPointsAcceptor controlPointsAcceptor) {
+        wiresManager.setControlPointsAcceptor(controlPointsAcceptor);
         return this;
     }
 

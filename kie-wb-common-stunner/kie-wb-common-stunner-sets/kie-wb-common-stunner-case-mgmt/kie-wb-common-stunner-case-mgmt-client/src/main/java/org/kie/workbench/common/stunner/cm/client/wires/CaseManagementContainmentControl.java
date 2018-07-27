@@ -71,7 +71,7 @@ public class CaseManagementContainmentControl implements WiresContainmentControl
         final WiresParentPickerControl.Index index = containmentControl.getParentPickerControl().getIndex();
         index.clear();
         if (state.getGhost().isPresent()) {
-            index.addShapeToSkip(state.getGhost().get());
+            index.exclude(state.getGhost().get());
         }
 
         if ((getParent() instanceof AbstractCaseManagementShape)) {

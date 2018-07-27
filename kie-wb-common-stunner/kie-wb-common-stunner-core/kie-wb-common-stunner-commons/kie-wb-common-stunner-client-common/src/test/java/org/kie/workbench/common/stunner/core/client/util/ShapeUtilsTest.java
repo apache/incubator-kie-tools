@@ -32,7 +32,6 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
-import org.kie.workbench.common.stunner.core.graph.content.view.ControlPointImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -89,7 +88,7 @@ public class ShapeUtilsTest {
         when(edge1Shape.getShapeView()).thenReturn(edge1ShapeView);
         when(edge2Shape.getShapeView()).thenReturn(edge2ShapeView);
 
-        controlPoint1 = new ControlPointImpl(0, 0);
+        controlPoint1 = ControlPoint.build(0, 0);
         controlPointList = Arrays.asList(controlPoint1);
         when(edge1Shape.getControlPoints()).thenReturn(controlPointList);
         when(edge1Shape.addControlPoints(controlPoint1)).thenReturn(controlPointList);

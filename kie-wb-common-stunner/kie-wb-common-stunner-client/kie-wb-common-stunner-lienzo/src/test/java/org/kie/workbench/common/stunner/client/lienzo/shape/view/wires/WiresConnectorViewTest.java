@@ -30,6 +30,7 @@ import com.ait.lienzo.client.core.shape.wires.MagnetManager;
 import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectorControlImpl;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
@@ -42,21 +43,20 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
-import org.kie.workbench.common.stunner.core.graph.content.view.ControlPointImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2DConnection;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InOrder;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
-import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -90,7 +90,7 @@ public class WiresConnectorViewTest {
     private WiresConnectorView tested;
 
     @Mock
-    private WiresConnectorControl wiresConnectorControl;
+    private WiresConnectorControlImpl wiresConnectorControl;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -203,9 +203,7 @@ public class WiresConnectorViewTest {
     @Test
     public void testConnectionControl() {
         final WiresConnectorControl connectorControl = mock(WiresConnectorControl.class);
-        final Object wcv = tested.setControl(connectorControl);
-        assertEquals(wcv,
-                     tested);
+        tested.setControl(connectorControl);
         assertEquals(connectorControl,
                      tested.getControl());
     }
@@ -422,48 +420,22 @@ public class WiresConnectorViewTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testAddControlPoint() {
-        Point2D point1 = point2DArray.get(1);
-        Point2D point2 = point2DArray.get(2);
-        Point2D point3 = point2DArray.get(3);
-
-        when(wiresConnectorControl.addControlPoint(point1.getX(), point1.getY())).thenReturn(1);
-        when(wiresConnectorControl.addControlPoint(point2.getX(), point2.getY())).thenReturn(2);
-        when(wiresConnectorControl.addControlPoint(point3.getX(), point3.getY())).thenReturn(3);
-
-        ControlPoint controlPoint1 = new ControlPointImpl(point1.getX(), point1.getY());
-        ControlPoint controlPoint2 = new ControlPointImpl(point2.getX(), point2.getY());
-        ControlPoint controlPoint3 = new ControlPointImpl(point3.getX(), point3.getY());
-
-        //without index
-        List<ControlPoint> addedControlPoint = tested.addControlPoint(controlPoint1, controlPoint2);
-        addedControlPoint.addAll(tested.addControlPoint(controlPoint3));
-
-        InOrder addControlPointOrder = inOrder(wiresConnectorControl);
-        addControlPointOrder.verify(wiresConnectorControl).addControlPoint(point1.getX(), point1.getY());
-        addControlPointOrder.verify(wiresConnectorControl).addControlPoint(point2.getX(), point2.getY());
-        addControlPointOrder.verify(wiresConnectorControl).addControlPoint(point3.getX(), point3.getY());
-
-        assertEquals(addedControlPoint.get(0).getIndex(), 1, 0);
-        assertEquals(addedControlPoint.get(1).getIndex(), 2, 0);
-        assertEquals(addedControlPoint.get(2).getIndex(), 3, 0);
-
-        //now with index
-        addedControlPoint = tested.addControlPoint(controlPoint1, controlPoint2, controlPoint3);
-        addControlPointOrder = inOrder(wiresConnectorControl);
-        addControlPointOrder.verify(wiresConnectorControl).addControlPointToLine(controlPoint1.getLocation().getX(),
-                                                                                 controlPoint1.getLocation().getY(),
-                                                                                 controlPoint1.getIndex());
-        addControlPointOrder.verify(wiresConnectorControl).addControlPointToLine(controlPoint2.getLocation().getX(),
-                                                                                 controlPoint2.getLocation().getY(),
-                                                                                 controlPoint2.getIndex());
-        addControlPointOrder.verify(wiresConnectorControl).addControlPointToLine(controlPoint3.getLocation().getX(),
-                                                                                 controlPoint3.getLocation().getY(),
-                                                                                 controlPoint3.getIndex());
-
-        assertEquals(addedControlPoint.get(0).getIndex(), 1, 0);
-        assertEquals(addedControlPoint.get(1).getIndex(), 2, 0);
-        assertEquals(addedControlPoint.get(2).getIndex(), 3, 0);
+        Point2D point1 = new Point2D(0.1, 0.2);
+        ControlPoint controlPoint1 = ControlPoint.build(point1.getX(), point1.getY(), 0);
+        IControlHandleList pointHandles = mock(IControlHandleList.class);
+        when(pointHandles.isEmpty()).thenReturn(true);
+        when(pointHandles.size()).thenReturn(0);
+        tested.setPointHandles(pointHandles);
+        List<ControlPoint> addedControlPoint = tested.addControlPoints(controlPoint1);
+        assertFalse(addedControlPoint.isEmpty());
+        assertEquals(controlPoint1, addedControlPoint.get(0));
+        ArgumentCaptor<Point2DArray> c1 = ArgumentCaptor.forClass(Point2DArray.class);
+        verify(line, atLeastOnce()).setPoint2DArray(c1.capture());
+        Point2DArray points1 = c1.getValue();
+        assertEquals(6, points1.size());
+        assertEquals(point1, points1.get(1));
     }
 
     @Test

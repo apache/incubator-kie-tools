@@ -23,7 +23,7 @@ import org.eclipse.dd.dc.Point;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.ControlPointImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnectorImpl;
@@ -119,10 +119,10 @@ public class SequenceFlowPropertyWriterTest {
         connector.setSourceConnection(MagnetConnection.Builder.at(1, 2));
         connector.setTargetConnection(MagnetConnection.Builder.at(2, 3));
         connector.setControlPoints(asList(
-                new ControlPointImpl(Point2D.create(
+                ControlPoint.build(Point2D.create(
                         sx + 100,
                         sy + 100)),
-                new ControlPointImpl(Point2D.create(
+                ControlPoint.build(Point2D.create(
                         sx + 150,
                         sy + 150))
         ));

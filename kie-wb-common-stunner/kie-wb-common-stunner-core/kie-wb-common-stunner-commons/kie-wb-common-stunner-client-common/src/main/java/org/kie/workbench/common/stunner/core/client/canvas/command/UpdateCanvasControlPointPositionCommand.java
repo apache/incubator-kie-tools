@@ -16,68 +16,37 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
-import java.util.Objects;
-
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.impl.AbstractCompositeCommand;
-import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
-import org.kie.workbench.common.stunner.core.graph.content.view.ControlPointImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 /**
  * Update a given {@link ControlPoint} position on Canvas.
  */
-public class UpdateCanvasControlPointPositionCommand extends AbstractCanvasCompositeCommand {
+public class UpdateCanvasControlPointPositionCommand extends AbstractCanvasCommand {
 
     private final Edge edge;
     private final ControlPoint controlPoint;
-    private final Point2D position;
-    private final ControlPoint positionedControlPoint;
 
     public UpdateCanvasControlPointPositionCommand(final Edge edge,
-                                                   final ControlPoint controlPoint,
-                                                   final Point2D position) {
+                                                   final ControlPoint controlPoint) {
         this.edge = edge;
         this.controlPoint = controlPoint;
-        this.position = position;
-        this.positionedControlPoint = getUpdatedControlPoint(position);
     }
 
     @Override
-    protected AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation> initialize(AbstractCanvasHandler context) {
-        if (ShapeUtils.getControlPoints(edge, context).stream().anyMatch(cp -> Objects.equals(cp.getLocation(), position))) {
-            //skip canvas commands in case the control point is already on the position
-            return this;
-        }
-        addCommand(new DeleteCanvasControlPointCommand(edge, controlPoint));
-        addCommand(new AddCanvasControlPointCommand(edge, positionedControlPoint));
-        return this;
+    public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
+        ShapeUtils.updateControlPoint(edge,
+                                      context,
+                                      controlPoint);
+        return buildResult();
     }
 
     @Override
-    protected void ensureInitialized(AbstractCanvasHandler context) {
-        initialize(context);
-    }
-
-    @Override
-    public CommandResult<CanvasViolation> undo(AbstractCanvasHandler context) {
-        return newUndoCommand().execute(context);
-    }
-
-    protected CompositeCommand<AbstractCanvasHandler, CanvasViolation> newUndoCommand() {
-        return new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>()
-                .addCommand(new DeleteCanvasControlPointCommand(edge, positionedControlPoint))
-                .addCommand(new AddCanvasControlPointCommand(edge, controlPoint))
-                .forward()
-                .build();
-    }
-
-    private ControlPointImpl getUpdatedControlPoint(Point2D position) {
-        return new ControlPointImpl(position, controlPoint.getIndex());
+    public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
+        return new UpdateCanvasControlPointPositionCommand(edge, controlPoint).execute(context);
     }
 }

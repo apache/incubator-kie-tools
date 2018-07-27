@@ -33,7 +33,6 @@ import com.ait.lienzo.client.core.shape.wires.SelectionManager;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.google.gwt.event.dom.client.MouseEvent;
 import com.google.gwt.event.shared.EventHandler;
@@ -103,19 +102,7 @@ public final class LienzoMultipleSelectionControl<H extends AbstractCanvasHandle
     private void rebuildSelectionArea() {
         if (null != selectionShapeProvider.getShape()) {
             getSelectionManager().getSelectedItems().rebuildBoundingBox();
-            // TODO: Here we need to call the drawSelectionShapeForSelection() method, but it's private.
-            // Let's workaroud it - THIS CAN BE REFACTORED ONCE MOVING TO NEXT LIENZO RELEASE.
-            if (getSelectionManager().getSelectedItems().isEmpty()) {
-                return;
-            }
-
-            BoundingBox bbox = getSelectionManager().getSelectedItems().getBoundingBox();
-
-            getSelectionManager().drawSelectionShape(bbox.getX(),
-                                                     bbox.getY(),
-                                                     bbox.getWidth(),
-                                                     bbox.getHeight(),
-                                                     getWiresManager().getLayer().getLayer().getOverLayer());
+            getSelectionManager().drawSelectionShapeForSelection();
         }
     }
 

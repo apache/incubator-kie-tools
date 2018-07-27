@@ -47,7 +47,6 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
-import org.kie.workbench.common.stunner.core.graph.content.view.ControlPointImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.map.MapIndexBuilder;
@@ -200,7 +199,7 @@ public class GraphBuilder {
 
         ControlPoint[] cps = new ControlPoint[controlPoints.size()];
         for (int i = 0; i < cps.length; i++) {
-            cps[i] = new ControlPointImpl(controlPoints.get(i), i+1);
+            cps[i] = ControlPoint.build(controlPoints.get(i), i + 1);
         }
         AddControlPointCommand addControlPoint = commandFactory.addControlPoint(edge, cps);
 

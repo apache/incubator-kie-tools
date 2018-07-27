@@ -79,16 +79,22 @@ public class ConnectorShape<W, D extends ShapeViewDef<W, V>, V extends ShapeView
                           targetConnection);
     }
 
-    public List<ControlPoint> addControlPoints(ControlPoint... controlPoints) {
-        return getShapeViewWithControlPoints().addControlPoint(controlPoints);
-    }
-
-    public void removeControlPoints(ControlPoint... controlPoints) {
-        getShapeViewWithControlPoints().removeControlPoint(controlPoints);
-    }
-
+    @SuppressWarnings("unchecked")
     public List<ControlPoint> getControlPoints() {
         return getShapeViewWithControlPoints().getShapeControlPoints();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<ControlPoint> addControlPoints(final ControlPoint... controlPoints) {
+        return getShapeViewWithControlPoints().addControlPoints(controlPoints);
+    }
+
+    public void removeControlPoints(final ControlPoint... controlPoints) {
+        getShapeViewWithControlPoints().removeControlPoints(controlPoints);
+    }
+
+    public void updateControlPoint(final ControlPoint controlPoint) {
+        getShapeViewWithControlPoints().updateControlPoint(controlPoint);
     }
 
     private HasManageableControlPoints getShapeViewWithControlPoints() {

@@ -17,20 +17,16 @@
 package org.kie.workbench.common.stunner.cm.client.canvas;
 
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresHandlerFactoryImpl;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.wires.StunnerWiresControlFactory;
-import org.kie.workbench.common.stunner.client.lienzo.wires.StunnerWiresHandlerFactory;
 import org.kie.workbench.common.stunner.client.lienzo.wires.WiresManagerFactoryImpl;
 import org.kie.workbench.common.stunner.cm.client.wires.MockCaseManagementShape;
-import org.kie.workbench.common.stunner.core.client.canvas.event.controlpoint.CanvasControlPointDoubleClickEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.controlpoint.CanvasControlPointDragEndEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.controlpoint.CanvasControlPointDragStartEvent;
 import org.kie.workbench.common.stunner.shapes.client.view.AbstractConnectorView;
 import org.kie.workbench.common.stunner.shapes.client.view.PolylineConnectorView;
-import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -44,10 +40,7 @@ public class CaseManagementCanvasViewTest {
     @Before
     public void setup() {
         this.view = new CaseManagementCanvasView(new WiresManagerFactoryImpl(new StunnerWiresControlFactory(),
-                                                                             new StunnerWiresHandlerFactory(
-                                                                                     new EventSourceMock<CanvasControlPointDragStartEvent>(),
-                                                                                     new EventSourceMock<CanvasControlPointDragEndEvent>(),
-                                                                                     new EventSourceMock<CanvasControlPointDoubleClickEvent>())));
+                                                                             new WiresHandlerFactoryImpl()));
         this.view.init();
     }
 

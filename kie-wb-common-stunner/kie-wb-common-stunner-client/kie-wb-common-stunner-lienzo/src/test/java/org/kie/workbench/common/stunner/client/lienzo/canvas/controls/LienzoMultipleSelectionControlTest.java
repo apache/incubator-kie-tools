@@ -176,11 +176,11 @@ public class LienzoMultipleSelectionControlTest {
         shapeView.setUUID(ELEMENT_UUID);
         when(shape.getShapeView()).thenReturn(shapeView);
         selectionShapeProvider = spy(new LienzoMultipleSelectionControl.CursoredSelectionShapeProvider(delegateShapeProvider,
-                                                                                                   () -> canvasHandler));
+                                                                                                       () -> canvasHandler));
         tested = spy(new LienzoMultipleSelectionControl<>(selectionControl,
-                                                      canvasSelectionEvent,
-                                                      clearSelectionEvent,
-                                                      selectionShapeProvider));
+                                                          canvasSelectionEvent,
+                                                          clearSelectionEvent,
+                                                          selectionShapeProvider));
     }
 
     @Test
@@ -298,11 +298,7 @@ public class LienzoMultipleSelectionControlTest {
         tested.onShapeLocationsChanged(shapeLocationsChangedEvent);
 
         verify(selectedItems, times(1)).rebuildBoundingBox();
-        verify(selectionManager, times(1)).drawSelectionShape(eq(MIN_WIDTH),
-                                                              eq(MIN_HEIGHT),
-                                                              eq(MAX_WIDTH),
-                                                              eq(MAX_HEIGHT),
-                                                              eq(overLayer));
+        verify(selectionManager, times(1)).drawSelectionShapeForSelection();
     }
 
     @Test

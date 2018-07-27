@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
-import org.kie.workbench.common.stunner.core.graph.content.view.ControlPointImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.mockito.Mock;
@@ -46,14 +45,14 @@ public class AbstractControlPointCommandTest extends AbstractGraphCommandTest {
     @Mock
     protected ViewConnector viewConnector;
 
-    public void setUp(){
+    public void setUp() {
         super.init(0, 0);
 
         newLocation = new Point2D(0, 0);
-        controlPoint1 = new ControlPointImpl(new Point2D(1,1), 1);
-        controlPoint2 = new ControlPointImpl(new Point2D(2,2), 2);
-        controlPoint3 = new ControlPointImpl(new Point2D(3,3), 3);
-        controlPointList = new ArrayList<ControlPoint>(){{
+        controlPoint1 = ControlPoint.build(new Point2D(1, 1), 1);
+        controlPoint2 = ControlPoint.build(new Point2D(2, 2), 2);
+        controlPoint3 = ControlPoint.build(new Point2D(3, 3), 3);
+        controlPointList = new ArrayList<ControlPoint>() {{
             add(controlPoint1);
             add(controlPoint2);
             add(controlPoint3);
@@ -62,7 +61,4 @@ public class AbstractControlPointCommandTest extends AbstractGraphCommandTest {
         when(edge.getContent()).thenReturn(viewConnector);
         when(viewConnector.getControlPoints()).thenReturn(controlPointList);
     }
-
-
-
 }

@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,12 +36,8 @@ import com.ait.lienzo.client.core.shape.wires.ILocationAcceptor;
 import com.ait.lienzo.client.core.shape.wires.SelectionManager;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
-import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.ShapeControlUtils;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.types.Point2DArray;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
-import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
@@ -80,7 +75,6 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
@@ -190,7 +184,7 @@ public class LocationControlImpl
     @Override
     protected void doInit() {
         super.doInit();
-        getWiresManager().setLocationAcceptor(LOCATION_ACCEPTOR);
+        getCanvasView().setLocationAcceptor(LOCATION_ACCEPTOR);
     }
 
     @Override
@@ -253,20 +247,6 @@ public class LocationControlImpl
         for (int i = 0; i < elements.length; i++) {
             final Element element = elements[i];
             builder.addCommand(createMoveCommand(element, locations[i]));
-
-            //check connectors
-            ShapeView shapeView = canvasHandler.getCanvas().getShape(element.getUUID()).getShapeView();
-            if (shapeView instanceof WiresShape) {
-                ShapeControlUtils.getChildConnectorWithinShape((WiresShape) shapeView).values()
-                        .stream()
-                        .forEach(wiresConnector -> {
-                            Optional.ofNullable(canvasHandler.getGraphIndex().getEdge(WiresUtils.getShapeUUID(wiresConnector.getGroup())))
-                                    .ifPresent(edge -> {
-                                        final Point2DArray controlPoints = wiresConnector.getControlPoints();
-                                        builder.addCommands(moveControlPointsCommands(edge, controlPoints));
-                                    });
-                        });
-            }
         }
 
         final Command<AbstractCanvasHandler, CanvasViolation> command = builder.build();
@@ -284,15 +264,6 @@ public class LocationControlImpl
         return result;
     }
 
-    private List<Command<AbstractCanvasHandler, CanvasViolation>> moveControlPointsCommands(Edge edge, Point2DArray controlPoints) {
-        return ((ViewConnector) edge.getContent()).getControlPoints()
-                .stream()
-                .map(cp -> {
-                    com.ait.lienzo.client.core.types.Point2D lienzoCP = controlPoints.get(cp.getIndex());
-                    return canvasCommandFactory.updateControlPointPosition(edge, cp, new Point2D(lienzoCP.getX(), lienzoCP.getY()));
-                }).collect(Collectors.toList());
-    }
-
     @Override
     protected void doClear() {
         ifSelectionManager(s -> s.getControl().setBoundsConstraint(null));
@@ -303,10 +274,14 @@ public class LocationControlImpl
     @Override
     protected void doDestroy() {
         clear();
-        getWiresManager().setLocationAcceptor(ILocationAcceptor.ALL);
+        getCanvasView().setLocationAcceptor(ILocationAcceptor.ALL);
         commandManagerProvider = null;
         boundsConstraint = null;
         super.doDestroy();
+    }
+
+    private WiresCanvas.View getCanvasView() {
+        return (WiresCanvas.View) canvasHandler.getAbstractCanvas().getView();
     }
 
     void onCanvasSelectionEvent(final @Observes CanvasSelectionEvent event) {
@@ -419,8 +394,9 @@ public class LocationControlImpl
     }
 
     private void ifSelectionManager(Consumer<SelectionManager> selectionManagerConsumer) {
-        if (null != getWiresManager().getSelectionManager()) {
-            selectionManagerConsumer.accept(getWiresManager().getSelectionManager());
+        final SelectionManager selectionManager = getWiresManager().getSelectionManager();
+        if (null != selectionManager && null != selectionManager.getControl()) {
+            selectionManagerConsumer.accept(selectionManager);
         }
     }
 }
