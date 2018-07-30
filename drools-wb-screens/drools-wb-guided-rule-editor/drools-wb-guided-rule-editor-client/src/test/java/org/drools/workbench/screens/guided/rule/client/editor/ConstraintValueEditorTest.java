@@ -151,24 +151,24 @@ public class ConstraintValueEditorTest {
 
         // reset oracle due to calls in ConstraintValueEditor constructor
         reset(oracle);
-        editor.getDropDownData();
+        editor.initDropDownData();
 
         verify(oracle).getEnums(eq(factType), eq(factField), anyMap());
     }
 
     @Test
     public void testInitializationOrder() {
-        // DROOLS-2662
-        // Call refresh() before ConstraintValueEditorHelper is constructed
-        // This ensures dropDownData is not null
+        // DROOLS-2662 and DROOLS-2781
+        // Create the dropdown before constraint value editor helper.
         final SingleFieldConstraint singleFieldConstraint = mock(SingleFieldConstraint.class);
         final ConstraintValueEditor editor = spy(createEditor(singleFieldConstraint));
 
         editor.init();
 
         final InOrder inOrder = Mockito.inOrder(editor);
-        inOrder.verify(editor).refresh();
+        inOrder.verify(editor).initDropDownData();
         inOrder.verify(editor).constructConstraintValueEditorHelper();
+        inOrder.verify(editor).refresh();
     }
 
     private ConstraintValueEditor createEditor(final BaseSingleFieldConstraint baseConstraint) {

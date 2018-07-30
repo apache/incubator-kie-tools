@@ -133,9 +133,11 @@ public class ConstraintValueEditor extends Composite {
     public void init() {
         setUpConstraint();
 
-        refresh();
+        initDropDownData();
 
         constructConstraintValueEditorHelper();
+
+        refresh();
 
         initWidget(panel);
     }
@@ -186,9 +188,6 @@ public class ConstraintValueEditor extends Composite {
         if (this.constraint instanceof SingleFieldConstraintEBLeftSide) {
             setUpSingleFieldConstraintEBLeftSide((SingleFieldConstraintEBLeftSide) this.constraint);
         }
-
-        //Initialise drop-down data
-        getDropDownData();
 
         //Show an editor for the constraint value type
         if (constraint.getConstraintValueType() == SingleFieldConstraint.TYPE_UNDEFINED) {
@@ -726,7 +725,7 @@ public class ConstraintValueEditor extends Composite {
         this.onTemplateValueChangeCommand = onTemplateValueChangeCommand;
     }
 
-    DropDownData getDropDownData() {
+    void initDropDownData() {
         //Set applicable flags and reference data depending upon type
         if (DataType.TYPE_BOOLEAN.equals(this.fieldType)) {
             this.isDropDownDataEnum = false;
@@ -751,7 +750,6 @@ public class ConstraintValueEditor extends Composite {
                                                 fieldName,
                                                 currentValueMap);
         }
-        return dropDownData;
     }
 
     //Signal (potential) change in Template variables
