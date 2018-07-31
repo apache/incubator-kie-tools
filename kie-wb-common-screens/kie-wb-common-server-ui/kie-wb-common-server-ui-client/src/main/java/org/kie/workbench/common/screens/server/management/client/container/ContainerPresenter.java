@@ -144,10 +144,9 @@ public class ContainerPresenter {
     }
 
     public void refreshOnContainerUpdateEvent(@Observes final ContainerUpdateEvent updateEvent) {
-
         final ContainerRuntimeOperation runtimeOperation = updateEvent.getContainerRuntimeOperation();
 
-        if (runtimeOperation != STOP_CONTAINER) {
+        if (updateEvent.getContainerSpec().equals(containerSpec) && runtimeOperation != STOP_CONTAINER) {
             refresh();
         }
     }

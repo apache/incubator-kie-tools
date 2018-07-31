@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-
 import javax.enterprise.event.Event;
 
 import org.jboss.errai.common.client.api.Caller;
@@ -32,13 +31,7 @@ import org.kie.server.api.model.Message;
 import org.kie.server.api.model.ReleaseId;
 import org.kie.server.controller.api.model.runtime.Container;
 import org.kie.server.controller.api.model.runtime.ServerInstanceKey;
-import org.kie.server.controller.api.model.spec.Capability;
-import org.kie.server.controller.api.model.spec.ContainerConfig;
-import org.kie.server.controller.api.model.spec.ContainerSpec;
-import org.kie.server.controller.api.model.spec.ContainerSpecKey;
-import org.kie.server.controller.api.model.spec.ProcessConfig;
-import org.kie.server.controller.api.model.spec.RuleConfig;
-import org.kie.server.controller.api.model.spec.ServerTemplateKey;
+import org.kie.server.controller.api.model.spec.*;
 import org.kie.workbench.common.screens.server.management.client.container.config.process.ContainerProcessConfigPresenter;
 import org.kie.workbench.common.screens.server.management.client.container.config.rules.ContainerRulesConfigPresenter;
 import org.kie.workbench.common.screens.server.management.client.container.status.ContainerRemoteStatusPresenter;
@@ -64,19 +57,9 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.anyObject;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ContainerPresenterTest {
@@ -373,9 +356,11 @@ public class ContainerPresenterTest {
 
     @Test
     public void testRefreshOnContainerUpdateEventWhenRuntimeOperationIsNotStopContainer() {
-        final ContainerUpdateEvent updateEvent = mock(ContainerUpdateEvent.class);
-
-        when(updateEvent.getContainerRuntimeOperation()).thenReturn(ContainerRuntimeOperation.START_CONTAINER);
+        final ContainerUpdateEvent updateEvent = new ContainerUpdateEvent(null,
+                                                                          containerSpec,
+                                                                          null,
+                                                                          null,
+                                                                          ContainerRuntimeOperation.START_CONTAINER);
         doNothing().when(presenter).refresh();
 
         presenter.refreshOnContainerUpdateEvent(updateEvent);
@@ -385,14 +370,50 @@ public class ContainerPresenterTest {
 
     @Test
     public void testRefreshOnContainerUpdateEventWhenRuntimeOperationIsStopContainer() {
-        final ContainerUpdateEvent updateEvent = mock(ContainerUpdateEvent.class);
-
-        when(updateEvent.getContainerRuntimeOperation()).thenReturn(ContainerRuntimeOperation.STOP_CONTAINER);
+        final ContainerUpdateEvent updateEvent = new ContainerUpdateEvent(null,
+                                                                          containerSpec,
+                                                                          null,
+                                                                          null,
+                                                                          ContainerRuntimeOperation.STOP_CONTAINER);
         doNothing().when(presenter).refresh();
 
         presenter.refreshOnContainerUpdateEvent(updateEvent);
 
-        verify(presenter, never()).refresh();
+        verify(presenter,
+               never()).refresh();
+    }
+
+    @Test
+    public void testRefreshOnContainerUpdateEventWithSameContainerSpec() {
+        final ContainerUpdateEvent updateEvent = new ContainerUpdateEvent(null,
+                                                                          containerSpec,
+                                                                          null,
+                                                                          null,
+                                                                          ContainerRuntimeOperation.START_CONTAINER);
+
+        doNothing().when(presenter).refresh();
+
+        presenter.refreshOnContainerUpdateEvent(updateEvent);
+
+        verify(presenter).refresh();
+    }
+
+    @Test
+    public void testRefreshOnContainerUpdateEventWithDifferentContainerSpec() {
+        final ContainerSpec containerSpecEvent = new ContainerSpec();
+        containerSpecEvent.setReleasedId(new ReleaseId("org",
+                                                       "kie",
+                                                       "1.0"));
+        final ContainerUpdateEvent updateEvent = new ContainerUpdateEvent(null,
+                                                                          containerSpecEvent,
+                                                                          null,
+                                                                          null,
+                                                                          ContainerRuntimeOperation.START_CONTAINER);
+
+        presenter.refreshOnContainerUpdateEvent(updateEvent);
+
+        verify(presenter,
+               never()).refresh();
     }
 
     @Test
