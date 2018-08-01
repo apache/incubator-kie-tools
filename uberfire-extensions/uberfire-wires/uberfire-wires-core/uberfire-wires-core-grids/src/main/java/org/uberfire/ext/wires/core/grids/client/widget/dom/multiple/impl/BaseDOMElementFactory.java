@@ -17,9 +17,9 @@ package org.uberfire.ext.wires.core.grids.client.widget.dom.multiple.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.multiple.MultipleDOMElementFactory;
@@ -52,8 +52,8 @@ public abstract class BaseDOMElementFactory<T, W extends Widget, E extends BaseD
 
     @Override
     public void attachDomElement(final GridBodyCellRenderContext context,
-                                 final Callback<E> onCreation,
-                                 final Callback<E> onDisplay) {
+                                 final Consumer<E> onCreation,
+                                 final Consumer<E> onDisplay) {
         E domElement;
         if (consumed + 1 > domElements.size()) {
             domElement = createDomElement(gridLayer,
@@ -67,10 +67,10 @@ public abstract class BaseDOMElementFactory<T, W extends Widget, E extends BaseD
 
         domElement.setContext(context);
         domElement.initialise(context);
-        onCreation.callback(domElement);
+        onCreation.accept(domElement);
 
         domElement.attach();
-        onDisplay.callback(domElement);
+        onDisplay.accept(domElement);
     }
 
     @Override

@@ -15,7 +15,8 @@
  */
 package org.uberfire.ext.wires.core.grids.client.model.impl;
 
-import org.kie.soup.commons.validation.PortablePreconditions;
+import java.util.Objects;
+
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
 public class BaseHeaderMetaData implements GridColumn.HeaderMetaData {
@@ -32,10 +33,8 @@ public class BaseHeaderMetaData implements GridColumn.HeaderMetaData {
 
     public BaseHeaderMetaData(final String columnTitle,
                               final String columnGroup) {
-        this.columnTitle = PortablePreconditions.checkNotNull("columnTitle",
-                                                              columnTitle);
-        this.columnGroup = PortablePreconditions.checkNotNull("columnGroup",
-                                                              columnGroup);
+        this.columnTitle = Objects.requireNonNull(columnTitle, "columnTitle");
+        this.columnGroup = Objects.requireNonNull(columnGroup, "columnGroup");
     }
 
     @Override

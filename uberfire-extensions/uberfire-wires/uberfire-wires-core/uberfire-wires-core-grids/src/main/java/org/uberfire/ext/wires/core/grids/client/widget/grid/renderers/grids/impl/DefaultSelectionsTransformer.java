@@ -21,9 +21,9 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities;
@@ -39,10 +39,8 @@ public class DefaultSelectionsTransformer implements SelectionsTransformer {
 
     public DefaultSelectionsTransformer(final GridData model,
                                         final List<GridColumn<?>> columns) {
-        this.model = PortablePreconditions.checkNotNull("model",
-                                                        model);
-        this.columns = PortablePreconditions.checkNotNull("columns",
-                                                          columns);
+        this.model = Objects.requireNonNull(model, "model");
+        this.columns = Objects.requireNonNull(columns, "columns");
     }
 
     @Override

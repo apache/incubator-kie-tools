@@ -17,8 +17,8 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.columns;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -70,7 +70,7 @@ public class BooleanDOMElementColumn extends BaseGridColumn<Boolean> implements 
     @Override
     public void edit(final GridCell<Boolean> cell,
                      final GridBodyCellRenderContext context,
-                     final Callback<GridCellValue<Boolean>> callback) {
-        callback.callback(new BaseGridCellValue<>(!cell.getValue().getValue()));
+                     final Consumer<GridCellValue<Boolean>> callback) {
+        callback.accept(new BaseGridCellValue<>(!cell.getValue().getValue()));
     }
 }

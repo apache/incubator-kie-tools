@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.wires.core.grids.client.widget.grid.columns;
 
+import java.util.function.Consumer;
+
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +25,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -50,7 +51,7 @@ public class BooleanDOMElementColumnTest {
     private GridBodyCellRenderContext context;
 
     @Mock
-    private Callback<GridCellValue<Boolean>> callback;
+    private Consumer<GridCellValue<Boolean>> callback;
 
     @Captor
     private ArgumentCaptor<BaseGridCellValue<Boolean>> callbackArgumentCaptor;
@@ -73,7 +74,7 @@ public class BooleanDOMElementColumnTest {
                     callback);
 
         verify(callback,
-               times(1)).callback(callbackArgumentCaptor.capture());
+               times(1)).accept(callbackArgumentCaptor.capture());
 
         final BaseGridCellValue<Boolean> callbackArgument = callbackArgumentCaptor.getValue();
         assertFalse(callbackArgument.getValue());
@@ -88,7 +89,7 @@ public class BooleanDOMElementColumnTest {
                     callback);
 
         verify(callback,
-               times(1)).callback(callbackArgumentCaptor.capture());
+               times(1)).accept(callbackArgumentCaptor.capture());
 
         final BaseGridCellValue<Boolean> callbackArgument = callbackArgumentCaptor.getValue();
         assertTrue(callbackArgument.getValue());

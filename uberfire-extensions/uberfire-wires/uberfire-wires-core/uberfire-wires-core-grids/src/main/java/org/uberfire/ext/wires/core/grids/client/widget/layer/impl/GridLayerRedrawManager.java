@@ -17,12 +17,12 @@ package org.uberfire.ext.wires.core.grids.client.widget.layer.impl;
 
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import com.google.gwt.animation.client.AnimationScheduler;
 import com.google.gwt.user.client.Command;
-import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class GridLayerRedrawManager {
 
@@ -64,8 +64,7 @@ public class GridLayerRedrawManager {
     }
 
     public void schedule(final PrioritizedCommand command) {
-        PortablePreconditions.checkNotNull("command",
-                                           command);
+        Objects.requireNonNull(command, "command");
         if (!commands.contains(command)) {
             commands.add(command);
             kick();

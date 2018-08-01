@@ -17,9 +17,9 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.columns;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 
-import org.kie.soup.commons.validation.PortablePreconditions;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -27,7 +27,6 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.TextBoxDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.TextBoxSingletonDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.single.impl.StringColumnDOMElementSingletonRenderer;
@@ -52,27 +51,16 @@ public class StringDOMElementSingletonColumn extends BaseGridColumn<String> impl
         super(headerMetaData,
               new StringColumnDOMElementSingletonRenderer(factory),
               width);
-        this.factory = PortablePreconditions.checkNotNull("factory",
-                                                          factory);
+        this.factory = Objects.requireNonNull(factory, "factory");
     }
 
     @Override
     public void edit(final GridCell<String> cell,
                      final GridBodyCellRenderContext context,
-                     final Callback<GridCellValue<String>> callback) {
+                     final Consumer<GridCellValue<String>> callback) {
         factory.attachDomElement(context,
-                                 new Callback<TextBoxDOMElement>() {
-                                     @Override
-                                     public void callback(final TextBoxDOMElement e) {
-                                         e.getWidget().setValue(assertCell(cell).getValue().getValue());
-                                     }
-                                 },
-                                 new Callback<TextBoxDOMElement>() {
-                                     @Override
-                                     public void callback(final TextBoxDOMElement e) {
-                                         e.getWidget().setFocus(true);
-                                     }
-                                 });
+                                 e -> e.getWidget().setValue(assertCell(cell).getValue().getValue()),
+                                 e -> e.getWidget().setFocus(true));
     }
 
     private GridCell<String> assertCell(final GridCell<String> cell) {

@@ -15,8 +15,9 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl;
 
+import java.util.function.Consumer;
+
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
@@ -53,8 +54,8 @@ public abstract class BaseSingletonDOMElementFactory<T, W extends Widget, E exte
 
     @Override
     public void attachDomElement(final GridBodyCellRenderContext context,
-                                 final Callback<E> onCreation,
-                                 final Callback<E> onDisplay) {
+                                 final Consumer<E> onCreation,
+                                 final Consumer<E> onDisplay) {
         gridLayer.batch(new GridLayerRedrawManager.PrioritizedCommand(Integer.MAX_VALUE) {
             @Override
             public void execute() {
@@ -63,10 +64,10 @@ public abstract class BaseSingletonDOMElementFactory<T, W extends Widget, E exte
                                                       context);
                 domElement.setContext(context);
                 domElement.initialise(context);
-                onCreation.callback(domElement);
+                onCreation.accept(domElement);
 
                 domElement.attach();
-                onDisplay.callback(domElement);
+                onDisplay.accept(domElement);
             }
         });
     }

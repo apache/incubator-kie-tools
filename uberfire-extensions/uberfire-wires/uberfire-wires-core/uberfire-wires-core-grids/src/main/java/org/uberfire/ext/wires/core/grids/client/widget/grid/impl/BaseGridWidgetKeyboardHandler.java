@@ -16,11 +16,11 @@
 package org.uberfire.ext.wires.core.grids.client.widget.grid.impl;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
@@ -47,14 +47,12 @@ public class BaseGridWidgetKeyboardHandler implements KeyDownHandler {
     private Set<KeyboardOperation> operations = new HashSet<>();
 
     public BaseGridWidgetKeyboardHandler(final GridLayer gridLayer) {
-        this.gridLayer = PortablePreconditions.checkNotNull("gridLayer",
-                                                            gridLayer);
+        this.gridLayer = Objects.requireNonNull(gridLayer, "gridLayer");
     }
 
     public void addOperation(final KeyboardOperation... operations) {
         for (KeyboardOperation operation : operations) {
-            this.operations.add(PortablePreconditions.checkNotNull("operation",
-                                                                   operation));
+            this.operations.add(Objects.requireNonNull(operation, "operation"));
         }
     }
 

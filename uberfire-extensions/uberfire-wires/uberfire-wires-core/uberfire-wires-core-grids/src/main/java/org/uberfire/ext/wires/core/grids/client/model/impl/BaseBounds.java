@@ -16,7 +16,6 @@
 
 package org.uberfire.ext.wires.core.grids.client.model.impl;
 
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 
 /**
@@ -66,8 +65,9 @@ public class BaseBounds implements Bounds {
 
     @Override
     public void setWidth(double width) {
-        PortablePreconditions.checkCondition("Width must be positive",
-                                             width >= 0);
+        if (!(width >= 0)) {
+            throw new IllegalStateException("Width must be positive");
+        }
         this.width = width;
     }
 
@@ -78,8 +78,9 @@ public class BaseBounds implements Bounds {
 
     @Override
     public void setHeight(double height) {
-        PortablePreconditions.checkCondition("Height must be positive",
-                                             height >= 0);
+        if (!(height >= 0)) {
+            throw new IllegalStateException("Height must be positive");
+        }
         this.height = height;
     }
 }

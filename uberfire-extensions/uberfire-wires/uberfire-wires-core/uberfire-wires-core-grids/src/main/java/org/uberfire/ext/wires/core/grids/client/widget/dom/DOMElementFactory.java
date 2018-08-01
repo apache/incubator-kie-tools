@@ -15,7 +15,8 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.dom;
 
-import org.uberfire.client.callbacks.Callback;
+import java.util.function.Consumer;
+
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
@@ -53,6 +54,6 @@ public interface DOMElementFactory<W, E> extends HasDOMElementResources {
      * @param onDisplay A callback that is invoked after the cell has been attached to the DOM and displayed.
      */
     void attachDomElement(final GridBodyCellRenderContext context,
-                          final Callback<E> onCreation,
-                          final Callback<E> onDisplay);
+                          final Consumer<E> onCreation,
+                          final Consumer<E> onDisplay);
 }

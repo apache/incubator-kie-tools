@@ -17,12 +17,11 @@
 package org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.types.Point2D;
-import org.kie.soup.commons.validation.PortablePreconditions;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -46,10 +45,8 @@ public class BaseCellSelectionManager implements CellSelectionManager {
     private final GridData gridModel;
 
     public BaseCellSelectionManager(final GridWidget gridWidget) {
-        this.gridWidget = PortablePreconditions.checkNotNull("gridWidget",
-                                                             gridWidget);
-        this.gridModel = PortablePreconditions.checkNotNull("gridModel",
-                                                            gridWidget.getModel());
+        this.gridWidget = Objects.requireNonNull(gridWidget, "gridWidget");
+        this.gridModel = Objects.requireNonNull(gridWidget.getModel(), "gridModel");
     }
 
     @Override
@@ -435,15 +432,11 @@ public class BaseCellSelectionManager implements CellSelectionManager {
 
         column.edit(cell,
                     context,
-                    new Callback<GridCellValue<?>>() {
-
-                        @Override
-                        public void callback(final GridCellValue<?> value) {
+                    value-> {
                             gridModel.setCellValue(uiRowIndex,
                                                    uiColumnIndex,
-                                                   value);
+                                                   (GridCellValue<?>) value);
                             gridWidget.getLayer().batch();
-                        }
                     });
     }
 }

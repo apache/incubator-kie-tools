@@ -18,8 +18,8 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.imp
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -36,8 +36,7 @@ public class BaseGridRendererHelper {
     private final GridWidget view;
 
     public BaseGridRendererHelper(final GridWidget view) {
-        this.view = PortablePreconditions.checkNotNull("view",
-                                                       view);
+        this.view = Objects.requireNonNull(view, "view");
     }
 
     /**

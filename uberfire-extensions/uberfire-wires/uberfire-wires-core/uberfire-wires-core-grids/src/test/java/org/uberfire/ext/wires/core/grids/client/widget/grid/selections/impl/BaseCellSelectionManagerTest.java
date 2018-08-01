@@ -17,6 +17,7 @@
 package org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Viewport;
@@ -28,7 +29,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -505,20 +505,20 @@ public class BaseCellSelectionManagerTest {
         verify(col1,
                never()).edit(any(GridCell.class),
                              any(GridBodyCellRenderContext.class),
-                             any(Callback.class));
+                             any(Consumer.class));
         verify(col2,
                never()).edit(any(GridCell.class),
                              any(GridBodyCellRenderContext.class),
-                             any(Callback.class));
+                             any(Consumer.class));
 
         verify(col1,
                never()).edit(any(GridCell.class),
                              any(GridBodyCellEditContext.class),
-                             any(Callback.class));
+                             any(Consumer.class));
         verify(col2,
                never()).edit(any(GridCell.class),
                              any(GridBodyCellEditContext.class),
-                             any(Callback.class));
+                             any(Consumer.class));
     }
 
     @Test
@@ -533,11 +533,11 @@ public class BaseCellSelectionManagerTest {
         verify(col2,
                times(1)).edit(any(GridCell.class),
                               contextArgumentCaptor.capture(),
-                              any(Callback.class));
+                              any(Consumer.class));
         verify(col2,
                times(1)).edit(any(GridCell.class),
                               editContextArgumentCaptor.capture(),
-                              any(Callback.class));
+                              any(Consumer.class));
 
         final GridBodyCellRenderContext context = contextArgumentCaptor.getValue();
         assertEquals(0,
@@ -559,20 +559,20 @@ public class BaseCellSelectionManagerTest {
         verify(col1,
                never()).edit(any(GridCell.class),
                              any(GridBodyCellRenderContext.class),
-                             any(Callback.class));
+                             any(Consumer.class));
         verify(col2,
                never()).edit(any(GridCell.class),
                              any(GridBodyCellRenderContext.class),
-                             any(Callback.class));
+                             any(Consumer.class));
 
         verify(col1,
                never()).edit(any(GridCell.class),
                              any(GridBodyCellEditContext.class),
-                             any(Callback.class));
+                             any(Consumer.class));
         verify(col2,
                never()).edit(any(GridCell.class),
                              any(GridBodyCellEditContext.class),
-                             any(Callback.class));
+                             any(Consumer.class));
     }
 
     @Test
@@ -598,11 +598,11 @@ public class BaseCellSelectionManagerTest {
         verify(col2,
                times(1)).edit(any(GridCell.class),
                               contextArgumentCaptor.capture(),
-                              any(Callback.class));
+                              any(Consumer.class));
         verify(col2,
                times(1)).edit(any(GridCell.class),
                               editContextArgumentCaptor.capture(),
-                              any(Callback.class));
+                              any(Consumer.class));
 
         final GridBodyCellRenderContext context = contextArgumentCaptor.getValue();
         assertEquals(0,

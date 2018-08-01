@@ -17,6 +17,7 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.imp
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiFunction;
 
 import com.ait.lienzo.client.core.shape.Group;
@@ -27,7 +28,6 @@ import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.types.Transform;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyColumnRenderContext;
@@ -80,8 +80,7 @@ public class BaseGridRenderer implements GridRenderer {
 
     @Override
     public void setTheme(final GridRendererTheme theme) {
-        this.theme = PortablePreconditions.checkNotNull("theme",
-                                                        theme);
+        this.theme = Objects.requireNonNull(theme, "theme");
     }
 
     @Override

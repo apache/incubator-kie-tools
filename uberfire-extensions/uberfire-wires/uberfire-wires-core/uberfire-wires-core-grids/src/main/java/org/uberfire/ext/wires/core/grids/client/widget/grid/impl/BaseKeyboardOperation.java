@@ -17,11 +17,11 @@
 package org.uberfire.ext.wires.core.grids.client.widget.grid.impl;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -35,8 +35,7 @@ public abstract class BaseKeyboardOperation implements KeyboardOperation {
     protected GridLayer gridLayer;
 
     public BaseKeyboardOperation(final GridLayer gridLayer) {
-        this.gridLayer = PortablePreconditions.checkNotNull("gridLayer",
-                                                            gridLayer);
+        this.gridLayer = Objects.requireNonNull(gridLayer, "gridLayer");
     }
 
     @Override

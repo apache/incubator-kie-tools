@@ -15,6 +15,7 @@
  */
 package org.uberfire.ext.wires.core.grids.client.model.impl;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,8 +27,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-import org.kie.soup.commons.validation.PortablePreconditions;
-import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -273,8 +272,9 @@ public class BaseGridData implements GridData {
 
     @Override
     public void setHeaderRowCount(final int headerRowCount) {
-        PortablePreconditions.checkCondition("headerRowCount",
-                                             headerRowCount > 0);
+        if (!(headerRowCount > 0)) {
+            throw new IllegalStateException("headerRowCount");
+        }
         this.headerRowCount = headerRowCount;
     }
 
@@ -375,7 +375,7 @@ public class BaseGridData implements GridData {
         return doSetCell(rowIndex,
                          columnIndex,
                          (pair) -> {
-                             final Optional<BaseGridCell> cell = Optional.ofNullable((BaseGridCell) getCell(pair.getK1(), pair.getK2()));
+                             final Optional<BaseGridCell> cell = Optional.ofNullable((BaseGridCell) getCell(pair.getKey(), pair.getValue()));
                              final BaseGridCell c = cell.orElse(new BaseGridCell<>(value));
                              c.setValue(value);
                              return c;
@@ -384,7 +384,7 @@ public class BaseGridData implements GridData {
 
     protected Range doSetCell(final int rowIndex,
                               final int columnIndex,
-                              final Function<Pair<Integer, Integer>, GridCell<?>> cellSupplier) {
+                              final Function<Map.Entry<Integer, Integer>, GridCell<?>> cellSupplier) {
         if (rowIndex < 0 || rowIndex > rows.size() - 1) {
             return new Range(rowIndex);
         }
@@ -397,7 +397,7 @@ public class BaseGridData implements GridData {
         //If we're not merged just set the value of a single cell
         if (!isMerged) {
             ((BaseGridRow) rows.get(rowIndex)).setCell(_columnIndex,
-                                                       cellSupplier.apply(Pair.newPair(rowIndex, columnIndex)));
+                                                       cellSupplier.apply(new AbstractMap.SimpleEntry<>(rowIndex, columnIndex)));
             return new Range(rowIndex);
         }
 
@@ -413,7 +413,7 @@ public class BaseGridData implements GridData {
         for (int i = minRowIndex; i <= maxRowIndex; i++) {
             final GridRow row = rows.get(i);
             ((BaseGridRow) row).setCell(_columnIndex,
-                                        cellSupplier.apply(Pair.newPair(i, columnIndex)));
+                                        cellSupplier.apply(new AbstractMap.SimpleEntry<>(i, columnIndex)));
         }
 
         indexManager.onSetCell(range,

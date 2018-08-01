@@ -26,7 +26,6 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBoundaryRende
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.GridRendererTheme;
-import org.uberfire.mvp.ParameterizedCommand;
 
 /**
  * Definition of a render for the pluggable rendering mechanism.
@@ -43,7 +42,8 @@ public interface GridRenderer {
     /**
      * Generic command to render a component of the grid
      */
-    interface RendererCommand extends ParameterizedCommand<GridRendererContext> {
+    interface RendererCommand {
+        void execute(GridRendererContext parameter);
 
     }
 

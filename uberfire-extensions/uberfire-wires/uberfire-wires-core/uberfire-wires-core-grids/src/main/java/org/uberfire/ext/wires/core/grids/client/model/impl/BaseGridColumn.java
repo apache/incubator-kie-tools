@@ -17,8 +17,8 @@ package org.uberfire.ext.wires.core.grids.client.model.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
 
@@ -45,10 +45,8 @@ public class BaseGridColumn<T> implements GridColumn<T> {
     public BaseGridColumn(final HeaderMetaData headerMetaData,
                           final GridColumnRenderer<T> columnRenderer,
                           final double width) {
-        PortablePreconditions.checkNotNull("headerMetaData",
-                                           headerMetaData);
-        PortablePreconditions.checkNotNull("columnRenderer",
-                                           columnRenderer);
+        Objects.requireNonNull(headerMetaData, "headerMetaData");
+        Objects.requireNonNull(columnRenderer, "columnRenderer");
         this.headerMetaData.add(headerMetaData);
         this.columnRenderer = columnRenderer;
         this.width = width;
@@ -57,12 +55,11 @@ public class BaseGridColumn<T> implements GridColumn<T> {
     public BaseGridColumn(final List<HeaderMetaData> headerMetaData,
                           final GridColumnRenderer<T> columnRenderer,
                           final double width) {
-        PortablePreconditions.checkNotNull("headerMetaData",
-                                           headerMetaData);
-        PortablePreconditions.checkCondition("headerMetaData has at least one entry",
-                                             headerMetaData.size() > 0);
-        PortablePreconditions.checkNotNull("columnRenderer",
-                                           columnRenderer);
+        Objects.requireNonNull(headerMetaData, "headerMetaData");
+        if (!(headerMetaData.size() > 0)) {
+            throw new IllegalStateException("headerMetaData has at least one entry");
+        }
+        Objects.requireNonNull(columnRenderer, "columnRenderer");
         this.headerMetaData.addAll(headerMetaData);
         this.columnRenderer = columnRenderer;
         this.width = width;

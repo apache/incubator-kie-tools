@@ -16,8 +16,8 @@
 package org.uberfire.ext.wires.core.grids.client.widget.grid.columns;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -51,7 +51,7 @@ public class StringPopupColumn extends BaseGridColumn<String> {
     @Override
     public void edit(final GridCell<String> cell,
                      final GridBodyCellRenderContext context,
-                     final Callback<GridCellValue<String>> callback) {
+                     final Consumer<GridCellValue<String>> callback) {
         editor.edit(assertCell(cell).getValue(),
                     callback);
     }

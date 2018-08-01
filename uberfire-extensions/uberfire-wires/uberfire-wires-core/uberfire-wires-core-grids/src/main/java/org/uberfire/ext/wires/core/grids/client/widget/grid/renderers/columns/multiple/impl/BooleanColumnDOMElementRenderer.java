@@ -17,7 +17,6 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.m
 
 import com.ait.lienzo.client.core.shape.Group;
 import org.gwtbootstrap3.client.ui.CheckBox;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.CheckBoxDOMElement;
@@ -37,18 +36,8 @@ public class BooleanColumnDOMElementRenderer extends BaseGridColumnMultipleDOMEl
         }
         final Group g = new Group();
         factory.attachDomElement(context,
-                                 new Callback<CheckBoxDOMElement>() {
-                                     @Override
-                                     public void callback(final CheckBoxDOMElement e) {
-                                         e.getWidget().setValue(cell.getValue().getValue());
-                                     }
-                                 },
-                                 new Callback<CheckBoxDOMElement>() {
-                                     @Override
-                                     public void callback(final CheckBoxDOMElement result) {
-                                         //Do nothing
-                                     }
-                                 });
+                                 e -> e.getWidget().setValue(cell.getValue().getValue()),
+                                 result -> {});
         return g;
     }
 }

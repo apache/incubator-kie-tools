@@ -15,6 +15,8 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.edit;
 
+import java.util.function.Consumer;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -27,7 +29,6 @@ import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
@@ -40,7 +41,7 @@ public class EditorPopup extends Modal {
     private final ModalBody modalBody = new ModalBody();
 
     private GridCellValue<String> value;
-    private Callback<GridCellValue<String>> callback = null;
+    private Consumer<GridCellValue<String>> callback = null;
 
     public EditorPopup() {
         setTitle("Edit");
@@ -89,7 +90,7 @@ public class EditorPopup extends Modal {
      * @param callback Callback to invoke when the popup is "OK'ed".
      */
     public void edit(final GridCellValue<String> value,
-                     final Callback<GridCellValue<String>> callback) {
+                     final Consumer<GridCellValue<String>> callback) {
         this.value = value;
         this.callback = callback;
         textBox.setText(value == null ? "" : value.getValue());
@@ -102,7 +103,7 @@ public class EditorPopup extends Modal {
 
     private void commit() {
         if (callback != null) {
-            callback.callback(new BaseGridCellValue<String>(textBox.getText()));
+            callback.accept(new BaseGridCellValue<String>(textBox.getText()));
         }
         hide();
     }

@@ -15,8 +15,9 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.single.impl;
 
+import java.util.Objects;
+
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.impl.BaseGridColumnRenderer;
@@ -27,8 +28,7 @@ public abstract class BaseGridColumnSingletonDOMElementRenderer<T, W extends Wid
     protected final SingletonDOMElementFactory<W, E> factory;
 
     public BaseGridColumnSingletonDOMElementRenderer(final SingletonDOMElementFactory<W, E> factory) {
-        this.factory = PortablePreconditions.checkNotNull("factory",
-                                                          factory);
+        this.factory = Objects.requireNonNull(factory, "factory");
     }
 
     @Override

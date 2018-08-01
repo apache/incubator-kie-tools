@@ -15,10 +15,12 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.grid.impl;
 
+import java.util.AbstractMap;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.stream.Stream;
 
@@ -32,7 +34,6 @@ import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
-import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyRenderContext;
@@ -62,7 +63,7 @@ public class BaseGridWidget extends Group implements GridWidget {
     protected final SelectionsTransformer bodyTransformer;
     protected final SelectionsTransformer floatingColumnsTransformer;
     protected final BaseGridRendererHelper rendererHelper;
-    protected final Queue<Pair<Group, List<GridRenderer.RendererCommand>>> renderQueue = new ArrayDeque<>();
+    protected final Queue<Map.Entry<Group, List<GridRenderer.RendererCommand>>> renderQueue = new ArrayDeque<>();
 
     //These are final as a reference is held by the ISelectionsTransformers
     protected final List<GridColumn<?>> allColumns = new ArrayList<>();
@@ -530,16 +531,16 @@ public class BaseGridWidget extends Group implements GridWidget {
 
     protected void addCommandsToRenderQueue(final Group parent,
                                             final List<GridRenderer.RendererCommand> commands) {
-        renderQueue.add(new Pair<>(parent, commands));
+        renderQueue.add(new AbstractMap.SimpleEntry<>(parent, commands));
     }
 
     protected void executeRenderQueueCommands(final boolean isSelectionLayer) {
         renderQueue.stream()
-                .forEach(p -> p.getK2()
+                .forEach(p -> p.getValue()
                         .forEach(c -> c.execute(new GridRenderer.GridRendererContext() {
                             @Override
                             public Group getGroup() {
-                                return p.getK1();
+                                return p.getKey();
                             }
 
                             @Override

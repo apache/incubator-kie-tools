@@ -15,8 +15,9 @@
  */
 package org.uberfire.ext.wires.core.grids.client.model.impl;
 
+import java.util.function.Consumer;
+
 import com.ait.lienzo.client.core.shape.Group;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -151,7 +152,7 @@ public abstract class BaseGridTest {
         @Override
         public void edit(final GridCell<T> cell,
                          final GridBodyCellRenderContext context,
-                         final Callback<GridCellValue<T>> callback) {
+                         final Consumer<GridCellValue<T>> callback) {
             //Do nothing
         }
     }

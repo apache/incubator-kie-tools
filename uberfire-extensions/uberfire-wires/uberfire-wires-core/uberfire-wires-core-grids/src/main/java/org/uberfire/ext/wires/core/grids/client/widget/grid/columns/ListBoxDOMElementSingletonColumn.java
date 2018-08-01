@@ -17,15 +17,14 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.columns;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 import com.google.gwt.user.client.ui.ListBox;
-import org.kie.soup.commons.validation.PortablePreconditions;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.ListBoxDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.ListBoxSingletonDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.single.impl.ListBoxColumnDOMElementSingletonRenderer;
@@ -50,37 +49,28 @@ public class ListBoxDOMElementSingletonColumn extends BaseGridColumn<String> imp
         super(headerMetaData,
               new ListBoxColumnDOMElementSingletonRenderer(factory),
               width);
-        this.factory = PortablePreconditions.checkNotNull("factory",
-                                                          factory);
+        this.factory = Objects.requireNonNull(factory, "factory");
     }
 
     @Override
     public void edit(final GridCell<String> cell,
                      final GridBodyCellRenderContext context,
-                     final Callback<GridCellValue<String>> callback) {
+                     final Consumer<GridCellValue<String>> callback) {
         factory.attachDomElement(context,
-                                 new Callback<ListBoxDOMElement>() {
-                                     @Override
-                                     public void callback(final ListBoxDOMElement e) {
-                                         final ListBox widget = e.getWidget();
-                                         widget.addItem("one");
-                                         widget.addItem("two");
-                                         if (cell != null && cell.getValue() != null) {
-                                             for (int i = 0; i < widget.getItemCount(); i++) {
-                                                 if (widget.getItemText(i).equals(cell.getValue().getValue())) {
-                                                     widget.setSelectedIndex(i);
-                                                     break;
-                                                 }
+                                 e -> {
+                                     final ListBox widget = e.getWidget();
+                                     widget.addItem("one");
+                                     widget.addItem("two");
+                                     if (cell != null && cell.getValue() != null) {
+                                         for (int i = 0; i < widget.getItemCount(); i++) {
+                                             if (widget.getItemText(i).equals(cell.getValue().getValue())) {
+                                                 widget.setSelectedIndex(i);
+                                                 break;
                                              }
                                          }
                                      }
                                  },
-                                 new Callback<ListBoxDOMElement>() {
-                                     @Override
-                                     public void callback(final ListBoxDOMElement e) {
-                                         e.getWidget().setFocus(true);
-                                     }
-                                 });
+                                 e -> e.getWidget().setFocus(true));
     }
 
     @Override

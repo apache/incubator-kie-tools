@@ -18,6 +18,7 @@ package org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import com.ait.lienzo.client.core.mediator.IMediator;
@@ -26,7 +27,6 @@ import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.user.client.Command;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.animation.GridWidgetEnterPinnedModeAnimation;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.animation.GridWidgetExitPinnedModeAnimation;
@@ -50,8 +50,7 @@ public class DefaultPinnedModeManager implements GridPinnedModeManager {
     public DefaultPinnedModeManager(final GridLayer gridLayer) {
         this.onEnterPinnedModeCommands = new ArrayList<>();
         this.onExitPinnedModeCommands = new ArrayList<>();
-        this.gridLayer = PortablePreconditions.checkNotNull("gridLayer",
-                                                            gridLayer);
+        this.gridLayer = Objects.requireNonNull(gridLayer, "gridLayer");
     }
 
     @Override

@@ -17,7 +17,6 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.m
 
 import com.ait.lienzo.client.core.shape.Group;
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.TextBoxDOMElement;
@@ -37,18 +36,8 @@ public class StringColumnDOMElementRenderer extends BaseGridColumnMultipleDOMEle
         }
         final Group g = new Group();
         factory.attachDomElement(context,
-                                 new Callback<TextBoxDOMElement>() {
-                                     @Override
-                                     public void callback(final TextBoxDOMElement e) {
-                                         e.getWidget().setValue(cell.getValue().getValue());
-                                     }
-                                 },
-                                 new Callback<TextBoxDOMElement>() {
-                                     @Override
-                                     public void callback(final TextBoxDOMElement e) {
-                                         //Do nothing
-                                     }
-                                 });
+                                 e -> e.getWidget().setValue(cell.getValue().getValue()),
+                                 e -> { });
         return g;
     }
 }

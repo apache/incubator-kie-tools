@@ -48,7 +48,6 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.Gr
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
-import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -318,7 +317,7 @@ public class GridWidgetDnDMouseMoveHandlerTest {
     }
 
     private void doFindMovableGridWhenOverDragHandle(final boolean isPinned,
-                                                     final Command assertion) {
+                                                     final Runnable assertion) {
         state.setOperation(GridWidgetHandlersOperation.NONE);
         when(gridWidget.isVisible()).thenReturn(true);
         when(gridWidget.onDragHandle(any(INodeXYEvent.class))).thenReturn(true);
@@ -336,7 +335,7 @@ public class GridWidgetDnDMouseMoveHandlerTest {
         verify(handler,
                times(1)).findGridColumn(eq(event));
 
-        assertion.execute();
+        assertion.run();
     }
 
     @Test

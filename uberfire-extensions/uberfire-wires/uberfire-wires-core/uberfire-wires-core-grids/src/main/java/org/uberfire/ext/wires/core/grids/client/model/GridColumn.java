@@ -16,8 +16,8 @@
 package org.uberfire.ext.wires.core.grids.client.model;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
@@ -48,7 +48,7 @@ public interface GridColumn<T> {
      */
     default void edit(final GridCell<T> cell,
                       final GridBodyCellRenderContext context,
-                      final Callback<GridCellValue<T>> callback) {
+                      final Consumer<GridCellValue<T>> callback) {
     }
 
     /**
@@ -59,7 +59,7 @@ public interface GridColumn<T> {
      */
     default void edit(final GridCell<T> cell,
                       final GridBodyCellEditContext context,
-                      final Callback<GridCellValue<T>> callback) {
+                      final Consumer<GridCellValue<T>> callback) {
         edit(cell,
              (GridBodyCellRenderContext) context,
              callback);
