@@ -83,7 +83,7 @@ public class NotificationView extends Composite
         popover.setContent(popOverMessage);
         parent.getElement().insertAfter(popover.asWidget().getElement(),
                                         icon.getElement());
-        popover.reconfigure();
+        popover.init();
     }
 
     private String getTitleText() {
