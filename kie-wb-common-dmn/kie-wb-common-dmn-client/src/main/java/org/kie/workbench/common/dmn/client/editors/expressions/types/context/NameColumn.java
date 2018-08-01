@@ -18,11 +18,11 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNSimpleGridColumn;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -58,7 +58,7 @@ public class NameColumn extends DMNSimpleGridColumn<ContextGrid, String> impleme
     @Override
     public void edit(final GridCell<String> cell,
                      final GridBodyCellRenderContext context,
-                     final Callback<GridCellValue<String>> callback) {
+                     final Consumer<GridCellValue<String>> callback) {
         final int rowIndex = context.getRowIndex();
         final int lastRowIndex = gridWidget.getModel().getRowCount() - 1;
         if (rowIndex == lastRowIndex) {

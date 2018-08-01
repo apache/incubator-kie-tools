@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.columns.factory;
 
+import java.util.function.Consumer;
+
 import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import org.junit.Before;
@@ -30,7 +32,6 @@ import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
@@ -51,10 +52,10 @@ public abstract class BaseSingletonDOMElementFactoryTest<F extends BaseSingleton
     private GridBodyCellRenderContext context;
 
     @Mock
-    private Callback<E> onCreation;
+    private Consumer<E> onCreation;
 
     @Mock
-    private Callback<E> onDisplay;
+    private Consumer<E> onDisplay;
 
     @Mock
     private EditorSession session;
@@ -111,12 +112,12 @@ public abstract class BaseSingletonDOMElementFactoryTest<F extends BaseSingleton
         final GridLayerRedrawManager.PrioritizedCommand command = commandArgumentCaptor.getValue();
         command.execute();
 
-        verify(onCreation).callback(domElementOnCreationArgumentCaptor.capture());
+        verify(onCreation).accept(domElementOnCreationArgumentCaptor.capture());
         final E domElementOnCreation = domElementOnCreationArgumentCaptor.getValue();
         verify(domElementOnCreation).setContext(eq(context));
         verify(domElementOnCreation).initialise(eq(context));
 
-        verify(onDisplay).callback(domElementOnDisplayArgumentCaptor.capture());
+        verify(onDisplay).accept(domElementOnDisplayArgumentCaptor.capture());
         final E domElementOnDisplay = domElementOnDisplayArgumentCaptor.getValue();
         verify(domElementOnDisplay).attach();
 

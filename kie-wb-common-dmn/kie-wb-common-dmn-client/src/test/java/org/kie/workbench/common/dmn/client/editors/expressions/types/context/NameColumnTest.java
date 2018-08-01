@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 
+import java.util.function.Consumer;
+
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.junit.Test;
@@ -25,7 +27,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.columns.BaseDOMElementSi
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
 import org.mockito.Mock;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
@@ -100,8 +101,8 @@ public class NameColumnTest extends BaseDOMElementSingletonColumnTest<TextBoxSin
 
         verify(factory,
                never()).attachDomElement(any(GridBodyCellRenderContext.class),
-                                         any(Callback.class),
-                                         any(Callback.class));
+                                         any(Consumer.class),
+                                         any(Consumer.class));
     }
 
     @Test

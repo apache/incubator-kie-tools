@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.widgets.grid;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -348,9 +349,9 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
         final List<Pair<Group, GridRenderer.RendererCommand>> gridLineCommands = new ArrayList<>();
         final List<Pair<Group, GridRenderer.RendererCommand>> allOtherCommands = new ArrayList<>();
         final List<Pair<Group, GridRenderer.RendererCommand>> selectedCellsCommands = new ArrayList<>();
-        for (Pair<Group, List<GridRenderer.RendererCommand>> p : renderQueue) {
-            final Group parent = p.getK1();
-            final List<GridRenderer.RendererCommand> commands = p.getK2();
+        for (Map.Entry<Group, List<GridRenderer.RendererCommand>> p : renderQueue) {
+            final Group parent = p.getKey();
+            final List<GridRenderer.RendererCommand> commands = p.getValue();
             for (GridRenderer.RendererCommand command : commands) {
                 if (command instanceof GridRenderer.RenderSelectedCellsCommand) {
                     selectedCellsCommands.add(new Pair<>(parent, command));

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
@@ -24,7 +25,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNSimpleGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -92,7 +92,7 @@ public class RelationColumn extends DMNSimpleGridColumn<RelationGrid, String> im
     @Override
     public void edit(final GridCell<String> cell,
                      final GridBodyCellRenderContext context,
-                     final Callback<GridCellValue<String>> callback) {
+                     final Consumer<GridCellValue<String>> callback) {
         factory.attachDomElement(context,
                                  (e) -> e.setValue(assertCellValue(assertCell(cell).getValue()).getValue()),
                                  (e) -> e.setFocus(true));

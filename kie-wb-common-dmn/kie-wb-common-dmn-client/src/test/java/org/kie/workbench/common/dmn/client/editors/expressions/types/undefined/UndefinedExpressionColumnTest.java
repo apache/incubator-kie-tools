@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.undefined;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.types.Point2D;
@@ -37,7 +38,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSel
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridCell;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.mockito.Mock;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -102,7 +102,7 @@ public class UndefinedExpressionColumnTest {
     private GridBodyCellEditContext context;
 
     @Mock
-    private Callback<GridCellValue<String>> callback;
+    private Consumer<GridCellValue<String>> callback;
 
     @Mock
     private Point2D relativeLocation;

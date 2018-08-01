@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.columns;
 
+import java.util.function.Consumer;
+
 import com.google.gwt.user.client.TakesValue;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.Widget;
@@ -26,7 +28,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -53,10 +54,10 @@ public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonD
     protected GridBodyCellRenderContext context;
 
     @Captor
-    protected ArgumentCaptor<Callback<D>> domElementOnCreationCallbackCaptor;
+    protected ArgumentCaptor<Consumer<D>> domElementOnCreationCallbackCaptor;
 
     @Captor
-    protected ArgumentCaptor<Callback<D>> domElementOnDisplayCallbackCaptor;
+    protected ArgumentCaptor<Consumer<D>> domElementOnDisplayCallbackCaptor;
 
     protected GridData model;
 
@@ -145,12 +146,12 @@ public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonD
                                          domElementOnCreationCallbackCaptor.capture(),
                                          domElementOnDisplayCallbackCaptor.capture());
 
-        final Callback<D> domElementOnCreationCallback = domElementOnCreationCallbackCaptor.getValue();
-        domElementOnCreationCallback.callback(domElement);
+        final Consumer<D> domElementOnCreationCallback = domElementOnCreationCallbackCaptor.getValue();
+        domElementOnCreationCallback.accept(domElement);
         verify(domElement).setValue(eq(value));
 
-        final Callback<D> domElementOnDisplayCallback = domElementOnDisplayCallbackCaptor.getValue();
-        domElementOnDisplayCallback.callback(domElement);
+        final Consumer<D> domElementOnDisplayCallback = domElementOnDisplayCallbackCaptor.getValue();
+        domElementOnDisplayCallback.accept(domElement);
         verify(domElement).setFocus(eq(true));
     }
 

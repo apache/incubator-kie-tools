@@ -29,7 +29,6 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
 
@@ -104,8 +103,8 @@ public class EditableTextHeaderMetaDataTest {
         header.edit(context);
 
         verify(factory).attachDomElement(eq(context),
-                                         any(Callback.class),
-                                         any(Callback.class));
+                                         any(Consumer.class),
+                                         any(Consumer.class));
     }
 
     @Test

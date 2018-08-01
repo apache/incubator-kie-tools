@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorCo
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
@@ -64,7 +64,7 @@ public class UndefinedExpressionColumn extends DMNGridColumn<UndefinedExpression
     @SuppressWarnings("unchecked")
     public void edit(final GridCell<String> cell,
                      final GridBodyCellEditContext context,
-                     final Callback<GridCellValue<String>> callback) {
+                     final Consumer<GridCellValue<String>> callback) {
         final int uiRowIndex = context.getRowIndex();
         final int uiColumnIndex = context.getColumnIndex();
         final double absoluteCellX = context.getAbsoluteCellX();
