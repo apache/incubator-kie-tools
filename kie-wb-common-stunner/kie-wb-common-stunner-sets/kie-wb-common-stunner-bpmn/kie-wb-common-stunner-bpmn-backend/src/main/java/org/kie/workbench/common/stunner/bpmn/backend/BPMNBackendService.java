@@ -62,7 +62,7 @@ public class BPMNBackendService extends AbstractDefinitionSetService {
         Boolean enableExperimentalBpmnMarshaller = Optional.ofNullable(
                 System.getProperty(MARSHALLER_EXPERIMENTAL_PROPERTY))
                 .map(Boolean::parseBoolean)
-                .orElse(false);
+                .orElse(true);
 
         LOG.info("{} = {}", MARSHALLER_EXPERIMENTAL_PROPERTY, enableExperimentalBpmnMarshaller);
 

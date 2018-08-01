@@ -54,6 +54,14 @@ public class DefinitionsPropertyWriter {
         definitions.getAnyAttribute().add(extensionEntry);
     }
 
+    public void setExporter(String exporter) {
+        definitions.setExporter(exporter);
+    }
+
+    public void setExporterVersion(String version) {
+        definitions.setExporterVersion(version);
+    }
+
     public void setProcess(Process process) {
         definitions.getRootElements().add(process);
     }

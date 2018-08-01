@@ -18,14 +18,32 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.custompropertie
 
 import java.util.Objects;
 
+import org.eclipse.bpmn2.ItemDefinition;
+import org.eclipse.bpmn2.Property;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Ids;
+
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
+
 public class VariableDeclaration {
 
+    private final ItemDefinition typeDeclaration;
+    private final Property typedIdentifier;
     private String identifier;
     private String type = "";
 
     public VariableDeclaration(String identifier, String type) {
         this.identifier = identifier;
         this.type = type;
+
+        this.typeDeclaration = bpmn2.createItemDefinition();
+        this.typeDeclaration.setId(Ids.item(identifier));
+        this.typeDeclaration.setStructureRef(type);
+
+        this.typedIdentifier = bpmn2.createProperty();
+        this.typedIdentifier.setId(Ids.typedIdentifier("GLOBAL", identifier));
+        this.typedIdentifier.setName(identifier);
+        this.typedIdentifier.setItemSubjectRef(typeDeclaration);
+
     }
 
     public static VariableDeclaration fromString(String encoded) {
@@ -52,6 +70,14 @@ public class VariableDeclaration {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public ItemDefinition getTypeDeclaration() {
+        return typeDeclaration;
+    }
+
+    public Property getTypedIdentifier() {
+        return typedIdentifier;
     }
 
     @Override

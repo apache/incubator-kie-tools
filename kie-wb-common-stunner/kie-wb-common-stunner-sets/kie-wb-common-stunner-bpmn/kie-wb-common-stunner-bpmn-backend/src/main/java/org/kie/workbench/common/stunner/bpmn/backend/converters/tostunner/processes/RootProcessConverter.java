@@ -44,7 +44,9 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 /**
  * Convert the root Process with all its children to a BPMNDiagram
  */
-public class RootProcessConverter extends AbstractProcessConverter {
+public class RootProcessConverter {
+
+    private final ProcessConverterDelegate delegate;
 
     public RootProcessConverter(
             TypedFactoryManager typedFactoryManager,
@@ -52,21 +54,25 @@ public class RootProcessConverter extends AbstractProcessConverter {
             DefinitionResolver definitionResolver,
             ConverterFactory factory) {
 
-        super(typedFactoryManager, definitionResolver, factory);
+        this.delegate = new ProcessConverterDelegate(
+                typedFactoryManager,
+                propertyReaderFactory,
+                definitionResolver,
+                factory);
     }
 
     public BpmnNode convertProcess() {
-        Process process = definitionResolver.getProcess();
-        String definitionsId = definitionResolver.getDefinitions().getId();
+        Process process = delegate.definitionResolver.getProcess();
+        String definitionsId = delegate.definitionResolver.getDefinitions().getId();
         BpmnNode processRoot = convertProcessNode(definitionsId, process);
 
         Map<String, BpmnNode> nodes =
-                super.convertChildNodes(
+                delegate.convertChildNodes(
                         processRoot,
                         process.getFlowElements(),
                         process.getLaneSets());
 
-        super.convertEdges(
+        delegate.convertEdges(
                 processRoot,
                 process.getFlowElements(),
                 nodes);
@@ -76,10 +82,10 @@ public class RootProcessConverter extends AbstractProcessConverter {
 
     private BpmnNode convertProcessNode(String id, Process process) {
         Node<View<BPMNDiagramImpl>, Edge> diagramNode =
-                factoryManager.newNode(id, BPMNDiagramImpl.class);
+                delegate.factoryManager.newNode(id, BPMNDiagramImpl.class);
         BPMNDiagramImpl definition = diagramNode.getContent().getDefinition();
 
-        ProcessPropertyReader e = propertyReaderFactory.of(process);
+        ProcessPropertyReader e = delegate.propertyReaderFactory.of(process);
 
         definition.setDiagramSet(new DiagramSet(
                 new Name(process.getName()),

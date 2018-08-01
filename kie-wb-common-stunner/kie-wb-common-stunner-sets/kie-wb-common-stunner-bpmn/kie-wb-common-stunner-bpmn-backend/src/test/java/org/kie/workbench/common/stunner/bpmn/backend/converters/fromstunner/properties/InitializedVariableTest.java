@@ -22,13 +22,14 @@ import java.net.URLEncoder;
 import org.eclipse.bpmn2.Assignment;
 import org.eclipse.bpmn2.FormalExpression;
 import org.junit.Test;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.InitializedVariable.InputConstant;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.VariableDeclaration;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Ids;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.asCData;
 
-public class InputAssignmentWriterTest {
+public class InitializedVariableTest {
 
     @Test
     public void urlDecodeConstants() throws UnsupportedEncodingException {
@@ -36,13 +37,9 @@ public class InputAssignmentWriterTest {
         String encoded = URLEncoder.encode(expected, "UTF-8");
 
         VariableDeclaration variable = new VariableDeclaration("ID", "Object");
-        InputAssignmentWriter iaw = new InputAssignmentWriter(
-                new DeclarationWriter(
-                        "PARENT",
-                        variable),
-                encoded);
+        InputConstant c = new InputConstant("PARENT", variable, encoded);
 
-        Assignment assignment = iaw.getAssociation().getAssignment().get(0);
+        Assignment assignment = c.getDataInputAssociation().getAssignment().get(0);
 
         FormalExpression to = (FormalExpression) assignment.getTo();
         assertEquals(Ids.dataInput("PARENT", "ID"), to.getBody());

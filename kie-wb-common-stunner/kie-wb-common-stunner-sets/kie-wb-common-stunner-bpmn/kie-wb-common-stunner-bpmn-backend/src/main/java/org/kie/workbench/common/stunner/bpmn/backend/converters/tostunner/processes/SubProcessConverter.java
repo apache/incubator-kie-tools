@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.Conver
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.AdHocSubProcessPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.MultipleInstanceSubProcessPropertyReader;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.SubProcessPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
@@ -54,14 +55,17 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-public class SubProcessConverter extends AbstractProcessConverter {
+public class SubProcessConverter {
+
+    private final ProcessConverterDelegate delegate;
 
     public SubProcessConverter(
             TypedFactoryManager typedFactoryManager,
+            PropertyReaderFactory propertyReaderFactory,
             DefinitionResolver definitionResolver,
             ConverterFactory converterFactory) {
 
-        super(typedFactoryManager, definitionResolver, converterFactory);
+        this.delegate = new ProcessConverterDelegate(typedFactoryManager, propertyReaderFactory, definitionResolver, converterFactory);
     }
 
     public BpmnNode convertSubProcess(SubProcess subProcess) {
@@ -77,12 +81,12 @@ public class SubProcessConverter extends AbstractProcessConverter {
         }
 
         Map<String, BpmnNode> nodes =
-                super.convertChildNodes(
+                delegate.convertChildNodes(
                         subProcessRoot,
                         subProcess.getFlowElements(),
                         subProcess.getLaneSets());
 
-        super.convertEdges(
+        delegate.convertEdges(
                 subProcessRoot,
                 subProcess.getFlowElements(),
                 nodes);
@@ -92,10 +96,10 @@ public class SubProcessConverter extends AbstractProcessConverter {
 
     private BpmnNode convertMultInstanceSubprocessNode(SubProcess subProcess) {
         Node<View<MultipleInstanceSubprocess>, Edge> node =
-                factoryManager.newNode(subProcess.getId(), MultipleInstanceSubprocess.class);
+                delegate.factoryManager.newNode(subProcess.getId(), MultipleInstanceSubprocess.class);
 
         MultipleInstanceSubprocess definition = node.getContent().getDefinition();
-        MultipleInstanceSubProcessPropertyReader p = propertyReaderFactory.ofMultipleInstance(subProcess);
+        MultipleInstanceSubProcessPropertyReader p = delegate.propertyReaderFactory.ofMultipleInstance(subProcess);
 
         definition.setGeneral(new BPMNGeneralSet(
                 new Name(p.getName()),
@@ -130,9 +134,9 @@ public class SubProcessConverter extends AbstractProcessConverter {
 
     private BpmnNode convertAdHocSubProcess(org.eclipse.bpmn2.AdHocSubProcess subProcess) {
         Node<View<AdHocSubprocess>, Edge> node =
-                factoryManager.newNode(subProcess.getId(), AdHocSubprocess.class);
+                delegate.factoryManager.newNode(subProcess.getId(), AdHocSubprocess.class);
         AdHocSubprocess definition = node.getContent().getDefinition();
-        AdHocSubProcessPropertyReader p = propertyReaderFactory.of(subProcess);
+        AdHocSubProcessPropertyReader p = delegate.propertyReaderFactory.of(subProcess);
 
         definition.setGeneral(new BPMNGeneralSet(
                 new Name(subProcess.getName()),
@@ -162,10 +166,10 @@ public class SubProcessConverter extends AbstractProcessConverter {
 
     private BpmnNode convertEmbeddedSubprocessNode(SubProcess subProcess) {
         Node<View<EmbeddedSubprocess>, Edge> node =
-                factoryManager.newNode(subProcess.getId(), EmbeddedSubprocess.class);
+                delegate.factoryManager.newNode(subProcess.getId(), EmbeddedSubprocess.class);
 
         EmbeddedSubprocess definition = node.getContent().getDefinition();
-        SubProcessPropertyReader p = propertyReaderFactory.of(subProcess);
+        SubProcessPropertyReader p = delegate.propertyReaderFactory.of(subProcess);
 
         definition.setGeneral(new BPMNGeneralSet(
                 new Name(subProcess.getName()),
@@ -194,10 +198,10 @@ public class SubProcessConverter extends AbstractProcessConverter {
 
     private BpmnNode convertEventSubprocessNode(SubProcess subProcess) {
         Node<View<EventSubprocess>, Edge> node =
-                factoryManager.newNode(subProcess.getId(), EventSubprocess.class);
+                delegate.factoryManager.newNode(subProcess.getId(), EventSubprocess.class);
 
         EventSubprocess definition = node.getContent().getDefinition();
-        SubProcessPropertyReader p = propertyReaderFactory.of(subProcess);
+        SubProcessPropertyReader p = delegate.propertyReaderFactory.of(subProcess);
 
         definition.setGeneral(new BPMNGeneralSet(
                 new Name(subProcess.getName()),

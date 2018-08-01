@@ -2,9 +2,9 @@
 
 - Experimental Marshallers
     
-    Enable with flag:
+    Disable with flag:
     
-        -Dbpmn.marshaller.experimental=true
+        -Dbpmn.marshaller.experimental=false
         
     - Entry point: `BPMNDirectDiagramMarshaller` which implements `BPMNDirectDiagramMarshaller` 
     - Actual unmarshalling from XML is delegated to Eclipse BPMN2 library

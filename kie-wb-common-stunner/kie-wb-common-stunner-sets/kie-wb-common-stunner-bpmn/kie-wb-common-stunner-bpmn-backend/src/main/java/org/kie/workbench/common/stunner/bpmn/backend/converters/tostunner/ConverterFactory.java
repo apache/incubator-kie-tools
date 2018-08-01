@@ -100,7 +100,7 @@ public class ConverterFactory {
     }
 
     public SubProcessConverter subProcessConverter() {
-        return new SubProcessConverter(factoryManager, definitionResolver, this);
+        return new SubProcessConverter(factoryManager, propertyReaderFactory, definitionResolver, this);
     }
 
     public LaneConverter laneConverter() {

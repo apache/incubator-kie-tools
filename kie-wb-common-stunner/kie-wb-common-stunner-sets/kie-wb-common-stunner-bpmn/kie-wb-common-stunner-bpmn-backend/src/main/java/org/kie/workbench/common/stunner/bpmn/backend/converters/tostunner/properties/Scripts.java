@@ -47,7 +47,8 @@ public class Scripts {
 
     public static ScriptTypeListValue onEntry(List<ExtensionAttributeValue> extensions) {
         if (extensions.isEmpty()) {
-            return new ScriptTypeListValue();
+            return new ScriptTypeListValue()
+                    .addValue(new ScriptTypeValue("java", ""));
         }
 
         @SuppressWarnings("unchecked")
@@ -109,7 +110,8 @@ public class Scripts {
 
     public static ScriptTypeListValue onExit(List<ExtensionAttributeValue> extensions) {
         if (extensions.isEmpty()) {
-            return new ScriptTypeListValue();
+            return new ScriptTypeListValue()
+                    .addValue(new ScriptTypeValue("java", ""));
         }
 
         @SuppressWarnings("unchecked")

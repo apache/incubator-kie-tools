@@ -3072,7 +3072,6 @@ public class BPMNDiagramMarshallerTest {
     public void testMarshallWorkItems() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_SERVICE_TASKS);
         String result = tested.marshall(diagram);
-        System.out.println(result);
         assertDiagram(result,
                       1,
                       4,

@@ -21,7 +21,9 @@ import java.util.List;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.dd.dc.Point;
 import org.junit.Test;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
@@ -31,7 +33,9 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnectorImp
 import static java.util.Arrays.asList;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.failNotEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.dc;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.asCData;
 
 public class SequenceFlowPropertyWriterTest {
 
@@ -60,13 +64,16 @@ public class SequenceFlowPropertyWriterTest {
 
         BPMNEdge edge = p.getEdge();
         List<Point> expected = asList(
-                pointOf(sWidth / 2 + sx,
+                pointOf(sWidth + sx,
                         sHeight / 2 + sy),
-                pointOf(tWidth / 2 + tx,
+                pointOf(tx,
                         tHeight / 2 + ty));
         List<Point> waypoints = edge.getWaypoint();
 
-        assertPointsEqual(expected, waypoints, "when magnet location is null, waypoints should be located at the center of their node");
+        assertPointsEqual(expected, waypoints,
+                          "when magnet location is null: " +
+                                  "source magnet should be right/middle, " +
+                                  "target magnet should left/middle");
     }
 
     @Test
@@ -141,6 +148,31 @@ public class SequenceFlowPropertyWriterTest {
         List<Point> waypoints = edge.getWaypoint();
 
         assertPointsEqual(expected, waypoints, "when magnet location is defined, waypoints should be translated into an absolute position");
+    }
+
+    @Test
+    public void JBPM_7522_shouldPersistProperties() {
+        TestSequenceFlowWriter w = new TestSequenceFlowWriter();
+        SequenceFlowPropertyWriter p = w.sequenceFlowOf(SEQ_ID);
+
+        String name = "Name";
+        String doc = "Doc";
+        String priority = "100";
+        ScriptTypeValue scriptTypeValue =
+                new ScriptTypeValue("java", "System.out.println(1);");
+
+        p.setName(name);
+        p.setDocumentation(doc);
+        p.setPriority(priority);
+        p.setConditionExpression(scriptTypeValue);
+
+        org.eclipse.bpmn2.SequenceFlow seq =
+                (org.eclipse.bpmn2.SequenceFlow) p.getFlowElement();
+
+        assertThat(seq.getName()).isEqualTo(name);
+        assertThat(seq.getDocumentation().get(0).getText()).isEqualTo(asCData(doc));
+        assertThat(CustomAttribute.priority.of(seq).get()).isEqualTo(priority);
+        assertThat(seq.getConditionExpression()).isNotNull();
     }
 
     private static ViewConnectorImpl<SequenceFlow> makeConnector() {

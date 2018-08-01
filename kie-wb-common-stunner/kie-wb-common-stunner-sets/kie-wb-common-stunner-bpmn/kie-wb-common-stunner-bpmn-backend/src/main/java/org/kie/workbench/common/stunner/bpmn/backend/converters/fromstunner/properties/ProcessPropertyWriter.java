@@ -73,6 +73,12 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
         bpmnDiagram.setPlane(bpmnPlane);
     }
 
+    public void setId(String value) {
+        // ids should be properly sanitized at a higher level
+        String sanitized = value.replaceAll("\\s", "");
+        process.setId(sanitized);
+    }
+
     public Process getProcess() {
         return process;
     }

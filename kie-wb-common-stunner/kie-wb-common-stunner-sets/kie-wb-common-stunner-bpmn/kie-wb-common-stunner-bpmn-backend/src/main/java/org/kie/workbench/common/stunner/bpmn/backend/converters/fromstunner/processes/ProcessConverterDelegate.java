@@ -17,37 +17,31 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.processes;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.ConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsBuildingContext;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.ElementContainer;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.lanes.LaneConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.ActivityPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.BasePropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.BoundaryEventPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.LanePropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.SubProcessPropertyWriter;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
-import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
-public class AbstractProcessConverter {
+class ProcessConverterDelegate {
 
     private final ConverterFactory converterFactory;
 
-    public AbstractProcessConverter(ConverterFactory converterFactory) {
+    ProcessConverterDelegate(ConverterFactory converterFactory) {
         this.converterFactory = converterFactory;
     }
 
-    public void convertChildNodes(
+    void convertChildNodes(
             ElementContainer p,
             DefinitionsBuildingContext context) {
 
@@ -70,43 +64,40 @@ public class AbstractProcessConverter {
                 .map(Result::value)
                 .forEach(p::addChildElement);
 
-        convertLanes(context.lanes(), p);
+        convertLanes(context, processed, p);
     }
 
     private void convertLanes(
-            Stream<? extends Node<View<? extends BPMNViewDefinition>, ?>> lanes,
-            ElementContainer p) {
-        Map<String, LanePropertyWriter> collect = lanes
-                .map(converterFactory.laneConverter()::toElement)
-                .filter(Result::notIgnored)
+            DefinitionsBuildingContext context,
+            Set<String> processed, ElementContainer p) {
+        LaneConverter laneConverter = converterFactory.laneConverter();
+        List<LanePropertyWriter> convertedLanes = context.lanes()
+                .map(laneConverter::toElement)
+                .filter(Result::isSuccess)
                 .map(Result::value)
-                .collect(toMap(LanePropertyWriter::getId, Function.identity()));
+                .peek(convertedLane -> {
+                    // for each lane, we get the child nodes in the graph
+                    context.withRootNode(convertedLane.getId()).childNodes()
+                            .filter(n -> !processed.contains(n.getUUID()))
+                            // then for each converted element, we re-set its parent to the converted lane
+                            .forEach(n -> p.getChildElement(n.getUUID()).setParent(convertedLane));
+                })
+                .collect(toList());
 
-        p.addLaneSet(collect.values());
+        p.addLaneSet(convertedLanes);
     }
 
-    public void convertEdges(ElementContainer p, DefinitionsBuildingContext context) {
-        context.childEdges()
-                .forEach(e -> {
-                    BasePropertyWriter pSrc = p.getChildElement(e.getSourceNode().getUUID());
-                    // if it's null, then it's a root: skip it
-                    if (pSrc != null) {
-                        BasePropertyWriter pTgt = p.getChildElement(e.getTargetNode().getUUID());
-                        // if it's null, then this edge is not related to this process. ignore.
-                        if (pTgt != null) {
-                            pTgt.setParent(pSrc);
-                        }
-                    }
-                });
-
+    void convertEdges(ElementContainer p, DefinitionsBuildingContext context) {
         context.dockEdges()
                 .forEach(e -> {
                     ActivityPropertyWriter pSrc =
                             (ActivityPropertyWriter) p.getChildElement(e.getSourceNode().getUUID());
                     BoundaryEventPropertyWriter pTgt =
                             (BoundaryEventPropertyWriter) p.getChildElement(e.getTargetNode().getUUID());
-
-                    pTgt.setParentActivity(pSrc);
+                    // if it's null, then this edge is not related to this process. ignore.
+                    if (pTgt != null) {
+                        pTgt.setParentActivity(pSrc);
+                    }
                 });
 
         context.edges()

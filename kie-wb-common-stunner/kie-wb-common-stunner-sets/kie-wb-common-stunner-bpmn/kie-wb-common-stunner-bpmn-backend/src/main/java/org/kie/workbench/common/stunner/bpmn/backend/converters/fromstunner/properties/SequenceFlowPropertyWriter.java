@@ -19,21 +19,27 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.pro
 import java.util.List;
 
 import org.eclipse.bpmn2.FlowNode;
+import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.Point;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Ids;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.DiscreteConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.dc;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.di;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.asCData;
 
 public class SequenceFlowPropertyWriter extends PropertyWriter {
 
@@ -113,7 +119,11 @@ public class SequenceFlowPropertyWriter extends PropertyWriter {
     private Point2D getSourceLocation(Connection sourceConnection) {
         Point2D location = sourceConnection.getLocation();
         if (location == null) {
-            location = getDefaultLocation(source.getShape().getBounds());
+            Bounds bounds = source.getShape().getBounds();
+            location = Point2D.create(
+                    bounds.getWidth(),
+                    bounds.getHeight() / 2
+            );
         }
         return location;
     }
@@ -121,13 +131,13 @@ public class SequenceFlowPropertyWriter extends PropertyWriter {
     private Point2D getTargetLocation(Connection targetConnection) {
         Point2D location = targetConnection.getLocation();
         if (location == null) {
-            location = getDefaultLocation(target.getShape().getBounds());
+            Bounds bounds = target.getShape().getBounds();
+            location = Point2D.create(
+                    0,
+                    bounds.getHeight() / 2
+            );
         }
         return location;
-    }
-
-    private Point2D getDefaultLocation(Bounds bounds) {
-        return Point2D.create(bounds.getWidth() / 2, bounds.getHeight() / 2);
     }
 
     private org.eclipse.dd.dc.Point pointOf(double x, double y) {
@@ -139,5 +149,22 @@ public class SequenceFlowPropertyWriter extends PropertyWriter {
 
     public BPMNEdge getEdge() {
         return bpmnEdge;
+    }
+
+    public void setPriority(String value) {
+        CustomAttribute.priority.of(sequenceFlow).set(value);
+    }
+
+    public void setConditionExpression(ScriptTypeValue scriptTypeValue) {
+        String language = scriptTypeValue.getLanguage();
+        String script = scriptTypeValue.getScript();
+
+        if (script != null) {
+            FormalExpression formalExpression = bpmn2.createFormalExpression();
+            String uri = Scripts.scriptLanguageToUri(language);
+            formalExpression.setLanguage(uri);
+            formalExpression.setBody(asCData(script));
+            sequenceFlow.setConditionExpression(formalExpression);
+        }
     }
 }

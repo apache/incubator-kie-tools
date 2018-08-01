@@ -41,7 +41,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.variables.Proce
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.asCData;
 
-public class SubProcessPropertyWriter extends PropertyWriter implements ElementContainer {
+public class SubProcessPropertyWriter extends ActivityPropertyWriter implements ElementContainer {
 
     protected final SubProcess process;
     private Collection<ElementParameters> simulationParameters = new ArrayList<>();
@@ -55,6 +55,7 @@ public class SubProcessPropertyWriter extends PropertyWriter implements ElementC
     public void addChildElement(PropertyWriter p) {
         this.childElements.put(p.getElement().getId(), p);
         process.getFlowElements().add(p.getFlowElement());
+        p.setParent(this);
 
         ElementParameters simulationParameters = p.getSimulationParameters();
         if (simulationParameters != null) {
@@ -129,7 +130,7 @@ public class SubProcessPropertyWriter extends PropertyWriter implements ElementC
         Scripts.setOnExitAction(process, onExitAction);
     }
 
-    public void setAsync(boolean isAsync) {
+    public void setAsync(Boolean isAsync) {
         CustomElement.async.of(flowElement).set(isAsync);
     }
 }

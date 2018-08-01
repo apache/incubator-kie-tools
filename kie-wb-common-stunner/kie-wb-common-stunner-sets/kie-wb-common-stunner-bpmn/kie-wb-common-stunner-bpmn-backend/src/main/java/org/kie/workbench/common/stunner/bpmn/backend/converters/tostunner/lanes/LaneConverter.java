@@ -45,7 +45,7 @@ public class LaneConverter {
         LanePropertyReader p = propertyReaderFactory.of(lane);
 
         definition.setGeneral(new BPMNGeneralSet(
-                new Name(lane.getName()),
+                new Name(p.getName()),
                 new Documentation(p.getDocumentation())
         ));
 

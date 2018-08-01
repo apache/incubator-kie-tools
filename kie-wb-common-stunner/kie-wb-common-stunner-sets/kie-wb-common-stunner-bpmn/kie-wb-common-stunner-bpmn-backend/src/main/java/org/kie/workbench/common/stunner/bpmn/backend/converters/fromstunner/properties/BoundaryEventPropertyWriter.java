@@ -19,6 +19,8 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.pro
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.EventDefinition;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.dc;
 
@@ -99,5 +101,13 @@ public class BoundaryEventPropertyWriter extends CatchEventPropertyWriter {
         bounds.setHeight(height);
 
         return bounds;
+    }
+
+    @Override
+    public void setBounds(Bounds rect) {
+        Bounds.Bound bound = rect.getUpperLeft();
+        CustomAttribute.dockerInfo.of(flowElement).set(
+                Point2D.create(bound.getX(), bound.getY()));
+        super.setBounds(rect);
     }
 }

@@ -34,7 +34,7 @@ public class FlowElementPropertyReader extends BasePropertyReader {
 
     public String getName() {
         String extendedName = CustomElement.name.of(element).get();
-        return extendedName.isEmpty() ?
+        return extendedName == null || extendedName.isEmpty() ?
                 Optional.ofNullable(flowElement.getName()).orElse("")
                 : extendedName;
     }

@@ -16,9 +16,13 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties;
 
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.InitializedVariable.InitializedInputVariable;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.InitializedVariable.InitializedOutputVariable;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.VariableScope;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 
 /**
@@ -177,6 +181,30 @@ public class ParsedAssignmentsInfo {
 
     public AssociationList getAssociations() {
         return associations;
+    }
+
+    public List<InitializedInputVariable> createInitializedInputVariables(String parentId, VariableScope variableScope) {
+        return getInputs()
+                .getDeclarations()
+                .stream()
+                .map(varDecl -> InitializedVariable.inputOf(
+                        parentId,
+                        variableScope,
+                        varDecl,
+                        associations.lookupInput(varDecl.getIdentifier())))
+                .collect(Collectors.toList());
+    }
+
+    public List<InitializedOutputVariable> createInitializedOutputVariables(String parentId, VariableScope variableScope) {
+        return getOutputs()
+                .getDeclarations()
+                .stream()
+                .map(varDecl -> InitializedVariable.outputOf(
+                        parentId,
+                        variableScope,
+                        varDecl,
+                        associations.lookupOutput(varDecl.getIdentifier())))
+                .collect(Collectors.toList());
     }
 
     public boolean isEmpty() {

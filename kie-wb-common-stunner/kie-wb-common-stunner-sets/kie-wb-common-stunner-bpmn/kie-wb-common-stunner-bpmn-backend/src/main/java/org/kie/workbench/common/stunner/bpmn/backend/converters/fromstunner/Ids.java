@@ -65,4 +65,8 @@ public class Ids {
     public static String multiInstanceItemType(String parentId, String id) {
         return parentId + "_multiInstanceItemType_"+id;
     }
+
+    public static String messageItem(String name) {
+        return name + "Type";
+    }
 }

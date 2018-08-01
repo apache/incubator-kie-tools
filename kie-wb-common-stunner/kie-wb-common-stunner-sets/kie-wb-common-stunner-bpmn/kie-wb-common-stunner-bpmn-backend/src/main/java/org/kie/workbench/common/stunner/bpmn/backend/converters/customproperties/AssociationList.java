@@ -66,8 +66,12 @@ public class AssociationList {
         return inputs;
     }
 
-    public Stream<AssociationDeclaration> lookupInput(String id) {
-        return inputs.stream().filter(in -> in.getTarget().equals(id));
+    public AssociationDeclaration lookupInput(String id) {
+        return inputs.stream().filter(in -> in.getTarget().equals(id)).findFirst().orElse(null);
+    }
+
+    public AssociationDeclaration lookupOutput(String id) {
+        return outputs.stream().filter(in -> in.getSource().equals(id)).findFirst().orElse(null);
     }
 
     public List<AssociationDeclaration> getOutputs() {

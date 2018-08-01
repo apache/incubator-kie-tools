@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.Lane;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 
 public class LanePropertyWriter extends BasePropertyWriter {
 
@@ -27,6 +29,12 @@ public class LanePropertyWriter extends BasePropertyWriter {
         super(lane, variableScope);
         this.lane = lane;
     }
+
+    public void setName(String value) {
+        lane.setName(StringEscapeUtils.escapeXml10(value.trim()));
+        CustomElement.name.of(lane).set(value);
+    }
+
 
     @Override
     public Lane getElement() {

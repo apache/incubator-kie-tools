@@ -21,6 +21,7 @@ import org.eclipse.bpmn2.ErrorEventDefinition;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.FormalExpression;
+import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.Message;
 import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.Signal;
@@ -49,28 +50,43 @@ public abstract class EventPropertyWriter extends PropertyWriter {
     public abstract void setAssignmentsInfo(AssignmentsInfo assignmentsInfo);
 
     public void addMessage(MessageRef messageRef) {
-        Message message = bpmn2.createMessage();
         MessageEventDefinition messageEventDefinition =
                 bpmn2.createMessageEventDefinition();
-
-        message.setName(messageRef.getValue());
-        messageEventDefinition.setMessageRef(message);
-
         addEventDefinition(messageEventDefinition);
+
+        String name = messageRef.getValue();
+        if (name == null || name.isEmpty()) {
+            return;
+        }
+
+        ItemDefinition itemDefinition = bpmn2.createItemDefinition();
+        itemDefinition.setId(Ids.messageItem(name));
+
+        Message message = bpmn2.createMessage();
+        message.setName(name);
+        message.setItemRef(itemDefinition);
+        messageEventDefinition.setMessageRef(message);
+        CustomAttribute.msgref.of(messageEventDefinition).set(name);
+
+        addItemDefinition(itemDefinition);
         addRootElement(message);
     }
 
     public void addSignal(SignalRef signalRef) {
         SignalEventDefinition signalEventDefinition =
                 bpmn2.createSignalEventDefinition();
+        addEventDefinition(signalEventDefinition);
 
         Signal signal = bpmn2.createSignal();
         String name = signalRef.getValue();
+        if (name == null || name.isEmpty()) {
+            return;
+        }
+
         signal.setName(name);
         signal.setId(Ids.fromString(name));
         signalEventDefinition.setSignalRef(signal.getId());
 
-        addEventDefinition(signalEventDefinition);
         addRootElement(signal);
     }
 
@@ -82,15 +98,18 @@ public abstract class EventPropertyWriter extends PropertyWriter {
         Error error = bpmn2.createError();
         ErrorEventDefinition errorEventDefinition =
                 bpmn2.createErrorEventDefinition();
+        addEventDefinition(errorEventDefinition);
 
         String errorCode = errorRef.getValue();
+        if (errorCode == null || errorCode.isEmpty()) {
+            return;
+        }
+
         error.setId(errorCode);
         error.setErrorCode(errorCode);
         errorEventDefinition.setErrorRef(error);
 
         CustomAttribute.errorName.of(errorEventDefinition).set(errorCode);
-
-        addEventDefinition(errorEventDefinition);
         addRootElement(error);
     }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
+package org.kie.workbench.common.stunner.bpmn.backend.converters;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,11 +33,11 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.Defini
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.di;
 
-class TestDefinitionsWriter {
+public class TestDefinitionsWriter {
 
     private final DefinitionResolver definitionResolver;
 
-    TestDefinitionsWriter() {
+    public TestDefinitionsWriter() {
         Definitions definitions = bpmn2.createDefinitions();
         definitions.getRootElements().add(bpmn2.createProcess());
         BPMNDiagram bpmnDiagram = di.createBPMNDiagram();
@@ -47,11 +47,11 @@ class TestDefinitionsWriter {
         this.definitionResolver = new DefinitionResolver(definitions, Collections.emptyList());
     }
 
-    DefinitionResolver getDefinitionResolver() {
+    public DefinitionResolver getDefinitionResolver() {
         return definitionResolver;
     }
 
-    FlowNode mockNode(String id, Bounds bounds) {
+    public FlowNode mockNode(String id, Bounds bounds) {
         Task node = bpmn2.createTask();
         node.setId(id);
 
@@ -63,7 +63,7 @@ class TestDefinitionsWriter {
         return node;
     }
 
-    SequenceFlow sequenceFlowOf(String id, FlowNode source, FlowNode target, List<Point> waypoints) {
+    public SequenceFlow sequenceFlowOf(String id, FlowNode source, FlowNode target, List<Point> waypoints) {
         SequenceFlow sequenceFlow = bpmn2.createSequenceFlow();
         sequenceFlow.setId(id);
         sequenceFlow.setSourceRef(source);

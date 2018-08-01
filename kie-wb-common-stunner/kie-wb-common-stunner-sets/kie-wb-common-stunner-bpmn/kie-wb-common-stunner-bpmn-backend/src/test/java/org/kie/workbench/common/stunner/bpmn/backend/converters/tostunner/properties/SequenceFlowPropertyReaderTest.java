@@ -24,6 +24,7 @@ import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.Point;
 import org.junit.Test;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.TestDefinitionsWriter;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 

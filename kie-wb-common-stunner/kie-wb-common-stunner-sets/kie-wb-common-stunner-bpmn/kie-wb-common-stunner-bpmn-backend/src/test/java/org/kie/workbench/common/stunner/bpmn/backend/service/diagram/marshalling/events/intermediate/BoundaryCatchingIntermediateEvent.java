@@ -16,9 +16,25 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.events.intermediate;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseCatchingIntermediateEvent;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.helpers.XMLReaderFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class BoundaryCatchingIntermediateEvent<T extends BaseCatchingIntermediateEvent> extends CatchingIntermediateEvent<T> {
 
@@ -26,6 +42,45 @@ public abstract class BoundaryCatchingIntermediateEvent<T extends BaseCatchingIn
 
     public BoundaryCatchingIntermediateEvent(Marshaller marshallerType) {
         super(marshallerType);
+    }
+
+    @Test
+    public void testDockerInfo() throws Exception {
+        Diagram<Graph, Metadata> initialDiagram = unmarshall(marshaller, getBpmnCatchingIntermediateEventFilePath());
+        String resultXml = marshaller.marshall(initialDiagram);
+        XMLReader xr = XMLReaderFactory.createXMLReader();
+
+        // load all (id, dockerinfos) pairs for this file
+        Map<String, String> dockerInfos = new HashMap<>();
+        xr.setContentHandler(new DefaultHandler() {
+            public void startElement(String s, String s1, String s2, Attributes attributes) {
+                if (s1.equals("boundaryEvent")) {
+                    dockerInfos.put(
+                            attributes.getValue("id"),
+                            attributes.getValue("drools:dockerinfo"));
+                }
+            }
+        });
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        InputStream resourceAsStream = contextClassLoader.getResourceAsStream(getBpmnCatchingIntermediateEventFilePath());
+        xr.parse(new InputSource(new InputStreamReader(resourceAsStream)));
+
+        // check whether they're all present in the new file,
+        // and remove it from the collection
+        xr.setContentHandler(new DefaultHandler() {
+            public void startElement(String s, String s1, String s2, Attributes attributes) {
+                if (s1.equals("boundaryEvent")) {
+                    String id = attributes.getValue("id");
+                    assertThat(attributes.getValue("drools:dockerinfo"))
+                            .as("Attributes should match for %s", id)
+                            .isEqualTo(dockerInfos.remove(id));
+                }
+            }
+        });
+        xr.parse(new InputSource(new StringReader(resultXml)));
+
+        assertThat(dockerInfos).as("the collection should be empty at the end (100% match)")
+                .isEmpty();
     }
 
     @Test

@@ -66,6 +66,22 @@ public class AssignmentsInfos {
             final List<DataOutputAssociation> outputAssociations,
             boolean alternativeEncoding) {
 
+        ParsedAssignmentsInfo parsedAssignmentsInfo = parsed(
+                datainput,
+                inputAssociations,
+                dataoutput,
+                outputAssociations,
+                alternativeEncoding);
+
+        return new AssignmentsInfo(parsedAssignmentsInfo.toString());
+    }
+
+    public static ParsedAssignmentsInfo parsed(
+            List<DataInput> datainput,
+            List<DataInputAssociation> inputAssociations,
+            List<DataOutput> dataoutput,
+            List<DataOutputAssociation> outputAssociations,
+            boolean alternativeEncoding) {
         DeclarationList inputs = dataInputDeclarations(datainput);
         DeclarationList outputs = dataOutputDeclarations(dataoutput);
 
@@ -73,8 +89,8 @@ public class AssignmentsInfos {
                 inAssociationDeclarations(inputAssociations),
                 outAssociationDeclarations(outputAssociations));
 
-        return new AssignmentsInfo(new ParsedAssignmentsInfo(
-                inputs, outputs, associations, alternativeEncoding).toString());
+        return new ParsedAssignmentsInfo(
+                inputs, outputs, associations, alternativeEncoding);
     }
 
     public static boolean isReservedDeclaration(DataInput o) {
@@ -95,10 +111,9 @@ public class AssignmentsInfos {
                         .collect(Collectors.toList()));
     }
 
-    private static DeclarationList dataOutputDeclarations(List<DataOutput> dataInputs) {
+    private static DeclarationList dataOutputDeclarations(List<DataOutput> dataOutputs) {
         return new DeclarationList(
-                dataInputs.stream()
-                        .filter(o -> !CustomAttribute.dtype.of(o).get().isEmpty())
+                dataOutputs.stream()
                         .map(out -> new VariableDeclaration(
                                 out.getName(),
                                 CustomAttribute.dtype.of(out).get()))

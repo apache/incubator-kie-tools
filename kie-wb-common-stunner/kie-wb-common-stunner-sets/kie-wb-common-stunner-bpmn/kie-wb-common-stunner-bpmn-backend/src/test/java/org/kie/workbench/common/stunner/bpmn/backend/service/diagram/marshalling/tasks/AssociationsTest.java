@@ -25,8 +25,12 @@ import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.Property;
+import org.eclipse.bpmn2.StartEvent;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsConverter;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Ids;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.CatchEventPropertyWriter;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.FlatVariableScope;
 import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.BPMNDiagramMarshallerBase;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
@@ -37,6 +41,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 import static junit.framework.TestCase.assertEquals;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 
 public class AssociationsTest extends BPMNDiagramMarshallerBase {
 
@@ -58,11 +63,28 @@ public class AssociationsTest extends BPMNDiagramMarshallerBase {
     }
 
     @Test
+    public void marshallUnassignedDeclaration() throws Exception {
+        String id = "PARENT";
+        String decl = "||Foo:String||";
+        StartEvent startEvent = bpmn2.createStartEvent();
+        startEvent.setId(id);
+        CatchEventPropertyWriter p =
+                new CatchEventPropertyWriter(startEvent, new FlatVariableScope());
+        p.setAssignmentsInfo(new AssignmentsInfo(decl));
+
+        assertEquals(1, p.getItemDefinitions().size());
+        assertEquals(Ids.dataOutputItem(id, "Foo"), p.getItemDefinitions().get(0).getId());
+        assertEquals("String", p.getItemDefinitions().get(0).getStructureRef());
+        assertEquals(1, startEvent.getDataOutputs().size());
+        assertEquals("Foo", startEvent.getDataOutputs().get(0).getName());
+        assertEquals(0, startEvent.getDataOutputAssociation().size());
+    }
+
+    @Test
     public void marshallAssociations() throws Exception {
         Diagram<Graph, Metadata> d = unmarshall(newMarshaller, BPMN_FILE_PATH);
         Node<View<UserTask>, ?> node = d.getGraph().getNode(TASK_ID);
         UserTask definition = node.getContent().getDefinition();
-        AssignmentsInfo assignmentsinfo = definition.getExecutionSet().getAssignmentsinfo();
 
         DefinitionsConverter definitionsConverter =
                 new DefinitionsConverter(d.getGraph());

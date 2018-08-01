@@ -16,43 +16,32 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
-import bpsim.ElementParameters;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.eclipse.bpmn2.Documentation;
-import org.eclipse.bpmn2.FlowElement;
+import org.eclipse.bpmn2.Lane;
+import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.asCData;
 
-public class PropertyWriter extends BasePropertyWriter {
+public class LanePropertyWriterTest {
 
-    protected final FlowElement flowElement;
+    @Test
+    public void JBPM_7523_shouldPreserveNameChars() {
+        Lane lane = bpmn2.createLane();
 
-    public PropertyWriter(FlowElement flowElement, VariableScope variableScope) {
-        super(flowElement, variableScope);
-        this.flowElement = flowElement;
-    }
+        PropertyWriterFactory writerFactory = new PropertyWriterFactory();
+        LanePropertyWriter w = writerFactory.of(lane);
 
-    public FlowElement getFlowElement() {
-        return flowElement;
-    }
+        String aWeirdName = "   XXX  !!@@ <><> ";
+        String aWeirdDoc = "   XXX  !!@@ <><> Docs ";
+        w.setName(aWeirdName);
+        w.setDocumentation(aWeirdDoc);
 
-    public void setName(String value) {
-        if (value == null || value.isEmpty()) {
-            return;
-        }
-        flowElement.setName(StringEscapeUtils.escapeXml10(value.trim()));
-        CustomElement.name.of(flowElement).set(value);
-    }
+        assertThat(lane.getName()).isEqualTo(StringEscapeUtils.escapeXml10(aWeirdName.trim()));
+        assertThat(CustomElement.name.of(lane).get()).isEqualTo(asCData(aWeirdName));
+        assertThat(lane.getDocumentation().get(0).getText()).isEqualTo(asCData(aWeirdDoc));
 
-    public void setDocumentation(String value) {
-        Documentation documentation = bpmn2.createDocumentation();
-        documentation.setText(asCData(value));
-        flowElement.getDocumentation().add(documentation);
-    }
-
-    public ElementParameters getSimulationParameters() {
-        return null;
     }
 }

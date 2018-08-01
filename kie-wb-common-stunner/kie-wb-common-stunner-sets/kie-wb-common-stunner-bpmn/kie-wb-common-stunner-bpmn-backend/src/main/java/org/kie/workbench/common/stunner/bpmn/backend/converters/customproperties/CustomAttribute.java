@@ -43,6 +43,7 @@ public class CustomAttribute<T> {
     };
     public static final AttributeDefinition<String> version = new StringAttribute(droolsns, "version", "1.0");
     public static final AttributeDefinition<String> errorName = new StringAttribute(droolsns, "erefname", "");
+    public static final AttributeDefinition<String> msgref = new StringAttribute(droolsns, "msgref", "");
     public static final AttributeDefinition<Boolean> boundarycaForBoundaryEvent = new BooleanAttribute(droolsns, "boundaryca", false) {
         @Override
         public Boolean getValue(BaseElement element) {
@@ -100,7 +101,7 @@ public class CustomAttribute<T> {
 
         @Override
         public void setValue(BaseElement element, Point2D value) {
-            throw new UnsupportedOperationException("not yet implemented");
+            setStringValue(element, String.format("%.1f^%.1f|", value.getX(), value.getY()));
         }
     };
 
@@ -117,6 +118,8 @@ public class CustomAttribute<T> {
     }
 
     public void set(T value) {
-        attributeDefinition.setValue(element, value);
+        if (value != null) {
+            attributeDefinition.setValue(element, value);
+        }
     }
 }

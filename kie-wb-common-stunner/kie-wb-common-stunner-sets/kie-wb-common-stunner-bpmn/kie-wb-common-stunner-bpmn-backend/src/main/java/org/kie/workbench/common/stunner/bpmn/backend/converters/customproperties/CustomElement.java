@@ -52,6 +52,8 @@ public class CustomElement<T> {
     }
 
     public void set(T value) {
-        elementDefinition.setValue(element, value);
+        if (value != null && !value.equals(elementDefinition.defaultValue)) {
+            elementDefinition.setValue(element, value);
+        }
     }
 }

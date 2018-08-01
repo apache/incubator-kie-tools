@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.events;
 
+import java.io.StringReader;
+
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.EndMessageEvent;
@@ -23,7 +25,13 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.M
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.helpers.XMLReaderFactory;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -169,6 +177,33 @@ public class EndMessageEventTest extends EndEvent<EndMessageEvent> {
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
         assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF);
         assertDataIOSet(filledSubprocessEvent.getDataIOSet(), EVENT_DATA_OUTPUT);
+    }
+
+    @Test
+    public void testMarshallItemDefinitionOrder() throws Exception {
+        Diagram<Graph, Metadata> initialDiagram = unmarshall(marshaller, getBpmnEndEventFilePath());
+        String resultXml = marshaller.marshall(initialDiagram);
+        XMLReader xr = XMLReaderFactory.createXMLReader();
+
+        xr.setContentHandler(new DefaultHandler() {
+            int itemDefinitions = 0;
+            int messages = 0;
+
+            public void startElement(String s, String s1, String s2, Attributes attributes) {
+                if ("itemDefinition".equals(s1)) {
+                    itemDefinitions++;
+                } else if ("message".equals(s1)) {
+                    messages++;
+                    if (messages > 0 && itemDefinitions == 0) {
+                        throw new IllegalArgumentException("Messages have been declared before itemDefinitions!");
+                    }
+                }
+            }
+        });
+
+        assertThatCode(
+                () -> xr.parse(new InputSource(new StringReader(resultXml))))
+                .doesNotThrowAnyException();
     }
 
     @Override

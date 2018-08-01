@@ -16,12 +16,14 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
-import java.util.Objects;
-import java.util.stream.Stream;
+import java.util.List;
 
+import org.eclipse.bpmn2.DataInput;
+import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.InputSet;
 import org.eclipse.bpmn2.ThrowEvent;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.InitializedVariable.InitializedInputVariable;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.ParsedAssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 
@@ -31,39 +33,49 @@ import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner
 public class ThrowEventPropertyWriter extends EventPropertyWriter {
 
     private final ThrowEvent throwEvent;
-    private final InputSet inputSet;
 
     public ThrowEventPropertyWriter(ThrowEvent flowElement, VariableScope variableScope) {
         super(flowElement, variableScope);
         this.throwEvent = flowElement;
-        this.inputSet = bpmn2.createInputSet();
-        throwEvent.setInputSet(inputSet);
     }
 
     @Override
     public void setAssignmentsInfo(AssignmentsInfo info) {
         ParsedAssignmentsInfo assignmentsInfo = ParsedAssignmentsInfo.of(info);
-        assignmentsInfo
-                .getInputs().getDeclarations()
-                .stream()
-                .filter(varDecl -> !isReservedIdentifier(varDecl.getIdentifier()))
-                .map(varDecl -> new DeclarationWriter(flowElement.getId(), varDecl))
-                .peek(dw -> {
-                    this.addItemDefinition(dw.getItemDefinition());
-                    throwEvent.getDataInputs().add(dw.getDataInput());
-                    inputSet.getDataInputRefs().add(dw.getDataInput());
-                })
-                .flatMap(dw -> toInputAssignmentStream(assignmentsInfo, dw))
-                .forEach(dia -> {
-                    throwEvent.getDataInputAssociation().add(dia.getAssociation());
-                });
+        List<InitializedInputVariable> inputs =
+                assignmentsInfo.createInitializedInputVariables(getId(), variableScope);
+
+        if (inputs.isEmpty()) {
+            return;
+        }
+        if (inputs.size() > 1) {
+            throw new IllegalArgumentException("Input Associations should be at most 1 in Throw Events");
+        }
+
+        InitializedInputVariable input = inputs.get(0);
+
+        if (isReservedIdentifier(input.getIdentifier())) {
+            return;
+        }
+
+        DataInput dataInput = input.getDataInput();
+        throwEvent.getDataInputs().add(dataInput);
+        getInputSet().getDataInputRefs().add(dataInput);
+
+        this.addItemDefinition(input.getItemDefinition());
+        DataInputAssociation dataInputAssociation = input.getDataInputAssociation();
+        if (dataInputAssociation != null) {
+            throwEvent.getDataInputAssociation().add(dataInputAssociation);
+        }
     }
 
-    private Stream<InputAssignmentWriter> toInputAssignmentStream(ParsedAssignmentsInfo assignmentsInfo, DeclarationWriter dw) {
-        return assignmentsInfo.getAssociations().lookupInput(dw.getVarId())
-                .map(targetVar -> variableScope.lookup(targetVar.getSource()))
-                .filter(Objects::nonNull)
-                .map(targetVar -> new InputAssignmentWriter(dw, targetVar));
+    private InputSet getInputSet() {
+        InputSet inputSet = throwEvent.getInputSet();
+        if (inputSet == null) {
+            inputSet = bpmn2.createInputSet();
+            throwEvent.setInputSet(inputSet);
+        }
+        return inputSet;
     }
 
     @Override

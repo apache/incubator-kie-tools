@@ -46,8 +46,8 @@ public class LaneConverter {
 
                     Lane definition = n.getContent().getDefinition();
                     BPMNGeneralSet general = definition.getGeneral();
-                    lane.setName(general.getName().getValue());
-                    p.setDocumentation(general.getName().getValue());
+                    p.setName(general.getName().getValue());
+                    p.setDocumentation(general.getDocumentation().getValue());
 
                     p.setBounds(n.getContent().getBounds());
 

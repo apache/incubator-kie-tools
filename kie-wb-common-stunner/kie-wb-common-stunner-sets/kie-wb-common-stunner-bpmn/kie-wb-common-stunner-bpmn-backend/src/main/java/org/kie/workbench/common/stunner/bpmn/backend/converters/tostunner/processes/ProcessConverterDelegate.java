@@ -37,22 +37,22 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.proper
  * ProcessConverterFactory returns instances of ProcessConverters
  * and SubprocessConverters.
  */
-class AbstractProcessConverter {
+final class ProcessConverterDelegate {
 
     protected final TypedFactoryManager factoryManager;
     protected final PropertyReaderFactory propertyReaderFactory;
     protected final DefinitionResolver definitionResolver;
     private final ConverterFactory converterFactory;
 
-    AbstractProcessConverter(
+    ProcessConverterDelegate(
             TypedFactoryManager typedFactoryManager,
+            PropertyReaderFactory propertyReaderFactory,
             DefinitionResolver definitionResolver,
             ConverterFactory factory) {
 
         this.factoryManager = typedFactoryManager;
         this.definitionResolver = definitionResolver;
-        this.propertyReaderFactory =
-                new PropertyReaderFactory(definitionResolver);
+        this.propertyReaderFactory = propertyReaderFactory;
         this.converterFactory = factory;
     }
 

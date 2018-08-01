@@ -146,15 +146,25 @@ abstract class DefinitionsContextHelper<
                 .filter(e -> (isChild(e)));
     }
 
-    public DefinitionsBuildingContext withRootNode(Node<?, ?> node) {
-        Map<String, Node> nodes = new HashMap<>();
+    public Stream<NodeT> childNodes() {
+        return childEdges().map(edgeT -> (NodeT) (edgeT.getTargetNode()));
+    }
 
+    public DefinitionsBuildingContext withRootNode(String nodeId) {
+        return new DefinitionsBuildingContext(getNode(nodeId), findEdgesBydId(nodeId));
+    }
+
+    public DefinitionsBuildingContext withRootNode(Node<?, ?> node) {
+        return new DefinitionsBuildingContext(node, findEdgesBydId(node.getUUID()));
+    }
+
+    private Map<String, Node> findEdgesBydId(String nodeId) {
+        Map<String, Node> nodes = new HashMap<>();
         childEdges()
-                .filter(e -> e.getSourceNode().getUUID().equals(node.getUUID()))
+                .filter(e -> e.getSourceNode().getUUID().equals(nodeId))
                 .map(Edge::getTargetNode)
                 .forEach(n -> nodes.put(n.getUUID(), n)); // use forEach instead of collect to avoid issues with type inference
-
-        return new DefinitionsBuildingContext(node, nodes);
+        return nodes;
     }
 
     private boolean isChild(EdgeT e) {

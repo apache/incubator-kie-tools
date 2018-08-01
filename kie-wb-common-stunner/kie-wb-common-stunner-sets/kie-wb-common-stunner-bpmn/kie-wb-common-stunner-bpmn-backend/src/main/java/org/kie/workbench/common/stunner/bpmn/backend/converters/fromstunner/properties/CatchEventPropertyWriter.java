@@ -16,10 +16,15 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
+import java.util.List;
+
 import bpsim.ElementParameters;
 import org.eclipse.bpmn2.CatchEvent;
+import org.eclipse.bpmn2.DataOutput;
+import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.OutputSet;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.InitializedVariable.InitializedOutputVariable;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.ParsedAssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.SimulationAttributeSets;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
@@ -30,34 +35,46 @@ import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunn
 public class CatchEventPropertyWriter extends EventPropertyWriter {
 
     private final CatchEvent event;
-    private final OutputSet outputSet;
     private ElementParameters simulationParameters;
 
     public CatchEventPropertyWriter(CatchEvent event, VariableScope variableScope) {
         super(event, variableScope);
         this.event = event;
-        this.outputSet = bpmn2.createOutputSet();
-        event.setOutputSet(outputSet);
     }
 
     public void setAssignmentsInfo(AssignmentsInfo info) {
         ParsedAssignmentsInfo assignmentsInfo = ParsedAssignmentsInfo.of(info);
-        assignmentsInfo.getAssociations()
-                .getOutputs()
-                .stream()
-                .map(declaration -> new OutputAssignmentWriter(
-                        flowElement.getId(),
-                        assignmentsInfo
-                                .getOutputs()
-                                .lookup(declaration.getSource()),
-                        variableScope.lookup(declaration.getTarget())
-                ))
-                .forEach(doa -> {
-                    this.addItemDefinition(doa.getItemDefinition());
-                    event.getDataOutputs().add(doa.getDataOutput());
-                    event.getDataOutputAssociation().add(doa.getAssociation());
-                    outputSet.getDataOutputRefs().add(doa.getDataOutput());
-                });
+        List<InitializedOutputVariable> outputs =
+                assignmentsInfo.createInitializedOutputVariables(
+                        getId(), variableScope);
+
+        if (outputs.isEmpty()) {
+            return;
+        }
+        if (outputs.size() > 1) {
+            throw new IllegalArgumentException("Output Associations should be at most 1 in Catch Events");
+        }
+
+        InitializedOutputVariable output = outputs.get(0);
+
+        DataOutput dataOutput = output.getDataOutput();
+        event.getDataOutputs().add(dataOutput);
+        getOutputSet().getDataOutputRefs().add(dataOutput);
+
+        this.addItemDefinition(dataOutput.getItemSubjectRef());
+        DataOutputAssociation dataOutputAssociation = output.getDataOutputAssociation();
+        if (dataOutputAssociation != null) {
+            event.getDataOutputAssociation().add(dataOutputAssociation);
+        }
+    }
+
+    private OutputSet getOutputSet() {
+        OutputSet outputSet = event.getOutputSet();
+        if (outputSet == null) {
+            outputSet = bpmn2.createOutputSet();
+            event.setOutputSet(outputSet);
+        }
+        return outputSet;
     }
 
     public void setSimulationSet(SimulationAttributeSet simulationSet) {

@@ -2181,8 +2181,8 @@ public class BPMNDirectDiagramMarshallerTest {
                       1,
                       0);
 
-        assertEquals("There are too many extensionElements sections. Some would be ignored!",
-                     3, countOccurrences(result, "<bpmn2:extensionElements>"));
+        assertEquals("Unexpected number of extensionElements sections.",
+                     2, countOccurrences(result, "<bpmn2:extensionElements>"));
         assertTrue(result.contains("<bpmn2:subProcess id=\"_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571\""));
         assertTrue(result.contains("name=\"MultipleInstanceSubprocess\""));
         assertTrue(result.contains("<drools:onEntry-script scriptFormat=\"http://www.java.com/java\">"));
@@ -2669,7 +2669,6 @@ public class BPMNDirectDiagramMarshallerTest {
     public void testMarshallWorkItems() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_SERVICE_TASKS);
         String result = tested.marshall(diagram);
-        System.out.println(result);
         assertDiagram(result,
                       1,
                       4,

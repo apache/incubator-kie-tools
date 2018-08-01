@@ -86,6 +86,12 @@ public abstract class ElementDefinition<T> {
     public CustomElement<T> of(BaseElement element) {
         return new CustomElement<>(this, element);
     }
+
+    public String stripCData(String s) {
+        String BEGIN_CDATA = "<![CDATA[";
+        String END_CDATA = "]]>";
+        return s.startsWith(BEGIN_CDATA) && s.endsWith(END_CDATA) ? s.substring(BEGIN_CDATA.length(), s.length() - END_CDATA.length()) : s;
+    }
 }
 
 class BooleanElement extends ElementDefinition<Boolean> {
@@ -97,6 +103,7 @@ class BooleanElement extends ElementDefinition<Boolean> {
     @Override
     public java.lang.Boolean getValue(BaseElement element) {
         return getStringValue(element)
+                .map(this::stripCData)
                 .map(java.lang.Boolean::parseBoolean)
                 .orElse(defaultValue);
     }

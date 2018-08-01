@@ -16,10 +16,12 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
+import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.di;
@@ -28,6 +30,13 @@ public class ProcessPropertyWriterTest {
 
     ProcessPropertyWriter p = new ProcessPropertyWriter(
             bpmn2.createProcess(), new FlatVariableScope());
+
+    @Test
+    public void setIdWithWhitespace() {
+        p.setId("some weird   id \t");
+        Process process = p.getProcess();
+        assertThat(process.getId()).isEqualTo("someweirdid");
+    }
 
     @Test
     public void addChildShape() {
