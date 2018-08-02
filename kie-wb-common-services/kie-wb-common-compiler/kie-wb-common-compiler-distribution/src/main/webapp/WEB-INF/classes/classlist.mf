@@ -1,0 +1,3 @@
+org.kie.workbench.common.services.backend.compiler.rest.client.MavenRestClient
+org.kie.workbench.common.services.backend.compiler.rest.server.MavenRestHandler
+org.kie.workbench.common.services.backend.compiler.rest.RestUtils

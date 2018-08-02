@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>org.kie.workbench.services</groupId>
+    <artifactId>kie-wb-common-compiler</artifactId>
+    <version>7.10.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>kie-wb-common-compiler-service</artifactId>
+
+  <name>Kie Workbench - Common - Compiler - Service</name>
+  <description>Kie Workbench - Common - Compiler - Service</description>
+
+  <properties>
+    <java.module.name>org.kie.wb.common.services.backend.compiler.service</java.module.name>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-compiler-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-model</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-services-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-jgit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jgit</groupId>
+      <artifactId>org.eclipse.jgit</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- test -->
+
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-testing-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-test-utils</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.el</groupId>
+          <artifactId>jboss-el-api_3.0_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.interceptor</groupId>
+          <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-fs</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.weld.se</groupId>
+      <artifactId>weld-se-core</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.el</groupId>
+          <artifactId>jboss-el-api_3.0_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.interceptor</groupId>
+          <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>src/main/filtered-resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <directory>src/test/projects</directory>
+        <filtering>true</filtering>
+      </testResource>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>true</filtering>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <apple.awt.UIElement>true</apple.awt.UIElement>
+            <org.uberfire.nio.git.daemon.enabled>true</org.uberfire.nio.git.daemon.enabled>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <nonFilteredFileExtensions>
+            <nonFilteredFileExtension>bpmn2</nonFilteredFileExtension>
+            <nonFilteredFileExtension>dmn</nonFilteredFileExtension>
+            <nonFilteredFileExtension>drl</nonFilteredFileExtension>
+            <nonFilteredFileExtension>drt</nonFilteredFileExtension>
+            <nonFilteredFileExtension>dsl</nonFilteredFileExtension>
+            <nonFilteredFileExtension>dslr</nonFilteredFileExtension>
+            <nonFilteredFileExtension>gdst</nonFilteredFileExtension>
+            <nonFilteredFileExtension>java</nonFilteredFileExtension>
+            <nonFilteredFileExtension>pmml</nonFilteredFileExtension>
+            <nonFilteredFileExtension>sxls</nonFilteredFileExtension>
+            <nonFilteredFileExtension>template</nonFilteredFileExtension>
+            <nonFilteredFileExtension>txls</nonFilteredFileExtension>
+            <nonFilteredFileExtension>xls</nonFilteredFileExtension>
+          </nonFilteredFileExtensions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

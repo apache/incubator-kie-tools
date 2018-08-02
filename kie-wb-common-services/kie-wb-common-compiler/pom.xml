@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie.workbench.services</groupId>
+    <artifactId>kie-wb-common-services</artifactId>
+    <version>7.10.0-SNAPSHOT</version>
+  </parent>
+  
+  <artifactId>kie-wb-common-compiler</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Kie Workbench - Common - Compiler</name>
+  <description>Kie Workbench - Common - Compiler</description>
+
+  <properties>
+    <java.module.name>org.kie.wb.common.services.backend.compiler</java.module.name>
+  </properties>
+
+  <modules>
+    <module>kie-wb-common-compiler-maven-plugins</module>
+    <module>kie-wb-common-compiler-core</module>
+    <module>kie-wb-common-compiler-maven-plugins-testing</module>
+    <module>kie-wb-common-compiler-service</module>
+    <module>kie-wb-common-compiler-distribution</module>
+  </modules>
+
+</project>

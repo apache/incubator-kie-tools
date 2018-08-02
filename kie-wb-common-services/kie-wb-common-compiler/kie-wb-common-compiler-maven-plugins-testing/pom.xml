@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>org.kie.workbench.services</groupId>
+    <artifactId>kie-wb-common-compiler</artifactId>
+    <version>7.10.0-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>kie-wb-common-compiler-maven-plugins-testing</artifactId>
+  <packaging>jar</packaging>
+  <name>Kie Workbench - Common - Compiler - Maven Plugins testing</name>
+  <description>Kie Workbench - Common - Compiler - Maven Plugins Testing</description>
+
+  <properties>
+    <java.module.name>org.kie.wb.common.services.backend.compiler.maven.plugins.testing</java.module.name>
+  </properties>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>src/main/filtered-resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <directory>src/test/projects</directory>
+        <filtering>true</filtering>
+      </testResource>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>true</filtering>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <org.uberfire.nio.git.daemon.enabled>true</org.uberfire.nio.git.daemon.enabled>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <nonFilteredFileExtensions>
+            <nonFilteredFileExtension>bpmn2</nonFilteredFileExtension>
+            <nonFilteredFileExtension>dmn</nonFilteredFileExtension>
+            <nonFilteredFileExtension>drl</nonFilteredFileExtension>
+            <nonFilteredFileExtension>drt</nonFilteredFileExtension>
+            <nonFilteredFileExtension>dsl</nonFilteredFileExtension>
+            <nonFilteredFileExtension>dslr</nonFilteredFileExtension>
+            <nonFilteredFileExtension>gdst</nonFilteredFileExtension>
+            <nonFilteredFileExtension>java</nonFilteredFileExtension>
+            <nonFilteredFileExtension>pmml</nonFilteredFileExtension>
+            <nonFilteredFileExtension>sxls</nonFilteredFileExtension>
+            <nonFilteredFileExtension>template</nonFilteredFileExtension>
+            <nonFilteredFileExtension>txls</nonFilteredFileExtension>
+            <nonFilteredFileExtension>xls</nonFilteredFileExtension>
+          </nonFilteredFileExtensions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kie.workbench.services</groupId>
+        <artifactId>kie-wb-common-compiler-maven-plugins</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+
+  <dependencies>
+    <!-- test -->
+    <dependency>
+      <groupId>commons-cli</groupId>
+      <artifactId>commons-cli</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+      <classifier>no_aop</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-test-utils</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.el</groupId>
+          <artifactId>jboss-el-api_3.0_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.interceptor</groupId>
+          <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.aether</groupId>
+      <artifactId>aether-impl</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-fs</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-compiler-maven-plugins</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-compiler-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-dependency-plugin</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.maven.reporting</groupId>
+          <artifactId>maven-reporting-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.sonatype.sisu</groupId>
+          <artifactId>sisu-inject-bean</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.sonatype.sisu</groupId>
+          <artifactId>sisu-inject-plexus</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.collections</groupId>
+          <artifactId>google-collections</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-container-default</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-archiver</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>classworlds</groupId>
+          <artifactId>classworlds</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+  </dependencies>
+
+</project>

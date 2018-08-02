@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+
+  <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <!-- %l lowers performance -->
+      <!--<pattern>%d [%t] %-5p %l%n  %m%n</pattern>-->
+      <!--<pattern>%d [%t] %-5p %m%n</pattern>-->
+      <pattern>%d [%thread] %level %logger{35} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <logger name="org.drools" level="INFO"/>
+  <logger name="org.kie" level="INFO"/>
+  <logger name="org.guvnor" level="INFO"/>
+  <logger name="org.apache.maven" level="ERROR"/>
+  <logger name="org.codehaus.plexus" level="ERROR"/>
+  <logger name="org.eclipse.aether" level="ERROR"/>
+
+
+  <root level="INFO">
+    <appender-ref ref="consoleAppender"/>
+  </root>
+
+</configuration>

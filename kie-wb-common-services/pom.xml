@@ -17,6 +17,7 @@
   <description>Kie Workbench - Common - Services</description>
 
   <modules>
+    <module>kie-wb-common-compiler</module>
     <module>kie-wb-common-datamodel</module>
     <module>kie-wb-common-services-api</module>
     <module>kie-wb-common-services-backend</module>

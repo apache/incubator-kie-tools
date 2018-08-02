@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ JBoss, Home of Professional Open Source
+  ~ Copyright 2017 Red Hat Inc. and/or its affiliates and other contributors
+  ~ as indicated by the @author tags. All rights reserved.
+  ~ See the copyright.txt in the distribution for a
+  ~ full listing of individual contributors.
+  ~
+  ~ This copyrighted material is made available to anyone wishing to use,
+  ~ modify, copy, or redistribute it subject to the terms and conditions
+  ~ of the GNU Lesser General Public License, v. 2.1.
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT A
+  ~ WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+  ~ PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+  ~ You should have received a copy of the GNU Lesser General Public License,
+  ~ v.2.1 along with this distribution; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+  ~ MA  02110-1301, USA.
+  -->
+<jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.1">
+  <deployment>
+    <exclusions>
+      <module name="org.apache.commons.logging"/>
+      <module name="org.apache.log4j"/>
+      <module name="org.slf4j"/>
+      <module name="org.slf4j.ext"/>
+      <module name="org.slf4j.impl"/>
+      <module name="org.slf4j.jcl-over-slf4j"/>
+    </exclusions>
+    <dependencies>
+      <!-- IMPORTANT: when adding dependency (module) here, make sure it is a public one.
+           Do not add private modules as there is no guarantee they won't be changed or
+           removed in future. WildFly also generates warning(s) during the deployment if
+           the WAR depends on private modules. -->
+      <!-- Keep the alphabetical order! -->
+      <!-- JMS API required by kie-server-client as there is an runtime API dependency
+           (even though the JMS is not being used for the communication itself). -->
+      <module name="javax.jms.api"/>
+
+      <!-- ******************************************************************************************** -->
+      <!-- EXCEPTIONS - private/unsupported modules that can not be directly added into the WEB-INF/lib -->
+      <!-- ******************************************************************************************** -->
+
+      <!-- WildFly/EAP security management provider's client dependencies.
+           These modules provide libraries for the properties realm management, required if using the concrete
+           WildFly/EAP provider for the user system management, as this webapp does by default. -->
+      <module name="org.jboss.as.controller-client"/>
+      <module name="org.jboss.as.domain-management"/>
+      <module name="org.jboss.msc"/>
+      <module name="org.jboss.dmr"/>
+
+    </dependencies>
+  </deployment>
+</jboss-deployment-structure>

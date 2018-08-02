@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>org.kie.workbench.services</groupId>
+    <artifactId>kie-wb-common-compiler</artifactId>
+    <version>7.10.0-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>kie-wb-common-compiler-maven-plugins</artifactId>
+  <packaging>maven-plugin</packaging>
+  <name>Kie Workbench - Common - Compiler - Maven Plugins</name>
+  <description>Kie Workbench - Common - Compiler - Maven Plugins</description>
+
+  <properties>
+    <java.module.name>org.kie.wb.common.services.backend.compiler.maven.plugins</java.module.name>
+  </properties>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>src/main/filtered-resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <directory>src/test/projects</directory>
+        <filtering>true</filtering>
+      </testResource>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>true</filtering>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <org.uberfire.nio.git.daemon.enabled>true</org.uberfire.nio.git.daemon.enabled>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <nonFilteredFileExtensions>
+            <nonFilteredFileExtension>bpmn2</nonFilteredFileExtension>
+            <nonFilteredFileExtension>dmn</nonFilteredFileExtension>
+            <nonFilteredFileExtension>drl</nonFilteredFileExtension>
+            <nonFilteredFileExtension>drt</nonFilteredFileExtension>
+            <nonFilteredFileExtension>dsl</nonFilteredFileExtension>
+            <nonFilteredFileExtension>dslr</nonFilteredFileExtension>
+            <nonFilteredFileExtension>gdst</nonFilteredFileExtension>
+            <nonFilteredFileExtension>java</nonFilteredFileExtension>
+            <nonFilteredFileExtension>pmml</nonFilteredFileExtension>
+            <nonFilteredFileExtension>sxls</nonFilteredFileExtension>
+            <nonFilteredFileExtension>template</nonFilteredFileExtension>
+            <nonFilteredFileExtension>txls</nonFilteredFileExtension>
+            <nonFilteredFileExtension>xls</nonFilteredFileExtension>
+          </nonFilteredFileExtensions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.eclipse.sisu</groupId>
+      <artifactId>org.eclipse.sisu.plexus</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-annotations</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-dependency-plugin</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.collections</groupId>
+          <artifactId>google-collections</artifactId>
+        </exclusion>
+       <exclusion>
+          <groupId>org.apache.maven.shared</groupId>
+          <artifactId>maven-common-artifact-filters</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.maven.doxia</groupId>
+          <artifactId>doxia-site-renderer</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>classworlds</groupId>
+          <artifactId>classworlds</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-container-default</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.maven.shared</groupId>
+          <artifactId>maven-artifact-transfer</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-io</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.maven.reporting</groupId>
+          <artifactId>maven-reporting-impl</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+    </dependency>
+
+  </dependencies>
+
+</project>
