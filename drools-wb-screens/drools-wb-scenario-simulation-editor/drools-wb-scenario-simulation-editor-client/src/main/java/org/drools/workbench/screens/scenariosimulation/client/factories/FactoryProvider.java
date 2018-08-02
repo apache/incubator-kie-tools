@@ -13,23 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools.workbench.screens.scenariosimulation.client.factories;
 
-package org.drools.workbench.screens.scenariosimulation.client.editor;
-
-import java.util.Map;
-
-import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
-import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
+import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.TextBoxSingletonDOMElementFactory;
 
-public interface ScenarioSimulationView extends KieEditorView,
-                                                IsWidget {
+public class FactoryProvider {
 
-    void setContent(final Map<Integer, String> headersMap, final Map<Integer, Map<Integer, String>> rowsMap);
-
-    // Add for testing purpose
-    ScenarioGridPanel getScenarioGridPanel();
-
-
+    public static TextBoxSingletonDOMElementFactory getHeaderHasNameTextBoxFactory(ScenarioGridPanel scenarioGridPanel, ScenarioGridLayer gridLayer) {
+        return new TextBoxSingletonDOMElementFactory(scenarioGridPanel,
+                                                     gridLayer,
+                                                     gridLayer.getScenarioGrid());
+    }
 
 }

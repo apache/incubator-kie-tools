@@ -41,6 +41,7 @@
 
   <inherits name='org.drools.workbench.screens.scenariosimulation.DroolsWorkbenchScenarioSimulationEditorAPI'/>
 
+  <inherits name="org.guvnor.common.services.project.GuvnorProjectClient" />
 
 
 </module>

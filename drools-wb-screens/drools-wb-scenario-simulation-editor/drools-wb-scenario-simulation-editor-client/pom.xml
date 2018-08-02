@@ -27,6 +27,15 @@
     </dependency>
 
     <dependency>
+        <groupId>org.kie.soup</groupId>
+        <artifactId>kie-soup-commons</artifactId>
+      </dependency>
+    
+    <dependency>
+      <groupId>org.gwtbootstrap3</groupId>
+      <artifactId>gwtbootstrap3</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-project-api</artifactId>
     </dependency>
@@ -94,6 +103,20 @@
       <artifactId>kie-wb-config-resource-widget</artifactId>
     </dependency>
 
+    <!--Wires Grids dependencies-->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-wires-core-grids</artifactId>
+      <!--<scope>provided</scope>-->
+    </dependency>
+
+    <!-- Lienzo -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>lienzo-core</artifactId>
+      <!-- <scope>provided</scope>-->
+    </dependency>
+
 
     <!-- GWT and GWT Extensions -->
     <dependency>
@@ -112,6 +135,11 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-testing-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>lienzo-tests</artifactId>
       <scope>test</scope>
     </dependency>
 

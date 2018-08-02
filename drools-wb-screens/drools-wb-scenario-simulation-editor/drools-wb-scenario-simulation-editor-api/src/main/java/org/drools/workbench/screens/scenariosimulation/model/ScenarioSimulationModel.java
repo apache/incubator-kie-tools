@@ -16,6 +16,9 @@
 
 package org.drools.workbench.screens.scenariosimulation.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.soup.project.datamodel.imports.HasImports;
 import org.kie.soup.project.datamodel.imports.Imports;
@@ -24,16 +27,33 @@ import org.kie.soup.project.datamodel.imports.Imports;
 public class ScenarioSimulationModel
         implements HasImports {
 
-    private String scesims;
+    /**
+     * Map of Header columns: key is the column number, value is the column text
+     */
+    private Map<Integer, String> headersMap;
+    /**
+     * Map of rows; Key is the row number, value is a Map itself where the key is the column number and the value is the cell text
+     */
+    private Map<Integer, Map<Integer, String>> rowsMap;
 
     private Imports imports = new Imports();
 
     public ScenarioSimulationModel() {
-
+        headersMap = new HashMap<>();
+        // DEFAULT HEADERS -TO CHANGE
+        headersMap.put(0, "T");
+        headersMap.put(1, "");
+        headersMap.put(2, "Expression");
+        rowsMap = new HashMap<>();
     }
 
-    public ScenarioSimulationModel(final String scesims) {
-        this.scesims = scesims;
+    public ScenarioSimulationModel(final Map<Integer, String> headersMap, final Map<Integer, Map<Integer, String>> rowsMap) {
+        this.headersMap = headersMap;
+        this.rowsMap = rowsMap;
+    }
+
+    public Map<Integer, String> getHeadersMap() {
+        return headersMap;
     }
 
     @Override
@@ -44,5 +64,8 @@ public class ScenarioSimulationModel
     @Override
     public void setImports(Imports imports) {
         this.imports = imports;
+    }
+    public Map<Integer, Map<Integer, String>> getRowsMap() {
+        return rowsMap;
     }
 }
