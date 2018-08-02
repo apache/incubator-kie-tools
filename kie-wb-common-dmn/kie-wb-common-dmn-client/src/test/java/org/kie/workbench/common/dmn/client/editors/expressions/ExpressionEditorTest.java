@@ -22,22 +22,30 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
 import org.kie.workbench.common.dmn.client.editors.toolbar.ToolbarStateHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCacheImpl;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.ManagedSession;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -61,16 +69,25 @@ public class ExpressionEditorTest {
     private ToolbarStateHandler toolbarStateHandler;
 
     @Mock
-    private HasName hasName;
-
-    @Mock
-    private HasExpression hasExpression;
+    private Decision decision;
 
     @Mock
     private Command command;
 
     @Mock
     private ManagedSession session;
+
+    @Mock
+    private CanvasHandler canvasHandler;
+
+    @Mock
+    private Node node;
+
+    @Mock
+    private Definition definition;
+
+    @Captor
+    private ArgumentCaptor<Optional<HasName>> optionalHasNameCaptor;
 
     private ExpressionEditor testedEditor;
 
@@ -92,8 +109,8 @@ public class ExpressionEditorTest {
         setupExpression(toolbarStateHandler);
 
         verify(view).setExpression(eq(NODE_UUID),
-                                   eq(hasExpression),
-                                   eq(Optional.of(hasName)));
+                                   eq(decision),
+                                   eq(Optional.of(decision)));
         verify(toolbarStateHandler).enterGridView();
     }
 
@@ -140,12 +157,12 @@ public class ExpressionEditorTest {
         testedEditor.setToolbarStateHandler(toolbarStateHandler);
 
         testedEditor.setExpression(NODE_UUID,
-                                   hasExpression,
-                                   Optional.of(hasName));
+                                   decision,
+                                   Optional.of(decision));
 
         verify(view).setExpression(eq(NODE_UUID),
-                                   eq(hasExpression),
-                                   eq(Optional.of(hasName)));
+                                   eq(decision),
+                                   eq(Optional.of(decision)));
     }
 
     @Test
@@ -157,5 +174,40 @@ public class ExpressionEditorTest {
         testedEditor.onCanvasFocusedSelectionEvent(event);
 
         verify(testedEditor).exit();
+    }
+
+    @Test
+    public void testOnCanvasElementUpdated() {
+        final CanvasElementUpdatedEvent event = new CanvasElementUpdatedEvent(canvasHandler, node);
+
+        when(node.getContent()).thenReturn(definition);
+        when(definition.getDefinition()).thenReturn(decision);
+
+        setupExpression(toolbarStateHandler);
+
+        testedEditor.onCanvasElementUpdated(event);
+
+        verify(view).setReturnToDRGText(optionalHasNameCaptor.capture());
+
+        final Optional<HasName> optionalHasName = optionalHasNameCaptor.getValue();
+        assertTrue(optionalHasName.isPresent());
+        assertEquals(decision,
+                     optionalHasName.get());
+    }
+
+    @Test
+    public void testOnCanvasElementUpdatedDifferentNode() {
+        final CanvasElementUpdatedEvent event = new CanvasElementUpdatedEvent(canvasHandler, node);
+
+        final Decision differentNodeDefinition = mock(Decision.class);
+
+        when(node.getContent()).thenReturn(definition);
+        when(definition.getDefinition()).thenReturn(differentNodeDefinition);
+
+        setupExpression(toolbarStateHandler);
+
+        testedEditor.onCanvasElementUpdated(event);
+
+        verify(view, never()).setReturnToDRGText(any(Optional.class));
     }
 }

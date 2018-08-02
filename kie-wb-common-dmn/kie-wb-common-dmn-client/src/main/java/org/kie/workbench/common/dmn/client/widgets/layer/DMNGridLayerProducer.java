@@ -17,18 +17,33 @@
 package org.kie.workbench.common.dmn.client.widgets.layer;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
 
 @ApplicationScoped
 public class DMNGridLayerProducer {
 
-    private DMNGridLayer layer = new DMNGridLayer();
+    private final DMNGridLayer layer;
+
+    public DMNGridLayerProducer() {
+        this.layer = makeGridLayer();
+    }
 
     @Produces
     @DMNEditor
     public DMNGridLayer getGridLayer() {
         return layer;
+    }
+
+    DMNGridLayer makeGridLayer() {
+        return new DMNGridLayer();
+    }
+
+    @SuppressWarnings("unused")
+    public void onCanvasElementUpdatedEvent(final @Observes CanvasElementUpdatedEvent event) {
+        layer.batch();
     }
 }

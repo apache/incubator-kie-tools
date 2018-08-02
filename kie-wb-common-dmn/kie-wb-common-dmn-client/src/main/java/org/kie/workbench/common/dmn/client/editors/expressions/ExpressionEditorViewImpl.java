@@ -179,7 +179,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         setExpressionTypeText(Optional.ofNullable(hasExpression.getExpression()));
     }
 
-    private void setReturnToDRGText(final Optional<HasName> hasName) {
+    @Override
+    public void setReturnToDRGText(final Optional<HasName> hasName) {
         hasName.ifPresent(name -> returnToDRG.setTextContent(translationService.format(DMNEditorConstants.ExpressionEditor_ReturnToDRG,
                                                                                        name.getName().getValue())));
     }
