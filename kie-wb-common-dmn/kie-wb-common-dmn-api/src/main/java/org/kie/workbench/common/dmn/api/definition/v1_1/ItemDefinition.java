@@ -24,6 +24,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 public class ItemDefinition extends NamedElement {
@@ -104,5 +105,52 @@ public class ItemDefinition extends NamedElement {
 
     public void setIsCollection(final Boolean value) {
         this.isCollection = value;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ItemDefinition)) {
+            return false;
+        }
+
+        final ItemDefinition that = (ItemDefinition) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) {
+            return false;
+        }
+        if (description != null ? !description.equals(that.description) : that.description != null) {
+            return false;
+        }
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
+        if (typeRef != null ? !typeRef.equals(that.typeRef) : that.typeRef != null) {
+            return false;
+        }
+        if (allowedValues != null ? !allowedValues.equals(that.allowedValues) : that.allowedValues != null) {
+            return false;
+        }
+        if (itemComponent != null ? !itemComponent.equals(that.itemComponent) : that.itemComponent != null) {
+            return false;
+        }
+        if (typeLanguage != null ? !typeLanguage.equals(that.typeLanguage) : that.typeLanguage != null) {
+            return false;
+        }
+        return isCollection != null ? isCollection.equals(that.isCollection) : that.isCollection == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
+                                         description != null ? description.hashCode() : 0,
+                                         name != null ? name.hashCode() : 0,
+                                         typeRef != null ? typeRef.hashCode() : 0,
+                                         allowedValues != null ? allowedValues.hashCode() : 0,
+                                         itemComponent != null ? itemComponent.hashCode() : 0,
+                                         typeLanguage != null ? typeLanguage.hashCode() : 0,
+                                         isCollection != null ? isCollection.hashCode() : 0);
     }
 }

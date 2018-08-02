@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.annotation.RuleExtension;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.SubFormFieldInitializer.COLLAPSIBLE_CONTAINER;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.SubFormFieldInitializer.FIELD_CONTAINER_PARAM;
@@ -80,5 +81,28 @@ public class Association extends Artifact {
 
     public Set<String> getStunnerLabels() {
         return stunnerLabels;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Association)) {
+            return false;
+        }
+
+        final Association that = (Association) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) {
+            return false;
+        }
+        return description != null ? description.equals(that.description) : that.description == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
+                                         description != null ? description.hashCode() : 0);
     }
 }

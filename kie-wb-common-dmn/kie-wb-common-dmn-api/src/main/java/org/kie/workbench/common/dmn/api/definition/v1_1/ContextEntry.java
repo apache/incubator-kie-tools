@@ -17,6 +17,7 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 public class ContextEntry extends DMNModelInstrumentedBase implements HasExpression {
@@ -45,5 +46,28 @@ public class ContextEntry extends DMNModelInstrumentedBase implements HasExpress
     @Override
     public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
         return this;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ContextEntry)) {
+            return false;
+        }
+
+        final ContextEntry that = (ContextEntry) o;
+
+        if (variable != null ? !variable.equals(that.variable) : that.variable != null) {
+            return false;
+        }
+        return expression != null ? expression.equals(that.expression) : that.expression == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(variable != null ? variable.hashCode() : 0,
+                                         expression != null ? expression.hashCode() : 0);
     }
 }

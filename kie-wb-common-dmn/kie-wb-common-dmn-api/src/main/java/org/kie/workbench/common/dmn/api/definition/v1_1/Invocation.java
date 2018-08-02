@@ -24,6 +24,7 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 public class Invocation extends Expression implements HasExpression {
@@ -71,5 +72,40 @@ public class Invocation extends Expression implements HasExpression {
             binding = new ArrayList<>();
         }
         return this.binding;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Invocation)) {
+            return false;
+        }
+
+        final Invocation that = (Invocation) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) {
+            return false;
+        }
+        if (description != null ? !description.equals(that.description) : that.description != null) {
+            return false;
+        }
+        if (typeRef != null ? !typeRef.equals(that.typeRef) : that.typeRef != null) {
+            return false;
+        }
+        if (expression != null ? !expression.equals(that.expression) : that.expression != null) {
+            return false;
+        }
+        return binding != null ? binding.equals(that.binding) : that.binding == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
+                                         description != null ? description.hashCode() : 0,
+                                         typeRef != null ? typeRef.hashCode() : 0,
+                                         expression != null ? expression.hashCode() : 0,
+                                         binding != null ? binding.hashCode() : 0);
     }
 }

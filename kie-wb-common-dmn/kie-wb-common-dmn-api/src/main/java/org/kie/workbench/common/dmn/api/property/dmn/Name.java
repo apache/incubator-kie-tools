@@ -24,6 +24,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18n
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
@@ -51,5 +52,24 @@ public class Name implements DMNProperty {
 
     public void setValue(final String value) {
         this.value = value;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Name)) {
+            return false;
+        }
+
+        final Name name = (Name) o;
+
+        return value != null ? value.equals(name.value) : name.value == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(value != null ? value.hashCode() : 0);
     }
 }

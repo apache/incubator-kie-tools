@@ -17,6 +17,7 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 public class Import extends DMNModelInstrumentedBase {
@@ -67,5 +68,32 @@ public class Import extends DMNModelInstrumentedBase {
 
     public void setImportType(final String importType) {
         this.importType = importType;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Import)) {
+            return false;
+        }
+
+        final Import that = (Import) o;
+
+        if (namespace != null ? !namespace.equals(that.namespace) : that.namespace != null) {
+            return false;
+        }
+        if (locationURI != null ? !locationURI.equals(that.locationURI) : that.locationURI != null) {
+            return false;
+        }
+        return importType != null ? importType.equals(that.importType) : that.importType == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(namespace != null ? namespace.hashCode() : 0,
+                                         locationURI != null ? locationURI.hashCode() : 0,
+                                         importType != null ? importType.hashCode() : 0);
     }
 }

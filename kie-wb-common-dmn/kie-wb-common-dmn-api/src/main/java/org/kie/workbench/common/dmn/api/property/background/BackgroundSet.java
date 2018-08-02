@@ -28,6 +28,7 @@ import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldType;
 
 @Portable
@@ -103,5 +104,32 @@ public class BackgroundSet implements DMNPropertySet {
 
     public void setBorderSize(final BorderSize borderSize) {
         this.borderSize = borderSize;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof BackgroundSet)) {
+            return false;
+        }
+
+        final BackgroundSet that = (BackgroundSet) o;
+
+        if (!bgColour.equals(that.bgColour)) {
+            return false;
+        }
+        if (!borderColour.equals(that.borderColour)) {
+            return false;
+        }
+        return borderSize.equals(that.borderSize);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(bgColour != null ? bgColour.hashCode() : 0,
+                                         borderColour != null ? borderColour.hashCode() : 0,
+                                         borderSize != null ? borderSize.hashCode() : 0);
     }
 }

@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.Ca
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.SubFormFieldInitializer.COLLAPSIBLE_CONTAINER;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.SubFormFieldInitializer.FIELD_CONTAINER_PARAM;
@@ -102,5 +103,28 @@ public class DMNDiagram extends DMNModelInstrumentedBase implements DMNDefinitio
 
     public Set<String> getStunnerLabels() {
         return stunnerLabels;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof DMNDiagram)) {
+            return false;
+        }
+
+        final DMNDiagram that = (DMNDiagram) o;
+
+        if (definitions != null ? !definitions.equals(that.definitions) : that.definitions != null) {
+            return false;
+        }
+        return id != null ? id.equals(that.id) : that.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(definitions != null ? definitions.hashCode() : 0,
+                                         id != null ? id.hashCode() : 0);
     }
 }

@@ -16,6 +16,7 @@
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 public class DMNElementReference extends DMNModelInstrumentedBase {
@@ -28,5 +29,24 @@ public class DMNElementReference extends DMNModelInstrumentedBase {
 
     public void setHref(final String value) {
         this.href = value;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof DMNElementReference)) {
+            return false;
+        }
+
+        final DMNElementReference that = (DMNElementReference) o;
+
+        return href != null ? href.equals(that.href) : that.href == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(href != null ? href.hashCode() : 0);
     }
 }

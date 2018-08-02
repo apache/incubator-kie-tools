@@ -22,6 +22,7 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 public class DecisionRule extends DMNElement {
@@ -58,5 +59,36 @@ public class DecisionRule extends DMNElement {
             outputEntry = new ArrayList<>();
         }
         return this.outputEntry;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof DecisionRule)) {
+            return false;
+        }
+
+        final DecisionRule that = (DecisionRule) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) {
+            return false;
+        }
+        if (description != null ? !description.equals(that.description) : that.description != null) {
+            return false;
+        }
+        if (inputEntry != null ? !inputEntry.equals(that.inputEntry) : that.inputEntry != null) {
+            return false;
+        }
+        return outputEntry != null ? outputEntry.equals(that.outputEntry) : that.outputEntry == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
+                                         description != null ? description.hashCode() : 0,
+                                         inputEntry != null ? inputEntry.hashCode() : 0,
+                                         outputEntry != null ? outputEntry.hashCode() : 0);
     }
 }

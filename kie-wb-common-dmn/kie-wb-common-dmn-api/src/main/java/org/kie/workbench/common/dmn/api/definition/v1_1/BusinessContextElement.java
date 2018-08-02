@@ -21,7 +21,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 
 public abstract class BusinessContextElement extends NamedElement {
 
-    private String uri;
+    protected String uri;
 
     public BusinessContextElement() {
     }

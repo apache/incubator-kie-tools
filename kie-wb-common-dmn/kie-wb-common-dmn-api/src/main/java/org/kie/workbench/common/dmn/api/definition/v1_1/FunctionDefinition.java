@@ -24,6 +24,7 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 public class FunctionDefinition extends Expression implements HasExpression {
@@ -80,6 +81,41 @@ public class FunctionDefinition extends Expression implements HasExpression {
             formalParameter = new ArrayList<>();
         }
         return this.formalParameter;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof FunctionDefinition)) {
+            return false;
+        }
+
+        final FunctionDefinition that = (FunctionDefinition) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) {
+            return false;
+        }
+        if (description != null ? !description.equals(that.description) : that.description != null) {
+            return false;
+        }
+        if (typeRef != null ? !typeRef.equals(that.typeRef) : that.typeRef != null) {
+            return false;
+        }
+        if (expression != null ? !expression.equals(that.expression) : that.expression != null) {
+            return false;
+        }
+        return formalParameter != null ? formalParameter.equals(that.formalParameter) : that.formalParameter == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
+                                         description != null ? description.hashCode() : 0,
+                                         typeRef != null ? typeRef.hashCode() : 0,
+                                         expression != null ? expression.hashCode() : 0,
+                                         formalParameter != null ? formalParameter.hashCode() : 0);
     }
 
     @Portable

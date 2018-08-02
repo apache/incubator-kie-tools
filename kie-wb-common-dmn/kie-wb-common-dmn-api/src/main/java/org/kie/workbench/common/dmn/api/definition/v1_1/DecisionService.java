@@ -23,6 +23,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 public class DecisionService extends NamedElement {
@@ -84,5 +85,48 @@ public class DecisionService extends NamedElement {
             inputData = new ArrayList<>();
         }
         return this.inputData;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof DecisionService)) {
+            return false;
+        }
+
+        final DecisionService that = (DecisionService) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) {
+            return false;
+        }
+        if (description != null ? !description.equals(that.description) : that.description != null) {
+            return false;
+        }
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
+        if (outputDecision != null ? !outputDecision.equals(that.outputDecision) : that.outputDecision != null) {
+            return false;
+        }
+        if (encapsulatedDecision != null ? !encapsulatedDecision.equals(that.encapsulatedDecision) : that.encapsulatedDecision != null) {
+            return false;
+        }
+        if (inputDecision != null ? !inputDecision.equals(that.inputDecision) : that.inputDecision != null) {
+            return false;
+        }
+        return inputData != null ? inputData.equals(that.inputData) : that.inputData == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
+                                         description != null ? description.hashCode() : 0,
+                                         name != null ? name.hashCode() : 0,
+                                         outputDecision != null ? outputDecision.hashCode() : 0,
+                                         encapsulatedDecision != null ? encapsulatedDecision.hashCode() : 0,
+                                         inputDecision != null ? inputDecision.hashCode() : 0,
+                                         inputData != null ? inputDecision.hashCode() : 0);
     }
 }

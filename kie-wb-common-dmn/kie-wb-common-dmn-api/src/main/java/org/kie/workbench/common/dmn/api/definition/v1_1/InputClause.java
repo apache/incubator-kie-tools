@@ -19,6 +19,7 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 public class InputClause extends DMNElement {
@@ -57,5 +58,36 @@ public class InputClause extends DMNElement {
 
     public void setInputValues(final UnaryTests value) {
         this.inputValues = value;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof InputClause)) {
+            return false;
+        }
+
+        final InputClause that = (InputClause) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) {
+            return false;
+        }
+        if (description != null ? !description.equals(that.description) : that.description != null) {
+            return false;
+        }
+        if (inputExpression != null ? !inputExpression.equals(that.inputExpression) : that.inputExpression != null) {
+            return false;
+        }
+        return inputValues != null ? inputValues.equals(that.inputValues) : that.inputValues == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
+                                         description != null ? description.hashCode() : 0,
+                                         inputExpression != null ? inputExpression.hashCode() : 0,
+                                         inputValues != null ? inputValues.hashCode() : 0);
     }
 }

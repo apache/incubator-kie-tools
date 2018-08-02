@@ -27,6 +27,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldType;
 
 @Portable
@@ -123,5 +124,36 @@ public class FontSet implements DMNPropertySet {
 
     public void setFontBorderSize(final FontBorderSize fontBorderSize) {
         this.fontBorderSize = fontBorderSize;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof FontSet)) {
+            return false;
+        }
+
+        final FontSet fontSet = (FontSet) o;
+
+        if (fontFamily != null ? !fontFamily.equals(fontSet.fontFamily) : fontSet.fontFamily != null) {
+            return false;
+        }
+        if (fontColour != null ? !fontColour.equals(fontSet.fontColour) : fontSet.fontColour != null) {
+            return false;
+        }
+        if (fontSize != null ? !fontSize.equals(fontSet.fontSize) : fontSet.fontSize != null) {
+            return false;
+        }
+        return fontBorderSize != null ? fontBorderSize.equals(fontSet.fontBorderSize) : fontSet.fontBorderSize == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(fontFamily != null ? fontFamily.hashCode() : 0,
+                                         fontColour != null ? fontColour.hashCode() : 0,
+                                         fontSize != null ? fontSize.hashCode() : 0,
+                                         fontBorderSize != null ? fontBorderSize.hashCode() : 0);
     }
 }

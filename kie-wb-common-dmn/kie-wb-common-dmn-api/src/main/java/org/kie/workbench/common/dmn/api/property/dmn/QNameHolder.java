@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Type;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
@@ -57,5 +58,24 @@ public class QNameHolder implements DMNProperty {
 
     public void setValue(final QName value) {
         this.value = value;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof QNameHolder)) {
+            return false;
+        }
+
+        final QNameHolder that = (QNameHolder) o;
+
+        return value != null ? value.equals(that.value) : that.value == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(value != null ? value.hashCode() : 0);
     }
 }

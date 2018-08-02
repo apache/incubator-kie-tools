@@ -23,6 +23,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 public class OrganizationalUnit extends BusinessContextElement {
@@ -65,5 +66,44 @@ public class OrganizationalUnit extends BusinessContextElement {
             decisionOwned = new ArrayList<>();
         }
         return this.decisionOwned;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof OrganizationalUnit)) {
+            return false;
+        }
+
+        final OrganizationalUnit that = (OrganizationalUnit) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) {
+            return false;
+        }
+        if (description != null ? !description.equals(that.description) : that.description != null) {
+            return false;
+        }
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
+        if (uri != null ? !uri.equals(that.uri) : that.uri != null) {
+            return false;
+        }
+        if (decisionMade != null ? !decisionMade.equals(that.decisionMade) : that.decisionMade != null) {
+            return false;
+        }
+        return decisionOwned != null ? decisionOwned.equals(that.decisionOwned) : that.decisionOwned == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
+                                         description != null ? description.hashCode() : 0,
+                                         name != null ? name.hashCode() : 0,
+                                         uri != null ? uri.hashCode() : 0,
+                                         decisionMade != null ? decisionMade.hashCode() : 0,
+                                         decisionOwned != null ? decisionOwned.hashCode() : 0);
     }
 }

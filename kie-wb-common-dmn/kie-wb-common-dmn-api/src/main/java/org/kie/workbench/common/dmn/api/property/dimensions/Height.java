@@ -27,6 +27,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18n
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
@@ -60,5 +61,24 @@ public class Height implements DMNProperty {
 
     public void setValue(final Double value) {
         this.value = value;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Height)) {
+            return false;
+        }
+
+        final Height height = (Height) o;
+
+        return value != null ? value.equals(height.value) : height.value == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(value != null ? value.hashCode() : 0);
     }
 }

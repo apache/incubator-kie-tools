@@ -41,6 +41,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.SubFormFieldInitializer.COLLAPSIBLE_CONTAINER;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.SubFormFieldInitializer.FIELD_CONTAINER_PARAM;
@@ -168,5 +169,52 @@ public class KnowledgeSource extends DRGElement implements DMNViewDefinition {
 
     public void setLocationURI(final LocationURI value) {
         this.locationURI = value;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof KnowledgeSource)) {
+            return false;
+        }
+
+        final KnowledgeSource that = (KnowledgeSource) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) {
+            return false;
+        }
+        if (description != null ? !description.equals(that.description) : that.description != null) {
+            return false;
+        }
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
+        if (type != null ? !type.equals(that.type) : that.type != null) {
+            return false;
+        }
+        if (locationURI != null ? !locationURI.equals(that.locationURI) : that.locationURI != null) {
+            return false;
+        }
+        if (backgroundSet != null ? !backgroundSet.equals(that.backgroundSet) : that.backgroundSet != null) {
+            return false;
+        }
+        if (fontSet != null ? !fontSet.equals(that.fontSet) : that.fontSet != null) {
+            return false;
+        }
+        return dimensionsSet != null ? dimensionsSet.equals(that.dimensionsSet) : that.dimensionsSet == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
+                                         description != null ? description.hashCode() : 0,
+                                         name != null ? name.hashCode() : 0,
+                                         type != null ? type.hashCode() : 0,
+                                         locationURI != null ? locationURI.hashCode() : 0,
+                                         backgroundSet != null ? backgroundSet.hashCode() : 0,
+                                         fontSet != null ? fontSet.hashCode() : 0,
+                                         dimensionsSet != null ? dimensionsSet.hashCode() : 0);
     }
 }

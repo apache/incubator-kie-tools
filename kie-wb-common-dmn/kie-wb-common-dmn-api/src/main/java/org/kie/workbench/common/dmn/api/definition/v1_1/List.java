@@ -22,6 +22,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 public class List extends Expression {
@@ -50,5 +51,36 @@ public class List extends Expression {
             expression = new ArrayList<>();
         }
         return this.expression;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof List)) {
+            return false;
+        }
+
+        final List that = (List) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) {
+            return false;
+        }
+        if (description != null ? !description.equals(that.description) : that.description != null) {
+            return false;
+        }
+        if (typeRef != null ? !typeRef.equals(that.typeRef) : that.typeRef != null) {
+            return false;
+        }
+        return expression != null ? expression.equals(that.expression) : that.expression == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
+                                         description != null ? description.hashCode() : 0,
+                                         typeRef != null ? typeRef.hashCode() : 0,
+                                         expression != null ? expression.hashCode() : 0);
     }
 }

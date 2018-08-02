@@ -33,6 +33,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
@@ -100,5 +101,40 @@ public class InformationItem extends DMNElement implements HasName,
 
     public void setTypeRefHolder(final QNameHolder typeRefHolder) {
         this.typeRefHolder = typeRefHolder;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof InformationItem)) {
+            return false;
+        }
+
+        final InformationItem that = (InformationItem) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) {
+            return false;
+        }
+        if (description != null ? !description.equals(that.description) : that.description != null) {
+            return false;
+        }
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
+        if (typeRef != null ? !typeRef.equals(that.typeRef) : that.typeRef != null) {
+            return false;
+        }
+        return typeRefHolder != null ? typeRefHolder.equals(that.typeRefHolder) : that.typeRefHolder == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
+                                         description != null ? description.hashCode() : 0,
+                                         name != null ? name.hashCode() : 0,
+                                         typeRef != null ? typeRef.hashCode() : 0,
+                                         typeRefHolder != null ? typeRefHolder.hashCode() : 0);
     }
 }

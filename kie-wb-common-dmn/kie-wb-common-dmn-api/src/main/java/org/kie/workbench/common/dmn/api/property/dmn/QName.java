@@ -20,6 +20,7 @@ import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace;
 import org.kie.workbench.common.dmn.api.property.DMNProperty;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 public class QName implements DMNProperty {
@@ -94,7 +95,7 @@ public class QName implements DMNProperty {
             return false;
         }
 
-        QName qName = (QName) o;
+        final QName qName = (QName) o;
 
         if (!namespaceURI.equals(qName.namespaceURI)) {
             return false;
@@ -107,10 +108,7 @@ public class QName implements DMNProperty {
      */
     @Override
     public int hashCode() {
-        int result = namespaceURI.hashCode();
-        result = ~~result;
-        result = 31 * result + localPart.hashCode();
-        result = ~~result;
-        return result;
+        return HashUtil.combineHashCodes(namespaceURI.hashCode(),
+                                         localPart.hashCode());
     }
 }

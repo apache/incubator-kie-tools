@@ -23,6 +23,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 public class DecisionTable extends Expression {
@@ -129,5 +130,60 @@ public class DecisionTable extends Expression {
 
     public void setOutputLabel(final String value) {
         this.outputLabel = value;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof DecisionTable)) {
+            return false;
+        }
+
+        final DecisionTable that = (DecisionTable) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) {
+            return false;
+        }
+        if (description != null ? !description.equals(that.description) : that.description != null) {
+            return false;
+        }
+        if (typeRef != null ? !typeRef.equals(that.typeRef) : that.typeRef != null) {
+            return false;
+        }
+        if (input != null ? !input.equals(that.input) : that.input != null) {
+            return false;
+        }
+        if (output != null ? !output.equals(that.output) : that.output != null) {
+            return false;
+        }
+        if (rule != null ? !rule.equals(that.rule) : that.rule != null) {
+            return false;
+        }
+        if (hitPolicy != that.hitPolicy) {
+            return false;
+        }
+        if (aggregation != that.aggregation) {
+            return false;
+        }
+        if (preferredOrientation != that.preferredOrientation) {
+            return false;
+        }
+        return outputLabel != null ? outputLabel.equals(that.outputLabel) : that.outputLabel == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
+                                         description != null ? description.hashCode() : 0,
+                                         typeRef != null ? typeRef.hashCode() : 0,
+                                         input != null ? input.hashCode() : 0,
+                                         output != null ? output.hashCode() : 0,
+                                         rule != null ? rule.hashCode() : 0,
+                                         hitPolicy != null ? hitPolicy.hashCode() : 0,
+                                         aggregation != null ? aggregation.hashCode() : 0,
+                                         preferredOrientation != null ? preferredOrientation.hashCode() : 0,
+                                         outputLabel != null ? outputLabel.hashCode() : 0);
     }
 }

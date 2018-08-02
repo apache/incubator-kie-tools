@@ -27,6 +27,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
@@ -88,5 +89,28 @@ public class RectangleDimensionsSet implements DMNPropertySet {
 
     public void setHeight(final Height height) {
         this.height = height;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof RectangleDimensionsSet)) {
+            return false;
+        }
+
+        final RectangleDimensionsSet that = (RectangleDimensionsSet) o;
+
+        if (width != null ? !width.equals(that.width) : that.width != null) {
+            return false;
+        }
+        return height != null ? height.equals(that.height) : that.height == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(width != null ? width.hashCode() : 0,
+                                         height != null ? height.hashCode() : 0);
     }
 }

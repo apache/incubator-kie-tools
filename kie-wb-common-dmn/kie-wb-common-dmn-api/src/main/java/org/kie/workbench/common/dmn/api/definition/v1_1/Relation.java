@@ -22,6 +22,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 public class Relation extends Expression {
@@ -61,5 +62,40 @@ public class Relation extends Expression {
             row = new ArrayList<>();
         }
         return this.row;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Relation)) {
+            return false;
+        }
+
+        final Relation that = (Relation) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) {
+            return false;
+        }
+        if (description != null ? !description.equals(that.description) : that.description != null) {
+            return false;
+        }
+        if (typeRef != null ? !typeRef.equals(that.typeRef) : that.typeRef != null) {
+            return false;
+        }
+        if (column != null ? !column.equals(that.column) : that.column != null) {
+            return false;
+        }
+        return row != null ? row.equals(that.row) : that.row == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
+                                         description != null ? description.hashCode() : 0,
+                                         typeRef != null ? typeRef.hashCode() : 0,
+                                         column != null ? column.hashCode() : 0,
+                                         row != null ? row.hashCode() : 0);
     }
 }
