@@ -43,6 +43,7 @@ import org.guvnor.m2repo.model.JarListPageRow;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.paging.PageResponse;
 
 @Service
@@ -56,10 +57,13 @@ public class M2RepoServiceImpl implements M2RepoService,
 
     private GuvnorM2Repository repository;
 
-    public M2RepoServiceImpl() {
-    }
+    public M2RepoServiceImpl() {}
 
     @Inject
+    public M2RepoServiceImpl(GuvnorM2Repository repository) {
+        this(LoggerFactory.getLogger(M2RepoServiceImpl.class), repository);
+    }
+
     public M2RepoServiceImpl(final Logger logger,
                              GuvnorM2Repository repository) {
         this.logger = logger;
