@@ -51,6 +51,7 @@ import org.kie.workbench.common.stunner.core.util.UUID;
  * the source toolbox' element.
  */
 @Dependent
+@FlowActionsToolbox
 public class CreateNodeAction extends AbstractToolboxAction {
 
     static final String KEY_TITLE = "org.kie.workbench.common.stunner.core.client.toolbox.createNewNode";

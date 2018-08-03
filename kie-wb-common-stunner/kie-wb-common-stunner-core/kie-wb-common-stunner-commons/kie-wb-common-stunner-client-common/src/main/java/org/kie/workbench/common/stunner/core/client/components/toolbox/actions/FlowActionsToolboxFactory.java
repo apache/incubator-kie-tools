@@ -68,7 +68,7 @@ public class FlowActionsToolboxFactory
     public FlowActionsToolboxFactory(final DefinitionUtils definitionUtils,
                                      final ToolboxDomainLookups toolboxDomainLookups,
                                      final @Any ManagedInstance<CreateConnectorAction> createConnectorActions,
-                                     final @Any ManagedInstance<CreateNodeAction> createNodeActions,
+                                     final @Any @FlowActionsToolbox ManagedInstance<CreateNodeAction> createNodeActions,
                                      final @Any @FlowActionsToolbox ManagedInstance<ActionsToolboxView> views) {
         this(definitionUtils,
              toolboxDomainLookups,
