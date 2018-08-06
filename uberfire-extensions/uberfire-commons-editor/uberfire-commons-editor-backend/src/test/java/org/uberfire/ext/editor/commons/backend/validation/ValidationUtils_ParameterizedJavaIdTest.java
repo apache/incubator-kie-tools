@@ -79,7 +79,7 @@ public class ValidationUtils_ParameterizedJavaIdTest {
                 {"dash-y", false},
                 {"Fire!fire!help", false},
                 {"Fire,help", false},
-                {"füür", false},
+                {"füür", true},
                 {"anyone()questionmark", false},
 
                 {"true", false},
@@ -93,7 +93,8 @@ public class ValidationUtils_ParameterizedJavaIdTest {
                 {"a", true},
                 {"classyAndSuperShinyNewCustomThing", true},
                 {"Misc2", true},
-                {"under_score", true}};
+                {"under_score", true},
+                {"背景色", true}};
     }
 
     @Test

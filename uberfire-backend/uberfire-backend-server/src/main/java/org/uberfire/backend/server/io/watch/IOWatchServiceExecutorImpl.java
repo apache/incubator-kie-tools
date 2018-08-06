@@ -29,8 +29,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.errai.security.shared.api.identity.UserImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Filter;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.data.Pair;
@@ -111,7 +109,7 @@ public class IOWatchServiceExecutorImpl implements IOWatchServiceExecutor {
                     }
                 }
             }
-            if (changes.size() == 1 && changes.values().size() == 1) {
+            if (changes.size() == 1 && changes.entrySet().iterator().next().getValue().size() == 1) {
                 final ResourceChange _event = changes.values().iterator().next().iterator().next();
                 if (_event instanceof ResourceUpdated) {
                     resourceUpdatedEvent.fire((ResourceUpdatedEvent) toEvent(changes.keySet().iterator().next(),
@@ -130,7 +128,7 @@ public class IOWatchServiceExecutorImpl implements IOWatchServiceExecutor {
                                                                              _event,
                                                                              firstContext));
                 }
-            } else if (changes.size() > 1) {
+            } else if (changes.size() >= 1) {
                 resourceBatchChanges.fire(new ResourceBatchChangesEvent(changes,
                                                                         message(firstContext),
                                                                         sessionInfo(firstContext)));
