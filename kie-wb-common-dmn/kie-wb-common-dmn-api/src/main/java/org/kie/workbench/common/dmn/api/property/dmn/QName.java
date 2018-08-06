@@ -36,8 +36,9 @@ public class QName implements DMNProperty {
     private String prefix;
 
     public QName() {
-        this(Namespace.FEEL.getUri(),
-             BuiltInType.STRING.getName());
+        this(NULL_NS_URI,
+             BuiltInType.STRING.getName(),
+             Namespace.FEEL.getPrefix());
     }
 
     public QName(final String namespaceURI,
