@@ -232,6 +232,12 @@
       <type>test-jar</type>
     </dependency>
 
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-wires-core-grids</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
 </project>

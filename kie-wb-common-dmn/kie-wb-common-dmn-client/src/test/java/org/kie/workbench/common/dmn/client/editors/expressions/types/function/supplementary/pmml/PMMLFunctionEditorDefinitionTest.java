@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.FunctionSupplementaryGrid;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
+import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -54,6 +55,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class PMMLFunctionEditorDefinitionTest {
@@ -69,6 +71,9 @@ public class PMMLFunctionEditorDefinitionTest {
 
     @Mock
     private SessionManager sessionManager;
+
+    @Mock
+    private DMNSession session;
 
     @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
@@ -104,14 +109,16 @@ public class PMMLFunctionEditorDefinitionTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        this.definition = new PMMLFunctionEditorDefinition(gridPanel,
-                                                           gridLayer,
-                                                           definitionUtils,
+        when(sessionManager.getCurrentSession()).thenReturn(session);
+        when(session.getGridPanel()).thenReturn(gridPanel);
+        when(session.getGridLayer()).thenReturn(gridLayer);
+        when(session.getCellEditorControls()).thenReturn(cellEditorControls);
+
+        this.definition = new PMMLFunctionEditorDefinition(definitionUtils,
                                                            sessionManager,
                                                            sessionCommandManager,
                                                            canvasCommandFactory,
                                                            editorSelectedEvent,
-                                                           cellEditorControls,
                                                            listSelector,
                                                            translationService,
                                                            expressionEditorDefinitionsSupplier);

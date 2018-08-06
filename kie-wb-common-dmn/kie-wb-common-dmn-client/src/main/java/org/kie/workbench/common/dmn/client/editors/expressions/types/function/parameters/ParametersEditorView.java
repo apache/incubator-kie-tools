@@ -37,6 +37,8 @@ public interface ParametersEditorView extends org.jboss.errai.ui.client.local.ap
 
     void setParameters(final List<InformationItem> parameters);
 
+    void focusParameter(final int index);
+
     void show();
 
     void hide();

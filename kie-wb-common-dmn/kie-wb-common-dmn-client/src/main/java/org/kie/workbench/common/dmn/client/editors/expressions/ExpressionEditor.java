@@ -18,23 +18,18 @@ package org.kie.workbench.common.dmn.client.editors.expressions;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
 import org.kie.workbench.common.dmn.client.editors.toolbar.ToolbarStateHandler;
+import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.uberfire.mvp.Command;
 
-@Dependent
 public class ExpressionEditor implements ExpressionEditorView.Presenter {
 
     private ExpressionEditorView view;
@@ -47,11 +42,6 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
 
     private DecisionNavigatorPresenter decisionNavigator;
 
-    public ExpressionEditor() {
-        //CDI proxy
-    }
-
-    @Inject
     @SuppressWarnings("unchecked")
     public ExpressionEditor(final ExpressionEditorView view,
                             final DecisionNavigatorPresenter decisionNavigator) {
@@ -63,6 +53,11 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
     @Override
     public HTMLElement getElement() {
         return view.getElement();
+    }
+
+    @Override
+    public void bind(final DMNSession session) {
+        view.bind(session);
     }
 
     @Override
@@ -102,12 +97,8 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
         });
     }
 
-    @SuppressWarnings("unused")
-    void onCanvasFocusedSelectionEvent(final @Observes CanvasSelectionEvent event) {
-        exit();
-    }
-
-    void onCanvasElementUpdated(final @Observes CanvasElementUpdatedEvent event) {
+    @Override
+    public void handleCanvasElementUpdated(final CanvasElementUpdatedEvent event) {
         final Element<?> element = event.getElement();
         if ((element instanceof Node)) {
             if (element.getContent() instanceof Definition) {

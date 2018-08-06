@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.toolbar.ToolbarStateHandler;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
+import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNEditorToolbar;
 import org.kie.workbench.common.dmn.showcase.client.perspectives.AuthoringPerspective;
 import org.kie.workbench.common.dmn.showcase.client.screens.ShowcaseDiagramService;
@@ -105,8 +106,6 @@ public class SessionDiagramEditorScreen {
     private String title = "Authoring Screen";
     private Menus menu = null;
 
-    private ExpressionEditorView.Presenter expressionEditor;
-
     @Inject
     public SessionDiagramEditorScreen(final DefinitionManager definitionManager,
                                       final ClientFactoryService clientFactoryServices,
@@ -119,7 +118,6 @@ public class SessionDiagramEditorScreen {
                                       final MenuDevCommandsBuilder menuDevCommandsBuilder,
                                       final ScreenPanelView screenPanelView,
                                       final ScreenErrorView screenErrorView,
-                                      final ExpressionEditorView.Presenter expressionEditor,
                                       final DecisionNavigatorDock decisionNavigatorDock) {
         this.definitionManager = definitionManager;
         this.clientFactoryServices = clientFactoryServices;
@@ -132,7 +130,6 @@ public class SessionDiagramEditorScreen {
         this.menuDevCommandsBuilder = menuDevCommandsBuilder;
         this.screenPanelView = screenPanelView;
         this.screenErrorView = screenErrorView;
-        this.expressionEditor = expressionEditor;
         this.decisionNavigatorDock = decisionNavigatorDock;
     }
 
@@ -300,6 +297,7 @@ public class SessionDiagramEditorScreen {
                 .open(diagram,
                       new ScreenPresenterCallback(() -> {
                           final ToolbarStateHandler toolbarStateHandler = new StandaloneToolbarStateHandler((DMNEditorToolbar) presenter.getToolbar());
+                          final ExpressionEditorView.Presenter expressionEditor = ((DMNSession) sessionManager.getCurrentSession()).getExpressionEditor();
                           expressionEditor.setToolbarStateHandler(toolbarStateHandler);
                           openDock(presenter.getInstance());
                           callback.execute();
@@ -425,7 +423,9 @@ public class SessionDiagramEditorScreen {
 
     private void onEditExpressionEvent(final @Observes EditExpressionEvent event) {
         if (isSameSession(event.getSession())) {
-            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+            final DMNSession session = sessionManager.getCurrentSession();
+            final ExpressionEditorView.Presenter expressionEditor = session.getExpressionEditor();
+            sessionCommandManager.execute(session.getCanvasHandler(),
                                           new NavigateToExpressionEditorCommand(expressionEditor,
                                                                                 presenter,
                                                                                 sessionManager,

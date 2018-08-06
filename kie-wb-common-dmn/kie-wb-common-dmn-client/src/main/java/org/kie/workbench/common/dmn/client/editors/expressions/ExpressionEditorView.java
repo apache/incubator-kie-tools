@@ -23,21 +23,28 @@ import org.jboss.errai.common.client.api.IsElement;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.client.editors.toolbar.ToolbarStateHandler;
+import org.kie.workbench.common.dmn.client.session.DMNSession;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
+import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.mvp.Command;
 
 public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.api.IsElement,
                                               UberElement<ExpressionEditorView.Presenter>,
+                                              CanvasControl.SessionAware<DMNSession>,
                                               RequiresResize,
                                               ProvidesResize {
 
-    interface Presenter extends IsElement {
+    interface Presenter extends IsElement,
+                                CanvasControl.SessionAware<DMNSession> {
 
         void setToolbarStateHandler(final ToolbarStateHandler toolbarStateHandler);
 
         void setExpression(final String nodeUUID,
                            final HasExpression hasExpression,
                            final Optional<HasName> hasName);
+
+        void handleCanvasElementUpdated(final CanvasElementUpdatedEvent event);
 
         void setExitCommand(final Command exitCommand);
 

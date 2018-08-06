@@ -26,19 +26,15 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
-import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyEditorView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
-import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
-import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
@@ -57,26 +53,20 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
     }
 
     @Inject
-    public DecisionTableEditorDefinition(final @DMNEditor DMNGridPanel gridPanel,
-                                         final @DMNEditor DMNGridLayer gridLayer,
-                                         final DefinitionUtils definitionUtils,
+    public DecisionTableEditorDefinition(final DefinitionUtils definitionUtils,
                                          final SessionManager sessionManager,
                                          final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                          final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                          final Event<ExpressionEditorChanged> editorSelectedEvent,
-                                         final CellEditorControlsView.Presenter cellEditorControls,
                                          final ListSelectorView.Presenter listSelector,
                                          final TranslationService translationService,
                                          final HitPolicyEditorView.Presenter hitPolicyEditor,
                                          final DecisionTableEditorDefinitionEnricher enricher) {
-        super(gridPanel,
-              gridLayer,
-              definitionUtils,
+        super(definitionUtils,
               sessionManager,
               sessionCommandManager,
               canvasCommandFactory,
               editorSelectedEvent,
-              cellEditorControls,
               listSelector,
               translationService);
         this.hitPolicyEditor = hitPolicyEditor;
@@ -117,15 +107,15 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
                                                  hasExpression,
                                                  expression,
                                                  hasName,
-                                                 gridPanel,
-                                                 gridLayer,
+                                                 getGridPanel(),
+                                                 getGridLayer(),
                                                  makeGridData(expression),
                                                  definitionUtils,
                                                  sessionManager,
                                                  sessionCommandManager,
                                                  canvasCommandFactory,
                                                  editorSelectedEvent,
-                                                 cellEditorControls,
+                                                 getCellEditorControls(),
                                                  listSelector,
                                                  translationService,
                                                  nesting,
@@ -138,6 +128,6 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
                                          sessionManager,
                                          sessionCommandManager,
                                          expression,
-                                         gridLayer::batch);
+                                         getGridLayer()::batch);
     }
 }

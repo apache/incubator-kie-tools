@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyEditorView;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
+import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
@@ -41,10 +42,8 @@ import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -75,10 +74,10 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
     private SessionManager sessionManager;
 
     @Mock
-    private ClientSession clientSession;
+    private DMNSession session;
 
     @Mock
-    private CanvasHandler canvasHandler;
+    private AbstractCanvasHandler canvasHandler;
 
     @Mock
     private Diagram diagram;
@@ -119,22 +118,24 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        this.definition = new DecisionTableEditorDefinition(gridPanel,
-                                                            gridLayer,
-                                                            definitionUtils,
+        when(sessionManager.getCurrentSession()).thenReturn(session);
+        when(session.getGridPanel()).thenReturn(gridPanel);
+        when(session.getGridLayer()).thenReturn(gridLayer);
+        when(session.getCellEditorControls()).thenReturn(cellEditorControls);
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
+
+        this.definition = new DecisionTableEditorDefinition(definitionUtils,
                                                             sessionManager,
                                                             sessionCommandManager,
                                                             canvasCommandFactory,
                                                             editorSelectedEvent,
-                                                            cellEditorControls,
                                                             listSelector,
                                                             translationService,
                                                             hitPolicyEditor,
                                                             new DecisionTableEditorDefinitionEnricher(sessionManager,
                                                                                                       new DMNGraphUtils(sessionManager)));
 
-        when(sessionManager.getCurrentSession()).thenReturn(clientSession);
-        when(clientSession.getCanvasHandler()).thenReturn(canvasHandler);
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(diagram.getGraph()).thenReturn(graph);
 

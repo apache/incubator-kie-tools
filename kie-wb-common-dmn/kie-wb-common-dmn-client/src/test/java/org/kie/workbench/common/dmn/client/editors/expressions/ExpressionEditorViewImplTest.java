@@ -48,6 +48,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelect
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
+import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanelContainer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
@@ -158,11 +159,22 @@ public class ExpressionEditorViewImplTest {
 
     private ExpressionGridCache expressionGridCache;
 
+    private DMNGridPanelContainer gridPanelContainer;
+
     private ExpressionEditorViewImpl view;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
+        this.expressionGridCache = new ExpressionGridCacheImpl();
+        this.gridPanelContainer = spy(new DMNGridPanelContainer());
+        when(sessionManager.getCurrentSession()).thenReturn(session);
+        when(session.getExpressionGridCache()).thenReturn(expressionGridCache);
+        when(session.getGridPanel()).thenReturn(gridPanel);
+        when(session.getGridLayer()).thenReturn(gridLayer);
+        when(session.getCellEditorControls()).thenReturn(cellEditorControls);
+        when(session.getMousePanMediator()).thenReturn(mousePanMediator);
+
         doReturn(viewport).when(gridPanel).getViewport();
         doReturn(viewportMediators).when(viewport).getMediators();
         doReturn(gridPanelElement).when(gridPanel).getElement();
@@ -174,22 +186,16 @@ public class ExpressionEditorViewImplTest {
                                                                        anyInt());
         doReturn(new BaseGridData()).when(editor).getModel();
 
-        this.expressionGridCache = new ExpressionGridCacheImpl();
-        when(sessionManager.getCurrentSession()).thenReturn(session);
-        when(session.getExpressionGridCache()).thenReturn(expressionGridCache);
-
         this.view = spy(new ExpressionEditorViewImpl(returnToDRG,
                                                      expressionType,
-                                                     gridPanel,
-                                                     gridLayer,
-                                                     mousePanMediator,
-                                                     cellEditorControls,
+                                                     gridPanelContainer,
                                                      translationService,
                                                      listSelector,
                                                      sessionManager,
                                                      sessionCommandManager,
                                                      expressionEditorDefinitionsSupplier));
         view.init(presenter);
+        view.bind(session);
 
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add(undefinedExpressionEditorDefinition);
@@ -219,7 +225,8 @@ public class ExpressionEditorViewImplTest {
     }
 
     @Test
-    public void testInit() {
+    public void testBind() {
+        //ExpressionEditorViewImpl.bind(..) is called in @Before setup
         verify(view).setupGridPanel();
         verify(view).setupGridWidget();
         verify(view).setupGridWidgetPanControl();
@@ -238,6 +245,8 @@ public class ExpressionEditorViewImplTest {
                      0.0);
 
         verify(gridPanel).add(gridLayer);
+        verify(gridPanelContainer).clear();
+        verify(gridPanelContainer).setWidget(gridPanel);
     }
 
     @Test
@@ -267,6 +276,7 @@ public class ExpressionEditorViewImplTest {
     public void testOnResize() {
         view.onResize();
 
+        verify(gridPanelContainer).onResize();
         verify(gridPanel).onResize();
     }
 

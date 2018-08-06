@@ -28,6 +28,7 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
+import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -47,6 +48,7 @@ import org.uberfire.mocks.EventSourceMock;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class LiteralExpressionEditorDefinitionTest {
@@ -62,6 +64,9 @@ public class LiteralExpressionEditorDefinitionTest {
 
     @Mock
     private SessionManager sessionManager;
+
+    @Mock
+    private DMNSession session;
 
     @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
@@ -94,14 +99,16 @@ public class LiteralExpressionEditorDefinitionTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        this.definition = new LiteralExpressionEditorDefinition(gridPanel,
-                                                                gridLayer,
-                                                                definitionUtils,
+        when(sessionManager.getCurrentSession()).thenReturn(session);
+        when(session.getGridPanel()).thenReturn(gridPanel);
+        when(session.getGridLayer()).thenReturn(gridLayer);
+        when(session.getCellEditorControls()).thenReturn(cellEditorControls);
+
+        this.definition = new LiteralExpressionEditorDefinition(definitionUtils,
                                                                 sessionManager,
                                                                 sessionCommandManager,
                                                                 canvasCommandFactory,
                                                                 editorSelectedEvent,
-                                                                cellEditorControls,
                                                                 listSelector,
                                                                 translationService);
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());

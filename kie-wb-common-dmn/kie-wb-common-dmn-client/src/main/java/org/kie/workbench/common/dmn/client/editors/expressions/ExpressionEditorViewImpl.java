@@ -43,11 +43,11 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellE
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
+import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanelContainer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.Session;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 
@@ -65,19 +65,20 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     @DataField("expressionType")
     private Heading expressionType;
 
-    private ExpressionContainerGrid expressionContainerGrid;
+    @DataField("dmn-table")
+    private DMNGridPanelContainer gridPanelContainer;
 
-    private DMNGridPanel gridPanel;
-    private DMNGridLayer gridLayer;
-    private RestrictedMousePanMediator mousePanMediator;
-
-    private CellEditorControlsView.Presenter cellEditorControls;
     private TranslationService translationService;
     private ListSelectorView.Presenter listSelector;
-
     private SessionManager sessionManager;
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+
+    private DMNGridPanel gridPanel;
+    private DMNGridLayer gridLayer;
+    private CellEditorControlsView.Presenter cellEditorControls;
+    private RestrictedMousePanMediator mousePanMediator;
+    private ExpressionContainerGrid expressionContainerGrid;
 
     public ExpressionEditorViewImpl() {
         //CDI proxy
@@ -86,10 +87,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     @Inject
     public ExpressionEditorViewImpl(final Anchor returnToDRG,
                                     final @Named("h2") Heading expressionType,
-                                    final @DMNEditor DMNGridPanel gridPanel,
-                                    final @DMNEditor DMNGridLayer gridLayer,
-                                    final @DMNEditor RestrictedMousePanMediator mousePanMediator,
-                                    final CellEditorControlsView.Presenter cellEditorControls,
+                                    final @DMNEditor DMNGridPanelContainer gridPanelContainer,
                                     final TranslationService translationService,
                                     final ListSelectorView.Presenter listSelector,
                                     final SessionManager sessionManager,
@@ -97,12 +95,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                     final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
         this.returnToDRG = returnToDRG;
         this.expressionType = expressionType;
+        this.gridPanelContainer = gridPanelContainer;
 
-        this.gridPanel = gridPanel;
-        this.gridLayer = gridLayer;
-        this.mousePanMediator = mousePanMediator;
-
-        this.cellEditorControls = cellEditorControls;
         this.translationService = translationService;
         this.listSelector = listSelector;
 
@@ -111,15 +105,17 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
     }
 
-    @DataField("dmn-table")
-    @SuppressWarnings("unused")
-    public GridLienzoPanel getGridPanel() {
-        return gridPanel;
-    }
-
     @Override
     public void init(final ExpressionEditorView.Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void bind(final DMNSession session) {
+        this.gridPanel = session.getGridPanel();
+        this.gridLayer = session.getGridLayer();
+        this.cellEditorControls = session.getCellEditorControls();
+        this.mousePanMediator = session.getMousePanMediator();
 
         setupGridPanel();
         setupGridWidget();
@@ -128,10 +124,12 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     protected void setupGridPanel() {
         final Transform transform = new Transform().scale(VP_SCALE);
+        gridPanel.getElement().setId("dmn_container_" + com.google.gwt.dom.client.Document.get().createUniqueId());
         gridPanel.getViewport().setTransform(transform);
         gridPanel.add(gridLayer);
 
-        gridPanel.getElement().setId("dmn_container_" + com.google.gwt.dom.client.Document.get().createUniqueId());
+        gridPanelContainer.clear();
+        gridPanelContainer.setWidget(gridPanel);
     }
 
     protected void setupGridWidget() {
@@ -199,6 +197,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     @Override
     public void onResize() {
-        gridPanel.onResize();
+        gridPanelContainer.onResize();
     }
 }

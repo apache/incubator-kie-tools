@@ -54,7 +54,7 @@ public class CellEditorControlsTest {
 
     @Before
     public void setup() {
-        this.controls = new CellEditorControls(gridPanel,
+        this.controls = new CellEditorControls(() -> gridPanel,
                                                view);
 
         doReturn(viewport).when(gridPanel).getViewport();

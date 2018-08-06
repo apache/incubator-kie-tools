@@ -19,15 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import com.ait.lienzo.client.core.types.Point2D;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.dom.client.ContextMenuHandler;
-import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -36,8 +32,6 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
-@DMNEditor
-@ApplicationScoped
 public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
 
     private DMNGridLayer gridLayer;
@@ -65,12 +59,7 @@ public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
         }
     }
 
-    public DMNGridPanelContextMenuHandler() {
-        //CDI proxy
-    }
-
-    @Inject
-    public DMNGridPanelContextMenuHandler(final @DMNEditor DMNGridLayer gridLayer,
+    public DMNGridPanelContextMenuHandler(final DMNGridLayer gridLayer,
                                           final CellEditorControlsView.Presenter cellEditorControls,
                                           final DMNGridPanelCellSelectionHandler cellSelectionHandler) {
         this.gridLayer = gridLayer;

@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
+import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -54,6 +55,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public abstract class BaseFunctionSupplementaryGridTest<D extends ExpressionEditorDefinition<Context>> {
@@ -69,6 +71,9 @@ public abstract class BaseFunctionSupplementaryGridTest<D extends ExpressionEdit
 
     @Mock
     protected SessionManager sessionManager;
+
+    @Mock
+    protected DMNSession session;
 
     @Mock
     protected SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
@@ -116,6 +121,11 @@ public abstract class BaseFunctionSupplementaryGridTest<D extends ExpressionEdit
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
+        when(sessionManager.getCurrentSession()).thenReturn(session);
+        when(session.getGridPanel()).thenReturn(gridPanel);
+        when(session.getGridLayer()).thenReturn(gridLayer);
+        when(session.getCellEditorControls()).thenReturn(cellEditorControls);
+
         definition = getEditorDefinition();
 
         expression = definition.getModelClass();

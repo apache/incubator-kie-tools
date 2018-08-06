@@ -24,14 +24,11 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.function.su
 public class PMMLFunctionSupplementaryGridTest extends BaseFunctionSupplementaryGridTest<PMMLFunctionEditorDefinition> {
 
     protected PMMLFunctionEditorDefinition getEditorDefinition() {
-        return new PMMLFunctionEditorDefinition(gridPanel,
-                                                gridLayer,
-                                                definitionUtils,
+        return new PMMLFunctionEditorDefinition(definitionUtils,
                                                 sessionManager,
                                                 sessionCommandManager,
                                                 canvasCommandFactory,
                                                 editorSelectedEvent,
-                                                cellEditorControls,
                                                 listSelector,
                                                 translationService,
                                                 expressionEditorDefinitionsSupplier);

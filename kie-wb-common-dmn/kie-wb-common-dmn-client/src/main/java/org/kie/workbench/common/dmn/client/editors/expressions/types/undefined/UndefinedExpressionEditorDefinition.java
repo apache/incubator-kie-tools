@@ -34,13 +34,10 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionT
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
-import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
-import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
@@ -58,25 +55,19 @@ public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Ex
     }
 
     @Inject
-    public UndefinedExpressionEditorDefinition(final @DMNEditor DMNGridPanel gridPanel,
-                                               final @DMNEditor DMNGridLayer gridLayer,
-                                               final DefinitionUtils definitionUtils,
+    public UndefinedExpressionEditorDefinition(final DefinitionUtils definitionUtils,
                                                final SessionManager sessionManager,
                                                final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                                final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                                final Event<ExpressionEditorChanged> editorSelectedEvent,
-                                               final CellEditorControlsView.Presenter cellEditorControls,
                                                final ListSelectorView.Presenter listSelector,
                                                final TranslationService translationService,
                                                final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
-        super(gridPanel,
-              gridLayer,
-              definitionUtils,
+        super(definitionUtils,
               sessionManager,
               sessionCommandManager,
               canvasCommandFactory,
               editorSelectedEvent,
-              cellEditorControls,
               listSelector,
               translationService);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
@@ -109,15 +100,15 @@ public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Ex
                                                        hasExpression,
                                                        expression,
                                                        hasName,
-                                                       gridPanel,
-                                                       gridLayer,
+                                                       getGridPanel(),
+                                                       getGridLayer(),
                                                        makeGridData(expression),
                                                        definitionUtils,
                                                        sessionManager,
                                                        sessionCommandManager,
                                                        canvasCommandFactory,
                                                        editorSelectedEvent,
-                                                       cellEditorControls,
+                                                       getCellEditorControls(),
                                                        listSelector,
                                                        translationService,
                                                        nesting,

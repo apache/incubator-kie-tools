@@ -16,28 +16,20 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.controls.container;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.types.Transform;
-import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 
-@ApplicationScoped
 public class CellEditorControls implements CellEditorControlsView.Presenter {
 
-    private DMNGridPanel gridPanel;
+    private Supplier<DMNGridPanel> gridPanelSupplier;
     private CellEditorControlsView view;
 
-    public CellEditorControls() {
-        //CDI proxy
-    }
-
-    @Inject
-    public CellEditorControls(final @DMNEditor DMNGridPanel gridPanel,
+    public CellEditorControls(final Supplier<DMNGridPanel> gridPanelSupplier,
                               final CellEditorControlsView view) {
-        this.gridPanel = gridPanel;
+        this.gridPanelSupplier = gridPanelSupplier;
         this.view = view;
         this.view.init(this);
     }
@@ -58,12 +50,14 @@ public class CellEditorControls implements CellEditorControlsView.Presenter {
 
     @Override
     public int getTransformedX(final int x) {
+        final DMNGridPanel gridPanel = gridPanelSupplier.get();
         final Transform transform = gridPanel.getViewport().getTransform();
         return (int) ((x * transform.getScaleX()) + transform.getTranslateX()) + gridPanel.getAbsoluteLeft();
     }
 
     @Override
     public int getTransformedY(final int y) {
+        final DMNGridPanel gridPanel = gridPanelSupplier.get();
         final Transform transform = gridPanel.getViewport().getTransform();
         return (int) ((y * transform.getScaleY()) + transform.getTranslateY()) + gridPanel.getAbsoluteTop();
     }

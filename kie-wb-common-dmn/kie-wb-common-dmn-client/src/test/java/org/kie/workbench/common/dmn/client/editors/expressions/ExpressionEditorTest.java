@@ -26,12 +26,12 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
 import org.kie.workbench.common.dmn.client.editors.toolbar.ToolbarStateHandler;
+import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCacheImpl;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.ManagedSession;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
@@ -64,6 +64,9 @@ public class ExpressionEditorTest {
 
     @Mock
     private DecisionNavigatorPresenter decisionNavigator;
+
+    @Mock
+    private DMNSession dmnSession;
 
     @Mock
     private ToolbarStateHandler toolbarStateHandler;
@@ -100,7 +103,14 @@ public class ExpressionEditorTest {
 
         testedEditor = spy(new ExpressionEditor(view,
                                                 decisionNavigator));
+        testedEditor.bind(dmnSession);
         when(session.getCanvasControl(eq(ExpressionGridCache.class))).thenReturn(expressionGridCache);
+    }
+
+    @Test
+    public void testBind() {
+        //ExpressionEditor.bind(..) is called in @Before setup
+        verify(view).bind(eq(dmnSession));
     }
 
     @Test
@@ -166,17 +176,6 @@ public class ExpressionEditorTest {
     }
 
     @Test
-    public void testOnCanvasFocusedSelectionEvent() {
-        final CanvasHandler canvasHandler = mock(CanvasHandler.class);
-        final String uuid = "uuid";
-        final CanvasSelectionEvent event = new CanvasSelectionEvent(canvasHandler, uuid);
-
-        testedEditor.onCanvasFocusedSelectionEvent(event);
-
-        verify(testedEditor).exit();
-    }
-
-    @Test
     public void testOnCanvasElementUpdated() {
         final CanvasElementUpdatedEvent event = new CanvasElementUpdatedEvent(canvasHandler, node);
 
@@ -185,7 +184,7 @@ public class ExpressionEditorTest {
 
         setupExpression(toolbarStateHandler);
 
-        testedEditor.onCanvasElementUpdated(event);
+        testedEditor.handleCanvasElementUpdated(event);
 
         verify(view).setReturnToDRGText(optionalHasNameCaptor.capture());
 
@@ -206,7 +205,7 @@ public class ExpressionEditorTest {
 
         setupExpression(toolbarStateHandler);
 
-        testedEditor.onCanvasElementUpdated(event);
+        testedEditor.handleCanvasElementUpdated(event);
 
         verify(view, never()).setReturnToDRGText(any(Optional.class));
     }

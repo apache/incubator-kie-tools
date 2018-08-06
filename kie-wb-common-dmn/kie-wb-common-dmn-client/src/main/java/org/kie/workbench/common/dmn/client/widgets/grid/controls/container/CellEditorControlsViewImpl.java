@@ -20,7 +20,7 @@ import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.BrowserEvents;
@@ -40,7 +40,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 
 @Templated
-@ApplicationScoped
+@Dependent
 public class CellEditorControlsViewImpl implements CellEditorControlsView {
 
     private static final String CONTAINER_CLASS = "kie-dmn-cell-editor-controls";

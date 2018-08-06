@@ -26,4 +26,6 @@ public interface ParameterView extends org.jboss.errai.ui.client.local.api.IsEle
     void addRemoveClickHandler(final Command command);
 
     void addParameterNameChangeHandler(final ParameterizedCommand<String> command);
+
+    void focus();
 }

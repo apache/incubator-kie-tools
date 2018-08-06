@@ -178,18 +178,20 @@ public class UndefinedExpressionGridTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
+        when(sessionManager.getCurrentSession()).thenReturn(session);
+        when(session.getGridPanel()).thenReturn(gridPanel);
+        when(session.getGridLayer()).thenReturn(gridLayer);
+        when(session.getCellEditorControls()).thenReturn(cellEditorControls);
+
         expressionGridCache = spy(new ExpressionGridCacheImpl());
         when(sessionManager.getCurrentSession()).thenReturn(session);
         when(session.getExpressionGridCache()).thenReturn(expressionGridCache);
 
-        definition = new UndefinedExpressionEditorDefinition(gridPanel,
-                                                             gridLayer,
-                                                             definitionUtils,
+        definition = new UndefinedExpressionEditorDefinition(definitionUtils,
                                                              sessionManager,
                                                              sessionCommandManager,
                                                              canvasCommandFactory,
                                                              editorSelectedEvent,
-                                                             cellEditorControls,
                                                              listSelector,
                                                              translationService,
                                                              expressionEditorDefinitionsSupplier);
@@ -211,7 +213,6 @@ public class UndefinedExpressionGridTest {
                                                                                                          any(Optional.class),
                                                                                                          anyInt());
 
-        doReturn(session).when(sessionManager).getCurrentSession();
         doReturn(handler).when(session).getCanvasHandler();
 
         when(parentGridWidget.getModel()).thenReturn(parentGridUiModel);

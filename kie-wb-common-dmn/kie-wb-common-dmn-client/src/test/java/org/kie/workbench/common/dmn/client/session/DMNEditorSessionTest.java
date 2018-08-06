@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.session;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -42,13 +43,12 @@ import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferenc
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class DMNEditorSessionTest extends BaseDMNSessionTest<DMNEditorSession> {
 
     @Mock

@@ -19,11 +19,11 @@ package org.kie.workbench.common.dmn.client.session;
 import java.util.Collections;
 import java.util.Map;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
-import org.mockito.runners.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class DMNViewerSessionTest extends BaseDMNSessionTest<DMNViewerSession> {
 
     @Override

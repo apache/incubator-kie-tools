@@ -24,14 +24,11 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.function.su
 public class JavaFunctionSupplementaryGridTest extends BaseFunctionSupplementaryGridTest<JavaFunctionEditorDefinition> {
 
     protected JavaFunctionEditorDefinition getEditorDefinition() {
-        return new JavaFunctionEditorDefinition(gridPanel,
-                                                gridLayer,
-                                                definitionUtils,
+        return new JavaFunctionEditorDefinition(definitionUtils,
                                                 sessionManager,
                                                 sessionCommandManager,
                                                 canvasCommandFactory,
                                                 editorSelectedEvent,
-                                                cellEditorControls,
                                                 listSelector,
                                                 translationService,
                                                 expressionEditorDefinitionsSupplier);

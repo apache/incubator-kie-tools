@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
+import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.showcase.client.perspectives.AuthoringPerspective;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
@@ -69,7 +70,7 @@ public class SessionDiagramEditorScreenTest {
     private SessionManager sessionManager;
 
     @Mock
-    private EditorSession session;
+    private DMNEditorSession session;
 
     @Captor
     private ArgumentCaptor<Consumer<EditorSession>> clientFullSessionConsumer;
@@ -78,12 +79,12 @@ public class SessionDiagramEditorScreenTest {
 
     @Before
     public void setup() {
-
         doReturn(presenter).when(presenter).withToolbar(anyBoolean());
         doReturn(presenter).when(presenter).withPalette(anyBoolean());
         doReturn(presenter).when(presenter).displayNotifications(any());
         doReturn(session).when(presenter).getInstance();
         doReturn(session).when(sessionManager).getCurrentSession();
+        doReturn(expressionEditor).when(session).getExpressionEditor();
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -109,7 +110,6 @@ public class SessionDiagramEditorScreenTest {
                                                     null,
                                                     screenPanelView,
                                                     null,
-                                                    expressionEditor,
                                                     decisionNavigatorDock));
     }
 

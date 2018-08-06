@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -35,7 +37,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 @ApplicationScoped
 public class ParametersEditorViewImpl implements ParametersEditorView {
 
-    private static final String OPEN = "open";
+    static final String OPEN = "open";
 
     @DataField("parametersContainer")
     private Div parametersContainer;
@@ -44,6 +46,7 @@ public class ParametersEditorViewImpl implements ParametersEditorView {
     private Div addParameter;
 
     private ManagedInstance<ParameterView> parameterViews;
+    private final List<ParameterView> parameterViewInstances = new ArrayList<>();
 
     private Presenter presenter;
 
@@ -67,8 +70,14 @@ public class ParametersEditorViewImpl implements ParametersEditorView {
 
     @Override
     public void setParameters(final List<InformationItem> parameters) {
+        parameterViewInstances.clear();
+        parameterViewInstances.addAll(parameters
+                                              .stream()
+                                              .map(this::makeParameterView)
+                                              .collect(Collectors.toList()));
+
         DOMUtil.removeAllChildren(parametersContainer);
-        parameters.forEach(parameter -> parametersContainer.appendChild(makeParameterView(parameter).getElement()));
+        parameterViewInstances.forEach(parameterView -> parametersContainer.appendChild(parameterView.getElement()));
     }
 
     private ParameterView makeParameterView(final InformationItem parameter) {
@@ -83,6 +92,14 @@ public class ParametersEditorViewImpl implements ParametersEditorView {
     @Override
     public void show() {
         getElement().getClassList().add(OPEN);
+    }
+
+    @Override
+    public void focusParameter(final int index) {
+        if (index < 0 || index >= parameterViewInstances.size()) {
+            return;
+        }
+        parameterViewInstances.get(index).focus();
     }
 
     @Override

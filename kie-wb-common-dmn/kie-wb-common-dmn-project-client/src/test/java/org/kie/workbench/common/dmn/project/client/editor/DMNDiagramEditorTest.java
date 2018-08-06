@@ -24,6 +24,7 @@ import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpression
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
+import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.project.client.type.DMNDiagramResourceType;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -59,6 +60,9 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     private SessionManager sessionManager;
 
     @Mock
+    private DMNEditorSession dmnEditorSession;
+
+    @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
@@ -78,6 +82,8 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     @Override
     public void setUp() {
         super.setUp();
+        when(sessionEditorPresenter.getInstance()).thenReturn(dmnEditorSession);
+        when(dmnEditorSession.getExpressionEditor()).thenReturn(expressionEditor);
         when(resourceType.getSuffix()).thenReturn("dmn");
     }
 
@@ -111,7 +117,6 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                                                  projectDiagramResourceServiceCaller,
                                                  sessionManager,
                                                  sessionCommandManager,
-                                                 expressionEditor,
                                                  decisionNavigatorDock) {
             {
                 fileMenuBuilder = DMNDiagramEditorTest.this.fileMenuBuilder;
@@ -157,7 +162,8 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
     @Test
     public void testOnDiagramLoadWhenCanvasHandlerIsNotNull() {
-        when(editorSession.getCanvasHandler()).thenReturn(canvasHandler);
+        when(sessionManager.getCurrentSession()).thenReturn(dmnEditorSession);
+        when(dmnEditorSession.getCanvasHandler()).thenReturn(canvasHandler);
 
         open();
 
@@ -188,9 +194,9 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
     @Test
     public void testOnEditExpressionEvent() {
-        when(editExpressionEvent.getSession()).thenReturn(editorSession);
-        when(sessionManager.getCurrentSession()).thenReturn(editorSession);
-        when(editorSession.getCanvasHandler()).thenReturn(canvasHandler);
+        when(editExpressionEvent.getSession()).thenReturn(dmnEditorSession);
+        when(sessionManager.getCurrentSession()).thenReturn(dmnEditorSession);
+        when(dmnEditorSession.getCanvasHandler()).thenReturn(canvasHandler);
 
         open();
 

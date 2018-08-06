@@ -19,13 +19,13 @@ package org.kie.workbench.common.dmn.client.widgets.grid.controls.list;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorItem;
 
-@ApplicationScoped
+@Dependent
 public class ListSelector implements ListSelectorView.Presenter {
 
     private ListSelectorView view;

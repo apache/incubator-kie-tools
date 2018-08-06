@@ -20,11 +20,21 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorControl;
+import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControl;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
+import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayerControl;
+import org.kie.workbench.common.dmn.client.widgets.layer.MousePanMediatorControl;
+import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
+import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanelControl;
 import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -42,10 +52,11 @@ import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -53,7 +64,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public abstract class BaseDMNSessionTest<S extends AbstractSession<AbstractCanvas, AbstractCanvasHandler>> {
 
     @Mock
@@ -90,7 +101,37 @@ public abstract class BaseDMNSessionTest<S extends AbstractSession<AbstractCanva
     protected SelectionControl selectionControl;
 
     @Mock
-    protected ExpressionGridCache expressionGridCacheControl;
+    protected ExpressionGridCache expressionGridCache;
+
+    @Mock
+    protected DMNGridLayerControl gridLayerControl;
+
+    @Mock
+    protected DMNGridLayer gridLayer;
+
+    @Mock
+    protected DMNGridPanelControl gridPanelControl;
+
+    @Mock
+    protected DMNGridPanel gridPanel;
+
+    @Mock
+    protected CellEditorControl cellEditorControl;
+
+    @Mock
+    protected CellEditorControls cellEditorControls;
+
+    @Mock
+    protected MousePanMediatorControl mousePanMediatorControl;
+
+    @Mock
+    protected RestrictedMousePanMediator mousePanMediator;
+
+    @Mock
+    protected ExpressionEditorControl expressionEditorControl;
+
+    @Mock
+    protected ExpressionEditorView.Presenter expressionEditor;
 
     protected ManagedSession managedSession;
 
@@ -118,7 +159,18 @@ public abstract class BaseDMNSessionTest<S extends AbstractSession<AbstractCanva
         this.canvasControlRegistrations.putAll(getCanvasControlRegistrations());
         this.canvasControlRegistrations.put(zoomControl, ZoomControl.class);
         this.canvasControlRegistrations.put(panControl, PanControl.class);
-        this.canvasControlRegistrations.put(expressionGridCacheControl, ExpressionGridCache.class);
+        this.canvasControlRegistrations.put(expressionGridCache, ExpressionGridCache.class);
+        this.canvasControlRegistrations.put(gridLayerControl, DMNGridLayerControl.class);
+        this.canvasControlRegistrations.put(gridPanelControl, DMNGridPanelControl.class);
+        this.canvasControlRegistrations.put(cellEditorControl, CellEditorControl.class);
+        this.canvasControlRegistrations.put(mousePanMediatorControl, MousePanMediatorControl.class);
+        this.canvasControlRegistrations.put(expressionEditorControl, ExpressionEditorControl.class);
+
+        when(gridLayerControl.getGridLayer()).thenReturn(gridLayer);
+        when(gridPanelControl.getGridPanel()).thenReturn(gridPanel);
+        when(cellEditorControl.getCellEditorControls()).thenReturn(cellEditorControls);
+        when(mousePanMediatorControl.getMousePanMediator()).thenReturn(mousePanMediator);
+        when(expressionEditorControl.getExpressionEditor()).thenReturn(expressionEditor);
 
         final CanvasControl[] canvasControls = new CanvasControl[0];
         this.canvasControlInstances = spy(new ManagedInstanceStub<>(canvasControlRegistrations.keySet().toArray(canvasControls)));
@@ -179,5 +231,59 @@ public abstract class BaseDMNSessionTest<S extends AbstractSession<AbstractCanva
 
         canvasControlRegistrations.keySet().forEach(r -> verify(r).destroy());
         canvasHandlerControlRegistrations.keySet().forEach(r -> verify(r).destroy());
+    }
+
+    @Test
+    public void testGetExpressionGridCache() {
+        //Session must first have been initialised
+        session.init(metadata, callback);
+
+        assertEquals(expressionGridCache,
+                     ((DMNSession) session).getExpressionGridCache());
+    }
+
+    @Test
+    public void testGetGridPanel() {
+        //Session must first have been initialised
+        session.init(metadata, callback);
+
+        assertEquals(gridPanel,
+                     ((DMNSession) session).getGridPanel());
+    }
+
+    @Test
+    public void testGetGridLayer() {
+        //Session must first have been initialised
+        session.init(metadata, callback);
+
+        assertEquals(gridLayer,
+                     ((DMNSession) session).getGridLayer());
+    }
+
+    @Test
+    public void testGetCellEditorControls() {
+        //Session must first have been initialised
+        session.init(metadata, callback);
+
+        assertEquals(cellEditorControls,
+                     ((DMNSession) session).getCellEditorControls());
+    }
+
+    @Test
+    public void testGetMousePanMediator() {
+        //Session must first have been initialised
+        session.init(metadata, callback);
+
+        assertEquals(mousePanMediator,
+                     ((DMNSession) session).getMousePanMediator());
+    }
+
+    @Test
+    public void testGetExpressionEditor() {
+        //Session must first have been initialised
+        session.init(metadata, callback);
+
+        assertEquals(expressionEditor,
+                     ((DMNSession) session).getExpressionEditor());
     }
 }

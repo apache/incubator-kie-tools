@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -50,16 +51,31 @@ public class ParametersEditorImpl implements ParametersEditorView.Presenter {
                      final int uiRowIndex,
                      final int uiColumnIndex) {
         binding = Optional.ofNullable(bound);
-        refresh();
+        binding.ifPresent(b -> {
+            view.setParameters(b.getParameters());
+        });
     }
 
     private void refresh() {
-        binding.ifPresent(b -> view.setParameters(b.getParameters()));
+        binding.ifPresent(b -> {
+            view.setParameters(b.getParameters());
+            focusLastParameter(b);
+        });
     }
 
     @Override
     public void show() {
-        binding.ifPresent(b -> view.show());
+        binding.ifPresent(b -> {
+            view.show();
+            focusLastParameter(b);
+        });
+    }
+
+    private void focusLastParameter(final HasParametersControl hasParameters) {
+        final List<InformationItem> parameters = hasParameters.getParameters();
+        if (!parameters.isEmpty()) {
+            view.focusParameter(parameters.size() - 1);
+        }
     }
 
     @Override

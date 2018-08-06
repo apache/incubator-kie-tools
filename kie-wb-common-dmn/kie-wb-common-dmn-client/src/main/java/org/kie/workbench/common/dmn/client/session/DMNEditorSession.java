@@ -20,7 +20,16 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorControl;
+import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControl;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
+import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
+import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayerControl;
+import org.kie.workbench.common.dmn.client.widgets.layer.MousePanMediatorControl;
+import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
+import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanelControl;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.SingleLineTextEditorBox;
@@ -49,6 +58,7 @@ import org.kie.workbench.common.stunner.core.client.session.impl.DefaultEditorSe
 import org.kie.workbench.common.stunner.core.client.session.impl.ManagedSession;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 import org.uberfire.mvp.Command;
 
 @Dependent
@@ -68,6 +78,11 @@ public class DMNEditorSession extends DefaultEditorSession implements DMNSession
               sessionCommandManager,
               requestCommandManager,
               stunnerPreferencesRegistry);
+    }
+
+    @Override
+    public ManagedSession getSession() {
+        return super.getSession();
     }
 
     @Override
@@ -91,7 +106,13 @@ public class DMNEditorSession extends DefaultEditorSession implements DMNSession
                            .registerCanvasHandlerControl(EdgeBuilderControl.class)
                            .registerCanvasControl(KeyboardControl.class)
                            .registerCanvasControl(ClipboardControl.class)
-                           .registerCanvasControl(ExpressionGridCache.class),
+                           .registerCanvasControl(ExpressionGridCache.class)
+                           .registerCanvasControl(DMNGridLayerControl.class)
+                           //The order of the following registrations is important. Do not re-order!
+                           .registerCanvasControl(CellEditorControl.class)
+                           .registerCanvasControl(MousePanMediatorControl.class)
+                           .registerCanvasControl(DMNGridPanelControl.class)
+                           .registerCanvasControl(ExpressionEditorControl.class),
                    metadata,
                    callback);
     }
@@ -99,5 +120,30 @@ public class DMNEditorSession extends DefaultEditorSession implements DMNSession
     @Override
     public ExpressionGridCache getExpressionGridCache() {
         return (ExpressionGridCache) getSession().getCanvasControl(ExpressionGridCache.class);
+    }
+
+    @Override
+    public DMNGridPanel getGridPanel() {
+        return ((DMNGridPanelControl) getSession().getCanvasControl(DMNGridPanelControl.class)).getGridPanel();
+    }
+
+    @Override
+    public DMNGridLayer getGridLayer() {
+        return ((DMNGridLayerControl) getSession().getCanvasControl(DMNGridLayerControl.class)).getGridLayer();
+    }
+
+    @Override
+    public CellEditorControlsView.Presenter getCellEditorControls() {
+        return ((CellEditorControl) getSession().getCanvasControl(CellEditorControl.class)).getCellEditorControls();
+    }
+
+    @Override
+    public RestrictedMousePanMediator getMousePanMediator() {
+        return ((MousePanMediatorControl) getSession().getCanvasControl(MousePanMediatorControl.class)).getMousePanMediator();
+    }
+
+    @Override
+    public ExpressionEditorView.Presenter getExpressionEditor() {
+        return ((ExpressionEditorControl) getSession().getCanvasControl(ExpressionEditorControl.class)).getExpressionEditor();
     }
 }

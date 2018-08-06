@@ -30,6 +30,7 @@ import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpression
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
+import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.project.client.type.DMNDiagramResourceType;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
@@ -79,7 +80,6 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
 
     private final SessionManager sessionManager;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    private final ExpressionEditorView.Presenter expressionEditor;
     private final DecisionNavigatorDock decisionNavigatorDock;
 
     @Inject
@@ -102,7 +102,6 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
                             final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller,
                             final SessionManager sessionManager,
                             final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                            final ExpressionEditorView.Presenter expressionEditor,
                             final DecisionNavigatorDock decisionNavigatorDock) {
         super(view,
               placeManager,
@@ -123,7 +122,6 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
               projectDiagramResourceServiceCaller);
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
-        this.expressionEditor = expressionEditor;
         this.decisionNavigatorDock = decisionNavigatorDock;
     }
 
@@ -161,6 +159,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         final Optional<CanvasHandler> canvasHandler = Optional.ofNullable(getCanvasHandler());
 
         canvasHandler.ifPresent(c -> {
+            final ExpressionEditorView.Presenter expressionEditor = ((DMNSession) sessionManager.getCurrentSession()).getExpressionEditor();
             expressionEditor.setToolbarStateHandler(new ProjectToolbarStateHandler(getMenuSessionItems()));
             decisionNavigatorDock.setupContent(c);
             decisionNavigatorDock.open();
@@ -214,7 +213,9 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
 
     void onEditExpressionEvent(final @Observes EditExpressionEvent event) {
         if (isSameSession(event.getSession())) {
-            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+            final DMNSession session = sessionManager.getCurrentSession();
+            final ExpressionEditorView.Presenter expressionEditor = session.getExpressionEditor();
+            sessionCommandManager.execute(session.getCanvasHandler(),
                                           new NavigateToExpressionEditorCommand(expressionEditor,
                                                                                 getSessionPresenter(),
                                                                                 sessionManager,

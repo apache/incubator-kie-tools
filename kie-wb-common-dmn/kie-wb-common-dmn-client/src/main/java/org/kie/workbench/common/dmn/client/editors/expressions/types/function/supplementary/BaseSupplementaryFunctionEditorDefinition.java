@@ -33,13 +33,10 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
-import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
-import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
@@ -54,25 +51,19 @@ public abstract class BaseSupplementaryFunctionEditorDefinition extends BaseEdit
         //CDI proxy
     }
 
-    public BaseSupplementaryFunctionEditorDefinition(final DMNGridPanel gridPanel,
-                                                     final DMNGridLayer gridLayer,
-                                                     final DefinitionUtils definitionUtils,
+    public BaseSupplementaryFunctionEditorDefinition(final DefinitionUtils definitionUtils,
                                                      final SessionManager sessionManager,
                                                      final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                                      final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                                      final Event<ExpressionEditorChanged> editorSelectedEvent,
-                                                     final CellEditorControlsView.Presenter cellEditorControls,
                                                      final ListSelectorView.Presenter listSelector,
                                                      final TranslationService translationService,
                                                      final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
-        super(gridPanel,
-              gridLayer,
-              definitionUtils,
+        super(definitionUtils,
               sessionManager,
               sessionCommandManager,
               canvasCommandFactory,
               editorSelectedEvent,
-              cellEditorControls,
               listSelector,
               translationService);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
@@ -111,15 +102,15 @@ public abstract class BaseSupplementaryFunctionEditorDefinition extends BaseEdit
                                                          hasExpression,
                                                          expression,
                                                          hasName,
-                                                         gridPanel,
-                                                         gridLayer,
+                                                         getGridPanel(),
+                                                         getGridLayer(),
                                                          makeGridData(expression),
                                                          definitionUtils,
                                                          sessionManager,
                                                          sessionCommandManager,
                                                          canvasCommandFactory,
                                                          editorSelectedEvent,
-                                                         cellEditorControls,
+                                                         getCellEditorControls(),
                                                          listSelector,
                                                          translationService,
                                                          nesting,
@@ -132,7 +123,7 @@ public abstract class BaseSupplementaryFunctionEditorDefinition extends BaseEdit
                                                  sessionManager,
                                                  sessionCommandManager,
                                                  expression,
-                                                 gridLayer::batch);
+                                                 getGridLayer()::batch);
     }
 
     protected abstract List<String> getVariableNames();

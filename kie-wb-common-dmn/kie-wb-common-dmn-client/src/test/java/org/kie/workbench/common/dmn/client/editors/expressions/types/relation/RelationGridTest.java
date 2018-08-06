@@ -45,7 +45,7 @@ import org.kie.workbench.common.dmn.client.commands.general.DeleteHeaderValueCom
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueCommand;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
-import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
+import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -152,7 +152,7 @@ public class RelationGridTest {
     private SessionManager sessionManager;
 
     @Mock
-    private DMNEditorSession dmnEditorSession;
+    private DMNSession session;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -202,17 +202,19 @@ public class RelationGridTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
+        when(sessionManager.getCurrentSession()).thenReturn(session);
+        when(session.getGridPanel()).thenReturn(gridPanel);
+        when(session.getGridLayer()).thenReturn(gridLayer);
+        when(session.getCellEditorControls()).thenReturn(cellEditorControls);
+
         tupleWithoutValue = new GridCellTuple(0, 1, gridWidget);
         tupleWithValue = new GridCellValueTuple<>(0, 1, gridWidget, new BaseGridCellValue<>("value"));
 
-        definition = new RelationEditorDefinition(gridPanel,
-                                                  gridLayer,
-                                                  definitionUtils,
+        definition = new RelationEditorDefinition(definitionUtils,
                                                   sessionManager,
                                                   sessionCommandManager,
                                                   canvasCommandFactory,
                                                   editorSelectedEvent,
-                                                  cellEditorControls,
                                                   listSelector,
                                                   translationService);
 
@@ -222,8 +224,7 @@ public class RelationGridTest {
         expression = definition.getModelClass();
         definition.enrich(Optional.empty(), expression);
 
-        doReturn(canvasHandler).when(dmnEditorSession).getCanvasHandler();
-        doReturn(dmnEditorSession).when(sessionManager).getCurrentSession();
+        doReturn(canvasHandler).when(session).getCanvasHandler();
         doReturn(parentGridData).when(parentGridWidget).getModel();
         doReturn(Collections.singletonList(parentGridColumn)).when(parentGridData).getColumns();
 

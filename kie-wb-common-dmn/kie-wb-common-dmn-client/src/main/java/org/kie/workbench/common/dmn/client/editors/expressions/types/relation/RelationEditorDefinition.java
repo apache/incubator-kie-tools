@@ -28,18 +28,14 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
-import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
-import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
-import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
@@ -55,24 +51,18 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
     }
 
     @Inject
-    public RelationEditorDefinition(final @DMNEditor DMNGridPanel gridPanel,
-                                    final @DMNEditor DMNGridLayer gridLayer,
-                                    final DefinitionUtils definitionUtils,
+    public RelationEditorDefinition(final DefinitionUtils definitionUtils,
                                     final SessionManager sessionManager,
                                     final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                     final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                     final Event<ExpressionEditorChanged> editorSelectedEvent,
-                                    final CellEditorControlsView.Presenter cellEditorControls,
                                     final ListSelectorView.Presenter listSelector,
                                     final TranslationService translationService) {
-        super(gridPanel,
-              gridLayer,
-              definitionUtils,
+        super(definitionUtils,
               sessionManager,
               sessionCommandManager,
               canvasCommandFactory,
               editorSelectedEvent,
-              cellEditorControls,
               listSelector,
               translationService);
     }
@@ -124,15 +114,15 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
                                             hasExpression,
                                             expression,
                                             hasName,
-                                            gridPanel,
-                                            gridLayer,
+                                            getGridPanel(),
+                                            getGridLayer(),
                                             makeGridData(expression),
                                             definitionUtils,
                                             sessionManager,
                                             sessionCommandManager,
                                             canvasCommandFactory,
                                             editorSelectedEvent,
-                                            cellEditorControls,
+                                            getCellEditorControls(),
                                             listSelector,
                                             translationService,
                                             nesting));
@@ -144,6 +134,6 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
                                     sessionManager,
                                     sessionCommandManager,
                                     expression,
-                                    gridLayer::batch);
+                                    getGridLayer()::batch);
     }
 }

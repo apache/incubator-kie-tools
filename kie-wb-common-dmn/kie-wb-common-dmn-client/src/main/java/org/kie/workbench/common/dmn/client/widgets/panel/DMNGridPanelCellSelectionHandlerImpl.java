@@ -18,10 +18,6 @@ package org.kie.workbench.common.dmn.client.widgets.panel;
 
 import java.util.stream.Stream;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -34,17 +30,11 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionStrategy;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RangeSelectionStrategy;
 
-@ApplicationScoped
 public class DMNGridPanelCellSelectionHandlerImpl implements DMNGridPanelCellSelectionHandler {
 
-    private DMNGridLayer gridLayer;
+    private final DMNGridLayer gridLayer;
 
-    public DMNGridPanelCellSelectionHandlerImpl() {
-        //CDI proxy
-    }
-
-    @Inject
-    public DMNGridPanelCellSelectionHandlerImpl(final @DMNEditor DMNGridLayer gridLayer) {
+    public DMNGridPanelCellSelectionHandlerImpl(final DMNGridLayer gridLayer) {
         this.gridLayer = gridLayer;
     }
 

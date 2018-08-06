@@ -22,6 +22,7 @@ import javax.enterprise.event.Event;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
@@ -36,14 +37,11 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 public abstract class BaseEditorDefinition<E extends Expression, D extends GridData> implements ExpressionEditorDefinition<E> {
 
-    protected DMNGridPanel gridPanel;
-    protected DMNGridLayer gridLayer;
     protected DefinitionUtils definitionUtils;
     protected SessionManager sessionManager;
     protected SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     protected CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     protected Event<ExpressionEditorChanged> editorSelectedEvent;
-    protected CellEditorControlsView.Presenter cellEditorControls;
     protected ListSelectorView.Presenter listSelector;
     protected TranslationService translationService;
 
@@ -51,27 +49,33 @@ public abstract class BaseEditorDefinition<E extends Expression, D extends GridD
         //CDI proxy
     }
 
-    public BaseEditorDefinition(final DMNGridPanel gridPanel,
-                                final DMNGridLayer gridLayer,
-                                final DefinitionUtils definitionUtils,
+    public BaseEditorDefinition(final DefinitionUtils definitionUtils,
                                 final SessionManager sessionManager,
                                 final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                 final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                 final Event<ExpressionEditorChanged> editorSelectedEvent,
-                                final CellEditorControlsView.Presenter cellEditorControls,
                                 final ListSelectorView.Presenter listSelector,
                                 final TranslationService translationService) {
-        this.gridPanel = gridPanel;
-        this.gridLayer = gridLayer;
         this.definitionUtils = definitionUtils;
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
         this.canvasCommandFactory = canvasCommandFactory;
         this.editorSelectedEvent = editorSelectedEvent;
-        this.cellEditorControls = cellEditorControls;
         this.listSelector = listSelector;
         this.translationService = translationService;
     }
 
     protected abstract D makeGridData(final Optional<E> expression);
+
+    protected DMNGridPanel getGridPanel() {
+        return ((DMNSession) sessionManager.getCurrentSession()).getGridPanel();
+    }
+
+    protected DMNGridLayer getGridLayer() {
+        return ((DMNSession) sessionManager.getCurrentSession()).getGridLayer();
+    }
+
+    protected CellEditorControlsView.Presenter getCellEditorControls() {
+        return ((DMNSession) sessionManager.getCurrentSession()).getCellEditorControls();
+    }
 }

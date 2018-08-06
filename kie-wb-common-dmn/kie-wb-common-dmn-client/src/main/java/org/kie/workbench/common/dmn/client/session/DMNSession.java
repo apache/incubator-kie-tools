@@ -16,12 +16,30 @@
 
 package org.kie.workbench.common.dmn.client.session;
 
+import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
+import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
+import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.ManagedSession;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 
 public interface DMNSession extends ClientSession<AbstractCanvas, AbstractCanvasHandler> {
 
+    ManagedSession getSession();
+
     ExpressionGridCache getExpressionGridCache();
+
+    DMNGridPanel getGridPanel();
+
+    DMNGridLayer getGridLayer();
+
+    CellEditorControlsView.Presenter getCellEditorControls();
+
+    RestrictedMousePanMediator getMousePanMediator();
+
+    ExpressionEditorView.Presenter getExpressionEditor();
 }

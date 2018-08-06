@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.widgets.grid.controls.list;
 import java.util.List;
 import java.util.Optional;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.IsElement;
@@ -32,6 +33,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSel
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorTextItem;
 
 @Templated
+@Dependent
 public class ListSelectorViewImpl implements ListSelectorView {
 
     private static final String OPEN = "open";

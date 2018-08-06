@@ -53,6 +53,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyEditorView;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
+import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -70,7 +71,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElement
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
@@ -161,7 +161,7 @@ public class DecisionTableGridTest {
     private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     @Mock
-    private ClientSession session;
+    private DMNSession session;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -238,14 +238,16 @@ public class DecisionTableGridTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        this.definition = new DecisionTableEditorDefinition(gridPanel,
-                                                            gridLayer,
-                                                            definitionUtils,
+        when(sessionManager.getCurrentSession()).thenReturn(session);
+        when(session.getGridPanel()).thenReturn(gridPanel);
+        when(session.getGridLayer()).thenReturn(gridLayer);
+        when(session.getCellEditorControls()).thenReturn(cellEditorControls);
+
+        this.definition = new DecisionTableEditorDefinition(definitionUtils,
                                                             sessionManager,
                                                             sessionCommandManager,
                                                             canvasCommandFactory,
                                                             editorSelectedEvent,
-                                                            cellEditorControls,
                                                             listSelector,
                                                             translationService,
                                                             hitPolicyEditor,
@@ -255,7 +257,6 @@ public class DecisionTableGridTest {
         expression = definition.getModelClass();
         definition.enrich(Optional.empty(), expression);
 
-        doReturn(session).when(sessionManager).getCurrentSession();
         doReturn(canvasHandler).when(session).getCanvasHandler();
         doReturn(graphCommandContext).when(canvasHandler).getGraphExecutionContext();
 

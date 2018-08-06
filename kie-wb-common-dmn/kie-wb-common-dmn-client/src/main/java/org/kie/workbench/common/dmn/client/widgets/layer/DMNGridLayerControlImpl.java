@@ -16,34 +16,42 @@
 
 package org.kie.workbench.common.dmn.client.widgets.layer;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Produces;
 
-import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
 
-@ApplicationScoped
-public class DMNGridLayerProducer {
+@Dependent
+public class DMNGridLayerControlImpl extends AbstractCanvasControl<AbstractCanvas> implements DMNGridLayerControl {
 
-    private final DMNGridLayer layer;
+    private DMNGridLayer gridLayer;
 
-    public DMNGridLayerProducer() {
-        this.layer = makeGridLayer();
-    }
-
-    @Produces
-    @DMNEditor
-    public DMNGridLayer getGridLayer() {
-        return layer;
+    public DMNGridLayerControlImpl() {
+        this.gridLayer = makeGridLayer();
     }
 
     DMNGridLayer makeGridLayer() {
         return new DMNGridLayer();
     }
 
+    @Override
+    protected void doInit() {
+    }
+
+    @Override
+    protected void doDestroy() {
+        gridLayer = null;
+    }
+
+    @Override
+    public DMNGridLayer getGridLayer() {
+        return gridLayer;
+    }
+
     @SuppressWarnings("unused")
     public void onCanvasElementUpdatedEvent(final @Observes CanvasElementUpdatedEvent event) {
-        layer.batch();
+        gridLayer.batch();
     }
 }

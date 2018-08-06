@@ -51,6 +51,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.function.su
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
+import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -67,7 +68,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPropertyCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
@@ -144,7 +144,7 @@ public class FunctionGridTest {
     private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     @Mock
-    private ClientSession session;
+    private DMNSession session;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -241,30 +241,29 @@ public class FunctionGridTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
+        when(sessionManager.getCurrentSession()).thenReturn(session);
+        when(session.getGridPanel()).thenReturn(gridPanel);
+        when(session.getGridLayer()).thenReturn(gridLayer);
+        when(session.getCellEditorControls()).thenReturn(cellEditorControls);
+
         tupleWithoutValue = new GridCellTuple(0, 0, gridWidget);
         tupleWithValue = new GridCellValueTuple<>(0, 0, gridWidget, new BaseGridCellValue<>("value"));
 
-        definition = new FunctionEditorDefinition(gridPanel,
-                                                  gridLayer,
-                                                  definitionUtils,
+        definition = new FunctionEditorDefinition(definitionUtils,
                                                   sessionManager,
                                                   sessionCommandManager,
                                                   canvasCommandFactory,
                                                   editorSelectedEvent,
-                                                  cellEditorControls,
                                                   listSelector,
                                                   translationService,
                                                   expressionEditorDefinitionsSupplier,
                                                   supplementaryEditorDefinitionsSupplier,
                                                   parametersEditor);
-        literalExpressionEditorDefinition = spy(new LiteralExpressionEditorDefinition(gridPanel,
-                                                                                      gridLayer,
-                                                                                      definitionUtils,
+        literalExpressionEditorDefinition = spy(new LiteralExpressionEditorDefinition(definitionUtils,
                                                                                       sessionManager,
                                                                                       sessionCommandManager,
                                                                                       canvasCommandFactory,
                                                                                       editorSelectedEvent,
-                                                                                      cellEditorControls,
                                                                                       listSelector,
                                                                                       translationService));
 
@@ -293,7 +292,6 @@ public class FunctionGridTest {
                                                                                                                                    any(Optional.class),
                                                                                                                                    anyInt());
 
-        doReturn(session).when(sessionManager).getCurrentSession();
         doReturn(canvasHandler).when(session).getCanvasHandler();
 
         when(gridWidget.getModel()).thenReturn(new BaseGridData(false));

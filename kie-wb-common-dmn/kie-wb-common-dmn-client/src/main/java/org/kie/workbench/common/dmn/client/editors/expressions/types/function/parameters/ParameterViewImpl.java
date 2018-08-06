@@ -66,4 +66,9 @@ public class ParameterViewImpl implements ParameterView {
                               (e) -> command.execute(name.getValue()),
                               false);
     }
+
+    @Override
+    public void focus() {
+        name.focus();
+    }
 }

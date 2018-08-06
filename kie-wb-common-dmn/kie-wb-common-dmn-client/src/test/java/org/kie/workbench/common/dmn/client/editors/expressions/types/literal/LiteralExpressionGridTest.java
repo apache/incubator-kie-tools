@@ -37,6 +37,7 @@ import org.kie.workbench.common.dmn.client.commands.general.DeleteHeaderValueCom
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextGrid;
+import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
@@ -54,7 +55,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPropertyCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
@@ -118,7 +118,7 @@ public class LiteralExpressionGridTest {
     private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     @Mock
-    private ClientSession session;
+    private DMNSession session;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -169,17 +169,19 @@ public class LiteralExpressionGridTest {
 
     @Before
     public void setup() {
+        when(sessionManager.getCurrentSession()).thenReturn(session);
+        when(session.getGridPanel()).thenReturn(gridPanel);
+        when(session.getGridLayer()).thenReturn(gridLayer);
+        when(session.getCellEditorControls()).thenReturn(cellEditorControls);
+
         tupleWithoutValue = new GridCellTuple(0, 0, gridWidget);
         tupleWithValue = new GridCellValueTuple<>(0, 0, gridWidget, new BaseGridCellValue<>("value"));
 
-        definition = new LiteralExpressionEditorDefinition(gridPanel,
-                                                           gridLayer,
-                                                           definitionUtils,
+        definition = new LiteralExpressionEditorDefinition(definitionUtils,
                                                            sessionManager,
                                                            sessionCommandManager,
                                                            canvasCommandFactory,
                                                            editorSelectedEvent,
-                                                           cellEditorControls,
                                                            listSelector,
                                                            translationService);
 
@@ -189,7 +191,6 @@ public class LiteralExpressionGridTest {
         expression = definition.getModelClass();
         expression.ifPresent(e -> e.setText(EXPRESSION_TEXT));
 
-        doReturn(session).when(sessionManager).getCurrentSession();
         doReturn(canvasHandler).when(session).getCanvasHandler();
         doReturn(mock(Bounds.class)).when(gridLayer).getVisibleBounds();
 

@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -31,12 +31,13 @@ import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ParametersEditorImplTest {
@@ -51,9 +52,6 @@ public class ParametersEditorImplTest {
     private ParametersEditorView view;
 
     @Mock
-    private HasParametersControl control;
-
-    @Mock
     private InformationItem parameter;
 
     @Captor
@@ -64,7 +62,33 @@ public class ParametersEditorImplTest {
 
     private ParametersEditorView.Presenter presenter;
 
-    private List<InformationItem> parameters = Collections.emptyList();
+    private final List<InformationItem> parameters = new ArrayList<>();
+
+    protected class MockHasParametersControl implements HasParametersControl {
+
+        @Override
+        public List<InformationItem> getParameters() {
+            return parameters;
+        }
+
+        @Override
+        public void addParameter(final Command onSuccess) {
+            parameters.add(new InformationItem());
+        }
+
+        @Override
+        public void removeParameter(final InformationItem parameter,
+                                    final Command onSuccess) {
+            parameters.remove(parameter);
+        }
+
+        @Override
+        public void updateParameterName(final InformationItem parameter,
+                                        final String name) {
+        }
+    }
+
+    private HasParametersControl control = spy(new MockHasParametersControl());
 
     @Before
     public void setup() {
@@ -90,8 +114,6 @@ public class ParametersEditorImplTest {
 
     @Test
     public void testBindNonNullControl() {
-        when(control.getParameters()).thenReturn(parameters);
-
         presenter.bind(control,
                        ROW_INDEX,
                        COLUMN_INDEX);
@@ -104,6 +126,7 @@ public class ParametersEditorImplTest {
         presenter.show();
 
         verify(view, never()).show();
+        verify(view, never()).focusParameter(anyInt());
     }
 
     @Test
@@ -114,6 +137,20 @@ public class ParametersEditorImplTest {
         presenter.show();
 
         verify(view).show();
+        verify(view, never()).focusParameter(anyInt());
+    }
+
+    @Test
+    public void testShowNonNullControlWithParameters() {
+        parameters.add(new InformationItem());
+
+        presenter.bind(control,
+                       ROW_INDEX,
+                       COLUMN_INDEX);
+        presenter.show();
+
+        verify(view).show();
+        verify(view).focusParameter(0);
     }
 
     @Test
@@ -138,12 +175,11 @@ public class ParametersEditorImplTest {
         presenter.addParameter();
 
         verify(control, never()).addParameter(any(Command.class));
+        verify(view, never()).focusParameter(anyInt());
     }
 
     @Test
     public void testAddParameterNonNullControl() {
-        when(control.getParameters()).thenReturn(parameters);
-
         presenter.bind(control,
                        ROW_INDEX,
                        COLUMN_INDEX);
@@ -157,6 +193,7 @@ public class ParametersEditorImplTest {
         commandCaptor.getValue().execute();
 
         verify(view).setParameters(eq(parameters));
+        verify(view).focusParameter(0);
     }
 
     @Test
@@ -165,11 +202,12 @@ public class ParametersEditorImplTest {
 
         verify(control, never()).removeParameter(any(InformationItem.class),
                                                  any(Command.class));
+        verify(view, never()).focusParameter(anyInt());
     }
 
     @Test
-    public void testRemoveParameterNonNullControl() {
-        when(control.getParameters()).thenReturn(parameters);
+    public void testRemoveLastParameterNonNullControl() {
+        parameters.add(parameter);
 
         presenter.bind(control,
                        ROW_INDEX,
@@ -185,6 +223,29 @@ public class ParametersEditorImplTest {
         commandCaptor.getValue().execute();
 
         verify(view).setParameters(eq(parameters));
+        verify(view, never()).focusParameter(anyInt());
+    }
+
+    @Test
+    public void testRemoveParameterNonNullControl() {
+        parameters.add(new InformationItem());
+        parameters.add(parameter);
+
+        presenter.bind(control,
+                       ROW_INDEX,
+                       COLUMN_INDEX);
+        //Binding sets the parameters, so reset
+        reset(view);
+
+        presenter.removeParameter(parameter);
+
+        verify(control).removeParameter(eq(parameter),
+                                        commandCaptor.capture());
+
+        commandCaptor.getValue().execute();
+
+        verify(view).setParameters(eq(parameters));
+        verify(view).focusParameter(0);
     }
 
     @Test
@@ -198,8 +259,6 @@ public class ParametersEditorImplTest {
 
     @Test
     public void testUpdateParameterNameNonNullControl() {
-        when(control.getParameters()).thenReturn(parameters);
-
         presenter.bind(control,
                        ROW_INDEX,
                        COLUMN_INDEX);
