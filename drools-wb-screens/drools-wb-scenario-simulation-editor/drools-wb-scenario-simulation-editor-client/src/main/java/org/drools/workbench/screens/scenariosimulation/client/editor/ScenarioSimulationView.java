@@ -20,6 +20,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
+import org.uberfire.workbench.model.menu.MenuItem;
 
 public interface ScenarioSimulationView extends KieEditorView,
                                                 IsWidget {
@@ -30,7 +31,10 @@ public interface ScenarioSimulationView extends KieEditorView,
 
     void clear();
 
+    MenuItem getRunScenarioMenuItem();
+
     void addGridMenuItem(String id, String label, String i18n, Command command);
 
     void addHeaderMenuItem(String id, String label, String i18n, Command command);
+
 }

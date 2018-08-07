@@ -22,6 +22,11 @@
   <dependencies>
 
     <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-security-server</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-project-datamodel-api</artifactId>
     </dependency>
@@ -95,6 +100,11 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-test-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-testing-utils</artifactId>
       <scope>test</scope>
     </dependency>
 

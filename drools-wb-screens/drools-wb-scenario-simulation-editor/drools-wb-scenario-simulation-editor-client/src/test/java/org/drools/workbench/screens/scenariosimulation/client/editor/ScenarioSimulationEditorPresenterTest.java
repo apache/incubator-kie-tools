@@ -20,10 +20,14 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridPanelClickHandler;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
@@ -46,6 +50,7 @@ import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -162,6 +167,18 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     }
 
     @Test
+    public void runScenarioButtonIsAdded() throws Exception {
+
+        final MenuItem menuItem = mock(MenuItem.class);
+        doReturn(menuItem).when(mockScenarioSimulationView).getRunScenarioMenuItem();
+
+        presenter.onStartup(mock(ObservablePath.class),
+                            mock(PlaceRequest.class));
+
+        verify(mockFileMenuBuilder).addNewTopLevelMenu(menuItem);
+    }
+
+    @Test
     public void save() {
         presenter.onStartup(mock(ObservablePath.class),
                             mock(PlaceRequest.class));
@@ -226,5 +243,19 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         verify(mockVersionRecordManager, times(1)).clear();
         verify(mockPlaceManager, times(0)).closePlace(RightPanelPresenter.IDENTIFIER);
         verify(mockScenarioSimulationView, times(1)).clear();
+    }
+
+    @Test
+    public void onRunTest() throws Exception {
+
+        final ScenarioSimulationModel model = new ScenarioSimulationModel();
+        doReturn(new ScenarioSimulationModelContent(model,
+                                                    new Overview(),
+                                                    new PackageDataModelOracleBaselinePayload())).when(scenarioSimulationService).loadContent(any());
+        presenter.onStartup(mock(ObservablePath.class), mock(PlaceRequest.class));
+
+        presenter.onRunScenario();
+
+        verify(scenarioSimulationService).runScenario(any(), eq(model));
     }
 }

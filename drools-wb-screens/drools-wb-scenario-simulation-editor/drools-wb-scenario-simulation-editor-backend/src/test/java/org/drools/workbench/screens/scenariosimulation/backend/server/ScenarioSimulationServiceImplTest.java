@@ -20,6 +20,7 @@ import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.backend.service.KieServiceOverviewLoader;
@@ -74,6 +75,12 @@ public class ScenarioSimulationServiceImplTest {
 
     @Mock
     private CopyService copyService;
+
+    @Mock
+    private User user;
+
+    @Mock
+    private ScenarioRunnerServiceImpl scenarioRunnerService;
 
     @InjectMocks
     private ScenarioSimulationServiceImpl service = new ScenarioSimulationServiceImpl(mock(SafeSessionInfo.class));
@@ -182,5 +189,19 @@ public class ScenarioSimulationServiceImplTest {
                        "test.scesim",
                        new ScenarioSimulationModel(),
                        "Commit comment");
+    }
+
+    @Test
+    public void runScenario() throws Exception {
+        doReturn("test user").when(user).getIdentifier();
+
+        final Path path = mock(Path.class);
+        final ScenarioSimulationModel model = new ScenarioSimulationModel();
+
+        service.runScenario(path, model);
+
+        verify(scenarioRunnerService).runTest("test user",
+                                              path,
+                                              model);
     }
 }

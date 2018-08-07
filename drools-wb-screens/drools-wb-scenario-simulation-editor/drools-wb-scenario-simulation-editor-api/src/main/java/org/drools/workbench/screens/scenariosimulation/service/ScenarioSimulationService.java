@@ -37,4 +37,6 @@ public interface ScenarioSimulationService
         SupportsCopy {
 
     ScenarioSimulationModelContent loadContent(final Path path);
+
+    void runScenario(final Path path, final ScenarioSimulationModel model);
 }

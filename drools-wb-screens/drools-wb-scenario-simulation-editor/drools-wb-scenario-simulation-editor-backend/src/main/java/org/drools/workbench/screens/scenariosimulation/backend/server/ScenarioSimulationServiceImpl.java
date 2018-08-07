@@ -28,6 +28,7 @@ import javax.inject.Named;
 
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
+import org.drools.workbench.screens.scenariosimulation.service.ScenarioRunnerService;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
 import org.drools.workbench.screens.scenariosimulation.type.ScenarioSimulationResourceTypeDefinition;
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
@@ -36,6 +37,7 @@ import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
@@ -86,6 +88,12 @@ public class ScenarioSimulationServiceImpl
     @Inject
     private DataModelService dataModelService;
 
+    @Inject
+    private ScenarioRunnerService scenarioRunnerService;
+
+    @Inject
+    private User user;
+
     private SafeSessionInfo safeSessionInfo;
 
     public ScenarioSimulationServiceImpl() {
@@ -99,6 +107,14 @@ public class ScenarioSimulationServiceImpl
     @PostConstruct
     public void init() {
         saveAndRenameService.init(this);
+    }
+
+    @Override
+    public void runScenario(final Path path,
+                            final ScenarioSimulationModel model) {
+        scenarioRunnerService.runTest(user.getIdentifier(),
+                                      path,
+                                      model);
     }
 
     @Override

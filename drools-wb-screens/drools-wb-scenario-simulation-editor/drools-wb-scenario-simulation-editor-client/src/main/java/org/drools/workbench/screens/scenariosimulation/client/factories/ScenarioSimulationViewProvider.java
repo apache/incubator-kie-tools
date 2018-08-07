@@ -15,7 +15,6 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.factories;
 
-import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridPanelClickHandler;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.renderers.ScenarioGridRenderer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
@@ -28,19 +27,18 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 public class ScenarioSimulationViewProvider {
 
     public static ScenarioGridPanel newScenarioGridPanel(final ScenarioGridLayer scenarioGridLayer) {
-        ScenarioGridPanel toReturn = new ScenarioGridPanel();
-        ScenarioGrid scenarioGrid = newScenarioGrid(toReturn, scenarioGridLayer);
-        scenarioGridLayer.addScenarioGrid(scenarioGrid);
+        final ScenarioGridPanel toReturn = new ScenarioGridPanel();
+        scenarioGridLayer.addScenarioGrid(newScenarioGrid(toReturn,
+                                                          scenarioGridLayer));
         toReturn.add(scenarioGridLayer);
         return toReturn;
     }
 
-    public static ScenarioSimulationGridPanelClickHandler newScenarioSimulationGridPanelClickHandler(final ScenarioGrid scenarioGrid) {
-        return new ScenarioSimulationGridPanelClickHandler(scenarioGrid);
+    private static ScenarioGrid newScenarioGrid(final ScenarioGridPanel scenarioGridPanel,
+                                                final ScenarioGridLayer scenarioGridLayer) {
+        return new ScenarioGrid(new ScenarioGridModel(),
+                                scenarioGridLayer,
+                                new ScenarioGridRenderer(false),
+                                scenarioGridPanel);
     }
-
-    private static ScenarioGrid newScenarioGrid(final ScenarioGridPanel scenarioGridPanel, final ScenarioGridLayer scenarioGridLayer) {
-        return new ScenarioGrid(new ScenarioGridModel(), scenarioGridLayer, new ScenarioGridRenderer(false), scenarioGridPanel);
-    }
-
 }

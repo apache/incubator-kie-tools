@@ -17,24 +17,11 @@ package org.drools.workbench.screens.scenariosimulation.client.events;
 
 import com.google.gwt.event.shared.GwtEvent;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioGridBodyRightClickHandler;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
-import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 
 public class ScenarioGridBodyRightClickEvent extends GwtEvent<ScenarioGridBodyRightClickHandler> {
 
     public static Type<ScenarioGridBodyRightClickHandler> TYPE = new Type<>();
-
-    private ScenarioGridPanel scenarioGridPanel;
-    private ScenarioGridLayer scenarioGridLayer;
-    private final GridCell<?> cell;
-
-    public ScenarioGridBodyRightClickEvent(ScenarioGridPanel scenarioGridPanel, ScenarioGridLayer scenarioGridLayer, GridCell<?> cell) {
-        this.scenarioGridPanel = scenarioGridPanel;
-        this.scenarioGridLayer = scenarioGridLayer;
-        this.cell = cell;
-    }
-
+    
     @Override
     public Type<ScenarioGridBodyRightClickHandler> getAssociatedType() {
         return TYPE;
@@ -43,17 +30,5 @@ public class ScenarioGridBodyRightClickEvent extends GwtEvent<ScenarioGridBodyRi
     @Override
     protected void dispatch(ScenarioGridBodyRightClickHandler handler) {
         handler.onRightClick(this);
-    }
-
-    public ScenarioGridPanel getScenarioGridPanel() {
-        return scenarioGridPanel;
-    }
-
-    public ScenarioGridLayer getScenarioGridLayer() {
-        return scenarioGridLayer;
-    }
-
-    public GridCell<?> getGridCell() {
-        return cell;
     }
 }

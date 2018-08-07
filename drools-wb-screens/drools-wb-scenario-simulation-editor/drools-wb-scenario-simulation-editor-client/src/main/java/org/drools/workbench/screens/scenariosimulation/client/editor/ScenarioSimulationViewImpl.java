@@ -18,18 +18,18 @@ package org.drools.workbench.screens.scenariosimulation.client.editor;
 
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.RootPanel;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.GridContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.HeaderContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioSimulationViewProvider;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridPanelClickHandler;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
+import org.uberfire.workbench.model.menu.MenuItem;
 
 /**
  * Implementation of the main view for the ScenarioSimulation editor.
@@ -40,11 +40,12 @@ public class ScenarioSimulationViewImpl
         extends KieEditorViewImpl
         implements ScenarioSimulationView {
 
-    ScenarioGridPanel scenarioGridPanel;
+    private ScenarioGridPanel scenarioGridPanel;
+
     private ScenarioSimulationEditorPresenter presenter;
 
     @Inject
-    ScenarioGridLayer scenarioGridLayer;
+    private ScenarioGridLayer scenarioGridLayer;
 
     @Inject
     private GridContextMenu gridContextMenu;
@@ -52,20 +53,19 @@ public class ScenarioSimulationViewImpl
     @Inject
     private HeaderContextMenu headerContextMenu;
 
-    protected HandlerRegistration clickHandlerRegistration;
+    private HandlerRegistration clickHandlerRegistration;
 
     @Override
     public void init(final ScenarioSimulationEditorPresenter presenter) {
         this.presenter = presenter;
+
         this.scenarioGridPanel = ScenarioSimulationViewProvider.newScenarioGridPanel(scenarioGridLayer);
+        clickHandlerRegistration = this.scenarioGridPanel.addClickHandler(new ScenarioSimulationGridPanelClickHandler(scenarioGridPanel.getScenarioGrid(),
+                                                                                                                      gridContextMenu,
+                                                                                                                      headerContextMenu));
         scenarioGridLayer.enterPinnedMode(scenarioGridLayer.getScenarioGrid(), () -> {
         });  // Hack to overcome default implementation
 
-        ScenarioSimulationGridPanelClickHandler scenarioSimulationGridPanelClickHandler = ScenarioSimulationViewProvider.newScenarioSimulationGridPanelClickHandler(scenarioGridPanel.getScenarioGrid());
-        clickHandlerRegistration = RootPanel.get().addDomHandler(scenarioSimulationGridPanelClickHandler, ClickEvent.getType());
-        scenarioSimulationGridPanelClickHandler.setGridContextMenu(gridContextMenu);
-        scenarioSimulationGridPanelClickHandler.setHeaderContextMenu(headerContextMenu);
-        scenarioGridPanel.setClickHandler(scenarioSimulationGridPanelClickHandler);
         initWidget(scenarioGridPanel);
     }
 
@@ -91,4 +91,14 @@ public class ScenarioSimulationViewImpl
         headerContextMenu.addMenuItem(id, label, i18n, command);
     }
 
+    @Override
+    public MenuItem getRunScenarioMenuItem() {
+        return new RunScenarioMenuItem(ScenarioSimulationEditorConstants.INSTANCE.runScenarioSimulation(),
+                                       new Command() {
+                                           @Override
+                                           public void execute() {
+                                               presenter.onRunScenario();
+                                           }
+                                       });
+    }
 }

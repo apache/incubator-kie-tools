@@ -15,7 +15,10 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.widgets;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.RootPanel;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridPanelClickHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
@@ -35,9 +38,10 @@ public class ScenarioGridPanel extends GridLienzoPanel {
         super(LIENZO_PANEL_WIDTH, LIENZO_PANEL_HEIGHT);
     }
 
-    public void setClickHandler(ScenarioSimulationGridPanelClickHandler clickHandler) {
+    public HandlerRegistration addClickHandler(final ScenarioSimulationGridPanelClickHandler clickHandler) {
         getDomElementContainer().addDomHandler(clickHandler,
                                                ContextMenuEvent.getType());
+        return RootPanel.get().addDomHandler(clickHandler, ClickEvent.getType());
     }
 
     public ScenarioGrid getScenarioGrid() {

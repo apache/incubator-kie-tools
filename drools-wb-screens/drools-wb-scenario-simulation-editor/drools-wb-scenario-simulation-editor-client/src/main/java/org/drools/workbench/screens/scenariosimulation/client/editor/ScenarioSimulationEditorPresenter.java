@@ -99,9 +99,9 @@ public class ScenarioSimulationEditorPresenter
         this.oracleFactory = oracleFactory;
         this.placeManager = placeManager;
 
-        view.init(this);
-
         addMenuItems();
+        
+        view.init(this);
     }
 
     @OnStartup
@@ -177,6 +177,7 @@ public class ScenarioSimulationEditorPresenter
      */
     @Override
     protected void makeMenuBar() {
+        fileMenuBuilder.addNewTopLevelMenu(view.getRunScenarioMenuItem());
         super.makeMenuBar();
         addRightPanelMenuItem(fileMenuBuilder);
     }
@@ -239,4 +240,8 @@ public class ScenarioSimulationEditorPresenter
         fileMenuBuilder.addNewTopLevelMenu(rightPanelMenuItem);
     }
 
+    public void onRunScenario() {
+        service.call().runScenario(versionRecordManager.getCurrentPath(),
+                                   model);
+    }
 }
