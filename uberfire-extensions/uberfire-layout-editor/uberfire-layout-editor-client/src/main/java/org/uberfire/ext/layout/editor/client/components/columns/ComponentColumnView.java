@@ -23,6 +23,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.Window;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Document;
 import org.jboss.errai.common.client.dom.HTMLElement;
@@ -147,7 +148,9 @@ public class ComponentColumnView
     }
 
     void setupOnResize() {
-        document.getBody().setOnresize(event -> calculateWidth());
+        Window.addResizeHandler(event -> {
+            calculateWidth();
+        });
     }
 
     public void dockSelectEvent(@Observes UberfireDocksInteractionEvent event) {
@@ -360,7 +363,7 @@ public class ComponentColumnView
         });
         content.setOnmouseout(e -> {
             removeCSSClass(content,
-                    "componentMovePreview");
+                           "componentMovePreview");
         });
         content.setOnmouseover(e -> {
             e.preventDefault();
