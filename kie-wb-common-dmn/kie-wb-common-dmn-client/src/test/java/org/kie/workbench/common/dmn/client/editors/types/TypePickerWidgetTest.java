@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.thirdparty.guava.common.collect.Ordering;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -54,6 +55,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -76,6 +78,9 @@ public class TypePickerWidgetTest {
 
     @Mock
     private DMNGraphUtils dmnGraphUtils;
+
+    @Mock
+    private DataTypeModal dataTypeModal;
 
     @GwtMock
     @SuppressWarnings("unused")
@@ -117,7 +122,8 @@ public class TypePickerWidgetTest {
         this.picker = spy(new TypePickerWidget(typeButton,
                                                translationService,
                                                qNameFieldConverter,
-                                               dmnGraphUtils));
+                                               dmnGraphUtils,
+                                               dataTypeModal));
     }
 
     @Test
@@ -300,5 +306,18 @@ public class TypePickerWidgetTest {
         typeSelector.setEnabled(eq(true));
 
         assertTrue(picker.isEnabled());
+    }
+
+    @Test
+    public void testOnClickTypeButton() {
+
+        final String value = "value";
+        final ClickEvent clickEvent = mock(ClickEvent.class);
+
+        when(typeSelector.getValue()).thenReturn(value);
+
+        picker.onClickTypeButton(clickEvent);
+
+        verify(dataTypeModal).show(value);
     }
 }

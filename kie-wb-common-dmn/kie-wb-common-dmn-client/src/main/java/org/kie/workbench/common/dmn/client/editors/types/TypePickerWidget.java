@@ -29,7 +29,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasValue;
@@ -68,6 +67,8 @@ public class TypePickerWidget extends Composite implements HasValue<String>,
 
     private DMNGraphUtils dmnGraphUtils;
 
+    private DataTypeModal dataTypeModal;
+
     private String type;
     private boolean enabled;
 
@@ -79,11 +80,13 @@ public class TypePickerWidget extends Composite implements HasValue<String>,
     public TypePickerWidget(final Button typeButton,
                             final TranslationService translationService,
                             final QNameFieldConverter qNameFieldConverter,
-                            final DMNGraphUtils dmnGraphUtils) {
+                            final DMNGraphUtils dmnGraphUtils,
+                            final DataTypeModal dataTypeModal) {
         this.typeButton = typeButton;
         this.typeSelector = GWT.create(Select.class);
         this.qNameFieldConverter = qNameFieldConverter;
         this.dmnGraphUtils = dmnGraphUtils;
+        this.dataTypeModal = dataTypeModal;
 
         this.typeSelector.setShowTick(true);
         this.typeSelector.setLiveSearch(true);
@@ -154,7 +157,8 @@ public class TypePickerWidget extends Composite implements HasValue<String>,
     @EventHandler("typeButton")
     @SuppressWarnings("unused")
     public void onClickTypeButton(final ClickEvent clickEvent) {
-        Window.alert("Show advanced popup to define types.");
+        final String value = typeSelector.getValue();
+        dataTypeModal.show(value);
     }
 
     @Override
