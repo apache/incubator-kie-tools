@@ -27,6 +27,8 @@ import org.kie.soup.project.datamodel.imports.Imports;
 public class ScenarioSimulationModel
         implements HasImports {
 
+    private Simulation simulation;
+
     /**
      * Map of Header columns: key is the column number, value is the column text
      */
@@ -45,6 +47,7 @@ public class ScenarioSimulationModel
         headersMap.put(1, "");
         headersMap.put(2, "Expression");
         rowsMap = new HashMap<>();
+        simulation = new Simulation();
     }
 
     public ScenarioSimulationModel(final Map<Integer, String> headersMap, final Map<Integer, Map<Integer, String>> rowsMap) {
@@ -54,6 +57,14 @@ public class ScenarioSimulationModel
 
     public Map<Integer, String> getHeadersMap() {
         return headersMap;
+    }
+
+    public Simulation getSimulation() {
+        return simulation;
+    }
+
+    public void setSimulation(Simulation simulation) {
+        this.simulation = simulation;
     }
 
     @Override
