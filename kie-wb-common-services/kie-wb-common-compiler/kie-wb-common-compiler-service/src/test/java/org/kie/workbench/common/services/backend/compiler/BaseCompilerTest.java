@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.Serializable;
 
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.kie.workbench.common.services.backend.compiler.impl.WorkspaceCompilationInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,12 @@ public class BaseCompilerTest implements Serializable{
     protected String alternateSettingsAbsPath;
     protected WorkspaceCompilationInfo info;
     protected AFCompiler compiler;
+
+    @BeforeClass
+    public static void setup() {
+        System.setProperty("org.uberfire.nio.git.daemon.enabled", "false");
+        System.setProperty("org.uberfire.nio.git.ssh.enabled", "false");
+    }
 
     public BaseCompilerTest(String prjName) {
         try {
