@@ -32,20 +32,12 @@ public class ScenarioGridPanel extends GridLienzoPanel {
 
     public static final int LIENZO_PANEL_HEIGHT = 450;
 
-    // Add for testing purpose
-    private ScenarioSimulationGridPanelContextMenuHandler contextMenuHandler;
-
     public ScenarioGridPanel(ScenarioSimulationGridPanelContextMenuHandler contextMenuHandler) {
         super(LIENZO_PANEL_WIDTH, LIENZO_PANEL_HEIGHT);
-        this.contextMenuHandler = contextMenuHandler;
         getDomElementContainer().addDomHandler(contextMenuHandler,
                                                ContextMenuEvent.getType());
     }
 
-    // Add for testing purpose
-    public ScenarioSimulationGridPanelContextMenuHandler getContextMenuHandler() {
-        return contextMenuHandler;
-    }
 
     public ScenarioGrid getScenarioGrid() {
         return ((ScenarioGridLayer) getDefaultGridLayer()).getScenarioGrid();

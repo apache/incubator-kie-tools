@@ -14,21 +14,28 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.scenariosimulation.client.editor;
-
-import java.util.Map;
+package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
-import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
+import org.uberfire.client.mvp.HasPresenter;
 
-public interface ScenarioSimulationView extends KieEditorView,
-                                                IsWidget {
+public interface RightPanelView
+        extends IsWidget,
+                HasPresenter<RightPanelView.Presenter> {
 
-    void setContent(final Map<Integer, String> headersMap, final Map<Integer, Map<Integer, String>> rowsMap);
+    void showEditorTab();
 
-    ScenarioGridPanel getScenarioGridPanel();
+    void hideCheatSheetTab();
 
+    void showCheatSheetTab();
 
+    void hideEditorTab();
+
+    interface Presenter {
+
+        void onEditorTabActivated();
+
+        void onCheatSheetTabActivated();
+    }
 
 }

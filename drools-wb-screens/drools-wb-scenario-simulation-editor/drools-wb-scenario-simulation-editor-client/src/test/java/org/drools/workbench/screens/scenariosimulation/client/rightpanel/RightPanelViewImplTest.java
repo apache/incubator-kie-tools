@@ -14,30 +14,48 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.scenariosimulation.client.editor;
+package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class ScenarioSimulationViewImplTest extends AbstractScenarioSimulationEditorTest {
+public class RightPanelViewImplTest {
 
-    private ScenarioSimulationView scenarioSimulationView;
+    private RightPanelViewImpl rightPanelView;
+
+    @Mock
+    private RightPanelPresenter mockRightPanelPresenter;
 
     @Before
     public void setup() {
-        super.setup();
-        scenarioSimulationView = new ScenarioSimulationViewImpl(mockScenarioGridPanel);
+        this.rightPanelView = spy(new RightPanelViewImpl() {
+            {
+
+            }
+        });
+        rightPanelView.init(mockRightPanelPresenter);
     }
 
     @Test
-    public void testSetContent() {
-        scenarioSimulationView.setContent(model.getHeadersMap(), model.getRowsMap());
-        verify(mockScenarioGrid, times(1)).setContent(model.getHeadersMap(), model.getRowsMap());
+    public void onEditorTabClick() {
+        rightPanelView.onEditorTabClick(mock(ClickEvent.class));
+        verify(mockRightPanelPresenter, times(1)).onEditorTabActivated();
     }
+
+    @Test
+    public void onCheatSheetTabClick() {
+        rightPanelView.onCheatSheetTabClick(mock(ClickEvent.class));
+        verify(mockRightPanelPresenter, times(1)).onCheatSheetTabActivated();
+    }
+
 }

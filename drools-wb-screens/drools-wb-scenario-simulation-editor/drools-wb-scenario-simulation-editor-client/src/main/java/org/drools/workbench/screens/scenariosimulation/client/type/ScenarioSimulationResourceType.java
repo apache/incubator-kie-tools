@@ -50,7 +50,7 @@ public class ScenarioSimulationResourceType
 
     @Override
     public String getDescription() {
-        String desc = ScenarioSimulationEditorConstants.INSTANCE.ScenarioSimulationResourceTypeDescription();
+        String desc = ScenarioSimulationEditorConstants.INSTANCE.scenarioSimulationResourceTypeDescription();
         if (desc == null || desc.isEmpty()) {
             return super.getDescription();
         }

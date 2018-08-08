@@ -19,11 +19,14 @@ package org.drools.workbench.screens.scenariosimulation.client.editor;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioSimulationViewProvider;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.RightPanelMenuItem;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
@@ -40,6 +43,10 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.mvp.PlaceStatus;
+import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
+import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
@@ -47,10 +54,14 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
+import static org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter.IDENTIFIER;
+
 @Dependent
-@WorkbenchEditor(identifier = "ScenarioSimulationEditor", supportedTypes = {ScenarioSimulationResourceType.class})
+@WorkbenchEditor(identifier = IDENTIFIER, supportedTypes = {ScenarioSimulationResourceType.class})
 public class ScenarioSimulationEditorPresenter
         extends KieEditor<ScenarioSimulationModel> {
+
+    public static final String IDENTIFIER = "ScenarioSimulationEditor";
 
     private ImportsWidgetPresenter importsWidget;
 
@@ -62,7 +73,11 @@ public class ScenarioSimulationEditorPresenter
     private ScenarioSimulationResourceType type;
 
     private AsyncPackageDataModelOracle oracle;
-    protected ScenarioSimulationView view;  // making protected for test purposes
+
+    private ScenarioSimulationView view;
+
+    @Inject
+    private RightPanelMenuItem rightPanelMenuItem;
 
     public ScenarioSimulationEditorPresenter() {
         //Zero-parameter constructor for CDI proxies
@@ -72,7 +87,8 @@ public class ScenarioSimulationEditorPresenter
     public ScenarioSimulationEditorPresenter(final Caller<ScenarioSimulationService> service,
                                              final ScenarioSimulationResourceType type,
                                              final ImportsWidgetPresenter importsWidget,
-                                             final AsyncPackageDataModelOracleFactory oracleFactory) {
+                                             final AsyncPackageDataModelOracleFactory oracleFactory,
+                                             final PlaceManager placeManager) {
         super();
         this.view = newScenarioSimulationView();   // Indirection added for test-purpose
         this.baseView = view;
@@ -80,6 +96,7 @@ public class ScenarioSimulationEditorPresenter
         this.type = type;
         this.importsWidget = importsWidget;
         this.oracleFactory = oracleFactory;
+        this.placeManager = placeManager;
     }
 
     @OnStartup
@@ -88,12 +105,17 @@ public class ScenarioSimulationEditorPresenter
         super.init(path,
                    place,
                    type);
-        view.getScenarioGridPanel().getDefaultGridLayer().enterPinnedMode(view.getScenarioGridPanel().getScenarioGrid(), () -> {});  // Horrible hack due to  default implementation/design
+        view.getScenarioGridPanel().getDefaultGridLayer().enterPinnedMode(view.getScenarioGridPanel().getScenarioGrid(), () -> {
+        });  // Hack to overcome default implementation
     }
 
     @OnClose
     public void onClose() {
         this.versionRecordManager.clear();
+        if (PlaceStatus.OPEN.equals(placeManager.getStatus(RightPanelPresenter.IDENTIFIER))) {
+            placeManager.closePlace(RightPanelPresenter.IDENTIFIER);
+            this.getView().showLoading();
+        }
     }
 
     @OnMayClose
@@ -121,8 +143,33 @@ public class ScenarioSimulationEditorPresenter
         return menus;
     }
 
+    // Observing to show RightPanel when ScenarioSimulationScreen is put in foreground
+    public void onPlaceGainFocusEvent(@Observes PlaceGainFocusEvent placeGainFocusEvent) {
+        PlaceRequest placeRequest = placeGainFocusEvent.getPlace();
+        if (placeRequest.getIdentifier().equals(ScenarioSimulationEditorPresenter.IDENTIFIER) && PlaceStatus.CLOSE.equals(placeManager.getStatus(RightPanelPresenter.IDENTIFIER))) {
+            placeManager.goTo(RightPanelPresenter.IDENTIFIER);
+        }
+    }
+
+    // Observing to hide RightPanel when ScenarioSimulationScreen is put in background
+    public void onPlaceHiddenEvent(@Observes PlaceHiddenEvent placeHiddenEvent) {
+        PlaceRequest placeRequest = placeHiddenEvent.getPlace();
+        if (placeRequest.getIdentifier().equals(ScenarioSimulationEditorPresenter.IDENTIFIER) && PlaceStatus.OPEN.equals(placeManager.getStatus(RightPanelPresenter.IDENTIFIER))) {
+            placeManager.closePlace(RightPanelPresenter.IDENTIFIER);
+        }
+    }
+
     public ScenarioSimulationView getView() {
         return view;
+    }
+
+    /**
+     * If you want to customize the menu override this method.
+     */
+    @Override
+    protected void makeMenuBar() {
+        super.makeMenuBar();
+        addRightPanelMenuItem(fileMenuBuilder);
     }
 
     @Override
@@ -146,14 +193,14 @@ public class ScenarioSimulationEditorPresenter
                 .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
     }
 
-    // Add only for testing purpose
-    protected ScenarioSimulationView newScenarioSimulationView() {
-        return ScenarioSimulationViewProvider.newScenarioSimulationView();
-    }
-
     protected void loadContent() {
         service.call(getModelSuccessCallback(),
                      getNoSuchFileExceptionErrorCallback()).loadContent(versionRecordManager.getCurrentPath());
+    }
+
+    // Needed by test
+    protected ScenarioSimulationView newScenarioSimulationView() {
+        return ScenarioSimulationViewProvider.newScenarioSimulationView();
     }
 
     private RemoteCallback<ScenarioSimulationModelContent> getModelSuccessCallback() {
@@ -175,5 +222,9 @@ public class ScenarioSimulationEditorPresenter
             view.setContent(model.getHeadersMap(), model.getRowsMap());
             createOriginalHash(model.hashCode());
         };
+    }
+
+    private void addRightPanelMenuItem(final FileMenuBuilder fileMenuBuilder) {
+        fileMenuBuilder.addNewTopLevelMenu(rightPanelMenuItem);
     }
 }

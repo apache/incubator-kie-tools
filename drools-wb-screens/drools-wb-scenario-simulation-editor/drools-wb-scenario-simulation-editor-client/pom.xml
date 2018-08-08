@@ -27,10 +27,10 @@
     </dependency>
 
     <dependency>
-        <groupId>org.kie.soup</groupId>
-        <artifactId>kie-soup-commons</artifactId>
-      </dependency>
-    
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-commons</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.gwtbootstrap3</groupId>
       <artifactId>gwtbootstrap3</artifactId>
@@ -76,6 +76,11 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-ioc</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-ui</artifactId>
     </dependency>
 
     <dependency>

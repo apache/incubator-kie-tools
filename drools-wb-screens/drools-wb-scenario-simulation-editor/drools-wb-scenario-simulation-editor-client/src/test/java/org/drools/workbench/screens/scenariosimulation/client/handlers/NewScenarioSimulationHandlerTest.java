@@ -39,34 +39,34 @@ import static org.mockito.Mockito.verify;
 public class NewScenarioSimulationHandlerTest {
 
     @Mock
-    private BusyIndicatorView busyIndicatorView;
+    private BusyIndicatorView mockBusyIndicatorView;
 
     @Mock
-    private ScenarioSimulationService scenarioSimulationService;
+    private ScenarioSimulationService mockScenarioSimulationService;
 
     @Mock
-    private ScenarioSimulationResourceType resourceType;
+    private ScenarioSimulationResourceType mockResourceType;
 
     @Mock
-    private EventSourceMock notificationEvent;
+    private EventSourceMock mockNotificationEvent;
 
     @Mock
-    private EventSourceMock newResourceSuccessEvent;
+    private EventSourceMock mockNewResourceSuccessEvent;
 
     @Mock
-    private PlaceManager placeManager;
+    private PlaceManager mockPlaceManager;
 
     private NewScenarioSimulationHandler handler;
 
     @Before
     public void setUp() throws Exception {
 
-        handler = new NewScenarioSimulationHandler(resourceType,
-                                                   busyIndicatorView,
-                                                   notificationEvent,
-                                                   newResourceSuccessEvent,
-                                                   placeManager,
-                                                   new CallerMock<>(scenarioSimulationService));
+        handler = new NewScenarioSimulationHandler(mockResourceType,
+                                                   mockBusyIndicatorView,
+                                                   mockNotificationEvent,
+                                                   mockNewResourceSuccessEvent,
+                                                   mockPlaceManager,
+                                                   new CallerMock<>(mockScenarioSimulationService));
     }
 
     @Test
@@ -75,11 +75,11 @@ public class NewScenarioSimulationHandlerTest {
                        "newfile.scesim",
                        mock(NewResourcePresenter.class));
 
-        verify(busyIndicatorView).showBusyIndicator("Saving");
-        verify(busyIndicatorView).hideBusyIndicator();
+        verify(mockBusyIndicatorView).showBusyIndicator("Saving");
+        verify(mockBusyIndicatorView).hideBusyIndicator();
 
-        verify(notificationEvent).fire(any(NotificationEvent.class));
-        verify(newResourceSuccessEvent).fire(any(NewResourcePresenter.class));
-        verify(placeManager).goTo(any(Path.class));
+        verify(mockNotificationEvent).fire(any(NotificationEvent.class));
+        verify(mockNewResourceSuccessEvent).fire(any(NewResourcePresenter.class));
+        verify(mockPlaceManager).goTo(any(Path.class));
     }
 }

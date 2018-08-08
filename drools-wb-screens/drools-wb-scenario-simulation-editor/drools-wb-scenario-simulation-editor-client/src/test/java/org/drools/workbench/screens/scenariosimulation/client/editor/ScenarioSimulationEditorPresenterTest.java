@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.editor;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +26,10 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.mvp.PlaceStatus;
+import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
+import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
@@ -47,23 +52,31 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     private ScenarioSimulationEditorPresenter presenter;
 
     @Mock
-    private ScenarioGridLayer scenarioGridLayer;
+    private ScenarioGridLayer mockScenarioGridLayer;
 
     @Mock
-    private ScenarioSimulationView scenarioSimulationView;
+    private ScenarioSimulationView mockScenarioSimulationView;
+
+    @Mock
+    private PlaceManager mockPlaceManager;
+
+    @Mock
+    private PlaceRequest mockPlaceRequest;
 
     @Before
     public void setup() {
         super.setup();
-        //ScenarioSimulationView scenarioSimulationView = mock(ScenarioSimulationViewImpl.class);
-        when(scenarioSimulationView.getScenarioGridPanel()).thenReturn(scenarioGridPanel);
+        when(mockScenarioSimulationView.getScenarioGridPanel()).thenReturn(mockScenarioGridPanel);
 
-        when(scenarioGridPanel.getDefaultGridLayer()).thenReturn(scenarioGridLayer);
+        when(mockScenarioGridPanel.getDefaultGridLayer()).thenReturn(mockScenarioGridLayer);
+
+        when(mockPlaceRequest.getIdentifier()).thenReturn(ScenarioSimulationEditorPresenter.IDENTIFIER);
 
         this.presenter = spy(new ScenarioSimulationEditorPresenter(new CallerMock<>(scenarioSimulationService),
                                                                    type,
-                                                                   importsWidget,
-                                                                   oracleFactory) {
+                                                                   mockImportsWidget,
+                                                                   mockOracleFactory,
+                                                                   mockPlaceManager) {
             {
                 this.kieView = mockKieView;
                 this.overviewWidget = mockOverviewWidget;
@@ -87,7 +100,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
 
             @Override
             protected ScenarioSimulationView newScenarioSimulationView() {
-                return scenarioSimulationView/*mock(ScenarioSimulationViewImpl.class)*/;
+                return mockScenarioSimulationView;
             }
         });
     }
@@ -96,19 +109,18 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     public void testOnStartup() {
 
         final AsyncPackageDataModelOracle oracle = mock(AsyncPackageDataModelOracle.class);
-        when(oracleFactory.makeAsyncPackageDataModelOracle(any(),
-                                                           eq(model),
-                                                           eq(content.getDataModel()))).thenReturn(oracle);
+        when(mockOracleFactory.makeAsyncPackageDataModelOracle(any(),
+                                                               eq(model),
+                                                               eq(content.getDataModel()))).thenReturn(oracle);
         presenter.onStartup(mock(ObservablePath.class),
                             mock(PlaceRequest.class));
-        verify(importsWidget).setContent(oracle,
-                                         model.getImports(),
-                                         false);
-        verify(mockKieView).addImportsTab(importsWidget);
+        verify(mockImportsWidget).setContent(oracle,
+                                             model.getImports(),
+                                             false);
+        verify(mockKieView).addImportsTab(mockImportsWidget);
         verify(presenter.getView()).showLoading();
         verify(presenter.getView()).hideBusyIndicator();
-        verify(scenarioGridLayer, times(1)).enterPinnedMode(any(), any());
-        verify(presenter.newScenarioSimulationView(), times(1));
+        verify(mockScenarioGridLayer, times(1)).enterPinnedMode(any(), any());
     }
 
     @Test
@@ -130,5 +142,23 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         verify(presenter.getView()).hideBusyIndicator();
         verify(mockNotification).fire(any(NotificationEvent.class));
         verify(mockVersionRecordManager).reloadVersions(any(Path.class));
+    }
+
+    @Test
+    public void onPlaceGainFocusEvent() {
+        PlaceGainFocusEvent mockPlaceGainFocusEvent = mock(PlaceGainFocusEvent.class);
+        when(mockPlaceGainFocusEvent.getPlace()).thenReturn(mockPlaceRequest);
+        when(mockPlaceManager.getStatus(RightPanelPresenter.IDENTIFIER)).thenReturn(PlaceStatus.CLOSE);
+        presenter.onPlaceGainFocusEvent(mockPlaceGainFocusEvent);
+        verify(mockPlaceManager, times(1)).goTo(RightPanelPresenter.IDENTIFIER);
+    }
+
+    @Test
+    public void onPlaceHiddenEvent() {
+        PlaceHiddenEvent mockPlaceHiddenEvent = mock(PlaceHiddenEvent.class);
+        when(mockPlaceHiddenEvent.getPlace()).thenReturn(mockPlaceRequest);
+        when(mockPlaceManager.getStatus(RightPanelPresenter.IDENTIFIER)).thenReturn(PlaceStatus.OPEN);
+        presenter.onPlaceHiddenEvent(mockPlaceHiddenEvent);
+        verify(mockPlaceManager, times(1)).closePlace(RightPanelPresenter.IDENTIFIER);
     }
 }

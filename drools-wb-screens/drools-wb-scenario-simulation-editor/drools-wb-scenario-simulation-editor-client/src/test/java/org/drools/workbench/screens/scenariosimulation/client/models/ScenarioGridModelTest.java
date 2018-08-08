@@ -49,19 +49,19 @@ public class ScenarioGridModelTest {
     private ScenarioGridModel scenarioGridModel;
 
     @Mock
-    private GridColumn<String> gridColumn;
+    private GridColumn<String> mockGridColumn;
 
     @Mock
-    private List<GridColumn.HeaderMetaData> headerMetaDataList;
+    private List<GridColumn.HeaderMetaData> mockHeaderMetaDataList;
 
     @Mock
-    private GridColumn.HeaderMetaData headerMetaData;
+    private GridColumn.HeaderMetaData mockHeaderMetaData;
 
     @Mock
-    private BaseGridCell<String> gridCell;
+    private BaseGridCell<String> mockGridCell;
 
     @Mock
-    private GridCellValue<String> gridCellValue;
+    private GridCellValue<String> mockGridCellValue;
 
     private Map<Integer, String> headersMap;
     private Map<Integer, Map<Integer, String>> rowsMap;
@@ -73,18 +73,18 @@ public class ScenarioGridModelTest {
     public void setup() {
         scenarioGridModel = new ScenarioGridModel();
 
-        when(gridColumn.getHeaderMetaData()).thenReturn(headerMetaDataList);
-        when(headerMetaDataList.get(0)).thenReturn(headerMetaData);
-        when(headerMetaData.getTitle()).thenReturn(GRID_COLUMN_TITLE);
+        when(mockGridColumn.getHeaderMetaData()).thenReturn(mockHeaderMetaDataList);
+        when(mockHeaderMetaDataList.get(0)).thenReturn(mockHeaderMetaData);
+        when(mockHeaderMetaData.getTitle()).thenReturn(GRID_COLUMN_TITLE);
 
-        when(gridCell.getValue()).thenReturn(gridCellValue);
-        when(gridCellValue.getValue()).thenReturn(GRID_CELL_TEXT);
+        when(mockGridCell.getValue()).thenReturn(mockGridCellValue);
+        when(mockGridCellValue.getValue()).thenReturn(GRID_CELL_TEXT);
 
         IntStream.range(0, NUMBER_OF_ROWS).forEach(i -> scenarioGridModel.appendRow(new ScenarioGridRow()));
         IntStream.range(0, NUMBER_OF_COLUMNS).forEach(i -> {
             final ScenarioGridColumn scenarioGridColumn = mock(ScenarioGridColumn.class);
             when(scenarioGridColumn.getIndex()).thenReturn(i);
-            scenarioGridModel.appendColumn(gridColumn);
+            scenarioGridModel.appendColumn(mockGridColumn);
         });
         // headersMap represents the column_id:column_title map
         headersMap = getHeadersMap();
@@ -103,7 +103,7 @@ public class ScenarioGridModelTest {
     @Test
     public void appendColumn() {
         int expectedColumnCount = scenarioGridModel.getColumnCount() + 1;
-        scenarioGridModel.appendColumn(gridColumn);
+        scenarioGridModel.appendColumn(mockGridColumn);
         int currentColumnCount = scenarioGridModel.getColumnCount();
         assertEquals(currentColumnCount, expectedColumnCount);
         int insertedColumnIndex = currentColumnCount - 1;
@@ -117,10 +117,10 @@ public class ScenarioGridModelTest {
         int insertedRowIndex = 0;
         int insertedColumnIndex = 1;
 
-        final GridData.Range r = scenarioGridModel.setCell(insertedRowIndex, insertedColumnIndex, () -> gridCell);
+        final GridData.Range r = scenarioGridModel.setCell(insertedRowIndex, insertedColumnIndex, () -> mockGridCell);
         assertEquals(insertedRowIndex, r.getMinRowIndex());
         assertEquals(insertedRowIndex, r.getMaxRowIndex());
-        assertEquals(gridCell, scenarioGridModel.getCell(insertedRowIndex, insertedColumnIndex));
+        assertEquals(mockGridCell, scenarioGridModel.getCell(insertedRowIndex, insertedColumnIndex));
         Map<Integer, String> insertedMap = rowsMap.get(insertedRowIndex);
         assertNotNull(insertedMap);
         String insertedString = insertedMap.get(insertedColumnIndex);

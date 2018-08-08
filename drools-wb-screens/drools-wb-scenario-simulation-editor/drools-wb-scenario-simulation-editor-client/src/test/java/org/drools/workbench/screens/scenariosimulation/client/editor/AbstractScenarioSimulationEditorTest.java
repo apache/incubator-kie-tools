@@ -68,10 +68,10 @@ public abstract class AbstractScenarioSimulationEditorTest {
     protected ScenarioSimulationService scenarioSimulationService;
 
     @Mock
-    protected ObservablePath path;
+    protected ObservablePath mockObservablePath;
 
     @Mock
-    protected Overview overview;
+    protected Overview mockOverview;
 
     @Mock
     protected WorkspaceProjectContext mockWorkbenchContext;
@@ -83,16 +83,16 @@ public abstract class AbstractScenarioSimulationEditorTest {
     protected EventSourceMock<NotificationEvent> mockNotification;
 
     @Mock
-    protected ImportsWidgetPresenter importsWidget;
+    protected ImportsWidgetPresenter mockImportsWidget;
 
     @Mock
-    protected AsyncPackageDataModelOracleFactory oracleFactory;
+    protected AsyncPackageDataModelOracleFactory mockOracleFactory;
 
     @Mock
-    protected ScenarioGridPanel scenarioGridPanel;
+    protected ScenarioGridPanel mockScenarioGridPanel;
 
     @Mock
-    protected ScenarioGrid scenarioGrid;
+    protected ScenarioGrid mockScenarioGrid;
 
     protected ScenarioSimulationResourceType type;
 
@@ -110,18 +110,18 @@ public abstract class AbstractScenarioSimulationEditorTest {
         when(mockFileMenuBuilder.addValidate(any(Command.class))).thenReturn(mockFileMenuBuilder);
         when(mockFileMenuBuilder.addNewTopLevelMenu(any(MenuItem.class))).thenReturn(mockFileMenuBuilder);
 
-        when(mockVersionRecordManager.getCurrentPath()).thenReturn(path);
-        when(mockVersionRecordManager.getPathToLatest()).thenReturn(path);
+        when(mockVersionRecordManager.getCurrentPath()).thenReturn(mockObservablePath);
+        when(mockVersionRecordManager.getPathToLatest()).thenReturn(mockObservablePath);
 
         when(mockWorkbenchContext.getActiveWorkspaceProject()).thenReturn(Optional.empty());
 
         this.model = new ScenarioSimulationModel();
         this.content = new ScenarioSimulationModelContent(model,
-                                                          overview,
+                                                          mockOverview,
                                                           mock(PackageDataModelOracleBaselinePayload.class));
 
-        when(scenarioSimulationService.loadContent(path)).thenReturn(content);
+        when(scenarioSimulationService.loadContent(mockObservablePath)).thenReturn(content);
 
-        when(scenarioGridPanel.getScenarioGrid()).thenReturn(scenarioGrid);
+        when(mockScenarioGridPanel.getScenarioGrid()).thenReturn(mockScenarioGrid);
     }
 }

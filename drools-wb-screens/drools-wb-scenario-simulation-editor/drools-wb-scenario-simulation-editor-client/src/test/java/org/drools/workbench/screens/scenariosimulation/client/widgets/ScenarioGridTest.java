@@ -41,19 +41,19 @@ import static org.mockito.Mockito.verify;
 public class ScenarioGridTest {
 
     @Mock
-    private ScenarioGridModel model;
+    private ScenarioGridModel mockScenarioGridModel;
     @Mock
-    private ScenarioGridLayer scenarioGridLayer;
+    private ScenarioGridLayer mockScenarioGridLayer;
     @Mock
-    private ScenarioGridRenderer renderer;
+    private ScenarioGridRenderer mockScenarioGridRenderer;
     @Mock
-    private ScenarioGridPanel scenarioGridPanel;
+    private ScenarioGridPanel mockScenarioGridPanel;
 
     private ScenarioGrid scenarioGrid;
 
     @Before
     public void setup() {
-        scenarioGrid = new ScenarioGrid(model, scenarioGridLayer, renderer, scenarioGridPanel);
+        scenarioGrid = new ScenarioGrid(mockScenarioGridModel, mockScenarioGridLayer, mockScenarioGridRenderer, mockScenarioGridPanel);
     }
 
     @Test
@@ -65,7 +65,7 @@ public class ScenarioGridTest {
     @Test
     public void setContent() {
         scenarioGrid.setContent(getHeadersMap(), getRowsMap());
-        verify(model, times(NUMBER_OF_COLUMNS)).insertColumn(anyInt(), anyObject());
-        verify(model, times(NUMBER_OF_ROWS)).insertRow(anyInt(), anyObject());
+        verify(mockScenarioGridModel, times(NUMBER_OF_COLUMNS)).insertColumn(anyInt(), anyObject());
+        verify(mockScenarioGridModel, times(NUMBER_OF_ROWS)).insertRow(anyInt(), anyObject());
     }
 }
