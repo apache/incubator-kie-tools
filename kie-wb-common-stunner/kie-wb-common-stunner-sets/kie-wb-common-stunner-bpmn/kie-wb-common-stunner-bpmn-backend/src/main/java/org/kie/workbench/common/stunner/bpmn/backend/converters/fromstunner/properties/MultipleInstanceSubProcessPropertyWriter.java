@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
@@ -33,6 +32,7 @@ import org.eclipse.bpmn2.SubProcess;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Ids;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.asCData;
 
 public class MultipleInstanceSubProcessPropertyWriter extends SubProcessPropertyWriter {
 
@@ -130,7 +130,7 @@ public class MultipleInstanceSubProcessPropertyWriter extends SubProcessProperty
 
     public void setCompletionCondition(String expression) {
         FormalExpression formalExpression = bpmn2.createFormalExpression();
-        formalExpression.setBody(StringEscapeUtils.escapeXml10(expression));
+        formalExpression.setBody(asCData(expression));
         this.miloop.setCompletionCondition(formalExpression);
     }
 }

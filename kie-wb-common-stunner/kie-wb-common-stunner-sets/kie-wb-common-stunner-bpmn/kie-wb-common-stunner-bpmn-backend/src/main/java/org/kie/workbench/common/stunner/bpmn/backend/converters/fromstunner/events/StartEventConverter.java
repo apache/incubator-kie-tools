@@ -22,11 +22,13 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.prop
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.conditional.InterruptingConditionalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.InterruptingErrorEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.InterruptingMessageEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.InterruptingSignalEventExecutionSet;
@@ -52,6 +54,7 @@ public class StartEventConverter {
                 .when(StartTimerEvent.class, this::timerEvent)
                 .when(StartErrorEvent.class, this::errorEvent)
                 .when(StartMessageEvent.class, this::messageEvent)
+                .when(StartConditionalEvent.class, this::conditionalEvent)
                 .apply(node).value();
     }
 
@@ -166,4 +169,25 @@ public class StartEventConverter {
         p.setBounds(n.getContent().getBounds());
         return p;
     }
+
+    private PropertyWriter conditionalEvent(Node<View<StartConditionalEvent>, ?> n) {
+        StartEvent event = bpmn2.createStartEvent();
+        event.setId(n.getUUID());
+
+        StartConditionalEvent definition = n.getContent().getDefinition();
+        CatchEventPropertyWriter p = propertyWriterFactory.of(event);
+
+        BPMNGeneralSet general = definition.getGeneral();
+        p.setName(general.getName().getValue());
+        p.setDocumentation(general.getDocumentation().getValue());
+        p.setSimulationSet(definition.getSimulationSet());
+        p.setBounds(n.getContent().getBounds());
+
+        InterruptingConditionalEventExecutionSet executionSet = definition.getExecutionSet();
+        event.setIsInterrupting(executionSet.getIsInterrupting().getValue());
+        p.addCondition(executionSet.getConditionExpression());
+
+        return p;
+    }
+
 }

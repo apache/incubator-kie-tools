@@ -36,6 +36,7 @@ public class BoundaryEventPropertyWriter extends CatchEventPropertyWriter {
     @Override
     public void setCancelActivity(Boolean value) {
         CustomAttribute.boundarycaForEvent.of(flowElement).set(value);
+        event.setCancelActivity(value);
     }
 
     public void setParentActivity(ActivityPropertyWriter parent) {

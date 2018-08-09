@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.proper
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.EventDefinitionReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.EventPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
+import org.kie.workbench.common.stunner.bpmn.definition.StartConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
@@ -41,6 +42,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.conditional.InterruptingConditionalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.ErrorRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.InterruptingErrorEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.InterruptingMessageEventExecutionSet;
@@ -78,7 +80,7 @@ public class StartEventConverter {
                         .when(MessageEventDefinition.class, e -> messageEvent(event, e))
                         .when(TimerEventDefinition.class, e -> timerEvent(event, e))
                         .when(ErrorEventDefinition.class, e -> errorEvent(event, e))
-                        .missing(ConditionalEventDefinition.class)
+                        .when(ConditionalEventDefinition.class, e -> conditionalEvent(event, e))
                         .missing(EscalationEventDefinition.class)
                         .missing(CompensateEventDefinition.class)
                         .apply(eventDefinitions.get(0)).value();
@@ -232,6 +234,36 @@ public class StartEventConverter {
 
         definition.setSimulationSet(p.getSimulationSet());
         definition.setIsInterrupting(new IsInterrupting(event.isIsInterrupting()));
+
+        node.getContent().setBounds(p.getBounds());
+
+        definition.setDimensionsSet(p.getCircleDimensionSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setBackgroundSet(p.getBackgroundSet());
+
+        return BpmnNode.of(node);
+    }
+
+    private BpmnNode conditionalEvent(
+            StartEvent event,
+            ConditionalEventDefinition e) {
+        Node<View<StartConditionalEvent>, Edge> node =
+                factoryManager.newNode(event.getId(), StartConditionalEvent.class);
+
+        StartConditionalEvent definition = node.getContent().getDefinition();
+        EventPropertyReader p = propertyReaderFactory.of(event);
+
+        definition.setGeneral(new BPMNGeneralSet(
+                new Name(p.getName()),
+                new Documentation(p.getDocumentation())
+        ));
+
+        definition.setExecutionSet(new InterruptingConditionalEventExecutionSet(
+                new IsInterrupting(event.isIsInterrupting()),
+                p.getConditionExpression(e))
+        );
+
+        definition.setSimulationSet(p.getSimulationSet());
 
         node.getContent().setBounds(p.getBounds());
 

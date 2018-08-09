@@ -46,7 +46,7 @@ public class MultipleInstanceSubProcessPropertyWriterTest {
     @Test
     public void completionConditionMustBeWrappedInCdata() {
         String expression = "x<1";
-        String expected = "x&lt;1";
+        String expected = "<![CDATA[" + expression + "]]>";
         SubProcess subProcess = bpmn2.createSubProcess();
         MultipleInstanceSubProcessPropertyWriter p =
                 new MultipleInstanceSubProcessPropertyWriter(

@@ -35,12 +35,14 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNo
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.CatchEventPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.EventDefinitionReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.CancelActivity;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.conditional.CancellingConditionalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.CancellingErrorEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.ErrorRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.CancellingMessageEventExecutionSet;
@@ -78,9 +80,9 @@ public class IntermediateCatchEventConverter {
                         .when(SignalEventDefinition.class, e -> signalEvent(event, e))
                         .when(MessageEventDefinition.class, e -> messageEvent(event, e))
                         .when(ErrorEventDefinition.class, e -> errorEvent(event, e))
+                        .when(ConditionalEventDefinition.class, e -> conditionalEvent(event, e))
                         .missing(EscalationEventDefinition.class)
                         .missing(CompensateEventDefinition.class)
-                        .missing(ConditionalEventDefinition.class)
                         .apply(eventDefinitions.get(0)).value();
             default:
                 throw new UnsupportedOperationException("Multiple definitions not supported for intermediate catch event");
@@ -99,9 +101,9 @@ public class IntermediateCatchEventConverter {
                         .when(TimerEventDefinition.class, e -> timerEvent(event, e))
                         .when(MessageEventDefinition.class, e -> messageEvent(event, e))
                         .when(ErrorEventDefinition.class, e -> errorEvent(event, e))
+                        .when(ConditionalEventDefinition.class, e -> conditionalEvent(event, e))
                         .missing(EscalationEventDefinition.class)
                         .missing(CompensateEventDefinition.class)
-                        .missing(ConditionalEventDefinition.class)
                         .apply(eventDefinitions.get(0)).value()
                         .docked();
             default:
@@ -224,4 +226,31 @@ public class IntermediateCatchEventConverter {
 
         return BpmnNode.of(node);
     }
+
+    private BpmnNode conditionalEvent(CatchEvent event, ConditionalEventDefinition e) {
+        String nodeId = event.getId();
+        Node<View<IntermediateConditionalEvent>, Edge> node = factoryManager.newNode(nodeId, IntermediateConditionalEvent.class);
+
+        IntermediateConditionalEvent definition = node.getContent().getDefinition();
+        CatchEventPropertyReader p = propertyReaderFactory.of(event);
+
+        definition.setGeneral(new BPMNGeneralSet(
+                new Name(p.getName()),
+                new Documentation(p.getDocumentation())
+        ));
+
+        definition.setExecutionSet(new CancellingConditionalEventExecutionSet(
+                new CancelActivity(p.isCancelActivity()),
+                p.getConditionExpression(e)
+        ));
+
+        node.getContent().setBounds(p.getBounds());
+
+        definition.setDimensionsSet(p.getCircleDimensionSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setBackgroundSet(p.getBackgroundSet());
+
+        return BpmnNode.of(node);
+    }
+
 }

@@ -26,13 +26,16 @@ import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 public class BoundaryEventPropertyReader extends CatchEventPropertyReader {
 
-    public BoundaryEventPropertyReader(BoundaryEvent el, BPMNPlane plane, DefinitionResolver definitionResolver) {
-        super(el, plane, definitionResolver);
+    private final BoundaryEvent event;
+
+    public BoundaryEventPropertyReader(BoundaryEvent event, BPMNPlane plane, DefinitionResolver definitionResolver) {
+        super(event, plane, definitionResolver);
+        this.event = event;
     }
 
     @Override
     public boolean isCancelActivity() {
-        return CustomAttribute.boundarycaForBoundaryEvent.of(element).get();
+        return event.isCancelActivity();
     }
 
     @Override

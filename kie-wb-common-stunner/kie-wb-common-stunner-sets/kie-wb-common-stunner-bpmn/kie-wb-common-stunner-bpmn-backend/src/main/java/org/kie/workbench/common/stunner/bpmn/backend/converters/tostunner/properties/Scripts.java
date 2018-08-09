@@ -38,8 +38,37 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptType
 import static org.jboss.drools.DroolsPackage.Literals.DOCUMENT_ROOT__ON_ENTRY_SCRIPT;
 import static org.jboss.drools.DroolsPackage.Literals.DOCUMENT_ROOT__ON_EXIT_SCRIPT;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.droolsFactory;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.LANGUAGE.DROOLS;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.LANGUAGE.JAVA;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.LANGUAGE.JAVASCRIPT;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.LANGUAGE.MVEL;
 
 public class Scripts {
+
+    public enum LANGUAGE {
+        JAVA("java", "http://www.java.com/java"),
+        JAVASCRIPT("javascript", "http://www.javascript.com/javascript"),
+        MVEL("mvel", "http://www.mvel.org/2.0"),
+        DROOLS("drools", "http://www.jboss.org/drools/rule");
+
+        private final String language;
+
+        private final String format;
+
+        LANGUAGE(String language,
+                 String format) {
+            this.language = language;
+            this.format = format;
+        }
+
+        public String language() {
+            return language;
+        }
+
+        public String format() {
+            return format;
+        }
+    }
 
     public static OnEntryAction onEntry(Task task) {
         return new OnEntryAction(onEntry(task.getExtensionValues()));
@@ -73,38 +102,46 @@ public class Scripts {
     }
 
     public static String scriptLanguageToUri(String language) {
+        return scriptLanguageToUri(language, JAVA.format());
+    }
+
+    public static String scriptLanguageToUri(String language, String defaultValue) {
         if (language == null) {
-            return "http://www.java.com/java";
+            return defaultValue;
         }
-        switch (language) {
-            case "java":
-                return "http://www.java.com/java";
-            case "mvel":
-                return "http://www.mvel.org/2.0";
-            case "javascript":
-                return "http://www.javascript.com/javascript";
-            case "drools":
-                return "http://www.jboss.org/drools/rule";
-            default:
-                return "http://www.java.com/java";
+
+        if (JAVA.language().equals(language)) {
+            return JAVA.format();
+        } else if (MVEL.language().equals(language)) {
+            return MVEL.format();
+        } else if (JAVASCRIPT.language().equals(language)) {
+            return JAVASCRIPT.format();
+        } else if (DROOLS.language().equals(language)) {
+            return DROOLS.format();
+        } else {
+            return defaultValue;
         }
     }
 
     public static String scriptLanguageFromUri(String format) {
+        return scriptLanguageFromUri(format, null);
+    }
+
+    public static String scriptLanguageFromUri(String format, String defaultValue) {
         if (format == null) {
-            return null;
+            return defaultValue;
         }
-        switch (format) {
-            case "http://www.java.com/java":
-                return "java";
-            case "http://www.mvel.org/2.0":
-                return "mvel";
-            case "http://www.javascript.com/javascript":
-                return "javascript";
-            case "http://www.jboss.org/drools/rule":
-                return "drools";
-            default:
-                return null;
+
+        if (JAVA.format().equals(format)) {
+            return JAVA.language();
+        } else if (MVEL.format().equals(format)) {
+            return MVEL.language();
+        } else if (JAVASCRIPT.format().equals(format)) {
+            return JAVASCRIPT.language();
+        } else if (DROOLS.format().equals(format)) {
+            return DROOLS.language();
+        } else {
+            return defaultValue;
         }
     }
 

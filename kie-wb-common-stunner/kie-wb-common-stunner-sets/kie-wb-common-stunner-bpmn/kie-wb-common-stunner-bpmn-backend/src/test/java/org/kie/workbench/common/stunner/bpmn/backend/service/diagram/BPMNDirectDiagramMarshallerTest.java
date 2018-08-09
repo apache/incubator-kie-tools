@@ -64,6 +64,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.InclusiveGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventThrowing;
@@ -75,6 +76,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
+import org.kie.workbench.common.stunner.bpmn.definition.StartConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
@@ -167,12 +169,14 @@ public class BPMNDirectDiagramMarshallerTest {
     private static final String BPMN_STARTSIGNALEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startSignalEvent.bpmn";
     private static final String BPMN_STARTMESSAGEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startMessageEvent.bpmn";
     private static final String BPMN_STARTERROREVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startErrorEvent.bpmn";
+    private static final String BPMN_STARTCONDITIONALEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startConditionalEvent.bpmn";
     private static final String BPMN_INTERMEDIATE_SIGNAL_EVENTCATCHING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateSignalEventCatching.bpmn";
     private static final String BPMN_INTERMEDIATE_ERROR_EVENTCATCHING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateErrorEventCatching.bpmn";
     private static final String BPMN_INTERMEDIATE_SIGNAL_EVENTTHROWING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateSignalEventThrowing.bpmn";
     private static final String BPMN_INTERMEDIATE_MESSAGE_EVENTCATCHING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateMessageEventCatching.bpmn";
     private static final String BPMN_INTERMEDIATE_MESSAGE_EVENTTHROWING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateMessageEventThrowing.bpmn";
     private static final String BPMN_INTERMEDIATE_TIMER_EVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateTimerEvent.bpmn";
+    private static final String BPMN_INTERMEDIATE_CONDITIONAL_EVENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateConditionalEvents.bpmn";
     private static final String BPMN_ENDSIGNALEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endSignalEvent.bpmn";
     private static final String BPMN_ENDMESSAGEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endMessageEvent.bpmn";
     private static final String BPMN_ENDNONEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endNoneEvent.bpmn";
@@ -547,6 +551,32 @@ public class BPMNDirectDiagramMarshallerTest {
 
     @Test
     @SuppressWarnings("unchecked")
+    public void testUnmarshallStartConditionalEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_STARTCONDITIONALEVENT);
+        assertDiagram(diagram,
+                      2);
+        assertEquals("StartConditionalEvent",
+                     diagram.getMetadata().getTitle());
+        Node<? extends Definition, ?> startEventNode = diagram.getGraph().getNode("_8F9C10C4-F1EE-4B49-B4CE-3059ADD4B391");
+        assertNotNull(startEventNode);
+        StartConditionalEvent startConditionalEvent = (StartConditionalEvent) startEventNode.getContent().getDefinition();
+
+        assertNotNull(startConditionalEvent.getGeneral());
+        assertEquals("StartConditionalEventName",
+                     startConditionalEvent.getGeneral().getName().getValue());
+        assertEquals("StartConditionalEventDocumentation",
+                     startConditionalEvent.getGeneral().getDocumentation().getValue());
+        assertNotNull(startConditionalEvent.getExecutionSet());
+        assertEquals("drools",
+                     startConditionalEvent.getExecutionSet().getConditionExpression().getValue().getLanguage());
+        assertEquals("StartConditionalEventConditionExpression",
+                     startConditionalEvent.getExecutionSet().getConditionExpression().getValue().getScript());
+        assertEquals(true,
+                     startConditionalEvent.getExecutionSet().getIsInterrupting().getValue());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void testUnmarshallIntermediateTimerEvent() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_INTERMEDIATE_TIMER_EVENT);
         assertDiagram(diagram,
@@ -567,6 +597,49 @@ public class BPMNDirectDiagramMarshallerTest {
                      intermediateTimerEvent.getExecutionSet().getTimerSettings().getValue().getTimeDate());
         assertEquals("abc",
                      intermediateTimerEvent.getExecutionSet().getTimerSettings().getValue().getTimeDuration());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshallIntermediateConditionalEvents() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_INTERMEDIATE_CONDITIONAL_EVENTS);
+        assertDiagram(diagram,
+                      4);
+        assertEquals("IntermediateConditionalEvents",
+                     diagram.getMetadata().getTitle());
+        Node<? extends Definition, ?> catchingEventNode = diagram.getGraph().getNode("_31A24997-C7B3-4286-8B4D-0EFD7CB11206");
+        assertNotNull(catchingEventNode);
+        IntermediateConditionalEvent catchingConditionalEvent = (IntermediateConditionalEvent) catchingEventNode.getContent().getDefinition();
+
+        assertNotNull(catchingConditionalEvent.getGeneral());
+        assertEquals("CatchingIntermediateConditionalEventName",
+                     catchingConditionalEvent.getGeneral().getName().getValue());
+        assertEquals("CatchingIntermediateConditionalDocumentation",
+                     catchingConditionalEvent.getGeneral().getDocumentation().getValue());
+        assertNotNull(catchingConditionalEvent.getExecutionSet());
+        assertEquals("drools",
+                     catchingConditionalEvent.getExecutionSet().getConditionExpression().getValue().getLanguage());
+        assertEquals("CatchingIntermediateConditionalEventCompletionCondition",
+                     catchingConditionalEvent.getExecutionSet().getConditionExpression().getValue().getScript());
+        assertEquals(true,
+                     catchingConditionalEvent.getExecutionSet().getCancelActivity().getValue());
+
+        Node<? extends Definition, ?> boundaryEventNode = diagram.getGraph().getNode("_FD2DB546-4A85-4C50-9003-548A9A354F97");
+        assertNotNull(boundaryEventNode);
+        IntermediateConditionalEvent boundaryConditionalEvent = (IntermediateConditionalEvent) boundaryEventNode.getContent().getDefinition();
+
+        assertNotNull(boundaryConditionalEvent.getGeneral());
+        assertEquals("BoundaryConditionalEventName",
+                     boundaryConditionalEvent.getGeneral().getName().getValue());
+        assertEquals("BoundaryConditionalEventDocumentation",
+                     boundaryConditionalEvent.getGeneral().getDocumentation().getValue());
+        assertNotNull(boundaryConditionalEvent.getExecutionSet());
+        assertEquals("drools",
+                     boundaryConditionalEvent.getExecutionSet().getConditionExpression().getValue().getLanguage());
+        assertEquals("BoundaryConditionalEventCompletionCondition",
+                     boundaryConditionalEvent.getExecutionSet().getConditionExpression().getValue().getScript());
+        assertEquals(true,
+                     boundaryConditionalEvent.getExecutionSet().getCancelActivity().getValue());
     }
 
     @Test
@@ -1893,6 +1966,26 @@ public class BPMNDirectDiagramMarshallerTest {
     }
 
     @Test
+    public void testMarshallStartConditionalEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_STARTCONDITIONALEVENT);
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      1,
+                      0);
+
+        assertTrue(result.contains("<bpmn2:startEvent id=\"_8F9C10C4-F1EE-4B49-B4CE-3059ADD4B391\""));
+        assertTrue(result.contains(" name=\"StartConditionalEvent\""));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[StartConditionalEventName]]></drools:metaValue>"));
+        assertTrue(result.contains("<![CDATA[StartConditionalEventDocumentation]]></bpmn2:documentation>"));
+        assertTrue(result.contains("<bpmn2:conditionalEventDefinition"));
+        assertTrue(result.contains("<bpmn2:condition"));
+        assertTrue(result.contains("![CDATA[StartConditionalEventConditionExpression]]></bpmn2:condition>"));
+        assertTrue(result.contains("</bpmn2:condition>"));
+        assertTrue(result.contains("</bpmn2:conditionalEventDefinition>"));
+    }
+
+    @Test
     public void testMarshallStartErrorEventEvent() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_STARTERROREVENT);
         String result = tested.marshall(diagram);
@@ -2201,7 +2294,7 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(result.contains("<bpmn2:inputDataItem xsi:type=\"bpmn2:tDataInput\" id=\"_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_dataInputInputX\" name=\"dataInput\"/>"));
         assertTrue(result.contains("<bpmn2:outputDataItem xsi:type=\"bpmn2:tDataOutput\" id=\"_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_dataOutputOutputX\" itemSubjectRef=\"_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_multiInstanceItemType_dataOutput\" name=\"dataOutput\"/>"));
         assertTrue(result.contains("<bpmn2:completionCondition xsi:type=\"bpmn2:tFormalExpression\""));
-        assertTrue(result.contains("a=b</bpmn2:completionCondition>"));
+        assertTrue(result.contains("<![CDATA[a=b]]></bpmn2:completionCondition>"));
         assertTrue(result.contains("</bpmn2:multiInstanceLoopCharacteristics>"));
     }
 
@@ -2470,6 +2563,38 @@ public class BPMNDirectDiagramMarshallerTest {
                      timerEvent.getExecutionSet().getTimerSettings().getValue().getTimeCycle());
         assertEquals("cron",
                      timerEvent.getExecutionSet().getTimerSettings().getValue().getTimeCycleLanguage());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testMarshallIntermediateConditionalEvents() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_INTERMEDIATE_CONDITIONAL_EVENTS);
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      3,
+                      0);
+
+        assertTrue(result.contains("<bpmn2:intermediateCatchEvent id=\"_31A24997-C7B3-4286-8B4D-0EFD7CB11206\""));
+        assertTrue(result.contains(" name=\"CatchingIntermediateConditionalEventName\""));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[CatchingIntermediateConditionalEventName]]></drools:metaValue>"));
+        assertTrue(result.contains("<![CDATA[CatchingIntermediateConditionalDocumentation]]></bpmn2:documentation>"));
+        assertTrue(result.contains("<bpmn2:conditionalEventDefinition"));
+        assertTrue(result.contains("<bpmn2:condition"));
+        assertTrue(result.contains("![CDATA[CatchingIntermediateConditionalEventCompletionCondition]]></bpmn2:condition>"));
+        assertTrue(result.contains("</bpmn2:condition>"));
+        assertTrue(result.contains("</bpmn2:conditionalEventDefinition>"));
+
+        assertTrue(result.contains("<bpmn2:boundaryEvent id=\"_FD2DB546-4A85-4C50-9003-548A9A354F97\""));
+        assertTrue(result.contains(" name=\"BoundaryConditionalEventName\""));
+        assertTrue(result.contains("attachedToRef=\"_0EE77FB7-0610-496D-AF48-6ADECE39897A\""));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[BoundaryConditionalEventName]]></drools:metaValue>"));
+        assertTrue(result.contains("<![CDATA[BoundaryConditionalEventDocumentation]]></bpmn2:documentation>"));
+        assertTrue(result.contains("<bpmn2:conditionalEventDefinition"));
+        assertTrue(result.contains("<bpmn2:condition"));
+        assertTrue(result.contains("![CDATA[BoundaryConditionalEventCompletionCondition]]></bpmn2:condition>"));
+        assertTrue(result.contains("</bpmn2:condition>"));
+        assertTrue(result.contains("</bpmn2:conditionalEventDefinition>"));
     }
 
     @Test

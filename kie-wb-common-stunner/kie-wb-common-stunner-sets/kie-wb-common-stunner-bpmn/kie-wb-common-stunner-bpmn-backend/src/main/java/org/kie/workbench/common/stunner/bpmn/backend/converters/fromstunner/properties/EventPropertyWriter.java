@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
+import org.eclipse.bpmn2.ConditionalEventDefinition;
 import org.eclipse.bpmn2.Error;
 import org.eclipse.bpmn2.ErrorEventDefinition;
 import org.eclipse.bpmn2.Event;
@@ -31,6 +32,8 @@ import org.eclipse.bpmn2.TimerEventDefinition;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Ids;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts;
+import org.kie.workbench.common.stunner.bpmn.definition.property.common.ConditionExpression;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.ErrorRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageRef;
@@ -40,6 +43,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.Tim
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettingsValue;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.asCData;
 
 public abstract class EventPropertyWriter extends PropertyWriter {
 
@@ -149,6 +153,23 @@ public abstract class EventPropertyWriter extends PropertyWriter {
         }
 
         addEventDefinition(eventDefinition);
+    }
+
+    public void addCondition(ConditionExpression condition) {
+        ConditionalEventDefinition conditionalEventDefinition = bpmn2.createConditionalEventDefinition();
+        FormalExpression conditionExpression = bpmn2.createFormalExpression();
+
+        String languageFormat = Scripts.scriptLanguageToUri(condition.getValue().getLanguage(),
+                                                            Scripts.LANGUAGE.DROOLS.format());
+        conditionExpression.setLanguage(languageFormat);
+
+        String conditionScript = condition.getValue().getScript();
+        if (conditionScript != null && !conditionScript.isEmpty()) {
+            conditionExpression.setBody(asCData(conditionScript));
+        }
+
+        conditionalEventDefinition.setCondition(conditionExpression);
+        addEventDefinition(conditionalEventDefinition);
     }
 
     protected abstract void addEventDefinition(EventDefinition eventDefinition);

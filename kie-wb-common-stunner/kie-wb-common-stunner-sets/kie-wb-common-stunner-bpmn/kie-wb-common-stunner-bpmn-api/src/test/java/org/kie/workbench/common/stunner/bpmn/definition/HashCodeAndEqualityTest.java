@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.background.Back
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BgColor;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BorderColor;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BorderSize;
-import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.ConditionExpression;
+import org.kie.workbench.common.stunner.bpmn.definition.property.common.ConditionExpression;
 import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.Priority;
 import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.SequenceFlowExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;

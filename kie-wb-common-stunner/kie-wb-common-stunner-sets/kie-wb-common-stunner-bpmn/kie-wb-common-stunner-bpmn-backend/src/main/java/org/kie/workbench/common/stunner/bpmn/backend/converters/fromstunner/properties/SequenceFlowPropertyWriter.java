@@ -152,14 +152,16 @@ public class SequenceFlowPropertyWriter extends PropertyWriter {
     }
 
     public void setPriority(String value) {
-        CustomAttribute.priority.of(sequenceFlow).set(value);
+        if (value != null && !value.isEmpty()) {
+            CustomAttribute.priority.of(sequenceFlow).set(value);
+        }
     }
 
     public void setConditionExpression(ScriptTypeValue scriptTypeValue) {
         String language = scriptTypeValue.getLanguage();
         String script = scriptTypeValue.getScript();
 
-        if (script != null) {
+        if (script != null && !script.isEmpty()) {
             FormalExpression formalExpression = bpmn2.createFormalExpression();
             String uri = Scripts.scriptLanguageToUri(language);
             formalExpression.setLanguage(uri);

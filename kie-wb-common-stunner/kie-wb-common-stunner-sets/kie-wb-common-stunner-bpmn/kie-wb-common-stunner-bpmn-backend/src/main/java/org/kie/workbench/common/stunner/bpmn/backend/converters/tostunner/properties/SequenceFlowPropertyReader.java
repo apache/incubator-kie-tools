@@ -62,7 +62,7 @@ public class SequenceFlowPropertyReader extends BasePropertyReader {
 
     public ScriptTypeValue getConditionExpression() {
         if (conditionExpression == null) {
-            return new ScriptTypeValue();
+            return new ScriptTypeValue("java","");
         } else {
             return new ScriptTypeValue(
                     Scripts.scriptLanguageFromUri(conditionExpression.getLanguage()),

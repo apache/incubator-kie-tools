@@ -21,10 +21,12 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.prop
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseCatchingIntermediateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.conditional.CancellingConditionalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.CancellingErrorEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.CancellingMessageEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.CancellingSignalEventExecutionSet;
@@ -51,6 +53,7 @@ public class IntermediateCatchEventConverter {
                 .when(IntermediateSignalEventCatching.class, this::signalEvent)
                 .when(IntermediateErrorEventCatching.class, this::errorEvent)
                 .when(IntermediateTimerEvent.class, this::timerEvent)
+                .when(IntermediateConditionalEvent.class, this::conditionalEvent)
 
                 .apply(node).value();
     }
@@ -131,6 +134,24 @@ public class IntermediateCatchEventConverter {
         CancellingMessageEventExecutionSet executionSet = definition.getExecutionSet();
         p.setCancelActivity(executionSet.getCancelActivity().getValue());
         p.addMessage(executionSet.getMessageRef());
+
+        p.setBounds(n.getContent().getBounds());
+        return p;
+    }
+
+    private PropertyWriter conditionalEvent(Node<View<IntermediateConditionalEvent>, ?> n) {
+        CatchEventPropertyWriter p = createCatchEventPropertyWriter(n);
+        p.getFlowElement().setId(n.getUUID());
+
+        IntermediateConditionalEvent definition = n.getContent().getDefinition();
+
+        BPMNGeneralSet general = definition.getGeneral();
+        p.setName(general.getName().getValue());
+        p.setDocumentation(general.getDocumentation().getValue());
+
+        CancellingConditionalEventExecutionSet executionSet = definition.getExecutionSet();
+        p.setCancelActivity(executionSet.getCancelActivity().getValue());
+        p.addCondition(executionSet.getConditionExpression());
 
         p.setBounds(n.getContent().getBounds());
         return p;

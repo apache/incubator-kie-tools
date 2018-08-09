@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.prope
 import java.util.List;
 import java.util.Optional;
 
+import org.eclipse.bpmn2.ConditionalEventDefinition;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.Expression;
@@ -28,10 +29,12 @@ import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
+import org.kie.workbench.common.stunner.bpmn.definition.property.common.ConditionExpression;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettings;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettingsValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationAttributeSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 
 public abstract class EventPropertyReader extends FlowElementPropertyReader {
 
@@ -93,5 +96,15 @@ public abstract class EventPropertyReader extends FlowElementPropertyReader {
         return definitionResolver.resolveSimulationParameters(element.getId())
                 .map(SimulationAttributeSets::of)
                 .orElse(new SimulationAttributeSet());
+    }
+
+    public ConditionExpression getConditionExpression(ConditionalEventDefinition conditionalEvent) {
+        FormalExpression formalExpression = (FormalExpression) conditionalEvent.getCondition();
+        if (formalExpression == null) {
+            return null;
+        }
+        String language = Scripts.scriptLanguageFromUri(formalExpression.getLanguage(), Scripts.LANGUAGE.DROOLS.language());
+        String script = formalExpression.getBody();
+        return new ConditionExpression(new ScriptTypeValue(language, script));
     }
 }
