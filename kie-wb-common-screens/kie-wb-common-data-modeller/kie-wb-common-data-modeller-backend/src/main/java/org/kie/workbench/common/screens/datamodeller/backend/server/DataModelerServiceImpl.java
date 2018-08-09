@@ -32,9 +32,7 @@ import javax.persistence.Entity;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.validation.GenericValidator;
-import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.utils.ModuleResourcePaths;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -264,8 +262,8 @@ public class DataModelerServiceImpl
 
             Pair<DataModel, ModelDriverResult> resultPair = loadModel(module,
                                                                       false);
-            String className = calculateClassName(module,
-                                                  path);
+            String className = serviceHelper.calculateClassName(module,
+                                                                path);
 
             editorModelContent.setCurrentModule(module);
             editorModelContent.setPath(path);
@@ -966,8 +964,8 @@ public class DataModelerServiceImpl
             }
             deleteService.delete(path,
                                  comment);
-            String className = calculateClassName(module,
-                                                  path);
+            String className = serviceHelper.calculateClassName(module,
+                                                                path);
             DataObject dataObject = new DataObjectImpl(
                     NamingUtils.extractPackageName(className),
                     NamingUtils.extractClassName(className));
@@ -1077,8 +1075,8 @@ public class DataModelerServiceImpl
         javaRootPath = ensureModuleJavaPath(Paths.convert(modulePath));
 
         for (DataObject dataObject : dataModel.getDataObjects()) {
-            targetFile = calculateFilePath(dataObject.getClassName(),
-                                           javaRootPath);
+            targetFile = serviceHelper.calculateFilePath(dataObject.getClassName(),
+                                                         javaRootPath);
             if (logger.isDebugEnabled()) {
                 logger.debug("Data object: " + dataObject.getClassName() + " java source code will be generated from scratch and written into file: " + targetFile);
             }
@@ -1348,82 +1346,5 @@ public class DataModelerServiceImpl
         }
 
         return javaPath;
-    }
-
-    /**
-     * Given a path within a module calculates the expected class name for the given class.
-     */
-    private String calculateClassName(final Module module,
-                                      final Path path) {
-
-        String rootPathURI = module.getRootPath().toURI();
-        String pathURI = path.toURI();
-        String strPath = null;
-
-        if (!pathURI.startsWith(rootPathURI)) {
-            return null;
-        }
-
-        if (pathURI.startsWith(rootPathURI + ModuleResourcePaths.MAIN_SRC_PATH)
-                || pathURI.startsWith(rootPathURI + ModuleResourcePaths.TEST_SRC_PATH)) {
-            pathURI = pathURI.substring(rootPathURI.length(),
-                                        pathURI.length());
-        } else {
-            pathURI = pathURI.substring(rootPathURI.length() + 1,
-                                        pathURI.length());
-        }
-
-        if (pathURI.startsWith(ModuleResourcePaths.MAIN_SRC_PATH)) {
-            strPath = pathURI.substring(ModuleResourcePaths.MAIN_SRC_PATH.length() + 1,
-                                        pathURI.length());
-        } else if (pathURI.startsWith(ModuleResourcePaths.TEST_SRC_PATH)) {
-            strPath = pathURI.substring(ModuleResourcePaths.TEST_SRC_PATH.length() + 1,
-                                        pathURI.length());
-        }
-
-        if (strPath == null) {
-            return null;
-        }
-
-        strPath = strPath.replace("/",
-                                  ".");
-        strPath = strPath.substring(0,
-                                    strPath.indexOf(".java"));
-
-        return strPath;
-    }
-
-    /**
-     * Given a className calculates the path to the java file allocating the corresponding pojo.
-     */
-    private org.uberfire.java.nio.file.Path calculateFilePath(String className,
-                                                              org.uberfire.java.nio.file.Path javaPath) {
-
-        String name = NamingUtils.extractClassName(className);
-        String packageName = NamingUtils.extractPackageName(className);
-        org.uberfire.java.nio.file.Path filePath = javaPath;
-
-        if (packageName != null) {
-            List<String> packageNameTokens = tokenizePackageName(packageName);
-            for (String token : packageNameTokens) {
-                filePath = filePath.resolve(token);
-            }
-        }
-
-        filePath = filePath.resolve(name + ".java");
-        return filePath;
-    }
-
-    public List<String> tokenizePackageName(final String packageName) {
-        List<String> tokens = new ArrayList<String>();
-
-        if (packageName != null) {
-            StringTokenizer st = new StringTokenizer(packageName,
-                                                     ".");
-            while (st.hasMoreTokens()) {
-                tokens.add(st.nextToken());
-            }
-        }
-        return tokens;
     }
 }

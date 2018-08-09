@@ -25,17 +25,18 @@ public interface NewPackagePopupView
 
         void onCreatePackage();
 
+        void onValueTyped();
     }
 
     String getPackageName();
 
-    void setPackageName( String packageName );
+    void setPackageName(String packageName);
 
-    void show( );
+    void show();
 
     void hide();
 
-    void setErrorMessage( String errorMessage );
+    void setErrorMessage(String errorMessage);
 
     void clearErrors();
 }

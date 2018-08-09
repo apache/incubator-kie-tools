@@ -1,12 +1,12 @@
-/**
+/*
  * Copyright 2012 Red Hat, Inc. and/or its affiliates.
- * <p/>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p/>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,7 @@ import org.uberfire.mvp.Command;
 
 @Dependent
 public class NewPackagePopup
-    implements NewPackagePopupView.Presenter {
+        implements NewPackagePopupView.Presenter {
 
     private ValidatorService validatorService;
 
@@ -38,10 +38,10 @@ public class NewPackagePopup
     private Command afterAddCommand;
 
     @Inject
-    public NewPackagePopup( NewPackagePopupView view,
-            ValidatorService validatorService ) {
+    public NewPackagePopup(NewPackagePopupView view,
+                           ValidatorService validatorService) {
         this.view = view;
-        view.init( this );
+        view.init(this);
         this.validatorService = validatorService;
     }
 
@@ -49,41 +49,49 @@ public class NewPackagePopup
         return packageName;
     }
 
-    private void setPackageName( String packageName ) {
+    private void setPackageName(String packageName) {
         this.packageName = packageName;
     }
 
     private void clear() {
         packageName = null;
-        view.setPackageName( null );
+        view.setPackageName(null);
         view.clearErrors();
     }
 
     @Override
     public void onCreatePackage() {
-        final String[] packageName = { DataModelerUtils.trim( view.getPackageName() ) };
-        packageName[0] = packageName[0] != null ? packageName[0].trim() : null;
+        final String[] packageName = {toLowerCase(DataModelerUtils.trim(view.getPackageName()))};
+        validatorService.isValidPackageIdentifier(packageName[0],
+                                                  new ValidatorCallback() {
+                                                      @Override
+                                                      public void onFailure() {
+                                                          view.setErrorMessage(Constants.INSTANCE.validation_error_invalid_package_identifier(packageName[0]));
+                                                      }
 
-        validatorService.isValidPackageIdentifier( packageName[0], new ValidatorCallback() {
-            @Override
-            public void onFailure() {
-                view.setErrorMessage( Constants.INSTANCE.validation_error_invalid_package_identifier( packageName[ 0 ] ) );
-            }
-
-            @Override
-            public void onSuccess() {
-                setPackageName( packageName[ 0 ] );
-                view.hide();
-                if ( afterAddCommand != null ) {
-                    afterAddCommand.execute();
-                }
-            }
-        } );
+                                                      @Override
+                                                      public void onSuccess() {
+                                                          setPackageName(packageName[0]);
+                                                          view.hide();
+                                                          if (afterAddCommand != null) {
+                                                              afterAddCommand.execute();
+                                                          }
+                                                      }
+                                                  });
     }
 
-    public void show( Command afterAddCommand ) {
+    @Override
+    public void onValueTyped() {
+        view.setPackageName(toLowerCase(view.getPackageName()));
+    }
+
+    public void show(Command afterAddCommand) {
         this.afterAddCommand = afterAddCommand;
         clear();
         view.show();
+    }
+
+    private String toLowerCase(String value) {
+        return value != null ? value.toLowerCase() : null;
     }
 }

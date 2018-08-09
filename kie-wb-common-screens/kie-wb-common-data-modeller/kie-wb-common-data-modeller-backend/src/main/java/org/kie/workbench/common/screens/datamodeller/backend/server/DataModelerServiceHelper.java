@@ -1,12 +1,12 @@
-/**
+/*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates.
- * <p>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,13 +17,9 @@
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -31,39 +27,45 @@ import javax.inject.Named;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.utils.ModuleResourcePaths;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.forge.roaster.model.SyntaxError;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelerError;
 import org.kie.workbench.common.services.datamodeller.driver.model.DriverError;
-import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.options.CommentedOption;
-import org.uberfire.java.nio.file.DirectoryStream;
-import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
 
 @ApplicationScoped
 public class DataModelerServiceHelper {
 
-    @Inject
-    protected KieModuleService moduleService;
-    @Inject
-    @Named("ioStrategy")
-    IOService ioService;
-    @Inject
+    private KieModuleService moduleService;
+
+    private IOService ioService;
+
     private CommentedOptionFactory commentedOptionFactory;
 
+    public DataModelerServiceHelper() {
+        //cdi proxying
+    }
+
+    @Inject
+    public DataModelerServiceHelper(final KieModuleService moduleService,
+                                    final @Named("ioStrategy") IOService ioService,
+                                    final CommentedOptionFactory commentedOptionFactory) {
+        this.moduleService = moduleService;
+        this.ioService = ioService;
+        this.commentedOptionFactory = commentedOptionFactory;
+    }
+
     public List<DataModelerError> toDataModelerError(List<DriverError> errors) {
-        List<DataModelerError> result = new ArrayList<DataModelerError>();
+        final List<DataModelerError> result = new ArrayList<>();
         if (errors == null) {
             return result;
         }
-
         for (DriverError error : errors) {
             DataModelerError dataModelerError = new DataModelerError(
                     error.getId(),
@@ -77,9 +79,9 @@ public class DataModelerServiceHelper {
         return result;
     }
 
-    public List<DataModelerError> toDataModelerError(List<SyntaxError> syntaxErrors,
-                                                     Path file) {
-        List<DataModelerError> errors = new ArrayList<DataModelerError>();
+    public List<DataModelerError> toDataModelerError(final List<SyntaxError> syntaxErrors,
+                                                     final Path file) {
+        final List<DataModelerError> errors = new ArrayList<>();
         DataModelerError error;
         for (SyntaxError syntaxError : syntaxErrors) {
             error = new DataModelerError(syntaxError.getDescription(),
@@ -92,19 +94,8 @@ public class DataModelerServiceHelper {
         return errors;
     }
 
-    public Map<String, org.uberfire.backend.vfs.Path> toVFSPaths(Map<String, Path> nioPaths) {
-        Map<String, org.uberfire.backend.vfs.Path> vfsPaths = new HashMap<String, org.uberfire.backend.vfs.Path>();
-        if (nioPaths != null) {
-            for (String key : nioPaths.keySet()) {
-                vfsPaths.put(key,
-                             Paths.convert(nioPaths.get(key)));
-            }
-        }
-        return vfsPaths;
-    }
-
-    public List<ValidationMessage> toValidationMessage(List<DataModelerError> errors) {
-        List<ValidationMessage> validationMessages = new ArrayList<ValidationMessage>();
+    public List<ValidationMessage> toValidationMessage(final List<DataModelerError> errors) {
+        final List<ValidationMessage> validationMessages = new ArrayList<>();
         ValidationMessage validationMessage;
 
         if (errors == null) {
@@ -131,99 +122,71 @@ public class DataModelerServiceHelper {
 
     public Package ensurePackageStructure(final Module module,
                                           final String packageName) {
-
         if (packageName == null || "".equals(packageName) || module == null) {
             return null;
         }
-
-        Package defaultPackage = moduleService.resolveDefaultPackage(module);
-        Package subPackage = defaultPackage;
-        Path subDirPath = Paths.convert(defaultPackage.getPackageMainSrcPath());
-        String subDirName;
-
-        StringTokenizer tokenizer = new StringTokenizer(packageName,
-                                                        ".");
-        while (tokenizer.hasMoreTokens()) {
-            subDirName = tokenizer.nextToken();
-            subDirPath = subDirPath.resolve(subDirName);
-            if (!ioService.exists(subDirPath)) {
-                //create the package using the moduleService.
-                subPackage = moduleService.newPackage(subPackage,
-                                                      subDirName);
-            } else {
-                subPackage = moduleService.resolvePackage(Paths.convert(subDirPath));
-            }
+        final Package defaultPackage = moduleService.resolveDefaultPackage(module);
+        final Path defaultPackagePath = Paths.convert(defaultPackage.getPackageMainSrcPath());
+        final String newPackageName = packageName.replace(".", "/");
+        final Path newPackagePath = defaultPackagePath.resolve(newPackageName);
+        if (!ioService.exists(newPackagePath)) {
+            return moduleService.newPackage(defaultPackage,
+                                            packageName);
+        } else {
+            return moduleService.resolvePackage(Paths.convert(newPackagePath));
         }
-
-        return subPackage;
     }
 
-    public String getCanonicalFileName(org.uberfire.backend.vfs.Path path) {
+    public Set<String> resolvePackages(final Module project) {
+        final Set<Package> packages = moduleService.resolvePackages(project);
+        return packages.stream()
+                .map(Package::getPackageName)
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Given a path within a module calculates the expected class name for the given class.
+     */
+    public String calculateClassName(final Module module,
+                                     final org.uberfire.backend.vfs.Path path) {
+        PortablePreconditions.checkNotNull("module", module);
         if (path == null) {
             return null;
         }
-        String fileName = path.getFileName();
-        return fileName.substring(0,
-                                  fileName.indexOf("."));
+        final Package defaultPackage = moduleService.resolveDefaultPackage(module);
+        if (defaultPackage == null) {
+            return null;
+        }
+        final Path mainSrcNioPath = Paths.convert(defaultPackage.getPackageMainSrcPath());
+        final Path testSrcNioPath = Paths.convert(defaultPackage.getPackageTestSrcPath());
+        final Path nioPath = Paths.convert(path);
+        Path relativePath = null;
+
+        if (mainSrcNioPath != null && nioPath.startsWith(mainSrcNioPath)) {
+            relativePath = mainSrcNioPath.relativize(nioPath);
+        } else if (testSrcNioPath != null && nioPath.startsWith(testSrcNioPath)) {
+            relativePath = testSrcNioPath.relativize(nioPath);
+        }
+
+        if (relativePath != null) {
+            String className = relativePath.toString().replace("/", ".");
+            return className.substring(0, className.lastIndexOf(".java"));
+        }
+        return null;
     }
 
-    public Set<String> resolvePackages(final KieModule project) {
-        final Set<String> packages = new HashSet<String>();
+    /**
+     * Given a className calculates the path to the java file allocating the corresponding pojo.
+     */
+    public Path calculateFilePath(final String className,
+                                  final Path javaPath) {
+        PortablePreconditions.checkNotNull("className", className);
+        PortablePreconditions.checkNotNull("javaPath", javaPath);
 
-        final Path rootPath = Paths.convert(project.getRootPath());
-        final String[] subdirs = ModuleResourcePaths.MAIN_SRC_PATH.split("/");
-
-        Path javaDir = rootPath;
-        //ensure rout to java files exists
-        for (String subdir : subdirs) {
-            javaDir = javaDir.resolve(subdir);
-            if (!ioService.exists(javaDir)) {
-                javaDir = null;
-                break;
-            }
+        String pathUri = className;
+        if (className.contains(".")) {
+            pathUri = className.replace(".", "/");
         }
-
-        if (javaDir == null) {
-            //uncommon case
-            return packages;
-        }
-        final String javaDirURI = javaDir.toUri().toString();
-        //path to java directory has been calculated, now visit the subdirectories to get the package names.
-        final List<Path> childDirectories = new ArrayList<Path>();
-        childDirectories.add(javaDir);
-        Path subDir;
-
-        while (childDirectories.size() > 0) {
-
-            final DirectoryStream<Path> dirStream = ioService.newDirectoryStream(childDirectories.remove(0),
-                                                                                 new DirectoryStream.Filter<Path>() {
-
-                                                                                     @Override
-                                                                                     public boolean accept(final Path entry) throws IOException {
-                                                                                         return Files.isDirectory(entry);
-                                                                                     }
-                                                                                 });
-
-            Iterator<Path> it = dirStream.iterator();
-            while (it != null && it.hasNext()) {
-                //visit this directory
-                subDir = it.next();
-                childDirectories.add(subDir);
-                //store this package name
-                packages.add(getPackagePart(javaDirURI,
-                                            subDir));
-            }
-            dirStream.close();
-        }
-        return packages;
-    }
-
-    private String getPackagePart(final String javaPathURI,
-                                  final Path path) {
-        String pathURI = path.toUri().toString();
-        String packagePart = pathURI.substring(javaPathURI.length() + 1,
-                                               pathURI.length());
-        return packagePart.replace("/",
-                                   ".");
+        return javaPath.resolve(pathUri + ".java");
     }
 }

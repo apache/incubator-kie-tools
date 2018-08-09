@@ -20,8 +20,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Column;
@@ -46,11 +44,11 @@ public class NewPackagePopupViewImpl
 
     private TextBox newPackageName = new TextBox();
 
-    private Button newPackageButton = new Button( Constants.INSTANCE.packageSelector_popup_add() );
+    private Button newPackageButton = new Button(Constants.INSTANCE.packageSelector_popup_add());
 
     private InputGroupButton inputGroupButton = new InputGroupButton();
 
-    private HTMLPanel newPackageHelpHtml = new HTMLPanel( "P", Constants.INSTANCE.validPackageHelp( "<br>" ) );
+    private HTMLPanel newPackageHelpHtml = new HTMLPanel("P", Constants.INSTANCE.validPackageHelp("<br>"));
 
     private HelpBlock errorMessages = new HelpBlock();
 
@@ -62,7 +60,7 @@ public class NewPackagePopupViewImpl
 
     private Row row = new Row();
 
-    private Column column = new Column( ColumnSize.MD_12 );
+    private Column column = new Column(ColumnSize.MD_12);
 
     private InputGroup inputGroup = new InputGroup();
 
@@ -74,39 +72,36 @@ public class NewPackagePopupViewImpl
 
     @PostConstruct
     private void init() {
-        mainPanel.setFluid( true );
-        mainPanel.add( row );
-        row.add( column );
+        mainPanel.setFluid(true);
+        mainPanel.add(row);
+        row.add(column);
 
-        newPackageButton.setType( ButtonType.PRIMARY );
-        newPackageButton.setIcon( IconType.PLUS );
-        inputGroupButton.add( newPackageButton );
+        newPackageButton.setType(ButtonType.PRIMARY);
+        newPackageButton.setIcon(IconType.PLUS);
+        inputGroupButton.add(newPackageButton);
 
-        inputGroup.add( newPackageName );
-        inputGroup.add( inputGroupButton );
+        inputGroup.add(newPackageName);
+        inputGroup.add(inputGroupButton);
 
-        newPackageName.setPlaceholder( Constants.INSTANCE.package_id_placeholder() );
-        newPackageControlGroup.add( inputGroup );
-        errorMessagesGroup.add( errorMessages );
+        newPackageName.setPlaceholder(Constants.INSTANCE.package_id_placeholder());
+        newPackageControlGroup.add(inputGroup);
+        errorMessagesGroup.add(errorMessages);
 
-        column.add( newPackageControlGroup );
-        column.add( newPackageHelpHtml );
-        column.add( errorMessagesGroup );
-        setBody( mainPanel );
+        column.add(newPackageControlGroup);
+        column.add(newPackageHelpHtml);
+        column.add(errorMessagesGroup);
+        setBody(mainPanel);
 
-        setTitle( Constants.INSTANCE.new_dataobject_popup_new_package() );
-        setClosable( true );
+        setTitle(Constants.INSTANCE.new_dataobject_popup_new_package());
+        setClosable(true);
 
-        newPackageButton.addClickHandler( new ClickHandler() {
-            @Override
-            public void onClick( ClickEvent event ) {
-                presenter.onCreatePackage();
-            }
-        } );
+        newPackageName.addKeyUpHandler(event -> presenter.onValueTyped());
+
+        newPackageButton.addClickHandler(event -> presenter.onCreatePackage());
     }
 
     @Override
-    public void init( Presenter presenter ) {
+    public void init(Presenter presenter) {
         this.presenter = presenter;
     }
 
@@ -116,12 +111,12 @@ public class NewPackagePopupViewImpl
     }
 
     @Override
-    public void setPackageName( String packageName ) {
-        newPackageName.setText( packageName );
+    public void setPackageName(String packageName) {
+        newPackageName.setText(packageName);
     }
 
     @Override
-    public void show( ) {
+    public void show() {
         super.show();
     }
 
@@ -137,15 +132,15 @@ public class NewPackagePopupViewImpl
 
     @Override
     public void clearErrors() {
-        errorMessages.setText( "" );
-        newPackageControlGroup.setValidationState( ValidationState.NONE );
-        errorMessagesGroup.setValidationState( ValidationState.NONE );
+        errorMessages.setText("");
+        newPackageControlGroup.setValidationState(ValidationState.NONE);
+        errorMessagesGroup.setValidationState(ValidationState.NONE);
     }
 
     @Override
-    public void setErrorMessage( String errorMessage ) {
-        newPackageControlGroup.setValidationState( ValidationState.ERROR );
-        errorMessages.setText( errorMessage );
-        errorMessagesGroup.setValidationState( ValidationState.ERROR );
+    public void setErrorMessage(String errorMessage) {
+        newPackageControlGroup.setValidationState(ValidationState.ERROR);
+        errorMessages.setText(errorMessage);
+        errorMessagesGroup.setValidationState(ValidationState.ERROR);
     }
 }

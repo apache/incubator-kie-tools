@@ -901,7 +901,7 @@ public class GenerationTools {
             return value;
         }
         //we need to escape characters like this '\r\t', \n, and " to generate the code properly.
-        return StringEscapeUtils.escapeJava( value );
+        return StringEscapeUtils.escapeJavaNonUTFChars(value);
     }
 
     public String fileHashEmptyTag() {
