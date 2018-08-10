@@ -25,6 +25,7 @@ import com.ait.lienzo.client.core.shape.IPathClipper;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.google.gwt.core.client.GWT;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyColumnRenderContext;
@@ -152,22 +153,21 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
                                                             blockStartColumnIndex,
                                                             blockEndColumnIndex);
 
-                    final String title = headerMetaData.get(headerRowIndex).getTitle();
-                    final Group headerGroup = new Group();
-                    final Text t = theme.getHeaderText()
-                            .setText(title)
-                            .setListening(false)
-                            .setX(blockWidth / 2)
-                            .setY(rowHeight / 2);
-                    headerGroup.add(t);
+                    final Group headerGroup = renderHeaderContent(context,
+                                                                  headerMetaData,
+                                                                  headerRowIndex,
+                                                                  blockWidth,
+                                                                  rowHeight);
 
                     //Clip Header Group
                     final BoundingBox bb = new BoundingBox(0,
                                                            0,
                                                            blockWidth,
                                                            rowHeight);
-                    final IPathClipper clipper = new BoundingBoxPathClipper(bb);
-                    headerGroup.setX(offsetX).setY(headerRowsYOffset + headerRowIndex * rowHeight).setPathClipper(clipper);
+                    final IPathClipper clipper = getBoundingBoxPathClipper(bb);
+                    headerGroup.setX(offsetX);
+                    headerGroup.setY(headerRowsYOffset + headerRowIndex * rowHeight);
+                    headerGroup.setPathClipper(clipper);
                     clipper.setActive(true);
 
                     g.add(headerGroup);
@@ -177,6 +177,26 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
         });
 
         return commands;
+    }
+
+    protected IPathClipper getBoundingBoxPathClipper(final BoundingBox bb) {
+        return new BoundingBoxPathClipper(bb);
+    }
+
+    protected Group renderHeaderContent(final GridHeaderColumnRenderContext context,
+                                        final List<GridColumn.HeaderMetaData> headerMetaData,
+                                        final int headerRowIndex,
+                                        final double blockWidth,
+                                        final double rowHeight) {
+        final Group headerGroup = GWT.create(Group.class);
+        final String title = headerMetaData.get(headerRowIndex).getTitle();
+        final Text t = context.getRenderer().getTheme().getHeaderText();
+        t.setText(title);
+        t.setListening(false);
+        t.setX(blockWidth / 2);
+        t.setY(rowHeight / 2);
+        headerGroup.add(t);
+        return headerGroup;
     }
 
     @SuppressWarnings("unchecked")

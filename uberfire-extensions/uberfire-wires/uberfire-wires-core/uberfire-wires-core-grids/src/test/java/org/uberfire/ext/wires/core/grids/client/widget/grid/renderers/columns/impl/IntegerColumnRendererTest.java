@@ -16,15 +16,37 @@
 
 package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.impl;
 
+import java.util.Collections;
+
+import com.ait.lienzo.client.core.shape.IPathClipper;
+import com.ait.lienzo.client.core.types.BoundingBox;
+import com.google.gwtmockito.WithClassesToStub;
+import org.gwtbootstrap3.client.ui.html.Text;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
+
+@WithClassesToStub({Text.class})
 public class IntegerColumnRendererTest extends BaseColumnRendererTest<Integer, IntegerColumnRenderer> {
 
     @Override
     public IntegerColumnRenderer getRenderer() {
-        return new IntegerColumnRenderer();
+        return new IntegerColumnRenderer() {
+            @Override
+            @SuppressWarnings("unused")
+            protected IPathClipper getBoundingBoxPathClipper(final BoundingBox bb) {
+                return boundingBoxPathClipper;
+            }
+        };
     }
 
     @Override
     protected Integer getValueToRender() {
         return 1;
+    }
+
+    @Override
+    protected GridColumn getGridColumn() {
+        return new RowNumberColumn(Collections.singletonList(headerMetaData),
+                                   renderer);
     }
 }

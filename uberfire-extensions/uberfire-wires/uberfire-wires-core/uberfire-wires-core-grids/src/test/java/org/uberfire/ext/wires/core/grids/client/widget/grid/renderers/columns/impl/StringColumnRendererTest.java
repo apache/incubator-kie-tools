@@ -16,15 +16,38 @@
 
 package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.impl;
 
+import java.util.Collections;
+
+import com.ait.lienzo.client.core.shape.IPathClipper;
+import com.ait.lienzo.client.core.types.BoundingBox;
+import com.google.gwtmockito.WithClassesToStub;
+import org.gwtbootstrap3.client.ui.html.Text;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.StringPopupColumn;
+
+@WithClassesToStub({Text.class})
 public class StringColumnRendererTest extends BaseColumnRendererTest<String, StringColumnRenderer> {
 
     @Override
     public StringColumnRenderer getRenderer() {
-        return new StringColumnRenderer();
+        return new StringColumnRenderer() {
+            @Override
+            @SuppressWarnings("unused")
+            protected IPathClipper getBoundingBoxPathClipper(final BoundingBox bb) {
+                return boundingBoxPathClipper;
+            }
+        };
     }
 
     @Override
     protected String getValueToRender() {
         return "cheese";
+    }
+
+    @Override
+    protected GridColumn getGridColumn() {
+        return new StringPopupColumn(Collections.singletonList(headerMetaData),
+                                     renderer,
+                                     100.0);
     }
 }
