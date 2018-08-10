@@ -18,19 +18,39 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
+import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
-public class Definitions extends NamedElement {
+@Bindable
+@PropertySet
+@FormDefinition(policy = FieldPolicy.ONLY_MARKED, startElement = "id")
+public class Definitions extends DMNElement implements HasName,
+                                                       DMNPropertySet {
 
     public static final String DEFAULT_EXPRESSION_LANGUAGE = "http://www.omg.org/spec/FEEL/20140401";
 
     public static final String DEFAULT_TYPE_LANGUAGE = "http://www.omg.org/spec/FEEL/20140401";
+
+    //Definitions should extend NamedElement however we want Name to be read-only
+    @Property
+    @FormField(afterElement = "description", readonly = true)
+    @Valid
+    private Name name;
 
     private List<Import> _import;
     private List<ItemDefinition> itemDefinition;
@@ -48,12 +68,12 @@ public class Definitions extends NamedElement {
         this(new Id(),
              new Description(),
              new Name(),
-             null,
-             null,
-             null,
-             null,
-             null,
-             null,
+             new ArrayList<>(),
+             new ArrayList<>(),
+             new ArrayList<>(),
+             new ArrayList<>(),
+             new ArrayList<>(),
+             new ArrayList<>(),
              "",
              "",
              "",
@@ -76,8 +96,8 @@ public class Definitions extends NamedElement {
                        final @MapsTo("exporter") String exporter,
                        final @MapsTo("exporterVersion") String exporterVersion) {
         super(id,
-              description,
-              name);
+              description);
+        this.name = name;
         this._import = _import;
         this.itemDefinition = itemDefinition;
         this.drgElement = drgElement;
@@ -89,6 +109,20 @@ public class Definitions extends NamedElement {
         this.namespace = namespace;
         this.exporter = exporter;
         this.exporterVersion = exporterVersion;
+    }
+
+    // -----------------------
+    // DMN properties
+    // -----------------------
+
+    @Override
+    public Name getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(final Name name) {
+        this.name = name;
     }
 
     public List<Import> getImport() {

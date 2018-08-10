@@ -96,4 +96,18 @@ public class DMNDiagramFactoryImplTest {
         assertEquals(DMNModelInstrumentedBase.Namespace.KIE.getUri(),
                      dmnDefaultNameSpaces.get(DMNModelInstrumentedBase.Namespace.KIE.getPrefix()));
     }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testModelName() {
+        final Diagram<Graph, Metadata> diagram = factory.build(NAME, metadata, graph);
+
+        //We can safely get the first object on the iterator as we know the graph only contains one node
+        final Node<View, Edge> root = (Node<View, Edge>) diagram.getGraph().nodes().iterator().next();
+        final DMNDiagram dmnDiagram = (DMNDiagram) root.getContent().getDefinition();
+
+        final Definitions dmnDefinitions = dmnDiagram.getDefinitions();
+
+        assertEquals(NAME, dmnDefinitions.getName().getValue());
+    }
 }

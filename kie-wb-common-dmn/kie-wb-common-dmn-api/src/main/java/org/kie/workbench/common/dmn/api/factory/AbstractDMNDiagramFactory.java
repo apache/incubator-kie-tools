@@ -56,6 +56,7 @@ public abstract class AbstractDMNDiagramFactory<M extends Metadata, D extends Di
         }
         updateProperties(diagramNode, metadata);
         updateDefaultNameSpaces(diagramNode);
+        updateName(diagramNode, name);
         return diagram;
     }
 
@@ -72,5 +73,12 @@ public abstract class AbstractDMNDiagramFactory<M extends Metadata, D extends Di
         Stream.of(DMNModelInstrumentedBase.Namespace.values())
                 .filter(namespace -> !dmnDefinitions.getNsContext().containsValue(namespace.getUri()))
                 .forEach(namespace -> dmnDefinitions.getNsContext().put(namespace.getPrefix(), namespace.getUri()));
+    }
+
+    private void updateName(final Node<Definition<DMNDiagram>, ?> diagramNode,
+                            final String name) {
+        final DMNDiagram dmnDiagram = diagramNode.getContent().getDefinition();
+        final Definitions dmnDefinitions = dmnDiagram.getDefinitions();
+        dmnDefinitions.getName().setValue(name);
     }
 }
