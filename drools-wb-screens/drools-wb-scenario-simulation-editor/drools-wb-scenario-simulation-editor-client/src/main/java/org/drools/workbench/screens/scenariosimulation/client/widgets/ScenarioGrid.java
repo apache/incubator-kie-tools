@@ -15,7 +15,8 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.widgets;
 
-import java.util.Map;
+import java.util.List;
+import java.util.stream.IntStream;
 
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
@@ -23,6 +24,10 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioS
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.renderers.ScenarioGridRenderer;
 import org.drools.workbench.screens.scenariosimulation.client.values.ScenarioGridCellValue;
+import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifier;
+import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
+import org.drools.workbench.screens.scenariosimulation.model.Scenario;
+import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
@@ -42,11 +47,13 @@ public class ScenarioGrid extends BaseGridWidget {
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
     }
 
-    public void setContent(Map<Integer, String> headersMap, Map<Integer, Map<Integer, String>> rowsMap) {
+    public void setContent(Simulation simulation) {
         ((ScenarioGridModel) model).clear();
-        ((ScenarioGridModel) model).bindContent(headersMap, rowsMap);
-        setHeaderColumns(headersMap);
-        appendRows(rowsMap);
+        ((ScenarioGridModel) model).bindContent(simulation);
+        // sort based on columnPosition to restore previous order
+        simulation.getSimulationDescriptor().sortByLogicalPosition();
+        setHeaderColumns(simulation);
+        appendRows(simulation);
     }
 
     @Override
@@ -58,15 +65,32 @@ public class ScenarioGrid extends BaseGridWidget {
                                                                  renderer);
     }
 
-    private void setHeaderColumns(Map<Integer, String> headersMap) {
-        headersMap.forEach((columnIndex, columnTitle) ->
-                                   model.insertColumn(columnIndex, getScenarioGridColumn(columnTitle, scenarioGridPanel, scenarioGridLayer)));
+    private void setHeaderColumns(Simulation simulation) {
+        simulation.getSimulationDescriptor().getFactMappings().forEach(fact -> {
+            String columnId = fact.getExpressionIdentifier().getName();
+            String columnTitle = fact.getExpressionAlias();
+            model.insertColumn(fact.getLogicalPosition(),
+                               getScenarioGridColumn(columnId, columnTitle, scenarioGridPanel, scenarioGridLayer));
+        });
     }
 
-    private void appendRows(Map<Integer, Map<Integer, String>> rowsMap) {
-        rowsMap.forEach((rowIndex, cellValueMap) -> {
+    private void appendRows(Simulation simulation) {
+        List<Scenario> scenarios = simulation.getScenarios();
+        IntStream.range(0, scenarios.size()).forEach(rowIndex -> {
+            Scenario scenario = scenarios.get(rowIndex);
             model.insertRow(rowIndex, new ScenarioGridRow());
-            cellValueMap.forEach((columnIndex, cellValue) -> model.setCell(rowIndex, columnIndex, () -> new ScenarioGridCell(new ScenarioGridCellValue(cellValue))));
+            scenario.getFactMappingValues().forEach(value -> {
+                FactIdentifier factIdentifier = value.getFactIdentifier();
+                ExpressionIdentifier expressionIdentifier = value.getExpressionIdentifier();
+                if (value.getRawValue() instanceof String) {
+                    String stringValue = (String) value.getRawValue();
+                    int columnIndex = simulation.getSimulationDescriptor().getIndexByIdentifier(factIdentifier, expressionIdentifier);
+                    model.setCell(rowIndex, columnIndex,
+                                  () -> new ScenarioGridCell(new ScenarioGridCellValue(stringValue)));
+                } else {
+                    throw new UnsupportedOperationException("Only string is supported at the moment");
+                }
+            });
         });
     }
 }

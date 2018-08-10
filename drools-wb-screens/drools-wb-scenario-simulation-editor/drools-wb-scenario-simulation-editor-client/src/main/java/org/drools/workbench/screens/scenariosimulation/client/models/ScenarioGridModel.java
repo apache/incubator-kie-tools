@@ -16,14 +16,19 @@
 package org.drools.workbench.screens.scenariosimulation.client.models;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
+import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifier;
+import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
+import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
+import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
+import org.drools.workbench.screens.scenariosimulation.model.Scenario;
+import org.drools.workbench.screens.scenariosimulation.model.Simulation;
+import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -31,8 +36,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 
 public class ScenarioGridModel extends BaseGridData {
 
-    private Optional<Map<Integer, String>> optionalHeadersMap = Optional.empty();
-    private Optional<Map<Integer, Map<Integer, String>>> optionalRowsMap = Optional.empty();
+    private Simulation simulation;
 
     public ScenarioGridModel() {
         super();
@@ -44,43 +48,49 @@ public class ScenarioGridModel extends BaseGridData {
 
     /**
      * Method to bind the data serialized inside backend <code>ScenarioSimulationModel</code>
-     * @param headersMap
-     * @param rowsMap
+     * @param simulation
      */
-    public void bindContent(Map<Integer, String> headersMap, Map<Integer, Map<Integer, String>> rowsMap) {
-        this.optionalHeadersMap = Optional.ofNullable(headersMap);
-        this.optionalRowsMap = Optional.ofNullable(rowsMap);
+    public void bindContent(Simulation simulation) {
+        this.simulation = simulation;
+        checkSimulation();
     }
 
     @Override
     public void appendColumn(GridColumn<?> column) {
+        checkSimulation();
         super.appendColumn(column);
-        optionalHeadersMap.ifPresent(headersMap -> {
-            int columnIndex = getColumnCount() - 1;
-            headersMap.put(columnIndex, column.getHeaderMetaData().get(0).getTitle());
-        });
+
+        SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
+        String title = column.getHeaderMetaData().get(0).getTitle();
+        String columnId = title;
+        FactIdentifier factIdentifier = FactIdentifier.create(columnId, String.class.getCanonicalName());
+        int columnIndex = getColumnCount() - 1;
+        ExpressionIdentifier ei = ExpressionIdentifier.create(columnId, FactMappingType.GIVEN);
+        simulationDescriptor.addFactMapping(columnIndex, title, factIdentifier, ei);
     }
 
     @Override
     public Range setCell(int rowIndex, int columnIndex, Supplier<GridCell<?>> cellSupplier) {
+        checkSimulation();
         Range toReturn = super.setCell(rowIndex, columnIndex, cellSupplier);
-        optionalRowsMap.ifPresent(rowsMap -> {
-            Optional<?> optionalValue = getCellValue(getCell(rowIndex, columnIndex));
-            optionalValue.ifPresent((Consumer<Object>) rawValue -> {
-                if (rawValue instanceof String) { // Just to avoid unchecked cast - BaseGridData/GridRow should be generified
-                    final String cellValue = (String) rawValue;
-                    rowsMap.computeIfPresent(rowIndex, (integer, integerStringMap) -> {
-                        integerStringMap.put(columnIndex, cellValue);
-                        return integerStringMap;
-                    });
-                    rowsMap.computeIfAbsent(rowIndex, integer -> {
-                        Map<Integer, String> toReturn1 = new HashMap<>(1);
-                        toReturn1.put(columnIndex, cellValue);
-                        return toReturn1;
-                    });
-                }
-            });
-        });
+
+        Optional<?> optionalValue = getCellValue(getCell(rowIndex, columnIndex));
+        if (!optionalValue.isPresent()) {
+            return toReturn;
+        }
+
+        Object rawValue = optionalValue.get();
+        if (rawValue instanceof String) { // Just to avoid unchecked cast - BaseGridData/GridRow should be generified
+            final String cellValue = (String) rawValue;
+
+            Scenario scenarioByIndex = simulation.getScenarioByIndex(rowIndex);
+            FactMapping factMappingByIndex = simulation.getSimulationDescriptor().getFactMappingByIndex(columnIndex);
+            FactIdentifier factIdentifier = factMappingByIndex.getFactIdentifier();
+            ExpressionIdentifier expressionIdentifier = factMappingByIndex.getExpressionIdentifier();
+
+            scenarioByIndex.addOrUpdateMappingValue(factIdentifier, expressionIdentifier, cellValue);
+        }
+
         return toReturn;
     }
 
@@ -90,19 +100,20 @@ public class ScenarioGridModel extends BaseGridData {
         IntStream.range(0, to)
                 .map(i -> to - i - 1)
                 .forEach(this::deleteRow);
-        optionalRowsMap.ifPresent(Map::clear);
-        // Deleting columns
         List<GridColumn<?>> copyList = new ArrayList<>(getColumns());
         copyList.forEach(this::deleteColumn);
-        optionalHeadersMap.ifPresent(Map::clear);
+        // clear can be called before bind
+        if(simulation != null) {
+            simulation.clear();
+        }
     }
 
-    protected Optional<Map<Integer, String>> getOptionalHeadersMap() {
-        return optionalHeadersMap;
+    private void checkSimulation() {
+        Objects.requireNonNull(simulation, "Bind a simulation to the ScenarioGridModel to use it");
     }
 
-    protected Optional<Map<Integer, Map<Integer, String>>> getOptionalRowsMap() {
-        return optionalRowsMap;
+    public Optional<Simulation> getSimulation() {
+        return Optional.ofNullable(simulation);
     }
 
     // Helper method to avoid potential NPE

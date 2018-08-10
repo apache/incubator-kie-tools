@@ -219,7 +219,7 @@ public class ScenarioSimulationEditorPresenter
                                      isReadOnly);
             addImportsTab(importsWidget);
             baseView.hideBusyIndicator();
-            view.setContent(model.getHeadersMap(), model.getRowsMap());
+            view.setContent(model.getSimulation());
             createOriginalHash(model.hashCode());
         };
     }

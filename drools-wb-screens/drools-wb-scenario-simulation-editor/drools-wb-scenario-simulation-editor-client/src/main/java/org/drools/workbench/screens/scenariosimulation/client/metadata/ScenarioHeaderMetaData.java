@@ -25,9 +25,11 @@ public class ScenarioHeaderMetaData extends BaseHeaderMetaData {
 
     final SingletonDOMElementFactory<TextBox, TextBoxDOMElement> factory;
 
+    final String columnId;
 
-    public ScenarioHeaderMetaData(String columnTitle, String columnGroup, final SingletonDOMElementFactory<TextBox, TextBoxDOMElement> factory) {
+    public ScenarioHeaderMetaData(String columnId, String columnTitle, String columnGroup, final SingletonDOMElementFactory<TextBox, TextBoxDOMElement> factory) {
         super(columnTitle, columnGroup);
+        this.columnId = columnId;
         this.factory = factory;
     }
 
@@ -35,5 +37,9 @@ public class ScenarioHeaderMetaData extends BaseHeaderMetaData {
         factory.attachDomElement(context,
                                  (e) -> e.getWidget().setText(getTitle()),
                                  (e) -> e.getWidget().setFocus(true));
+    }
+
+    public String getColumnId() {
+        return columnId;
     }
 }

@@ -17,12 +17,13 @@
 package org.drools.workbench.screens.scenariosimulation.client.models;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.IntStream;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridRow;
+import org.drools.workbench.screens.scenariosimulation.model.Scenario;
+import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,10 +33,9 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 
-import static org.drools.workbench.screens.scenariosimulation.client.TestUtils.NUMBER_OF_COLUMNS;
-import static org.drools.workbench.screens.scenariosimulation.client.TestUtils.NUMBER_OF_ROWS;
-import static org.drools.workbench.screens.scenariosimulation.client.TestUtils.getHeadersMap;
-import static org.drools.workbench.screens.scenariosimulation.client.TestUtils.getRowsMap;
+import static org.drools.workbench.screens.scenariosimulation.client.TestUtils.getCellValue;
+import static org.drools.workbench.screens.scenariosimulation.client.TestUtils.getColName;
+import static org.drools.workbench.screens.scenariosimulation.client.TestUtils.getSimulation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
@@ -58,20 +58,32 @@ public class ScenarioGridModelTest {
     private GridColumn.HeaderMetaData mockHeaderMetaData;
 
     @Mock
+    private GridColumn<String> mockGridColumnAppend;
+
+    @Mock
+    private List<GridColumn.HeaderMetaData> mockHeaderMetaDataListAppend;
+
+    @Mock
+    private GridColumn.HeaderMetaData mockHeaderMetaDataAppend;
+
+    @Mock
     private BaseGridCell<String> mockGridCell;
 
     @Mock
     private GridCellValue<String> mockGridCellValue;
 
-    private Map<Integer, String> headersMap;
-    private Map<Integer, Map<Integer, String>> rowsMap;
+    private Simulation simulation;
 
-    private final String GRID_COLUMN_TITLE = "MOCKED GRID COLUMN TITLE";
-    private final String GRID_CELL_TEXT = "MOCKED GRID CELL TEXT";
+    private final String GRID_COLUMN_TITLE = getColName(1);
+    private final String GRID_CELL_TEXT = getCellValue(1, 1);
 
     @Before
     public void setup() {
+        int cols = 1;
+        int rows = 1;
         scenarioGridModel = new ScenarioGridModel();
+        simulation = getSimulation(cols, rows);
+        scenarioGridModel.bindContent(simulation);
 
         when(mockGridColumn.getHeaderMetaData()).thenReturn(mockHeaderMetaDataList);
         when(mockHeaderMetaDataList.get(0)).thenReturn(mockHeaderMetaData);
@@ -80,50 +92,48 @@ public class ScenarioGridModelTest {
         when(mockGridCell.getValue()).thenReturn(mockGridCellValue);
         when(mockGridCellValue.getValue()).thenReturn(GRID_CELL_TEXT);
 
-        IntStream.range(0, NUMBER_OF_ROWS).forEach(i -> scenarioGridModel.appendRow(new ScenarioGridRow()));
-        IntStream.range(0, NUMBER_OF_COLUMNS).forEach(i -> {
-            final ScenarioGridColumn scenarioGridColumn = mock(ScenarioGridColumn.class);
-            when(scenarioGridColumn.getIndex()).thenReturn(i);
-            scenarioGridModel.appendColumn(mockGridColumn);
-        });
-        // headersMap represents the column_id:column_title map
-        headersMap = getHeadersMap();
-        // rowsMap represents the row_id : (column_id:cell_text) map
-        rowsMap = getRowsMap();
-        // This is here because different tests need to check the actual modification of the bind maps
-        scenarioGridModel.bindContent(headersMap, rowsMap);
+        final ScenarioGridColumn scenarioGridColumn = mock(ScenarioGridColumn.class);
+        when(scenarioGridColumn.getIndex()).thenReturn(1);
+        scenarioGridModel.appendColumn(mockGridColumn);
+        IntStream.range(0, rows).forEach(i -> scenarioGridModel.appendRow(new ScenarioGridRow()));
     }
 
     @Test
     public void bindContent() {
-        assertTrue(scenarioGridModel.getOptionalHeadersMap().isPresent());
-        assertTrue(scenarioGridModel.getOptionalRowsMap().isPresent());
+        assertTrue(scenarioGridModel.getSimulation().isPresent());
     }
 
     @Test
     public void appendColumn() {
+
+        String colName = getColName(2);
+
+        when(mockGridColumnAppend.getHeaderMetaData()).thenReturn(mockHeaderMetaDataListAppend);
+        when(mockHeaderMetaDataListAppend.get(0)).thenReturn(mockHeaderMetaDataAppend);
+        when(mockHeaderMetaDataAppend.getTitle()).thenReturn(colName);
+
         int expectedColumnCount = scenarioGridModel.getColumnCount() + 1;
-        scenarioGridModel.appendColumn(mockGridColumn);
+        scenarioGridModel.appendColumn(mockGridColumnAppend);
         int currentColumnCount = scenarioGridModel.getColumnCount();
         assertEquals(currentColumnCount, expectedColumnCount);
         int insertedColumnIndex = currentColumnCount - 1;
-        String insertedString = headersMap.get(insertedColumnIndex);
+        String insertedString = simulation.getSimulationDescriptor().getFactMappingByIndex(insertedColumnIndex).getExpressionIdentifier().getName();
         assertNotNull(insertedString);
-        assertEquals(insertedString, GRID_COLUMN_TITLE);
+        assertEquals(insertedString, colName);
     }
 
     @Test
     public void testSetCell() {
         int insertedRowIndex = 0;
-        int insertedColumnIndex = 1;
+        int insertedColumnIndex = 0;
 
         final GridData.Range r = scenarioGridModel.setCell(insertedRowIndex, insertedColumnIndex, () -> mockGridCell);
         assertEquals(insertedRowIndex, r.getMinRowIndex());
         assertEquals(insertedRowIndex, r.getMaxRowIndex());
         assertEquals(mockGridCell, scenarioGridModel.getCell(insertedRowIndex, insertedColumnIndex));
-        Map<Integer, String> insertedMap = rowsMap.get(insertedRowIndex);
-        assertNotNull(insertedMap);
-        String insertedString = insertedMap.get(insertedColumnIndex);
+        Scenario scenarioByIndex = simulation.getScenarioByIndex(insertedRowIndex);
+        assertNotNull(scenarioByIndex);
+        String insertedString = (String) scenarioByIndex.getFactMappingValueByIndex(insertedColumnIndex).get().getRawValue();
         assertNotNull(insertedString);
         assertNotNull(insertedString);
         assertEquals(insertedString, GRID_CELL_TEXT);
@@ -134,8 +144,8 @@ public class ScenarioGridModelTest {
         assertNotEquals(0, scenarioGridModel.getRowCount());
         assertNotEquals(0, scenarioGridModel.getColumnCount());
         scenarioGridModel.clear();
-        assertTrue(headersMap.isEmpty());
-        assertTrue(rowsMap.isEmpty());
+        assertTrue(simulation.getScenarios().isEmpty());
+        assertTrue(simulation.getSimulationDescriptor().getFactMappings().isEmpty());
         assertEquals(0, scenarioGridModel.getRowCount());
         assertEquals(0, scenarioGridModel.getColumnCount());
     }

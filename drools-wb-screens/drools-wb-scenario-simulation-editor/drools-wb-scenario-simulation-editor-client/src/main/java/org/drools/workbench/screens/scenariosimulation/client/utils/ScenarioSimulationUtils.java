@@ -25,8 +25,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.TextBoxSi
 
 public class ScenarioSimulationUtils {
 
-    public static ScenarioGridColumn getScenarioGridColumn(String columnTitle, ScenarioGridPanel scenarioGridPanel, ScenarioGridLayer gridLayer) {
+    public static ScenarioGridColumn getScenarioGridColumn(String columnId, String columnTitle, ScenarioGridPanel scenarioGridPanel, ScenarioGridLayer gridLayer) {
         TextBoxSingletonDOMElementFactory factory = FactoryProvider.getHeaderHasNameTextBoxFactory(scenarioGridPanel, gridLayer);
-        return new ScenarioGridColumn(new ScenarioHeaderMetaData(columnTitle, "", factory), new ScenarioGridColumnRenderer(), 100, false);
+        return new ScenarioGridColumn(new ScenarioHeaderMetaData(columnId, columnTitle, "", factory), new ScenarioGridColumnRenderer(), 100, false);
     }
 }

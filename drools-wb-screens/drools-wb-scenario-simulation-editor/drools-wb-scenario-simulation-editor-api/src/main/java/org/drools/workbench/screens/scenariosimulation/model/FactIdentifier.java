@@ -28,6 +28,8 @@ public class FactIdentifier {
     private String name;
     private String className;
 
+    public static FactIdentifier DESCRIPTION = create("Description", String.class.getCanonicalName());
+
     public FactIdentifier() {
     }
 
@@ -42,6 +44,10 @@ public class FactIdentifier {
 
     public String getClassName() {
         return className;
+    }
+
+    public static FactIdentifier create(String name, String className) {
+        return new FactIdentifier(name, className);
     }
 
     @Override

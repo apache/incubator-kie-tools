@@ -23,5 +23,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public enum FactMappingType {
     GIVEN,
-    EXPECTED;
+    EXPECTED,
+    // used to define descriptive column
+    OTHER
 }

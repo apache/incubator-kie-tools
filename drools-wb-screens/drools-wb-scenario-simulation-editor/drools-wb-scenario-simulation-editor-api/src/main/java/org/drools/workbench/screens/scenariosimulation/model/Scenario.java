@@ -32,7 +32,6 @@ import static java.util.stream.Collectors.toSet;
 @Portable
 public class Scenario {
 
-    private String description;
     /**
      * List of values to be used to test this scenario
      */
@@ -43,8 +42,7 @@ public class Scenario {
     public Scenario() {
     }
 
-    public Scenario(String description, SimulationDescriptor simulationDescriptor) {
-        this.description = description;
+    public Scenario(SimulationDescriptor simulationDescriptor) {
         this.simulationDescriptor = simulationDescriptor;
     }
 
@@ -52,7 +50,7 @@ public class Scenario {
         return Collections.unmodifiableList(factMappingValues);
     }
 
-    public FactMappingValue addMappingValue(FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier, String value) {
+    public FactMappingValue addMappingValue(FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier, Object value) {
         String factName = factIdentifier.getName();
         if (getFactMappingValue(factIdentifier, expressionIdentifier).isPresent()) {
             throw new IllegalArgumentException(
@@ -64,6 +62,13 @@ public class Scenario {
         return factMappingValue;
     }
 
+    public FactMappingValue addOrUpdateMappingValue(FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier, Object value) {
+        return getFactMappingValue(factIdentifier, expressionIdentifier).map(e -> {
+            e.setRawValue(value);
+            return e;
+        }).orElseGet(() -> addMappingValue(factIdentifier, expressionIdentifier, value));
+    }
+
     public Optional<FactMappingValue> getFactMappingValue(FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier) {
         return factMappingValues.stream().filter(e -> e.getFactIdentifier().getName().equalsIgnoreCase(factIdentifier.getName()) &&
                 e.getExpressionIdentifier().equals(expressionIdentifier)).findFirst();
@@ -73,7 +78,7 @@ public class Scenario {
         FactMapping factMappingByIndex;
         try {
             factMappingByIndex = simulationDescriptor.getFactMappingByIndex(index);
-        }catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             throw new IllegalArgumentException(
                     new StringBuilder().append("Impossible to retrieve FactMapping at index ").append(index).toString(), e);
         }
@@ -84,8 +89,15 @@ public class Scenario {
         return factMappingValues.stream().filter(e -> e.getFactIdentifier().equals(factIdentifier)).collect(toList());
     }
 
+    public void setDescription(String name) {
+        addOrUpdateMappingValue(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION, name);
+    }
+
     public String getDescription() {
-        return description;
+        return factMappingValues.stream()
+                .filter(e -> e.getExpressionIdentifier().equals(ExpressionIdentifier.DESCRIPTION) &&
+                        e.getFactIdentifier().equals(FactIdentifier.DESCRIPTION)).map(e -> (String) e.getRawValue())
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("No description available"));
     }
 
     public Collection<String> getFactNames() {

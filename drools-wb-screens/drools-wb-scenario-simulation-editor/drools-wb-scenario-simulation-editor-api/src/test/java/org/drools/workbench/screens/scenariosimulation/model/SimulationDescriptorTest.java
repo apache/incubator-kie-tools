@@ -15,8 +15,16 @@
  */
 package org.drools.workbench.screens.scenariosimulation.model;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 
 public class SimulationDescriptorTest {
 
@@ -27,21 +35,44 @@ public class SimulationDescriptorTest {
     @Before
     public void init() {
         simulationDescriptor = new SimulationDescriptor();
-        factIdentifier = simulationDescriptor.newFactIdentifier("test fact", String.class.getCanonicalName());
-        expressionIdentifier = ExpressionIdentifier.identifier("test expression", FactMappingType.EXPECTED);
+        factIdentifier = FactIdentifier.create("test fact", String.class.getCanonicalName());
+        expressionIdentifier = ExpressionIdentifier.create("test expression", FactMappingType.EXPECTED);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void addFactMappingTest() {
-        simulationDescriptor.addFactMapping(expressionIdentifier, factIdentifier);
+        simulationDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
 
         // Should fail
-        simulationDescriptor.addFactMapping(expressionIdentifier, factIdentifier);
+        simulationDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void addFactMappingIndexTest() {
         // Should fail
-        simulationDescriptor.addFactMapping(1, expressionIdentifier, factIdentifier);
+        simulationDescriptor.addFactMapping(1, factIdentifier, expressionIdentifier);
+    }
+
+    @Test
+    public void sortByLogicalPositionTest() {
+        List<FactMapping> originalFactMappings = IntStream.range(0, 2).boxed()
+                .map(i -> simulationDescriptor
+                        .addFactMapping(FactIdentifier.create("test " + i, String.class.getCanonicalName()),
+                                        ExpressionIdentifier.create("test " + i, FactMappingType.EXPECTED))
+                ).collect(Collectors.toList());
+        FactMapping factMappingEdited = originalFactMappings.get(0);
+        factMappingEdited.setLogicalPosition(100);
+        simulationDescriptor.sortByLogicalPosition();
+        List<FactMapping> updatedFactMappings = simulationDescriptor.getFactMappings();
+        assertNotSame(updatedFactMappings.get(0), factMappingEdited);
+        assertSame(updatedFactMappings.get(updatedFactMappings.size() - 1), factMappingEdited);
+        assertEquals(originalFactMappings.size(), updatedFactMappings.size());
+    }
+
+    @Test
+    public void getIndexByIdentifierTest() {
+        simulationDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
+        int index = simulationDescriptor.getIndexByIdentifier(this.factIdentifier, this.expressionIdentifier);
+        assertEquals(0, index);
     }
 }

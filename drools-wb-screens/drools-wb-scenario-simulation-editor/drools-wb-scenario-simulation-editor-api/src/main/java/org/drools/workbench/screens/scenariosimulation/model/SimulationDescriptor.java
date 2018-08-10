@@ -17,11 +17,13 @@ package org.drools.workbench.screens.scenariosimulation.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -37,12 +39,29 @@ public class SimulationDescriptor {
         return Collections.unmodifiableList(factMappings);
     }
 
+    /**
+     * Sort elements based on logicalPosition value
+     */
+    public void sortByLogicalPosition() {
+        factMappings.sort(Comparator.comparing(FactMapping::getLogicalPosition));
+    }
+
     public Set<FactIdentifier> getFactIdentifiers() {
         return factMappings.stream().map(FactMapping::getFactIdentifier).collect(Collectors.toSet());
     }
 
     public FactMapping getFactMappingByIndex(int index) {
         return factMappings.get(index);
+    }
+
+    public int getIndexByIdentifier(FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier) {
+        return IntStream.range(0, factMappings.size()).filter(index -> {
+            FactMapping factMapping = factMappings.get(index);
+            return factMapping.getExpressionIdentifier().equals(expressionIdentifier) &&
+                    factMapping.getExpressionIdentifier().equals(expressionIdentifier);
+        }).findFirst().orElseThrow(() -> new IllegalArgumentException(
+                new StringBuilder().append("Impossible to find a FactMapping with factIdentifier '").append(factIdentifier.getName())
+                        .append("' and expressionIdentifier '").append(expressionIdentifier.getName()).append("'").toString()));
     }
 
     public List<FactMapping> getFactMappingsByFactName(String factName) {
@@ -55,19 +74,19 @@ public class SimulationDescriptor {
         return factMappings.stream().findFirst();
     }
 
-    public FactIdentifier newFactIdentifier(String factName, String className) {
-        return new FactIdentifier(factName, className);
-    }
-
     private List<FactMapping> internalFilter(Predicate<FactMapping> predicate) {
         return factMappings.stream().filter(predicate).collect(Collectors.toList());
     }
 
-    public FactMapping addFactMapping(ExpressionIdentifier expressionIdentifier, FactIdentifier factIdentifier) {
-        return addFactMapping(factMappings.size(), expressionIdentifier, factIdentifier);
+    public FactMapping addFactMapping(FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier) {
+        return addFactMapping(factMappings.size(), factIdentifier, expressionIdentifier);
     }
 
-    public FactMapping addFactMapping(int index, ExpressionIdentifier expressionIdentifier, FactIdentifier factIdentifier) {
+    public FactMapping addFactMapping(int index, FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier) {
+        return addFactMapping(index, expressionIdentifier.getName(), factIdentifier, expressionIdentifier);
+    }
+
+    public FactMapping addFactMapping(int index, String expressionAlias, FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier) {
         if (getFactMapping(factIdentifier, expressionIdentifier).isPresent()) {
             throw new IllegalArgumentException(
                     new StringBuilder().append("An expression with name '").append(expressionIdentifier.getName())
@@ -78,8 +97,12 @@ public class SimulationDescriptor {
                     new StringBuilder().append("Impossible to add an element at position ").append(index)
                             .append(" because there are only ").append(factMappings.size()).append(" elements").toString());
         }
-        FactMapping factMapping = new FactMapping(expressionIdentifier, factIdentifier, index);
+        FactMapping factMapping = new FactMapping(expressionAlias, factIdentifier, expressionIdentifier, index);
         factMappings.add(index, factMapping);
         return factMapping;
+    }
+
+    public void clear() {
+        factMappings.clear();
     }
 }

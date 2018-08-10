@@ -15,44 +15,56 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client;
 
-import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifier;
+import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
+import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
+import org.drools.workbench.screens.scenariosimulation.model.Scenario;
+import org.drools.workbench.screens.scenariosimulation.model.Simulation;
+import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
 
 /**
  * Class used to provide common methods used by different classes
  */
 public class TestUtils {
 
-    public static final int NUMBER_OF_ROWS = 3;
-    public static final int NUMBER_OF_COLUMNS = 3;
-
-    // headersMap represents the column_id:column_title map
-    public static Map<Integer, String> getHeadersMap() {
-        return IntStream.range(0, NUMBER_OF_COLUMNS)
-                .boxed()
-                .collect(
-                        Collectors.toMap(
-                                columnId -> columnId,
-                                columnId -> "COL-" + columnId
-                        ));
+    public static Simulation getSimulation(int numberOfColumns, int numberOfRows) {
+        Simulation simulation = new Simulation();
+        SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
+        simulationDescriptor.addFactMapping(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION);
+        // generate simulationDescriptor
+        IntStream.range(0, numberOfColumns).forEach(columnIndex -> {
+            simulationDescriptor.addFactMapping(FactIdentifier.create(getFactName(columnIndex), String.class.getCanonicalName()),
+                                                ExpressionIdentifier.create(getColName(columnIndex), FactMappingType.EXPECTED)
+            );
+        });
+        // generate scenarios
+        IntStream.range(0, numberOfRows).forEach(rowIndex -> {
+            final Scenario scenario = simulation.addScenario();
+            scenario.setDescription(getRowName(rowIndex));
+            IntStream.range(0, numberOfColumns).forEach( columnIndex -> {
+                scenario.addMappingValue(FactIdentifier.create(getFactName(columnIndex), String.class.getCanonicalName()),
+                                         ExpressionIdentifier.create(getColName(columnIndex), FactMappingType.EXPECTED),
+                                         getCellValue(columnIndex, rowIndex));
+            });
+        });
+        return simulation;
     }
 
-    // rowsMap represents the row_id : (column_id:cell_text) map
-    public static Map<Integer, Map<Integer, String>> getRowsMap() {
-        return IntStream.range(0, NUMBER_OF_ROWS)
-                .boxed()
-                .collect(
-                        Collectors.toMap(
-                                columnId -> columnId,
-                                rowId -> IntStream.range(0, NUMBER_OF_COLUMNS)
-                                        .boxed()
-                                        .collect(
-                                                Collectors.toMap(
-                                                        columnId -> columnId,
-                                                        columnId -> "CELL-" + rowId + "-" + columnId
-                                                ))
-                        )
-                );
+    public static String getColName(int index) {
+        return "COL-" + index;
+    }
+
+    public static String getRowName(int index) {
+        return "ROW-" + index;
+    }
+
+    public static String getFactName(int index) {
+        return "GROUP_COL-" + index;
+    }
+
+    public static String getCellValue(int col, int row) {
+        return "VAL_COL-" + col + "-ROW-" + row;
     }
 }

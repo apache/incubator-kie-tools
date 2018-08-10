@@ -16,9 +16,8 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.editor;
 
-import java.util.Map;
-
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
+import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
 
@@ -40,8 +39,8 @@ public class ScenarioSimulationViewImpl
     }
 
     @Override
-    public void setContent(Map<Integer, String> headersMap, Map<Integer, Map<Integer, String>> rowsMap) {
-        scenarioGridPanel.getScenarioGrid().setContent(headersMap, rowsMap);
+    public void setContent(Simulation simulation) {
+        scenarioGridPanel.getScenarioGrid().setContent(simulation);
     }
 
     @Override

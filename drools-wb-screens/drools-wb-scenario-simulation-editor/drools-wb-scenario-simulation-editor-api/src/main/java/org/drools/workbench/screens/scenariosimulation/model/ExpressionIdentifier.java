@@ -28,6 +28,8 @@ public class ExpressionIdentifier {
     private String name;
     private FactMappingType type;
 
+    public static ExpressionIdentifier DESCRIPTION = create("Description", FactMappingType.OTHER);
+
     public ExpressionIdentifier() {
     }
 
@@ -44,7 +46,7 @@ public class ExpressionIdentifier {
         return type;
     }
 
-    public static ExpressionIdentifier identifier(String name, FactMappingType type) {
+    public static ExpressionIdentifier create(String name, FactMappingType type) {
         return new ExpressionIdentifier(name, type);
     }
 

@@ -48,9 +48,14 @@ public class Simulation {
         return scenarios.get(index);
     }
 
-    public Scenario addScenario(String name) {
-        Scenario scenario = new Scenario(name, simulationDescriptor);
+    public Scenario addScenario() {
+        Scenario scenario = new Scenario(simulationDescriptor);
         scenarios.add(scenario);
         return scenario;
+    }
+
+    public void clear() {
+        simulationDescriptor.clear();
+        scenarios.clear();
     }
 }

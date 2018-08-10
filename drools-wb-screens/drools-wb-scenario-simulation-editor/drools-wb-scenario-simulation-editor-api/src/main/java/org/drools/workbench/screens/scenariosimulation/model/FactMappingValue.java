@@ -45,6 +45,10 @@ public class FactMappingValue {
         this.operator = operator;
     }
 
+    public void setRawValue(Object rawValue) {
+        this.rawValue = rawValue;
+    }
+
     public FactIdentifier getFactIdentifier() {
         return factIdentifier;
     }
