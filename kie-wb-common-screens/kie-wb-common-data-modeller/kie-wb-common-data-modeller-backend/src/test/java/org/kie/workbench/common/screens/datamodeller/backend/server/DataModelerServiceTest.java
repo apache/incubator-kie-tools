@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.datamodeller.backend.server;
 
 import java.util.Arrays;
 import java.util.List;
+
 import javax.enterprise.inject.Instance;
 
 import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
@@ -42,10 +43,19 @@ import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystem;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyMap;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DataModelerServiceTest {
@@ -242,5 +252,14 @@ public class DataModelerServiceTest {
                                      any(Path.class));
         verify(ioService,
                times(1)).endBatch();
+    }
+
+    @Test
+    public void testCreateDataObjectAlreadyExists() {
+        final Path path = PathFactory.newPath("DataObject.java", "file:///DataObject.java");
+
+        when(ioService.exists(any(org.uberfire.java.nio.file.Path.class))).thenReturn(true);
+        assertThatThrownBy(() -> dataModelerService.createJavaFile(path, "", ""))
+                .isInstanceOf(FileAlreadyExistsException.class);
     }
 }
