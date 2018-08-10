@@ -47,6 +47,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.mocks.EventSourceMock;
@@ -109,6 +110,9 @@ public class FunctionEditorDefinitionTest {
     @Mock
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
 
+    @Mock
+    private EventSourceMock<RefreshFormProperties> refreshFormPropertiesEvent;
+
     private Optional<HasName> hasName = Optional.empty();
 
     private FunctionEditorDefinition definition;
@@ -126,6 +130,7 @@ public class FunctionEditorDefinitionTest {
                                                        sessionCommandManager,
                                                        canvasCommandFactory,
                                                        editorSelectedEvent,
+                                                       refreshFormPropertiesEvent,
                                                        listSelector,
                                                        translationService,
                                                        expressionEditorDefinitionsSupplier,

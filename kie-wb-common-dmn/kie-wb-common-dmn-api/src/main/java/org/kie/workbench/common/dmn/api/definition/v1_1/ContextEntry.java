@@ -17,18 +17,22 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
+import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
-public class ContextEntry extends DMNModelInstrumentedBase implements HasExpression {
+public class ContextEntry extends DMNModelInstrumentedBase implements HasExpression,
+                                                                      HasVariable {
 
     private InformationItem variable;
     private Expression expression;
 
+    @Override
     public InformationItem getVariable() {
         return variable;
     }
 
+    @Override
     public void setVariable(final InformationItem value) {
         this.variable = value;
     }

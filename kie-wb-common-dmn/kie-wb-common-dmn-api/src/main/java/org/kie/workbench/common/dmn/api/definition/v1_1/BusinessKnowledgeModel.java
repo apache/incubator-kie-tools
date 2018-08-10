@@ -24,6 +24,7 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
+import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -47,7 +48,8 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @Bindable
 @Definition(graphFactory = NodeFactory.class)
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED, startElement = "id", defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)})
-public class BusinessKnowledgeModel extends DRGElement implements DMNViewDefinition {
+public class BusinessKnowledgeModel extends DRGElement implements HasVariable,
+                                                                  DMNViewDefinition {
 
     @Category
     public static final transient String stunnerCategory = Categories.NODES;
@@ -151,10 +153,12 @@ public class BusinessKnowledgeModel extends DRGElement implements DMNViewDefinit
     // DMN properties
     // -----------------------
 
+    @Override
     public InformationItem getVariable() {
         return variable;
     }
 
+    @Override
     public void setVariable(final InformationItem variable) {
         this.variable = variable;
     }
@@ -165,6 +169,11 @@ public class BusinessKnowledgeModel extends DRGElement implements DMNViewDefinit
 
     public void setEncapsulatedLogic(final FunctionDefinition value) {
         this.encapsulatedLogic = value;
+    }
+
+    @Override
+    public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
+        return this;
     }
 
     @Override

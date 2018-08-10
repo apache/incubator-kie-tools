@@ -44,6 +44,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
@@ -95,6 +96,9 @@ public class ExpressionEditorColumnTest {
 
     @Mock
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
+
+    @Mock
+    private EventSourceMock<RefreshFormProperties> refreshFormPropertiesEvent;
 
     @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
@@ -398,6 +402,7 @@ public class ExpressionEditorColumnTest {
                                       sessionCommandManager,
                                       canvasCommandFactory,
                                       editorSelectedEvent,
+                                      refreshFormPropertiesEvent,
                                       cellEditorControls,
                                       listSelector,
                                       translationService,

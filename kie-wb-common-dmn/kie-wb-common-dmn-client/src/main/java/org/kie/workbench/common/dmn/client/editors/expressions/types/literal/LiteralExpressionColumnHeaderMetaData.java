@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,33 +19,50 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.literal;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.gwtbootstrap3.client.ui.TextBox;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableTextHeaderMetaData;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.client.editors.types.HasNameAndDataTypeControl;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditablePopupHeaderMetaData;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 
-public class LiteralExpressionColumnHeaderMetaData extends EditableTextHeaderMetaData<TextBox, TextBoxDOMElement> {
+class LiteralExpressionColumnHeaderMetaData extends EditablePopupHeaderMetaData<HasNameAndDataTypeControl, NameAndDataTypeEditorView.Presenter> {
 
-    private static final String NAME_COLUMN_GROUP = "LiteralExpressionColumnHeaderMetaData$NameColumn";
+    private static final String NAME_DATA_TYPE_COLUMN_GROUP = "LiteralExpressionColumnHeaderMetaData$NameAndDataTypeColumn";
 
-    public LiteralExpressionColumnHeaderMetaData(final Supplier<String> titleGetter,
-                                                 final Consumer<String> titleSetter,
-                                                 final SingletonDOMElementFactory<TextBox, TextBoxDOMElement> factory) {
-        super(titleGetter,
-              titleSetter,
-              factory,
-              NAME_COLUMN_GROUP);
+    private final Supplier<String> nameSupplier;
+    private final Consumer<String> nameConsumer;
+    private final Supplier<QName> typeRefSupplier;
+
+    public LiteralExpressionColumnHeaderMetaData(final Supplier<String> nameSupplier,
+                                                 final Consumer<String> nameConsumer,
+                                                 final Supplier<QName> typeRefSupplier,
+                                                 final CellEditorControlsView.Presenter cellEditorControls,
+                                                 final NameAndDataTypeEditorView.Presenter headerEditor,
+                                                 final LiteralExpressionGrid gridWidget) {
+        super(cellEditorControls,
+              headerEditor,
+              gridWidget);
+        this.nameSupplier = nameSupplier;
+        this.nameConsumer = nameConsumer;
+        this.typeRefSupplier = typeRefSupplier;
     }
 
     @Override
-    public boolean equals(final Object o) {
-        // No implementation of equals/hashCode as each instance is considered different to another
-        return this == o;
+    public String getColumnGroup() {
+        return NAME_DATA_TYPE_COLUMN_GROUP;
     }
 
     @Override
-    public int hashCode() {
-        // This default implementation is needed because of the CheckStyle plugin
-        return super.hashCode();
+    public String getTitle() {
+        return nameSupplier.get();
+    }
+
+    @Override
+    public void setTitle(final String title) {
+        nameConsumer.accept(title);
+    }
+
+    String getTypeRef() {
+        return typeRefSupplier.get().toString();
     }
 }

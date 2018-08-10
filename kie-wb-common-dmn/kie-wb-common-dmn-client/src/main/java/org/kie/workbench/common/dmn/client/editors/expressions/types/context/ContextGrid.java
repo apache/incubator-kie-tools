@@ -56,6 +56,7 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
@@ -83,6 +84,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
                        final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                        final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                        final Event<ExpressionEditorChanged> editorSelectedEvent,
+                       final Event<RefreshFormProperties> refreshFormPropertiesEvent,
                        final CellEditorControlsView.Presenter cellEditorControls,
                        final ListSelectorView.Presenter listSelector,
                        final TranslationService translationService,
@@ -102,6 +104,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
               sessionCommandManager,
               canvasCommandFactory,
               editorSelectedEvent,
+              refreshFormPropertiesEvent,
               cellEditorControls,
               listSelector,
               translationService,

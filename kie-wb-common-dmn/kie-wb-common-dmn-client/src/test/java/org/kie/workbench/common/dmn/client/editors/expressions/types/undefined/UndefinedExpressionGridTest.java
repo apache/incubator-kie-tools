@@ -59,6 +59,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.impl.ManagedSession;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -155,6 +156,9 @@ public class UndefinedExpressionGridTest {
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
 
     @Mock
+    private EventSourceMock<RefreshFormProperties> refreshFormPropertiesEvent;
+
+    @Mock
     private ManagedSession managedSession;
 
     @Captor
@@ -192,6 +196,7 @@ public class UndefinedExpressionGridTest {
                                                              sessionCommandManager,
                                                              canvasCommandFactory,
                                                              editorSelectedEvent,
+                                                             refreshFormPropertiesEvent,
                                                              listSelector,
                                                              translationService,
                                                              expressionEditorDefinitionsSupplier);

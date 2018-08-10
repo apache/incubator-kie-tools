@@ -87,6 +87,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
                                       sessionCommandManager,
                                       canvasCommandFactory,
                                       editorSelectedEvent,
+                                      refreshFormPropertiesEvent,
                                       cellEditorControls,
                                       listSelector,
                                       translationService,

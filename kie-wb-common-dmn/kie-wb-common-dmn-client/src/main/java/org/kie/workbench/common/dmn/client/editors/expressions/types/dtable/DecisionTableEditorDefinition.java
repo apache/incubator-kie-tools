@@ -41,6 +41,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 
 @ApplicationScoped
 public class DecisionTableEditorDefinition extends BaseEditorDefinition<DecisionTable, DecisionTableGridData> {
@@ -58,6 +59,7 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
                                          final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                          final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                          final Event<ExpressionEditorChanged> editorSelectedEvent,
+                                         final Event<RefreshFormProperties> refreshFormPropertiesEvent,
                                          final ListSelectorView.Presenter listSelector,
                                          final TranslationService translationService,
                                          final HitPolicyEditorView.Presenter hitPolicyEditor,
@@ -67,6 +69,7 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
               sessionCommandManager,
               canvasCommandFactory,
               editorSelectedEvent,
+              refreshFormPropertiesEvent,
               listSelector,
               translationService);
         this.hitPolicyEditor = hitPolicyEditor;
@@ -115,6 +118,7 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
                                                  sessionCommandManager,
                                                  canvasCommandFactory,
                                                  editorSelectedEvent,
+                                                 refreshFormPropertiesEvent,
                                                  getCellEditorControls(),
                                                  listSelector,
                                                  translationService,

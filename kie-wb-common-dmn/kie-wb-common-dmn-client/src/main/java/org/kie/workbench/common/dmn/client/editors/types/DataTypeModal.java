@@ -27,7 +27,6 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeFactory;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.editors.types.treegrid.DataTypeTreeGrid;
-import org.kie.workbench.common.dmn.client.property.dmn.QNameFieldConverter;
 import org.uberfire.ext.editor.commons.client.file.popups.elemental2.Elemental2Modal;
 
 @ApplicationScoped
@@ -39,19 +38,19 @@ public class DataTypeModal extends Elemental2Modal<DataTypeModal.View> {
 
     private final DataTypeFactory dataTypeFactory;
 
-    private final QNameFieldConverter qNameFieldConverter;
+    private final QNameConverter qNameConverter;
 
     @Inject
     public DataTypeModal(final View view,
                          final DataTypeTreeGrid treeGrid,
                          final ItemDefinitionUtils itemDefinitionUtils,
                          final DataTypeFactory dataTypeFactory,
-                         final QNameFieldConverter qNameFieldConverter) {
+                         final QNameConverter qNameConverter) {
         super(view);
         this.treeGrid = treeGrid;
         this.itemDefinitionUtils = itemDefinitionUtils;
         this.dataTypeFactory = dataTypeFactory;
-        this.qNameFieldConverter = qNameFieldConverter;
+        this.qNameConverter = qNameConverter;
     }
 
     @PostConstruct
@@ -77,7 +76,7 @@ public class DataTypeModal extends Elemental2Modal<DataTypeModal.View> {
     }
 
     private String extractItemDefinitionName(final String value) {
-        final QName qName = qNameFieldConverter.toModelValue(value);
+        final QName qName = qNameConverter.toModelValue(value);
         return qName.getLocalPart();
     }
 

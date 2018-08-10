@@ -25,6 +25,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
+import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.AllowedAnswers;
@@ -52,6 +53,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @Definition(graphFactory = NodeFactory.class)
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED, startElement = "id", defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)})
 public class Decision extends DRGElement implements HasExpression,
+                                                    HasVariable,
                                                     DMNViewDefinition {
 
     @Category
@@ -188,10 +190,12 @@ public class Decision extends DRGElement implements HasExpression,
         this.allowedAnswers = allowedAnswers;
     }
 
+    @Override
     public InformationItem getVariable() {
         return variable;
     }
 
+    @Override
     public void setVariable(final InformationItem variable) {
         this.variable = variable;
     }

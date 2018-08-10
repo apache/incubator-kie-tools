@@ -522,4 +522,17 @@ public class ExpressionContainerGridTest {
 
         assertThat(hasExpression.getExpression()).isNull();
     }
+
+    @Test
+    public void testSpyHasExpressionWithExpressionAsDMNModelInstrumentedBase() {
+        when(hasExpression.asDMNModelInstrumentedBase()).thenReturn(literalExpression);
+
+        grid.setExpression(NODE_UUID,
+                           hasExpression,
+                           Optional.of(hasName));
+
+        final HasExpression spy = grid.spyHasExpression(hasExpression);
+
+        assertThat(spy.asDMNModelInstrumentedBase()).isEqualTo(literalExpression);
+    }
 }

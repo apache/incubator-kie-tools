@@ -27,6 +27,7 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -41,6 +42,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.mocks.EventSourceMock;
@@ -92,6 +94,12 @@ public class LiteralExpressionEditorDefinitionTest {
     @Mock
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
 
+    @Mock
+    private EventSourceMock<RefreshFormProperties> refreshFormPropertiesEvent;
+
+    @Mock
+    private NameAndDataTypeEditorView.Presenter headerEditor;
+
     private Optional<HasName> hasName = Optional.of(HasName.NOP);
 
     private LiteralExpressionEditorDefinition definition;
@@ -109,8 +117,10 @@ public class LiteralExpressionEditorDefinitionTest {
                                                                 sessionCommandManager,
                                                                 canvasCommandFactory,
                                                                 editorSelectedEvent,
+                                                                refreshFormPropertiesEvent,
                                                                 listSelector,
-                                                                translationService);
+                                                                translationService,
+                                                                headerEditor);
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
     }
 

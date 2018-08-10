@@ -62,6 +62,7 @@ import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
@@ -99,6 +100,8 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
 
     protected final TranslationService translationService;
     protected final Event<ExpressionEditorChanged> editorSelectedEvent;
+    protected final Event<RefreshFormProperties> refreshFormPropertiesEvent;
+
     protected final int nesting;
     protected M uiModelMapper;
 
@@ -116,6 +119,7 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
                               final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                               final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                               final Event<ExpressionEditorChanged> editorSelectedEvent,
+                              final Event<RefreshFormProperties> refreshFormPropertiesEvent,
                               final CellEditorControlsView.Presenter cellEditorControls,
                               final ListSelectorView.Presenter listSelector,
                               final TranslationService translationService,
@@ -133,6 +137,7 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
         this.sessionCommandManager = sessionCommandManager;
         this.canvasCommandFactory = canvasCommandFactory;
         this.editorSelectedEvent = editorSelectedEvent;
+        this.refreshFormPropertiesEvent = refreshFormPropertiesEvent;
         this.cellEditorControls = cellEditorControls;
         this.listSelector = listSelector;
         this.translationService = translationService;
@@ -190,7 +195,10 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
         return (gcv) -> {
             final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder = new CompositeCommand.Builder<>();
             commandBuilder.addCommand(new DeleteHeaderValueCommand(extractEditableHeaderMetaData(gcv),
-                                                                   gridLayer::batch));
+                                                                   () -> {
+                                                                       gridLayer.batch();
+                                                                       nodeUUID.ifPresent(uuid -> refreshFormPropertiesEvent.fire(new RefreshFormProperties(sessionManager.getCurrentSession(), uuid)));
+                                                                   }));
             getUpdateStunnerTitleCommand("").ifPresent(commandBuilder::addCommand);
             return commandBuilder.build();
         };
@@ -202,7 +210,10 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
             final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder = new CompositeCommand.Builder<>();
             commandBuilder.addCommand(new SetHeaderValueCommand(title,
                                                                 extractEditableHeaderMetaData(gcv),
-                                                                gridLayer::batch));
+                                                                () -> {
+                                                                    gridLayer.batch();
+                                                                    nodeUUID.ifPresent(uuid -> refreshFormPropertiesEvent.fire(new RefreshFormProperties(sessionManager.getCurrentSession(), uuid)));
+                                                                }));
             getUpdateStunnerTitleCommand(title).ifPresent(commandBuilder::addCommand);
             return commandBuilder.build();
         };

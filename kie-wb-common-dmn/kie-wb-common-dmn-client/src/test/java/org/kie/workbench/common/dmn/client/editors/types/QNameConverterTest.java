@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.property.dmn;
+package org.kie.workbench.common.dmn.client.editors.types;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class QNameFieldConverterTest {
+public class QNameConverterTest {
 
     private static final String ENCODED_FEEL_DATE = "[][date][" + DMNModelInstrumentedBase.Namespace.FEEL.getPrefix() + "]";
 
@@ -48,11 +48,11 @@ public class QNameFieldConverterTest {
     @Mock
     private DMNGraphUtils dmnGraphUtils;
 
-    private QNameFieldConverter converter;
+    private QNameConverter converter;
 
     @Before
     public void setup() {
-        this.converter = new QNameFieldConverter(dmnGraphUtils) {
+        this.converter = new QNameConverter(dmnGraphUtils) {
             @Override
             protected List<String> getRegexGroups(final String componentValue) {
                 final List<String> regExGroups = new ArrayList<>();

@@ -162,7 +162,7 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
 
             @Override
             public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
-                return hasExpression.getExpression();
+                return hasExpression.asDMNModelInstrumentedBase();
             }
         };
 

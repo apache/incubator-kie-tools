@@ -45,6 +45,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
@@ -95,6 +96,9 @@ public abstract class BaseFunctionSupplementaryGridTest<D extends ExpressionEdit
 
     @Mock
     protected EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
+
+    @Mock
+    protected EventSourceMock<RefreshFormProperties> refreshFormPropertiesEvent;
 
     @Mock
     private GridCellTuple parent;

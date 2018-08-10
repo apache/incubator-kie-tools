@@ -19,32 +19,27 @@ package org.kie.workbench.common.dmn.client.property.dmn;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.databinding.client.api.Converter;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
-import org.kie.workbench.common.dmn.client.editors.types.TypePickerWidget;
+import org.kie.workbench.common.dmn.client.editors.types.DataTypePickerWidget;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
-import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.RequiresValueConverter;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 
 @Dependent
-public class QNameFieldRenderer extends FieldRenderer<QNameFieldDefinition, DefaultFormGroup> implements RequiresValueConverter {
+public class QNameFieldRenderer extends FieldRenderer<QNameFieldDefinition, DefaultFormGroup> {
 
-    private TypePickerWidget typePicker;
-    private QNameFieldConverter qNameFieldConverter;
+    private DataTypePickerWidget typePicker;
 
     public QNameFieldRenderer() {
         //CDI proxy
     }
 
     @Inject
-    public QNameFieldRenderer(final TypePickerWidget typePicker,
-                              final QNameFieldConverter qNameFieldConverter) {
+    public QNameFieldRenderer(final DataTypePickerWidget typePicker) {
         this.typePicker = typePicker;
-        this.qNameFieldConverter = qNameFieldConverter;
     }
 
     //Required for Unit Testing
@@ -60,7 +55,6 @@ public class QNameFieldRenderer extends FieldRenderer<QNameFieldDefinition, Defa
         // be sufficient in all cases, as the InformationItem cannot have its NameSpace context set.
         final Object model = renderingContext.getParentContext().getModel();
         if (model instanceof DMNModelInstrumentedBase) {
-            qNameFieldConverter.setDMNModel((DMNModelInstrumentedBase) model);
             typePicker.setDMNModel((DMNModelInstrumentedBase) model);
         }
         superInit(renderingContext, field);
@@ -95,10 +89,5 @@ public class QNameFieldRenderer extends FieldRenderer<QNameFieldDefinition, Defa
     @Override
     protected void setReadOnly(final boolean readOnly) {
         typePicker.setEnabled(!readOnly);
-    }
-
-    @Override
-    public Converter getConverter() {
-        return qNameFieldConverter;
     }
 }

@@ -44,6 +44,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 
 @ApplicationScoped
 public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Expression, DMNGridData> {
@@ -60,6 +61,7 @@ public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Ex
                                                final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                                final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                                final Event<ExpressionEditorChanged> editorSelectedEvent,
+                                               final Event<RefreshFormProperties> refreshFormPropertiesEvent,
                                                final ListSelectorView.Presenter listSelector,
                                                final TranslationService translationService,
                                                final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
@@ -68,6 +70,7 @@ public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Ex
               sessionCommandManager,
               canvasCommandFactory,
               editorSelectedEvent,
+              refreshFormPropertiesEvent,
               listSelector,
               translationService);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
@@ -108,6 +111,7 @@ public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Ex
                                                        sessionCommandManager,
                                                        canvasCommandFactory,
                                                        editorSelectedEvent,
+                                                       refreshFormPropertiesEvent,
                                                        getCellEditorControls(),
                                                        listSelector,
                                                        translationService,

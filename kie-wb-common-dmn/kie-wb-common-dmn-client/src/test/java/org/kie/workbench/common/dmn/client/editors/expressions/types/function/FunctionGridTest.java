@@ -50,6 +50,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.function.pa
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.FunctionSupplementaryGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -72,6 +73,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -183,6 +185,9 @@ public class FunctionGridTest {
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
 
     @Mock
+    private EventSourceMock<RefreshFormProperties> refreshFormPropertiesEvent;
+
+    @Mock
     private ExpressionEditorDefinition supplementaryLiteralExpressionEditorDefinition;
 
     @Mock
@@ -190,6 +195,9 @@ public class FunctionGridTest {
 
     @Mock
     private Command onSuccess;
+
+    @Mock
+    private NameAndDataTypeEditorView.Presenter headerEditor;
 
     private Context supplementaryLiteralExpression = new Context();
 
@@ -254,6 +262,7 @@ public class FunctionGridTest {
                                                   sessionCommandManager,
                                                   canvasCommandFactory,
                                                   editorSelectedEvent,
+                                                  refreshFormPropertiesEvent,
                                                   listSelector,
                                                   translationService,
                                                   expressionEditorDefinitionsSupplier,
@@ -264,8 +273,10 @@ public class FunctionGridTest {
                                                                                       sessionCommandManager,
                                                                                       canvasCommandFactory,
                                                                                       editorSelectedEvent,
+                                                                                      refreshFormPropertiesEvent,
                                                                                       listSelector,
-                                                                                      translationService));
+                                                                                      translationService,
+                                                                                      headerEditor));
 
         expression = definition.getModelClass();
         definition.enrich(Optional.empty(), expression);

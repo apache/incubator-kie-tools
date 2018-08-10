@@ -51,6 +51,7 @@ import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
 import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
@@ -104,6 +105,9 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
 
     @Mock
+    private EventSourceMock<RefreshFormProperties> refreshFormPropertiesEvent;
+
+    @Mock
     protected GridCellTuple parent;
 
     @Mock
@@ -129,6 +133,7 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
                                                             sessionCommandManager,
                                                             canvasCommandFactory,
                                                             editorSelectedEvent,
+                                                            refreshFormPropertiesEvent,
                                                             listSelector,
                                                             translationService,
                                                             hitPolicyEditor,

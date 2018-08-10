@@ -22,7 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
-import org.kie.workbench.common.dmn.client.editors.types.TypePickerWidget;
+import org.kie.workbench.common.dmn.client.editors.types.DataTypePickerWidget;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
@@ -38,10 +38,7 @@ import static org.mockito.Mockito.when;
 public class QNameFieldRendererTest {
 
     @Mock
-    private TypePickerWidget typePicker;
-
-    @Mock
-    private QNameFieldConverter qNameFieldConverter;
+    private DataTypePickerWidget typePicker;
 
     @Mock
     private FormRenderingContext context;
@@ -65,8 +62,7 @@ public class QNameFieldRendererTest {
 
     @Before
     public void setup() {
-        this.renderer = spy(new QNameFieldRenderer(typePicker,
-                                                   qNameFieldConverter));
+        this.renderer = spy(new QNameFieldRenderer(typePicker));
         this.renderer.setFormGroup(formGroupInstance);
         when(context.getParentContext()).thenReturn(parentContext);
         when(parentContext.getModel()).thenReturn(dmnModel);
@@ -79,7 +75,6 @@ public class QNameFieldRendererTest {
                       definition);
 
         verify(typePicker).setDMNModel(eq(dmnModel));
-        verify(qNameFieldConverter).setDMNModel(eq(dmnModel));
         verify(renderer).superInit(eq(context), eq(definition));
     }
 

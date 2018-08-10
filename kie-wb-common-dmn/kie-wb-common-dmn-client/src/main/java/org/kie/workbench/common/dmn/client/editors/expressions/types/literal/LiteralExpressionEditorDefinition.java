@@ -28,6 +28,7 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -40,9 +41,12 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 
 @ApplicationScoped
 public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<LiteralExpression, DMNGridData> {
+
+    private NameAndDataTypeEditorView.Presenter headerEditor;
 
     public LiteralExpressionEditorDefinition() {
         //CDI proxy
@@ -54,15 +58,19 @@ public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<Lite
                                              final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                              final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                              final Event<ExpressionEditorChanged> editorSelectedEvent,
+                                             final Event<RefreshFormProperties> refreshFormPropertiesEvent,
                                              final ListSelectorView.Presenter listSelector,
-                                             final TranslationService translationService) {
+                                             final TranslationService translationService,
+                                             final NameAndDataTypeEditorView.Presenter headerEditor) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,
               canvasCommandFactory,
               editorSelectedEvent,
+              refreshFormPropertiesEvent,
               listSelector,
               translationService);
+        this.headerEditor = headerEditor;
     }
 
     @Override
@@ -100,10 +108,12 @@ public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<Lite
                                                      sessionCommandManager,
                                                      canvasCommandFactory,
                                                      editorSelectedEvent,
+                                                     refreshFormPropertiesEvent,
                                                      getCellEditorControls(),
                                                      listSelector,
                                                      translationService,
-                                                     nesting));
+                                                     nesting,
+                                                     headerEditor));
     }
 
     @Override

@@ -62,6 +62,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanva
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -175,6 +176,9 @@ public class RelationGridTest {
     @Mock
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
 
+    @Mock
+    private EventSourceMock<RefreshFormProperties> refreshFormPropertiesEvent;
+
     @Captor
     private ArgumentCaptor<DeleteRelationColumnCommand> deleteColumnCommand;
 
@@ -215,6 +219,7 @@ public class RelationGridTest {
                                                   sessionCommandManager,
                                                   canvasCommandFactory,
                                                   editorSelectedEvent,
+                                                  refreshFormPropertiesEvent,
                                                   listSelector,
                                                   translationService);
 

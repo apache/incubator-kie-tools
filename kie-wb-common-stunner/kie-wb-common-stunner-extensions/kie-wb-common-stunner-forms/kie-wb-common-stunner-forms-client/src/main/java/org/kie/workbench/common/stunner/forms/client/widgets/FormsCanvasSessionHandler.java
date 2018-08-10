@@ -45,6 +45,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 import org.uberfire.mvp.Command;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
@@ -175,6 +176,15 @@ public class FormsCanvasSessionHandler {
         }
         Object property = model.get(fieldName);
         return definitionManager.adapters().forProperty().getId(property);
+    }
+
+    void onRefreshFormPropertiesEvent(@Observes RefreshFormProperties event) {
+        checkNotNull("event", event);
+
+        if (null != getCanvasHandler()) {
+            final String uuid = event.getUuid();
+            render(uuid);
+        }
     }
 
     @SuppressWarnings("unchecked")

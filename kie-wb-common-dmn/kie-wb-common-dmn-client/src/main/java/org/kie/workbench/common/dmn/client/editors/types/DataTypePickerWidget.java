@@ -45,13 +45,12 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
-import org.kie.workbench.common.dmn.client.property.dmn.QNameFieldConverter;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 
 @Dependent
 @Templated
-public class TypePickerWidget extends Composite implements HasValue<String>,
-                                                           HasEnabled {
+public class DataTypePickerWidget extends Composite implements HasValue<QName>,
+                                                               HasEnabled {
 
     static final Comparator<BuiltInType> BUILT_IN_TYPE_COMPARATOR = Comparator.comparing(o -> o.getName());
 
@@ -63,28 +62,29 @@ public class TypePickerWidget extends Composite implements HasValue<String>,
     @DataField
     private Select typeSelector;
 
-    private QNameFieldConverter qNameFieldConverter;
+    private QNameConverter qNameConverter;
 
     private DMNGraphUtils dmnGraphUtils;
 
     private DataTypeModal dataTypeModal;
 
-    private String type;
+    private QName type;
+
     private boolean enabled;
 
-    public TypePickerWidget() {
+    public DataTypePickerWidget() {
         //CDI proxy
     }
 
     @Inject
-    public TypePickerWidget(final Button typeButton,
-                            final TranslationService translationService,
-                            final QNameFieldConverter qNameFieldConverter,
-                            final DMNGraphUtils dmnGraphUtils,
-                            final DataTypeModal dataTypeModal) {
+    public DataTypePickerWidget(final Button typeButton,
+                                final TranslationService translationService,
+                                final QNameConverter qNameConverter,
+                                final DMNGraphUtils dmnGraphUtils,
+                                final DataTypeModal dataTypeModal) {
         this.typeButton = typeButton;
         this.typeSelector = GWT.create(Select.class);
-        this.qNameFieldConverter = qNameFieldConverter;
+        this.qNameConverter = qNameConverter;
         this.dmnGraphUtils = dmnGraphUtils;
         this.dataTypeModal = dataTypeModal;
 
@@ -94,15 +94,17 @@ public class TypePickerWidget extends Composite implements HasValue<String>,
         this.typeSelector.getElement().setAttribute("data-container", "body");
         this.typeSelector.refresh();
 
-        this.typeSelector.addValueChangeHandler((event) -> setValue(event.getValue(), true));
+        this.typeSelector.addValueChangeHandler((event) -> setValue(qNameConverter.toModelValue(event.getValue()), true));
     }
 
     public void setDMNModel(final DMNModelInstrumentedBase dmnModel) {
-        this.qNameFieldConverter.setDMNModel(dmnModel);
+        this.qNameConverter.setDMNModel(dmnModel);
         typeSelector.clear();
 
         addBuiltInTypes();
         addItemDefinitions();
+
+        typeSelector.refresh();
     }
 
     private void addBuiltInTypes() {
@@ -116,7 +118,7 @@ public class TypePickerWidget extends Composite implements HasValue<String>,
     Optional<Option> makeTypeSelector(final BuiltInType bit) {
         final Option o = GWT.create(Option.class);
         o.setText(bit.getName());
-        o.setValue(qNameFieldConverter.toWidgetValue(bit.asQName()));
+        o.setValue(qNameConverter.toWidgetValue(bit.asQName()));
         return Optional.of(o);
     }
 
@@ -147,9 +149,9 @@ public class TypePickerWidget extends Composite implements HasValue<String>,
             final Name name = id.getName();
             o = GWT.create(Option.class);
             o.setText(name.getValue());
-            o.setValue(qNameFieldConverter.toWidgetValue(new QName(QName.NULL_NS_URI,
-                                                                   name.getValue(),
-                                                                   QName.DEFAULT_NS_PREFIX)));
+            o.setValue(qNameConverter.toWidgetValue(new QName(QName.NULL_NS_URI,
+                                                              name.getValue(),
+                                                              QName.DEFAULT_NS_PREFIX)));
         }
         return Optional.ofNullable(o);
     }
@@ -162,36 +164,36 @@ public class TypePickerWidget extends Composite implements HasValue<String>,
     }
 
     @Override
-    public String getValue() {
+    public QName getValue() {
         return type;
     }
 
     @Override
-    public void setValue(final String value) {
+    public void setValue(final QName value) {
         setValue(value,
                  false);
     }
 
     @Override
-    public void setValue(final String value,
+    public void setValue(final QName value,
                          final boolean fireEvents) {
-        final String oldValue = type;
+        final QName oldValue = type;
         type = value;
-        typeSelector.setValue(type, false);
+        typeSelector.setValue(qNameConverter.toWidgetValue(type), false);
 
         if (fireEvents) {
             fireValueChangeEvent(oldValue);
         }
     }
 
-    void fireValueChangeEvent(final String oldValue) {
+    void fireValueChangeEvent(final QName oldValue) {
         ValueChangeEvent.fireIfNotEqual(this,
                                         oldValue,
                                         type);
     }
 
     @Override
-    public HandlerRegistration addValueChangeHandler(final ValueChangeHandler<String> handler) {
+    public HandlerRegistration addValueChangeHandler(final ValueChangeHandler<QName> handler) {
         return addHandler(handler,
                           ValueChangeEvent.getType());
     }

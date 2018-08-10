@@ -67,6 +67,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
@@ -204,6 +205,9 @@ public class ContextGridTest {
     @Mock
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
 
+    @Mock
+    private EventSourceMock<RefreshFormProperties> refreshFormPropertiesEvent;
+
     @Captor
     private ArgumentCaptor<AddContextEntryCommand> addContextEntryCommandCaptor;
 
@@ -242,6 +246,7 @@ public class ContextGridTest {
                                                  sessionCommandManager,
                                                  canvasCommandFactory,
                                                  editorSelectedEvent,
+                                                 refreshFormPropertiesEvent,
                                                  listSelector,
                                                  translationService,
                                                  expressionEditorDefinitionsSupplier);

@@ -42,6 +42,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 
 @ApplicationScoped
 public class RelationEditorDefinition extends BaseEditorDefinition<Relation, RelationGridData> {
@@ -56,6 +57,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
                                     final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                     final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                     final Event<ExpressionEditorChanged> editorSelectedEvent,
+                                    final Event<RefreshFormProperties> refreshFormPropertiesEvent,
                                     final ListSelectorView.Presenter listSelector,
                                     final TranslationService translationService) {
         super(definitionUtils,
@@ -63,6 +65,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
               sessionCommandManager,
               canvasCommandFactory,
               editorSelectedEvent,
+              refreshFormPropertiesEvent,
               listSelector,
               translationService);
     }
@@ -122,6 +125,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
                                             sessionCommandManager,
                                             canvasCommandFactory,
                                             editorSelectedEvent,
+                                            refreshFormPropertiesEvent,
                                             getCellEditorControls(),
                                             listSelector,
                                             translationService,

@@ -27,7 +27,6 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeFactory;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.editors.types.treegrid.DataTypeTreeGrid;
-import org.kie.workbench.common.dmn.client.property.dmn.QNameFieldConverter;
 import org.mockito.Mock;
 
 import static org.mockito.Matchers.any;
@@ -54,13 +53,13 @@ public class DataTypeModalTest {
     private DataTypeFactory dataTypeFactory;
 
     @Mock
-    private QNameFieldConverter qNameFieldConverter;
+    private QNameConverter qNameConverter;
 
     private DataTypeModal modal;
 
     @Before
     public void setup() {
-        modal = spy(new DataTypeModal(view, treeGrid, itemDefinitionUtils, dataTypeFactory, qNameFieldConverter));
+        modal = spy(new DataTypeModal(view, treeGrid, itemDefinitionUtils, dataTypeFactory, qNameConverter));
 
         doNothing().when(modal).superSetup();
         doNothing().when(modal).superShow();
@@ -83,7 +82,7 @@ public class DataTypeModalTest {
 
         when(dataTypeFactory.makeDataType(itemDefinition)).thenReturn(dataType);
         when(itemDefinitionUtils.findByName(selectedType)).thenReturn(Optional.of(itemDefinition));
-        when(qNameFieldConverter.toModelValue(selectedValue)).thenReturn(qName);
+        when(qNameConverter.toModelValue(selectedValue)).thenReturn(qName);
         when(qName.getLocalPart()).thenReturn(selectedType);
 
         modal.show(selectedValue);
@@ -100,7 +99,7 @@ public class DataTypeModalTest {
         final QName qName = mock(QName.class);
 
         when(itemDefinitionUtils.findByName(selectedType)).thenReturn(Optional.empty());
-        when(qNameFieldConverter.toModelValue(selectedValue)).thenReturn(qName);
+        when(qNameConverter.toModelValue(selectedValue)).thenReturn(qName);
         when(qName.getLocalPart()).thenReturn(selectedType);
 
         modal.show(selectedValue);

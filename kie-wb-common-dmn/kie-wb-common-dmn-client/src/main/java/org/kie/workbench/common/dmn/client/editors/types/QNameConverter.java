@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.property.dmn;
+package org.kie.workbench.common.dmn.client.editors.types;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +25,13 @@ import javax.inject.Inject;
 
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
-import org.jboss.errai.databinding.client.api.Converter;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 
 @Dependent
-public class QNameFieldConverter implements Converter<QName, String> {
+public class QNameConverter {
 
     private static final String QNAME_URI = "@1";
     private static final String QNAME_LOCALPART = "@2";
@@ -45,12 +44,12 @@ public class QNameFieldConverter implements Converter<QName, String> {
 
     private DMNModelInstrumentedBase dmnModel;
 
-    public QNameFieldConverter() {
+    public QNameConverter() {
         //CDI proxy
     }
 
     @Inject
-    public QNameFieldConverter(final DMNGraphUtils dmnGraphUtils) {
+    public QNameConverter(final DMNGraphUtils dmnGraphUtils) {
         this.dmnGraphUtils = dmnGraphUtils;
     }
 
@@ -58,17 +57,6 @@ public class QNameFieldConverter implements Converter<QName, String> {
         this.dmnModel = dmnModel;
     }
 
-    @Override
-    public Class<QName> getModelType() {
-        return QName.class;
-    }
-
-    @Override
-    public Class<String> getComponentType() {
-        return String.class;
-    }
-
-    @Override
     public QName toModelValue(final String componentValue) {
         //The componentValue is an encoded QName. See QNAME_ENCODING. Convert back to a QName.
         try {
@@ -100,7 +88,6 @@ public class QNameFieldConverter implements Converter<QName, String> {
         return regExGroups;
     }
 
-    @Override
     public String toWidgetValue(final QName modelValue) {
         String encoding = QNAME_ENCODING;
         String namespace = modelValue.getNamespaceURI();

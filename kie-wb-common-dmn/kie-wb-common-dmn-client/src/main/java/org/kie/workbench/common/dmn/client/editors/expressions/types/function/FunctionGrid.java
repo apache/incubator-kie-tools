@@ -62,6 +62,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.mvp.Command;
@@ -86,6 +87,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                         final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                         final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                         final Event<ExpressionEditorChanged> editorSelectedEvent,
+                        final Event<RefreshFormProperties> refreshFormPropertiesEvent,
                         final CellEditorControlsView.Presenter cellEditorControls,
                         final ListSelectorView.Presenter listSelector,
                         final TranslationService translationService,
@@ -107,6 +109,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
               sessionCommandManager,
               canvasCommandFactory,
               editorSelectedEvent,
+              refreshFormPropertiesEvent,
               cellEditorControls,
               listSelector,
               translationService,
