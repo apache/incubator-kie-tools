@@ -21,11 +21,12 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.encoder.Encoder;
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.kie.workbench.common.services.backend.compiler.configuration.MavenConfig;
 import org.kie.workbench.common.services.backend.logback.appender.KieSiftingAppender;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LogbackConfigTest {
 

@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.services.backend.compiler.plugin;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,7 +25,6 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeMetaInfo;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,14 +34,15 @@ import org.kie.scanner.KieModuleMetaData;
 import org.kie.scanner.KieModuleMetaDataImpl;
 import org.kie.workbench.common.services.backend.compiler.AFCompiler;
 import org.kie.workbench.common.services.backend.compiler.CompilationRequest;
-import org.kie.workbench.common.services.backend.constants.ResourcesConstants;
-import org.kie.workbench.common.services.backend.utils.TestUtil;
+import org.kie.workbench.common.services.backend.compiler.TestUtilMaven;
 import org.kie.workbench.common.services.backend.compiler.configuration.KieDecorator;
 import org.kie.workbench.common.services.backend.compiler.configuration.MavenCLIArgs;
 import org.kie.workbench.common.services.backend.compiler.impl.DefaultCompilationRequest;
 import org.kie.workbench.common.services.backend.compiler.impl.WorkspaceCompilationInfo;
 import org.kie.workbench.common.services.backend.compiler.impl.kie.KieCompilationResponse;
 import org.kie.workbench.common.services.backend.compiler.impl.kie.KieMavenCompilerFactory;
+import org.kie.workbench.common.services.backend.constants.ResourcesConstants;
+import org.kie.workbench.common.services.backend.utils.TestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.file.Files;
@@ -54,7 +53,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class KieMetadataTest {
 
-    private Path mavenRepo;
+    private String mavenRepo;
     private String alternateSettingsAbsPath;
     private Path tmpRoot;
     private Logger logger = LoggerFactory.getLogger(KieMetadataTest.class);
@@ -72,8 +71,8 @@ public class KieMetadataTest {
 
     @Before
     public void setUp() throws Exception {
-        mavenRepo = TestUtil.createMavenRepo();
-        alternateSettingsAbsPath = TestUtil.getSettingsFile();
+        mavenRepo = TestUtilMaven.getMavenRepo();
+        alternateSettingsAbsPath = TestUtilMaven.getSettingsFile();
         tmpRoot = Files.createTempDirectory("repo");
     }
 
@@ -86,7 +85,7 @@ public class KieMetadataTest {
 
         AFCompiler compiler = KieMavenCompilerFactory.getCompiler(KieDecorator.KIE_LOG_AND_CLASSPATH_DEPS_AFTER);
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(temp);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
                                                                new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);
@@ -133,7 +132,7 @@ public class KieMetadataTest {
 
             AFCompiler compiler = KieMavenCompilerFactory.getCompiler(KieDecorator.KIE_LOG_AND_CLASSPATH_DEPS_AFTER);
             WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(Paths.get(tmp.toUri()));
-            CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+            CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                    info,
                                                                    new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                    Boolean.FALSE);
@@ -177,7 +176,7 @@ public class KieMetadataTest {
 
         AFCompiler compiler = KieMavenCompilerFactory.getCompiler(KieDecorator.KIE_AND_CLASSPATH_AFTER_DEPS);
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(Paths.get(tmp.toUri()));
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
                                                                new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);

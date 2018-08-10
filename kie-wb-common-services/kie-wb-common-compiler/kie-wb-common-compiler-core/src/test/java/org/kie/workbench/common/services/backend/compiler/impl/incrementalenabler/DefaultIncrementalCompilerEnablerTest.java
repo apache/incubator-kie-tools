@@ -20,19 +20,19 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.guvnor.common.services.project.backend.server.utils.configuration.ConfigurationKey;
 import org.junit.Test;
 import org.kie.workbench.common.services.backend.compiler.BaseCompilerTest;
 import org.kie.workbench.common.services.backend.compiler.CompilationRequest;
-import org.kie.workbench.common.services.backend.constants.ResourcesConstants;
 import org.kie.workbench.common.services.backend.compiler.configuration.MavenCLIArgs;
 import org.kie.workbench.common.services.backend.compiler.impl.DefaultCompilationRequest;
 import org.kie.workbench.common.services.backend.compiler.impl.pomprocessor.ProcessedPoms;
+import org.kie.workbench.common.services.backend.constants.ResourcesConstants;
 import org.kie.workbench.common.services.backend.constants.TestConstants;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Paths;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultIncrementalCompilerEnablerTest extends BaseCompilerTest {
 
@@ -42,7 +42,7 @@ public class DefaultIncrementalCompilerEnablerTest extends BaseCompilerTest {
 
     @Test
     public void processTest() {
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
                                                                new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);
@@ -69,7 +69,7 @@ public class DefaultIncrementalCompilerEnablerTest extends BaseCompilerTest {
     public void processDisabledMavenDefaultCompilerTest() {
 
         Properties props = loadProperties("IncrementalCompiler.properties");
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
                                                                new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);

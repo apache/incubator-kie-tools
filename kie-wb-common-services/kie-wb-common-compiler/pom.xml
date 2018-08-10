@@ -20,6 +20,7 @@
   </properties>
 
   <modules>
+    <module>kie-wb-common-compiler-testing</module>
     <module>kie-wb-common-compiler-maven-plugins</module>
     <module>kie-wb-common-compiler-core</module>
     <module>kie-wb-common-compiler-maven-plugins-testing</module>

@@ -16,9 +16,6 @@
 
 package org.kie.workbench.common.services.backend.compiler;
 
-import org.kie.workbench.common.services.backend.utils.TestUtil;
-import org.kie.workbench.common.services.backend.constants.ResourcesConstants;
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +37,8 @@ import org.kie.workbench.common.services.backend.compiler.impl.DefaultCompilatio
 import org.kie.workbench.common.services.backend.compiler.impl.WorkspaceCompilationInfo;
 import org.kie.workbench.common.services.backend.compiler.impl.kie.KieCompilationResponse;
 import org.kie.workbench.common.services.backend.compiler.impl.kie.KieMavenCompilerFactory;
+import org.kie.workbench.common.services.backend.constants.ResourcesConstants;
+import org.kie.workbench.common.services.backend.utils.TestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.file.Files;
@@ -51,14 +50,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConcurrentBuildTest {
 
-    private Path mavenRepo;
+    private String mavenRepo;
     private Logger logger = LoggerFactory.getLogger(ConcurrentBuildTest.class);
 
     private CountDownLatch latch = new CountDownLatch(4);
 
     @Before
     public void setUp() throws Exception {
-        mavenRepo = TestUtil.createMavenRepo();
+        mavenRepo = TestUtilMaven.getMavenRepo();
     }
 
     @Test
@@ -158,7 +157,7 @@ public class ConcurrentBuildTest {
     }
 
     private KieCompilationResponse compileAndloadKieJarSingleMetadataWithPackagedJar() {
-        String alternateSettingsAbsPath = TestUtil.getSettingsFile();;
+        String alternateSettingsAbsPath = TestUtilMaven.getSettingsFile();;
         Path tmpRoot = Files.createTempDirectory("repo_" + UUID.randomUUID().toString());
         Path tmp = Files.createDirectories(Paths.get(tmpRoot.toString(), "dummy"));
         try {
@@ -169,7 +168,7 @@ public class ConcurrentBuildTest {
 
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(KieDecorator.KIE_AND_LOG_AFTER);
         final WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(Paths.get(tmp.toUri()));
-        final CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        final CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                      info,
                                                                      new String[]{
                                                                              MavenCLIArgs.COMPILE,
@@ -193,7 +192,7 @@ public class ConcurrentBuildTest {
     }
 
     private KieCompilationResponse compileAndLoadKieJarMetadataAllResourcesPackagedJar() {
-        String alternateSettingsAbsPath = TestUtil.getSettingsFile();;
+        String alternateSettingsAbsPath = TestUtilMaven.getSettingsFile();;
         Path tmpRoot = Files.createTempDirectory("repo_" + UUID.randomUUID().toString());
         Path tmp = Files.createDirectories(Paths.get(tmpRoot.toString(), "dummy"));
         try {
@@ -204,7 +203,7 @@ public class ConcurrentBuildTest {
 
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(KieDecorator.KIE_AND_LOG_AFTER);
         final WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(tmp);
-        final CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        final CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                      info,
                                                                      new String[]{
                                                                              MavenCLIArgs.COMPILE,

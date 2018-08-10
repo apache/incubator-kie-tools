@@ -29,8 +29,6 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.maven.DefaultMaven;
-import org.apache.maven.Maven;
 import org.kie.workbench.common.services.backend.compiler.impl.DefaultHttpCompilationResponse;
 import org.kie.workbench.common.services.backend.compiler.impl.kie.KieCompilationResponse;
 import org.kie.workbench.common.services.backend.compiler.rest.RestUtils;

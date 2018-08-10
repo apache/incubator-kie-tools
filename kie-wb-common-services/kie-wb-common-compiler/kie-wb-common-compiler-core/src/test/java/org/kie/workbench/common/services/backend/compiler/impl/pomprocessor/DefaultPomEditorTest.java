@@ -16,18 +16,19 @@
 package org.kie.workbench.common.services.backend.compiler.impl.pomprocessor;
 
 import java.util.HashSet;
-import static org.assertj.core.api.Assertions.assertThat;
+
 import org.assertj.core.api.SoftAssertions;
 import org.junit.Before;
-
 import org.junit.Test;
 import org.kie.workbench.common.services.backend.compiler.BaseCompilerTest;
 import org.kie.workbench.common.services.backend.compiler.CompilationRequest;
-import org.kie.workbench.common.services.backend.constants.ResourcesConstants;
 import org.kie.workbench.common.services.backend.compiler.configuration.ConfigurationContextProvider;
 import org.kie.workbench.common.services.backend.compiler.configuration.MavenCLIArgs;
 import org.kie.workbench.common.services.backend.compiler.impl.DefaultCompilationRequest;
+import org.kie.workbench.common.services.backend.constants.ResourcesConstants;
 import org.uberfire.java.nio.file.Paths;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultPomEditorTest extends BaseCompilerTest {
 
@@ -61,7 +62,7 @@ public class DefaultPomEditorTest extends BaseCompilerTest {
     @Test
     public void writeTest() {
         assertThat(editor.getHistory()).isEmpty();
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                 info,
                 new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                 Boolean.FALSE);
@@ -72,7 +73,7 @@ public class DefaultPomEditorTest extends BaseCompilerTest {
     @Test
     public void cleanHistoryTest() {
         assertThat(editor.getHistory()).isEmpty();
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                 info,
                 new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                 Boolean.FALSE);

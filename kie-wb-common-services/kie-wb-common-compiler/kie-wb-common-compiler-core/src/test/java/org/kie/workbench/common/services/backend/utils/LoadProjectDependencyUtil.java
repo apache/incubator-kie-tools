@@ -16,9 +16,11 @@
 package org.kie.workbench.common.services.backend.utils;
 
 import java.lang.reflect.Method;
+
+import org.slf4j.Logger;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import org.slf4j.Logger;
 
 public class LoadProjectDependencyUtil {
 

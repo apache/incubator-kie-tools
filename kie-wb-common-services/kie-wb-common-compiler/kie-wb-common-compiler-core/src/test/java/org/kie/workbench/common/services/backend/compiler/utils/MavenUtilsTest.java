@@ -19,16 +19,16 @@ package org.kie.workbench.common.services.backend.compiler.utils;
 import java.util.List;
 
 import org.apache.maven.artifact.Artifact;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.guvnor.m2repo.backend.server.repositories.ArtifactRepositoryService.GLOBAL_M2_REPO_NAME;
-
 import org.appformer.maven.integration.Aether;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.Test;
 import org.kie.workbench.common.services.backend.compiler.impl.utils.MavenRepos;
-import org.kie.workbench.common.services.backend.constants.ResourcesConstants;
 import org.kie.workbench.common.services.backend.compiler.impl.utils.MavenUtils;
+import org.kie.workbench.common.services.backend.constants.ResourcesConstants;
 import org.uberfire.java.nio.file.Paths;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.guvnor.m2repo.backend.server.repositories.ArtifactRepositoryService.GLOBAL_M2_REPO_NAME;
 
 public class MavenUtilsTest {
 

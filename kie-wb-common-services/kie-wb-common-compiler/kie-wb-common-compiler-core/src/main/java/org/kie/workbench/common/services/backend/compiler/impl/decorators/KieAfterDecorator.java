@@ -41,7 +41,7 @@ import org.kie.workbench.common.services.backend.compiler.impl.kie.KieCompilatio
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.workbench.common.services.backend.compiler.impl.classloader.CompilerClassloaderUtils.*;
+import static org.kie.workbench.common.services.backend.compiler.impl.classloader.CompilerClassloaderUtils.getStringFromTargets;
 
 /***
  * After decorator that reads and store the Objects created by the Kie takari plugin and placed the3se Objects in the CompilationResponse

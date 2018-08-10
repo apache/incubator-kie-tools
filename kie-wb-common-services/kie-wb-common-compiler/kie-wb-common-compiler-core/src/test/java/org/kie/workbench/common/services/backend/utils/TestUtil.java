@@ -21,10 +21,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.guvnor.common.services.project.backend.server.utils.configuration.ConfigurationKey;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.rules.TestName;
 import org.kie.workbench.common.services.backend.compiler.CompilationResponse;
 import org.slf4j.Logger;
@@ -36,7 +37,6 @@ import org.uberfire.java.nio.file.Paths;
 public class TestUtil {
 
     private static Logger logger = LoggerFactory.getLogger(TestUtil.class);
-    private static final String JENKINS_SETTINGS_XML_FILE = "JENKINS_SETTINGS_XML_FILE";
 
     public static void copyTree(Path source,
                                 Path target) throws IOException {
@@ -88,35 +88,12 @@ public class TestUtil {
         }
     }
 
-    public static Path createMavenRepo() throws Exception {
-        Path mavenRepository = Paths.get(System.getProperty("user.home"),
-                                         "/.m2/repository");
-        if (!Files.exists(mavenRepository)) {
-            logger.info("Creating a m2_repo into " + mavenRepository);
-            if (!Files.exists(Files.createDirectories(mavenRepository))) {
-                throw new Exception("Folder not writable in the project");
-            }
-        }
-        return mavenRepository;
-    }
-
     public static Path createAndCopyToDirectory(Path root, String dirName, String copyTree) throws IOException {
         //NIO creation and copy content
         Path dir = Files.createDirectories(Paths.get(root.toString(), dirName));
         TestUtil.copyTree(Paths.get(copyTree), dir);
         return dir;
         //end NIO
-    }
-
-    public static String getSettingsFile(){
-        String jenkinsFile = System.getenv().get(JENKINS_SETTINGS_XML_FILE);
-        if(jenkinsFile != null){
-            logger.info("Using settings.xml file provided by JENKINS:{}", jenkinsFile);
-            return jenkinsFile;
-        }else {
-            logger.info("Using local settings.xml file.");
-            return new File("src/test/settings.xml").getAbsolutePath();
-        }
     }
 
     public static void saveMavenLogIfCompilationResponseNotSuccessfull(Path tmp, CompilationResponse response, Class<?> testClass, TestName testName) throws Exception{

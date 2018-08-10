@@ -17,20 +17,22 @@
 
   <properties>
     <java.module.name>org.kie.wb.common.services.backend.compiler.distribution</java.module.name>
-    <!--<deployable.groupId>org.kie.workbench.services</deployable.groupId>
-    <deployable.artifactId>kie-wb-common-compiler-distribution</deployable.artifactId>
-    <deployable.version>${version.org.kie}</deployable.version>
-    <deployable.classifier/>-->
     <deployable.context>kie-maven-compiler</deployable.context>
-    <!--<deployment.timeout>90000</deployment.timeout>-->
     <container.host>localhost</container.host>
     <container.port>8090</container.port>
     <kie.compiler.url>http://${container.host}:${container.port}/${deployable.context}</kie.compiler.url>
-    <!--<deployable.classifier.wildfly11>wildfly11</deployable.classifier.wildfly11>
-    <deployable.classifier.eap7>eap7</deployable.classifier.eap7>
-    <deployable.classifier.swarm>swarm</deployable.classifier.swarm>-->
     <version.wildfly11>11.0.0.Final</version.wildfly11>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kie.workbench.services</groupId>
+        <artifactId>kie-wb-common-compiler-testutil</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -93,6 +95,11 @@
     </dependency>
 
     <!-- test -->
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-compiler-testutil</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>

@@ -16,9 +16,7 @@
 
 package org.kie.workbench.common.services.backend.compiler;
 
-import org.kie.workbench.common.services.backend.utils.TestUtil;
 import java.nio.charset.StandardCharsets;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +25,7 @@ import org.kie.workbench.common.services.backend.compiler.impl.DefaultCompilatio
 import org.kie.workbench.common.services.backend.compiler.impl.WorkspaceCompilationInfo;
 import org.kie.workbench.common.services.backend.compiler.impl.incrementalenabler.DefaultIncrementalCompilerEnabler;
 import org.kie.workbench.common.services.backend.constants.TestConstants;
+import org.kie.workbench.common.services.backend.utils.TestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.file.Files;
@@ -35,15 +34,17 @@ import org.uberfire.java.nio.file.Paths;
 import org.uberfire.java.nio.file.api.FileSystemProviders;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class DefaultIncrementalCompilerEnablerTest {
 
-    private Path mavenRepo;
+    private String mavenRepo;
     private Logger logger = LoggerFactory.getLogger(DefaultIncrementalCompilerEnablerTest.class);
 
     @Before
     public void setUp() throws Exception {
-        mavenRepo = TestUtil.createMavenRepo();
+        mavenRepo = TestUtilMaven.getMavenRepo();
     }
 
     @Test
@@ -70,7 +71,7 @@ public class DefaultIncrementalCompilerEnablerTest {
                                          StandardCharsets.UTF_8);
         assertThat(pomAsAstring).doesNotContain(TestConstants.TAKARI_LIFECYCLE_ARTIFACT);
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(tmp);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
                                                                new String[]{MavenCLIArgs.CLEAN, MavenCLIArgs.COMPILE},
                                                                Boolean.FALSE);
@@ -118,7 +119,7 @@ public class DefaultIncrementalCompilerEnablerTest {
         assertThat(pomAsAstringDummyB).contains("<packaging>kjar</packaging>");
 
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(tmp);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
                                                                new String[]{MavenCLIArgs.CLEAN, MavenCLIArgs.COMPILE},
                                                                Boolean.FALSE);

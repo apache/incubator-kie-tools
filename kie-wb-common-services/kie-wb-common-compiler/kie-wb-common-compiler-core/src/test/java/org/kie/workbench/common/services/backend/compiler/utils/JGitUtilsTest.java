@@ -20,8 +20,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.UUID;
-import static org.assertj.core.api.Assertions.assertThat;
-import org.assertj.core.api.SoftAssertions;
 
 import org.eclipse.jgit.api.Git;
 import org.junit.After;
@@ -29,8 +27,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.workbench.common.services.backend.compiler.DefaultMavenCompilerTest;
-import org.kie.workbench.common.services.backend.utils.TestUtil;
 import org.kie.workbench.common.services.backend.compiler.impl.utils.JGitUtils;
+import org.kie.workbench.common.services.backend.utils.TestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOService;
@@ -39,6 +37,8 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.Paths;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.mocks.FileSystemTestingUtils;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class JGitUtilsTest {
 

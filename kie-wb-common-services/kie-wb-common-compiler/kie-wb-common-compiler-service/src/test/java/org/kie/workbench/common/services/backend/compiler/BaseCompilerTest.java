@@ -17,7 +17,10 @@ package org.kie.workbench.common.services.backend.compiler;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.kie.workbench.common.services.backend.compiler.impl.WorkspaceCompilationInfo;
@@ -30,8 +33,8 @@ import org.uberfire.java.nio.file.Paths;
 public class BaseCompilerTest implements Serializable{
 
     protected static Path tmpRoot;
-    protected Path mavenRepo;
-    protected Logger logger = LoggerFactory.getLogger(BaseCompilerTest.class);
+    protected String mavenRepo;
+    protected static Logger logger = LoggerFactory.getLogger(BaseCompilerTest.class);
     protected String alternateSettingsAbsPath;
     protected WorkspaceCompilationInfo info;
     protected AFCompiler compiler;
@@ -44,15 +47,7 @@ public class BaseCompilerTest implements Serializable{
 
     public BaseCompilerTest(String prjName) {
         try {
-            mavenRepo = Paths.get(System.getProperty("user.home"),
-                                  "/.m2/repository");
-
-            if (!Files.exists(mavenRepo)) {
-                logger.info("Creating a m2_repo into " + mavenRepo);
-                if (!Files.exists(Files.createDirectories(mavenRepo))) {
-                    throw new Exception("Folder not writable in the project");
-                }
-            }
+            mavenRepo = TestUtilMaven.getMavenRepo();
             tmpRoot = Files.createTempDirectory("repo");
             alternateSettingsAbsPath = new File("src/test/settings.xml").getAbsolutePath();
             Path tmp = Files.createDirectories(Paths.get(tmpRoot.toString(), "dummy"));
@@ -62,6 +57,7 @@ public class BaseCompilerTest implements Serializable{
             logger.error(e.getMessage());
         }
     }
+
 
     @AfterClass
     public static void tearDown() {

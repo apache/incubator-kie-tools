@@ -20,17 +20,17 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import org.assertj.core.api.SoftAssertions;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.kie.workbench.common.services.backend.compiler.BaseCompilerTest;
 import org.kie.workbench.common.services.backend.compiler.CompilationRequest;
 import org.kie.workbench.common.services.backend.compiler.CompilationResponse;
-import org.kie.workbench.common.services.backend.constants.ResourcesConstants;
 import org.kie.workbench.common.services.backend.compiler.configuration.MavenCLIArgs;
 import org.kie.workbench.common.services.backend.compiler.impl.BaseMavenCompiler;
 import org.kie.workbench.common.services.backend.compiler.impl.DefaultCompilationRequest;
+import org.kie.workbench.common.services.backend.constants.ResourcesConstants;
 import org.uberfire.java.nio.file.Path;
 
 public class OutputLogAfterDecoratorTest extends BaseCompilerTest {
@@ -47,7 +47,7 @@ public class OutputLogAfterDecoratorTest extends BaseCompilerTest {
     @Test
     public void compileTest() {
 
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
                                                                new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);
@@ -68,7 +68,7 @@ public class OutputLogAfterDecoratorTest extends BaseCompilerTest {
         InputStream input = new FileInputStream(new File(ResourcesConstants.DUMMY_OVERRIDE+"/src/main/java/dummy/DummyOverride.java"));
         override.put(path, input);
 
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
                                                                new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);
@@ -83,7 +83,7 @@ public class OutputLogAfterDecoratorTest extends BaseCompilerTest {
 
     @Test
     public void compileFailedTest() throws Exception {
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                createdNewPrjInRepo("dummy-fail", ResourcesConstants.DUMMY_FAIL_DEPS_SIMPLE),
                                                                new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);

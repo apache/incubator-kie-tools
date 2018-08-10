@@ -17,16 +17,19 @@ package org.kie.workbench.common.services.backend.maven.plugins.dependency;
 
 import java.io.File;
 import java.net.URLClassLoader;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
-import org.guvnor.common.services.project.backend.server.utils.configuration.ConfigurationKey;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.services.backend.compiler.AFCompiler;
 import org.kie.workbench.common.services.backend.compiler.CompilationRequest;
 import org.kie.workbench.common.services.backend.compiler.CompilationResponse;
+import org.kie.workbench.common.services.backend.compiler.TestUtilMaven;
 import org.kie.workbench.common.services.backend.compiler.configuration.KieDecorator;
 import org.kie.workbench.common.services.backend.compiler.configuration.MavenCLIArgs;
 import org.kie.workbench.common.services.backend.compiler.configuration.MavenConfig;
@@ -45,36 +48,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BuildInMemoryClasspathMojoTest {
 
     private static Path tmpRoot;
-    private Path mavenRepo;
+    private String mavenRepo;
     private static Logger logger = LoggerFactory.getLogger(BuildInMemoryClasspathMojoTest.class);
     private String alternateSettingsAbsPath;
-    private static final String JENKINS_SETTINGS_XML_FILE = "JENKINS_SETTINGS_XML_FILE";
 
     @Before
     public void setUp() throws Exception {
-        mavenRepo = Paths.get(System.getProperty("user.home"), "/.m2/repository");
-
-        if (!Files.exists(mavenRepo)) {
-            if (!Files.exists(Files.createDirectories(mavenRepo))) {
-                throw new Exception("Folder not writable in the project");
-            }
-        }
-
-
-        mavenRepo = Paths.get(System.getProperty("user.home"),
-                              "/.m2/repository");
-
-        if (!Files.exists(mavenRepo)) {
-            logger.info("Creating a m2_repo into " + mavenRepo);
-            if (!Files.exists(Files.createDirectories(mavenRepo))) {
-                throw new Exception("Folder not writable in the project");
-            }
-        }
+        mavenRepo = TestUtilMaven.getMavenRepo();
         tmpRoot = Files.createTempDirectory("repo");
-        alternateSettingsAbsPath = getSettingsFile();
-
+        alternateSettingsAbsPath = TestUtilMaven.getSettingsFile();
     }
-
 
     @Test
     public void getClassloaderFromAllDependenciesSimpleTest(){
@@ -82,7 +65,7 @@ public class BuildInMemoryClasspathMojoTest {
         Path path = Paths.get(".").resolve("target/test-classes/dummy_deps_simple");
         AFCompiler compiler = KieMavenCompilerFactory.getCompiler(KieDecorator.CLASSPATH_DEPS_AFTER_DECORATOR);
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(path);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
                                                                new String[]{ MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath, MavenConfig.DEPS_IN_MEMORY_BUILD_CLASSPATH},
                                                                Boolean.FALSE);
@@ -99,7 +82,7 @@ public class BuildInMemoryClasspathMojoTest {
         Path path = Paths.get(".").resolve("target/test-classes/dummy_deps_complex");
         AFCompiler compiler = KieMavenCompilerFactory.getCompiler(KieDecorator.CLASSPATH_DEPS_AFTER_DECORATOR);
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(path);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
                                                                new String[]{MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath, MavenConfig.DEPS_IN_MEMORY_BUILD_CLASSPATH},
                                                                Boolean.FALSE);
@@ -114,7 +97,7 @@ public class BuildInMemoryClasspathMojoTest {
     public void testCompilerClassloaderUtilsTests(){
         Path path = Paths.get(".").resolve("target/test-classes//dummy_deps_complex");
         Optional<ClassLoader> classloaderOptional = CompilerClassloaderUtils.getClassloaderFromAllDependencies(path.toAbsolutePath().toString(),
-                                                                                                               mavenRepo.toAbsolutePath().toString());
+                                                                                                               mavenRepo);
         assertThat(classloaderOptional).isPresent();
         ClassLoader classloader = classloaderOptional.get();
         URLClassLoader urlsc = (URLClassLoader) classloader;
@@ -137,16 +120,5 @@ public class BuildInMemoryClasspathMojoTest {
         }
     }
 
-    public static String getSettingsFile(){
-        String jenkinsFile = System.getenv().get(JENKINS_SETTINGS_XML_FILE);
-        if(jenkinsFile != null){
-            logger.info("Using settings.xml file provided by JENKINS:{}", jenkinsFile);
-            return jenkinsFile;
-        }else {
-            logger.info("Using local settings.xml file.");
-            return new File("src/test/settings.xml").getAbsolutePath();
-        }
-
-    }
 
 }

@@ -15,19 +15,18 @@
  */
 package org.kie.workbench.common.services.backend.compiler;
 
-import org.junit.Rule;
-import org.junit.rules.TestName;
-import org.kie.workbench.common.services.backend.utils.TestUtil;
-import java.io.File;
 import java.io.IOException;
 
 import org.junit.AfterClass;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 import org.kie.workbench.common.services.backend.compiler.configuration.KieDecorator;
 import org.kie.workbench.common.services.backend.compiler.configuration.MavenCLIArgs;
 import org.kie.workbench.common.services.backend.compiler.impl.DefaultCompilationRequest;
 import org.kie.workbench.common.services.backend.compiler.impl.WorkspaceCompilationInfo;
 import org.kie.workbench.common.services.backend.compiler.impl.kie.KieCompilationResponse;
 import org.kie.workbench.common.services.backend.compiler.impl.kie.KieMavenCompilerFactory;
+import org.kie.workbench.common.services.backend.utils.TestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.file.Files;
@@ -37,7 +36,7 @@ import org.uberfire.java.nio.file.Paths;
 public class BaseCompilerTest {
 
     protected static Path tmpRoot;
-    protected Path mavenRepo;
+    protected String mavenRepo;
     protected Logger logger = LoggerFactory.getLogger(BaseCompilerTest.class);
     protected String alternateSettingsAbsPath;
     protected WorkspaceCompilationInfo info;
@@ -49,9 +48,9 @@ public class BaseCompilerTest {
 
     public BaseCompilerTest(String prjName) {
         try {
-            mavenRepo = TestUtil.createMavenRepo();
+            mavenRepo = TestUtilMaven.getMavenRepo();
             tmpRoot = Files.createTempDirectory("repo");
-            alternateSettingsAbsPath = TestUtil.getSettingsFile();
+            alternateSettingsAbsPath = TestUtilMaven.getSettingsFile();
             Path tmp = TestUtil.createAndCopyToDirectory(tmpRoot, "dummy", prjName);
             info = new WorkspaceCompilationInfo(Paths.get(tmp.toUri()));
         } catch (Exception e) {
@@ -63,7 +62,7 @@ public class BaseCompilerTest {
         this(prjName);
         try {
             compiler = KieMavenCompilerFactory.getCompiler(decorator);
-            CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+            CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                    info,
                                                                    new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                    Boolean.FALSE);

@@ -22,12 +22,13 @@ import java.util.Map;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.kie.workbench.common.services.backend.compiler.configuration.MavenConfig;
 import org.kie.workbench.common.services.backend.logback.OutputSharedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KieSiftingAppenderTest {
 

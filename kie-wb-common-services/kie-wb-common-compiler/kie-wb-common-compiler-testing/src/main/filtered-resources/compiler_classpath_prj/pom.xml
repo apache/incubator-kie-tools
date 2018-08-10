@@ -1,90 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.workbench.services</groupId>
     <artifactId>kie-wb-common-compiler</artifactId>
-    <version>7.10.0-SNAPSHOT</version>
+    <version>${version.org.kie}</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
-
-  <artifactId>kie-wb-common-compiler-core</artifactId>
-
-  <name>Kie Workbench - Common - Compiler - Core</name>
-  <description>Kie Workbench - Common - Compiler - Core</description>
-
+  <artifactId>kie-wb-common-compiler-offprocess</artifactId>
+  <name>Kie Workbench - Common - Compiler - OffProcess</name>
+  <description>Kie Workbench - Common - Compiler - OffProcess</description>
   <properties>
-    <java.module.name>org.kie.wb.common.services.backend.compiler.core</java.module.name>
+    <java.module.name>org.kie.wb.common.services.backend.compiler.core.offprocess</java.module.name>
   </properties>
-
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-      <resource>
-        <directory>src/main/filtered-resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-    <testResources>
-      <testResource>
-        <directory>src/test/projects</directory>
-        <filtering>true</filtering>
-      </testResource>
-      <testResource>
-        <directory>src/test/resources</directory>
-        <filtering>true</filtering>
-      </testResource>
-    </testResources>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <systemPropertyVariables>
-            <apple.awt.UIElement>true</apple.awt.UIElement>
-            <org.uberfire.nio.git.daemon.enabled>true</org.uberfire.nio.git.daemon.enabled>
-          </systemPropertyVariables>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <configuration>
-          <nonFilteredFileExtensions>
-            <nonFilteredFileExtension>bpmn2</nonFilteredFileExtension>
-            <nonFilteredFileExtension>dmn</nonFilteredFileExtension>
-            <nonFilteredFileExtension>drl</nonFilteredFileExtension>
-            <nonFilteredFileExtension>drt</nonFilteredFileExtension>
-            <nonFilteredFileExtension>dsl</nonFilteredFileExtension>
-            <nonFilteredFileExtension>dslr</nonFilteredFileExtension>
-            <nonFilteredFileExtension>gdst</nonFilteredFileExtension>
-            <nonFilteredFileExtension>java</nonFilteredFileExtension>
-            <nonFilteredFileExtension>pmml</nonFilteredFileExtension>
-            <nonFilteredFileExtension>sxls</nonFilteredFileExtension>
-            <nonFilteredFileExtension>template</nonFilteredFileExtension>
-            <nonFilteredFileExtension>txls</nonFilteredFileExtension>
-            <nonFilteredFileExtension>xls</nonFilteredFileExtension>
-          </nonFilteredFileExtensions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.kie.workbench.services</groupId>
-        <artifactId>kie-wb-common-compiler-testutil</artifactId>
+        <artifactId>kie-wb-common-compiler-core</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
+      <!--<dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-io</artifactId>
+        <version>3.0.1</version>
+      </dependency>-->
     </dependencies>
   </dependencyManagement>
-
   <dependencies>
-
+    <dependency>
+      <groupId>net.openhft</groupId>
+      <artifactId>chronicle-queue</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net.openhft</groupId>
+      <artifactId>chronicle-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net.openhft</groupId>
+      <artifactId>chronicle-bytes</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net.openhft</groupId>
+      <artifactId>chronicle-wire</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-compiler-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.activemq</groupId>
+          <artifactId>artemis-jms-client</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.jms</groupId>
+          <artifactId>jboss-jms-api_2.0_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-buffer</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-transport</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-handler</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-transport-native-epoll</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-transport-native-kqueue</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-codec-http</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     <!-- Transitive deps -->
     <dependency>
       <groupId>commons-io</groupId>
@@ -119,8 +116,91 @@
     </dependency>
 
     <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.aether</groupId>
+      <artifactId>aether-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-project-api</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.uberfire</groupId>
+          <artifactId>uberfire-client-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.uberfire</groupId>
+          <artifactId>uberfire-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.uberfire</groupId>
+          <artifactId>uberfire-social-activities-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.errai</groupId>
+          <artifactId>errai-bus</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.errai</groupId>
+          <artifactId>errai-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.uberfire</groupId>
+          <artifactId>uberfire-commons</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.uberfire</groupId>
+          <artifactId>uberfire-preferences-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.uberfire</groupId>
+          <artifactId>uberfire-preferences-processors</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.activemq</groupId>
+          <artifactId>artemis-jms-client</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.jms</groupId>
+          <artifactId>jboss-jms-api_2.0_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-buffer</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-transport</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-handler</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-transport-native-epoll</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-transport-native-kqueue</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-codec-http</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -244,10 +324,6 @@
           <artifactId>uberfire-backend-cdi</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.uberfire</groupId>
-          <artifactId>uberfire-project-api</artifactId>
-        </exclusion>
-        <exclusion>
           <groupId>org.jboss.errai</groupId>
           <artifactId>errai-security-server</artifactId>
         </exclusion>
@@ -262,10 +338,6 @@
         <exclusion>
           <groupId>org.kie.soup</groupId>
           <artifactId>kie-soup-maven-integration</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.eclipse.aether</groupId>
-          <artifactId>aether-util</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -283,6 +355,17 @@
     <dependency>
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-maven-support</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-maven-integration</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.ant</groupId>
+          <artifactId>ant</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -329,10 +412,6 @@
           <groupId>org.uberfire</groupId>
           <artifactId>uberfire-social-activities-api</artifactId>
         </exclusion>
-        <exclusion>
-          <groupId>org.uberfire</groupId>
-          <artifactId>uberfire-project-api</artifactId>
-        </exclusion>
       </exclusions>
     </dependency>
 
@@ -341,15 +420,10 @@
       <artifactId>kie-ci</artifactId>
       <exclusions>
         <exclusion>
-          <groupId>org.kie.soup</groupId>
-          <artifactId>kie-soup-maven-integration</artifactId>
+          <groupId>org.apache.ant</groupId>
+          <artifactId>ant</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-maven-integration</artifactId>
     </dependency>
 
     <dependency>
@@ -361,13 +435,6 @@
           <groupId>uberfire-maven-support</groupId>
         </exclusion>
       </exclusions>
-    </dependency>
-
-    <!-- log -->
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
     </dependency>
 
     <dependency>
@@ -392,11 +459,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-component-annotations</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
       <classifier>no_aop</classifier>
@@ -405,12 +467,6 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.eclipse.aether</groupId>
-          <artifactId>aether-util</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <dependency>
@@ -449,13 +505,13 @@
     </dependency>
 
     <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-plugin-api</artifactId>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-interpolation</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-interpolation</artifactId>
+      <artifactId>plexus-component-annotations</artifactId>
     </dependency>
 
     <dependency>
@@ -474,17 +530,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-jgit</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.uberfire</groupId>
-          <artifactId>uberfire-commons</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
       <groupId>commons-cli</groupId>
       <artifactId>commons-cli</artifactId>
     </dependency>
@@ -495,100 +540,69 @@
     </dependency>
 
     <dependency>
-      <groupId>org.eclipse.jgit</groupId>
-      <artifactId>org.eclipse.jgit</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-        </exclusion>
-      </exclusions>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-fs</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.eclipse.aether</groupId>
-      <artifactId>aether-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.aether</groupId>
-      <artifactId>aether-impl</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-
-    <!-- End incremental compiler -->
-
-   <!-- Runtime for maven in memory classpath plugin -->
+    <!-- Runtime for maven in memory classpath plugin -->
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-io</artifactId>
       <scope>runtime</scope>
     </dependency>
 
+    <!-- test-->
     <dependency>
-      <groupId>org.apache.maven.shared</groupId>
-      <artifactId>maven-artifact-transfer</artifactId>
-      <scope>runtime</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.sonatype.sisu</groupId>
-          <artifactId>sisu-inject-bean</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.sonatype.sisu</groupId>
-          <artifactId>sisu-inject</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.sonatype.sisu</groupId>
-          <artifactId>sisu-inject-plexus</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <!-- Test-->
-    <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-compiler-testutil</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-testing-utils</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-test-utils</artifactId>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
       <scope>test</scope>
       <exclusions>
         <exclusion>
-          <groupId>org.jboss.spec.javax.el</groupId>
-          <artifactId>jboss-el-api_3.0_spec</artifactId>
+          <groupId>org.hamcrest</groupId>
+          <artifactId>hamcrest-core</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.jboss.spec.javax.interceptor</groupId>
-          <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.uberfire</groupId>
-          <artifactId>uberfire-metadata-backend-lucene</artifactId>
+          <groupId>org.mockito</groupId>
+          <artifactId>mockito-core</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-fs</artifactId>
-      <scope>test</scope>
     </dependency>
   </dependencies>
-
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.takari.maven.plugins</groupId>
+        <artifactId>takari-lifecycle-plugin</artifactId>
+        <version>1.13.5</version>
+        <executions>
+          <execution>
+            <id>default-compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <compilerId>jdt</compilerId>
+          <source>1.8</source>
+          <target>1.8</target>
+          <failOnError>false</failOnError>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-compile</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
+        <configuration>
+          <skipMain>true</skipMain>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

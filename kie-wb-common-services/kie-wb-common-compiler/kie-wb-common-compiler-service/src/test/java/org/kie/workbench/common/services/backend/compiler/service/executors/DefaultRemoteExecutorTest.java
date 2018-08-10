@@ -18,13 +18,14 @@ package org.kie.workbench.common.services.backend.compiler.service.executors;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 import org.kie.workbench.common.services.backend.compiler.BaseCompilerTest;
 import org.kie.workbench.common.services.backend.compiler.configuration.MavenCLIArgs;
 import org.kie.workbench.common.services.backend.compiler.impl.kie.KieCompilationResponse;
 import org.uberfire.java.nio.file.Paths;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultRemoteExecutorTest extends BaseCompilerTest {
 

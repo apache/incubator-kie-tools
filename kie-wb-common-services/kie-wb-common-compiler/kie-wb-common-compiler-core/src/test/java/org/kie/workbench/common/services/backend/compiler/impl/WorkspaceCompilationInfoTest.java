@@ -15,26 +15,22 @@
  */
 package org.kie.workbench.common.services.backend.compiler.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.services.backend.constants.ResourcesConstants;
 import org.kie.workbench.common.services.backend.utils.TestUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.Paths;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class WorkspaceCompilationInfoTest {
 
-    private static Path mavenRepo;
-    private static Logger logger = LoggerFactory.getLogger(WorkspaceCompilationInfoTest.class);
     private static Path tmpRoot;
 
     @Before
     public void setUp() throws Exception {
-        mavenRepo = TestUtil.createMavenRepo();
         tmpRoot = Files.createTempDirectory("repo");
         Path tmp = Files.createDirectories(Paths.get(tmpRoot.toString(), "dummy"));
         TestUtil.copyTree(Paths.get(ResourcesConstants.KJAR_2_SINGLE_RESOURCES), tmp);

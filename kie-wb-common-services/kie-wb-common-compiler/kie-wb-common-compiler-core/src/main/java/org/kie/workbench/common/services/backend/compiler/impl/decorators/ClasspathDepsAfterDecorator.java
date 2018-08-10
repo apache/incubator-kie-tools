@@ -24,7 +24,6 @@ import org.kie.workbench.common.services.backend.compiler.CompilationRequest;
 import org.kie.workbench.common.services.backend.compiler.CompilationResponse;
 import org.kie.workbench.common.services.backend.compiler.impl.DefaultCompilationResponse;
 import org.kie.workbench.common.services.backend.compiler.impl.classloader.CompilerClassloaderUtils;
-import org.uberfire.java.nio.file.Paths;
 
 /***
  * After decorator that reads the List<String> with the dependencies from the project's modules cretaed by the

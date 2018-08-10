@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.kie.workbench.common.services.backend.compiler.CompilationRequest;
 import org.kie.workbench.common.services.backend.compiler.CompilationResponse;
+import org.kie.workbench.common.services.backend.compiler.TestUtilMaven;
 import org.kie.workbench.common.services.backend.compiler.configuration.MavenCLIArgs;
 import org.kie.workbench.common.services.backend.compiler.impl.BaseMavenCompiler;
 import org.kie.workbench.common.services.backend.compiler.impl.DefaultCompilationRequest;
@@ -51,7 +52,7 @@ public class JGITCompilerBeforeDecoratorTest {
 
     private FileSystemTestingUtils fileSystemTestingUtils = new FileSystemTestingUtils();
     private IOService ioService;
-    private Path mavenRepo;
+    private String mavenRepo;
 
     @Rule
     public TestName testName = new TestName();
@@ -72,7 +73,7 @@ public class JGITCompilerBeforeDecoratorTest {
         fileSystemTestingUtils.setup();
         ioService = fileSystemTestingUtils.getIoService();
 
-        mavenRepo = TestUtil.createMavenRepo();
+        mavenRepo = TestUtilMaven.getMavenRepo();
     }
 
     @After
@@ -88,7 +89,7 @@ public class JGITCompilerBeforeDecoratorTest {
         //Compile the repo
         JGITCompilerBeforeDecorator compiler = new JGITCompilerBeforeDecorator(new BaseMavenCompiler());
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(fileSystem.getPath("/"));
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.TRUE);
@@ -111,7 +112,7 @@ public class JGITCompilerBeforeDecoratorTest {
 
         //Compile the repo
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(fileSystem.getPath("/"));
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.TRUE);
@@ -142,7 +143,7 @@ public class JGITCompilerBeforeDecoratorTest {
         //Compile the repo
 
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(fileSystem.getPath("/"));
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.TRUE);

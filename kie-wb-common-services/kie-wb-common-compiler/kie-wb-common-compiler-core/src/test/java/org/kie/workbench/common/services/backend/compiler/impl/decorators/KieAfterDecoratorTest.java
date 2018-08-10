@@ -20,16 +20,16 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import org.assertj.core.api.SoftAssertions;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.Test;
 import org.kie.workbench.common.services.backend.compiler.BaseCompilerTest;
 import org.kie.workbench.common.services.backend.compiler.CompilationRequest;
-import org.kie.workbench.common.services.backend.constants.ResourcesConstants;
 import org.kie.workbench.common.services.backend.compiler.configuration.MavenCLIArgs;
 import org.kie.workbench.common.services.backend.compiler.impl.BaseMavenCompiler;
 import org.kie.workbench.common.services.backend.compiler.impl.DefaultCompilationRequest;
 import org.kie.workbench.common.services.backend.compiler.impl.kie.KieCompilationResponse;
+import org.kie.workbench.common.services.backend.constants.ResourcesConstants;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.Paths;
 
@@ -42,7 +42,7 @@ public class KieAfterDecoratorTest extends BaseCompilerTest {
     @Test
     public void compileTest() {
 
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
                                                                new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);
@@ -65,7 +65,7 @@ public class KieAfterDecoratorTest extends BaseCompilerTest {
         InputStream input = new FileInputStream(new File(ResourcesConstants.KJAR_2_SINGLE_RESOURCES_OVERRIDE+"/src/main/java/org/kie/maven/plugin/test/Person.java"));
         override.put(path, input);
 
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
                                                                new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);
@@ -82,7 +82,7 @@ public class KieAfterDecoratorTest extends BaseCompilerTest {
 
     @Test
     public void compileWithouKieMavenPlugin() throws Exception {
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                createdNewPrjInRepo("normal-dummy", ResourcesConstants.DUMMY),
                                                                new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);
@@ -99,7 +99,7 @@ public class KieAfterDecoratorTest extends BaseCompilerTest {
 
     @Test
     public void compileWithFailedResponse() throws Exception{
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                createdNewPrjInRepo("kjar-2-fail", ResourcesConstants.KJAR_2_SINGLE_FAIL_RESOURCES),
                                                                new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);

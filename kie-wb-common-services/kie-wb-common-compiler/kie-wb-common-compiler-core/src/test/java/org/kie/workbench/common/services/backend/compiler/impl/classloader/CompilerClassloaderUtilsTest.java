@@ -21,12 +21,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 import org.kie.workbench.common.services.backend.compiler.BaseCompilerTest;
 import org.kie.workbench.common.services.backend.compiler.configuration.KieDecorator;
 import org.kie.workbench.common.services.backend.compiler.impl.utils.MavenUtils;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CompilerClassloaderUtilsTest extends BaseCompilerTest {
 
@@ -100,8 +101,8 @@ public class CompilerClassloaderUtilsTest extends BaseCompilerTest {
         targets.add("/target/classes/io/akka/test/C.class");
         targets.add("/target/classes/com/acme/test/D.class");
         targets.add("/target/classes/com/acme/test/E.class");
-        targets.add(mavenRepo.toAbsolutePath().toString() + "/junit/junit/4.12/junit.jar");
-        targets.add(mavenRepo.toAbsolutePath().toString() + "/junit/junit/4.12/junit-4.12.jar");
+        targets.add(mavenRepo + "/junit/junit/4.12/junit.jar");
+        targets.add(mavenRepo + "/junit/junit/4.12/junit-4.12.jar");
 
         Set<String> orgKie = CompilerClassloaderUtils.filterPathClasses(targets, mavenRepo.toString());
         assertThat(orgKie).hasSize(5);

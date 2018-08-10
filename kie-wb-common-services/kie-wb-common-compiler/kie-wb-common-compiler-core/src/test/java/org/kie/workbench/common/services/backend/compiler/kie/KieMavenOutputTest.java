@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.services.backend.compiler.kie;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -23,27 +22,30 @@ import org.junit.rules.TestName;
 import org.kie.workbench.common.services.backend.compiler.AFCompiler;
 import org.kie.workbench.common.services.backend.compiler.CompilationRequest;
 import org.kie.workbench.common.services.backend.compiler.CompilationResponse;
-import org.kie.workbench.common.services.backend.constants.ResourcesConstants;
-import org.kie.workbench.common.services.backend.utils.TestUtil;
+import org.kie.workbench.common.services.backend.compiler.TestUtilMaven;
 import org.kie.workbench.common.services.backend.compiler.configuration.KieDecorator;
 import org.kie.workbench.common.services.backend.compiler.configuration.MavenCLIArgs;
 import org.kie.workbench.common.services.backend.compiler.impl.DefaultCompilationRequest;
 import org.kie.workbench.common.services.backend.compiler.impl.WorkspaceCompilationInfo;
 import org.kie.workbench.common.services.backend.compiler.impl.kie.KieMavenCompilerFactory;
+import org.kie.workbench.common.services.backend.constants.ResourcesConstants;
+import org.kie.workbench.common.services.backend.utils.TestUtil;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.Paths;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class KieMavenOutputTest {
 
-    private Path mavenRepo;
+    private String mavenRepo;
 
     @Rule
     public TestName testName = new TestName();
 
     @Before
     public void setUp() throws Exception {
-        mavenRepo = TestUtil.createMavenRepo();
+        mavenRepo = TestUtilMaven.getMavenRepo();
     }
 
     @Test
@@ -55,7 +57,7 @@ public class KieMavenOutputTest {
 
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(KieDecorator.LOG_OUTPUT_AFTER);
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(tmp);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
                                                                new String[]{MavenCLIArgs.CLEAN, MavenCLIArgs.COMPILE},
                                                                Boolean.TRUE);

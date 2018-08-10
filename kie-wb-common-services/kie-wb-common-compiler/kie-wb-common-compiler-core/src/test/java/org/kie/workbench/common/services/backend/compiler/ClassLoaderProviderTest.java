@@ -16,24 +16,20 @@
 
 package org.kie.workbench.common.services.backend.compiler;
 
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.rules.TestName;
-import org.kie.workbench.common.services.backend.utils.LoadProjectDependencyUtil;
-import org.kie.workbench.common.services.backend.utils.TestUtil;
-import org.kie.workbench.common.services.backend.constants.ResourcesConstants;
 import java.io.IOException;
 import java.net.URLClassLoader;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.rule.KieModuleMetaInfo;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.kie.api.builder.KieModule;
 import org.kie.scanner.KieModuleMetaData;
 import org.kie.scanner.KieModuleMetaDataImpl;
@@ -45,15 +41,20 @@ import org.kie.workbench.common.services.backend.compiler.impl.classloader.Compi
 import org.kie.workbench.common.services.backend.compiler.impl.kie.KieCompilationResponse;
 import org.kie.workbench.common.services.backend.compiler.impl.kie.KieMavenCompilerFactory;
 import org.kie.workbench.common.services.backend.compiler.impl.utils.MavenUtils;
+import org.kie.workbench.common.services.backend.constants.ResourcesConstants;
+import org.kie.workbench.common.services.backend.utils.LoadProjectDependencyUtil;
+import org.kie.workbench.common.services.backend.utils.TestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.Paths;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class ClassLoaderProviderTest {
 
-    private Path mavenRepo;
+    private String mavenRepo;
     Path tmpRoot;
     Path tmp;
     Path uberfireTmp;
@@ -64,7 +65,7 @@ public class ClassLoaderProviderTest {
 
     @Before
     public void setUp() throws Exception {
-        mavenRepo = TestUtil.createMavenRepo();
+        mavenRepo = TestUtilMaven.getMavenRepo();
     }
 
     @After
@@ -83,7 +84,7 @@ public class ClassLoaderProviderTest {
 
         AFCompiler compiler = KieMavenCompilerFactory.getCompiler(KieDecorator.NONE);
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(uberfireTmp);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
                                                                mavenPhases,
                                                                Boolean.FALSE);
@@ -98,7 +99,7 @@ public class ClassLoaderProviderTest {
 
         List<String> pomList = MavenUtils.searchPoms(Paths.get(ResourcesConstants.DUMMY_KIE_MULTIMODULE_CLASSLOADER_DIR));
         Optional<ClassLoader> clazzLoader = CompilerClassloaderUtils.loadDependenciesClassloaderFromProject(pomList,
-                                                                                                            mavenRepo.toAbsolutePath().toString());
+                                                                                                            mavenRepo);
         assertThat(clazzLoader).isPresent();
 
         LoadProjectDependencyUtil.loadLoggerFactory(clazzLoader.get());
@@ -112,7 +113,7 @@ public class ClassLoaderProviderTest {
         assertThat(res.isSuccessful()).isTrue();
 
         Optional<ClassLoader> clazzLoader = CompilerClassloaderUtils.loadDependenciesClassloaderFromProject(uberfireTmp.toAbsolutePath().toString(),
-                                                                                                            mavenRepo.toAbsolutePath().toString());
+                                                                                                            mavenRepo);
         assertThat(clazzLoader).isPresent();
 
         LoadProjectDependencyUtil.loadLoggerFactory(clazzLoader.get());
@@ -135,7 +136,7 @@ public class ClassLoaderProviderTest {
     public void getClassloaderFromAllDependenciesTestSimple() {
         Path path = Paths.get(".").resolve(ResourcesConstants.DUMMY_DEPS_SIMPLE_DIR);
         Optional<ClassLoader> classloaderOptional = CompilerClassloaderUtils.getClassloaderFromAllDependencies(path.toAbsolutePath().toString(),
-                                                                                                               mavenRepo.toAbsolutePath().toString());
+                                                                                                               mavenRepo);
         assertThat(classloaderOptional).isPresent();
         ClassLoader classloader = classloaderOptional.get();
         URLClassLoader urlsc = (URLClassLoader) classloader;
@@ -146,7 +147,7 @@ public class ClassLoaderProviderTest {
     public void getClassloaderFromAllDependenciesTestComplex() {
         Path path = Paths.get(".").resolve(ResourcesConstants.DUMMY_DEPS_COMPLEX_DIR);
         Optional<ClassLoader> classloaderOptional = CompilerClassloaderUtils.getClassloaderFromAllDependencies(path.toAbsolutePath().toString(),
-                                                                                                               mavenRepo.toAbsolutePath().toString());
+                                                                                                               mavenRepo);
         assertThat(classloaderOptional).isPresent();
         ClassLoader classloader = classloaderOptional.get();
         URLClassLoader urlsc = (URLClassLoader) classloader;
@@ -158,13 +159,13 @@ public class ClassLoaderProviderTest {
         /**
          * If the test fail check if the Drools core classes used, KieModuleMetaInfo and TypeMetaInfo implements Serializable
          * */
-        String alternateSettingsAbsPath = TestUtil.getSettingsFile();
+        String alternateSettingsAbsPath = TestUtilMaven.getSettingsFile();
         Path tmpRoot = Files.createTempDirectory("repo");
         Path tmp = TestUtil.createAndCopyToDirectory(tmpRoot, "dummy", ResourcesConstants.KJAR_2_SINGLE_RESOURCES);
 
         AFCompiler compiler = KieMavenCompilerFactory.getCompiler(KieDecorator.KIE_AND_CLASSPATH_AFTER_DEPS);
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(Paths.get(tmp.toUri()));
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
                                                                new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);
@@ -214,7 +215,7 @@ public class ClassLoaderProviderTest {
 
         AFCompiler compiler = KieMavenCompilerFactory.getCompiler(KieDecorator.KIE_AFTER);
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(Paths.get(tmp.toUri()));
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
                                                                new String[]{MavenCLIArgs.INSTALL},
                                                                Boolean.FALSE);

@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.services.backend.compiler.impl.kie;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.kie.workbench.common.services.backend.compiler.AFCompiler;
 import org.kie.workbench.common.services.backend.compiler.configuration.KieDecorator;
@@ -24,6 +23,8 @@ import org.kie.workbench.common.services.backend.compiler.impl.decorators.Classp
 import org.kie.workbench.common.services.backend.compiler.impl.decorators.JGITCompilerBeforeDecorator;
 import org.kie.workbench.common.services.backend.compiler.impl.decorators.KieAfterDecorator;
 import org.kie.workbench.common.services.backend.compiler.impl.decorators.OutputLogAfterDecorator;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KieMavenCompilerFactoryTest {
 

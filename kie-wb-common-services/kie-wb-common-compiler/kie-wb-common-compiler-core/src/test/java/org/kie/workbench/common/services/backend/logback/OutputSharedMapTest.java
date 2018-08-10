@@ -16,9 +16,10 @@
 package org.kie.workbench.common.services.backend.logback;
 
 import java.util.List;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class OutputSharedMapTest {
 
