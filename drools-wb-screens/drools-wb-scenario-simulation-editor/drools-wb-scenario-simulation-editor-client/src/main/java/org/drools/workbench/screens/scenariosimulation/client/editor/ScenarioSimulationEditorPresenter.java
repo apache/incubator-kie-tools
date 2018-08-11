@@ -22,8 +22,8 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioSimulationViewProvider;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.RightPanelMenuItem;
@@ -85,18 +85,23 @@ public class ScenarioSimulationEditorPresenter
 
     @Inject
     public ScenarioSimulationEditorPresenter(final Caller<ScenarioSimulationService> service,
+                                             final ScenarioSimulationView view,
                                              final ScenarioSimulationResourceType type,
                                              final ImportsWidgetPresenter importsWidget,
                                              final AsyncPackageDataModelOracleFactory oracleFactory,
                                              final PlaceManager placeManager) {
-        super();
-        this.view = newScenarioSimulationView();   // Indirection added for test-purpose
+        super(view);
+        this.view = view;
         this.baseView = view;
         this.service = service;
         this.type = type;
         this.importsWidget = importsWidget;
         this.oracleFactory = oracleFactory;
         this.placeManager = placeManager;
+
+        view.init(this);
+
+        addMenuItems();
     }
 
     @OnStartup
@@ -105,8 +110,6 @@ public class ScenarioSimulationEditorPresenter
         super.init(path,
                    place,
                    type);
-        view.getScenarioGridPanel().getDefaultGridLayer().enterPinnedMode(view.getScenarioGridPanel().getScenarioGrid(), () -> {
-        });  // Hack to overcome default implementation
     }
 
     @OnClose
@@ -114,8 +117,10 @@ public class ScenarioSimulationEditorPresenter
         this.versionRecordManager.clear();
         if (PlaceStatus.OPEN.equals(placeManager.getStatus(RightPanelPresenter.IDENTIFIER))) {
             placeManager.closePlace(RightPanelPresenter.IDENTIFIER);
-            this.getView().showLoading();
+            this.view.showLoading();
         }
+
+        this.view.clear();
     }
 
     @OnMayClose
@@ -163,6 +168,10 @@ public class ScenarioSimulationEditorPresenter
         return view;
     }
 
+    public ScenarioSimulationModel getModel() {
+        return model;
+    }
+
     /**
      * If you want to customize the menu override this method.
      */
@@ -198,9 +207,11 @@ public class ScenarioSimulationEditorPresenter
                      getNoSuchFileExceptionErrorCallback()).loadContent(versionRecordManager.getCurrentPath());
     }
 
-    // Needed by test
-    protected ScenarioSimulationView newScenarioSimulationView() {
-        return ScenarioSimulationViewProvider.newScenarioSimulationView();
+    private void addMenuItems() {
+        view.addGridMenuItem("one", "ONE", "", () -> GWT.log("ONE COMMAND"));
+        view.addGridMenuItem("two", "TWO", "", () -> GWT.log("TWO COMMAND"));
+        view.addHeaderMenuItem("one", "HEADER-ONE", "", () -> GWT.log("HEADER-ONE COMMAND"));
+        view.addHeaderMenuItem("two", "HEADER-TWO", "", () -> GWT.log("HEADER-TWO COMMAND"));
     }
 
     private RemoteCallback<ScenarioSimulationModelContent> getModelSuccessCallback() {
@@ -227,4 +238,5 @@ public class ScenarioSimulationEditorPresenter
     private void addRightPanelMenuItem(final FileMenuBuilder fileMenuBuilder) {
         fileMenuBuilder.addNewTopLevelMenu(rightPanelMenuItem);
     }
+
 }

@@ -14,46 +14,42 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.scenariosimulation.client.editor;
+package org.drools.workbench.screens.scenariosimulation.client.editor.menu;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class ScenarioSimulationViewImplTest extends AbstractScenarioSimulationEditorTest {
+public class MenuItemViewImplTest {
 
-    private ScenarioSimulationView scenarioSimulationView;
-
-    @Mock
-    private ScenarioGridPanel mockScenarioGridPanel;
+    private MenuItemViewImpl menuItemView;
 
     @Mock
-    private ScenarioGrid mockScenarioGrid;
+    private MenuItemPresenter mockMenuItemPresenter;
 
     @Before
     public void setup() {
-        super.setup();
-        when(mockScenarioGridPanel.getScenarioGrid()).thenReturn(mockScenarioGrid);
-        scenarioSimulationView = spy(new ScenarioSimulationViewImpl() {
+        this.menuItemView = spy(new MenuItemViewImpl() {
             {
-                scenarioGridPanel = mockScenarioGridPanel;
+
             }
         });
+        menuItemView.setPresenter(mockMenuItemPresenter);
     }
 
     @Test
-    public void testSetContent() {
-        scenarioSimulationView.setContent(model.getSimulation());
-        verify(mockScenarioGrid, times(1)).setContent(model.getSimulation());
+    public void onClickEvent() {
+        ClickEvent mockClickEvent = mock(ClickEvent.class);
+        menuItemView.onClickEvent(mockClickEvent);
+        verify(mockMenuItemPresenter, times(1)).onClickEvent(mockClickEvent);
     }
 }

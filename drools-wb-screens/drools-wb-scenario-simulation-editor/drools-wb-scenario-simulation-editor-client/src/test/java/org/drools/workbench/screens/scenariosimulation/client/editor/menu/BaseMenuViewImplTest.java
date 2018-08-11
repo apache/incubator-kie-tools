@@ -14,46 +14,39 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.scenariosimulation.client.editor;
+package org.drools.workbench.screens.scenariosimulation.client.editor.menu;
 
+import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class ScenarioSimulationViewImplTest extends AbstractScenarioSimulationEditorTest {
-
-    private ScenarioSimulationView scenarioSimulationView;
+public class BaseMenuViewImplTest {
 
     @Mock
-    private ScenarioGridPanel mockScenarioGridPanel;
+    private BaseMenu mockBaseMenu;
 
-    @Mock
-    private ScenarioGrid mockScenarioGrid;
+    private BaseMenuViewImpl baseMenuView;
 
     @Before
     public void setup() {
-        super.setup();
-        when(mockScenarioGridPanel.getScenarioGrid()).thenReturn(mockScenarioGrid);
-        scenarioSimulationView = spy(new ScenarioSimulationViewImpl() {
-            {
-                scenarioGridPanel = mockScenarioGridPanel;
-            }
+        this.baseMenuView = spy(new BaseMenuViewImpl() {
         });
+        baseMenuView.init(mockBaseMenu);
     }
 
     @Test
-    public void testSetContent() {
-        scenarioSimulationView.setContent(model.getSimulation());
-        verify(mockScenarioGrid, times(1)).setContent(model.getSimulation());
+    public void onContextMenuEvent() {
+        ContextMenuEvent mockEvent = mock(ContextMenuEvent.class);
+        baseMenuView.onContextMenuEvent(mockEvent);
+        verify(mockBaseMenu, times(1)).onContextMenuEvent(mockEvent);
     }
 }

@@ -39,7 +39,6 @@ public class ScenarioGridModel extends BaseGridData {
     private Simulation simulation;
 
     public ScenarioGridModel() {
-        super();
     }
 
     public ScenarioGridModel(boolean isMerged) {
