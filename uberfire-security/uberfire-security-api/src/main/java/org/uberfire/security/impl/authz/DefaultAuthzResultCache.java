@@ -32,8 +32,7 @@ public class DefaultAuthzResultCache {
         if (result == null) {
             return null;
         }
-        AuthorizationResult decision = result.get(user.getIdentifier());
-        return decision == null ? null : decision;
+        return result.get(user.getIdentifier());
     }
 
     public void put(final User user,
@@ -63,5 +62,14 @@ public class DefaultAuthzResultCache {
 
     public void clear() {
         internal.clear();
+    }
+
+    public void invalidate(final User user) {
+        if (user == null || user.getIdentifier() == null || user.getIdentifier().isEmpty()) {
+            return;
+        }
+        for (Map<String, AuthorizationResult> entry : internal.values()) {
+            entry.remove(user.getIdentifier());
+        }
     }
 }

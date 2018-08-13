@@ -232,4 +232,10 @@ public interface AuthorizationManager {
      */
     PermissionCheck check(String permission,
                           User user);
+
+    /**
+     * Invalidate user related authorization data cached
+     * @param user user to invalidate cache
+     */
+    void invalidate(final User user);
 }

@@ -198,6 +198,11 @@ public class IOServiceSecuritySetupTest {
                                      User user) {
             return null;
         }
+
+        @Override
+        public void invalidate(User user) {
+
+        }
     }
 
     ;

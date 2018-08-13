@@ -231,4 +231,10 @@ public class DefaultAuthorizationManager implements AuthorizationManager {
                                        user,
                                        votingStrategy);
     }
+
+    @Override
+    public void invalidate(final User user) {
+        permissionManager.invalidate(user);
+    }
+
 }

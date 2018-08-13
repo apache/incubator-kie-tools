@@ -372,6 +372,28 @@ public class PermissionManagerTest {
                      1);
         assertEquals(authzResultCache.size(createUserMock()),
                      0);
+
+        permissionManager.invalidate(user);
+
+        assertEquals(authzResultCache.size(user),
+                0);
+
+        permissionManager.checkPermission(viewAll,
+                user);
+        verify(permissionManager,
+                times(2)).resolvePermissions(user,
+                VotingStrategy.PRIORITY);
+        verify(authzResultCache,
+                times(2)).put(user,
+                viewAll,
+                AuthorizationResult.ACCESS_GRANTED);
+        verify(authzResultCache,
+                times(5)).get(user,
+                viewAll);
+        assertEquals(authzResultCache.size(user),
+                1);
+        assertEquals(authzResultCache.size(createUserMock()),
+                0);
     }
 
     @Test

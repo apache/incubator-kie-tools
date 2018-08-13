@@ -175,4 +175,10 @@ public interface PermissionManager {
      */
     PermissionCollection resolvePermissions(User user,
                                             VotingStrategy votingStrategy);
+
+    /**
+     * Invalidate user related authorization data cached
+     * @param user user to invalidate cache
+     */
+    void invalidate(final User user);
 }

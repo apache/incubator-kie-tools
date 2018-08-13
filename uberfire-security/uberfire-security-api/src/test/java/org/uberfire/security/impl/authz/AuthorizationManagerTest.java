@@ -515,4 +515,24 @@ public class AuthorizationManagerTest {
                never()).execute();
         verify(onGranted).execute();
     }
+
+    @Test
+    public void testInvalidateCache() throws Exception {
+        User user1 = createUserMock("admin",
+                "manager");
+        permissionManager.setDefaultVotingStrategy(VotingStrategy.AFFIRMATIVE);
+        assertTrue(authorizationManager.authorize(perspective1,
+                user1));
+
+        authorizationManager.check(perspective1,
+                user1)
+                .granted(onGranted)
+                .denied(onDenied);
+        verify(onDenied,
+                never()).execute();
+        verify(onGranted).execute();
+
+        authorizationManager.invalidate(user1);
+        verify(permissionManager, times(1)).invalidate(user1);
+    }
 }

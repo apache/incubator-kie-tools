@@ -257,6 +257,11 @@ public class DefaultPermissionManager implements PermissionManager {
         }
     }
 
+    @Override
+    public void invalidate(final User user) {
+        cache.invalidate(user);
+    }
+
     private PermissionCollection resolvePermissionsAffirmative(User user) {
         // TODO
         PermissionCollection result = new DefaultPermissionCollection();
