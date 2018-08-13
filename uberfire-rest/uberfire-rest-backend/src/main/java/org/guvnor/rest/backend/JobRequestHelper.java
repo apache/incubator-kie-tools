@@ -37,7 +37,7 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.shared.test.TestResultMessage;
-import org.guvnor.common.services.shared.test.TestService;
+import org.guvnor.common.services.shared.test.TestRunnerService;
 import org.guvnor.rest.client.CloneProjectRequest;
 import org.guvnor.rest.client.JobResult;
 import org.guvnor.rest.client.JobStatus;
@@ -83,7 +83,7 @@ public class JobRequestHelper {
     private OrganizationalUnitService organizationalUnitService;
 
     @Inject
-    private TestService testService;
+    private TestRunnerService testService;
 
     public JobResult cloneProject(final String jobId,
                                   final String spaceName,

@@ -27,7 +27,7 @@ import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.shared.test.Failure;
 import org.guvnor.common.services.shared.test.TestResultMessage;
-import org.guvnor.common.services.shared.test.TestService;
+import org.guvnor.common.services.shared.test.TestRunnerService;
 import org.guvnor.rest.client.CloneProjectRequest;
 import org.guvnor.rest.client.JobResult;
 import org.guvnor.rest.client.JobStatus;
@@ -67,7 +67,7 @@ public class JobRequestHelperTest {
     @Captor
     ArgumentCaptor<Event<TestResultMessage>> captor;
     @Mock
-    private TestService testService;
+    private TestRunnerService testService;
     @Mock
     private RepositoryService repositoryService;
     @Mock
