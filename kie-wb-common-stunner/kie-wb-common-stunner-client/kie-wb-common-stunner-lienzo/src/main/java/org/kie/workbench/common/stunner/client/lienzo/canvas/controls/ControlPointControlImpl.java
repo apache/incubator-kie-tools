@@ -31,6 +31,7 @@ import com.ait.lienzo.client.core.shape.wires.IControlPointsAcceptor;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
+import org.kie.workbench.common.stunner.client.lienzo.components.drag.DragBoundsEnforcer;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresConnectorView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
@@ -41,6 +42,9 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
+import org.kie.workbench.common.stunner.core.client.shape.view.IsConnector;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
@@ -60,6 +64,7 @@ public class ControlPointControlImpl
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     private final IControlPointsAcceptor cpAcceptor;
     private CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
+    public static final int DRAG_BOUNDS_MARGIN = 10;
 
     @Inject
     public ControlPointControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
@@ -77,6 +82,22 @@ public class ControlPointControlImpl
     @Override
     @SuppressWarnings("unchecked")
     public void register(final Element element) {
+        final Shape<?> shape = canvasHandler.getCanvas().getShape(element.getUUID());
+        if (checkNotRegistered(element) && isConnector(shape) && supportsControlPoints(shape)) {
+            //set the connector drag bounds to avoid dragging control points outside canvas
+            DragBoundsEnforcer
+                    .forShape(shape.getShapeView())
+                    .withMargin(DRAG_BOUNDS_MARGIN)
+                    .enforce(canvasHandler.getDiagram().getGraph());
+        }
+    }
+
+    private boolean isConnector(Shape<?> shape) {
+        return shape.getShapeView() instanceof IsConnector;
+    }
+
+    private boolean supportsControlPoints(Shape<?> shape) {
+        return shape.getShapeView() instanceof HasControlPoints;
     }
 
     @Override

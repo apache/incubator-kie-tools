@@ -36,11 +36,13 @@ import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.Shadow;
 import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasDragBounds;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasManageableControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.IsConnector;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
@@ -56,7 +58,8 @@ public class WiresConnectorView<T> extends WiresConnector
         implements
         LienzoShapeView<T>,
         IsConnector<T>,
-        HasManageableControlPoints<T> {
+        HasManageableControlPoints<T>,
+        HasDragBounds<T> {
 
     protected String uuid;
 
@@ -572,5 +575,17 @@ public class WiresConnectorView<T> extends WiresConnector
     @Override
     public void setUserData(Object userData) {
         getDirectionalLine().setUserData(userData);
+    }
+
+    @Override
+    public T setDragBounds(double x0, double y0, double x1, double y1) {
+        getGroup().setDragBounds(new DragBounds(x0, y0, x1, y1));
+        return cast();
+    }
+
+    @Override
+    public T unsetDragBounds() {
+        getGroup().setDragBounds(null);
+        return cast();
     }
 }

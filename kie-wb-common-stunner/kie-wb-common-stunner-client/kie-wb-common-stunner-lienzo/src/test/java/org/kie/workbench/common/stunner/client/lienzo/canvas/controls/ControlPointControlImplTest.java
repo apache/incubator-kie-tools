@@ -24,13 +24,13 @@ import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
 import com.ait.lienzo.client.core.shape.wires.IControlPointsAcceptor;
-import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresConnectorView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ControlPointControl;
@@ -39,10 +39,15 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
+import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
@@ -67,6 +72,7 @@ public class ControlPointControlImplTest {
 
     private static final String EDGE_UUID = "edge1";
     private static final ControlPoint CONTROL_POINT = ControlPoint.build(1, 3, 0);
+    private static final Bounds GRAPH_BOUNDS = new BoundsImpl(new BoundImpl(0d, 0d), new BoundImpl(100d, 100d));
 
     @Mock
     private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
@@ -83,19 +89,27 @@ public class ControlPointControlImplTest {
     @Mock
     private Metadata metadata;
     @Mock
-    private WiresConnector connector;
+    private WiresConnectorView connector;
     @Mock
     private IControlHandleList wiresPointHandles;
     @Mock
     private IControlHandle wiresPointHandle;
     @Mock
     private IPrimitive wiresPointPrimitive;
+    @Mock
+    private Shape connectorShape;
 
     private Edge edge;
     private ViewConnectorImpl content;
     private List<ControlPoint> controlPointList;
 
     private ControlPointControlImpl tested;
+
+    @Mock
+    private Graph graph;
+
+    @Mock
+    private DefinitionSet graphContent;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -107,6 +121,7 @@ public class ControlPointControlImplTest {
         controlPointList = Collections.singletonList(CONTROL_POINT);
         content.setControlPoints(controlPointList);
         when(connector.uuid()).thenReturn(EDGE_UUID);
+        when(connector.getUUID()).thenReturn(EDGE_UUID);
         when(connector.getPointHandles()).thenReturn(wiresPointHandles);
         when(wiresPointHandles.isEmpty()).thenReturn(false);
         when(wiresPointHandles.size()).thenReturn(3);
@@ -120,7 +135,12 @@ public class ControlPointControlImplTest {
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
         when(canvas.getView()).thenReturn(canvasView);
+        when(canvas.getShape(EDGE_UUID)).thenReturn(connectorShape);
+        when(connectorShape.getShapeView()).thenReturn(connector);
         when(diagram.getMetadata()).thenReturn(metadata);
+        when(graph.getContent()).thenReturn(graphContent);
+        when(diagram.getGraph()).thenReturn(graph);
+        when(graphContent.getBounds()).thenReturn(GRAPH_BOUNDS);
         when(commandManager.allow(eq(canvasHandler), any(Command.class)))
                 .thenReturn(CanvasCommandResultBuilder.SUCCESS);
         tested = new ControlPointControlImpl(canvasCommandFactory);
@@ -131,6 +151,17 @@ public class ControlPointControlImplTest {
     public void testInit() {
         tested.init(canvasHandler);
         verify(canvasView, times(1)).setControlPointsAcceptor(any(IControlPointsAcceptor.class));
+    }
+
+    @Test
+    public void testRegister() {
+        tested.init(canvasHandler);
+        tested.register(edge);
+
+        verify(connector).setDragBounds(GRAPH_BOUNDS.getUpperLeft().getX() + ControlPointControlImpl.DRAG_BOUNDS_MARGIN,
+                                        GRAPH_BOUNDS.getUpperLeft().getY() + ControlPointControlImpl.DRAG_BOUNDS_MARGIN,
+                                        GRAPH_BOUNDS.getLowerRight().getX() + ControlPointControlImpl.DRAG_BOUNDS_MARGIN,
+                                        GRAPH_BOUNDS.getLowerRight().getY() + ControlPointControlImpl.DRAG_BOUNDS_MARGIN);
     }
 
     @Test
