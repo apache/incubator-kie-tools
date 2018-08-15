@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.components.toolbox.actions;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.shape.Group;
@@ -102,13 +103,18 @@ public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolbo
 
     @Override
     public void destroy() {
-        toolboxView.destroy();
-        if (null != tooltip) {
-            tooltip.destroy();
-            tooltip = null;
-        }
+        Optional.ofNullable(toolboxView).ifPresent(WiresShapeToolbox::destroy);
+        Optional.ofNullable(tooltip).ifPresent(ToolboxTextTooltip::destroy);
         toolboxView = null;
+        tooltip = null;
         canvas = null;
+    }
+
+    @Override
+    public void hideAndDestroy() {
+        Optional.ofNullable(toolboxView).ifPresent(WiresShapeToolbox::hideAndDestroy);
+        toolboxView = null;
+        destroy();
     }
 
     protected V init(final ActionsToolbox toolbox,

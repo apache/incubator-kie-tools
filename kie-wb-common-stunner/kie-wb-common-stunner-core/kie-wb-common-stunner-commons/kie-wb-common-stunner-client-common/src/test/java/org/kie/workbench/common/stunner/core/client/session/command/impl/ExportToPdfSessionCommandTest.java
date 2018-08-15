@@ -42,7 +42,6 @@ public class ExportToPdfSessionCommandTest extends AbstractExportSessionCommandT
         super.setup();
         this.tested = new ExportToPdfSessionCommand(canvasFileExport);
         this.tested.bind(session);
-        setTimer(tested);
     }
 
     @Test

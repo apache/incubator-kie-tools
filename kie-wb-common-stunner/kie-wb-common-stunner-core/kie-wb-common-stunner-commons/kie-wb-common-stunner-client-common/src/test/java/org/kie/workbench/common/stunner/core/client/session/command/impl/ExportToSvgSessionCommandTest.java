@@ -40,7 +40,6 @@ public class ExportToSvgSessionCommandTest extends AbstractExportSessionCommandT
         super.setup();
         this.tested = new ExportToSvgSessionCommand(canvasFileExport);
         this.tested.bind(session);
-        setTimer(this.tested);
     }
 
     @Test

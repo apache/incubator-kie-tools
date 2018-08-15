@@ -24,7 +24,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Timer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
@@ -51,7 +50,6 @@ public class MorphNodeAction extends AbstractToolboxAction {
 
     private static Logger LOGGER = Logger.getLogger(MorphNodeAction.class.getName());
     static final String KEY_TITLE = "org.kie.workbench.common.stunner.core.client.toolbox.morphInto";
-    protected int commandDelay = 100;
 
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
@@ -99,36 +97,21 @@ public class MorphNodeAction extends AbstractToolboxAction {
         clearSelectionEventEvent.fire(new CanvasClearSelectionEvent(canvasHandler));
 
         //delay is used to overcome the toolbar animation while morphing the node
-        executeWithDelay(() -> {
-            final CommandResult<CanvasViolation> result =
-                    sessionCommandManager.execute(canvasHandler,
-                                                  commandFactory.morphNode(sourceNode,
-                                                                           morphDefinition,
-                                                                           targetDefinitionId,
-                                                                           ssid));
-            if (CommandUtils.isError(result)) {
-                LOGGER.log(Level.SEVERE,
-                           result.toString());
-            } else {
-                fireElementSelectedEvent(selectionEvent,
-                                         canvasHandler,
-                                         uuid);
-            }
-        }, commandDelay);
-        return this;
-    }
-
-    private void executeWithDelay(Runnable execute, int delay) {
-        if (delay > 0) {
-            new Timer() {
-                @Override
-                public void run() {
-                    execute.run();
-                }
-            }.schedule(delay);
+        final CommandResult<CanvasViolation> result =
+                sessionCommandManager.execute(canvasHandler,
+                                              commandFactory.morphNode(sourceNode,
+                                                                       morphDefinition,
+                                                                       targetDefinitionId,
+                                                                       ssid));
+        if (CommandUtils.isError(result)) {
+            LOGGER.log(Level.SEVERE,
+                       result.toString());
         } else {
-            execute.run();
+            fireElementSelectedEvent(selectionEvent,
+                                     canvasHandler,
+                                     uuid);
         }
+        return this;
     }
 
     @Override

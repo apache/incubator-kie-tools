@@ -73,4 +73,10 @@ public class StunnerWiresShapeControlTest {
         verify(shapeView,
                times(1)).moveToTop();
     }
+
+    @Test
+    public void testDestroy() {
+        tested.destroy();
+        verify(delegate, times(1)).destroy();
+    }
 }

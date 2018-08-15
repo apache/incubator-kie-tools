@@ -336,6 +336,7 @@ public class TestingGraphInstanceBuilder {
 
         result.edge3 = graphTestHandler.newEdge(EDGE3_UUID, EDGE3_ID, Optional.of(DEF4_LABELS));
         graphTestHandler.dockTo(result.intermNode, result.dockedNode);
+        graphTestHandler.setChild(result.parentNode, result.dockedNode);
 
         return result;
     }

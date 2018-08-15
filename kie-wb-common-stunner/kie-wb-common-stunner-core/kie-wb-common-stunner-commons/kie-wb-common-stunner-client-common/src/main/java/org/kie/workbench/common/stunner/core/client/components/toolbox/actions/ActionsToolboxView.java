@@ -23,15 +23,15 @@ import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 public interface ActionsToolboxView<V extends ActionsToolboxView> {
 
-    public V init(ActionsToolbox toolbox);
+    V init(ActionsToolbox toolbox);
 
-    public V addButton(Glyph glyph,
-                       String title,
-                       Consumer<MouseClickEvent> clickEventConsumer);
+    V addButton(Glyph glyph, String title, Consumer<MouseClickEvent> clickEventConsumer);
 
-    public V show();
+    V show();
 
-    public V hide();
+    V hide();
 
-    public void destroy();
+    void destroy();
+
+    void hideAndDestroy();
 }

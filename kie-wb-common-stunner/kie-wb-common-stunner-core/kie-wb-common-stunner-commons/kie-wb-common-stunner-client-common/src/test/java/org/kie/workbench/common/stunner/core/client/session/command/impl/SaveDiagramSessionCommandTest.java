@@ -28,7 +28,6 @@ import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.command.event.SaveDiagramSessionCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
-import org.kie.workbench.common.stunner.core.client.util.TimerUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.util.UUID;
@@ -90,13 +89,6 @@ public class SaveDiagramSessionCommandTest {
         saveDiagramSessionCommandExecutedEvent = new SaveDiagramSessionCommandExecutedEvent(DIAGRAM_UUID);
         command = new SaveDiagramSessionCommand(clientDiagramService, canvasFileExport);
         command.bind(session);
-
-        command.setTimer(new TimerUtils() {
-            @Override
-            public void executeWithDelay(Runnable executeFunction, int delayMillis) {
-                executeFunction.run();
-            }
-        });
     }
 
     @Test

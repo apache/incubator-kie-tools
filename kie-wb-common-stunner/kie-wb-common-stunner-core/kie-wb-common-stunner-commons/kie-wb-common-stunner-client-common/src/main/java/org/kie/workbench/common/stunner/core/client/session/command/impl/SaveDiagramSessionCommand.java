@@ -32,7 +32,6 @@ import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.event.SaveDiagramSessionCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
-import org.kie.workbench.common.stunner.core.client.util.TimerUtils;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.uberfire.backend.vfs.Path;
 
@@ -50,7 +49,6 @@ public class SaveDiagramSessionCommand extends AbstractClientSessionCommand<Edit
 
     private final ClientDiagramService diagramService;
     private final CanvasFileExport canvasExport;
-    private TimerUtils timer;
 
     protected SaveDiagramSessionCommand() {
         this(null, null);
@@ -61,7 +59,6 @@ public class SaveDiagramSessionCommand extends AbstractClientSessionCommand<Edit
         super(true);
         this.diagramService = diagramService;
         this.canvasExport = canvasExport;
-        this.timer = new TimerUtils();
     }
 
     @Override
@@ -90,25 +87,18 @@ public class SaveDiagramSessionCommand extends AbstractClientSessionCommand<Edit
             getSession().getSelectionControl().clearSelection();
 
             //This is a workaround to overcome the animations executed on canvas when clear selection
-            //FIXME: remove the delay, handle this on the proper way, i.e perform the action on a static way
-            timer.executeWithDelay(() -> {
-                final String rawSvg = canvasExport.exportToSvg(getCanvasHandler());
-                diagramService.saveOrUpdateSvg(diagramMetadata.getPath(), rawSvg, new ServiceCallback<Path>() {
-                    @Override
-                    public void onSuccess(Path path) {
-                        LOGGER.info("Diagram SVG saved on " + path);
-                    }
+            final String rawSvg = canvasExport.exportToSvg(getCanvasHandler());
+            diagramService.saveOrUpdateSvg(diagramMetadata.getPath(), rawSvg, new ServiceCallback<Path>() {
+                @Override
+                public void onSuccess(Path path) {
+                    LOGGER.info("Diagram SVG saved on " + path);
+                }
 
-                    @Override
-                    public void onError(ClientRuntimeError error) {
-                        LOGGER.severe("Error saving diagram SVG " + error.getMessage());
-                    }
-                });
-            }, 300);
+                @Override
+                public void onError(ClientRuntimeError error) {
+                    LOGGER.severe("Error saving diagram SVG " + error.getMessage());
+                }
+            });
         }
-    }
-
-    protected void setTimer(TimerUtils timer) {
-        this.timer = timer;
     }
 }

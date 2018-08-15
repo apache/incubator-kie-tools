@@ -301,4 +301,13 @@ public class WiresShapeToolboxTest {
         verify(registrations,
                times(1)).removeHandler();
     }
+
+    @Test
+    public void testHideAndDestroy() {
+        tested.hideAndDestroy();
+        verify(toolbox, times(1)).hide();
+        verify(toolbox, times(1)).hide(any(Runnable.class), any(Runnable.class));
+        verify(toolbox, times(1)).destroy();
+        verify(registrations, times(1)).removeHandler();
+    }
 }

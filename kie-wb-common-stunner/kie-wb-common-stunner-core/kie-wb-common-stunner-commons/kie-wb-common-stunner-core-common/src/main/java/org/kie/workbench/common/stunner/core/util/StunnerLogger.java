@@ -123,7 +123,9 @@ public class StunnerLogger {
                 @Override
                 public void startEdgeTraversal(final Edge<Object, Node> edge) {
                     log(indent + "Edge UUID: " + edge.getUUID());
-                    final Node outNode = (Node) edge.getTargetNode();
+                    final Object content = edge.getContent();
+                    log("  Edge Content: " + content.getClass().getName());
+                    final Node outNode = edge.getTargetNode();
                     if (outNode == null) {
                         log(indent + "  No outgoing node found");
                     } else {

@@ -128,4 +128,9 @@ public abstract class DelegateWiresShapeControl implements WiresShapeControl {
     public Point2D getAdjust() {
         return getDelegate().getAdjust();
     }
+
+    @Override
+    public void destroy() {
+        getDelegate().destroy();
+    }
 }

@@ -176,9 +176,12 @@ public class WiresShapeToolbox
 
     @Override
     public void destroy() {
+        doDestroy();
+    }
+
+    public void hideAndDestroy() {
         toolbox.hide(() -> {
-                     },
-                     this::doDestroy);
+        }, this::doDestroy);
     }
 
     private void initHandlers(final WiresShape shape) {

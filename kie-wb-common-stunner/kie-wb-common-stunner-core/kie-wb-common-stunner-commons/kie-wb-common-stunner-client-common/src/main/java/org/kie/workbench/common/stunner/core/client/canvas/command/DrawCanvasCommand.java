@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 
@@ -59,6 +61,7 @@ public class DrawCanvasCommand extends AbstractCanvasCommand {
         childrenTraverseProcessor
                 .traverse(graph,
                           new AbstractChildrenTraverseCallback<Node<View, Edge>, Edge<Child, Node>>() {
+                              private Map<String, Boolean> processedNodes = new HashMap<>();
 
                               @Override
                               public void startNodeTraversal(final Node<View, Edge> node) {
@@ -94,22 +97,56 @@ public class DrawCanvasCommand extends AbstractCanvasCommand {
                               }
 
                               private void addNode(final Node node) {
+                                  //skip in case the node was already processed
+                                  if (processedNodes.containsKey(node.getUUID())) {
+                                      return;
+                                  }
+
                                   commandBuilder.addCommand(new AddCanvasNodeCommand(node,
                                                                                      shapeSetId));
+                                  addProcessedNode(node);
                               }
 
                               private void addChildNode(final Node<View, Edge> parent,
                                                         final Node<View, Edge> node) {
+                                  //skip in case the node was already processed
+                                  if (processedNodes.containsKey(node.getUUID())) {
+                                      return;
+                                  }
+
+                                  //check whether the parent was processed, is must be processed before child node
+                                  if (!processedNodes.containsKey(parent.getUUID())) {
+                                      addNode(parent);
+                                  }
+
                                   commandBuilder.addCommand(new AddCanvasChildNodeCommand(parent,
                                                                                           node,
                                                                                           shapeSetId));
+                                  addProcessedNode(node);
                               }
 
                               private void addDockedNode(final Node<View, Edge> parent,
                                                          final Node<View, Edge> node) {
+                                  //check whether the dock parent was processed, is must be processed before docked the node
+                                  if (!processedNodes.containsKey(parent.getUUID())) {
+                                      addNode(parent);
+                                  }
+
                                   commandBuilder.addCommand(new AddCanvasDockedNodeCommand(parent,
                                                                                            node,
                                                                                            shapeSetId));
+                                  addProcessedNode(node);
+                              }
+
+                              private void addProcessedNode(Node<View, Edge> node) {
+                                  processedNodes.put(node.getUUID(), true);
+                              }
+
+                              @Override
+                              public void endGraphTraversal() {
+                                  super.endGraphTraversal();
+                                  processedNodes.clear();
+                                  processedNodes = null;
                               }
                           });
 
@@ -126,9 +163,7 @@ public class DrawCanvasCommand extends AbstractCanvasCommand {
                               }
                           });
 
-        return commandBuilder
-                .build()
-                .execute(context);
+        return executeCommands(context, commandBuilder);
     }
 
     @Override
@@ -148,5 +183,12 @@ public class DrawCanvasCommand extends AbstractCanvasCommand {
 
     private String getShapeSetId(final AbstractCanvasHandler context) {
         return context.getDiagram().getMetadata().getShapeSetId();
+    }
+
+    protected CommandResult<CanvasViolation> executeCommands(AbstractCanvasHandler context,
+                                                             CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder) {
+        return commandBuilder
+                .build()
+                .execute(context);
     }
 }

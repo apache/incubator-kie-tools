@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
@@ -30,6 +31,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.mockito.Mock;
+import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
@@ -68,6 +70,9 @@ public class DeleteNodeActionTest {
 
     private DeleteNodeAction tested;
 
+    @Mock
+    private EventSourceMock<CanvasClearSelectionEvent> clearSelectionEventEventSourceMock;
+
     @Before
     public void setup() throws Exception {
         when(commandFactory.deleteNode(eq(element))).thenReturn(deleteNodeCommand);
@@ -77,31 +82,24 @@ public class DeleteNodeActionTest {
         this.tested = new DeleteNodeAction(translationService,
                                            sessionCommandManager,
                                            commandFactory,
-                                           action -> true);
+                                           action -> true,
+                                           clearSelectionEventEventSourceMock);
     }
 
     @Test
     public void testTitle() {
-        tested.getTitle(canvasHandler,
-                        E_UUID);
-        verify(translationService,
-               times(1)).getValue(eq(CoreTranslationMessages.DELETE));
+        tested.getTitle(canvasHandler, E_UUID);
+        verify(translationService, times(1)).getValue(eq(CoreTranslationMessages.DELETE));
     }
 
     @Test
     public void testAction() {
         final MouseClickEvent event = mock(MouseClickEvent.class);
-        ToolboxAction<AbstractCanvasHandler> cascade =
-                tested.onMouseClick(canvasHandler,
-                                    E_UUID,
-                                    event);
-        assertEquals(tested,
-                     cascade);
-        verify(commandFactory,
-               times(1)).deleteNode(eq(element));
-        verify(sessionCommandManager,
-               times(1)).execute(eq(canvasHandler),
-                                 eq(deleteNodeCommand));
+        final ToolboxAction<AbstractCanvasHandler> cascade = tested.onMouseClick(canvasHandler, E_UUID, event);
+        assertEquals(tested, cascade);
+        verify(commandFactory, times(1)).deleteNode(eq(element));
+        verify(sessionCommandManager, times(1)).execute(eq(canvasHandler), eq(deleteNodeCommand));
+        verify(clearSelectionEventEventSourceMock).fire(any(CanvasClearSelectionEvent.class));
     }
 
     @Test
@@ -110,16 +108,12 @@ public class DeleteNodeActionTest {
         this.tested = new DeleteNodeAction(translationService,
                                            sessionCommandManager,
                                            commandFactory,
-                                           action -> false);
+                                           action -> false,
+                                           clearSelectionEventEventSourceMock);
         final MouseClickEvent event = mock(MouseClickEvent.class);
-        ToolboxAction<AbstractCanvasHandler> cascade =
-                tested.onMouseClick(canvasHandler,
-                                    E_UUID,
-                                    event);
-        assertEquals(tested,
-                     cascade);
-        verify(sessionCommandManager,
-               never()).execute(eq(canvasHandler),
-                                any(CanvasCommand.class));
+        final ToolboxAction<AbstractCanvasHandler> cascade = tested.onMouseClick(canvasHandler, E_UUID, event);
+        assertEquals(tested, cascade);
+        verify(sessionCommandManager, never()).execute(eq(canvasHandler), any(CanvasCommand.class));
+        verify(clearSelectionEventEventSourceMock, never()).fire(any(CanvasClearSelectionEvent.class));
     }
 }

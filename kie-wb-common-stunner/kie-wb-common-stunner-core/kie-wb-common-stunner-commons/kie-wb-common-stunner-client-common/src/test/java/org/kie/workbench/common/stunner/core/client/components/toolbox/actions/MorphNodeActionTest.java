@@ -132,7 +132,6 @@ public class MorphNodeActionTest {
                                           canvasClearSelectionEventEventSourceMock)
                 .setMorphDefinition(morphDefinition)
                 .setTargetDefinitionId(MORPH_TARGET_ID);
-        tested.commandDelay = 0;
     }
 
     @Test

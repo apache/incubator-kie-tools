@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.util;
 
+import java.util.Optional;
+
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -97,7 +99,7 @@ public class CanvasLayoutUtils {
     public Point2D getNext(final CanvasHandler canvasHandler,
                            final Node<View<?>, Edge> root,
                            final Node<View<?>, Edge> newNode) {
-        final double[] rootBounds = getBoundCoordinates(root.getContent());
+        final double[] rootBounds = getBoundCoordinates(root);
         final double[] rootSize = GraphUtils.getNodeSize(root.getContent());
         final double[] newNodeSize = GraphUtils.getNodeSize(newNode.getContent());
         Point2D[] offset = {new Point2D(PADDING_X,
@@ -379,12 +381,22 @@ public class CanvasLayoutUtils {
         return targetNode == null;
     }
 
-    private double[] getBoundCoordinates(final View view) {
+    private double[] getBoundCoordinates(final Node<View<?>, Edge> node) {
+        if (GraphUtils.isDockedNode(node)) {
+            final Node parent = GraphUtils.getDockParent(node).get();
+            final Point2D parentPosition = GraphUtils.getPosition((View) parent.getContent());
+            return getBoundCoordinates(node.getContent(), Optional.ofNullable(parentPosition));
+        }
+        return getBoundCoordinates(node.getContent(), Optional.empty());
+    }
+
+    private double[] getBoundCoordinates(final View view, final Optional<Point2D> parentPosition) {
+        final Point2D relativePositionTo = parentPosition.orElse(new Point2D(0, 0));
         final Bounds bounds = view.getBounds();
         final Bounds.Bound ulBound = bounds.getUpperLeft();
         final Bounds.Bound lrBound = bounds.getLowerRight();
         final double lrX = lrBound.getX();
         final double lrY = ulBound.getY();
-        return new double[]{lrX, lrY};
+        return new double[]{lrX + relativePositionTo.getX(), lrY + relativePositionTo.getY()};
     }
 }

@@ -19,9 +19,11 @@ package org.kie.workbench.common.stunner.core.client.components.toolbox.actions;
 import java.util.function.Predicate;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
@@ -43,25 +45,30 @@ public class DeleteNodeAction implements ToolboxAction<AbstractCanvasHandler> {
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
     private final Predicate<DeleteNodeAction> confirmDelete;
+    private final Event<CanvasClearSelectionEvent> clearSelectionEvent;
 
     @Inject
     public DeleteNodeAction(final ClientTranslationService translationService,
                             final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                            final CanvasCommandFactory<AbstractCanvasHandler> commandFactory) {
+                            final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
+                            final Event<CanvasClearSelectionEvent> clearSelectionEvent) {
         this(translationService,
              sessionCommandManager,
              commandFactory,
-             deleteNodeAction -> true);
+             deleteNodeAction -> true,
+             clearSelectionEvent);
     }
 
     DeleteNodeAction(final ClientTranslationService translationService,
                      final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                      final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
-                     final Predicate<DeleteNodeAction> confirmDelete) {
+                     final Predicate<DeleteNodeAction> confirmDelete,
+                     final Event<CanvasClearSelectionEvent> clearSelectionEvent) {
         this.translationService = translationService;
         this.sessionCommandManager = sessionCommandManager;
         this.commandFactory = commandFactory;
         this.confirmDelete = confirmDelete;
+        this.clearSelectionEvent = clearSelectionEvent;
     }
 
     @Override
@@ -82,11 +89,11 @@ public class DeleteNodeAction implements ToolboxAction<AbstractCanvasHandler> {
                                                              final String uuid,
                                                              final MouseClickEvent event) {
         if (confirmDelete.test(this)) {
-            final Node<?, Edge> node = AbstractToolboxAction.getElement(canvasHandler,
-                                                                        uuid)
-                    .asNode();
-            sessionCommandManager.execute(canvasHandler,
-                                          commandFactory.deleteNode(node));
+            final Node<?, Edge> node = AbstractToolboxAction.getElement(canvasHandler, uuid).asNode();
+
+            clearSelectionEvent.fire(new CanvasClearSelectionEvent(canvasHandler));
+
+            sessionCommandManager.execute(canvasHandler, commandFactory.deleteNode(node));
         }
         return this;
     }

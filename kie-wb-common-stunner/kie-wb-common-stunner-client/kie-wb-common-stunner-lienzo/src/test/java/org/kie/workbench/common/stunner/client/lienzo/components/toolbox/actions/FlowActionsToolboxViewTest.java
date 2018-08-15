@@ -105,4 +105,11 @@ public class FlowActionsToolboxViewTest
                            canvas,
                            shape);
     }
+
+    @Test
+    public void testHideAndDestroy() {
+        testInit();
+        tested.hideAndDestroy();
+        verify(toolboxView).hideAndDestroy();
+    }
 }

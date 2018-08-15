@@ -63,8 +63,7 @@ public class DeleteCanvasNodeCommand extends AbstractCanvasCommand {
     @Override
     public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
         final String ssid = context.getDiagram().getMetadata().getShapeSetId();
-        final AbstractCanvasCommand command = new AddCanvasNodeCommand(candidate,
-                                                                       ssid);
+        final AbstractCanvasCommand command = new AddCanvasChildNodeCommand(parent, candidate, ssid);
         return command.execute(context);
     }
 

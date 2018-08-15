@@ -56,7 +56,7 @@ public class SafeDeleteNodeProcessor {
         boolean deleteNode(final Node<?, Edge> node);
     }
 
-    private final Set<String> processedConnectors = new HashSet<String>();
+    private final Set<String> processedConnectors = new HashSet<>();
     private final Node<Definition<?>, Edge> candidate;
     private final Graph graph;
     private final ChildrenTraverseProcessor childrenTraverseProcessor;
@@ -81,6 +81,10 @@ public class SafeDeleteNodeProcessor {
                               @Override
                               public void startNodeTraversal(final Node<View, Edge> node) {
                                   super.startNodeTraversal(node);
+                                  if (GraphUtils.isDockedNode(node)) {
+                                      //docked nodes will be handled on the #processNode
+                                      return;
+                                  }
                                   nodes.add(node);
                               }
 
@@ -89,6 +93,10 @@ public class SafeDeleteNodeProcessor {
                                                                 final Node<View, Edge> node) {
                                   super.startNodeTraversal(parents,
                                                            node);
+                                  if (GraphUtils.isDockedNode(node)) {
+                                      //docked nodes will be handled on the #processNode
+                                      return true;
+                                  }
                                   nodes.add(node);
                                   return true;
                               }
@@ -110,6 +118,12 @@ public class SafeDeleteNodeProcessor {
                              final Callback callback,
                              final boolean candidate) {
         log("Deleting node [" + node.getUUID() + "]");
+
+        //processing recursively docked nodes relative to the current node
+        GraphUtils.getDockedNodes(node).forEach(docked -> processNode(docked, callback, false));
+
+        GraphUtils.getDockParent(node).ifPresent(parent -> callback.removeDock(parent, node));
+
         Stream.concat(node.getOutEdges().stream(),
                       node.getInEdges().stream())
                 .filter(e -> e.getContent() instanceof View)
@@ -120,9 +134,6 @@ public class SafeDeleteNodeProcessor {
                 .filter(e -> e.getContent() instanceof Child)
                 .forEach(e -> callback.removeChild(e.getSourceNode(),
                                                    node));
-
-        GraphUtils.getDockedNodes(node).forEach(docked -> callback.removeDock(node, docked));
-
         if (candidate) {
             callback.deleteCandidateNode(node);
         } else {

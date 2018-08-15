@@ -222,7 +222,7 @@ public class ToolboxControlImplTest {
         verify(toolbox,
                times(1)).show();
         verify(toolbox,
-               times(1)).destroy();
+               times(1)).hideAndDestroy();
         verify(toolbox,
                never()).hide();
     }

@@ -131,7 +131,7 @@ public class LienzoSelectionControlTest {
         MouseClickEvent event = mock(MouseClickEvent.class);
         when(event.isButtonLeft()).thenReturn(true);
         clickHandler.handle(event);
-        verify(selectionControl, times(1)).select(eq(element));
+        verify(selectionControl, times(1)).select(eq(element.getUUID()));
     }
 
     @Test
@@ -141,7 +141,7 @@ public class LienzoSelectionControlTest {
         tested.register(element);
         tested.singleSelect(element);
         verify(selectionControl, times(1)).clearSelection();
-        verify(selectionControl, times(1)).select(eq(element));
+        verify(selectionControl, times(1)).select(eq(element.getUUID()));
     }
 
     @Test

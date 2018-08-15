@@ -121,6 +121,7 @@ public abstract class AbstractToolboxControl
 
     protected void handleCanvasClearSelectionEvent(final CanvasClearSelectionEvent event) {
         if (checkEventContext(event)) {
+            toolboxControl.destroyToolboxes();
             clear();
         }
     }
@@ -142,11 +143,10 @@ public abstract class AbstractToolboxControl
         clear();
         toolboxShowPredicate.id = ids.iterator().next();
         toolboxShowPredicate.count = ids.size();
-        toolboxControl.destroyToolboxes();
     }
 
     public void clear() {
-        toolboxControl.destroyToolboxes();
+        toolboxControl.hideAndDestroyToolboxes();
         toolboxShowPredicate.id = null;
         toolboxShowPredicate.count = 0;
     }

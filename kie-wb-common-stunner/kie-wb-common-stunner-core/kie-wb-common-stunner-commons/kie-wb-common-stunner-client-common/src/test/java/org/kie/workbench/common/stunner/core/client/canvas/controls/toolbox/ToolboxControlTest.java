@@ -147,7 +147,7 @@ public class ToolboxControlTest {
                                                                           shape);
         tested.onCanvasShapeRemovedEvent(event);
         verify(delegated,
-               times(1)).destroyToolboxes();
+               times(1)).hideAndDestroyToolboxes();
         verify(delegated,
                never()).show(any(Element.class));
         verify(delegated,

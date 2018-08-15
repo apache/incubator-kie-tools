@@ -91,4 +91,10 @@ public class DelegateWiresCompositeControlTest {
         tested.isAllowed();
         verify(delegate, times(1)).isAllowed();
     }
+
+    @Test
+    public void testDestroy() {
+        tested.destroy();
+        verify(delegate, times(1)).destroy();
+    }
 }

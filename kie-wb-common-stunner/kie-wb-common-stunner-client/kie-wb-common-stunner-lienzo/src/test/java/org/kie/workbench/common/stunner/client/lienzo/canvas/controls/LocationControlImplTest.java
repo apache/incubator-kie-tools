@@ -47,6 +47,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPositionCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.event.ShapeLocationsChangedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
@@ -55,6 +56,8 @@ import org.kie.workbench.common.stunner.core.client.shape.ShapeViewExtStub;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.DragEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.DragHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseEnterHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
@@ -81,6 +84,7 @@ import org.uberfire.mocks.EventSourceMock;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
@@ -169,6 +173,9 @@ public class LocationControlImplTest {
     @Mock
     private EventSourceMock<ShapeLocationsChangedEvent> shapeLocationsChangedEvent;
 
+    @Mock
+    private EventSourceMock<CanvasSelectionEvent> canvasSelectionEvent;
+
     private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     private ShapeViewExtStub shapeView;
     private LocationControlImpl tested;
@@ -207,7 +214,7 @@ public class LocationControlImplTest {
         when(wiresManager.getSelectionManager()).thenReturn(selectionManager);
         when(selectionManager.getControl()).thenReturn(wiresCompositeControl);
 
-        this.tested = new LocationControlImpl(canvasCommandFactory, shapeLocationsChangedEvent);
+        this.tested = new LocationControlImpl(canvasCommandFactory, shapeLocationsChangedEvent, canvasSelectionEvent);
         tested.setCommandManagerProvider(() -> commandManager);
     }
 
@@ -226,7 +233,7 @@ public class LocationControlImplTest {
         tested.register(element);
         assertTrue(tested.isRegistered(element));
         verify(shapeView, times(1)).setDragEnabled(eq(true));
-        ArgumentCaptor<BoundingBox> bbCaptor = ArgumentCaptor.forClass(BoundingBox.class);
+        ArgumentCaptor<BoundingBox> bbCaptor = forClass(BoundingBox.class);
         verify(wiresCompositeControl, times(1)).setBoundsConstraint(bbCaptor.capture());
         BoundingBox bb = bbCaptor.getValue();
         assertEquals(1.0d, bb.getMinX(), 0d);
@@ -243,7 +250,16 @@ public class LocationControlImplTest {
                times(1)).supports(eq(ViewEventType.MOUSE_EXIT));
         verify(shapeEventHandler,
                times(1)).addHandler(eq(ViewEventType.MOUSE_EXIT),
+
                                     any(MouseEnterHandler.class));
+
+        //testing drag handler to select the moving element
+        ArgumentCaptor<DragHandler> dragHandlerArgumentCaptor = forClass(DragHandler.class);
+        verify(shapeEventHandler).addHandler(eq(ViewEventType.DRAG), dragHandlerArgumentCaptor.capture());
+        dragHandlerArgumentCaptor.getValue().start(mock(DragEvent.class));
+        ArgumentCaptor<CanvasSelectionEvent> canvasSelectionEventArgumentCaptor = forClass(CanvasSelectionEvent.class);
+        verify(canvasSelectionEvent).fire(canvasSelectionEventArgumentCaptor.capture());
+        assertTrue(canvasSelectionEventArgumentCaptor.getValue().getIdentifiers().contains(element.getUUID()));
     }
 
     @Test
@@ -299,11 +315,11 @@ public class LocationControlImplTest {
         tested.register(element);
         Point2D location = new Point2D(45d, 65.5d);
         tested.move(new Element[]{element}, new Point2D[]{location});
-        ArgumentCaptor<CanvasCommand> commandArgumentCaptor = ArgumentCaptor.forClass(CanvasCommand.class);
+        ArgumentCaptor<CanvasCommand> commandArgumentCaptor = forClass(CanvasCommand.class);
         verify(commandManager, times(1)).execute(eq(canvasHandler),
                                                  commandArgumentCaptor.capture());
 
-        ArgumentCaptor<ShapeLocationsChangedEvent> shapeLocationsChangedEventCaptor = ArgumentCaptor.forClass(ShapeLocationsChangedEvent.class);
+        ArgumentCaptor<ShapeLocationsChangedEvent> shapeLocationsChangedEventCaptor = forClass(ShapeLocationsChangedEvent.class);
         verify(shapeLocationsChangedEvent, times(1)).fire(shapeLocationsChangedEventCaptor.capture());
         assertTrue(shapeLocationsChangedEventCaptor.getValue() instanceof ShapeLocationsChangedEvent);
 
@@ -327,7 +343,7 @@ public class LocationControlImplTest {
         final com.ait.lienzo.client.core.types.Point2D point = new com.ait.lienzo.client.core.types.Point2D(40d, 50d);
         locationAcceptor.accept(new WiresContainer[]{wiresContainer},
                                 new com.ait.lienzo.client.core.types.Point2D[]{point});
-        ArgumentCaptor<CanvasCommand> commandArgumentCaptor = ArgumentCaptor.forClass(CanvasCommand.class);
+        ArgumentCaptor<CanvasCommand> commandArgumentCaptor = forClass(CanvasCommand.class);
         verify(commandManager, times(1)).execute(eq(canvasHandler),
                                                  commandArgumentCaptor.capture());
 
@@ -343,8 +359,7 @@ public class LocationControlImplTest {
         tested.init(canvasHandler);
         tested.register(element);
         tested.deregister(element);
-        verify(shapeEventHandler,
-               times(1)).removeHandler(any(ViewHandler.class));
+        verify(shapeEventHandler, atLeastOnce()).removeHandler(any(ViewHandler.class));
         assertFalse(tested.isRegistered(element));
     }
 

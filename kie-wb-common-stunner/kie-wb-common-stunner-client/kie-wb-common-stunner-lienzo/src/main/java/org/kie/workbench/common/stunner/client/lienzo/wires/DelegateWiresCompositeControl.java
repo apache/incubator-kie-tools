@@ -105,4 +105,9 @@ public abstract class DelegateWiresCompositeControl implements WiresCompositeCon
     public Point2D getAdjust() {
         return getDelegate().getAdjust();
     }
+
+    @Override
+    public void destroy() {
+        getDelegate().destroy();
+    }
 }

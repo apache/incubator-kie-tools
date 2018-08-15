@@ -24,7 +24,6 @@ import org.kie.workbench.common.stunner.core.client.session.command.AbstractClie
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
-import org.kie.workbench.common.stunner.core.client.util.TimerUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.Mock;
@@ -66,15 +65,6 @@ public abstract class AbstractExportSessionCommandTest {
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getPath()).thenReturn(path);
         when(path.getFileName()).thenReturn(FILE_NAME);
-    }
-
-    protected void setTimer(AbstractExportSessionCommand command) {
-        command.setTimer(new TimerUtils() {
-            @Override
-            public void executeWithDelay(Runnable executeFunction, int delayMillis) {
-                executeFunction.run();
-            }
-        });
     }
 
     protected abstract AbstractClientSessionCommand getCommand();

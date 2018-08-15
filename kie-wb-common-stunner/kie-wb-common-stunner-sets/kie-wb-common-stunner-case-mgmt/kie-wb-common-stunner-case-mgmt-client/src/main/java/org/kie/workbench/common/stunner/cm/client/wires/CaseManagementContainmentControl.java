@@ -177,6 +177,12 @@ public class CaseManagementContainmentControl implements WiresContainmentControl
         clearState();
     }
 
+    @Override
+    public void destroy() {
+        clearState();
+        containmentControl.destroy();
+    }
+
     private void restore(final AbstractCaseManagementShape ghost) {
         final WiresContainer originalParent = state.getOriginalParent().get();
         final int originalIndex = state.getOriginalIndex().get();

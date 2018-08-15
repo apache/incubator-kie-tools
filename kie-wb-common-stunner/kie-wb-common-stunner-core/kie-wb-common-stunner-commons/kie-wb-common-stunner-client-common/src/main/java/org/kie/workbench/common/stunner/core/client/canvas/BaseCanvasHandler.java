@@ -297,8 +297,14 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
         final String parentUUID = parent.getUUID();
         final String childUUID = child.getUUID();
         final Shape childShape = getCanvas().getShape(childUUID);
+        if(Objects.isNull(childShape)){
+            return;
+        }
         if (!isCanvasRoot(parentUUID)) {
             final Shape parentShape = getCanvas().getShape(parentUUID);
+            if(Objects.isNull(parentShape)){
+                return;
+            }
             getCanvas().deleteChildShape(parentShape,
                                          childShape);
         } else {

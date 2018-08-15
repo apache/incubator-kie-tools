@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.canvas;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -242,6 +243,10 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
     public void deregister(final Element element,
                            final boolean fireEvents) {
         final Shape shape = getCanvas().getShape(element.getUUID());
+        if(Objects.isNull(shape)){
+            //already not exists on canvas
+            return;
+        }
         deregister(shape,
                    element,
                    fireEvents);

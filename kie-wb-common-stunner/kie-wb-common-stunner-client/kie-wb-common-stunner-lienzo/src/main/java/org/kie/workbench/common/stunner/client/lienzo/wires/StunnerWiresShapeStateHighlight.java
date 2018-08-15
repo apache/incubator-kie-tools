@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.wires;
 
+import java.util.Objects;
+
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
@@ -27,6 +29,7 @@ public class StunnerWiresShapeStateHighlight implements WiresShapeHighlight<Pick
 
     private final StunnerWiresShapeHighlight delegate;
     private HasShapeState current;
+    private PickerPart.ShapePart currentPartState;
 
     public StunnerWiresShapeStateHighlight(final WiresManager wiresManager) {
         this(new StunnerWiresShapeHighlight(wiresManager));
@@ -54,17 +57,21 @@ public class StunnerWiresShapeStateHighlight implements WiresShapeHighlight<Pick
 
     @Override
     public void restore() {
-        if (null != current) {
+        if (null != current &&
+                (Objects.isNull(currentPartState) || Objects.equals(PickerPart.ShapePart.BODY, currentPartState))) {
             current.applyState(ShapeState.NONE);
             setCurrent(null);
         } else {
+            //always restore because the highlightBorder is not applying state, it is only delegating.
             delegate.restore();
         }
+        currentPartState = null;
     }
 
     private void highlight(final WiresShape shape,
                            final PickerPart.ShapePart part,
                            final ShapeState state) {
+        this.currentPartState = part;
         switch (part) {
             case BODY:
                 highlightBody(shape,

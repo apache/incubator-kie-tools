@@ -142,4 +142,10 @@ public class ActionsToolboxTest {
         verify(view,
                times(1)).destroy();
     }
+
+    @Test
+    public void testHideAndDestroy() {
+        tested.hideAndDestroy();
+        verify(view, times(1)).hideAndDestroy();
+    }
 }

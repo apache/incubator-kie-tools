@@ -304,10 +304,18 @@ public class GraphUtils {
     }
 
     public static List<Node> getDockedNodes(final Node<?, ? extends Edge> element) {
+        return getNodesFromOutEdges(element, edge -> (edge.getContent() instanceof Dock));
+    }
+
+    public static List<Node> getChildNodes(final Node<?, ? extends Edge> element) {
+        return getNodesFromOutEdges(element, edge -> (edge.getContent() instanceof Child));
+    }
+
+    private static List<Node> getNodesFromOutEdges(final Node<?, ? extends Edge> element, Predicate<Edge> filter) {
         Objects.requireNonNull(element.getOutEdges());
         return element.getOutEdges()
                 .stream()
-                .filter(edge -> (edge.getContent() instanceof Dock))
+                .filter(filter::test)
                 .map(Edge::getTargetNode)
                 .collect(Collectors.toList());
     }

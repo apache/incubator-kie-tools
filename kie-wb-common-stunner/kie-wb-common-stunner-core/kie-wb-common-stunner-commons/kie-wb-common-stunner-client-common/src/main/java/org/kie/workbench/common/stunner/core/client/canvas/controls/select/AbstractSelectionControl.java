@@ -93,9 +93,9 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
     }
 
     @Override
-    public SelectionControl<H, Element> select(final Element element) {
-        selectionControl.select(element);
-        onSelect(Collections.singletonList(element.getUUID()));
+    public SelectionControl<H, Element> select(final String uuid) {
+        selectionControl.select(uuid);
+        onSelect(Collections.singletonList(uuid));
         return this;
     }
 
@@ -103,8 +103,8 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
     }
 
     @Override
-    public SelectionControl<H, Element> deselect(final Element element) {
-        selectionControl.deselect(element);
+    public SelectionControl<H, Element> deselect(final String uuid) {
+        selectionControl.deselect(uuid);
         return this;
     }
 
@@ -175,7 +175,7 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
     @Override
     public void bind(final ClientSession session) {
         if (session instanceof EditorSession) {
-            ((EditorSession)session).getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
+            ((EditorSession) session).getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
             selectionControl.setReadonly(false);
         }
     }

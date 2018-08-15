@@ -22,6 +22,9 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -40,8 +43,12 @@ public class DeleteCanvasNodeCommandTest extends AbstractCanvasCommandTest {
 
     @Mock
     private Node candidate;
+
     @Mock
     private Node parent;
+
+    @Mock
+    private View view;
 
     private DeleteCanvasNodeCommand tested;
 
@@ -50,6 +57,8 @@ public class DeleteCanvasNodeCommandTest extends AbstractCanvasCommandTest {
         super.setUp();
         when(candidate.getUUID()).thenReturn(C_ID);
         when(parent.getUUID()).thenReturn(P_ID);
+        when(candidate.getContent()).thenReturn(view);
+        when(view.getBounds()).thenReturn(new BoundsImpl(new BoundImpl(0d,0d), new BoundImpl(10d,10d)));
         this.tested = new DeleteCanvasNodeCommand(candidate,
                                                   parent);
     }
@@ -68,5 +77,12 @@ public class DeleteCanvasNodeCommandTest extends AbstractCanvasCommandTest {
         verify(canvasHandler,
                times(1)).applyElementMutation(eq(parent),
                                               any(MutationContext.class));
+    }
+
+    @Test
+    public void testUndo(){
+        tested.undo(canvasHandler);
+        verify(canvasHandler).register(SHAPE_SET_ID, candidate);
+        verify(canvasHandler).addChild(parent, candidate);
     }
 }

@@ -37,4 +37,9 @@ public interface Toolbox<T extends Toolbox> {
      * Destroys the toolbox.
      */
     void destroy();
+
+    /**
+     * Hide the toolbox and then destroy it.
+     */
+    void hideAndDestroy();
 }

@@ -106,6 +106,12 @@ public class ActionsToolbox<V extends ActionsToolboxView<?>>
         actions.clear();
     }
 
+    @Override
+    public void hideAndDestroy() {
+        getView().hideAndDestroy();
+        actions.clear();
+    }
+
     public V getView() {
         return view;
     }

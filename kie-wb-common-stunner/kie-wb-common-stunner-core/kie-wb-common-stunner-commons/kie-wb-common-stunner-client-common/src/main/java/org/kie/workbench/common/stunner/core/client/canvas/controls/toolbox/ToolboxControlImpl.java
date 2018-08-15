@@ -90,12 +90,16 @@ public class ToolboxControlImpl<F extends ToolboxFactory<AbstractCanvasHandler, 
 
     @Override
     protected void doDestroy() {
-        destroyToolboxes();
+        hideAndDestroyToolboxes();
         super.doDestroy();
     }
 
     public void destroyToolboxes() {
         toolboxes.destroy();
+    }
+
+    public void hideAndDestroyToolboxes() {
+        toolboxes.hideAndDestroy();
     }
 
     @SuppressWarnings("unchecked")
@@ -180,8 +184,17 @@ public class ToolboxControlImpl<F extends ToolboxFactory<AbstractCanvasHandler, 
             list.forEach(Toolbox::hide);
         }
 
+        public void hideAndDestroy() {
+            list.forEach(Toolbox::hideAndDestroy);
+            clear();
+        }
+
         public void destroy() {
             list.forEach(Toolbox::destroy);
+            clear();
+        }
+
+        private void clear() {
             list.clear();
             uuid = null;
         }

@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,6 +59,8 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasDragBounds;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.DragEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.DragHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseEnterEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseEnterHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseExitEvent;
@@ -97,17 +100,21 @@ public class LocationControlImpl
     private CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
     private double[] boundsConstraint;
     private final Collection<String> selectedIDs = new LinkedList<>();
+    private final Event<CanvasSelectionEvent> selectionEvent;
 
     protected LocationControlImpl() {
         this(null,
+             null,
              null);
     }
 
     @Inject
     public LocationControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
-                               final Event<ShapeLocationsChangedEvent> shapeLocationsChangedEvent) {
+                               final Event<ShapeLocationsChangedEvent> shapeLocationsChangedEvent,
+                               final Event<CanvasSelectionEvent> selectionEvent) {
         this.canvasCommandFactory = canvasCommandFactory;
         this.shapeLocationsChangedEvent = shapeLocationsChangedEvent;
+        this.selectionEvent = selectionEvent;
     }
 
     @Override
@@ -226,6 +233,30 @@ public class LocationControlImpl
                                                 outHandler);
                     registerHandler(shape.getUUID(),
                                     outHandler);
+
+                    //Adding DragHandler on the shape to check whether the moving shape is not selected, th
+                    final DragHandler dragHandler = new DragHandler() {
+                        @Override
+                        public void start(DragEvent event) {
+                            if (Objects.nonNull(selectionEvent)) {
+                                //select the moving shape, if not
+                                selectionEvent.fire(new CanvasSelectionEvent(canvasHandler, shape.getUUID()));
+                            }
+                        }
+
+                        @Override
+                        public void end(DragEvent event) {
+
+                        }
+
+                        @Override
+                        public void handle(DragEvent event) {
+
+                        }
+                    };
+
+                    hasEventHandlers.addHandler(ViewEventType.DRAG, dragHandler);
+                    registerHandler(shape.getUUID(), dragHandler);
                 }
             }
         }

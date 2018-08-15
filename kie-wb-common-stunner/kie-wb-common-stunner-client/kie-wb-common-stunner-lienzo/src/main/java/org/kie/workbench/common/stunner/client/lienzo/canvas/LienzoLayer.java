@@ -223,6 +223,7 @@ public class LienzoLayer extends AbstractLayer<LienzoLayer, ShapeView<?>, Shape<
                        final double sy) {
         transform.scale(sx,
                         sy);
+        this.getViewPort().batch();
     }
 
     private void scale(final Transform transform,

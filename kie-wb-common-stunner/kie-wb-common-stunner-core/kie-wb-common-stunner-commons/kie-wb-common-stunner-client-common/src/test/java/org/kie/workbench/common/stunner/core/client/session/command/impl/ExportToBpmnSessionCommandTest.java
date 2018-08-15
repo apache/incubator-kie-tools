@@ -68,7 +68,6 @@ public class ExportToBpmnSessionCommandTest extends AbstractExportSessionCommand
                                                  errorPopupPresenter,
                                                  textFileExport);
         command.bind(session);
-        setTimer(command);
     }
 
     @Test

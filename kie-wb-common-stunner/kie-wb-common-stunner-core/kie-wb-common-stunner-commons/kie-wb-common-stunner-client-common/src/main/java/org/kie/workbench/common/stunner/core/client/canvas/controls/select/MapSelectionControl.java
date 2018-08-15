@@ -108,18 +108,19 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
 
     @Override
     public void deregister(final Element element) {
-        deselect(element);
-        items.remove(element.getUUID());
+        final String uuid = element.getUUID();
+        deselect(uuid);
+        items.remove(uuid);
     }
 
     @Override
-    public SelectionControl<H, Element> select(final Element element) {
-        return select(Collections.singletonList(element.getUUID()));
+    public SelectionControl<H, Element> select(final String uuid) {
+        return select(Collections.singletonList(uuid));
     }
 
     @Override
-    public SelectionControl<H, Element> deselect(final Element element) {
-        return deselect(Collections.singletonList(element.getUUID()));
+    public SelectionControl<H, Element> deselect(final String uuid) {
+        return deselect(Collections.singletonList(uuid));
     }
 
     @Override

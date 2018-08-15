@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
@@ -41,19 +42,18 @@ public class SafeDeleteNodeProcessorTest {
     @Mock
     private SafeDeleteNodeProcessor.Callback callback;
 
-    private TestingGraphMockHandler graphTestHandler;
-    private TestingGraphMockHandler graphTestHandlerContainer;
     private TestingGraphInstanceBuilder.TestGraph2 graphHolder;
     private TestingGraphInstanceBuilder.TestGraph3 graphHolderContainer;
+    private TestingGraphInstanceBuilder.TestGraph4 graphHolderDocked;
+
 
     private SafeDeleteNodeProcessor tested;
 
     @Before
     public void setup() throws Exception {
-        this.graphTestHandler = new TestingGraphMockHandler();
-        this.graphTestHandlerContainer = new TestingGraphMockHandler();
-        this.graphHolder = TestingGraphInstanceBuilder.newGraph2(graphTestHandler);
-        this.graphHolderContainer = TestingGraphInstanceBuilder.newGraph3(graphTestHandlerContainer);
+        this.graphHolder = TestingGraphInstanceBuilder.newGraph2(new TestingGraphMockHandler());
+        this.graphHolderContainer = TestingGraphInstanceBuilder.newGraph3(new TestingGraphMockHandler());
+        this.graphHolderDocked = TestingGraphInstanceBuilder.newGraph4(new TestingGraphMockHandler());
     }
 
     @Test
@@ -188,5 +188,32 @@ public class SafeDeleteNodeProcessorTest {
 
         inOrder.verify(callback,
                        times(1)).deleteCandidateNode(eq(graphHolderContainer.parentNode));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testDeleteDockParent() {
+        this.tested = new SafeDeleteNodeProcessor(new ChildrenTraverseProcessorImpl(new TreeWalkTraverseProcessorImpl()),
+                                                  graphHolderDocked.graph,
+                                                  graphHolderDocked.intermNode);
+        tested.run(callback);
+        verify(callback, times(1)).deleteCandidateConnector(eq(graphHolderDocked.edge1));
+        verify(callback, times(1)).deleteCandidateConnector(eq(graphHolderDocked.edge2));
+        verify(callback, times(1)).removeChild(eq(graphHolderDocked.parentNode), eq(graphHolderDocked.intermNode));
+        verify(callback, times(1)).deleteCandidateNode(eq(graphHolderDocked.intermNode));
+        verify(callback, times(1)).removeDock(graphHolderDocked.intermNode, graphHolderDocked.dockedNode);
+        verify(callback, times(1)).deleteNode(graphHolderDocked.dockedNode);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testDeleteDocked() {
+        this.tested = new SafeDeleteNodeProcessor(new ChildrenTraverseProcessorImpl(new TreeWalkTraverseProcessorImpl()),
+                                                  graphHolderDocked.graph,
+                                                  graphHolderDocked.dockedNode);
+        tested.run(callback);
+        verify(callback, never()).deleteCandidateConnector(any(Edge.class));
+        verify(callback, times(1)).removeDock(graphHolderDocked.intermNode, graphHolderDocked.dockedNode);
+        verify(callback, times(1)).deleteCandidateNode(graphHolderDocked.dockedNode);
     }
 }

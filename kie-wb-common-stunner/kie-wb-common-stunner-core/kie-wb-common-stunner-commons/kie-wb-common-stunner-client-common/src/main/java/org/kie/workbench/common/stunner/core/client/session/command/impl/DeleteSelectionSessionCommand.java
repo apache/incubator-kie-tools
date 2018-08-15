@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -92,17 +93,20 @@ public class DeleteSelectionSessionCommand extends AbstractSelectionAwareSession
         checkNotNull("callback",
                      callback);
         if (null != getSession().getSelectionControl()) {
-            final AbstractCanvasHandler canvasHandler = (AbstractCanvasHandler) getSession().getCanvasHandler();
+            final AbstractCanvasHandler canvasHandler = getSession().getCanvasHandler();
             final SelectionControl<AbstractCanvasHandler, Element> selectionControl = getSession().getSelectionControl();
             final Collection<String> selectedItems = selectionControl.getSelectedItems();
+
+            clearSelectionEvent.fire(new CanvasClearSelectionEvent(canvasHandler));
+
             if (selectedItems != null && !selectedItems.isEmpty()) {
                 // Execute the commands.
                 final CommandResult<CanvasViolation> result =
                         sessionCommandManager.execute(canvasHandler,
-                                                      canvasCommandFactory
-                                                              .delete(selectedItems.stream()
-                                                                              .map(uuid -> canvasHandler.getGraphIndex().get(uuid))
-                                                                              .collect(Collectors.toList())));
+                                                      canvasCommandFactory.delete(selectedItems.stream()
+                                                                                          .map(uuid -> canvasHandler.getGraphIndex().get(uuid))
+                                                                                          .filter(Objects::nonNull)
+                                                                                          .collect(Collectors.toList())));
                 // Check the results.
                 if (!CommandUtils.isError(result)) {
                     callback.onSuccess();
@@ -113,8 +117,6 @@ public class DeleteSelectionSessionCommand extends AbstractSelectionAwareSession
             } else {
                 callback.onError((V) new ClientRuntimeError("Cannot delete element, no element selected on canvas"));
             }
-            selectionControl.clearSelection();
-            clearSelectionEvent.fire(new CanvasClearSelectionEvent(getCanvasHandler()));
         }
     }
 

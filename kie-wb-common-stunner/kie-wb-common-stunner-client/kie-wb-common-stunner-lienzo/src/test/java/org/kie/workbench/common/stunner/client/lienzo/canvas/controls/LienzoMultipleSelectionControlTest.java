@@ -319,7 +319,7 @@ public class LienzoMultipleSelectionControlTest {
         when(selectionManager.getSelectedItems()).thenReturn(selectedItems);
         tested.init(canvasHandler);
         tested.register(element);
-        tested.select(element);
+        tested.select(element.getUUID());
         tested.clearSelection();
         verify(selectionControl, times(1)).clearSelection();
         verify(selectionManager, times(1)).clearSelection();

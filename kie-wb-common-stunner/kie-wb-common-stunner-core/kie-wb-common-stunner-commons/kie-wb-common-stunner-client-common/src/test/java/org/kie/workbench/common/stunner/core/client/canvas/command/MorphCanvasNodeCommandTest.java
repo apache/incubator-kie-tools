@@ -16,20 +16,27 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
+import java.util.stream.StreamSupport;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.client.shape.EdgeShape;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -45,6 +52,9 @@ public class MorphCanvasNodeCommandTest extends AbstractCanvasCommandTest {
 
     private TestingGraphInstanceBuilder.TestGraph4 graphInstance;
 
+    @Mock
+    private ViewConnector viewConnector;
+
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -53,11 +63,18 @@ public class MorphCanvasNodeCommandTest extends AbstractCanvasCommandTest {
         graphInstance = TestingGraphInstanceBuilder.newGraph4(graphTestHandler);
         when(diagram.getGraph()).thenReturn(graphInstance.graph);
         when(graphIndex.getGraph()).thenReturn(graphInstance.graph);
-        this.tested = new MorphCanvasNodeCommand(graphInstance.dockedNode, morphDefinition, NEW_SHAPE_SET_ID);
+
+        //mocking shapes
+        StreamSupport.<Node>stream(graphInstance.graph.nodes().spliterator(), true)
+                .map(node -> ((Node)node).getUUID())
+                .forEach(uuid-> when(canvas.getShape((String) uuid)).thenReturn(mock(Shape.class)));
+        when(canvas.getShape(graphInstance.edge1.getUUID())).thenReturn(mock(EdgeShape.class));
+        when(canvas.getShape(graphInstance.edge2.getUUID())).thenReturn(mock(EdgeShape.class));
     }
 
     @Test
-    public void execute() {
+    public void executeDockedNode() {
+        this.tested = new MorphCanvasNodeCommand(graphInstance.dockedNode, morphDefinition, NEW_SHAPE_SET_ID);
         CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
         assertFalse(CommandUtils.isError(result));
         verify(canvasHandler).deregister(graphInstance.dockedNode);
@@ -65,5 +82,17 @@ public class MorphCanvasNodeCommandTest extends AbstractCanvasCommandTest {
         verify(canvasHandler).applyElementMutation(graphInstance.dockedNode, MutationContext.STATIC);
         verify(canvasHandler).undock(graphInstance.intermNode, graphInstance.dockedNode);
         verify(canvasHandler).dock(graphInstance.intermNode, graphInstance.dockedNode);
+    }
+
+    @Test
+    public void executeIntermediateNode() {
+        this.tested = new MorphCanvasNodeCommand(graphInstance.intermNode, morphDefinition, NEW_SHAPE_SET_ID);
+        CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
+        assertFalse(CommandUtils.isError(result));
+        verify(canvasHandler).deregister(graphInstance.intermNode);
+        verify(canvasHandler).register(NEW_SHAPE_SET_ID, graphInstance.intermNode);
+        verify(canvasHandler).applyElementMutation(graphInstance.intermNode, MutationContext.STATIC);
+        verify(canvasHandler).removeChild(graphInstance.parentNode, graphInstance.intermNode);
+        verify(canvasHandler).addChild(graphInstance.parentNode, graphInstance.intermNode);
     }
 }
