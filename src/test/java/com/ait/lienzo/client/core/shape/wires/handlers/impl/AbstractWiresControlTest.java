@@ -23,14 +23,21 @@ import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresMagnetsControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.mockito.Mock;
 
 import static org.mockito.Matchers.anyDouble;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-public class AbstractWiresControlTest {
+public abstract class AbstractWiresControlTest {
+
+    protected static final double SHAPE_SIZE = 10;
+
+    protected static final double PARENT_SIZE = 100;
 
     protected WiresShape shape;
 
@@ -51,23 +58,33 @@ public class AbstractWiresControlTest {
     @Mock
     protected IDockingAcceptor dockingAcceptor;
 
-    protected static final double SHAPE_SIZE = 10;
+    @Mock
+    protected WiresShapeControl shapeControl;
 
-    protected static final double PARENT_SIZE = 100;
+    @Mock
+    protected WiresMagnetsControl shapeMagnetsControl;
+
+    @Mock
+    protected WiresShapeControl parentControl;
+
+    @Mock
+    protected WiresMagnetsControl parentMagnetsControl;
 
     public void setUp() {
         layer = new Layer();
         pickerOptions = new ColorMapBackedPicker.PickerOptions(false, 0);
         manager = WiresManager.get(layer);
-        shape = new WiresShape(new MultiPath().rect(0, 0, SHAPE_SIZE, SHAPE_SIZE));
+        shape = spy(new WiresShape(new MultiPath().rect(0, 0, SHAPE_SIZE, SHAPE_SIZE)));
         shape.setWiresManager(manager);
+        shape.setControl(shapeControl);
         parent = new WiresShape(new MultiPath().rect(0, 0, PARENT_SIZE, PARENT_SIZE));
         parent.setWiresManager(manager);
+        parent.setControl(parentControl);
         manager.getMagnetManager().createMagnets(parent);
         manager.setDockingAcceptor(dockingAcceptor);
-        shape.setLocation(new Point2D(0, 0));
-        parent.setLocation(new Point2D(0, 0));
 
+        when(shapeControl.getMagnetsControl()).thenReturn(shapeMagnetsControl);
+        when(parentControl.getMagnetsControl()).thenReturn(parentMagnetsControl);
         when(parentPicker.getWiresLayer()).thenReturn(manager.getLayer());
         when(parentPicker.getParent()).thenReturn(parent);
         when(dockingAcceptor.dockingAllowed(parent, shape)).thenReturn(true);
@@ -77,5 +94,10 @@ public class AbstractWiresControlTest {
         when(parentPicker.onMove(anyDouble(), anyDouble())).thenReturn(true);
         when(parentPicker.getPickerOptions()).thenReturn(pickerOptions);
         when(parentPicker.getIndex()).thenReturn(index);
+        when(parentPicker.getIndex()).thenReturn(index);
+
+        shape.setLocation(new Point2D(0, 0));
+        parent.setLocation(new Point2D(0, 0));
+
     }
 }

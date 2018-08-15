@@ -123,4 +123,9 @@ public class WiresShapeLocationControlImplTest {
         tested.reset();
         assertEquals(new Point2D(0, 0), shape.getLocation());
     }
+
+    @Test
+    public void testDestroy(){
+        testClear();
+    }
 }

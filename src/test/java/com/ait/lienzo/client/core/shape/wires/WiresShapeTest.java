@@ -19,6 +19,9 @@
 package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
+import com.ait.lienzo.client.core.event.NodeDragEndHandler;
+import com.ait.lienzo.client.core.event.NodeMouseDownHandler;
+import com.ait.lienzo.client.core.event.NodeMouseUpHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
@@ -29,7 +32,10 @@ import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartHandler;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepHandler;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeHandler;
 import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.dom.client.DomEvent;
@@ -95,14 +101,14 @@ public class WiresShapeTest
     @Before
     public void setup()
     {
-        path = new MultiPath().rect(3, 7, 100, 100);
+        path = spy(new MultiPath().rect(3, 7, 100, 100));
         group = spy(new Group());
         when(layoutContainer.getGroup()).thenReturn(group);
         when(layoutContainer.setOffset(any(Point2D.class))).thenReturn(layoutContainer);
         when(layoutContainer.setSize(anyDouble(), anyDouble())).thenReturn(layoutContainer);
         when(layoutContainer.execute()).thenReturn(layoutContainer);
         when(layoutContainer.refresh()).thenReturn(layoutContainer);
-        tested = new WiresShape(path, layoutContainer, handlerManager, handlerRegistrationManager, attributesChangedBatcher);
+        tested = spy(new WiresShape(path, layoutContainer, handlerManager, handlerRegistrationManager, attributesChangedBatcher));
     }
 
     @Test
@@ -129,6 +135,20 @@ public class WiresShapeTest
 
         tested.setDraggable(true);
         assertTrue(tested.getGroup().isDraggable());
+    }
+
+    @Test
+    public void testDraggableHandlers()
+    {
+        final WiresShapeHandler handler = mock(WiresShapeHandler.class);
+        WiresManager.addWiresShapeHandler(tested,
+                                          handlerRegistrationManager,
+                                          handler);
+        verify(group, times(1)).addNodeMouseDownHandler(any(NodeMouseDownHandler.class));
+        verify(group, times(1)).addNodeMouseUpHandler(any(NodeMouseUpHandler.class));
+        verify(group, times(1)).setDragConstraints(any(DragConstraintEnforcer.class));
+        verify(group, times(1)).addNodeDragEndHandler(any(NodeDragEndHandler.class));
+        verify(handlerRegistrationManager, times(4)).register(any(HandlerRegistration.class));
     }
 
     @Test
@@ -228,12 +248,15 @@ public class WiresShapeTest
     {
         final WiresShapeControlHandleList controls = mock(WiresShapeControlHandleList.class);
         final WiresShape shape = spy(new WiresShape(path, layoutContainer));
+        final WiresShapeControl shapeControl = mock(WiresShapeControl.class);
         doReturn(controls).when(shape).getControls();
+        shape.setControl(shapeControl);
         shape.destroy();
 
         verify(layoutContainer).destroy();
         verify(controls).destroy();
         verify(shape).removeFromParent();
+        verify(shapeControl).destroy();
     }
 
     @Test
@@ -255,17 +278,24 @@ public class WiresShapeTest
     {
         assertNull(tested.getControls());
 
-        assertNotNull(tested.loadControls(RESIZE));
-        assertNotNull(tested.getControls());
+        assertNull(tested.loadControls(null));
+        assertNull(tested.getControls());
 
         assertNull(tested.loadControls(CONNECTOR));
         assertNull(tested.getControls());
+        verify(path).getControlHandles(CONNECTOR);
+        verify(tested, never()).createControlHandles(eq(CONNECTOR), any(ControlHandleList.class));
+
+        assertNotNull(tested.loadControls(RESIZE));
+        assertNotNull(tested.getControls());
+        verify(path).getControlHandles(RESIZE);
+        verify(tested).createControlHandles(eq(RESIZE), any(ControlHandleList.class));
+
 
         assertNotNull(tested.loadControls(POINT));
         assertNotNull(tested.getControls());
-
-        assertNull(tested.loadControls(null));
-        assertNull(tested.getControls());
+        verify(path).getControlHandles(POINT);
+        verify(tested, never()).createControlHandles(eq(POINT), any(ControlHandleList.class));
     }
 
     @Test
@@ -280,8 +310,6 @@ public class WiresShapeTest
     @Test
     public void testRefresh()
     {
-        tested = spy(tested);
-
         final WiresShapeControlHandleList controls = mock(WiresShapeControlHandleList.class);
         doReturn(controls).when(tested).createControlHandles(eq(RESIZE), any(ControlHandleList.class));
 

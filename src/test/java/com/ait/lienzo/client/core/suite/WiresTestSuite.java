@@ -17,6 +17,7 @@
 package com.ait.lienzo.client.core.suite;
 
 import com.ait.lienzo.client.core.shape.AbstractOffsetMultiPointShapeTest;
+import com.ait.lienzo.client.core.shape.wires.BackingColorMapUtilsTest;
 import com.ait.lienzo.client.core.shape.wires.MagnetManagerTest;
 import com.ait.lienzo.client.core.shape.wires.SelectionManagerTest;
 import com.ait.lienzo.client.core.shape.wires.WiresConnectorTest;
@@ -25,15 +26,18 @@ import com.ait.lienzo.client.core.shape.wires.WiresManagerTest;
 import com.ait.lienzo.client.core.shape.wires.WiresShapeControlHandleListTest;
 import com.ait.lienzo.client.core.shape.wires.WiresShapeTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHandlerImplTest;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.AlignAndDistributeControlImplTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresCompositeControlImplTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresCompositeShapeHandlerTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectorControlImplTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectorHandlerImplTest;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresContainmentControlImplTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresControlPointHandlerImplTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresDockingControlImplTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresParentPickerControlImplTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlImplTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeLocationControlImplTest;
+import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPickerTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -63,7 +67,12 @@ import org.junit.runners.Suite;
         WiresShapeLocationControlImplTest.class,
         WiresShapeTest.class,
         WiresCompositeControlImplTest.class,
-        WiresControlPointHandlerImplTest.class
+        WiresControlPointHandlerImplTest.class,
+        AlignAndDistributeControlImplTest.class,
+        WiresContainmentControlImplTest.class,
+        BackingColorMapUtilsTest.class,
+        ColorMapBackedPickerTest.class
+
 })
 public class WiresTestSuite {
 

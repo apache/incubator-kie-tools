@@ -142,6 +142,14 @@ public class WiresCompositeControlImplTest extends AbstractWiresControlTest {
     }
 
     @Test
+    public void testDestroy() {
+        tested.onMoveStart(0d, 0d);
+        tested.destroy();
+        verify(shapeControl).destroy();
+        verify(shapeControl1).destroy();
+    }
+
+    @Test
     public void testAcceptForConnectors() {
         selectionShapes = Collections.emptyList();
         selectionConnectors = Collections.emptyList();

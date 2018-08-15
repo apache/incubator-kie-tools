@@ -18,6 +18,7 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
@@ -50,6 +51,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -66,28 +69,35 @@ public class WiresContainerTest
     private WiresContainer     tested;
 
     @Mock
-    HandlerRegistrationManager handlerRegistrationManager;
+    private HandlerRegistrationManager handlerRegistrationManager;
 
     @Mock
-    IAttributesChangedBatcher  attributesChangedBatcher;
+    private IAttributesChangedBatcher  attributesChangedBatcher;
 
     @Mock
-    HandlerManager             handlerManager;
+    private HandlerManager             handlerManager;
 
     @Mock
-    WiresManager               wiresManager;
+    private WiresManager               wiresManager;
 
     @Mock
-    AlignAndDistribute         alignAndDistribute;
+    private AlignAndDistribute         alignAndDistribute;
 
     @Mock
-    AlignAndDistributeControl  alignAndDistributeControl;
+    private AlignAndDistributeControl  alignAndDistributeControl;
+
+    private WiresLayoutContainer layoutContainer;
+
+    private Group layoutContainerGroup;
 
     @Before
     public void setup()
     {
+        layoutContainerGroup = spy(new Group());
+        layoutContainer = spy(new WiresLayoutContainer(layoutContainerGroup));
         when(wiresManager.getAlignAndDistribute()).thenReturn(alignAndDistribute);
         when(alignAndDistribute.getControlForShape(anyString())).thenReturn(alignAndDistributeControl);
+        when(layoutContainer.getGroup()).thenReturn(layoutContainerGroup);
         parentContainer = spy(new Group());
         shape = createShape();
         tested = new WiresContainer(parentContainer, handlerManager, handlerRegistrationManager, attributesChangedBatcher);
@@ -101,6 +111,18 @@ public class WiresContainerTest
         assertNull(tested.getDockedTo());
         assertEquals(parentContainer, tested.getContainer());
         assertEquals(0, tested.getChildShapes().size());
+    }
+
+    @Test
+    public void testLocation()
+    {
+        WiresShape child = spy(new WiresShape(new MultiPath().circle(5)));
+        Point2D point = new Point2D(0d, 0d);
+        tested.add(child);
+        tested.setLocation(point);
+        verify(parentContainer, times(1)).setLocation(eq(point));
+        verify(child, atLeastOnce()).shapeMoved();
+
     }
 
     @Test
@@ -140,11 +162,14 @@ public class WiresContainerTest
     @Test
     public void testAddChild()
     {
-        tested.add(shape);
+        tested.add(createShape(layoutContainer));
 
         final NFastArrayList<WiresShape> children = tested.getChildShapes();
         assertEquals(1, tested.getChildShapes().size());
         assertEquals(tested, children.get(0).getParent());
+        verify(layoutContainerGroup, atLeast(2)).getAttributes();
+        verify(layoutContainerGroup).setX(0);
+        verify(layoutContainerGroup).setY(0);
     }
 
     @Test
@@ -279,8 +304,13 @@ public class WiresContainerTest
         return new WiresContainer(group);
     }
 
-    private static WiresShape createShape()
+    private WiresShape createShape()
     {
         return new WiresShape(new MultiPath().rect(0, 0, 100, 100));
+    }
+
+    private WiresShape createShape(LayoutContainer layoutContainer)
+    {
+        return new WiresShape(new MultiPath().rect(0, 0, 100, 100), layoutContainer);
     }
 }

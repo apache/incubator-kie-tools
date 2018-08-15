@@ -19,19 +19,18 @@
 package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Viewport;
-import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndHandler;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartHandler;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorHandler;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresHandlerFactory;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.util.ScratchPad;
-import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -111,7 +110,9 @@ public class WiresManagerTest
         assertNotNull(tested.getShape(shape.uuid()));
         verify(shape, times(1)).setControl(any(WiresShapeControl.class));
         verify(layer, times(1)).add(eq(shape.getGroup()));
-        verify(handlerRegistrationManager, times(4)).register(any(HandlerRegistration.class));
+        verify(handlerRegistrationManager, times(6)).register(any(HandlerRegistration.class));
+        verify(shape).addWiresResizeStartHandler(any(WiresResizeStartHandler.class));
+        verify(shape).addWiresResizeEndHandler(any(WiresResizeEndHandler.class));
     }
 
     @Test
@@ -145,11 +146,8 @@ public class WiresManagerTest
         when(shape.getGroup()).thenReturn(group);
         final WiresShapeControl shapeControl = spied.register(shape);
 
-        // group.getBoundingBoxAttributes are used for box calculation during shape registration and store calculated values in double primitives
-        verify(group).getBoundingBoxAttributes();
-        shape.getHandlerManager().fireEvent(new WiresResizeEndEvent(shape, new NodeDragMoveEvent(mock(DragContext.class)), 1, 1, 11, 11));
-        // group.getBoundingBoxAttributes are used for box calculation during shape registration AND trigger re-calculation during shape resize
-        verify(group, times(2)).getBoundingBoxAttributes();
+        verify(shape).addWiresResizeStartHandler(any(WiresResizeStartHandler.class));
+        verify(shape).addWiresResizeEndHandler(any(WiresResizeEndHandler.class));
     }
 
     @Test

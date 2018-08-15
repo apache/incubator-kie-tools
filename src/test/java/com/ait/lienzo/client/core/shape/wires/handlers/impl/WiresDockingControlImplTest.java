@@ -16,24 +16,45 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.google.gwt.event.shared.HandlerRegistration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresDockingControlImplTest extends AbstractWiresControlTest {
+
+    @Mock
+    private HandlerRegistrationManager handlerRegistrationManager;
 
     private WiresDockingControlImpl wiresDockingControl;
 
     @Before
     public void setUp() {
         super.setUp();
+        wiresDockingControl = new WiresDockingControlImpl(parentPicker,
+                                                          handlerRegistrationManager);
+    }
 
-        wiresDockingControl = new WiresDockingControlImpl(parentPicker);
+    @Test
+    public void testUndockOnceStartingDrag() {
+        shape.setDockedTo(mock(WiresContainer.class));
+        wiresDockingControl.afterMoveStart(0d, 0d);
+        assertNull(shape.getDockedTo());
     }
 
     @Test
@@ -41,41 +62,48 @@ public class WiresDockingControlImplTest extends AbstractWiresControlTest {
         wiresDockingControl.beforeMoveStart(0, 0);
         wiresDockingControl.afterMove(50, 50);
         Point2D adjust = wiresDockingControl.getAdjust();
-        Point2D parentLocation = parent.getLocation();
-        assertEquals(adjust.getX(), parentLocation.getX() - SHAPE_SIZE / 2, 0);
-        assertEquals(adjust.getY(), parentLocation.getY() - SHAPE_SIZE / 2, 0);
+        assertEquals(adjust.getX(), PARENT_SIZE - SHAPE_SIZE / 2, 0);
+        assertEquals(adjust.getY(), PARENT_SIZE - SHAPE_SIZE / 2, 0);
     }
 
     @Test
-    public void dock() {
-        wiresDockingControl.dock(shape, parent, new Point2D(90, 90));
-        Point2D location = shape.getLocation();
-        assertEquals(location.getX(), 95, 0);
-        assertEquals(location.getY(), 95, 0);
-
-        wiresDockingControl.dock(shape, parent, new Point2D(20, 85));
-        location = shape.getLocation();
-        assertEquals(location.getX(), 45, 0);
-        assertEquals(location.getY(), 95, 0);
-
-        wiresDockingControl.dock(shape, parent, new Point2D(3, 92));
-        location = shape.getLocation();
-        assertEquals(location.getX(), -5, 0);
-        assertEquals(location.getY(), 95, 0);
-
-        wiresDockingControl.dock(shape, parent, new Point2D(90, 10));
-        location = shape.getLocation();
-        assertEquals(location.getX(), 95, 0);
-        assertEquals(location.getY(), -5, 0);
-
-        wiresDockingControl.dock(shape, parent, new Point2D(40, 15));
-        location = shape.getLocation();
-        assertEquals(location.getX(), 45, 0);
-        assertEquals(location.getY(), -5, 0);
-
-        wiresDockingControl.dock(shape, parent, new Point2D(5, 10));
-        location = shape.getLocation();
-        assertEquals(location.getX(), -5, 0);
-        assertEquals(location.getY(), -5, 0);
+    public void testDock() {
+        final WiresContainer oldParent = mock(WiresContainer.class);
+        shape.setParent(oldParent);
+        shape.setDockedTo(oldParent);
+        wiresDockingControl.dock(parent);
+        verify(oldParent, atLeastOnce()).remove(eq(shape));
+        verify(handlerRegistrationManager, times(2)).register(any(HandlerRegistration.class));
+        assertEquals(parent, shape.getDockedTo());
     }
+
+    @Test
+    public void ensureSetRelativeLocationFromParentOnDocking() {
+        wiresDockingControl.dock(parent);
+
+        wiresDockingControl.move( new Point2D(90, 90));
+        Point2D location = shape.getLocation();
+        assertEquals(90, location.getX(), 0);
+        assertEquals(90, location.getY(), 0);
+
+        wiresDockingControl.move(new Point2D(20, 85));
+        location = shape.getLocation();
+        assertEquals(20, location.getX(), 0);
+        assertEquals(85, location.getY(), 0);
+
+        parent.setLocation(new Point2D(50, 50));
+
+        wiresDockingControl.move(new Point2D(90, 90));
+        location = shape.getLocation();
+        assertEquals(40, location.getX(), 0);
+        assertEquals(40, location.getY(), 0);
+
+    }
+
+    @Test
+    public void testDestroy() {
+        wiresDockingControl.destroy();
+        verify(handlerRegistrationManager, times(1)).destroy();
+    }
+
 }

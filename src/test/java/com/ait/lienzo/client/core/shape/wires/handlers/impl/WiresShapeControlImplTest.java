@@ -15,9 +15,23 @@
  */
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
-import com.ait.lienzo.client.core.shape.*;
-import com.ait.lienzo.client.core.shape.wires.*;
-import com.ait.lienzo.client.core.shape.wires.handlers.*;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.IDirectionalMultiPointShape;
+import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.MultiPathDecorator;
+import com.ait.lienzo.client.core.shape.PolyLine;
+import com.ait.lienzo.client.core.shape.wires.ILocationAcceptor;
+import com.ait.lienzo.client.core.shape.wires.MagnetManager;
+import com.ait.lienzo.client.core.shape.wires.WiresConnection;
+import com.ait.lienzo.client.core.shape.wires.WiresConnector;
+import com.ait.lienzo.client.core.shape.wires.WiresContainer;
+import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
+import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.shape.wires.handlers.AlignAndDistributeControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresContainmentControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresMagnetsControl;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -27,11 +41,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresShapeControlImplTest extends AbstractWiresControlTest {
@@ -152,7 +172,6 @@ public class WiresShapeControlImplTest extends AbstractWiresControlTest {
         when(connector.getTail()).thenReturn(tail);
         when(head.getLocation()).thenReturn(new Point2D(1, 1));
         when(tail.getLocation()).thenReturn(new Point2D(2, 2));
-        when(alignAndDistributeControl.isDraggable()).thenReturn(true);
 
         tested = new WiresShapeControlImpl(parentPicker, m_magnetsControl, m_dockingAndControl, m_containmentControl);
         tested.setAlignAndDistributeControl(alignAndDistributeControl);
@@ -291,6 +310,16 @@ public class WiresShapeControlImplTest extends AbstractWiresControlTest {
 
         tested.onMove(10, 10);
         verify(connectorControl).onMove(10, 10);
+    }
+
+    @Test
+    public void testDestroy(){
+        tested.destroy();
+        assertEquals(tested.getAdjust(), new Point2D(0d,0d));
+        verify(m_dockingAndControl).destroy();
+        verify(m_containmentControl).destroy();
+        verify(parentPicker).destroy();
+        verify(alignAndDistributeControl).dragEnd();
     }
 
     @Test

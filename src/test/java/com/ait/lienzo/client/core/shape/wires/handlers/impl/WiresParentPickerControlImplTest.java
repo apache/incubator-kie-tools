@@ -35,7 +35,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -53,6 +56,7 @@ public class WiresParentPickerControlImplTest {
     private WiresManager manager;
     private WiresShape shape;
     private WiresShape parent;
+    private WiresShapeLocationControlImpl shapeLocationControl;
 
     @Before
     public void setup()
@@ -63,7 +67,8 @@ public class WiresParentPickerControlImplTest {
         shape.setWiresManager(manager);
         parent = new WiresShape(new MultiPath().rect(0, 0, 100, 100));
         parent.setWiresManager(manager);
-        tested = new WiresParentPickerControlImpl(new WiresShapeLocationControlImpl(shape),
+        shapeLocationControl = spy(new WiresShapeLocationControlImpl(shape));
+        tested = new WiresParentPickerControlImpl(shapeLocationControl,
                                                   new WiresParentPickerControlImpl.ColorMapBackedPickerProvider() {
                                                       @Override
                                                       public ColorMapBackedPicker get(WiresLayer layer) {
@@ -111,4 +116,10 @@ public class WiresParentPickerControlImplTest {
         assertFalse(pickerOptions.getShapesToSkip().isEmpty());
     }
 
+    @Test
+    public void testDestroy(){
+        tested.destroy();
+        verify(shapeLocationControl, atLeastOnce()).clear();
+        verify(shapeLocationControl).destroy();
+    }
 }

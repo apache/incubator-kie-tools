@@ -18,6 +18,7 @@
 package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +34,7 @@ public class MultiPathTest {
     @Before
     public void setup() {
         tested = new MultiPath().rect(0, 0, 100, 100);
+        assertNull(tested.m_box);
     }
 
     @Test
