@@ -373,4 +373,10 @@ public class WiresConnectorControlImpl implements WiresConnectorControl {
     private static boolean isConnected(final WiresConnection connection) {
         return null != connection && null != connection.getMagnet();
     }
+
+    @Override
+    public void destroy() {
+        clear();
+        destroyPointHandles();
+    }
 }

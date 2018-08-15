@@ -90,10 +90,8 @@ public class WiresShapeHandlerImpl extends WiresManager.WiresDragHandler impleme
         }
 
         // Check acceptors' allow methods.
-        final boolean isDockAllowed = null != getControl().getDockingControl() &&
-                getControl().getDockingControl().isAllow();
-        final boolean isContAllow = null != getControl().getContainmentControl() &&
-                getControl().getContainmentControl().isAllow();
+        final boolean isDockAllowed = null != getControl().getDockingControl() && getControl().getDockingControl().isAllow();
+        final boolean isContAllow = null != getControl().getContainmentControl() && getControl().getContainmentControl().isAllow();
 
         // Highlights.
         final WiresShape newParent = getParentShape();

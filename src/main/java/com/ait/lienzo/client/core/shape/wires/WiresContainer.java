@@ -125,6 +125,7 @@ public class WiresContainer
     public WiresContainer setLocation(final Point2D p)
     {
         getGroup().setLocation(p);
+        shapeMoved();
         return this;
     }
 
@@ -176,14 +177,25 @@ public class WiresContainer
 
         m_childShapes.add(shape);
 
+        // This is needed as a workaround, due to getComputedBoundingBox needed atleast x and y set to something, else it won't work.
+        Group group = shape.getGroup();
+        if ( !group.getAttributes().isDefined(Attribute.X) )
+        {
+            group.setX(0);
+        }
+        if ( !group.getAttributes().isDefined(Attribute.Y) )
+        {
+            group.setY(0);
+        }
+
         m_container.add(shape.getGroup());
 
         shape.setParent(this);
 
-       shape.shapeMoved();
+        shape.shapeMoved();
 
         if (null != m_wiresManager && m_wiresManager.getAlignAndDistribute().isShapeIndexed(shape.uuid())) {
-            m_wiresManager.getAlignAndDistribute().getControlForShape(shape.uuid()).refresh();
+            m_wiresManager.getAlignAndDistribute().getControlForShape(shape.uuid()).updateIndex();
         }
 
         getLayoutHandler().requestLayout( this );

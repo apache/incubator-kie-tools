@@ -21,4 +21,9 @@ public interface WiresControl {
      * and clears current control's state.
      */
     void reset();
+
+    /**
+     * Destroys the control instance
+     */
+    void destroy();
 }

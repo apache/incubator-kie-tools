@@ -32,8 +32,6 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
 
     protected BoundingBox                                          m_box;
 
-    protected boolean                                              m_isDraggable;
-
     protected boolean                                              m_isDragging;
 
     protected HandlerRegistrationManager                           m_attrHandlerRegs;
@@ -64,9 +62,11 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
 
     private boolean                                                indexed;
 
-    private final Flows.BooleanOp                                  m_bboxOp;
+    private boolean                                                m_indexedButRemoved;
 
-    private final Flows.BooleanOp                                  m_tranOp;
+    private Flows.BooleanOp                                        m_bboxOp;
+
+    private Flows.BooleanOp                                        m_tranOp;
 
     private double                                                 m_leftOffset;
 
@@ -95,39 +95,38 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
 
         m_alignAndDistribute.indexOn(this);
 
-        if (m_group.isDraggable())
-        {
-            dragOn();
-        }
         m_attrHandlerRegs = new HandlerRegistrationManager();
 
-        final ArrayList<Attribute> temp = new ArrayList<Attribute>(attributes);
-
-        temp.add(Attribute.X);
-
-        temp.add(Attribute.Y);
-
-        final NFastStringSet seen = new NFastStringSet();
-
-        final ArrayList<Attribute> list = new ArrayList<Attribute>();
-
-        for (Attribute attribute : temp)
+        if (attributes != null)
         {
-            if (null != attribute)
-            {
-                if (false == seen.contains(attribute.getProperty()))
-                {
-                    list.add(attribute);
+            final ArrayList<Attribute> temp = new ArrayList<Attribute>(attributes);
 
-                    seen.add(attribute.getProperty());
+            temp.add(Attribute.X);
+
+            temp.add(Attribute.Y);
+
+            final NFastStringSet seen = new NFastStringSet();
+
+            final ArrayList<Attribute> list = new ArrayList<Attribute>();
+
+            for (Attribute attribute : temp)
+            {
+                if (null != attribute)
+                {
+                    if (false == seen.contains(attribute.getProperty()))
+                    {
+                        list.add(attribute);
+
+                        seen.add(attribute.getProperty());
+                    }
                 }
             }
+            m_bboxOp = any(list);
+
+            addHandlers(m_group, list);
+
+            m_tranOp = any(Attribute.ROTATION, Attribute.SCALE, Attribute.SHEAR);
         }
-        m_bboxOp = any(list);
-
-        addHandlers(m_group, list);
-
-        m_tranOp = any(Attribute.ROTATION, Attribute.SCALE, Attribute.SHEAR);
     }
 
     private final AttributesChangedHandler ShapeAttributesChangedHandler = new AttributesChangedHandler()
@@ -363,21 +362,6 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         }
     }
 
-    public void dragOn()
-    {
-        m_isDraggable = true;
-    }
-
-    public void draggOff()
-    {
-        m_isDraggable = false;
-    }
-
-    public boolean isDraggable()
-    {
-        return m_isDraggable;
-    }
-
     private final boolean hasComplexTransformAttributes()
     {
         final Attributes attr = AlignAndDistribute.getAttributes(m_group);
@@ -422,7 +406,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
     public void refresh(boolean transforms, boolean attributes)
     {
 
-        if (m_isDragging)
+        if (m_isDragging || m_indexedButRemoved)
         {
             // ignore attribute changes while dragging
             return;
@@ -443,18 +427,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
                 m_alignAndDistribute.indexOn(this);
             }
         }
-        boolean isDraggable = m_group.isDraggable();
 
-        if (!m_isDraggable && isDraggable)
-        {
-            // was off, now on
-            dragOn();
-        }
-        else if (m_isDraggable && !isDraggable)
-        {
-            // was on, now on off
-            draggOff();
-        }
         if (indexed && attributes)
         {
             updateIndex();
@@ -500,10 +473,11 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
 
     public void indexOff(IPrimitive<?> child)
     {
-        AlignAndDistributeControl handler = m_alignAndDistribute.getControlForShape(child.uuid());
+        AlignAndDistributeControlImpl handler = (AlignAndDistributeControlImpl) m_alignAndDistribute.getControlForShape(child.uuid());
         if (handler != null && handler.isIndexed())
         {
             m_alignAndDistribute.indexOffWithoutChangingStatus(handler);
+            handler.m_indexedButRemoved = true;
         }
     }
 
@@ -552,6 +526,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         if (handler != null && handler.isIndexed())
         {
             m_alignAndDistribute.indexOnWithoutChangingStatus(handler);
+            ((AlignAndDistributeControlImpl)handler).m_indexedButRemoved = true;
             handler.updateIndex();
         }
     }

@@ -82,19 +82,19 @@ public class WiresShapeControlImpl
             index.exclude(children.get(i));
         }
 
-        // Delegate mvoe start to the shape's docking control
+        // Delegate move start to the shape's docking control
         if (m_dockingAndControl != null) {
             m_dockingAndControl.onMoveStart(x,
                                             y);
         }
 
-        // Delegate mvoe start to the shape's containment control
+        // Delegate move start to the shape's containment control
         if (m_containmentControl != null) {
             m_containmentControl.onMoveStart(x,
                                              y);
         }
 
-        // Delegate mvoe start to the align and distribute control.
+        // Delegate move start to the align and distribute control.
         if (m_alignAndDistributeControl != null) {
             m_alignAndDistributeControl.dragStart();
         }
@@ -152,16 +152,13 @@ public class WiresShapeControlImpl
             return true;
         }
 
-        final Point2D dxy = new Point2D(dx,
-                                        dy);
+        final Point2D dxy = new Point2D(dx, dy);
 
-        final boolean isDockAdjust = null != m_dockingAndControl &&
-                m_dockingAndControl.onMove(dx,
-                                           dy);
+        final boolean isDockAdjust = null != m_dockingAndControl && m_dockingAndControl.onMove(dx, dy);
         if (isDockAdjust) {
             final Point2D dadjust = m_dockingAndControl.getAdjust();
             double adjustDistance = Geometry.distance(dx, dy, dadjust.getX(), dadjust.getY());
-            if (adjustDistance > getWiresManager().getDockingAcceptor().getHotspotSize()) {
+            if (adjustDistance < getWiresManager().getDockingAcceptor().getHotspotSize()) {
                 dxy.setX(dadjust.getX());
                 dxy.setY(dadjust.getY());
             }
@@ -177,7 +174,6 @@ public class WiresShapeControlImpl
         }
 
         final boolean isAlignDistroAdjust = null != m_alignAndDistributeControl &&
-                m_alignAndDistributeControl.isDraggable() &&
                 m_alignAndDistributeControl.dragAdjust(dxy);
 
         // Special adjustments.
@@ -326,7 +322,7 @@ public class WiresShapeControlImpl
         }
         parentPickerControl.reset();
         if (null != m_alignAndDistributeControl) {
-            m_alignAndDistributeControl.dragEnd();
+            m_alignAndDistributeControl.updateIndex();
         }
         getShape().shapeMoved();
         forEachConnectorControl(new Consumer<WiresConnectorControl>() {
@@ -337,6 +333,21 @@ public class WiresShapeControlImpl
             }
         });
         clearState();
+    }
+
+    @Override
+    public void destroy() {
+        clearState();
+        if (null != getDockingControl()) {
+            getDockingControl().destroy();
+        }
+        if (null != getContainmentControl()) {
+            getContainmentControl().destroy();
+        }
+        parentPickerControl.destroy();
+        if (null != m_alignAndDistributeControl) {
+            m_alignAndDistributeControl.dragEnd();
+        }
     }
 
     @Override

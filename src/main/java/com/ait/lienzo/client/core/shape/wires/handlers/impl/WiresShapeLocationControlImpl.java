@@ -1,7 +1,6 @@
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
-import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeLocationControl;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -107,6 +106,11 @@ public class WiresShapeLocationControlImpl implements WiresShapeLocationControl 
         if (null != shapeResetLocation) {
             setShapeLocation(shapeResetLocation);
         }
+    }
+
+    @Override
+    public void destroy() {
+        clear();
     }
 
     public Point2D getShapeLocation() {

@@ -133,9 +133,22 @@ public class BackingColorMapUtils
                         double y1 = points.get(3) + offsetY;
                         double r = points.get(4);
                         ctx.arcTo(x0, y0, x1, y1, r);
-
+                        break;
                     }
-                    break;
+                    case PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE:
+                    {
+                        points = entry.getPoints();
+
+                        double x0 = points.get(0) + offsetX;
+                        double y0 = points.get(1) + offsetY;
+
+                        double x1 = points.get(2) + offsetX;
+                        double y1 = points.get(3) + offsetY;
+
+                        double x2 = points.get(4) + offsetX;
+                        double y2 = points.get(5) + offsetY;
+                        ctx.bezierCurveTo(x0, y0, x1, y1, x2, y2);
+                    }
                 }
             }
 

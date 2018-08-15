@@ -24,21 +24,23 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 
+import java.util.HashMap;
+
 public final class PathPartList
 {
-    private double                m_cpx;
+    private double                                      m_cpx;
 
-    private double                m_cpy;
+    private double                                      m_cpy;
 
-    private boolean               m_fin;
+    private boolean                                     m_fin;
 
-    private boolean               m_mov;
+    private boolean                                     m_mov;
 
-    private Path2D                m_p2d;
+    private Path2D                                      m_p2d;
 
-    private BoundingBox           m_box;
+    private BoundingBox                                 m_box;
 
-    private final PathPartListJSO m_jso;
+    private final PathPartListJSO                       m_jso;
 
     public PathPartList()
     {
@@ -59,7 +61,7 @@ public final class PathPartList
 
     public final void push(final PathPartEntryJSO part)
     {
-        m_box = null;
+        resetBoundingBox();
 
         if (false == m_mov)
         {
@@ -82,7 +84,7 @@ public final class PathPartList
     {
         m_p2d = null;
 
-        m_box = null;
+        resetBoundingBox();
 
         m_mov = false;
 
@@ -381,16 +383,19 @@ public final class PathPartList
 
     public BoundingBox getBoundingBox()
     {
-        final int size = size();
-
-        if (size < 1)
-        {
-            return new BoundingBox(0, 0, 0, 0);
-        }
         if (m_box != null)
         {
             return m_box;
         }
+
+        final int size = size();
+
+        if (size < 1)
+        {
+            m_box = new BoundingBox(0, 0, 0, 0);
+            return m_box;
+        }
+
         m_box = new BoundingBox();
 
         double oldx = 0;
@@ -515,8 +520,6 @@ public final class PathPartList
             switch (part.getCommand())
             {
                 case PathPartEntryJSO.LINETO_ABSOLUTE:
-                    points.push(oldx = p.get(0), oldy = p.get(1));
-                    break;
                 case PathPartEntryJSO.MOVETO_ABSOLUTE:
                     points.push(oldx = p.get(0), oldy = p.get(1));
                     break;

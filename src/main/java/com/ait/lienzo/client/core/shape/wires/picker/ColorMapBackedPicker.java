@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.*;
 import com.ait.lienzo.client.core.types.ColorKeyRotor;
 import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.ImageDataPixelColor;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
@@ -38,8 +39,6 @@ public class ColorMapBackedPicker
 
     private final PickerOptions                m_options;
 
-    protected ImageData                        m_imageData;
-
     protected WiresLayer                       m_layer;
 
     public ColorMapBackedPicker(WiresLayer layer,
@@ -53,7 +52,6 @@ public class ColorMapBackedPicker
         m_options = options;
         m_scratchPad.clear();
         addShapes(shapes);
-        m_imageData = m_ctx.getImageData(0, 0, m_scratchPad.getWidth(), m_scratchPad.getHeight());
     }
 
 
@@ -114,10 +112,10 @@ public class ColorMapBackedPicker
             y = (int) Math.round(temp.getY());
         }
 
-        String color = BackingColorMapUtils.findColorAtPoint(m_imageData, x, y);
+        ImageDataPixelColor color = m_ctx.getImageDataPixelColor(x, y);
         if (color != null)
         {
-            PickerPart pickerPart = m_colorMap.get(color);
+            PickerPart pickerPart = m_colorMap.get(color.toBrowserRGB());
             if (pickerPart != null)
             {
                 return pickerPart;

@@ -13,7 +13,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-// TODO - review DSJ
 
 package com.ait.lienzo.client.core.shape.wires;
 
@@ -37,6 +36,8 @@ import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
+
 
 public class WiresShape extends WiresContainer
 {
@@ -225,24 +226,21 @@ public class WiresShape extends WiresContainer
 
     private void _loadControls(final IControlHandle.ControlHandleType type)
     {
-        if (null != getControls())
-        {
-            this.getControls().destroy();
-
-            this.m_ctrls = null;
-        }
-
-        Map<IControlHandle.ControlHandleType, IControlHandleList> handles = getPath().getControlHandles(type);
+        final Map<ControlHandleType, IControlHandleList> handles = getPath().getControlHandles(type);
 
         if (null != handles)
         {
-            IControlHandleList controls = handles.get(type);
-
-            if ((null != controls) && (controls.isActive()))
+            if (getControls() == null)
             {
-                this.m_ctrls = createControlHandles(type, (ControlHandleList) controls);
+                final IControlHandleList controls = handles.get(type);
+
+                if ((null != controls) && (controls.isActive()))
+                {
+                    this.m_ctrls = createControlHandles(type, (ControlHandleList) controls);
+                }
             }
         }
+
     }
 
     protected WiresShapeControlHandleList createControlHandles(IControlHandle.ControlHandleType type, ControlHandleList controls)
@@ -283,7 +281,7 @@ public class WiresShape extends WiresContainer
 
         if (null != getControl())
         {
-            getControl().reset();
+            getControl().destroy();
             m_control = null;
         }
     }

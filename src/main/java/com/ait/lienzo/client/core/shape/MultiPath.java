@@ -235,6 +235,8 @@ public class MultiPath extends AbstractMultiPathPartShape<MultiPath>
 
     private final PathPartList getOrIncrementList()
     {
+        resetBoundingBox(); // null the cache, as the BB will change
+
         final NFastArrayList<PathPartList> list = getPathPartListArray();
 
         if (list.size() < 1)

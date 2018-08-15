@@ -72,7 +72,12 @@ public class WiresLayoutContainer implements LayoutContainer
 
     public WiresLayoutContainer()
     {
-        this.group = new Group().setDraggable(false);
+        this(new Group().setDraggable(false));
+    }
+
+    protected WiresLayoutContainer(Group group)
+    {
+        this.group = group;
         this.offset = new Point2D(0, 0);
         this.width = 0;
         this.height = 0;
