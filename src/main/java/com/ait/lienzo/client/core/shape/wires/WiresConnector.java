@@ -231,7 +231,7 @@ public class WiresConnector
 
     public IControlHandleList getPointHandles()
     {
-        if (m_pointHandles == null)
+        if (m_pointHandles == null || m_pointHandles.isEmpty())
         {
             m_pointHandles = m_line.getControlHandles(POINT).get(POINT);
         }

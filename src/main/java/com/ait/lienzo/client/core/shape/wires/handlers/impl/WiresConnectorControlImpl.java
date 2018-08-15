@@ -10,6 +10,7 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlPointHandler;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.client.widget.DefaultDragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArray;
@@ -270,6 +271,21 @@ public class WiresConnectorControlImpl implements WiresConnectorControl {
 
             m_connector.getPointHandles().show();
 
+            final WiresControlPointHandler controlPointsHandler =
+                    m_wiresManager.getWiresHandlerFactory().newControlPointHandler(m_connector, m_wiresManager);
+
+            for (IControlHandle handle : m_connector.getPointHandles()) {
+                final Shape<?> shape = handle.getControl().asShape();
+                m_HandlerRegistrationManager.register(shape.addNodeMouseClickHandler(controlPointsHandler));
+                m_HandlerRegistrationManager.register(shape.addNodeMouseDoubleClickHandler(controlPointsHandler));
+                m_HandlerRegistrationManager.register(shape.addNodeDragStartHandler(controlPointsHandler));
+                m_HandlerRegistrationManager.register(shape.addNodeDragEndHandler(controlPointsHandler));
+                m_HandlerRegistrationManager.register(shape.addNodeDragMoveHandler(controlPointsHandler));
+                //enforce drag constraints on the point handles
+                shape.setDragConstraints(new DefaultDragConstraintEnforcer());
+                shape.setDragBounds(m_connector.getGroup().getDragBounds());
+            }
+
             m_headConnectionControl = m_wiresManager.getControlFactory()
                                                     .newConnectionControl(m_connector,
                                                                           true,
@@ -287,18 +303,6 @@ public class WiresConnectorControlImpl implements WiresConnectorControl {
             Shape<?> tail = m_connector.getTailConnection().getControl().asShape();
             tail.setDragConstraints(tailConnectionHandler);
             m_HandlerRegistrationManager.register(tail.addNodeDragEndHandler(tailConnectionHandler));
-
-            final WiresControlPointHandler controlPointsHandler =
-                    m_wiresManager.getWiresHandlerFactory().newControlPointHandler(m_connector, m_wiresManager);
-
-            for (IControlHandle handle : m_connector.getPointHandles()) {
-                final Shape<?> shape = handle.getControl().asShape();
-                m_HandlerRegistrationManager.register(shape.addNodeMouseClickHandler(controlPointsHandler));
-                m_HandlerRegistrationManager.register(shape.addNodeMouseDoubleClickHandler(controlPointsHandler));
-                m_HandlerRegistrationManager.register(shape.addNodeDragStartHandler(controlPointsHandler));
-                m_HandlerRegistrationManager.register(shape.addNodeDragEndHandler(controlPointsHandler));
-                m_HandlerRegistrationManager.register(shape.addNodeDragMoveHandler(controlPointsHandler));
-            }
         }
     }
 
@@ -312,9 +316,8 @@ public class WiresConnectorControlImpl implements WiresConnectorControl {
         m_connector.destroyPointHandles();
     }
 
-    private final class ConnectionHandler implements DragConstraintEnforcer,
+    protected final class ConnectionHandler implements DragConstraintEnforcer,
                                                      NodeDragEndHandler {
-
         private final WiresConnectionControl connectionControl;
 
         private ConnectionHandler(final WiresConnectionControl connectionControl) {
