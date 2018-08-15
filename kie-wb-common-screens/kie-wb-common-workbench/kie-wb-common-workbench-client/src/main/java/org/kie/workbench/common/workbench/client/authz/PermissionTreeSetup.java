@@ -105,7 +105,6 @@ public class PermissionTreeSetup {
                                                    i18n.Apps());
 
         // Exclude some perspectives
-        perspectiveTreeProvider.excludePerspectiveId(AUTHORING); /* kie-wb-distributions */
         perspectiveTreeProvider.excludePerspectiveId("AuthoringPerspectiveNoContext"); /* kie-wb-distributions */
         perspectiveTreeProvider.excludePerspectiveId("FormDisplayPerspective"); /* jbpm-console-ng */
         perspectiveTreeProvider.excludePerspectiveId("Drools Tasks"); /* jbpm-console-ng */

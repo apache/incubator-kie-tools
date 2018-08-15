@@ -22,7 +22,6 @@ public interface PerspectiveIds {
     String SOCIAL_HOME = "SocialHomePagePerspective";
     String SOCIAL_USER_HOME = "UserHomePagePerspective";
     String SECURITY_MANAGEMENT = "SecurityManagementPerspective";
-    String AUTHORING = "AuthoringPerspective";
     String GUVNOR_M2REPO = "GuvnorM2RepoPerspective";
     String ADMINISTRATION = "AdministrationPerspective";
     String LIBRARY = "LibraryPerspective";

@@ -25,7 +25,6 @@
     <module>kie-wb-common-home</module>
     <module>kie-wb-common-java-editor</module>
     <module>kie-wb-common-server-ui</module>
-    <module>kie-wb-common-social-home-page</module>
     <module>kie-wb-common-contributors</module>
     <module>kie-wb-common-examples-screen</module>
     <module>kie-wb-common-workbench</module>

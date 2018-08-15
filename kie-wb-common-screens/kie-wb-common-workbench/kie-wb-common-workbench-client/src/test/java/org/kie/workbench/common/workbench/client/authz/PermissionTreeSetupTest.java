@@ -34,7 +34,6 @@ import static org.kie.workbench.common.workbench.client.EditorIds.XLS_SCORE_CARD
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.ADMIN;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.ADMINISTRATION;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.APPS;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.AUTHORING;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.CONTENT_MANAGEMENT;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.DATASET_AUTHORING;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.DATASOURCE_MANAGEMENT;
@@ -140,7 +139,6 @@ public class PermissionTreeSetupTest {
     public void testConfigureTree_ExcludedPerspectives() {
         tree.configureTree();
 
-        verify(perspectiveTreeProvider).excludePerspectiveId(eq(AUTHORING));
         verify(perspectiveTreeProvider).excludePerspectiveId(eq("AuthoringPerspectiveNoContext"));
         verify(perspectiveTreeProvider).excludePerspectiveId(eq("FormDisplayPerspective"));
         verify(perspectiveTreeProvider).excludePerspectiveId(eq("Drools Tasks"));
