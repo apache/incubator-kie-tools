@@ -63,7 +63,7 @@ public class KieMetadataTest {
 
     @After
     public void tearDown() {
-        if(tmpRoot!=null) {
+        if (tmpRoot != null) {
             TestUtil.rm(tmpRoot.toFile());
         }
         mavenRepo = null;
@@ -119,7 +119,6 @@ public class KieMetadataTest {
         KieModuleMetaData kieModuleMetaData = new KieModuleMetaDataImpl((InternalKieModule) kModule,
                                                                         res.getDependenciesAsURI());
         assertThat(kieModuleMetaData).isNotNull();
-
     }
 
     @Test

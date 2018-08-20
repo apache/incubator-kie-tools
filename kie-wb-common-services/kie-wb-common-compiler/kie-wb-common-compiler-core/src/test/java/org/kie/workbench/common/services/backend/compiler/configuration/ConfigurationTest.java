@@ -47,7 +47,6 @@ public class ConfigurationTest {
         assertThat(conf.keySet()).hasSize(14);
     }
 
-
     @Test
     public void loadPropertiesConfig() {
         ConfigurationStrategy strategy = new ConfigurationPropertiesStrategy();
@@ -174,5 +173,4 @@ public class ConfigurationTest {
         File fileObject = new File(url.toURI());
         return new FileOutputStream(fileObject);
     }
-
 }

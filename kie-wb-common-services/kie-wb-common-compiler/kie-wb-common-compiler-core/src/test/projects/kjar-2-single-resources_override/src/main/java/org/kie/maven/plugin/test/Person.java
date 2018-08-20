@@ -16,6 +16,7 @@
 package org.kie.maven.plugin.test;
 
 public class Person {
+
     private int id;
     private String name;
     private String surname;

@@ -9,5 +9,4 @@ public class Dummy implements Serializable {
     public Dummy(Integer age) {
         this.age = age;
     }
-
 }

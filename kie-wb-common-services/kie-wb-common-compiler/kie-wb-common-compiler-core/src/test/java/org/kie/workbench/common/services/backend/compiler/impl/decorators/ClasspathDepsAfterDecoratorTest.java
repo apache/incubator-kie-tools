@@ -45,8 +45,8 @@ public class ClasspathDepsAfterDecoratorTest extends BaseCompilerTest {
         CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
                                                                new String[]{
-                                                                        MavenCLIArgs.INSTALL,
-                                                                        MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath
+                                                                       MavenCLIArgs.INSTALL,
+                                                                       MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath
                                                                },
                                                                Boolean.FALSE);
 
@@ -63,8 +63,8 @@ public class ClasspathDepsAfterDecoratorTest extends BaseCompilerTest {
         CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                createdNewPrjInRepo("dummy-fail", ResourcesConstants.DUMMY_FAIL_DEPS_SIMPLE),
                                                                new String[]{
-                                                                        MavenCLIArgs.INSTALL,
-                                                                        MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath
+                                                                       MavenCLIArgs.INSTALL,
+                                                                       MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath
                                                                },
                                                                Boolean.FALSE);
 
@@ -75,5 +75,4 @@ public class ClasspathDepsAfterDecoratorTest extends BaseCompilerTest {
             softly.assertThat(res.getDependencies()).hasSize(0);
         });
     }
-
 }

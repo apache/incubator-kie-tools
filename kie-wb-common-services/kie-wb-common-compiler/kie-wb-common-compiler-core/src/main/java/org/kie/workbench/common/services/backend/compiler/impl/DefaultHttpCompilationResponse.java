@@ -42,7 +42,7 @@ public class DefaultHttpCompilationResponse implements HttpCompilationResponse,
 
     private List<String> projectDependencies = Collections.emptyList();
     private List<URI> projectDependenciesAsURI = Collections.emptyList();
-    private List<URL> projectDependenciesAsURL= Collections.emptyList();
+    private List<URL> projectDependenciesAsURL = Collections.emptyList();
 
     private List<String> targetContent = Collections.emptyList();
     private List<URI> targetContentAsURI = Collections.emptyList();
@@ -51,9 +51,9 @@ public class DefaultHttpCompilationResponse implements HttpCompilationResponse,
     public DefaultHttpCompilationResponse(KieCompilationResponse res) {
         this.successful = res.isSuccessful();
         this.mavenOutput = new ArrayList<>(res.getMavenOutput());
-        if(res.getWorkingDir().isPresent()){
+        if (res.getWorkingDir().isPresent()) {
             this.workingDir = res.getWorkingDir().get().toAbsolutePath().toString();
-        }else {
+        } else {
             this.workingDir = StringUtils.EMPTY;
         }
         this.targetContent = new ArrayList<>(res.getTargetContent());
@@ -76,7 +76,7 @@ public class DefaultHttpCompilationResponse implements HttpCompilationResponse,
         return Optional.ofNullable(workingDir);
     }
 
-    public List<String> getProjectDependencies(){
+    public List<String> getProjectDependencies() {
         return projectDependencies != null ? projectDependencies : Collections.emptyList();
     }
 

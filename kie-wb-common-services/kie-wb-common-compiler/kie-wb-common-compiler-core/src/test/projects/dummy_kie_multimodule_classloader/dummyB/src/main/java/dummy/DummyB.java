@@ -38,5 +38,4 @@ public class DummyB implements Serializable {
     public String greetings() {
         return "Hello World !";
     }
-
 }

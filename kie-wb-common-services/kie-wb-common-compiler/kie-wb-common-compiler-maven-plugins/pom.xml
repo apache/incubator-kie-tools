@@ -95,7 +95,7 @@
           <groupId>com.google.collections</groupId>
           <artifactId>google-collections</artifactId>
         </exclusion>
-       <exclusion>
+        <exclusion>
           <groupId>org.apache.maven.shared</groupId>
           <artifactId>maven-common-artifact-filters</artifactId>
         </exclusion>

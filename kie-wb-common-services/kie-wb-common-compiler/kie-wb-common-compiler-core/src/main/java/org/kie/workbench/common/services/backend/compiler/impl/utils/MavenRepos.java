@@ -17,5 +17,6 @@ package org.kie.workbench.common.services.backend.compiler.impl.utils;
 
 public enum MavenRepos {
 
-    LOCAL, GLOBAL
+    LOCAL,
+    GLOBAL
 }

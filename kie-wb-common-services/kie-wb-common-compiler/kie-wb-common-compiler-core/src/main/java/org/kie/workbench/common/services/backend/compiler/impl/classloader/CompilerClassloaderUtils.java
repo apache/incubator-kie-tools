@@ -62,6 +62,7 @@ import org.uberfire.java.nio.file.Paths;
 public class CompilerClassloaderUtils {
 
     protected static final Logger logger = LoggerFactory.getLogger(CompilerClassloaderUtils.class);
+
     private CompilerClassloaderUtils() {
     }
 

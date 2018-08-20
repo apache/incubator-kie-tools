@@ -17,10 +17,7 @@ package org.kie.workbench.common.services.backend.compiler;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.kie.workbench.common.services.backend.compiler.impl.WorkspaceCompilationInfo;
@@ -30,7 +27,7 @@ import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.Paths;
 
-public class BaseCompilerTest implements Serializable{
+public class BaseCompilerTest implements Serializable {
 
     protected static Path tmpRoot;
     protected String mavenRepo;
@@ -58,10 +55,11 @@ public class BaseCompilerTest implements Serializable{
         }
     }
 
-
     @AfterClass
     public static void tearDown() {
-        if(tmpRoot != null) {
+        System.clearProperty("org.uberfire.nio.git.daemon.enabled");
+        System.clearProperty("org.uberfire.nio.git.ssh.enabled");
+        if (tmpRoot != null) {
             TestUtil.rm(tmpRoot.toFile());
         }
     }

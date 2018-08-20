@@ -10,9 +10,11 @@ public class Dummy implements Serializable {
         this.name = name;
     }
 
-    public String getName(){return name;}
+    public String getName() {
+        return name;
+    }
 
-    public String toString(){
+    public String toString() {
         return "name:" + name + " \n";
     }
 }

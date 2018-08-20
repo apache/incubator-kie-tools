@@ -8,7 +8,6 @@ public class DummyFail implements Serializable {
 
     public Dummy(String name) {
         this.name = name;
-	syntax error
+        syntax error
     }
-
 }

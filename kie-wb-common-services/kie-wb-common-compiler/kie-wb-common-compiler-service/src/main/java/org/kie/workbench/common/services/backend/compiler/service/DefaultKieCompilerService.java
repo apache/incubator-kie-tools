@@ -26,6 +26,7 @@ import org.kie.workbench.common.services.backend.compiler.impl.kie.KieCompilatio
 import org.kie.workbench.common.services.backend.compiler.service.executors.DefaultLocalExecutor;
 import org.kie.workbench.common.services.backend.compiler.service.executors.DefaultRemoteExecutor;
 import org.uberfire.java.nio.file.Path;
+
 /**
  * Define the Default Implementation of a AppFormer Compiler Service
  */
@@ -35,12 +36,10 @@ public class DefaultKieCompilerService implements AFCompilerService {
     private DefaultLocalExecutor localExecutor;
     private DefaultRemoteExecutor remoteExecutor;
 
-    public DefaultKieCompilerService(){
+    public DefaultKieCompilerService() {
         localExecutor = new DefaultLocalExecutor(Executors.newCachedThreadPool());
         remoteExecutor = new DefaultRemoteExecutor(Executors.newCachedThreadPool());
     }
-
-
 
     /************************************ Suitable for the Local Builds ***********************************************/
 
@@ -90,7 +89,6 @@ public class DefaultKieCompilerService implements AFCompilerService {
     public CompletableFuture<KieCompilationResponse> build(String projectPath, String mavenRepo) {
         return remoteExecutor.build(projectPath, mavenRepo);
     }
-
 
     @Override
     public CompletableFuture<KieCompilationResponse> buildAndInstall(String projectPath, String mavenRepo) {

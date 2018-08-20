@@ -17,14 +17,12 @@ package org.kie.workbench.common.services.backend.maven.plugins.dependency;
 
 import java.io.File;
 import java.net.URLClassLoader;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.workbench.common.services.backend.compiler.AFCompiler;
 import org.kie.workbench.common.services.backend.compiler.CompilationRequest;
@@ -52,12 +50,19 @@ public class BuildInMemoryClasspathMojoTest {
     private static Logger logger = LoggerFactory.getLogger(BuildInMemoryClasspathMojoTest.class);
     private String alternateSettingsAbsPath;
 
+    @BeforeClass
+    public static void setup() {
+        System.setProperty("org.uberfire.nio.git.daemon.enabled", "false");
+        System.setProperty("org.uberfire.nio.git.ssh.enabled", "false");
+    }
+
     @Before
     public void setUp() throws Exception {
         mavenRepo = TestUtilMaven.getMavenRepo();
         tmpRoot = Files.createTempDirectory("repo");
         alternateSettingsAbsPath = TestUtilMaven.getSettingsFile();
     }
+
 
     @Test
     public void getClassloaderFromAllDependenciesSimpleTest(){
@@ -106,6 +111,8 @@ public class BuildInMemoryClasspathMojoTest {
 
     @AfterClass
     public static void tearDown() {
+        System.clearProperty("org.uberfire.nio.git.daemon.enabled");
+        System.clearProperty("org.uberfire.nio.git.ssh.enabled");
         if(tmpRoot!= null) {
             rm(tmpRoot.toFile());
         }

@@ -29,7 +29,6 @@ public interface CompilerExecutor {
 
     /************************************ Suitable for the Local Builds ***********************************************/
 
-
     /**
      * Run a mvn compile on the projectPath with mavenRepo specified, maven output provided in the CompilationResponse
      * a new CompilationRequest will be created at every invocation, useful if the project folder and maven repo changes
@@ -44,7 +43,6 @@ public interface CompilerExecutor {
      */
     CompletableFuture<KieCompilationResponse> build(Path projectPath, String mavenRepo, Map<Path, InputStream> override);
 
-
     /**
      * Run a mvn compile on the projectPath with mavenRepo specified, maven output provided in the CompilationResponse
      * a new CompilationRequest will be created at every invocation, useful if the project folder and maven repo changes
@@ -53,14 +51,12 @@ public interface CompilerExecutor {
     CompletableFuture<KieCompilationResponse> build(Path projectPath, String mavenRepo,
                                                     Boolean skipPrjDependenciesCreationList);
 
-
     /**
      * Run a mvn install on the projectPath, maven output provided in the CompilationResponse
      * a new CompilationRequest will be created at every invocation, useful if the project folder and maven repo changes
      * between compilation Requests
      */
     CompletableFuture<KieCompilationResponse> buildAndInstall(Path projectPath, String mavenRepo);
-
 
     /**
      * Run a mvn install on the projectPath, maven output provided in the CompilationResponse
@@ -70,14 +66,12 @@ public interface CompilerExecutor {
     CompletableFuture<KieCompilationResponse> buildAndInstall(Path projectPath, String mavenRepo,
                                                               Boolean skipPrjDependenciesCreationList);
 
-
     /**
      * Run a mvn {args}, maven output provided in the CompilationResponse
      * a new CompilationRequest will be created at every invocation, useful if the project folder, maven repo and
      * maven args changes between compilation Requests
      */
     CompletableFuture<KieCompilationResponse> buildSpecialized(Path projectPath, String mavenRepo, String[] args);
-
 
     /**
      * Run a mvn {args}, maven output provided in the CompilationResponse
@@ -87,7 +81,4 @@ public interface CompilerExecutor {
     CompletableFuture<KieCompilationResponse> buildSpecialized(Path projectPath,
                                                                String mavenRepo,
                                                                String[] args, Boolean skipPrjDependenciesCreationList);
-
-
-
 }

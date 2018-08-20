@@ -62,7 +62,7 @@ public class KieAfterDecoratorTest extends BaseCompilerTest {
 
         Map<Path, InputStream> override = new HashMap<>();
         Path path = Paths.get(tmpRoot + "/src/main/java/org/kie/maven/plugin/test/Person.java");
-        InputStream input = new FileInputStream(new File(ResourcesConstants.KJAR_2_SINGLE_RESOURCES_OVERRIDE+"/src/main/java/org/kie/maven/plugin/test/Person.java"));
+        InputStream input = new FileInputStream(new File(ResourcesConstants.KJAR_2_SINGLE_RESOURCES_OVERRIDE + "/src/main/java/org/kie/maven/plugin/test/Person.java"));
         override.put(path, input);
 
         CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
@@ -89,7 +89,7 @@ public class KieAfterDecoratorTest extends BaseCompilerTest {
 
         KieAfterDecorator decorator = new KieAfterDecorator(new BaseMavenCompiler());
         KieCompilationResponse kieRes = (KieCompilationResponse) decorator.compile(req);
-         SoftAssertions.assertSoftly(softly -> {
+        SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(kieRes.isSuccessful()).isTrue();
             softly.assertThat(kieRes.getMavenOutput()).isEmpty();
             softly.assertThat(kieRes.getKieModule()).isNotNull();
@@ -98,7 +98,7 @@ public class KieAfterDecoratorTest extends BaseCompilerTest {
     }
 
     @Test
-    public void compileWithFailedResponse() throws Exception{
+    public void compileWithFailedResponse() throws Exception {
         CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                createdNewPrjInRepo("kjar-2-fail", ResourcesConstants.KJAR_2_SINGLE_FAIL_RESOURCES),
                                                                new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},

@@ -31,7 +31,7 @@ public class MavenAPIUtil {
 
     public final static String TRUE = "true";
 
-    public static Plugin getPlugin(String groupdID, String artifactID, String version, Boolean extensions){
+    public static Plugin getPlugin(String groupdID, String artifactID, String version, Boolean extensions) {
         Plugin plugin = new Plugin();
         plugin.setGroupId(groupdID);
         plugin.setArtifactId(artifactID);
@@ -40,7 +40,7 @@ public class MavenAPIUtil {
         return plugin;
     }
 
-    public static Plugin getPlugin(String groupdID, String artifactID, String version){
+    public static Plugin getPlugin(String groupdID, String artifactID, String version) {
         Plugin plugin = new Plugin();
         plugin.setGroupId(groupdID);
         plugin.setArtifactId(artifactID);

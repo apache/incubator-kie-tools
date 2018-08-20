@@ -93,9 +93,9 @@ public class BaseMavenCompiler<T extends CompilationResponse> implements AFCompi
 
         Thread.currentThread().setContextClassLoader(original);
         if (exitCode == 0) {
-            return (T) new DefaultKieCompilationResponse(Boolean.TRUE);
+            return (T) new DefaultKieCompilationResponse(Boolean.TRUE, req.getRequestUUID());
         } else {
-            return (T) new DefaultKieCompilationResponse(Boolean.FALSE);
+            return (T) new DefaultKieCompilationResponse(Boolean.FALSE, req.getRequestUUID());
         }
     }
 
@@ -110,7 +110,7 @@ public class BaseMavenCompiler<T extends CompilationResponse> implements AFCompi
             try {
                 boolean isChanged = Files.exists(path);
                 backup.add(new BackupItem(path, isChanged ? Files.readAllBytes(path) : null, isChanged));
-                if(!Files.exists(path.getParent())){
+                if (!Files.exists(path.getParent())) {
                     Files.createDirectories(path.getParent());
                 }
                 Files.write(path, readAllBytes(input), StandardOpenOption.CREATE,

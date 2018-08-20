@@ -15,8 +15,6 @@
  */
 package org.kie.workbench.common.services.backend.compiler.impl.kie;
 
-
-
 import org.kie.workbench.common.services.backend.compiler.AFCompiler;
 import org.kie.workbench.common.services.backend.compiler.CompilationResponse;
 import org.kie.workbench.common.services.backend.compiler.configuration.KieDecorator;
@@ -100,7 +98,6 @@ public class KieMavenCompilerFactory {
                                         new ClasspathDepsAfterDecorator(
                                                 new BaseMavenCompiler()))));
                 break;
-
 
             default:
                 compiler = new BaseMavenCompiler();

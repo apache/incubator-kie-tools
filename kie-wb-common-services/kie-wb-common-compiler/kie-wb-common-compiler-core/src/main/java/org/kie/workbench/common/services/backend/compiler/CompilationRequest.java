@@ -57,7 +57,7 @@ public interface CompilationRequest {
     Map<String, Object> getMap();
 
     /**
-     *  This contains the identifier used in all objects related to this build
+     * This contains the identifier used in all objects related to this build
      * @return the unique identifier for this build
      */
     String getRequestUUID();

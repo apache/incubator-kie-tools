@@ -64,35 +64,18 @@ public class DefaultMavenCompilerTest {
     private FileSystemTestingUtils fileSystemTestingUtils = new FileSystemTestingUtils();
     private IOService ioService;
     private String mavenRepo;
-    private static int gitDaemonPort;
 
-    public static int findFreePort() {
-        int port = 0;
-        try {
-            ServerSocket server = new ServerSocket(0);
-            port = server.getLocalPort();
-            server.close();
-        } catch (IOException e) {
-            Assert.fail("Can't find free port!");
-        }
-        logger.debug("Found free port " + port);
-        return port;
-    }
 
     @BeforeClass
     public static void setupSystemProperties() {
-        String gitPort = System.getProperty("org.uberfire.nio.git.daemon.port");
-        if(gitPort!= null) {
-            gitDaemonPort = Integer.valueOf(gitPort);
-        }
-        int freePort = findFreePort();
+        int freePort = TestUtilGit.findFreePort();
         System.setProperty("org.uberfire.nio.git.daemon.port", String.valueOf(freePort));
-        logger.info("Git port used:{}",freePort);
+        logger.info("Git port used:{}", freePort);
     }
 
     @AfterClass
     public static void tearDownClass() {
-        System.setProperty("org.uberfire.nio.git.daemon.port", String.valueOf(gitDaemonPort));
+        System.clearProperty("org.uberfire.nio.git.daemon.port");
     }
 
     @Rule
@@ -102,7 +85,6 @@ public class DefaultMavenCompilerTest {
     public void setUp() throws Exception {
         fileSystemTestingUtils.setup();
         ioService = fileSystemTestingUtils.getIoService();
-
         mavenRepo = TestUtilMaven.getMavenRepo();
     }
 
@@ -412,10 +394,10 @@ public class DefaultMavenCompilerTest {
         String pomAsAstring = new String(encoded,
                                          StandardCharsets.UTF_8);
         assertThat(pomAsAstring).doesNotContain("<artifactId>kie-takari-lifecycle-plugin</artifactId>")
-                                .doesNotContain("<packaging>kjar</packaging>")
-                                .doesNotContain("<compilerId>jdt</compilerId>")
-                                .doesNotContain("<source>1.8</source>")
-                                .doesNotContain("<target>1.8</target>");
+                .doesNotContain("<packaging>kjar</packaging>")
+                .doesNotContain("<compilerId>jdt</compilerId>")
+                .doesNotContain("<source>1.8</source>")
+                .doesNotContain("<target>1.8</target>");
 
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(tmp);
         CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
@@ -430,8 +412,8 @@ public class DefaultMavenCompilerTest {
                                   StandardCharsets.UTF_8);
 
         assertThat(pomAsAstring).contains("<compilerId>jdt</compilerId>")
-                                .contains("<source>1.8</source>")
-                                .contains("<target>1.8</target>");
+                .contains("<source>1.8</source>")
+                .contains("<target>1.8</target>");
 
         TestUtil.rm(tmpRoot.toFile());
     }

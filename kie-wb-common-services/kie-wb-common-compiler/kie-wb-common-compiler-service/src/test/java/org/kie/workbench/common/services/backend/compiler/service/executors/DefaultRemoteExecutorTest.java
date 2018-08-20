@@ -40,7 +40,7 @@ public class DefaultRemoteExecutorTest extends BaseCompilerTest {
 
         DefaultRemoteExecutor executor = new DefaultRemoteExecutor(executorService);
         CompletableFuture<KieCompilationResponse> futureRes = executor.build(tmpRoot.toAbsolutePath().toString(),
-                                                                             mavenRepo.toString());
+                                                                             mavenRepo);
         KieCompilationResponse res = futureRes.get();
         assertThat(res.isSuccessful()).isFalse();
     }
@@ -49,7 +49,7 @@ public class DefaultRemoteExecutorTest extends BaseCompilerTest {
     public void buildAndSkipDepsNonExistentProject() throws Exception{
         DefaultRemoteExecutor executor = new DefaultRemoteExecutor(executorService);
         CompletableFuture<KieCompilationResponse> futureRes = executor.build(tmpRoot.toAbsolutePath().toString(),
-                                                                             mavenRepo.toString(),
+                                                                             mavenRepo,
                                                                              Boolean.FALSE);
         KieCompilationResponse res = futureRes.get();
         assertThat(res.isSuccessful()).isFalse();
@@ -59,7 +59,7 @@ public class DefaultRemoteExecutorTest extends BaseCompilerTest {
     @Test
     public void buildAndInstallNonExistentProject() throws Exception{
         DefaultRemoteExecutor executor = new DefaultRemoteExecutor(executorService);
-        CompletableFuture<KieCompilationResponse> futureRes = executor.buildAndInstall(tmpRoot.toAbsolutePath().toString(), mavenRepo.toString());
+        CompletableFuture<KieCompilationResponse> futureRes = executor.buildAndInstall(tmpRoot.toAbsolutePath().toString(), mavenRepo);
         KieCompilationResponse res = futureRes.get();
         assertThat(res.isSuccessful()).isFalse();
     }
@@ -68,7 +68,7 @@ public class DefaultRemoteExecutorTest extends BaseCompilerTest {
     public void buildAndInstallSkipDepsNonExistentProject() throws Exception{
         DefaultRemoteExecutor executor = new DefaultRemoteExecutor(executorService);
         CompletableFuture<KieCompilationResponse> futureRes = executor.buildAndInstall(tmpRoot.toAbsolutePath().toString(),
-                                                                                       mavenRepo.toString(),
+                                                                                       mavenRepo,
                                                                                        Boolean.FALSE);
         KieCompilationResponse res = futureRes.get();
         assertThat(res.isSuccessful()).isFalse();
@@ -79,7 +79,7 @@ public class DefaultRemoteExecutorTest extends BaseCompilerTest {
     public void buildExistentProject() throws Exception{
         DefaultRemoteExecutor executor = new DefaultRemoteExecutor(executorService);
         CompletableFuture<KieCompilationResponse> futureRes = executor.build(Paths.get(tmpRoot.toAbsolutePath()+"/dummy").toAbsolutePath().toString(),
-                                                                             mavenRepo.toString());
+                                                                             mavenRepo);
         KieCompilationResponse res = futureRes.get();
         assertThat(res.isSuccessful()).isTrue();
     }
@@ -90,7 +90,7 @@ public class DefaultRemoteExecutorTest extends BaseCompilerTest {
     public void buildAndInstallExistentProject() throws Exception{
         DefaultRemoteExecutor executor = new DefaultRemoteExecutor(executorService);
         CompletableFuture<KieCompilationResponse> futureRes = executor.buildAndInstall(Paths.get(tmpRoot.toAbsolutePath()+"/dummy").toAbsolutePath().toString(),
-                                                                                       mavenRepo.toString());
+                                                                                       mavenRepo);
         KieCompilationResponse res = futureRes.get();
         assertThat(res.isSuccessful()).isTrue();
         assertThat(res.getDependencies()).isNotEmpty();
@@ -101,7 +101,7 @@ public class DefaultRemoteExecutorTest extends BaseCompilerTest {
     public void buildAndInstallSkipDepsExistentProject() throws Exception{
         DefaultRemoteExecutor executor = new DefaultRemoteExecutor(executorService);
         CompletableFuture<KieCompilationResponse> futureRes = executor.buildAndInstall(Paths.get(tmpRoot.toAbsolutePath()+"/dummy").toAbsolutePath().toString(),
-                                                                                       mavenRepo.toString(),
+                                                                                       mavenRepo,
                                                                                        Boolean.TRUE);
         KieCompilationResponse res = futureRes.get();
         assertThat(res.isSuccessful()).isTrue();
@@ -112,7 +112,7 @@ public class DefaultRemoteExecutorTest extends BaseCompilerTest {
     public void buildSpecializedNonExistentProject() throws Exception{
         DefaultRemoteExecutor executor = new DefaultRemoteExecutor(executorService);
         CompletableFuture<KieCompilationResponse> futureRes = executor.buildSpecialized(tmpRoot.toAbsolutePath().toString(),
-                                                                                        mavenRepo.toString(),
+                                                                                        mavenRepo,
                                                                                         new String[]{MavenCLIArgs.COMPILE});
         KieCompilationResponse res = futureRes.get();
         assertThat(res.isSuccessful()).isFalse();
@@ -122,7 +122,7 @@ public class DefaultRemoteExecutorTest extends BaseCompilerTest {
     public void buildSpecializedSkipDepsExistentProject() throws Exception{
         DefaultRemoteExecutor executor = new DefaultRemoteExecutor(executorService);
         CompletableFuture<KieCompilationResponse> futureRes = executor.buildSpecialized(Paths.get(tmpRoot.toAbsolutePath()+"/dummy").toAbsolutePath().toString(),
-                                                                                        mavenRepo.toString(),
+                                                                                        mavenRepo,
                                                                                         new String[]{MavenCLIArgs.COMPILE},
                                                                                         Boolean.TRUE);
         KieCompilationResponse res = futureRes.get();
@@ -133,7 +133,7 @@ public class DefaultRemoteExecutorTest extends BaseCompilerTest {
     public void buildSpecializedSkipDepsNonExistentProject() throws Exception{
         DefaultRemoteExecutor executor = new DefaultRemoteExecutor(executorService);
         CompletableFuture<KieCompilationResponse> futureRes = executor.buildSpecialized(tmpRoot.toAbsolutePath().toString(),
-                                                                                        mavenRepo.toString(),
+                                                                                        mavenRepo,
                                                                                         new String[]{MavenCLIArgs.COMPILE},
                                                                                         Boolean.TRUE);
         KieCompilationResponse res = futureRes.get();

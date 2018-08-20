@@ -49,7 +49,7 @@ public class OutputSharedMap {
         }
     }
 
-    public static void purgeAll(){
+    public static void purgeAll() {
         map.clear();
     }
 }

@@ -8,7 +8,7 @@
     <artifactId>kie-wb-common-services</artifactId>
     <version>7.11.0-SNAPSHOT</version>
   </parent>
-  
+
   <artifactId>kie-wb-common-compiler</artifactId>
   <packaging>pom</packaging>
 
@@ -20,12 +20,16 @@
   </properties>
 
   <modules>
-    <module>kie-wb-common-compiler-testing</module>
+    <module>kie-wb-common-compiler-testutil</module>
     <module>kie-wb-common-compiler-maven-plugins</module>
+    <module>kie-wb-common-compiler-offprocess-classpath</module>
     <module>kie-wb-common-compiler-core</module>
-    <module>kie-wb-common-compiler-maven-plugins-testing</module>
     <module>kie-wb-common-compiler-service</module>
+    <module>kie-wb-common-compiler-offprocess-core</module>
+    <module>kie-wb-common-compiler-offprocess-service</module>
     <module>kie-wb-common-compiler-distribution</module>
+    <module>kie-wb-common-compiler-maven-plugins-testing</module>
+    <module>kie-wb-common-compiler-offprocess-testing</module>
   </modules>
 
 </project>

@@ -518,7 +518,7 @@
 
     <!-- End incremental compiler -->
 
-   <!-- Runtime for maven in memory classpath plugin -->
+    <!-- Runtime for maven in memory classpath plugin -->
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-io</artifactId>

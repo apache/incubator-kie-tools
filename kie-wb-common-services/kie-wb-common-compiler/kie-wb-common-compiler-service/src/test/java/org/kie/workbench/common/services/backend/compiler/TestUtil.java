@@ -35,13 +35,11 @@ public class TestUtil {
     }
 
     public static void rm(File f) {
-        try{
+        try {
             FileUtils.deleteDirectory(f);
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error("Couldn't delete file {}", f);
             logger.error(e.getMessage(), e);
         }
     }
-
-
 }

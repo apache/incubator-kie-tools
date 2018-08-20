@@ -109,7 +109,8 @@ public class KieAfterDecorator<T extends CompilationResponse, C extends AFCompil
                                                      targetContent,
                                                      res.getDependencies(),
                                                      req.getInfo().getPrjPath(),
-                                                     events);
+                                                     events,
+                                                     req.getRequestUUID());
         } else {
             List<String> msgs = new ArrayList<>();
             if (kieModuleMetaInfoTuple.getErrorMsg().isPresent()) {
@@ -119,7 +120,7 @@ public class KieAfterDecorator<T extends CompilationResponse, C extends AFCompil
                 msgs.add("[ERROR] Error in the kieModule :" + kieModuleTuple.getErrorMsg().get());
             }
             msgs.addAll(res.getMavenOutput());
-            return new DefaultKieCompilationResponse(Boolean.FALSE, msgs, req.getInfo().getPrjPath());
+            return new DefaultKieCompilationResponse(Boolean.FALSE, msgs, req.getInfo().getPrjPath(), req.getRequestUUID());
         }
     }
 
@@ -136,9 +137,17 @@ public class KieAfterDecorator<T extends CompilationResponse, C extends AFCompil
 
         final List<String> targetContent = getStringFromTargets(req.getInfo().getPrjPath());
         if (res.isSuccessful()) {
-            return new DefaultKieCompilationResponse(res.isSuccessful(), res.getMavenOutput(), targetContent, res.getDependencies(), req.getInfo().getPrjPath());
+            return new DefaultKieCompilationResponse(res.isSuccessful(),
+                                                     res.getMavenOutput(),
+                                                     targetContent,
+                                                     res.getDependencies(),
+                                                     req.getInfo().getPrjPath(),
+                                                     req.getRequestUUID());
         } else {
-            return new DefaultKieCompilationResponse(res.isSuccessful(), res.getMavenOutput(), req.getInfo().getPrjPath());
+            return new DefaultKieCompilationResponse(res.isSuccessful(),
+                                                     res.getMavenOutput(),
+                                                     req.getInfo().getPrjPath(),
+                                                     req.getRequestUUID());
         }
     }
 
@@ -200,5 +209,4 @@ public class KieAfterDecorator<T extends CompilationResponse, C extends AFCompil
             }
         }
     }
-
 }

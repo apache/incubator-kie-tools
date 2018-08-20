@@ -44,7 +44,7 @@ public class DefaultCompilationRequest implements CompilationRequest {
     public DefaultCompilationRequest(String mavenRepo,
                                      WorkspaceCompilationInfo info,
                                      String[] args) {
-        this(mavenRepo,info, args, UUID.randomUUID().toString());
+        this(mavenRepo, info, args, UUID.randomUUID().toString());
     }
 
     /***
@@ -111,7 +111,7 @@ public class DefaultCompilationRequest implements CompilationRequest {
                                      String[] args,
                                      Boolean skipPrjDependenciesCreationList,
                                      boolean restoreOverride) {
-        this(mavenRepo,info,args, skipPrjDependenciesCreationList, restoreOverride, UUID.randomUUID().toString());
+        this(mavenRepo, info, args, skipPrjDependenciesCreationList, restoreOverride, UUID.randomUUID().toString());
     }
 
     @Override

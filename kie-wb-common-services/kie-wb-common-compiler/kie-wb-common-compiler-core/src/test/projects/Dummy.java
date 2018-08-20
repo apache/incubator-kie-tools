@@ -18,9 +18,11 @@ public class Dummy {
         return surname;
     }
 
-    public int getAge(){return age;}
+    public int getAge() {
+        return age;
+    }
 
-    public String toString(){
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("name:").append(name).append(" surname:").append(surname).append(" age:").append(age);
         return sb.toString();

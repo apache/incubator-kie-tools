@@ -21,11 +21,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.rules.TestName;
 import org.kie.workbench.common.services.backend.compiler.CompilationResponse;
 import org.slf4j.Logger;
@@ -45,9 +43,9 @@ public class TestUtil {
     }
 
     public static void rm(File f) {
-        try{
+        try {
             FileUtils.deleteDirectory(f);
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error("Couldn't delete file {}", f);
             logger.error(e.getMessage(), e);
         }
@@ -68,7 +66,6 @@ public class TestUtil {
     public static void writeMavenOutputIntoTargetFolder(final File tmp,
                                                         final List<String> mavenOutput,
                                                         final String testName) throws Exception {
-        //File dir = tmp.toAbsolutePath().toFile();
         File target = new File(tmp.toString() + "/target/");
         if (!target.exists()) {
             logger.info("Creating target folder");
@@ -96,14 +93,14 @@ public class TestUtil {
         //end NIO
     }
 
-    public static void saveMavenLogIfCompilationResponseNotSuccessfull(Path tmp, CompilationResponse response, Class<?> testClass, TestName testName) throws Exception{
+    public static void saveMavenLogIfCompilationResponseNotSuccessfull(Path tmp, CompilationResponse response, Class<?> testClass, TestName testName) throws Exception {
         String logName = testClass.getSimpleName() + "." + testName.getMethodName();
         if (!response.isSuccessful()) {
             TestUtil.writeMavenOutputIntoTargetFolder(tmp, response.getMavenOutput(), logName);
         }
     }
 
-    public static void saveMavenLogIfCompilationResponseNotSuccessfull(java.nio.file.Path tmp, CompilationResponse response, Class<?> testClass, TestName testName) throws Exception{
+    public static void saveMavenLogIfCompilationResponseNotSuccessfull(java.nio.file.Path tmp, CompilationResponse response, Class<?> testClass, TestName testName) throws Exception {
         String logName = testClass.getSimpleName() + "." + testName.getMethodName();
         if (!response.isSuccessful()) {
             TestUtil.writeMavenOutputIntoTargetFolder(tmp, response.getMavenOutput(), logName);

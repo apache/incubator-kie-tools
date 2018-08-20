@@ -23,5 +23,4 @@ public class TestConstants {
     public static final String KIE_TAKARI_LIFECYCLE_ARTIFACT = "<artifactId>takari-lifecycle-plugin</artifactId>";
 
     public static final String MAVEN_ARTIFACT = "<artifactId>maven-compiler-plugin</artifactId>";
-
 }

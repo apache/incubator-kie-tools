@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.eclipse.jgit.api.Git;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -66,6 +67,12 @@ public class JGITCompilerBeforeDecoratorTest {
                            "false");
         System.setProperty("org.uberfire.sys.repo.monitor.disabled",
                            "true");
+    }
+
+    @AfterClass
+    public static void restoreSystemProperties() {
+        System.clearProperty("org.uberfire.nio.git.daemon.enabled");
+        System.clearProperty("org.uberfire.nio.git.ssh.enabled");
     }
 
     @Before

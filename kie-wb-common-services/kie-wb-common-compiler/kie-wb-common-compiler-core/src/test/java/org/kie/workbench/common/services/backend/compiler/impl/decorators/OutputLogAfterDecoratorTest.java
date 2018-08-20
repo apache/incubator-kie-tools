@@ -65,7 +65,7 @@ public class OutputLogAfterDecoratorTest extends BaseCompilerTest {
 
         Map<Path, InputStream> override = new HashMap<>();
         org.uberfire.java.nio.file.Path path = org.uberfire.java.nio.file.Paths.get(tmpRoot + "/src/main/java/dummy/DummyOverride.java");
-        InputStream input = new FileInputStream(new File(ResourcesConstants.DUMMY_OVERRIDE+"/src/main/java/dummy/DummyOverride.java"));
+        InputStream input = new FileInputStream(new File(ResourcesConstants.DUMMY_OVERRIDE + "/src/main/java/dummy/DummyOverride.java"));
         override.put(path, input);
 
         CompilationRequest req = new DefaultCompilationRequest(mavenRepo,

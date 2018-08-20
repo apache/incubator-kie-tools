@@ -44,14 +44,14 @@ public class DefaultIncrementalCompilerEnabler implements IncrementalCompilerEna
     public DefaultIncrementalCompilerEnabler() {
         ConfigurationContextProvider confProvider = new ConfigurationContextProvider();
         isValidConfiguration = confProvider.isValid();
-        if(isValidConfiguration){
+        if (isValidConfiguration) {
             editor = new DefaultPomEditor(new HashSet<>(), confProvider);
         }
     }
 
     @Override
     public ProcessedPoms process(final CompilationRequest req) {
-        if(!isValidConfiguration){
+        if (!isValidConfiguration) {
             return new ProcessedPoms(Boolean.FALSE, Collections.emptyList());
         }
         Path mainPom = Paths.get(URI.create(FILE_URI + req.getKieCliRequest().getWorkingDirectory() + "/" + POM_NAME));
@@ -67,7 +67,7 @@ public class DefaultIncrementalCompilerEnabler implements IncrementalCompilerEna
             boolean result = false;
             if (pomsList.size() > 0) {
                 result = processFoundPoms(pomsList,
-                                 req);
+                                          req);
             }
             return new ProcessedPoms(result,
                                      pomsList);
@@ -78,7 +78,7 @@ public class DefaultIncrementalCompilerEnabler implements IncrementalCompilerEna
     }
 
     private boolean processFoundPoms(List<String> poms,
-                                  CompilationRequest request) {
+                                     CompilationRequest request) {
 
         boolean result = true;
         for (String pom : poms) {

@@ -107,7 +107,7 @@ public class MavenUtils {
     public static String getMavenRepoDir(MavenRepos repo) {
         String repository;
         Aether defaultAether = Aether.getAether();
-        switch (repo){
+        switch (repo) {
             case LOCAL:
                 repository = defaultAether.getLocalRepository().getUrl();
                 break;
@@ -118,37 +118,37 @@ public class MavenUtils {
                 repository = getTempRepo();
         }
 
-        if(repository == null || repository.isEmpty()){
+        if (repository == null || repository.isEmpty()) {
             repository = getTempRepo();
         }
-        if(!Files.exists(Paths.get(repository))){
+        if (!Files.exists(Paths.get(repository))) {
             Files.createDirectories(Paths.get(repository));
         }
 
         return repository;
     }
 
-    private static String getTempRepo(){
+    private static String getTempRepo() {
         String tempDir = System.getProperty("java.io.tmpdir");
         StringBuffer sb = new StringBuffer();
         sb.append(tempDir).append(tempDir.endsWith(CommonConstants.SEPARATOR) ? "" : CommonConstants.SEPARATOR).append("maven/repository/");
         return sb.toString();
     }
 
-    private static String getGlobalRepo(Collection<RemoteRepository> remoteRepos){
+    private static String getGlobalRepo(Collection<RemoteRepository> remoteRepos) {
         String mavenRepo = "";
-        for(RemoteRepository item : remoteRepos){
-            if(item.getId().startsWith(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME)){
+        for (RemoteRepository item : remoteRepos) {
+            if (item.getId().startsWith(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME)) {
                 mavenRepo = item.getUrl();
                 break;
             }
         }
-        if(mavenRepo.isEmpty()){
-            String envVar =  System.getProperty(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME);
-            if(envVar!= null){
+        if (mavenRepo.isEmpty()) {
+            String envVar = System.getProperty(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME);
+            if (envVar != null) {
                 mavenRepo = envVar;
             }
         }
-        return  mavenRepo;
+        return mavenRepo;
     }
 }

@@ -62,7 +62,7 @@ public class KieClassLoaderProviderTest {
     }
 
     @After
-    public void clean() throws Exception{
+    public void clean() throws Exception {
         if (tmpRoot != null) {
             TestUtil.rm(tmpRoot.toFile());
         }
@@ -102,7 +102,7 @@ public class KieClassLoaderProviderTest {
     @Test
     public void loadProjectClassloaderFromStringTest() throws Exception {
         //we use NIO for this part of the test because Uberfire lack the implementation to copy a tree
-        CompilationResponse res =  compileProjectInRepo(MavenCLIArgs.CLEAN, MavenCLIArgs.COMPILE, MavenCLIArgs.INSTALL);
+        CompilationResponse res = compileProjectInRepo(MavenCLIArgs.CLEAN, MavenCLIArgs.COMPILE, MavenCLIArgs.INSTALL);
         TestUtil.saveMavenLogIfCompilationResponseNotSuccessfull(tmp, res, this.getClass(), testName);
         assertThat(res.isSuccessful()).isTrue();
 
@@ -116,7 +116,7 @@ public class KieClassLoaderProviderTest {
     @Test
     public void loadTargetFolderClassloaderTest() throws Exception {
         //we use NIO for this part of the test because Uberfire lack the implementation to copy a tree
-        CompilationResponse res =  compileProjectInRepo(MavenCLIArgs.COMPILE);
+        CompilationResponse res = compileProjectInRepo(MavenCLIArgs.COMPILE);
         TestUtil.saveMavenLogIfCompilationResponseNotSuccessfull(tmp, res, this.getClass(), testName);
         assertThat(res.isSuccessful()).isTrue();
 

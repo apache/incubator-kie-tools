@@ -157,7 +157,7 @@ public class ConcurrentBuildTest {
     }
 
     private KieCompilationResponse compileAndloadKieJarSingleMetadataWithPackagedJar() {
-        String alternateSettingsAbsPath = TestUtilMaven.getSettingsFile();;
+        String alternateSettingsAbsPath = TestUtilMaven.getSettingsFile();
         Path tmpRoot = Files.createTempDirectory("repo_" + UUID.randomUUID().toString());
         Path tmp = Files.createDirectories(Paths.get(tmpRoot.toString(), "dummy"));
         try {
@@ -192,7 +192,7 @@ public class ConcurrentBuildTest {
     }
 
     private KieCompilationResponse compileAndLoadKieJarMetadataAllResourcesPackagedJar() {
-        String alternateSettingsAbsPath = TestUtilMaven.getSettingsFile();;
+        String alternateSettingsAbsPath = TestUtilMaven.getSettingsFile();
         Path tmpRoot = Files.createTempDirectory("repo_" + UUID.randomUUID().toString());
         Path tmp = Files.createDirectories(Paths.get(tmpRoot.toString(), "dummy"));
         try {

@@ -27,6 +27,7 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MavenParameterTest {
+
     @Test
     public void cliParameters() {
         String settingsXml = "src/test/settings.xml";

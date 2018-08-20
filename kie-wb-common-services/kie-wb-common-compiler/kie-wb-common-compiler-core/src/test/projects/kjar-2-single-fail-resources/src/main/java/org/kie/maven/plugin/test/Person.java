@@ -16,13 +16,14 @@
 package org.kie.maven.plugin.test;
 
 public class Person {
+
     private int id;
     private String name;
     private boolean adult;
 
     public Person(int id) {
         this.id = id;
-	syntax error
+        syntax error
     }
 
     public int getId() {

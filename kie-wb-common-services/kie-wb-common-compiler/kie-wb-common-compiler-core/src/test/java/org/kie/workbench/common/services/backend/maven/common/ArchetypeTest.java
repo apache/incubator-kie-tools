@@ -58,11 +58,9 @@ public class ArchetypeTest {
         }
     }
 
-
     @Test
     public void testArchetypeGenerate() throws Exception {
         Path tmpRoot = Files.createTempDirectory("repo");
-
 
         Path tmp = Paths.get(tmpRoot.toAbsolutePath().toString());
         assertThat(isDirEmpty(tmpRoot)).isTrue();
@@ -89,22 +87,20 @@ public class ArchetypeTest {
         Path prj = Paths.get(tmpRoot.toAbsolutePath().toString(), artifactId);
         assertThat(isDirEmpty(prj)).isFalse();
 
-        Path appDir = Paths.get(prj.toAbsolutePath().toString(), "/src/main/java/"+ (groupId.replace(".", "/")));
+        Path appDir = Paths.get(prj.toAbsolutePath().toString(), "/src/main/java/" + (groupId.replace(".", "/")));
         assertThat(isDirEmpty(appDir)).isFalse();
 
         Path testDir = Paths.get(prj.toAbsolutePath().toString(), "/src/test/java/" + (groupId.replace(".", "/")));
         assertThat(isDirEmpty(testDir)).isFalse();
 
-        Path pom = Paths.get(tmpRoot.toAbsolutePath().toString(), artifactId+ "/pom.xml");
+        Path pom = Paths.get(tmpRoot.toAbsolutePath().toString(), artifactId + "/pom.xml");
         assertThat(Files.exists(pom)).isTrue();
 
         TestUtil.rm(tmpRoot.toFile());
-
     }
 
-
     private boolean isDirEmpty(final Path directory) {
-        try(DirectoryStream<Path> dirStream = Files.newDirectoryStream(directory)) {
+        try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(directory)) {
             return !dirStream.iterator().hasNext();
         }
     }

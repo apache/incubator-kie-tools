@@ -18,6 +18,7 @@ package org.kie.workbench.common.services.backend.compiler;
 import java.io.IOException;
 
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.kie.workbench.common.services.backend.compiler.configuration.KieDecorator;
@@ -37,11 +38,26 @@ public class BaseCompilerTest {
 
     protected static Path tmpRoot;
     protected String mavenRepo;
-    protected Logger logger = LoggerFactory.getLogger(BaseCompilerTest.class);
+    protected static Logger logger = LoggerFactory.getLogger(BaseCompilerTest.class);
     protected String alternateSettingsAbsPath;
     protected WorkspaceCompilationInfo info;
     protected AFCompiler compiler;
     protected KieCompilationResponse res;
+
+    @BeforeClass
+    public static void setupSystemProperties() {
+        int freePort = TestUtilGit.findFreePort();
+        System.setProperty("org.uberfire.nio.git.daemon.port", String.valueOf(freePort));
+        logger.info("Git port used:{}", freePort);
+    }
+
+    @AfterClass
+    public static void tearDown() {
+        System.clearProperty("org.uberfire.nio.git.daemon.port");
+        if (tmpRoot != null) {
+            TestUtil.rm(tmpRoot.toFile());
+        }
+    }
 
     @Rule
     public TestName testName = new TestName();
@@ -78,10 +94,5 @@ public class BaseCompilerTest {
         return new WorkspaceCompilationInfo(Paths.get(tmp.toUri()));
     }
 
-    @AfterClass
-    public static void tearDown() {
-        if(tmpRoot!= null) {
-            TestUtil.rm(tmpRoot.toFile());
-        }
-    }
+
 }

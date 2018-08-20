@@ -51,9 +51,9 @@ public class LoadProjectDependencyUtil {
             assertThat(obj.toString()).startsWith("dummy.DummyB");
 
             Method m = clazz.getMethod("greetings",
-                    new Class[]{});
+                                       new Class[]{});
             Object greeting = m.invoke(obj,
-                    new Object[]{});
+                                       new Object[]{});
             assertThat(greeting.toString()).isEqualTo("Hello World !");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

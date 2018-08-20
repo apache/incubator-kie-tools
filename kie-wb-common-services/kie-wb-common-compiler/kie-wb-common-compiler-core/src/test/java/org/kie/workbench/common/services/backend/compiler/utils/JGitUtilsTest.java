@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import org.eclipse.jgit.api.Git;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -58,6 +59,12 @@ public class JGitUtilsTest {
                            "true");
     }
 
+    @AfterClass
+    public static void restoreSystemProperties() {
+        System.clearProperty("org.uberfire.nio.git.daemon.enabled");
+        System.clearProperty("org.uberfire.nio.git.ssh.enabled");
+    }
+
     @Before
     public void setUp() throws Exception {
         fileSystemTestingUtils.setup();
@@ -79,7 +86,6 @@ public class JGitUtilsTest {
         fileSystemTestingUtils.cleanup();
         TestUtil.rm(new File("src/../.security/"));
     }
-
 
     @Test
     public void tempCloneTest() throws Exception {

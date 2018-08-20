@@ -9,5 +9,4 @@ public class DummyOverride implements Serializable {
     public DummyOverride(String surname) {
         this.surname = surname;
     }
-
 }

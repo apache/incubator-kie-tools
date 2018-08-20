@@ -15,13 +15,10 @@
  */
 package org.kie.workbench.common.services.backend.compiler;
 
-import java.io.File;
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.kie.workbench.common.services.backend.compiler.impl.WorkspaceCompilationInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,9 +30,15 @@ public class BaseCompilerTest implements Serializable {
 
     protected static Path tmpRoot;
     protected String mavenRepo;
-    protected static Logger logger = LoggerFactory.getLogger(BaseCompilerTest.class);
+    protected Logger logger = LoggerFactory.getLogger(BaseCompilerTest.class);
     protected String alternateSettingsAbsPath;
     protected WorkspaceCompilationInfo info;
+
+    @BeforeClass
+    public static void setup() {
+        System.setProperty("org.uberfire.nio.git.daemon.enabled", "false");
+        System.setProperty("org.uberfire.nio.git.ssh.enabled", "false");
+    }
 
     public BaseCompilerTest(String prjName) {
         try {
@@ -50,9 +53,10 @@ public class BaseCompilerTest implements Serializable {
         }
     }
 
-
     @AfterClass
     public static void tearDown() {
+        System.clearProperty("org.uberfire.nio.git.daemon.enabled");
+        System.clearProperty("org.uberfire.nio.git.ssh.enabled");
         if (tmpRoot != null) {
             TestUtil.rm(tmpRoot.toFile());
         }

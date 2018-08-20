@@ -16,6 +16,7 @@
 package org.kie.maven.plugin.test;
 
 public class Person {
+
     private int id;
     private String name;
     private boolean adult;
@@ -48,7 +49,7 @@ public class Person {
         this.adult = adult;
     }
 
-    public String toString(){
-        return "id:"+id+" name:"+name+" adult:"+adult;
+    public String toString() {
+        return "id:" + id + " name:" + name + " adult:" + adult;
     }
 }

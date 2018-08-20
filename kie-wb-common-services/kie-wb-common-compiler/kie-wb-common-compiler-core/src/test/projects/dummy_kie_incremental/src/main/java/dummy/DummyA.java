@@ -11,7 +11,7 @@ public class DummyA extends Dummy implements Serializable {
         this.surname = surname;
     }
 
-    public String toString(){
-        return super.toString()+ "surname:" + surname + " \n";
+    public String toString() {
+        return super.toString() + "surname:" + surname + " \n";
     }
 }

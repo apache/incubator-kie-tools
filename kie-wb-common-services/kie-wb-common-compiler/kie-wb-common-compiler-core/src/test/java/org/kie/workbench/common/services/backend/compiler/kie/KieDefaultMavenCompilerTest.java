@@ -32,13 +32,16 @@ import org.eclipse.jgit.api.RebaseCommand;
 import org.eclipse.jgit.api.RebaseResult;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.kie.workbench.common.services.backend.compiler.AFCompiler;
 import org.kie.workbench.common.services.backend.compiler.CompilationRequest;
 import org.kie.workbench.common.services.backend.compiler.CompilationResponse;
+import org.kie.workbench.common.services.backend.compiler.TestUtilGit;
 import org.kie.workbench.common.services.backend.compiler.TestUtilMaven;
 import org.kie.workbench.common.services.backend.compiler.configuration.KieDecorator;
 import org.kie.workbench.common.services.backend.compiler.configuration.MavenCLIArgs;
@@ -69,11 +72,22 @@ public class KieDefaultMavenCompilerTest {
     @Rule
     public TestName testName = new TestName();
 
+    @BeforeClass
+    public static void setupSystemProperties() {
+        int freePort = TestUtilGit.findFreePort();
+        System.setProperty("org.uberfire.nio.git.daemon.port", String.valueOf(freePort));
+        logger.info("Git port used:{}", freePort);
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        System.clearProperty("org.uberfire.nio.git.daemon.port");
+    }
+
     @Before
     public void setUp() throws Exception {
         fileSystemTestingUtils.setup();
         ioService = fileSystemTestingUtils.getIoService();
-
         mavenRepo = TestUtilMaven.getMavenRepo();
     }
 
@@ -394,11 +408,11 @@ public class KieDefaultMavenCompilerTest {
         Map<org.uberfire.java.nio.file.Path, InputStream> override = new HashMap<>();
 
         org.uberfire.java.nio.file.Path path = org.uberfire.java.nio.file.Paths.get(req.getInfo().getPrjPath() + "/src/main/java/dummy/DummyOverride.java");
-        InputStream input = new FileInputStream(new File(ResourcesConstants.DUMMY_OVERRIDE+"/src/main/java/dummy/DummyOverride.java"));
+        InputStream input = new FileInputStream(new File(ResourcesConstants.DUMMY_OVERRIDE + "/src/main/java/dummy/DummyOverride.java"));
         override.put(path, input);
 
         org.uberfire.java.nio.file.Path pathTwo = org.uberfire.java.nio.file.Paths.get(req.getInfo().getPrjPath() + "/src/main/java/dummy/Dummy.java");
-        InputStream inputTwo = new FileInputStream(new File(ResourcesConstants.DUMMY_OVERRIDE+"/src/main/java/dummy/Dummy.java"));
+        InputStream inputTwo = new FileInputStream(new File(ResourcesConstants.DUMMY_OVERRIDE + "/src/main/java/dummy/Dummy.java"));
         override.put(pathTwo, inputTwo);
 
         //recompile

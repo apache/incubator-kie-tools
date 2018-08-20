@@ -93,9 +93,8 @@ public class DefaultIncrementalCompilerEnablerTest extends BaseCompilerTest {
         assertThat(pomAsAstring).contains(TestConstants.KIE_TAKARI_LIFECYCLE_ARTIFACT);
         assertThat(pomAsAstring).contains(TestConstants.MAVEN_ARTIFACT);
         String mavenCompilerVersion = props.getProperty(ConfigurationKey.MAVEN_COMPILER_PLUGIN_VERSION.name());
-        assertThat(pomAsAstring).contains("<version>"+ mavenCompilerVersion +"</version>");
+        assertThat(pomAsAstring).contains("<version>" + mavenCompilerVersion + "</version>");
     }
-
 
     private Properties loadProperties(String propName) {
         Properties prop = new Properties();

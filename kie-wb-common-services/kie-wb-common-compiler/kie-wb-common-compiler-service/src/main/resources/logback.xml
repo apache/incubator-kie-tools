@@ -23,7 +23,7 @@
   <logger name="org.guvnor" level="INFO"/>
 
   <root level="INFO">
-    <appender-ref ref="KieSift" />
+    <appender-ref ref="KieSift"/>
     <appender-ref ref="consoleAppender"/>
   </root>
 

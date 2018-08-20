@@ -9,5 +9,4 @@ public class Dummy implements Serializable {
     public Dummy(String name) {
         this.name = name;
     }
-
 }

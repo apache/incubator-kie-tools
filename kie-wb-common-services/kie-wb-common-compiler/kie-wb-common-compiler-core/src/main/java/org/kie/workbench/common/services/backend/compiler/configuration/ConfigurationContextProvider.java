@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This implementation first try to load configuration keys from environment variables then load properties with a files
  * called IncrementalCompiler.properties then an hard coded configuration
- * 
+ *
  * <p>
  * MAVEN_PLUGINS =org.apache.maven.plugins
  * MAVEN_COMPILER_PLUGIN =maven-compiler-plugin

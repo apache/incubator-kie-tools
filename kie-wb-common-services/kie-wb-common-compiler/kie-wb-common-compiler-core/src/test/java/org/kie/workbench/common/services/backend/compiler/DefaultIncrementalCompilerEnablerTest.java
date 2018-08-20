@@ -36,7 +36,6 @@ import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 public class DefaultIncrementalCompilerEnablerTest {
 
     private String mavenRepo;
@@ -86,7 +85,6 @@ public class DefaultIncrementalCompilerEnablerTest {
         assertThat(pomAsAstring.contains("kie-takari-plugin")).isFalse();
         TestUtil.rm(tmpRoot.toFile());
     }
-
 
     @Test
     public void testReadKiePluginTest() throws Exception {

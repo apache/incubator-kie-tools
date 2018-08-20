@@ -32,15 +32,15 @@ public class UUIDThreadNameDiscriminatorTest {
     private Logger logger = LoggerFactory.getLogger(UUIDThreadNameDiscriminatorTest.class);
 
     @Test
-    public void uuidThreadNameDiscriminatorTest(){
-        String compilationID ="80dbc168-a1fe-499d-a414-d4a37d13d100-1516620517065-1";
+    public void uuidThreadNameDiscriminatorTest() {
+        String compilationID = "80dbc168-a1fe-499d-a414-d4a37d13d100-1516620517065-1";
         String[] args = new String[]{};
         LoggingEvent event = new LoggingEvent("org.kie.workbench.common.services.backend.logback.appender.KieSiftingAppenderTest",
-                                              (ch.qos.logback.classic.Logger)logger,
+                                              (ch.qos.logback.classic.Logger) logger,
                                               Level.INFO,
                                               "I'm a beatiful test message :)",
                                               null, args);
-        Map<String,String> mdcMap = new HashMap<>();
+        Map<String, String> mdcMap = new HashMap<>();
         mdcMap.put(MavenConfig.COMPILATION_ID, compilationID);
         event.setMDCPropertyMap(mdcMap);
 
@@ -53,5 +53,4 @@ public class UUIDThreadNameDiscriminatorTest {
         discriminator.stop();
         assertThat(discriminator.isStarted()).isFalse();
     }
-
 }

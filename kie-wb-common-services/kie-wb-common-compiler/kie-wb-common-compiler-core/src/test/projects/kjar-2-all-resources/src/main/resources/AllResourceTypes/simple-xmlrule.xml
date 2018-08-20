@@ -3,20 +3,20 @@
          xmlns="http://drools.org/drools-5.2"
          xs:schemaLocation="http://drools.org/drools-5.2 drools.org/drools-5.2.xsd">
 
-    <rule name="simple_rule">
-        <rule-attribute name="salience" value="10"/>
-        <rule-attribute name="no-loop" value="true"/>
-        <rule-attribute name="agenda-group" value="agenda-group"/>
-        <rule-attribute name="activation-group" value="activation-group"/>
+  <rule name="simple_rule">
+    <rule-attribute name="salience" value="10"/>
+    <rule-attribute name="no-loop" value="true"/>
+    <rule-attribute name="agenda-group" value="agenda-group"/>
+    <rule-attribute name="activation-group" value="activation-group"/>
 
-        <lhs>
-            <pattern identifier="sample" object-type="String">
-            </pattern>
-        </lhs>
-        <rhs>
+    <lhs>
+      <pattern identifier="sample" object-type="String">
+      </pattern>
+    </lhs>
+    <rhs>
 
-        </rhs>
-    </rule>
+    </rhs>
+  </rule>
 
 </package>
 

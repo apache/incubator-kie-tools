@@ -30,20 +30,22 @@ import org.kie.workbench.common.services.backend.compiler.impl.decorators.KieAft
 import org.kie.workbench.common.services.backend.compiler.impl.decorators.OutputLogAfterDecorator;
 import org.kie.workbench.common.services.backend.compiler.impl.kie.KieCompilationResponse;
 import org.uberfire.java.nio.file.Paths;
+
 /**
  * Implementation for a local build requested by a remote execution
  */
 public class DefaultRemoteExecutor implements RemoteExecutor {
 
-    private ExecutorService executor ;
+    private ExecutorService executor;
     private LRUCache<String, CompilerAggregateEntryCache> compilerCacheForRemoteInvocation;
 
-    public DefaultRemoteExecutor(ExecutorService executorService){
+    public DefaultRemoteExecutor(ExecutorService executorService) {
         executor = executorService;
-        compilerCacheForRemoteInvocation = new LRUCache<String, CompilerAggregateEntryCache>(){};
+        compilerCacheForRemoteInvocation = new LRUCache<String, CompilerAggregateEntryCache>() {
+        };
     }
 
-    private AFCompiler getCompiler(String projectPath){
+    private AFCompiler getCompiler(String projectPath) {
         CompilerAggregateEntryCache info = compilerCacheForRemoteInvocation.getEntry(projectPath);
         if (info != null && info.getCompiler() != null) {
             return info.getCompiler();
@@ -64,10 +66,8 @@ public class DefaultRemoteExecutor implements RemoteExecutor {
         return new CompilerAggregateEntryCache(compiler, info);
     }
 
-
-
     private CompletableFuture<KieCompilationResponse> internalBuild(String projectPath, String mavenRepo,
-                                                 boolean skipProjectDepCreation, String goal) {
+                                                                    boolean skipProjectDepCreation, String goal) {
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(Paths.get(projectPath));
         AFCompiler compiler = getCompiler(projectPath);
         CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
@@ -75,11 +75,10 @@ public class DefaultRemoteExecutor implements RemoteExecutor {
                                                                new String[]{goal},
                                                                skipProjectDepCreation);
         return runInItsOwnThread(compiler, req);
-
     }
 
     private CompletableFuture<KieCompilationResponse> internalBuild(String projectPath, String mavenRepo,
-                                                 boolean skipProjectDepCreation, String[] args) {
+                                                                    boolean skipProjectDepCreation, String[] args) {
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(Paths.get(projectPath));
         AFCompiler compiler = getCompiler(projectPath);
         CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
@@ -91,7 +90,7 @@ public class DefaultRemoteExecutor implements RemoteExecutor {
     }
 
     private CompletableFuture<KieCompilationResponse> runInItsOwnThread(AFCompiler compiler, CompilationRequest req) {
-        return CompletableFuture.supplyAsync(()->((KieCompilationResponse)compiler.compile(req)), executor);
+        return CompletableFuture.supplyAsync(() -> ((KieCompilationResponse) compiler.compile(req)), executor);
     }
 
     /************************************ Suitable for the REST Builds ************************************************/
@@ -113,7 +112,7 @@ public class DefaultRemoteExecutor implements RemoteExecutor {
 
     @Override
     public CompletableFuture<KieCompilationResponse> buildAndInstall(String projectPath, String mavenRepo,
-                                                  Boolean skipPrjDependenciesCreationList) {
+                                                                     Boolean skipPrjDependenciesCreationList) {
         return internalBuild(projectPath, mavenRepo, skipPrjDependenciesCreationList, MavenCLIArgs.INSTALL);
     }
 
@@ -124,7 +123,7 @@ public class DefaultRemoteExecutor implements RemoteExecutor {
 
     @Override
     public CompletableFuture<KieCompilationResponse> buildSpecialized(String projectPath, String mavenRepo, String[] args,
-                                                   Boolean skipPrjDependenciesCreationList) {
+                                                                      Boolean skipPrjDependenciesCreationList) {
         return internalBuild(projectPath, mavenRepo, skipPrjDependenciesCreationList, args);
     }
 }

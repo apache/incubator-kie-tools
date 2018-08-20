@@ -70,7 +70,9 @@ public class ConfigurationEnvironmentStrategy implements ConfigurationStrategy {
     }
 
     @Override
-    public Boolean isValid() { return valid && ( conf.keySet().containsAll(EnumSet.allOf(ConfigurationKey.class))); }
+    public Boolean isValid() {
+        return valid && (conf.keySet().containsAll(EnumSet.allOf(ConfigurationKey.class)));
+    }
 
     @Override
     public Map<ConfigurationKey, String> loadConfiguration() {

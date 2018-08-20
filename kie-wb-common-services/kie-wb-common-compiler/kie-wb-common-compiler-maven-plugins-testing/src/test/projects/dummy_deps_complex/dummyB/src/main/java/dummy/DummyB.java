@@ -25,5 +25,4 @@ public class DummyB implements Serializable {
     public DummyB(String name) {
         this.name = name;
     }
-
 }

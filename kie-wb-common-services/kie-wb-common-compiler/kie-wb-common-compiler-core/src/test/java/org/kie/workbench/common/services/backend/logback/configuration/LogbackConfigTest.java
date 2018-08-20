@@ -32,14 +32,13 @@ public class LogbackConfigTest {
 
     LoggerContext loggerContext = new LoggerContext();
 
-
     @Test
     public void configureLoggingProgrammatically() {
         ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
         LogbackConfig config = new LogbackConfig();
         config.configure(loggerContext);
         root.info("test appender");
-        Appender<ILoggingEvent> kieSift =  root.getAppender("KieSift");
+        Appender<ILoggingEvent> kieSift = root.getAppender("KieSift");
         assertThat(kieSift).isNotNull();
         KieSiftingAppender kieSiftAppender = (KieSiftingAppender) kieSift;
         assertThat(kieSiftAppender).isNotNull();
@@ -52,5 +51,4 @@ public class LogbackConfigTest {
         PatternLayoutEncoder encoder = (PatternLayoutEncoder) enc;
         assertThat(encoder.getPattern()).isEqualTo("%d [%thread] %level %logger{35} - %msg%n");
     }
-
 }
