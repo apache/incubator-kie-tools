@@ -16,12 +16,13 @@
 
 package org.kie.workbench.common.dmn.client.editors.types;
 
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.uberfire.client.mvp.UberElement;
 
-public interface DataTypeEditorView extends org.jboss.errai.ui.client.local.api.IsElement,
+public interface DataTypeEditorView extends IsElement,
                                             UberElement<DataTypeEditorView.Presenter> {
 
     interface Presenter extends HasCellEditorControls.Editor<HasDataTypeControl> {
