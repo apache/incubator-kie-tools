@@ -25,7 +25,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 public class ItemDefinitionPropertyConverter {
 
-    public static ItemDefinition wbFromDMN(final org.kie.dmn.model.v1_1.ItemDefinition dmn) {
+    public static ItemDefinition wbFromDMN(final org.kie.dmn.model.api.ItemDefinition dmn) {
         if (dmn == null) {
             return null;
         }
@@ -46,7 +46,7 @@ public class ItemDefinitionPropertyConverter {
         UnaryTests utConverted = UnaryTestsPropertyConverter.wbFromDMN(dmn.getAllowedValues());
         result.setAllowedValues(utConverted);
 
-        for (org.kie.dmn.model.v1_1.ItemDefinition child : dmn.getItemComponent()) {
+        for (org.kie.dmn.model.api.ItemDefinition child : dmn.getItemComponent()) {
             ItemDefinition convertedChild = ItemDefinitionPropertyConverter.wbFromDMN(child);
             result.getItemComponent().add(convertedChild);
         }
@@ -54,11 +54,11 @@ public class ItemDefinitionPropertyConverter {
         return result;
     }
 
-    public static org.kie.dmn.model.v1_1.ItemDefinition dmnFromWB(final ItemDefinition wb) {
+    public static org.kie.dmn.model.api.ItemDefinition dmnFromWB(final ItemDefinition wb) {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.v1_1.ItemDefinition result = new org.kie.dmn.model.v1_1.ItemDefinition();
+        org.kie.dmn.model.api.ItemDefinition result = new org.kie.dmn.model.v1_1.TItemDefinition();
         result.setId(wb.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         result.setName(wb.getName().getValue());
@@ -71,7 +71,7 @@ public class ItemDefinitionPropertyConverter {
         result.setAllowedValues(UnaryTestsPropertyConverter.dmnFromWB(wb.getAllowedValues()));
 
         for (ItemDefinition child : wb.getItemComponent()) {
-            org.kie.dmn.model.v1_1.ItemDefinition convertedChild = ItemDefinitionPropertyConverter.dmnFromWB(child);
+            org.kie.dmn.model.api.ItemDefinition convertedChild = ItemDefinitionPropertyConverter.dmnFromWB(child);
             result.getItemComponent().add(convertedChild);
         }
 

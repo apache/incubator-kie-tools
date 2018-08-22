@@ -21,7 +21,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
 
 public class ImportedValuesConverter {
 
-    public static ImportedValues wbFromDMN(final org.kie.dmn.model.v1_1.ImportedValues dmn) {
+    public static ImportedValues wbFromDMN(final org.kie.dmn.model.api.ImportedValues dmn) {
         if (dmn == null) {
             return null;
         }
@@ -38,11 +38,11 @@ public class ImportedValuesConverter {
         return wb;
     }
 
-    public static org.kie.dmn.model.v1_1.ImportedValues wbFromDMN(final ImportedValues wb) {
+    public static org.kie.dmn.model.api.ImportedValues wbFromDMN(final ImportedValues wb) {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.v1_1.ImportedValues dmn = new org.kie.dmn.model.v1_1.ImportedValues();
+        org.kie.dmn.model.api.ImportedValues dmn = new org.kie.dmn.model.v1_1.TImportedValues();
         dmn.setNamespace(wb.getNamespace());
         dmn.setLocationURI(wb.getLocationURI().getValue());
         dmn.setImportType(wb.getImportType());

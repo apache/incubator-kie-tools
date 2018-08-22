@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.core.util.UUID;
 
 public class DefinitionsConverter {
 
-    public static Definitions wbFromDMN(final org.kie.dmn.model.v1_1.Definitions dmn) {
+    public static Definitions wbFromDMN(final org.kie.dmn.model.api.Definitions dmn) {
         if (dmn == null) {
             return null;
         }
@@ -42,23 +42,23 @@ public class DefinitionsConverter {
         result.setDescription(description);
         result.getNsContext().putAll(dmn.getNsContext());
 
-        for (org.kie.dmn.model.v1_1.ItemDefinition itemDef : dmn.getItemDefinition()) {
+        for (org.kie.dmn.model.api.ItemDefinition itemDef : dmn.getItemDefinition()) {
             ItemDefinition itemDefConvered = ItemDefinitionPropertyConverter.wbFromDMN(itemDef);
             result.getItemDefinition().add(itemDefConvered);
         }
 
-        for (org.kie.dmn.model.v1_1.Import i : dmn.getImport()) {
+        for (org.kie.dmn.model.api.Import i : dmn.getImport()) {
             result.getImport().add(ImportConverter.nodeFromDMN(i));
         }
 
         return result;
     }
 
-    public static org.kie.dmn.model.v1_1.Definitions dmnFromWB(final Definitions wb) {
+    public static org.kie.dmn.model.api.Definitions dmnFromWB(final Definitions wb) {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.v1_1.Definitions result = new org.kie.dmn.model.v1_1.Definitions();
+        org.kie.dmn.model.api.Definitions result = new org.kie.dmn.model.v1_1.TDefinitions();
 
         // TODO currently DMN wb UI does not offer feature to set these required DMN properties, setting some hardcoded defaults for now.
         String defaultId = (wb.getId() != null) ? wb.getId().getValue() : UUID.uuid();
@@ -72,7 +72,7 @@ public class DefinitionsConverter {
         result.getNsContext().putAll(wb.getNsContext());
 
         for (ItemDefinition itemDef : wb.getItemDefinition()) {
-            org.kie.dmn.model.v1_1.ItemDefinition itemDefConvered = ItemDefinitionPropertyConverter.dmnFromWB(itemDef);
+            org.kie.dmn.model.api.ItemDefinition itemDefConvered = ItemDefinitionPropertyConverter.dmnFromWB(itemDef);
             result.getItemDefinition().add(itemDefConvered);
         }
 

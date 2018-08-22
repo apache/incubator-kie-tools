@@ -34,7 +34,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.marshalling.server.ServerMarshalling;
-import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
+import org.kie.dmn.backend.marshalling.v1_1.xstream.XStreamMarshaller;
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Association;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
@@ -114,7 +114,7 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         this.bkmConverter = new BusinessKnowledgeModelConverter(factoryManager);
         this.knowledgeSourceConverter = new KnowledgeSourceConverter(factoryManager);
         this.textAnnotationConverter = new TextAnnotationConverter(factoryManager);
-        this.marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new DDExtensionsRegister()));
+        this.marshaller = new XStreamMarshaller(Arrays.asList(new DDExtensionsRegister())); // generic marshaller will be eventually: DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new DDExtensionsRegister()));
     }
 
     @Deprecated
@@ -130,7 +130,7 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         return result;
     }
 
-    private static Optional<org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDiagram> findDMNDiagram(org.kie.dmn.model.v1_1.Definitions dmnXml) {
+    private static Optional<org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDiagram> findDMNDiagram(org.kie.dmn.model.api.Definitions dmnXml) {
         if (dmnXml.getExtensionElements() == null) {
             return Optional.empty();
         }
@@ -150,24 +150,24 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
     @Override
     public Graph unmarshall(final Metadata metadata,
                             final InputStream input) throws IOException {
-        org.kie.dmn.model.v1_1.Definitions dmnXml = marshaller.unmarshal(new InputStreamReader(input));
+        org.kie.dmn.model.api.Definitions dmnXml = marshaller.unmarshal(new InputStreamReader(input));
 
-        Map<String, Entry<org.kie.dmn.model.v1_1.DRGElement, Node>> elems = dmnXml.getDrgElement().stream().collect(Collectors.toMap(org.kie.dmn.model.v1_1.DRGElement::getId,
+        Map<String, Entry<org.kie.dmn.model.api.DRGElement, Node>> elems = dmnXml.getDrgElement().stream().collect(Collectors.toMap(org.kie.dmn.model.api.DRGElement::getId,
                                                                                                                                      dmn -> new SimpleEntry<>(dmn,
                                                                                                                                                               dmnToStunner(dmn))));
 
         Optional<org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDiagram> dmnDDDiagram = findDMNDiagram(dmnXml);
 
-        for (Entry<org.kie.dmn.model.v1_1.DRGElement, Node> kv : elems.values()) {
-            org.kie.dmn.model.v1_1.DRGElement elem = kv.getKey();
+        for (Entry<org.kie.dmn.model.api.DRGElement, Node> kv : elems.values()) {
+            org.kie.dmn.model.api.DRGElement elem = kv.getKey();
             Node currentNode = kv.getValue();
 
             ddExtAugmentStunner(dmnDDDiagram, currentNode);
 
             // DMN spec table 2: Requirements connection rules
-            if (elem instanceof org.kie.dmn.model.v1_1.Decision) {
-                org.kie.dmn.model.v1_1.Decision decision = (org.kie.dmn.model.v1_1.Decision) elem;
-                for (org.kie.dmn.model.v1_1.InformationRequirement ir : decision.getInformationRequirement()) {
+            if (elem instanceof org.kie.dmn.model.api.Decision) {
+                org.kie.dmn.model.api.Decision decision = (org.kie.dmn.model.api.Decision) elem;
+                for (org.kie.dmn.model.api.InformationRequirement ir : decision.getInformationRequirement()) {
                     if (ir.getRequiredInput() != null) {
                         String reqInputID = getId(ir.getRequiredInput());
                         Node requiredNode = elems.get(reqInputID).getValue();
@@ -189,7 +189,7 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
                         setConnectionMagnets(myEdge);
                     }
                 }
-                for (org.kie.dmn.model.v1_1.KnowledgeRequirement kr : decision.getKnowledgeRequirement()) {
+                for (org.kie.dmn.model.api.KnowledgeRequirement kr : decision.getKnowledgeRequirement()) {
                     String reqInputID = getId(kr.getRequiredKnowledge());
                     Node requiredNode = elems.get(reqInputID).getValue();
                     Edge myEdge = factoryManager.newElement(UUID.uuid(),
@@ -199,7 +199,7 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
                                 currentNode);
                     setConnectionMagnets(myEdge);
                 }
-                for (org.kie.dmn.model.v1_1.AuthorityRequirement kr : decision.getAuthorityRequirement()) {
+                for (org.kie.dmn.model.api.AuthorityRequirement kr : decision.getAuthorityRequirement()) {
                     String reqInputID = getId(kr.getRequiredAuthority());
                     Node requiredNode = elems.get(reqInputID).getValue();
                     Edge myEdge = factoryManager.newElement(UUID.uuid(),
@@ -209,9 +209,9 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
                                 currentNode);
                     setConnectionMagnets(myEdge);
                 }
-            } else if (elem instanceof org.kie.dmn.model.v1_1.BusinessKnowledgeModel) {
-                org.kie.dmn.model.v1_1.BusinessKnowledgeModel bkm = (org.kie.dmn.model.v1_1.BusinessKnowledgeModel) elem;
-                for (org.kie.dmn.model.v1_1.KnowledgeRequirement kr : bkm.getKnowledgeRequirement()) {
+            } else if (elem instanceof org.kie.dmn.model.api.BusinessKnowledgeModel) {
+                org.kie.dmn.model.api.BusinessKnowledgeModel bkm = (org.kie.dmn.model.api.BusinessKnowledgeModel) elem;
+                for (org.kie.dmn.model.api.KnowledgeRequirement kr : bkm.getKnowledgeRequirement()) {
                     String reqInputID = getId(kr.getRequiredKnowledge());
                     Node requiredNode = elems.get(reqInputID).getValue();
                     Edge myEdge = factoryManager.newElement(UUID.uuid(),
@@ -221,7 +221,7 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
                                 currentNode);
                     setConnectionMagnets(myEdge);
                 }
-                for (org.kie.dmn.model.v1_1.AuthorityRequirement kr : bkm.getAuthorityRequirement()) {
+                for (org.kie.dmn.model.api.AuthorityRequirement kr : bkm.getAuthorityRequirement()) {
                     String reqInputID = getId(kr.getRequiredAuthority());
                     Node requiredNode = elems.get(reqInputID).getValue();
                     Edge myEdge = factoryManager.newElement(UUID.uuid(),
@@ -231,9 +231,9 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
                                 currentNode);
                     setConnectionMagnets(myEdge);
                 }
-            } else if (elem instanceof org.kie.dmn.model.v1_1.KnowledgeSource) {
-                org.kie.dmn.model.v1_1.KnowledgeSource ks = (org.kie.dmn.model.v1_1.KnowledgeSource) elem;
-                for (org.kie.dmn.model.v1_1.AuthorityRequirement ir : ks.getAuthorityRequirement()) {
+            } else if (elem instanceof org.kie.dmn.model.api.KnowledgeSource) {
+                org.kie.dmn.model.api.KnowledgeSource ks = (org.kie.dmn.model.api.KnowledgeSource) elem;
+                for (org.kie.dmn.model.api.AuthorityRequirement ir : ks.getAuthorityRequirement()) {
                     if (ir.getRequiredInput() != null) {
                         String reqInputID = getId(ir.getRequiredInput());
                         Node requiredNode = elems.get(reqInputID).getValue();
@@ -268,12 +268,14 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
             }
         }
 
-        Map<String, Node<View<TextAnnotation>, ?>> textAnnotations = dmnXml.getArtifact().stream().filter(org.kie.dmn.model.v1_1.TextAnnotation.class::isInstance).map(org.kie.dmn.model.v1_1.TextAnnotation.class::cast).collect(Collectors.toMap(org.kie.dmn.model.v1_1.TextAnnotation::getId,
+        Map<String, Node<View<TextAnnotation>, ?>> textAnnotations = dmnXml.getArtifact().stream().filter(org.kie.dmn.model.api.TextAnnotation.class::isInstance).map(org.kie.dmn.model.api.TextAnnotation.class::cast)
+                                                                           .collect(Collectors.toMap(org.kie.dmn.model.api.TextAnnotation::getId,
                                                                                                                                                                                                                                                    textAnnotationConverter::nodeFromDMN));
         textAnnotations.values().forEach(n -> ddExtAugmentStunner(dmnDDDiagram, n));
 
-        List<org.kie.dmn.model.v1_1.Association> associations = dmnXml.getArtifact().stream().filter(org.kie.dmn.model.v1_1.Association.class::isInstance).map(org.kie.dmn.model.v1_1.Association.class::cast).collect(Collectors.toList());
-        for (org.kie.dmn.model.v1_1.Association a : associations) {
+        List<org.kie.dmn.model.api.Association> associations = dmnXml.getArtifact().stream().filter(org.kie.dmn.model.api.Association.class::isInstance).map(org.kie.dmn.model.api.Association.class::cast).collect(
+                                                                                                                                                                                                                    Collectors.toList());
+        for (org.kie.dmn.model.api.Association a : associations) {
             String sourceId = getId(a.getSourceRef());
             Node sourceNode = Optional.ofNullable(elems.get(sourceId)).map(Entry::getValue).orElse(textAnnotations.get(sourceId));
 
@@ -319,20 +321,20 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
                                     false).filter(n -> n.getContent().getDefinition() instanceof DMNDiagram).findFirst().orElseThrow(() -> new UnsupportedOperationException("TODO"));
     }
 
-    private String getId(org.kie.dmn.model.v1_1.DMNElementReference er) {
+    private String getId(org.kie.dmn.model.api.DMNElementReference er) {
         String href = er.getHref();
         return href.contains("#") ? href.substring(href.indexOf('#') + 1) : href;
     }
 
-    private Node dmnToStunner(org.kie.dmn.model.v1_1.DRGElement dmn) {
-        if (dmn instanceof org.kie.dmn.model.v1_1.InputData) {
-            return inputDataConverter.nodeFromDMN((org.kie.dmn.model.v1_1.InputData) dmn);
-        } else if (dmn instanceof org.kie.dmn.model.v1_1.Decision) {
-            return decisionConverter.nodeFromDMN((org.kie.dmn.model.v1_1.Decision) dmn);
-        } else if (dmn instanceof org.kie.dmn.model.v1_1.BusinessKnowledgeModel) {
-            return bkmConverter.nodeFromDMN((org.kie.dmn.model.v1_1.BusinessKnowledgeModel) dmn);
-        } else if (dmn instanceof org.kie.dmn.model.v1_1.KnowledgeSource) {
-            return knowledgeSourceConverter.nodeFromDMN((org.kie.dmn.model.v1_1.KnowledgeSource) dmn);
+    private Node dmnToStunner(org.kie.dmn.model.api.DRGElement dmn) {
+        if (dmn instanceof org.kie.dmn.model.api.InputData) {
+            return inputDataConverter.nodeFromDMN((org.kie.dmn.model.api.InputData) dmn);
+        } else if (dmn instanceof org.kie.dmn.model.api.Decision) {
+            return decisionConverter.nodeFromDMN((org.kie.dmn.model.api.Decision) dmn);
+        } else if (dmn instanceof org.kie.dmn.model.api.BusinessKnowledgeModel) {
+            return bkmConverter.nodeFromDMN((org.kie.dmn.model.api.BusinessKnowledgeModel) dmn);
+        } else if (dmn instanceof org.kie.dmn.model.api.KnowledgeSource) {
+            return knowledgeSourceConverter.nodeFromDMN((org.kie.dmn.model.api.KnowledgeSource) dmn);
         } else {
             throw new UnsupportedOperationException("TODO"); // TODO 
         }
@@ -378,15 +380,21 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
     public String marshall(final Diagram<Graph, Metadata> diagram) throws IOException {
         Graph<?, Node<View, ?>> g = diagram.getGraph();
 
-        Map<String, org.kie.dmn.model.v1_1.DRGElement> nodes = new HashMap<>();
-        Map<String, org.kie.dmn.model.v1_1.TextAnnotation> textAnnotations = new HashMap<>();
+        Map<String, org.kie.dmn.model.api.DRGElement> nodes = new HashMap<>();
+        Map<String, org.kie.dmn.model.api.TextAnnotation> textAnnotations = new HashMap<>();
 
         @SuppressWarnings("unchecked")
         Node<View<DMNDiagram>, ?> dmnDiagramRoot = (Node<View<DMNDiagram>, ?>) findDMNDiagramRoot(g);
         Definitions definitionsStunnerPojo = dmnDiagramRoot.getContent().getDefinition().getDefinitions();
-        org.kie.dmn.model.v1_1.Definitions definitions = DefinitionsConverter.dmnFromWB(definitionsStunnerPojo);
+        org.kie.dmn.model.api.Definitions definitions = DefinitionsConverter.dmnFromWB(definitionsStunnerPojo);
         if (definitions.getExtensionElements() == null) {
-            definitions.setExtensionElements(new org.kie.dmn.model.v1_1.Definitions.ExtensionElements());
+            if (definitions instanceof org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase) {
+                definitions.setExtensionElements(new org.kie.dmn.model.v1_1.TDMNElement.TExtensionElements());
+            } else if (definitions instanceof org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase) {
+                definitions.setExtensionElements(new org.kie.dmn.model.v1_2.TDMNElement.TExtensionElements());
+            } else {
+                definitions.setExtensionElements(new org.kie.dmn.model.v1_2.TDMNElement.TExtensionElements());
+            }
         }
         org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDiagram dmnDDDMNDiagram = new org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDiagram();
         definitions.getExtensionElements().getAny().add(dmnDDDMNDiagram);
@@ -405,7 +413,7 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
                                         textAnnotationConverter.dmnFromNode((Node<View<TextAnnotation>, ?>) node));
                     dmnDDDMNDiagram.getAny().add(stunnerToDDExt((View<? extends DMNElement>) view));
 
-                    List<org.kie.dmn.model.v1_1.Association> associations = AssociationConverter.dmnFromWB((Node<View<TextAnnotation>, ?>) node);
+                    List<org.kie.dmn.model.api.Association> associations = AssociationConverter.dmnFromWB((Node<View<TextAnnotation>, ?>) node);
                     definitions.getArtifact().addAll(associations);
                 }
             }
@@ -534,7 +542,7 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         }
     }
 
-    private org.kie.dmn.model.v1_1.DRGElement stunnerToDMN(final Node<?, ?> node) {
+    private org.kie.dmn.model.api.DRGElement stunnerToDMN(final Node<?, ?> node) {
         if (node.getContent() instanceof View<?>) {
             View<?> view = (View<?>) node.getContent();
             if (view.getDefinition() instanceof InputData) {

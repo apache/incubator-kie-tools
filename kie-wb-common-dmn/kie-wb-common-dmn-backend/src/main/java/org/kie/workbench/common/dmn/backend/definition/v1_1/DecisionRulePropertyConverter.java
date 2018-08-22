@@ -24,7 +24,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Id;
 
 public class DecisionRulePropertyConverter {
 
-    public static DecisionRule wbFromDMN(final org.kie.dmn.model.v1_1.DecisionRule dmn) {
+    public static DecisionRule wbFromDMN(final org.kie.dmn.model.api.DecisionRule dmn) {
         Id id = new Id(dmn.getId());
         Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         
@@ -32,18 +32,18 @@ public class DecisionRulePropertyConverter {
         result.setId(id);
         result.setDescription(description);
 
-        for (org.kie.dmn.model.v1_1.UnaryTests ie : dmn.getInputEntry()) {
+        for (org.kie.dmn.model.api.UnaryTests ie : dmn.getInputEntry()) {
             result.getInputEntry().add(UnaryTestsPropertyConverter.wbFromDMN(ie));
         }
-        for (org.kie.dmn.model.v1_1.LiteralExpression oe : dmn.getOutputEntry()) {
+        for (org.kie.dmn.model.api.LiteralExpression oe : dmn.getOutputEntry()) {
             result.getOutputEntry().add(LiteralExpressionPropertyConverter.wbFromDMN(oe));
         }
 
         return result;
     }
 
-    public static org.kie.dmn.model.v1_1.DecisionRule dmnFromWB(final DecisionRule wb) {
-        org.kie.dmn.model.v1_1.DecisionRule result = new org.kie.dmn.model.v1_1.DecisionRule();
+    public static org.kie.dmn.model.api.DecisionRule dmnFromWB(final DecisionRule wb) {
+        org.kie.dmn.model.api.DecisionRule result = new org.kie.dmn.model.v1_1.TDecisionRule();
         result.setId(wb.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
 

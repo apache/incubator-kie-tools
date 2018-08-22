@@ -22,7 +22,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 
 public class ContextEntryPropertyConverter {
 
-    public static ContextEntry wbFromDMN(final org.kie.dmn.model.v1_1.ContextEntry dmn) {
+    public static ContextEntry wbFromDMN(final org.kie.dmn.model.api.ContextEntry dmn) {
         InformationItem variable = InformationItemPropertyConverter.wbFromDMN(dmn.getVariable());
         Expression expression = ExpressionPropertyConverter.wbFromDMN(dmn.getExpression());
 
@@ -32,11 +32,11 @@ public class ContextEntryPropertyConverter {
         return result;
     }
 
-    public static org.kie.dmn.model.v1_1.ContextEntry dmnFromWB(final ContextEntry wb) {
-        org.kie.dmn.model.v1_1.ContextEntry result = new org.kie.dmn.model.v1_1.ContextEntry();
+    public static org.kie.dmn.model.api.ContextEntry dmnFromWB(final ContextEntry wb) {
+        org.kie.dmn.model.api.ContextEntry result = new org.kie.dmn.model.v1_1.TContextEntry();
 
-        org.kie.dmn.model.v1_1.InformationItem variable = InformationItemPropertyConverter.dmnFromWB(wb.getVariable());
-        org.kie.dmn.model.v1_1.Expression expression = ExpressionPropertyConverter.dmnFromWB(wb.getExpression());
+        org.kie.dmn.model.api.InformationItem variable = InformationItemPropertyConverter.dmnFromWB(wb.getVariable());
+        org.kie.dmn.model.api.Expression expression = ExpressionPropertyConverter.dmnFromWB(wb.getExpression());
 
         result.setVariable(variable);
         result.setExpression(expression);

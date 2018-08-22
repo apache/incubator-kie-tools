@@ -28,12 +28,12 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public class AssociationConverter {
 
-    public static List<org.kie.dmn.model.v1_1.Association> dmnFromWB(final Node<View<TextAnnotation>, ?> node) {
+    public static List<org.kie.dmn.model.api.Association> dmnFromWB(final Node<View<TextAnnotation>, ?> node) {
         TextAnnotation ta = node.getContent().getDefinition();
-        org.kie.dmn.model.v1_1.DMNElementReference ta_elementReference = new org.kie.dmn.model.v1_1.DMNElementReference();
+        org.kie.dmn.model.api.DMNElementReference ta_elementReference = new org.kie.dmn.model.v1_1.TDMNElementReference();
         ta_elementReference.setHref(new StringBuilder("#").append(ta.getId().getValue()).toString());
 
-        List<org.kie.dmn.model.v1_1.Association> result = new ArrayList<>();
+        List<org.kie.dmn.model.api.Association> result = new ArrayList<>();
 
         List<Edge<?, ?>> inEdges = (List<Edge<?, ?>>) node.getInEdges();
         for (Edge<?, ?> e : inEdges) {
@@ -42,10 +42,10 @@ public class AssociationConverter {
                 View<?> view = (View<?>) sourceNode.getContent();
                 if (view.getDefinition() instanceof DRGElement) {
                     DRGElement drgElement = (DRGElement) view.getDefinition();
-                    org.kie.dmn.model.v1_1.DMNElementReference sourceRef = new org.kie.dmn.model.v1_1.DMNElementReference();
+                    org.kie.dmn.model.api.DMNElementReference sourceRef = new org.kie.dmn.model.v1_1.TDMNElementReference();
                     sourceRef.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
 
-                    org.kie.dmn.model.v1_1.Association adding = new org.kie.dmn.model.v1_1.Association();
+                    org.kie.dmn.model.api.Association adding = new org.kie.dmn.model.v1_1.TAssociation();
                     adding.setId(((View<Association>) e.getContent()).getDefinition().getId().getValue());
                     adding.setDescription(((View<Association>) e.getContent()).getDefinition().getDescription().getValue());
                     adding.setSourceRef(sourceRef);
@@ -61,10 +61,10 @@ public class AssociationConverter {
                 View<?> view = (View<?>) targetNode.getContent();
                 if (view.getDefinition() instanceof DRGElement) {
                     DRGElement drgElement = (DRGElement) view.getDefinition();
-                    org.kie.dmn.model.v1_1.DMNElementReference targetRef = new org.kie.dmn.model.v1_1.DMNElementReference();
+                    org.kie.dmn.model.api.DMNElementReference targetRef = new org.kie.dmn.model.v1_1.TDMNElementReference();
                     targetRef.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
 
-                    org.kie.dmn.model.v1_1.Association adding = new org.kie.dmn.model.v1_1.Association();
+                    org.kie.dmn.model.api.Association adding = new org.kie.dmn.model.v1_1.TAssociation();
                     adding.setId(((View<Association>) e.getContent()).getDefinition().getId().getValue());
                     adding.setDescription(((View<Association>) e.getContent()).getDefinition().getDescription().getValue());
                     adding.setSourceRef(ta_elementReference);

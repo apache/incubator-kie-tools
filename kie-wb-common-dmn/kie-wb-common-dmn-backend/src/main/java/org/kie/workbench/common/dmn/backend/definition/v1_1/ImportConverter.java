@@ -24,7 +24,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 public final class ImportConverter {
 
-  public static Import nodeFromDMN(org.kie.dmn.model.v1_1.Import source) {
+  public static Import nodeFromDMN(org.kie.dmn.model.api.Import source) {
     LocationURI locationURI = new LocationURI(source.getLocationURI());
     Import result = new Import(source.getNamespace(), locationURI, source.getImportType());
     Map<QName, String> additionalAttributes = new HashMap<>();
@@ -35,8 +35,8 @@ public final class ImportConverter {
     return result;
   }
 
-  public static org.kie.dmn.model.v1_1.Import dmnFromNode(Import source) {
-    org.kie.dmn.model.v1_1.Import result = new org.kie.dmn.model.v1_1.Import();
+  public static org.kie.dmn.model.api.Import dmnFromNode(Import source) {
+    org.kie.dmn.model.api.Import result = new org.kie.dmn.model.v1_1.TImport();
     result.setImportType(source.getImportType());
     result.setLocationURI(source.getLocationURI().getValue());
     result.setNamespace(source.getNamespace());

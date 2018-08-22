@@ -25,7 +25,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 public class InvocationPropertyConverter {
 
-    public static Invocation wbFromDMN(final org.kie.dmn.model.v1_1.Invocation dmn) {
+    public static Invocation wbFromDMN(final org.kie.dmn.model.api.Invocation dmn) {
         if (dmn == null) {
             return null;
         }
@@ -41,7 +41,7 @@ public class InvocationPropertyConverter {
         Expression convertedExpression = ExpressionPropertyConverter.wbFromDMN(dmn.getExpression());
         result.setExpression(convertedExpression);
 
-        for (org.kie.dmn.model.v1_1.Binding b : dmn.getBinding()) {
+        for (org.kie.dmn.model.api.Binding b : dmn.getBinding()) {
             Binding bConverted = BindingPropertyConverter.wbFromDMN(b);
             result.getBinding().add(bConverted);
         }
@@ -49,21 +49,21 @@ public class InvocationPropertyConverter {
         return result;
     }
 
-    public static org.kie.dmn.model.v1_1.Invocation dmnFromWB(final Invocation wb) {
+    public static org.kie.dmn.model.api.Invocation dmnFromWB(final Invocation wb) {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.v1_1.Invocation result = new org.kie.dmn.model.v1_1.Invocation();
+        org.kie.dmn.model.api.Invocation result = new org.kie.dmn.model.v1_1.TInvocation();
         result.setId(wb.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(),
                                             result::setTypeRef);
 
-        org.kie.dmn.model.v1_1.Expression convertedExpression = ExpressionPropertyConverter.dmnFromWB(wb.getExpression());
+        org.kie.dmn.model.api.Expression convertedExpression = ExpressionPropertyConverter.dmnFromWB(wb.getExpression());
         result.setExpression(convertedExpression);
 
         for (Binding b : wb.getBinding()) {
-            org.kie.dmn.model.v1_1.Binding bConverted = BindingPropertyConverter.dmnFromWB(b);
+            org.kie.dmn.model.api.Binding bConverted = BindingPropertyConverter.dmnFromWB(b);
             result.getBinding().add(bConverted);
         }
 

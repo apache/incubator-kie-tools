@@ -25,7 +25,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 public class OutputClausePropertyConverter {
 
-    public static OutputClause wbFromDMN(final org.kie.dmn.model.v1_1.OutputClause dmn) {
+    public static OutputClause wbFromDMN(final org.kie.dmn.model.api.OutputClause dmn) {
         Id id = new Id(dmn.getId());
         Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         UnaryTests outputValues = UnaryTestsPropertyConverter.wbFromDMN(dmn.getOutputValues());
@@ -43,8 +43,8 @@ public class OutputClausePropertyConverter {
         return result;
     }
 
-    public static org.kie.dmn.model.v1_1.OutputClause dmnFromWB(final OutputClause wb) {
-        org.kie.dmn.model.v1_1.OutputClause result = new org.kie.dmn.model.v1_1.OutputClause();
+    public static org.kie.dmn.model.api.OutputClause dmnFromWB(final OutputClause wb) {
+        org.kie.dmn.model.api.OutputClause result = new org.kie.dmn.model.v1_1.TOutputClause();
         result.setId(wb.getId().getValue());
         result.setName(wb.getName());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));

@@ -24,7 +24,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 public class InformationItemPropertyConverter {
 
-    public static InformationItem wbFromDMN(final org.kie.dmn.model.v1_1.InformationItem dmn) {
+    public static InformationItem wbFromDMN(final org.kie.dmn.model.api.InformationItem dmn) {
         if (dmn == null) {
             return null;
         }
@@ -39,11 +39,11 @@ public class InformationItemPropertyConverter {
         return result;
     }
 
-    public static org.kie.dmn.model.v1_1.InformationItem dmnFromWB(final InformationItem wb) {
+    public static org.kie.dmn.model.api.InformationItem dmnFromWB(final InformationItem wb) {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.v1_1.InformationItem result = new org.kie.dmn.model.v1_1.InformationItem();
+        org.kie.dmn.model.api.InformationItem result = new org.kie.dmn.model.v1_1.TInformationItem();
         result.setId(wb.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         result.setName(wb.getName().getValue());

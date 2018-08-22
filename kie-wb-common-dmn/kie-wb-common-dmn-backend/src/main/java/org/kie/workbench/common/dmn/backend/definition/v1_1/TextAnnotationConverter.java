@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-public class TextAnnotationConverter implements NodeConverter<org.kie.dmn.model.v1_1.TextAnnotation, org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation> {
+public class TextAnnotationConverter implements NodeConverter<org.kie.dmn.model.api.TextAnnotation, org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation> {
 
     private FactoryManager factoryManager;
 
@@ -38,7 +38,7 @@ public class TextAnnotationConverter implements NodeConverter<org.kie.dmn.model.
     }
 
     @Override
-    public Node<View<TextAnnotation>, ?> nodeFromDMN(final org.kie.dmn.model.v1_1.TextAnnotation dmn) {
+    public Node<View<TextAnnotation>, ?> nodeFromDMN(final org.kie.dmn.model.api.TextAnnotation dmn) {
         @SuppressWarnings("unchecked")
         Node<View<TextAnnotation>, ?> node = (Node<View<TextAnnotation>, ?>) factoryManager.newElement(dmn.getId(),
                                                                                                        TextAnnotation.class).asNode();
@@ -58,9 +58,9 @@ public class TextAnnotationConverter implements NodeConverter<org.kie.dmn.model.
     }
 
     @Override
-    public org.kie.dmn.model.v1_1.TextAnnotation dmnFromNode(final Node<View<TextAnnotation>, ?> node) {
+    public org.kie.dmn.model.api.TextAnnotation dmnFromNode(final Node<View<TextAnnotation>, ?> node) {
         TextAnnotation source = node.getContent().getDefinition();
-        org.kie.dmn.model.v1_1.TextAnnotation result = new org.kie.dmn.model.v1_1.TextAnnotation();
+        org.kie.dmn.model.api.TextAnnotation result = new org.kie.dmn.model.v1_1.TTextAnnotation();
         result.setId(source.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));
         result.setText(source.getText().getValue());

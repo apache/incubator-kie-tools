@@ -22,7 +22,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Id;
 
 public class UnaryTestsPropertyConverter {
 
-    public static UnaryTests wbFromDMN(final org.kie.dmn.model.v1_1.UnaryTests dmn) {
+    public static UnaryTests wbFromDMN(final org.kie.dmn.model.api.UnaryTests dmn) {
         if (dmn == null) {
             return null;
         }
@@ -33,11 +33,11 @@ public class UnaryTestsPropertyConverter {
         return result;
     }
 
-    public static org.kie.dmn.model.v1_1.UnaryTests dmnFromWB(final UnaryTests wb) {
+    public static org.kie.dmn.model.api.UnaryTests dmnFromWB(final UnaryTests wb) {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.v1_1.UnaryTests result = new org.kie.dmn.model.v1_1.UnaryTests();
+        org.kie.dmn.model.api.UnaryTests result = new org.kie.dmn.model.v1_1.TUnaryTests();
         result.setId(wb.getId().getValue());
         result.setDescription(wb.getDescription().getValue());
         result.setText(wb.getText());

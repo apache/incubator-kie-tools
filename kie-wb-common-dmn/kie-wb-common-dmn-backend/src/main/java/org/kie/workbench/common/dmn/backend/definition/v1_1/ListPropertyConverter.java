@@ -26,13 +26,13 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 public class ListPropertyConverter {
 
-    public static List wbFromDMN(final org.kie.dmn.model.v1_1.List dmn) {
+    public static List wbFromDMN(final org.kie.dmn.model.api.List dmn) {
         Id id = new Id(dmn.getId());
         Description description = new Description(dmn.getDescription());
         QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef());
 
         java.util.List<Expression> expression = new ArrayList<>();
-        for (org.kie.dmn.model.v1_1.Expression e : dmn.getExpression()) {
+        for (org.kie.dmn.model.api.Expression e : dmn.getExpression()) {
             Expression eConverted = ExpressionPropertyConverter.wbFromDMN(e);
             expression.add(eConverted);
         }
@@ -41,15 +41,15 @@ public class ListPropertyConverter {
         return result;
     }
 
-    public static org.kie.dmn.model.v1_1.List dmnFromWB(final List wb) {
-        org.kie.dmn.model.v1_1.List result = new org.kie.dmn.model.v1_1.List();
+    public static org.kie.dmn.model.api.List dmnFromWB(final List wb) {
+        org.kie.dmn.model.api.List result = new org.kie.dmn.model.v1_1.TList();
         result.setId(wb.getId().getValue());
         result.setDescription(wb.getDescription().getValue());
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(),
                                             result::setTypeRef);
 
         for (Expression e : wb.getExpression()) {
-            org.kie.dmn.model.v1_1.Expression eConverted = ExpressionPropertyConverter.dmnFromWB(e);
+            org.kie.dmn.model.api.Expression eConverted = ExpressionPropertyConverter.dmnFromWB(e);
             result.getExpression().add(eConverted);
         }
 

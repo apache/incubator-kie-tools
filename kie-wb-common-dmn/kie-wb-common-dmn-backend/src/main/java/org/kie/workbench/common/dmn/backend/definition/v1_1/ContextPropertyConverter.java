@@ -24,28 +24,28 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 public class ContextPropertyConverter {
 
-    public static Context wbFromDMN(final org.kie.dmn.model.v1_1.Context dmn) {
+    public static Context wbFromDMN(final org.kie.dmn.model.api.Context dmn) {
         Id id = new Id(dmn.getId());
         Description description = new Description(dmn.getDescription());
         QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef());
         Context result = new Context(id,
                                      description,
                                      typeRef);
-        for (org.kie.dmn.model.v1_1.ContextEntry ce : dmn.getContextEntry()) {
+        for (org.kie.dmn.model.api.ContextEntry ce : dmn.getContextEntry()) {
             ContextEntry ceConverted = ContextEntryPropertyConverter.wbFromDMN(ce);
             result.getContextEntry().add(ceConverted);
         }
         return result;
     }
 
-    public static org.kie.dmn.model.v1_1.Context dmnFromWB(final Context wb) {
-        org.kie.dmn.model.v1_1.Context result = new org.kie.dmn.model.v1_1.Context();
+    public static org.kie.dmn.model.api.Context dmnFromWB(final Context wb) {
+        org.kie.dmn.model.api.Context result = new org.kie.dmn.model.v1_1.TContext();
         result.setId(wb.getId().getValue());
         result.setDescription(wb.getDescription().getValue());
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(),
                                             result::setTypeRef);
         for (ContextEntry ce : wb.getContextEntry()) {
-            org.kie.dmn.model.v1_1.ContextEntry ceConverted = ContextEntryPropertyConverter.dmnFromWB(ce);
+            org.kie.dmn.model.api.ContextEntry ceConverted = ContextEntryPropertyConverter.dmnFromWB(ce);
             result.getContextEntry().add(ceConverted);
         }
         return result;

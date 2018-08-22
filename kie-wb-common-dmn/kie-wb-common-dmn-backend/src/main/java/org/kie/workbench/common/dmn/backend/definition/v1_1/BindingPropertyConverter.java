@@ -22,7 +22,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 
 public class BindingPropertyConverter {
 
-    public static Binding wbFromDMN(final org.kie.dmn.model.v1_1.Binding dmn) {
+    public static Binding wbFromDMN(final org.kie.dmn.model.api.Binding dmn) {
         if (dmn == null) {
             return null;
         }
@@ -35,11 +35,11 @@ public class BindingPropertyConverter {
         return result;
     }
 
-    public static org.kie.dmn.model.v1_1.Binding dmnFromWB(final Binding wb) {
+    public static org.kie.dmn.model.api.Binding dmnFromWB(final Binding wb) {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.v1_1.Binding result = new org.kie.dmn.model.v1_1.Binding();
+        org.kie.dmn.model.api.Binding result = new org.kie.dmn.model.v1_1.TBinding();
         result.setParameter(InformationItemPropertyConverter.dmnFromWB(wb.getParameter()));
         result.setExpression(ExpressionPropertyConverter.dmnFromWB(wb.getExpression()));
 

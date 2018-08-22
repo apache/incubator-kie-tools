@@ -24,7 +24,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 public class LiteralExpressionPropertyConverter {
 
-    public static LiteralExpression wbFromDMN(final org.kie.dmn.model.v1_1.LiteralExpression dmn) {
+    public static LiteralExpression wbFromDMN(final org.kie.dmn.model.api.LiteralExpression dmn) {
         if (dmn == null) {
             return null;
         }
@@ -43,11 +43,11 @@ public class LiteralExpressionPropertyConverter {
         return result;
     }
 
-    public static org.kie.dmn.model.v1_1.LiteralExpression dmnFromWB(final LiteralExpression wb) {
+    public static org.kie.dmn.model.api.LiteralExpression dmnFromWB(final LiteralExpression wb) {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.v1_1.LiteralExpression result = new org.kie.dmn.model.v1_1.LiteralExpression();
+        org.kie.dmn.model.api.LiteralExpression result = new org.kie.dmn.model.v1_1.TLiteralExpression();
         result.setId(wb.getId().getValue());
         result.setDescription(wb.getDescription().getValue());
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(),

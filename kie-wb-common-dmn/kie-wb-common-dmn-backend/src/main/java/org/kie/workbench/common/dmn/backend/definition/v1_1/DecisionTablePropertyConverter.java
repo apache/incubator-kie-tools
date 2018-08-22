@@ -29,7 +29,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 public class DecisionTablePropertyConverter {
 
-    public static DecisionTable wbFromDMN(final org.kie.dmn.model.v1_1.DecisionTable dmn) {
+    public static DecisionTable wbFromDMN(final org.kie.dmn.model.api.DecisionTable dmn) {
         Id id = new Id(dmn.getId());
         Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef());
@@ -39,13 +39,13 @@ public class DecisionTablePropertyConverter {
         result.setDescription(description);
         result.setTypeRef(typeRef);
 
-        for (org.kie.dmn.model.v1_1.InputClause input : dmn.getInput()) {
+        for (org.kie.dmn.model.api.InputClause input : dmn.getInput()) {
             result.getInput().add(InputClausePropertyConverter.wbFromDMN(input));
         }
-        for (org.kie.dmn.model.v1_1.OutputClause input : dmn.getOutput()) {
+        for (org.kie.dmn.model.api.OutputClause input : dmn.getOutput()) {
             result.getOutput().add(OutputClausePropertyConverter.wbFromDMN(input));
         }
-        for (org.kie.dmn.model.v1_1.DecisionRule dr : dmn.getRule()) {
+        for (org.kie.dmn.model.api.DecisionRule dr : dmn.getRule()) {
             result.getRule().add(DecisionRulePropertyConverter.wbFromDMN(dr));
         }
         if (dmn.getHitPolicy() != null) {
@@ -63,8 +63,8 @@ public class DecisionTablePropertyConverter {
         return result;
     }
 
-    public static org.kie.dmn.model.v1_1.DecisionTable dmnFromWB(final DecisionTable wb) {
-        org.kie.dmn.model.v1_1.DecisionTable result = new org.kie.dmn.model.v1_1.DecisionTable();
+    public static org.kie.dmn.model.api.DecisionTable dmnFromWB(final DecisionTable wb) {
+        org.kie.dmn.model.api.DecisionTable result = new org.kie.dmn.model.v1_1.TDecisionTable();
         result.setId(wb.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(), result::setTypeRef);
@@ -79,13 +79,13 @@ public class DecisionTablePropertyConverter {
             result.getRule().add(DecisionRulePropertyConverter.dmnFromWB(dr));
         }
         if (wb.getHitPolicy() != null) {
-            result.setHitPolicy(org.kie.dmn.model.v1_1.HitPolicy.fromValue(wb.getHitPolicy().value()));
+            result.setHitPolicy(org.kie.dmn.model.api.HitPolicy.fromValue(wb.getHitPolicy().value()));
         }
         if (wb.getAggregation() != null) {
-            result.setAggregation(org.kie.dmn.model.v1_1.BuiltinAggregator.fromValue(wb.getAggregation().value()));
+            result.setAggregation(org.kie.dmn.model.api.BuiltinAggregator.fromValue(wb.getAggregation().value()));
         }
         if (wb.getPreferredOrientation() != null) {
-            result.setPreferredOrientation(org.kie.dmn.model.v1_1.DecisionTableOrientation.fromValue(wb.getPreferredOrientation().value()));
+            result.setPreferredOrientation(org.kie.dmn.model.api.DecisionTableOrientation.fromValue(wb.getPreferredOrientation().value()));
         }
 
         result.setOutputLabel(wb.getOutputLabel());

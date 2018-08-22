@@ -34,7 +34,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dmn.model.v1_1.BusinessKnowledgeModel, org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel> {
+public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dmn.model.api.BusinessKnowledgeModel, org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel> {
 
     private FactoryManager factoryManager;
 
@@ -44,7 +44,7 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
     }
 
     @Override
-    public Node<View<BusinessKnowledgeModel>, ?> nodeFromDMN(final org.kie.dmn.model.v1_1.BusinessKnowledgeModel dmn) {
+    public Node<View<BusinessKnowledgeModel>, ?> nodeFromDMN(final org.kie.dmn.model.api.BusinessKnowledgeModel dmn) {
         @SuppressWarnings("unchecked")
         Node<View<BusinessKnowledgeModel>, ?> node = (Node<View<BusinessKnowledgeModel>, ?>) factoryManager.newElement(dmn.getId(),
                                                                                                                        BusinessKnowledgeModel.class).asNode();
@@ -66,9 +66,9 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
     }
 
     @Override
-    public org.kie.dmn.model.v1_1.BusinessKnowledgeModel dmnFromNode(final Node<View<BusinessKnowledgeModel>, ?> node) {
+    public org.kie.dmn.model.api.BusinessKnowledgeModel dmnFromNode(final Node<View<BusinessKnowledgeModel>, ?> node) {
         BusinessKnowledgeModel source = node.getContent().getDefinition();
-        org.kie.dmn.model.v1_1.BusinessKnowledgeModel result = new org.kie.dmn.model.v1_1.BusinessKnowledgeModel();
+        org.kie.dmn.model.api.BusinessKnowledgeModel result = new org.kie.dmn.model.v1_1.TBusinessKnowledgeModel();
         result.setId(source.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));
         result.setName(source.getName().getValue());
@@ -83,14 +83,14 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
                 if (view.getDefinition() instanceof DRGElement) {
                     DRGElement drgElement = (DRGElement) view.getDefinition();
                     if (drgElement instanceof BusinessKnowledgeModel) {
-                        org.kie.dmn.model.v1_1.KnowledgeRequirement iReq = new org.kie.dmn.model.v1_1.KnowledgeRequirement();
-                        org.kie.dmn.model.v1_1.DMNElementReference ri = new org.kie.dmn.model.v1_1.DMNElementReference();
+                        org.kie.dmn.model.api.KnowledgeRequirement iReq = new org.kie.dmn.model.v1_1.TKnowledgeRequirement();
+                        org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_1.TDMNElementReference();
                         ri.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
                         iReq.setRequiredKnowledge(ri);
                         result.getKnowledgeRequirement().add(iReq);
                     } else if (drgElement instanceof KnowledgeSource) {
-                        org.kie.dmn.model.v1_1.AuthorityRequirement iReq = new org.kie.dmn.model.v1_1.AuthorityRequirement();
-                        org.kie.dmn.model.v1_1.DMNElementReference ri = new org.kie.dmn.model.v1_1.DMNElementReference();
+                        org.kie.dmn.model.api.AuthorityRequirement iReq = new org.kie.dmn.model.v1_1.TAuthorityRequirement();
+                        org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_1.TDMNElementReference();
                         ri.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
                         iReq.setRequiredAuthority(ri);
                         result.getAuthorityRequirement().add(iReq);

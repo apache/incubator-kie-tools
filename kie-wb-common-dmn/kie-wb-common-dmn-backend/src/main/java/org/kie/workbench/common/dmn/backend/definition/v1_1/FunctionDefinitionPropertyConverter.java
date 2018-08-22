@@ -30,7 +30,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 public class FunctionDefinitionPropertyConverter {
 
-    public static FunctionDefinition wbFromDMN(final org.kie.dmn.model.v1_1.FunctionDefinition dmn) {
+    public static FunctionDefinition wbFromDMN(final org.kie.dmn.model.api.FunctionDefinition dmn) {
         if (dmn == null) {
             return null;
         }
@@ -49,7 +49,7 @@ public class FunctionDefinitionPropertyConverter {
             result.getAdditionalAttributes().put(convertedQName, kv.getValue());
         }
 
-        for (org.kie.dmn.model.v1_1.InformationItem ii : dmn.getFormalParameter()) {
+        for (org.kie.dmn.model.api.InformationItem ii : dmn.getFormalParameter()) {
             InformationItem iiConverted = InformationItemPropertyConverter.wbFromDMN(ii);
             result.getFormalParameter().add(iiConverted);
         }
@@ -57,11 +57,11 @@ public class FunctionDefinitionPropertyConverter {
         return result;
     }
 
-    public static org.kie.dmn.model.v1_1.FunctionDefinition dmnFromWB(final FunctionDefinition wb) {
+    public static org.kie.dmn.model.api.FunctionDefinition dmnFromWB(final FunctionDefinition wb) {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.v1_1.FunctionDefinition result = new org.kie.dmn.model.v1_1.FunctionDefinition();
+        org.kie.dmn.model.api.FunctionDefinition result = new org.kie.dmn.model.v1_1.TFunctionDefinition();
         result.setId(wb.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(),
@@ -86,7 +86,7 @@ public class FunctionDefinitionPropertyConverter {
         }
 
         for (InformationItem ii : wb.getFormalParameter()) {
-            org.kie.dmn.model.v1_1.InformationItem iiConverted = InformationItemPropertyConverter.dmnFromWB(ii);
+            org.kie.dmn.model.api.InformationItem iiConverted = InformationItemPropertyConverter.dmnFromWB(ii);
             result.getFormalParameter().add(iiConverted);
         }
 

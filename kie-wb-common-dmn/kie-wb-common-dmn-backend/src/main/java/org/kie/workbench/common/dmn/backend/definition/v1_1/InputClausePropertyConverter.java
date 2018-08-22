@@ -24,7 +24,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Id;
 
 public class InputClausePropertyConverter {
 
-    public static InputClause wbFromDMN(final org.kie.dmn.model.v1_1.InputClause dmn) {
+    public static InputClause wbFromDMN(final org.kie.dmn.model.api.InputClause dmn) {
         Id id = new Id(dmn.getId());
         Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         LiteralExpression inputExpression = LiteralExpressionPropertyConverter.wbFromDMN(dmn.getInputExpression());
@@ -35,8 +35,8 @@ public class InputClausePropertyConverter {
         return result;
     }
 
-    public static org.kie.dmn.model.v1_1.InputClause dmnFromWB(final InputClause wb) {
-        org.kie.dmn.model.v1_1.InputClause result = new org.kie.dmn.model.v1_1.InputClause();
+    public static org.kie.dmn.model.api.InputClause dmnFromWB(final InputClause wb) {
+        org.kie.dmn.model.api.InputClause result = new org.kie.dmn.model.v1_1.TInputClause();
         result.setId(wb.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         result.setInputExpression(LiteralExpressionPropertyConverter.dmnFromWB(wb.getInputExpression()));

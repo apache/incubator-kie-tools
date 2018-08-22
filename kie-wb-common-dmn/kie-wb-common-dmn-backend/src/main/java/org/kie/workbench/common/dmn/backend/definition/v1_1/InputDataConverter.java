@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-public class InputDataConverter implements NodeConverter<org.kie.dmn.model.v1_1.InputData, org.kie.workbench.common.dmn.api.definition.v1_1.InputData> {
+public class InputDataConverter implements NodeConverter<org.kie.dmn.model.api.InputData, org.kie.workbench.common.dmn.api.definition.v1_1.InputData> {
 
     private FactoryManager factoryManager;
 
@@ -38,7 +38,7 @@ public class InputDataConverter implements NodeConverter<org.kie.dmn.model.v1_1.
     }
 
     @Override
-    public Node<View<InputData>, ?> nodeFromDMN(final org.kie.dmn.model.v1_1.InputData dmn) {
+    public Node<View<InputData>, ?> nodeFromDMN(final org.kie.dmn.model.api.InputData dmn) {
         @SuppressWarnings("unchecked")
         Node<View<InputData>, ?> node = (Node<View<InputData>, ?>) factoryManager.newElement(dmn.getId(),
                                                                                              InputData.class).asNode();
@@ -58,9 +58,9 @@ public class InputDataConverter implements NodeConverter<org.kie.dmn.model.v1_1.
     }
 
     @Override
-    public org.kie.dmn.model.v1_1.InputData dmnFromNode(final Node<View<InputData>, ?> node) {
+    public org.kie.dmn.model.api.InputData dmnFromNode(final Node<View<InputData>, ?> node) {
         InputData source = node.getContent().getDefinition();
-        org.kie.dmn.model.v1_1.InputData result = new org.kie.dmn.model.v1_1.InputData();
+        org.kie.dmn.model.api.InputData result = new org.kie.dmn.model.v1_1.TInputData();
         result.setId(source.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));
         result.setName(source.getName().getValue());

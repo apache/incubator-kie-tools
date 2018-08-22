@@ -27,13 +27,13 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 public class RelationPropertyConverter {
 
-    public static Relation wbFromDMN(final org.kie.dmn.model.v1_1.Relation dmn) {
+    public static Relation wbFromDMN(final org.kie.dmn.model.api.Relation dmn) {
         Id id = new Id(dmn.getId());
         Description description = new Description(dmn.getDescription());
         QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef());
 
-        List<org.kie.dmn.model.v1_1.InformationItem> column = dmn.getColumn();
-        List<org.kie.dmn.model.v1_1.List> row = dmn.getRow();
+        List<org.kie.dmn.model.api.InformationItem> column = dmn.getColumn();
+        List<org.kie.dmn.model.api.List> row = dmn.getRow();
 
         List<InformationItem> convertedColumn = column.stream().map(InformationItemPropertyConverter::wbFromDMN).collect(Collectors.toList());
         List<org.kie.workbench.common.dmn.api.definition.v1_1.List> convertedRow = row.stream().map(ListPropertyConverter::wbFromDMN).collect(Collectors.toList());
@@ -42,20 +42,20 @@ public class RelationPropertyConverter {
         return result;
     }
 
-    public static org.kie.dmn.model.v1_1.Relation dmnFromWB(final Relation wb) {
-        org.kie.dmn.model.v1_1.Relation result = new org.kie.dmn.model.v1_1.Relation();
+    public static org.kie.dmn.model.api.Relation dmnFromWB(final Relation wb) {
+        org.kie.dmn.model.api.Relation result = new org.kie.dmn.model.v1_1.TRelation();
         result.setId(wb.getId().getValue());
         result.setDescription(wb.getDescription().getValue());
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(),
                                             result::setTypeRef);
 
         for (InformationItem iitem : wb.getColumn()) {
-            org.kie.dmn.model.v1_1.InformationItem iitemConverted = InformationItemPropertyConverter.dmnFromWB(iitem);
+            org.kie.dmn.model.api.InformationItem iitemConverted = InformationItemPropertyConverter.dmnFromWB(iitem);
             result.getColumn().add(iitemConverted);
         }
 
         for (org.kie.workbench.common.dmn.api.definition.v1_1.List list : wb.getRow()) {
-            org.kie.dmn.model.v1_1.List listConverted = ListPropertyConverter.dmnFromWB(list);
+            org.kie.dmn.model.api.List listConverted = ListPropertyConverter.dmnFromWB(list);
             result.getRow().add(listConverted);
         }
 
