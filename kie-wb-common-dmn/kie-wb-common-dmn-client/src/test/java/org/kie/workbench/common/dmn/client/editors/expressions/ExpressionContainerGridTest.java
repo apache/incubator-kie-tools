@@ -32,7 +32,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
-import org.kie.workbench.common.dmn.client.commands.ClearExpressionTypeCommand;
+import org.kie.workbench.common.dmn.client.commands.general.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;

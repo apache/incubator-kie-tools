@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.commands;
+package org.kie.workbench.common.dmn.client.commands.general;
 
 import java.util.Optional;
 
@@ -22,7 +22,6 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.client.commands.general.BaseClearExpressionCommandTest;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionContainerUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
