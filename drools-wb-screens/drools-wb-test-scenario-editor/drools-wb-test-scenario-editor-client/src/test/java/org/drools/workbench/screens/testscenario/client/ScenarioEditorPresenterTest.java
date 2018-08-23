@@ -33,6 +33,7 @@ import org.drools.workbench.screens.testscenario.client.type.TestScenarioResourc
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.drools.workbench.screens.testscenario.model.TestScenarioResult;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
+import org.guvnor.common.services.project.categories.Decision;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.WorkspaceProject;
@@ -71,7 +72,6 @@ import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
@@ -170,7 +170,7 @@ public class ScenarioEditorPresenterTest {
                                                  importsWidget,
                                                  fakeService,
                                                  new CallerMock<>(testService),
-                                                 new TestScenarioResourceType(new Others()),
+                                                 new TestScenarioResourceType(new Decision()),
                                                  modelOracleFactory,
                                                  settingsPage,
                                                  auditPage) {

@@ -25,6 +25,7 @@ import org.apache.lucene.search.Query;
 import org.drools.workbench.models.testscenarios.backend.util.ScenarioXMLPersistence;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.type.TestScenarioResourceTypeDefinition;
+import org.guvnor.common.services.project.categories.Decision;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
@@ -36,7 +37,6 @@ import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.workbench.category.Others;
 
 public class IndexTestScenarioTest extends BaseIndexingTest<TestScenarioResourceTypeDefinition> {
 
@@ -139,7 +139,7 @@ public class IndexTestScenarioTest extends BaseIndexingTest<TestScenarioResource
 
     @Override
     protected TestScenarioResourceTypeDefinition getResourceTypeDefinition() {
-        return new TestScenarioResourceTypeDefinition(new Others());
+        return new TestScenarioResourceTypeDefinition(new Decision());
     }
 
     @Override
