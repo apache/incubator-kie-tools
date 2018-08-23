@@ -41,6 +41,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyRenderCon
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBoundaryRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer.GridRendererContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer.RenderBodyGridBackgroundCommand;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer.RenderBodyGridContentCommand;
@@ -54,6 +55,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.Grid
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer.RendererCommand;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Mockito.doReturn;
@@ -240,5 +242,29 @@ public class BaseExpressionGridRenderingTest extends BaseExpressionGridTest {
         order.verify(renderHeaderGridLinesCommand).execute(any(GridRendererContext.class));
         order.verify(renderBodyGridLinesCommand).execute(any(GridRendererContext.class));
         order.verify(renderSelectedCellsCommand).execute(any(GridRendererContext.class));
+    }
+
+    @Test
+    public void testHeaderDimensionsWhenHeaderNotHidden() {
+        final GridRenderer renderer = new BaseExpressionGridRenderer(false);
+
+        assertEquals(BaseExpressionGridRenderer.HEADER_HEIGHT,
+                     renderer.getHeaderHeight(),
+                     0.0);
+        assertEquals(BaseExpressionGridRenderer.HEADER_ROW_HEIGHT,
+                     renderer.getHeaderRowHeight(),
+                     0.0);
+    }
+
+    @Test
+    public void testHeaderDimensionsWhenHeaderIsNotHidden() {
+        final GridRenderer renderer = new BaseExpressionGridRenderer(true);
+
+        assertEquals(0.0,
+                     renderer.getHeaderHeight(),
+                     0.0);
+        assertEquals(0.0,
+                     renderer.getHeaderRowHeight(),
+                     0.0);
     }
 }

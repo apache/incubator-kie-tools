@@ -30,7 +30,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class NameColumnTest extends BaseDOMElementSingletonColumnTest<TextBoxSingletonDOMElementFactory, TextBoxDOMElement, TextBox, NameColumn, InvocationGrid> {
+public class InvocationParameterColumnTest extends BaseDOMElementSingletonColumnTest<TextBoxSingletonDOMElementFactory, TextBoxDOMElement, TextBox, InvocationParameterColumn, InvocationGrid> {
 
     @Mock
     private TextBoxSingletonDOMElementFactory factory;
@@ -62,10 +62,10 @@ public class NameColumnTest extends BaseDOMElementSingletonColumnTest<TextBoxSin
     }
 
     @Override
-    protected NameColumn getColumn() {
-        return new NameColumn(headerMetaData,
-                              factory,
-                              gridWidget);
+    protected InvocationParameterColumn getColumn() {
+        return new InvocationParameterColumn(headerMetaData,
+                                             factory,
+                                             gridWidget);
     }
 
     @Test

@@ -21,24 +21,24 @@ import java.util.List;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Text;
 import com.google.gwt.core.client.GWT;
-import org.gwtbootstrap3.client.ui.TextArea;
+import org.gwtbootstrap3.client.ui.base.TextBoxBase;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextAreaDOMElement;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
+import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
+import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.BaseSingletonDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.single.impl.BaseGridColumnSingletonDOMElementRenderer;
 
-public class NameAndDataTypeColumnRenderer extends BaseGridColumnSingletonDOMElementRenderer<String, TextArea, TextAreaDOMElement> {
+public class NameAndDataTypeColumnRenderer<W extends TextBoxBase, E extends BaseDOMElement<String, W>> extends BaseGridColumnSingletonDOMElementRenderer<String, W, E> {
 
     static final String FONT_STYLE_TYPE_REF = "italic";
 
     static final double SPACING = 8.0;
 
-    public NameAndDataTypeColumnRenderer(final TextAreaSingletonDOMElementFactory factory) {
+    public NameAndDataTypeColumnRenderer(final BaseSingletonDOMElementFactory<String, W, E> factory) {
         super(factory);
     }
 

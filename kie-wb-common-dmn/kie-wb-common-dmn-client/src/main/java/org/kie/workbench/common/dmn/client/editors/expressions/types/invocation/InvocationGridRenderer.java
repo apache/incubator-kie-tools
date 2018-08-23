@@ -20,9 +20,23 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRender
 
 public class InvocationGridRenderer extends BaseExpressionGridRenderer {
 
+    static final double HEADER_HEIGHT = 128;
+
+    static final double HEADER_ROW_HEIGHT = 128;
+
     @SuppressWarnings("unused")
     public InvocationGridRenderer(final boolean isHeaderHidden) {
         //TODO {manstis} We need to hide only the first header row when header is hidden
         super(false);
+    }
+
+    @Override
+    protected double getRequiredHeaderHeight(final boolean isHeaderHidden) {
+        return isHeaderHidden ? 0.0 : HEADER_HEIGHT;
+    }
+
+    @Override
+    protected double getRequiredHeaderRowHeight(final boolean isHeaderHidden) {
+        return isHeaderHidden ? 0.0 : HEADER_ROW_HEIGHT;
     }
 }

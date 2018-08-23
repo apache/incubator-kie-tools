@@ -29,6 +29,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Nam
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DescriptionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.InputClauseColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.OutputClauseColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.InvocationParameterColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionColumn;
@@ -133,7 +134,7 @@ public class BaseExpressionGridTheme implements GridRendererTheme {
         final Rectangle background = new Rectangle(0, 0);
         if (column instanceof NameColumn) {
             background.setFillColor(LABEL_BACKGROUND_FILL_COLOUR);
-        } else if (column instanceof org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.NameColumn) {
+        } else if (column instanceof InvocationParameterColumn) {
             background.setFillColor(LABEL_BACKGROUND_FILL_COLOUR);
         } else if (column instanceof org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.NameColumn) {
             background.setFillColor(LABEL_BACKGROUND_FILL_COLOUR);

@@ -19,18 +19,18 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.invocation
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.TextArea;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableTextHeaderMetaData;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextAreaDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
 
-public class InvocationColumnExpressionHeaderMetaData extends EditableTextHeaderMetaData<TextBox, TextBoxDOMElement> {
+public class InvocationColumnExpressionHeaderMetaData extends EditableTextHeaderMetaData<TextArea, TextAreaDOMElement> {
 
     static final String EXPRESSION_COLUMN_GROUP = "InvocationColumnExpressionHeaderMetaData$Expression";
 
     public InvocationColumnExpressionHeaderMetaData(final Supplier<String> titleGetter,
                                                     final Consumer<String> titleSetter,
-                                                    final SingletonDOMElementFactory<TextBox, TextBoxDOMElement> factory) {
+                                                    final SingletonDOMElementFactory<TextArea, TextAreaDOMElement> factory) {
         super(titleGetter,
               titleSetter,
               factory,

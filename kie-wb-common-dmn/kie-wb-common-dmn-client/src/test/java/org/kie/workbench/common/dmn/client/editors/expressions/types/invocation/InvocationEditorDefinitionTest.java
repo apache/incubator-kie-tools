@@ -31,6 +31,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -96,6 +97,9 @@ public class InvocationEditorDefinitionTest {
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
     @Mock
+    private NameAndDataTypeEditorView.Presenter headerEditor;
+
+    @Mock
     private GridCellTuple parent;
 
     @Mock
@@ -127,7 +131,8 @@ public class InvocationEditorDefinitionTest {
                                                          refreshFormPropertiesEvent,
                                                          listSelector,
                                                          translationService,
-                                                         expressionEditorDefinitionsSupplier);
+                                                         expressionEditorDefinitionsSupplier,
+                                                         headerEditor);
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add((ExpressionEditorDefinition) definition);
 

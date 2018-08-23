@@ -30,6 +30,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.Deci
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DescriptionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.InputClauseColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.OutputClauseColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.InvocationParameterColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionColumn;
@@ -57,7 +58,7 @@ public class BaseExpressionGridThemeTest {
 
     private List<Pair<Class<? extends GridColumn>, String>> tests = new ArrayList<Pair<Class<? extends GridColumn>, String>>() {{
         add(new Pair<>(NameColumn.class, LABEL_BACKGROUND_FILL_COLOUR));
-        add(new Pair<>(org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.NameColumn.class, LABEL_BACKGROUND_FILL_COLOUR));
+        add(new Pair<>(InvocationParameterColumn.class, LABEL_BACKGROUND_FILL_COLOUR));
         add(new Pair<>(org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.NameColumn.class, LABEL_BACKGROUND_FILL_COLOUR));
         add(new Pair<>(RelationColumn.class, RELATION_BACKGROUND_FILL_COLOUR));
         add(new Pair<>(LiteralExpressionColumn.class, LITERAL_EXPRESSION_COLUMN_BACKGROUND_FILL_COLOUR));

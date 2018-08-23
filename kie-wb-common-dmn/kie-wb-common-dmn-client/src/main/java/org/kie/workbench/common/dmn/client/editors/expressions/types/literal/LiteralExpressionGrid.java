@@ -172,7 +172,7 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
     @SuppressWarnings("unchecked")
     protected BiConsumer<HasName, String> setDisplayNameConsumer() {
         return (hn, name) -> {
-            final CompositeCommand.Builder commandBuilder = newHasNameHasNoValueCommand(hn);
+            final CompositeCommand.Builder commandBuilder = newHasNameHasValueCommand(hn, name);
             getUpdateStunnerTitleCommand(name).ifPresent(commandBuilder::addCommand);
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           commandBuilder.build());

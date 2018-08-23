@@ -27,7 +27,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.NameColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.InvocationParameterColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -62,7 +62,7 @@ public class MoveRowsCommandTest {
     protected RowNumberColumn uiRowNumberColumn;
 
     @Mock
-    protected NameColumn uiNameColumn;
+    protected InvocationParameterColumn uiNameColumn;
 
     @Mock
     protected ExpressionEditorColumn uiExpressionEditorColumn;

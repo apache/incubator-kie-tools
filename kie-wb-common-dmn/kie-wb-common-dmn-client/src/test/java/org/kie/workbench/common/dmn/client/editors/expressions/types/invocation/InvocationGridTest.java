@@ -32,24 +32,29 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.AddParameterBindingCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.DeleteParameterBindingCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
-import org.kie.workbench.common.dmn.client.commands.general.DeleteHeaderValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
-import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.context.NameColumnHeaderMetaData;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -67,6 +72,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPropertyCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
@@ -94,7 +100,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils.assertCommands;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -102,6 +107,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -121,6 +127,10 @@ public class InvocationGridTest {
     private final static int CLEAR_EXPRESSION_TYPE = 4;
 
     private static final String NODE_UUID = "uuid";
+
+    private static final String NAME = "name";
+
+    private static final String NAME_NEW = "name-new";
 
     private GridCellTuple tupleWithoutValue;
 
@@ -184,10 +194,10 @@ public class InvocationGridTest {
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
     @Mock
-    private GridCellTuple parent;
+    private NameAndDataTypeEditorView.Presenter headerEditor;
 
     @Mock
-    private HasExpression hasExpression;
+    private GridCellTuple parent;
 
     @Mock
     private ExpressionEditorDefinition literalExpressionEditorDefinition;
@@ -222,6 +232,11 @@ public class InvocationGridTest {
     @Captor
     private ArgumentCaptor<GridLayerRedrawManager.PrioritizedCommand> redrawCommandCaptor;
 
+    @Captor
+    private ArgumentCaptor<CompositeCommand> compositeCommandCaptor;
+
+    private Decision hasExpression = new Decision();
+
     private LiteralExpression literalExpression = new LiteralExpression();
 
     private Optional<Invocation> expression = Optional.empty();
@@ -251,7 +266,8 @@ public class InvocationGridTest {
                                                     refreshFormPropertiesEvent,
                                                     listSelector,
                                                     translationService,
-                                                    expressionEditorDefinitionsSupplier);
+                                                    expressionEditorDefinitionsSupplier,
+                                                    headerEditor);
 
         expression = definition.getModelClass();
         definition.enrich(Optional.empty(), expression);
@@ -324,7 +340,7 @@ public class InvocationGridTest {
         assertEquals(3,
                      uiModel.getColumnCount());
         assertTrue(uiModel.getColumns().get(0) instanceof RowNumberColumn);
-        assertTrue(uiModel.getColumns().get(1) instanceof NameColumn);
+        assertTrue(uiModel.getColumns().get(1) instanceof InvocationParameterColumn);
         assertTrue(uiModel.getColumns().get(2) instanceof ExpressionEditorColumn);
 
         assertEquals(1,
@@ -370,10 +386,10 @@ public class InvocationGridTest {
 
         assertEquals(2,
                      header.size());
-        assertTrue(header.get(0) instanceof NameColumnHeaderMetaData);
+        assertTrue(header.get(0) instanceof InvocationColumnHeaderMetaData);
         assertTrue(header.get(1) instanceof InvocationColumnExpressionHeaderMetaData);
 
-        final NameColumnHeaderMetaData md1 = (NameColumnHeaderMetaData) header.get(0);
+        final InvocationColumnHeaderMetaData md1 = (InvocationColumnHeaderMetaData) header.get(0);
         final InvocationColumnExpressionHeaderMetaData md2 = (InvocationColumnExpressionHeaderMetaData) header.get(1);
 
         assertEquals("name",
@@ -671,24 +687,105 @@ public class InvocationGridTest {
     }
 
     @Test
-    public void testHeaderFactoryWhenNested() {
-        setupGrid(1);
+    public void testGetDisplayName() {
+        setupGrid(0);
 
-        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderHasNameTextBoxFactory();
-        assertCommands(factory.getHasNoValueCommand().apply(tupleWithoutValue),
-                       DeleteHeaderValueCommand.class);
-        assertCommands(factory.getHasValueCommand().apply(tupleWithValue),
-                       SetHeaderValueCommand.class);
+        assertThat(extractHeaderMetaData().getDisplayName()).isEqualTo(NAME);
+    }
+
+    private InvocationColumnHeaderMetaData extractHeaderMetaData() {
+        final InvocationParameterColumn column = (InvocationParameterColumn) grid.getModel().getColumns().get(1);
+        return (InvocationColumnHeaderMetaData) column.getHeaderMetaData().get(0);
     }
 
     @Test
-    public void testHeaderFactoryWhenNotNested() {
+    @SuppressWarnings("unchecked")
+    public void testSetDisplayNameWithNoChange() {
         setupGrid(0);
 
-        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderHasNameTextBoxFactory();
-        assertCommands(factory.getHasNoValueCommand().apply(tupleWithoutValue),
-                       DeleteHeaderValueCommand.class, UpdateElementPropertyCommand.class);
-        assertCommands(factory.getHasValueCommand().apply(tupleWithValue),
-                       SetHeaderValueCommand.class, UpdateElementPropertyCommand.class);
+        extractHeaderMetaData().setDisplayName(NAME);
+
+        verify(sessionCommandManager, never()).execute(any(AbstractCanvasHandler.class),
+                                                       any(org.kie.workbench.common.stunner.core.command.Command.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSetDisplayNameWithEmptyValue() {
+        setupGrid(0);
+
+        extractHeaderMetaData().setDisplayName("");
+
+        verify(sessionCommandManager).execute(eq(canvasHandler),
+                                              compositeCommandCaptor.capture());
+
+        GridFactoryCommandUtils.assertCommands(compositeCommandCaptor.getValue(),
+                                               DeleteHasNameCommand.class,
+                                               UpdateElementPropertyCommand.class);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSetDisplayNameWithNullValue() {
+        setupGrid(0);
+
+        extractHeaderMetaData().setDisplayName(null);
+
+        verify(sessionCommandManager).execute(eq(canvasHandler),
+                                              compositeCommandCaptor.capture());
+
+        GridFactoryCommandUtils.assertCommands(compositeCommandCaptor.getValue(),
+                                               DeleteHasNameCommand.class,
+                                               UpdateElementPropertyCommand.class);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSetDisplayNameWithNonEmptyValue() {
+        setupGrid(0);
+
+        extractHeaderMetaData().setDisplayName(NAME_NEW);
+
+        verify(sessionCommandManager).execute(eq(canvasHandler),
+                                              compositeCommandCaptor.capture());
+
+        GridFactoryCommandUtils.assertCommands(compositeCommandCaptor.getValue(),
+                                               SetHasNameCommand.class,
+                                               UpdateElementPropertyCommand.class);
+    }
+
+    @Test
+    public void testGetTypeRef() {
+        setupGrid(0);
+
+        assertThat(extractHeaderMetaData().getTypeRef()).isNotNull();
+    }
+
+    @Test
+    public void testSetTypeRef() {
+        setupGrid(0);
+
+        extractHeaderMetaData().setTypeRef(new QName(DMNModelInstrumentedBase.Namespace.FEEL.getUri(),
+                                                     BuiltInType.DATE.getName()));
+
+        verify(sessionCommandManager).execute(eq(canvasHandler),
+                                              any(SetTypeRefCommand.class));
+    }
+
+    @Test
+    public void testSetTypeRefWithoutChange() {
+        setupGrid(0);
+
+        extractHeaderMetaData().setTypeRef(new QName());
+
+        verify(sessionCommandManager, never()).execute(any(AbstractCanvasHandler.class),
+                                                       any(SetTypeRefCommand.class));
+    }
+
+    @Test
+    public void testAsDMNModelInstrumentedBase() {
+        setupGrid(0);
+
+        assertThat(extractHeaderMetaData().asDMNModelInstrumentedBase()).isInstanceOf(hasExpression.getVariable().getClass());
     }
 }

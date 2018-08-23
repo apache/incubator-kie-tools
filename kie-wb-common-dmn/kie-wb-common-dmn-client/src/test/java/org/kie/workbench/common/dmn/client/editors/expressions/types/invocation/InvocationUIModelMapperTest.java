@@ -66,7 +66,7 @@ public class InvocationUIModelMapperTest {
     private RowNumberColumn uiRowNumberColumn;
 
     @Mock
-    private NameColumn uiNameColumn;
+    private InvocationParameterColumn uiNameColumn;
 
     @Mock
     private ExpressionEditorColumn uiExpressionEditorColumn;

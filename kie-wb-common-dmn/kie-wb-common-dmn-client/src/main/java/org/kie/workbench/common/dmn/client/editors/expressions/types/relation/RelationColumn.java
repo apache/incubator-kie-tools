@@ -43,7 +43,7 @@ public class RelationColumn extends DMNSimpleGridColumn<RelationGrid, String> im
                           final TextAreaSingletonDOMElementFactory factory,
                           final RelationGrid gridWidget) {
         super(headerMetaData,
-              new NameAndDataTypeColumnRenderer(factory),
+              new NameAndDataTypeColumnRenderer<>(factory),
               gridWidget);
         this.factory = PortablePreconditions.checkNotNull("factory",
                                                           factory);

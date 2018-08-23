@@ -20,9 +20,9 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl
 
 public class BaseExpressionGridRenderer extends BaseGridRenderer {
 
-    protected static final double HEADER_HEIGHT = 64;
+    static final double HEADER_HEIGHT = 64;
 
-    protected static final double HEADER_ROW_HEIGHT = 64;
+    static final double HEADER_ROW_HEIGHT = 64;
 
     protected final double headerHeight;
 
@@ -30,8 +30,8 @@ public class BaseExpressionGridRenderer extends BaseGridRenderer {
 
     public BaseExpressionGridRenderer(final boolean isHeaderHidden) {
         super(new BaseExpressionGridTheme());
-        this.headerHeight = isHeaderHidden ? 0.0 : HEADER_HEIGHT;
-        this.headerRowHeight = isHeaderHidden ? 0.0 : HEADER_ROW_HEIGHT;
+        this.headerHeight = getRequiredHeaderHeight(isHeaderHidden);
+        this.headerRowHeight = getRequiredHeaderRowHeight(isHeaderHidden);
     }
 
     @Override
@@ -42,5 +42,13 @@ public class BaseExpressionGridRenderer extends BaseGridRenderer {
     @Override
     public double getHeaderRowHeight() {
         return headerRowHeight;
+    }
+
+    protected double getRequiredHeaderHeight(final boolean isHeaderHidden) {
+        return isHeaderHidden ? 0.0 : HEADER_HEIGHT;
+    }
+
+    protected double getRequiredHeaderRowHeight(final boolean isHeaderHidden) {
+        return isHeaderHidden ? 0.0 : HEADER_ROW_HEIGHT;
     }
 }
