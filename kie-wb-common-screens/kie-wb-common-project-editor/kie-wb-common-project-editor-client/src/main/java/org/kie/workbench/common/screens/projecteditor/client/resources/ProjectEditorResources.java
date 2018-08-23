@@ -48,7 +48,7 @@ public interface ProjectEditorResources
     @Source("images/newProject.gif")
     ImageResource newProjectIcon();
 
-    @Source("images/newFolder.gif")
+    @Source("images/BPM_FileIcons_package.png")
     ImageResource newFolderIcon();
 
 }
