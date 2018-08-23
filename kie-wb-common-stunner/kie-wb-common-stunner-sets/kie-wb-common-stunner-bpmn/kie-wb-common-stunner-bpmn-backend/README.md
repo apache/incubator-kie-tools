@@ -4,7 +4,7 @@
     
     Disable with flag:
     
-        -Dbpmn.marshaller.experimental=false
+        -Dbpmn.marshaller.legacy=true
         
     - Entry point: `BPMNDirectDiagramMarshaller` which implements `BPMNDirectDiagramMarshaller` 
     - Actual unmarshalling from XML is delegated to Eclipse BPMN2 library

@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend;
 
-import java.util.Optional;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -34,7 +32,7 @@ import org.slf4j.LoggerFactory;
 public class BPMNBackendService extends AbstractDefinitionSetService {
 
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(BPMNBackendService.class);
-    private static final String MARSHALLER_EXPERIMENTAL_PROPERTY = "bpmn.marshaller.experimental";
+    private static final String MARSHALLER_LEGACY_PROPERTY = "bpmn.marshaller.legacy";
 
     private final BPMNDefinitionSetResourceType bpmnResourceType;
 
@@ -59,16 +57,14 @@ public class BPMNBackendService extends AbstractDefinitionSetService {
             final BPMNDiagramMarshaller bpmnDiagramMarshaller,
             final BPMNDirectDiagramMarshaller bpmnDirectDiagramMarshaller) {
 
-        Boolean enableExperimentalBpmnMarshaller = Optional.ofNullable(
-                System.getProperty(MARSHALLER_EXPERIMENTAL_PROPERTY))
-                .map(Boolean::parseBoolean)
-                .orElse(true);
+        Boolean useLegacyMarshaller =
+                Boolean.parseBoolean(System.getProperty(MARSHALLER_LEGACY_PROPERTY, "false"));
 
-        LOG.info("{} = {}", MARSHALLER_EXPERIMENTAL_PROPERTY, enableExperimentalBpmnMarshaller);
+        LOG.info("{} = {}", MARSHALLER_LEGACY_PROPERTY, useLegacyMarshaller);
 
-        return (enableExperimentalBpmnMarshaller) ?
-                bpmnDirectDiagramMarshaller :
-                bpmnDiagramMarshaller;
+        return (useLegacyMarshaller) ?
+                bpmnDiagramMarshaller :
+                bpmnDirectDiagramMarshaller;
     }
 
     @Override
