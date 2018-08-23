@@ -31,6 +31,7 @@ class RowNumberColumnHeaderMetaData extends EditablePopupHeaderMetaData<HasHitPo
 
     private final Supplier<HitPolicy> hitPolicySupplier;
     private final Supplier<BuiltinAggregator> builtinAggregatorSupplier;
+    private final DecisionTableGrid gridWidget;
 
     public RowNumberColumnHeaderMetaData(final Supplier<HitPolicy> hitPolicySupplier,
                                          final Supplier<BuiltinAggregator> builtinAggregatorSupplier,
@@ -38,10 +39,15 @@ class RowNumberColumnHeaderMetaData extends EditablePopupHeaderMetaData<HasHitPo
                                          final HitPolicyEditorView.Presenter editor,
                                          final DecisionTableGrid gridWidget) {
         super(cellEditorControls,
-              editor,
-              gridWidget);
+              editor);
         this.hitPolicySupplier = hitPolicySupplier;
         this.builtinAggregatorSupplier = builtinAggregatorSupplier;
+        this.gridWidget = gridWidget;
+    }
+
+    @Override
+    protected HasHitPolicyControl getPresenter() {
+        return gridWidget;
     }
 
     @Override

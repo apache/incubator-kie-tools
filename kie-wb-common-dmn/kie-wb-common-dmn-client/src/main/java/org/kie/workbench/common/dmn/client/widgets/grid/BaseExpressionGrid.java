@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -33,11 +35,16 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteHeaderValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderGridWidgetMouseDoubleClickHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
@@ -197,7 +204,7 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
             commandBuilder.addCommand(new DeleteHeaderValueCommand(extractEditableHeaderMetaData(gcv),
                                                                    () -> {
                                                                        gridLayer.batch();
-                                                                       nodeUUID.ifPresent(uuid -> refreshFormPropertiesEvent.fire(new RefreshFormProperties(sessionManager.getCurrentSession(), uuid)));
+                                                                       getNodeUUID().ifPresent(uuid -> refreshFormPropertiesEvent.fire(new RefreshFormProperties(sessionManager.getCurrentSession(), uuid)));
                                                                    }));
             getUpdateStunnerTitleCommand("").ifPresent(commandBuilder::addCommand);
             return commandBuilder.build();
@@ -212,17 +219,61 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
                                                                 extractEditableHeaderMetaData(gcv),
                                                                 () -> {
                                                                     gridLayer.batch();
-                                                                    nodeUUID.ifPresent(uuid -> refreshFormPropertiesEvent.fire(new RefreshFormProperties(sessionManager.getCurrentSession(), uuid)));
+                                                                    getNodeUUID().ifPresent(uuid -> refreshFormPropertiesEvent.fire(new RefreshFormProperties(sessionManager.getCurrentSession(), uuid)));
                                                                 }));
             getUpdateStunnerTitleCommand(title).ifPresent(commandBuilder::addCommand);
             return commandBuilder.build();
         };
     }
 
+    @SuppressWarnings("unchecked")
+    protected Consumer<HasName> clearDisplayNameConsumer() {
+        return (hn) -> sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                                     newHasNameHasNoValueCommand(hn).build());
+    }
+
+    @SuppressWarnings("unchecked")
+    protected BiConsumer<HasName, String> setDisplayNameConsumer() {
+        return (hn, name) -> sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                                           newHasNameHasValueCommand(hn, name).build());
+    }
+
+    protected BiConsumer<HasTypeRef, QName> setTypeRefConsumer() {
+        return (htr, typeRef) -> sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                                               new SetTypeRefCommand(htr,
+                                                                                     typeRef,
+                                                                                     () -> {
+                                                                                         gridLayer.batch();
+                                                                                         getNodeUUID().ifPresent(uuid -> refreshFormPropertiesEvent.fire(new RefreshFormProperties(sessionManager.getCurrentSession(), uuid)));
+                                                                                     }));
+    }
+
+    protected CompositeCommand.Builder newHasNameHasNoValueCommand(final HasName hasName) {
+        final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder = new CompositeCommand.Builder<>();
+        commandBuilder.addCommand(new DeleteHasNameCommand(hasName,
+                                                           () -> {
+                                                               gridLayer.batch();
+                                                               getNodeUUID().ifPresent(uuid -> refreshFormPropertiesEvent.fire(new RefreshFormProperties(sessionManager.getCurrentSession(), uuid)));
+                                                           }));
+        return commandBuilder;
+    }
+
+    protected CompositeCommand.Builder newHasNameHasValueCommand(final HasName hasName,
+                                                                 final String name) {
+        final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder = new CompositeCommand.Builder<>();
+        commandBuilder.addCommand(new SetHasNameCommand(hasName,
+                                                        name,
+                                                        () -> {
+                                                            gridLayer.batch();
+                                                            getNodeUUID().ifPresent(uuid -> refreshFormPropertiesEvent.fire(new RefreshFormProperties(sessionManager.getCurrentSession(), uuid)));
+                                                        }));
+        return commandBuilder;
+    }
+
     protected Optional<AbstractCanvasGraphCommand> getUpdateStunnerTitleCommand(final String value) {
         AbstractCanvasGraphCommand command = null;
-        if (nodeUUID.isPresent()) {
-            final String uuid = nodeUUID.get();
+        if (getNodeUUID().isPresent()) {
+            final String uuid = getNodeUUID().get();
             final AbstractCanvasHandler canvasHandler = (AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler();
             final Element<?> element = canvasHandler.getGraphIndex().get(uuid);
             if (element.getContent() instanceof Definition) {
@@ -407,6 +458,11 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
     @Override
     public boolean isCacheable() {
         return true;
+    }
+
+    //Package protected getter for Unit Tests.
+    Optional<String> getNodeUUID() {
+        return nodeUUID;
     }
 
     public double getMinimumWidth() {

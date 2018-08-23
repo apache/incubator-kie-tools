@@ -21,10 +21,13 @@ import java.util.Collections;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -38,13 +41,20 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManage
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class EditableHeaderGridWidgetMouseDoubleClickHandlerTest {
+
+    private static final int MOUSE_EVENT_X = 32;
+
+    private static final int MOUSE_EVENT_Y = 64;
+
+    private static final double GRID_COMPUTED_LOCATION_X = 100.0;
+
+    private static final double GRID_COMPUTED_LOCATION_Y = 200.0;
 
     @Mock
     private GridWidget gridWidget;
@@ -85,9 +95,14 @@ public class EditableHeaderGridWidgetMouseDoubleClickHandlerTest {
     @Mock
     private EditableHeaderMetaData editableHeaderMetaData;
 
+    @Captor
+    private ArgumentCaptor<GridBodyCellEditContext> gridBodyCellEditContextCaptor;
+
     private GridData uiModel;
 
     private EditableHeaderGridWidgetMouseDoubleClickHandler handler;
+
+    private Point2D computedLocation = new Point2D(GRID_COMPUTED_LOCATION_X, GRID_COMPUTED_LOCATION_Y);
 
     @Before
     @SuppressWarnings("unchecked")
@@ -99,14 +114,20 @@ public class EditableHeaderGridWidgetMouseDoubleClickHandlerTest {
         when(gridWidget.getRenderer()).thenReturn(renderer);
         when(gridWidget.getHeader()).thenReturn(gridWidgetHeader);
         when(gridWidget.getViewport()).thenReturn(viewport);
+        when(gridWidget.getComputedLocation()).thenReturn(computedLocation);
+        when(gridWidget.getWidth()).thenReturn((double) MOUSE_EVENT_X);
 
         when(rendererHelper.getRenderingInformation()).thenReturn(renderingInformation);
         when(rendererHelper.getColumnInformation(anyDouble())).thenReturn(columnInformation);
         when(columnInformation.getColumn()).thenReturn(gridColumn);
 
+        when(renderer.getHeaderHeight()).thenReturn((double) MOUSE_EVENT_Y);
+        when(renderer.getHeaderRowHeight()).thenReturn((double) MOUSE_EVENT_Y);
         when(renderingInformation.getBodyBlockInformation()).thenReturn(renderingBlockInformation);
         when(renderingInformation.getFloatingBlockInformation()).thenReturn(renderingBlockInformation);
-        when(renderer.getHeaderHeight()).thenReturn(0.0);
+
+        when(event.getX()).thenReturn(MOUSE_EVENT_X);
+        when(event.getY()).thenReturn(MOUSE_EVENT_Y);
 
         this.handler = new EditableHeaderGridWidgetMouseDoubleClickHandler(gridWidget,
                                                                            selectionManager,
@@ -135,6 +156,14 @@ public class EditableHeaderGridWidgetMouseDoubleClickHandlerTest {
 
         assertThat(handler.handleHeaderCellDoubleClick(event)).isTrue();
 
-        verify(editableHeaderMetaData).edit(any(GridBodyCellEditContext.class));
+        verify(editableHeaderMetaData).edit(gridBodyCellEditContextCaptor.capture());
+
+        final GridBodyCellEditContext gridBodyCellEditContext = gridBodyCellEditContextCaptor.getValue();
+        assertThat(gridBodyCellEditContext).isNotNull();
+        assertThat(gridBodyCellEditContext.getRelativeLocation()).isPresent();
+
+        final Point2D relativeLocation = gridBodyCellEditContext.getRelativeLocation().get();
+        assertThat(relativeLocation.getX()).isEqualTo(MOUSE_EVENT_X + GRID_COMPUTED_LOCATION_X);
+        assertThat(relativeLocation.getY()).isEqualTo(MOUSE_EVENT_Y + GRID_COMPUTED_LOCATION_Y);
     }
 }

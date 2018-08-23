@@ -27,15 +27,14 @@ public abstract class EditablePopupHeaderMetaData<G, E extends HasCellEditorCont
 
     protected CellEditorControlsView.Presenter cellEditorControls;
     protected E editor;
-    protected G gridWidget;
 
     public EditablePopupHeaderMetaData(final CellEditorControlsView.Presenter cellEditorControls,
-                                       final E editor,
-                                       final G gridWidget) {
+                                       final E editor) {
         this.cellEditorControls = cellEditorControls;
         this.editor = editor;
-        this.gridWidget = gridWidget;
     }
+
+    protected abstract G getPresenter();
 
     @Override
     public void setColumnGroup(final String columnGroup) {
@@ -44,7 +43,7 @@ public abstract class EditablePopupHeaderMetaData<G, E extends HasCellEditorCont
 
     @Override
     public void setTitle(final String title) {
-        throw new UnsupportedOperationException("Title is derived from the Decision Table Hit Policy and cannot be set on the HeaderMetaData.");
+        throw new UnsupportedOperationException("Title is derived and cannot be set on the HeaderMetaData.");
     }
 
     @Override
@@ -54,10 +53,10 @@ public abstract class EditablePopupHeaderMetaData<G, E extends HasCellEditorCont
         final double absoluteCellX = context.getAbsoluteCellX();
         final double absoluteCellY = context.getAbsoluteCellY();
 
-        editor.bind(gridWidget,
+        editor.bind(getPresenter(),
                     uiRowIndex,
                     uiColumnIndex);
-        final double[] dxy = {0.0, 0.0};
+        final double[] dxy = {absoluteCellX, absoluteCellY};
         final double headerRowHeight = context.getCellHeight();
         final Optional<Point2D> rx = context.getRelativeLocation();
         rx.ifPresent(r -> {
@@ -65,8 +64,8 @@ public abstract class EditablePopupHeaderMetaData<G, E extends HasCellEditorCont
             dxy[1] = r.getY() - headerRowHeight * uiRowIndex;
         });
         cellEditorControls.show(editor,
-                                (int) (absoluteCellX + dxy[0]),
-                                (int) (absoluteCellY + dxy[1]));
+                                (int) (dxy[0]),
+                                (int) (dxy[1]));
     }
 
     @Override

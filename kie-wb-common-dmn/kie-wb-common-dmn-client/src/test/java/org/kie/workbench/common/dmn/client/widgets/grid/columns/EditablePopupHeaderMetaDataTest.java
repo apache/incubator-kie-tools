@@ -104,8 +104,8 @@ public class EditablePopupHeaderMetaDataTest {
                             eq(ROW_INDEX),
                             eq(COLUMN_INDEX));
         verify(cellEditorControls).show(eq(editor),
-                                        eq((int) (ABSOLUTE_CELL_X + RELATIVE_X)),
-                                        eq((int) (ABSOLUTE_CELL_Y + (RELATIVE_Y - CELL_HEIGHT * ROW_INDEX))));
+                                        eq((int) RELATIVE_X),
+                                        eq((int) (RELATIVE_Y - CELL_HEIGHT * ROW_INDEX)));
     }
 
     @Test
@@ -142,12 +142,19 @@ public class EditablePopupHeaderMetaDataTest {
 
     private static class MockEditableHeaderMetaData extends EditablePopupHeaderMetaData<GridWidget, MockEditor> {
 
+        private final GridWidget gridWidget;
+
         public MockEditableHeaderMetaData(final CellEditorControlsView.Presenter cellEditorControls,
                                           final MockEditor editor,
                                           final GridWidget gridWidget) {
             super(cellEditorControls,
-                  editor,
-                  gridWidget);
+                  editor);
+            this.gridWidget = gridWidget;
+        }
+
+        @Override
+        protected GridWidget getPresenter() {
+            return gridWidget;
         }
 
         @Override

@@ -30,6 +30,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -47,6 +48,8 @@ import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties
 @ApplicationScoped
 public class RelationEditorDefinition extends BaseEditorDefinition<Relation, RelationGridData> {
 
+    private NameAndDataTypeEditorView.Presenter headerEditor;
+
     public RelationEditorDefinition() {
         //CDI proxy
     }
@@ -59,7 +62,8 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
                                     final Event<ExpressionEditorChanged> editorSelectedEvent,
                                     final Event<RefreshFormProperties> refreshFormPropertiesEvent,
                                     final ListSelectorView.Presenter listSelector,
-                                    final TranslationService translationService) {
+                                    final TranslationService translationService,
+                                    final NameAndDataTypeEditorView.Presenter headerEditor) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,
@@ -68,6 +72,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
               refreshFormPropertiesEvent,
               listSelector,
               translationService);
+        this.headerEditor = headerEditor;
     }
 
     @Override
@@ -129,7 +134,8 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
                                             getCellEditorControls(),
                                             listSelector,
                                             translationService,
-                                            nesting));
+                                            nesting,
+                                            headerEditor));
     }
 
     @Override

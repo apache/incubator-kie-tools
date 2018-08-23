@@ -163,17 +163,17 @@ public class BusinessKnowledgeModel extends DRGElement implements HasVariable,
         this.variable = variable;
     }
 
+    @Override
+    public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
+        return this;
+    }
+
     public FunctionDefinition getEncapsulatedLogic() {
         return encapsulatedLogic;
     }
 
     public void setEncapsulatedLogic(final FunctionDefinition value) {
         this.encapsulatedLogic = value;
-    }
-
-    @Override
-    public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
-        return this;
     }
 
     @Override

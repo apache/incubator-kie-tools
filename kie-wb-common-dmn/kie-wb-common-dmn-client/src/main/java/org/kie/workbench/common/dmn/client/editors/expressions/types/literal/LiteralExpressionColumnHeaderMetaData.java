@@ -16,53 +16,39 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.literal;
 
+import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
+import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
-import org.kie.workbench.common.dmn.client.editors.types.HasNameAndDataTypeControl;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditablePopupHeaderMetaData;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 
-class LiteralExpressionColumnHeaderMetaData extends EditablePopupHeaderMetaData<HasNameAndDataTypeControl, NameAndDataTypeEditorView.Presenter> {
+public class LiteralExpressionColumnHeaderMetaData extends NameAndDataTypeHeaderMetaData {
 
     private static final String NAME_DATA_TYPE_COLUMN_GROUP = "LiteralExpressionColumnHeaderMetaData$NameAndDataTypeColumn";
 
-    private final Supplier<String> nameSupplier;
-    private final Consumer<String> nameConsumer;
-    private final Supplier<QName> typeRefSupplier;
-
-    public LiteralExpressionColumnHeaderMetaData(final Supplier<String> nameSupplier,
-                                                 final Consumer<String> nameConsumer,
-                                                 final Supplier<QName> typeRefSupplier,
+    public LiteralExpressionColumnHeaderMetaData(final Optional<HasName> hasName,
+                                                 final HasTypeRef hasTypeRef,
+                                                 final Consumer<HasName> clearDisplayNameConsumer,
+                                                 final BiConsumer<HasName, String> setDisplayNameConsumer,
+                                                 final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
                                                  final CellEditorControlsView.Presenter cellEditorControls,
-                                                 final NameAndDataTypeEditorView.Presenter headerEditor,
-                                                 final LiteralExpressionGrid gridWidget) {
-        super(cellEditorControls,
-              headerEditor,
-              gridWidget);
-        this.nameSupplier = nameSupplier;
-        this.nameConsumer = nameConsumer;
-        this.typeRefSupplier = typeRefSupplier;
+                                                 final NameAndDataTypeEditorView.Presenter headerEditor) {
+        super(hasName,
+              hasTypeRef,
+              clearDisplayNameConsumer,
+              setDisplayNameConsumer,
+              setTypeRefConsumer,
+              cellEditorControls,
+              headerEditor);
     }
 
     @Override
     public String getColumnGroup() {
         return NAME_DATA_TYPE_COLUMN_GROUP;
-    }
-
-    @Override
-    public String getTitle() {
-        return nameSupplier.get();
-    }
-
-    @Override
-    public void setTitle(final String title) {
-        nameConsumer.accept(title);
-    }
-
-    String getTypeRef() {
-        return typeRefSupplier.get().toString();
     }
 }

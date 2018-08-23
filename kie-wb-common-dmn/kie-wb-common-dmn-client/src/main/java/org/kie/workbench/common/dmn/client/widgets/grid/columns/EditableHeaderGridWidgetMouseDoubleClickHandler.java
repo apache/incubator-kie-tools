@@ -90,11 +90,12 @@ public class EditableHeaderGridWidgetMouseDoubleClickHandler extends BaseGridWid
         }
 
         //Get rendering information
+        final Point2D gridWidgetComputedLocation = gridWidget.getComputedLocation();
         final EditableHeaderMetaData headerMetaData = (EditableHeaderMetaData) column.getHeaderMetaData().get(uiHeaderRowIndex);
         final GridBodyCellEditContext context = EditableHeaderUtilities.makeRenderContext(gridWidget,
                                                                                           ri,
                                                                                           ci,
-                                                                                          rp,
+                                                                                          rp.add(gridWidgetComputedLocation),
                                                                                           uiHeaderRowIndex);
         headerMetaData.edit(context);
 

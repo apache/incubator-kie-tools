@@ -18,8 +18,9 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.literal;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import javax.enterprise.event.Event;
 
@@ -28,12 +29,10 @@ import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.api.property.dmn.QName;
-import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
-import org.kie.workbench.common.dmn.client.editors.types.HasNameAndDataTypeControl;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
@@ -44,23 +43,21 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 
-public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression, DMNGridData, LiteralExpressionUIModelMapper> implements HasListSelectorControl,
-                                                                                                                                         HasNameAndDataTypeControl {
+public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression, DMNGridData, LiteralExpressionUIModelMapper> implements HasListSelectorControl {
 
     public static final double PADDING = 0.0;
 
@@ -140,16 +137,46 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
 
     @Override
     protected void initialiseUiColumns() {
-        final GridColumn literalExpressionColumn = new LiteralExpressionColumn(new LiteralExpressionColumnHeaderMetaData(() -> hasName.orElse(HasName.NOP).getName().getValue(),
-                                                                                                                         (s) -> hasName.orElse(HasName.NOP).getName().setValue(s),
-                                                                                                                         this::getTypeRef,
+        HasTypeRef hasTypeRef = expression.get();
+        final DMNModelInstrumentedBase base = hasExpression.asDMNModelInstrumentedBase();
+        if (base instanceof HasVariable) {
+            final HasVariable hasVariable = (HasVariable) base;
+            hasTypeRef = hasVariable.getVariable();
+        }
+
+        final GridColumn literalExpressionColumn = new LiteralExpressionColumn(new LiteralExpressionColumnHeaderMetaData(hasName,
+                                                                                                                         hasTypeRef,
+                                                                                                                         clearDisplayNameConsumer(),
+                                                                                                                         setDisplayNameConsumer(),
+                                                                                                                         setTypeRefConsumer(),
                                                                                                                          cellEditorControls,
-                                                                                                                         headerEditor,
-                                                                                                                         this),
+                                                                                                                         headerEditor),
                                                                                getBodyTextAreaFactory(),
                                                                                this);
 
         model.appendColumn(literalExpressionColumn);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Consumer<HasName> clearDisplayNameConsumer() {
+        return (hn) -> {
+            final CompositeCommand.Builder commandBuilder = newHasNameHasNoValueCommand(hn);
+            getUpdateStunnerTitleCommand("").ifPresent(commandBuilder::addCommand);
+            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                          commandBuilder.build());
+        };
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected BiConsumer<HasName, String> setDisplayNameConsumer() {
+        return (hn, name) -> {
+            final CompositeCommand.Builder commandBuilder = newHasNameHasNoValueCommand(hn);
+            getUpdateStunnerTitleCommand(name).ifPresent(commandBuilder::addCommand);
+            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                          commandBuilder.build());
+        };
     }
 
     @Override
@@ -200,61 +227,5 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
     public void onItemSelected(final ListSelectorItem item) {
         final ListSelectorTextItem li = (ListSelectorTextItem) item;
         li.getCommand().execute();
-    }
-
-    @Override
-    public String getDisplayName() {
-        return hasName.orElse(HasName.NOP).getName().getValue();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public void setDisplayName(final String name) {
-        if (Objects.equals(name, getDisplayName())) {
-            return;
-        }
-
-        if (name == null || name.trim().isEmpty()) {
-            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                          newHeaderHasNameHasNoValueCommand().apply(new GridCellTuple(0,
-                                                                                                      0,
-                                                                                                      this)));
-        } else {
-            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                          newHeaderHasNameHasValueCommand().apply(new GridCellValueTuple<>(0,
-                                                                                                           0,
-                                                                                                           this,
-                                                                                                           new BaseGridCellValue<>(name))));
-        }
-    }
-
-    @Override
-    public QName getTypeRef() {
-        final DMNModelInstrumentedBase model = hasExpression.asDMNModelInstrumentedBase();
-        if (model instanceof HasVariable) {
-            final HasVariable hasVariable = (HasVariable) model;
-            return hasVariable.getVariable().getTypeRef();
-        }
-        return null;
-    }
-
-    @Override
-    public void setTypeRef(final QName typeRef) {
-        final DMNModelInstrumentedBase model = hasExpression.asDMNModelInstrumentedBase();
-        if (model instanceof HasVariable) {
-            final HasVariable hasVariable = (HasVariable) model;
-            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                          new SetTypeRefCommand(hasVariable,
-                                                                typeRef,
-                                                                () -> {
-                                                                    gridLayer.batch();
-                                                                    nodeUUID.ifPresent(uuid -> refreshFormPropertiesEvent.fire(new RefreshFormProperties(sessionManager.getCurrentSession(), uuid)));
-                                                                }));
-        }
-    }
-
-    @Override
-    public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
-        return expression.get();
     }
 }

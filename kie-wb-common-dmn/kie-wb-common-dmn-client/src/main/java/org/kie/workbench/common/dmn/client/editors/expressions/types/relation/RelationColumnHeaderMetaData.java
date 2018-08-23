@@ -16,36 +16,39 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 
+import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
-import org.gwtbootstrap3.client.ui.TextBox;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableTextHeaderMetaData;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
+import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 
-public class RelationColumnHeaderMetaData extends EditableTextHeaderMetaData<TextBox, TextBoxDOMElement> {
+public class RelationColumnHeaderMetaData extends NameAndDataTypeHeaderMetaData {
 
-    private static final String NAME_COLUMN_GROUP = "RelationColumnHeaderMetaData$NameColumn";
+    private static final String NAME_DATA_TYPE_COLUMN_GROUP = "RelationColumnHeaderMetaData$NameAndDataTypeColumn";
 
-    public RelationColumnHeaderMetaData(final Supplier<String> titleGetter,
-                                        final Consumer<String> titleSetter,
-                                        final SingletonDOMElementFactory<TextBox, TextBoxDOMElement> factory) {
-        super(titleGetter,
-              titleSetter,
-              factory,
-              NAME_COLUMN_GROUP);
+    public RelationColumnHeaderMetaData(final InformationItem variable,
+                                        final Consumer<HasName> clearDisplayNameConsumer,
+                                        final BiConsumer<HasName, String> setDisplayNameConsumer,
+                                        final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
+                                        final CellEditorControlsView.Presenter cellEditorControls,
+                                        final NameAndDataTypeEditorView.Presenter headerEditor) {
+        super(Optional.ofNullable(variable),
+              variable,
+              clearDisplayNameConsumer,
+              setDisplayNameConsumer,
+              setTypeRefConsumer,
+              cellEditorControls,
+              headerEditor);
     }
 
     @Override
-    public boolean equals(final Object o) {
-        // No implementation of equals/hashCode as each instance is considered different to another
-        return this == o;
-    }
-
-    @Override
-    public int hashCode() {
-        // This default implementation is needed because of the CheckStyle plugin
-        return super.hashCode();
+    public String getColumnGroup() {
+        return NAME_DATA_TYPE_COLUMN_GROUP;
     }
 }

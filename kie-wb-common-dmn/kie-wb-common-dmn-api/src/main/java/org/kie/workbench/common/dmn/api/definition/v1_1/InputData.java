@@ -24,6 +24,7 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
+import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -47,7 +48,8 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @Bindable
 @Definition(graphFactory = NodeFactory.class)
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED, startElement = "id", defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)})
-public class InputData extends DRGElement implements DMNViewDefinition {
+public class InputData extends DRGElement implements DMNViewDefinition,
+                                                     HasVariable {
 
     @Category
     public static final transient String stunnerCategory = Categories.NODES;
@@ -146,12 +148,19 @@ public class InputData extends DRGElement implements DMNViewDefinition {
     // DMN properties
     // -----------------------
 
+    @Override
     public InformationItem getVariable() {
         return variable;
     }
 
+    @Override
     public void setVariable(final InformationItem variable) {
         this.variable = variable;
+    }
+
+    @Override
+    public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
+        return this;
     }
 
     @Override

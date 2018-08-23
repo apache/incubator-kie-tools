@@ -34,10 +34,10 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.A
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationColumnCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationRowCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.SelectionUtils;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -61,7 +61,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberCol
 public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData, RelationUIModelMapper> implements HasListSelectorControl {
 
     private final TextAreaSingletonDOMElementFactory factory = getBodyTextAreaFactory();
-    private final TextBoxSingletonDOMElementFactory headerFactory = getHeaderTextBoxFactory();
+
+    private final NameAndDataTypeEditorView.Presenter headerEditor;
 
     public RelationGrid(final GridCellTuple parent,
                         final Optional<String> nodeUUID,
@@ -80,7 +81,8 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                         final CellEditorControlsView.Presenter cellEditorControls,
                         final ListSelectorView.Presenter listSelector,
                         final TranslationService translationService,
-                        final int nesting) {
+                        final int nesting,
+                        final NameAndDataTypeEditorView.Presenter headerEditor) {
         super(parent,
               nodeUUID,
               hasExpression,
@@ -100,6 +102,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
               listSelector,
               translationService,
               nesting);
+        this.headerEditor = headerEditor;
 
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
 
@@ -133,9 +136,12 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
     }
 
     private RelationColumn makeRelationColumn(final InformationItem informationItem) {
-        final RelationColumn relationColumn = new RelationColumn(new RelationColumnHeaderMetaData(() -> informationItem.getName().getValue(),
-                                                                                                  (s) -> informationItem.getName().setValue(s),
-                                                                                                  headerFactory),
+        final RelationColumn relationColumn = new RelationColumn(new RelationColumnHeaderMetaData(informationItem,
+                                                                                                  clearDisplayNameConsumer(),
+                                                                                                  setDisplayNameConsumer(),
+                                                                                                  setTypeRefConsumer(),
+                                                                                                  cellEditorControls,
+                                                                                                  headerEditor),
                                                                  factory,
                                                                  this);
         return relationColumn;

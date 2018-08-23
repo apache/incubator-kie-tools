@@ -32,15 +32,21 @@ public class FunctionColumnParametersHeaderMetaData extends EditablePopupHeaderM
     static final String PARAMETER_COLUMN_GROUP = "FunctionColumnParametersHeaderMetaData$Parameters";
 
     private final Supplier<FunctionDefinition> functionSupplier;
+    private final FunctionGrid gridWidget;
 
     public FunctionColumnParametersHeaderMetaData(final Supplier<FunctionDefinition> functionSupplier,
                                                   final CellEditorControlsView.Presenter cellEditorControls,
                                                   final ParametersEditorView.Presenter editor,
                                                   final FunctionGrid gridWidget) {
         super(cellEditorControls,
-              editor,
-              gridWidget);
+              editor);
         this.functionSupplier = functionSupplier;
+        this.gridWidget = gridWidget;
+    }
+
+    @Override
+    protected HasParametersControl getPresenter() {
+        return gridWidget;
     }
 
     @Override

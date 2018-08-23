@@ -21,6 +21,7 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -40,6 +41,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @PropertySet
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED, startElement = "id")
 public class InformationItem extends DMNElement implements HasName,
+                                                           HasTypeRef,
                                                            DMNPropertySet {
 
     //InformationItem should extend NamedElement however we do not want to expose Name as a @FormField
@@ -84,12 +86,19 @@ public class InformationItem extends DMNElement implements HasName,
         this.name = name;
     }
 
+    @Override
     public QName getTypeRef() {
         return typeRefHolder.getValue();
     }
 
+    @Override
     public void setTypeRef(final QName typeRef) {
         this.typeRefHolder.setValue(typeRef);
+    }
+
+    @Override
+    public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
+        return this;
     }
 
     // ------------------

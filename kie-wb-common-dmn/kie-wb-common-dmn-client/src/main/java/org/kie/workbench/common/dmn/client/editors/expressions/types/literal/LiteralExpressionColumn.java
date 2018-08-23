@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.literal;
 import java.util.function.Consumer;
 
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeColumnRenderer;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNSimpleGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
@@ -36,7 +37,7 @@ public class LiteralExpressionColumn extends DMNSimpleGridColumn<LiteralExpressi
                                    final TextAreaSingletonDOMElementFactory factory,
                                    final LiteralExpressionGrid gridWidget) {
         super(headerMetaData,
-              new LiteralExpressionColumnRenderer(factory),
+              new NameAndDataTypeColumnRenderer(factory),
               gridWidget);
         this.factory = PortablePreconditions.checkNotNull("factory",
                                                           factory);

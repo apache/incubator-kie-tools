@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.expressions.types.literal;
+package org.kie.workbench.common.dmn.client.widgets.grid.columns;
 
 import java.util.List;
 
@@ -32,13 +32,13 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRende
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.single.impl.BaseGridColumnSingletonDOMElementRenderer;
 
-public class LiteralExpressionColumnRenderer extends BaseGridColumnSingletonDOMElementRenderer<String, TextArea, TextAreaDOMElement> {
+public class NameAndDataTypeColumnRenderer extends BaseGridColumnSingletonDOMElementRenderer<String, TextArea, TextAreaDOMElement> {
 
     static final String FONT_STYLE_TYPE_REF = "italic";
 
     static final double SPACING = 8.0;
 
-    public LiteralExpressionColumnRenderer(final TextAreaSingletonDOMElementFactory factory) {
+    public NameAndDataTypeColumnRenderer(final TextAreaSingletonDOMElementFactory factory) {
         super(factory);
     }
 
@@ -57,8 +57,8 @@ public class LiteralExpressionColumnRenderer extends BaseGridColumnSingletonDOME
         final GridColumn.HeaderMetaData headerRowMetaData = headerMetaData.get(headerRowIndex);
         final String title = headerRowMetaData.getTitle();
 
-        if (headerRowMetaData instanceof LiteralExpressionColumnHeaderMetaData) {
-            final LiteralExpressionColumnHeaderMetaData leHeaderMetaData = (LiteralExpressionColumnHeaderMetaData) headerRowMetaData;
+        if (headerRowMetaData instanceof NameAndDataTypeHeaderMetaData) {
+            final NameAndDataTypeHeaderMetaData nadHeaderMetaData = (NameAndDataTypeHeaderMetaData) headerRowMetaData;
             final Text name = context.getRenderer().getTheme().getHeaderText();
             name.setText(title);
             name.setListening(false);
@@ -68,7 +68,7 @@ public class LiteralExpressionColumnRenderer extends BaseGridColumnSingletonDOME
             final Text typeRef = context.getRenderer().getTheme().getHeaderText();
             typeRef.setFontStyle(FONT_STYLE_TYPE_REF);
             typeRef.setFontSize(BaseExpressionGridTheme.FONT_SIZE - 2.0);
-            typeRef.setText("(" + leHeaderMetaData.getTypeRef() + ")");
+            typeRef.setText("(" + nadHeaderMetaData.getTypeRef().toString() + ")");
             typeRef.setListening(false);
             typeRef.setX(blockWidth / 2);
             typeRef.setY(rowHeight / 2 + SPACING);

@@ -28,6 +28,7 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -100,6 +101,9 @@ public class RelationEditorDefinitionTest {
     @Mock
     private EventSourceMock<RefreshFormProperties> refreshFormPropertiesEvent;
 
+    @Mock
+    private NameAndDataTypeEditorView.Presenter headerEditor;
+
     private Optional<HasName> hasName = Optional.empty();
 
     private RelationEditorDefinition definition;
@@ -119,7 +123,8 @@ public class RelationEditorDefinitionTest {
                                                        editorSelectedEvent,
                                                        refreshFormPropertiesEvent,
                                                        listSelector,
-                                                       translationService);
+                                                       translationService,
+                                                       headerEditor);
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
     }
 

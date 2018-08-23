@@ -24,30 +24,33 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.List;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationRowCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationColumnCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationRowCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
-import org.kie.workbench.common.dmn.client.commands.general.DeleteHeaderValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
-import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -61,6 +64,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 import org.mockito.ArgumentCaptor;
@@ -83,13 +87,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -112,6 +117,10 @@ public class RelationGridTest {
 
     private static final String NODE_UUID = "uuid";
 
+    private static final String NAME = "column-1";
+
+    private static final String NAME_NEW = "name-new";
+
     private GridCellTuple tupleWithoutValue;
 
     private GridCellValueTuple tupleWithValue;
@@ -124,9 +133,6 @@ public class RelationGridTest {
 
     @Mock
     private GridColumn parentGridColumn;
-
-    @Mock
-    private HasExpression hasExpression;
 
     @Mock
     private Viewport viewport;
@@ -179,6 +185,9 @@ public class RelationGridTest {
     @Mock
     private EventSourceMock<RefreshFormProperties> refreshFormPropertiesEvent;
 
+    @Mock
+    private NameAndDataTypeEditorView.Presenter headerEditor;
+
     @Captor
     private ArgumentCaptor<DeleteRelationColumnCommand> deleteColumnCommand;
 
@@ -191,9 +200,14 @@ public class RelationGridTest {
     @Captor
     private ArgumentCaptor<GridLayerRedrawManager.PrioritizedCommand> redrawCommandCaptor;
 
+    @Captor
+    private ArgumentCaptor<CompositeCommand> compositeCommandCaptor;
+
     private GridCellTuple parent;
 
     private Relation relation = new Relation();
+
+    private Decision hasExpression = new Decision();
 
     private Optional<Relation> expression = Optional.of(relation);
 
@@ -221,7 +235,8 @@ public class RelationGridTest {
                                                   editorSelectedEvent,
                                                   refreshFormPropertiesEvent,
                                                   listSelector,
-                                                  translationService);
+                                                  translationService,
+                                                  headerEditor);
 
         final Decision decision = new Decision();
         decision.setName(new Name("name"));
@@ -571,23 +586,22 @@ public class RelationGridTest {
 
         verify(parent).proposeContainingColumnWidth(grid.getWidth() + grid.getPadding() * 2);
         verify(parentGridColumn).setWidth(grid.getWidth() + grid.getPadding() * 2);
-        verify(gridLayer, times(2)).batch(redrawCommandCaptor.capture());
+        verify(gridLayer).batch(redrawCommandCaptor.capture());
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
 
-        final java.util.List<GridLayerRedrawManager.PrioritizedCommand> redrawCommands = redrawCommandCaptor.getAllValues();
+        final GridLayerRedrawManager.PrioritizedCommand redrawCommand = redrawCommandCaptor.getValue();
 
-        //First call redraws grid following addition of new row
-        final GridLayerRedrawManager.PrioritizedCommand redrawCommand0 = redrawCommands.get(0);
-        redrawCommand0.execute();
+        redrawCommand.execute();
 
         verify(gridLayer).draw();
 
-        //Second call displays the inline editor for the new row
-        final GridLayerRedrawManager.PrioritizedCommand redrawCommand1 = redrawCommands.get(1);
-        redrawCommand1.execute();
-
-        verify(gridLayerDomElementContainer).add(any(Widget.class));
+        verify(headerEditor).bind(any(RelationColumnHeaderMetaData.class),
+                                  eq(0),
+                                  eq(0));
+        verify(cellEditorControls).show(eq(headerEditor),
+                                        anyInt(),
+                                        anyInt());
     }
 
     private void addColumn(final int index) {
@@ -676,20 +690,102 @@ public class RelationGridTest {
     }
 
     @Test
-    public void testHeaderFactoryWhenNested() {
-        setupGrid(1);
+    public void testGetDisplayName() {
+        setupGrid(0);
 
-        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderTextBoxFactory();
-        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteHeaderValueCommand.class);
-        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetHeaderValueCommand.class);
+        assertThat(extractHeaderMetaData().getDisplayName()).isEqualTo(NAME);
+    }
+
+    private RelationColumnHeaderMetaData extractHeaderMetaData() {
+        final RelationColumn column = (RelationColumn) grid.getModel().getColumns().get(1);
+        return (RelationColumnHeaderMetaData) column.getHeaderMetaData().get(0);
     }
 
     @Test
-    public void testHeaderFactoryWhenNotNested() {
+    @SuppressWarnings("unchecked")
+    public void testSetDisplayNameWithNoChange() {
         setupGrid(0);
 
-        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderTextBoxFactory();
-        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteHeaderValueCommand.class);
-        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetHeaderValueCommand.class);
+        extractHeaderMetaData().setDisplayName(NAME);
+
+        verify(sessionCommandManager, never()).execute(any(AbstractCanvasHandler.class),
+                                                       any(org.kie.workbench.common.stunner.core.command.Command.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSetDisplayNameWithEmptyValue() {
+        setupGrid(0);
+
+        extractHeaderMetaData().setDisplayName("");
+
+        verify(sessionCommandManager).execute(eq(canvasHandler),
+                                              compositeCommandCaptor.capture());
+
+        GridFactoryCommandUtils.assertCommands(compositeCommandCaptor.getValue(),
+                                               DeleteHasNameCommand.class);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSetDisplayNameWithNullValue() {
+        setupGrid(0);
+
+        extractHeaderMetaData().setDisplayName(null);
+
+        verify(sessionCommandManager).execute(eq(canvasHandler),
+                                              compositeCommandCaptor.capture());
+
+        GridFactoryCommandUtils.assertCommands(compositeCommandCaptor.getValue(),
+                                               DeleteHasNameCommand.class);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSetDisplayNameWithNonEmptyValue() {
+        setupGrid(0);
+
+        extractHeaderMetaData().setDisplayName(NAME_NEW);
+
+        verify(sessionCommandManager).execute(eq(canvasHandler),
+                                              compositeCommandCaptor.capture());
+
+        GridFactoryCommandUtils.assertCommands(compositeCommandCaptor.getValue(),
+                                               SetHasNameCommand.class);
+    }
+
+    @Test
+    public void testGetTypeRef() {
+        setupGrid(0);
+
+        assertThat(extractHeaderMetaData().getTypeRef()).isNotNull();
+    }
+
+    @Test
+    public void testSetTypeRef() {
+        setupGrid(0);
+
+        extractHeaderMetaData().setTypeRef(new QName(Namespace.FEEL.getUri(),
+                                                     BuiltInType.DATE.getName()));
+
+        verify(sessionCommandManager).execute(eq(canvasHandler),
+                                              any(SetTypeRefCommand.class));
+    }
+
+    @Test
+    public void testSetTypeRefWithoutChange() {
+        setupGrid(0);
+
+        extractHeaderMetaData().setTypeRef(new QName());
+
+        verify(sessionCommandManager, never()).execute(any(AbstractCanvasHandler.class),
+                                                       any(SetTypeRefCommand.class));
+    }
+
+    @Test
+    public void testAsDMNModelInstrumentedBase() {
+        setupGrid(0);
+
+        assertThat(extractHeaderMetaData().asDMNModelInstrumentedBase()).isInstanceOf(hasExpression.getVariable().getClass());
     }
 }

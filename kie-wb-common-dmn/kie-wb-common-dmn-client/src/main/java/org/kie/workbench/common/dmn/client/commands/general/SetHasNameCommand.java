@@ -19,8 +19,7 @@ package org.kie.workbench.common.dmn.client.commands.general;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
-import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -35,23 +34,23 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBui
 import org.kie.workbench.common.stunner.core.graph.command.impl.AbstractGraphCommand;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-public class SetTypeRefCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
+public class SetHasNameCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
                                                                              VetoUndoCommand {
 
-    private final HasTypeRef hasTypeRef;
-    private final QName typeRef;
+    private final HasName hasName;
+    private final String name;
     private final org.uberfire.mvp.Command canvasOperation;
 
-    private final Optional<QName> oldTypeRef;
+    private final Optional<String> oldName;
 
-    public SetTypeRefCommand(final HasTypeRef hasTypeRef,
-                             final QName typeRef,
+    public SetHasNameCommand(final HasName hasName,
+                             final String name,
                              final org.uberfire.mvp.Command canvasOperation) {
-        this.hasTypeRef = Objects.requireNonNull(hasTypeRef);
-        this.typeRef = Objects.requireNonNull(typeRef);
+        this.hasName = Objects.requireNonNull(hasName);
+        this.name = Objects.requireNonNull(name);
         this.canvasOperation = Objects.requireNonNull(canvasOperation);
 
-        this.oldTypeRef = Optional.ofNullable(hasTypeRef.getTypeRef());
+        this.oldName = Optional.ofNullable(hasName.getName().getValue());
     }
 
     @Override
@@ -64,14 +63,14 @@ public class SetTypeRefCommand extends AbstractCanvasGraphCommand implements Vet
 
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
-                hasTypeRef.setTypeRef(typeRef);
+                hasName.getName().setValue(name);
 
                 return GraphCommandResultBuilder.SUCCESS;
             }
 
             @Override
             public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext gce) {
-                hasTypeRef.setTypeRef(oldTypeRef.orElse(null));
+                hasName.getName().setValue(oldName.orElse(null));
 
                 return GraphCommandResultBuilder.SUCCESS;
             }

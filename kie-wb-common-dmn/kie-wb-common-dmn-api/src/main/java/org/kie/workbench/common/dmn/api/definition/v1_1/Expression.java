@@ -15,11 +15,12 @@
  */
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
-public abstract class Expression extends DMNElement {
+public abstract class Expression extends DMNElement implements HasTypeRef {
 
     protected QName typeRef;
 
@@ -38,11 +39,18 @@ public abstract class Expression extends DMNElement {
     // DMN properties
     // -----------------------
 
+    @Override
     public QName getTypeRef() {
         return typeRef;
     }
 
+    @Override
     public void setTypeRef(final QName typeRef) {
         this.typeRef = typeRef;
+    }
+
+    @Override
+    public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
+        return this;
     }
 }

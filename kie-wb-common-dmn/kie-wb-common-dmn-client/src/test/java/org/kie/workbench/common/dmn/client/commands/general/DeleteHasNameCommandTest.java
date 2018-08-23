@@ -19,9 +19,8 @@ package org.kie.workbench.common.dmn.client.commands.general;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
-import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -37,13 +36,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SetTypeRefCommandTest {
+public class DeleteHasNameCommandTest {
 
-    @Mock
-    private QName typeRef;
-
-    @Mock
-    private QName oldTypeRef;
+    private static final String NAME = "name";
 
     @Mock
     private org.uberfire.mvp.Command canvasOperation;
@@ -54,17 +49,16 @@ public class SetTypeRefCommandTest {
     @Mock
     private GraphCommandExecutionContext graphCommandExecutionContext;
 
-    private HasTypeRef hasTypeRef = new InformationItem();
+    private HasName hasName = new Decision();
 
-    private SetTypeRefCommand command;
+    private DeleteHasNameCommand command;
 
     @Before
     public void setup() {
-        hasTypeRef.setTypeRef(oldTypeRef);
+        hasName.getName().setValue(NAME);
 
-        this.command = new SetTypeRefCommand(hasTypeRef,
-                                             typeRef,
-                                             canvasOperation);
+        this.command = new DeleteHasNameCommand(hasName,
+                                                canvasOperation);
     }
 
     @Test
@@ -79,8 +73,8 @@ public class SetTypeRefCommandTest {
     public void executeGraphCommand() {
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.getGraphCommand(canvasHandler).execute(graphCommandExecutionContext));
-        assertEquals(typeRef,
-                     hasTypeRef.getTypeRef());
+        assertEquals(DeleteHasNameCommand.DEFAULT_TITLE,
+                     hasName.getName().getValue());
     }
 
     @Test
@@ -91,8 +85,8 @@ public class SetTypeRefCommandTest {
                      command.getGraphCommand(canvasHandler).execute(graphCommandExecutionContext));
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.getGraphCommand(canvasHandler).undo(graphCommandExecutionContext));
-        assertEquals(oldTypeRef,
-                     hasTypeRef.getTypeRef());
+        assertEquals(NAME,
+                     hasName.getName().getValue());
     }
 
     @Test

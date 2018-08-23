@@ -29,18 +29,38 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand;
+import org.kie.workbench.common.dmn.client.commands.general.DeleteHeaderValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.util.UUID;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
@@ -63,15 +83,48 @@ import static org.mockito.Mockito.when;
 @RunWith(LienzoMockitoTestRunner.class)
 public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
+    private static final String NAME = "name";
+
+    private static final QName TYPE_REF = new QName();
+
+    private GridCellTuple tupleWithoutValue;
+
+    private GridCellValueTuple tupleWithValue;
+
+    @Mock
+    private ClientSession session;
+
+    @Mock
+    private AbstractCanvasHandler canvasHandler;
+
     @Captor
     private ArgumentCaptor<GridLayerRedrawManager.PrioritizedCommand> redrawCommandCaptor;
+
+    @Captor
+    private ArgumentCaptor<Command> commandCaptor;
+
+    @Captor
+    private ArgumentCaptor<RefreshFormProperties> refreshFormPropertiesCaptor;
+
+    private Decision decision = new Decision();
+
+    @Override
+    public void setup() {
+        super.setup();
+
+        tupleWithoutValue = new GridCellTuple(0, 0, grid);
+        tupleWithValue = new GridCellValueTuple<>(0, 0, grid, new BaseGridCellValue<>("value"));
+
+        when(sessionManager.getCurrentSession()).thenReturn(session);
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
+    }
 
     @Override
     @SuppressWarnings("unchecked")
     public BaseExpressionGrid getGrid() {
         final HasExpression hasExpression = mock(HasExpression.class);
         final Optional<LiteralExpression> expression = Optional.of(mock(LiteralExpression.class));
-        final Optional<HasName> hasName = Optional.of(mock(HasName.class));
+        final Optional<HasName> hasName = Optional.of(decision);
 
         return new BaseExpressionGrid(parentCell,
                                       Optional.empty(),
@@ -352,6 +405,135 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
         verify(gridLayer).draw();
         verify(gridLayer, never()).select(any(GridWidget.class));
+    }
+
+    @Test
+    public void testHeaderTextBoxFactory() {
+        appendColumns(GridColumn.class);
+        when(grid.getModel().getColumns().get(0).getHeaderMetaData()).thenReturn(Collections.singletonList(mock(EditableHeaderMetaData.class)));
+        when(mapper.getUiModel()).thenReturn(() -> grid.getModel());
+
+        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderTextBoxFactory();
+        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteHeaderValueCommand.class);
+        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetHeaderValueCommand.class);
+    }
+
+    @Test
+    public void testHeaderTextAreaFactory() {
+        appendColumns(GridColumn.class);
+        when(grid.getModel().getColumns().get(0).getHeaderMetaData()).thenReturn(Collections.singletonList(mock(EditableHeaderMetaData.class)));
+        when(mapper.getUiModel()).thenReturn(() -> grid.getModel());
+
+        final TextAreaSingletonDOMElementFactory factory = grid.getHeaderTextAreaFactory();
+        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteHeaderValueCommand.class);
+        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetHeaderValueCommand.class);
+    }
+
+    @Test
+    public void testClearDisplayNameConsumer() {
+        doTestClearDisplayNameConsumer();
+
+        verify(gridLayer).batch();
+    }
+
+    @Test
+    public void testClearDisplayNameConsumerWhenNotNested() {
+        final String uuid = UUID.uuid();
+        doReturn(Optional.of(uuid)).when(grid).getNodeUUID();
+
+        doTestClearDisplayNameConsumer();
+
+        verify(gridLayer).batch();
+        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesCaptor.capture());
+
+        final RefreshFormProperties refreshFormProperties = refreshFormPropertiesCaptor.getValue();
+        assertThat(refreshFormProperties.getUuid()).isEqualTo(uuid);
+        assertThat(refreshFormProperties.getSession()).isEqualTo(session);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void doTestClearDisplayNameConsumer() {
+        grid.clearDisplayNameConsumer().accept(decision);
+
+        verify(sessionCommandManager).execute(eq(canvasHandler),
+                                              commandCaptor.capture());
+
+        final Command command = commandCaptor.getValue();
+        GridFactoryCommandUtils.assertCommands(command,
+                                               DeleteHasNameCommand.class);
+
+        command.execute(canvasHandler);
+    }
+
+    @Test
+    public void testSetDisplayNameConsumer() {
+        doTestSetDisplayNameConsumer();
+
+        verify(gridLayer).batch();
+    }
+
+    @Test
+    public void testSetDisplayNameConsumerWhenNotNested() {
+        final String uuid = UUID.uuid();
+        doReturn(Optional.of(uuid)).when(grid).getNodeUUID();
+
+        doTestSetDisplayNameConsumer();
+
+        verify(gridLayer).batch();
+        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesCaptor.capture());
+
+        final RefreshFormProperties refreshFormProperties = refreshFormPropertiesCaptor.getValue();
+        assertThat(refreshFormProperties.getUuid()).isEqualTo(uuid);
+        assertThat(refreshFormProperties.getSession()).isEqualTo(session);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void doTestSetDisplayNameConsumer() {
+        grid.setDisplayNameConsumer().accept(decision, NAME);
+
+        verify(sessionCommandManager).execute(eq(canvasHandler),
+                                              commandCaptor.capture());
+
+        final Command command = commandCaptor.getValue();
+        GridFactoryCommandUtils.assertCommands(command,
+                                               SetHasNameCommand.class);
+
+        command.execute(canvasHandler);
+    }
+
+    @Test
+    public void testSetTypeRefConsumer() {
+        doTestSetTypeRefConsumer();
+
+        verify(gridLayer).batch();
+    }
+
+    @Test
+    public void testSetTypeRefConsumerWhenNotNested() {
+        final String uuid = UUID.uuid();
+        doReturn(Optional.of(uuid)).when(grid).getNodeUUID();
+
+        doTestSetTypeRefConsumer();
+
+        verify(gridLayer).batch();
+        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesCaptor.capture());
+
+        final RefreshFormProperties refreshFormProperties = refreshFormPropertiesCaptor.getValue();
+        assertThat(refreshFormProperties.getUuid()).isEqualTo(uuid);
+        assertThat(refreshFormProperties.getSession()).isEqualTo(session);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void doTestSetTypeRefConsumer() {
+        grid.setTypeRefConsumer().accept(decision.getVariable(), TYPE_REF);
+
+        verify(sessionCommandManager).execute(eq(canvasHandler),
+                                              commandCaptor.capture());
+
+        final Command command = commandCaptor.getValue();
+        assertThat(command).isInstanceOf(SetTypeRefCommand.class);
+
+        command.execute(canvasHandler);
     }
 
     /*

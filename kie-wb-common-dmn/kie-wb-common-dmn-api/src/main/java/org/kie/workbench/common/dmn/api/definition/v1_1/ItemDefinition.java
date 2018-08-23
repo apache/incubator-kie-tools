@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
@@ -27,7 +28,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
-public class ItemDefinition extends NamedElement {
+public class ItemDefinition extends NamedElement implements HasTypeRef {
 
     private QName typeRef;
     private UnaryTests allowedValues;
@@ -64,12 +65,19 @@ public class ItemDefinition extends NamedElement {
         this.isCollection = isCollection;
     }
 
+    @Override
     public QName getTypeRef() {
         return typeRef;
     }
 
+    @Override
     public void setTypeRef(final QName value) {
         this.typeRef = value;
+    }
+
+    @Override
+    public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
+        return this;
     }
 
     public UnaryTests getAllowedValues() {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.expressions.types.literal;
+package org.kie.workbench.common.dmn.client.widgets.grid.columns;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +27,8 @@ import com.google.gwtmockito.GwtMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.mockito.Mock;
@@ -43,11 +45,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class LiteralExpressionColumnRendererTest {
+public class NameAndDataTypeColumnRendererTest {
 
     private static final String TITLE = "title";
 
-    private static final String TYPE_REF = "type-ref";
+    private static final QName TYPE_REF = new QName();
 
     private static final int BLOCK_WIDTH = 100;
 
@@ -82,12 +84,12 @@ public class LiteralExpressionColumnRendererTest {
 
     private List<GridColumn.HeaderMetaData> headerMetaData;
 
-    private LiteralExpressionColumnRenderer renderer;
+    private NameAndDataTypeColumnRenderer renderer;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        this.renderer = new LiteralExpressionColumnRenderer(factory);
+        this.renderer = new NameAndDataTypeColumnRenderer(factory);
         this.context = new GridHeaderColumnRenderContext(0,
                                                          Collections.singletonList(uiColumn),
                                                          Collections.singletonList(uiColumn),
@@ -123,8 +125,8 @@ public class LiteralExpressionColumnRendererTest {
     }
 
     @Test
-    public void testRenderHeaderContentWithLiteralExpressionColumnHeaderMetaData() {
-        final LiteralExpressionColumnHeaderMetaData metaData = mock(LiteralExpressionColumnHeaderMetaData.class);
+    public void testRenderHeaderContentWithNameAndDataTypeHeaderMetaData() {
+        final NameAndDataTypeHeaderMetaData metaData = mock(NameAndDataTypeHeaderMetaData.class);
         this.headerMetaData = Collections.singletonList(metaData);
 
         when(metaData.getTitle()).thenReturn(TITLE);
@@ -138,12 +140,12 @@ public class LiteralExpressionColumnRendererTest {
 
         verify(headerText1).setText(eq(TITLE));
         verify(headerText1).setX(BLOCK_WIDTH / 2);
-        verify(headerText1).setY(ROW_HEIGHT / 2 - LiteralExpressionColumnRenderer.SPACING);
+        verify(headerText1).setY(ROW_HEIGHT / 2 - NameAndDataTypeColumnRenderer.SPACING);
 
         verify(headerText2).setText(eq("(" + TYPE_REF + ")"));
         verify(headerText2).setX(BLOCK_WIDTH / 2);
-        verify(headerText2).setY(ROW_HEIGHT / 2 + LiteralExpressionColumnRenderer.SPACING);
-        verify(headerText2).setFontStyle(LiteralExpressionColumnRenderer.FONT_STYLE_TYPE_REF);
+        verify(headerText2).setY(ROW_HEIGHT / 2 + NameAndDataTypeColumnRenderer.SPACING);
+        verify(headerText2).setFontStyle(NameAndDataTypeColumnRenderer.FONT_STYLE_TYPE_REF);
         verify(headerText2).setFontSize(BaseExpressionGridTheme.FONT_SIZE - 2.0);
 
         verify(headerGroup).add(headerText1);
