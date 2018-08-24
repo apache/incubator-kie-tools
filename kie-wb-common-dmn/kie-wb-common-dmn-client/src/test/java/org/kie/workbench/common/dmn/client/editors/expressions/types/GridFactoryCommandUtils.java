@@ -22,14 +22,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class GridFactoryCommandUtils {
 
-    public static void assertCommands(final org.kie.workbench.common.stunner.core.command.Command command,
-                                      final Class... commands) {
-        assertThat(command).isInstanceOf(CompositeCommand.class);
-        final CompositeCommand compositeCommand = (CompositeCommand) command;
-        assertThat(compositeCommand.getCommands()).hasSize(commands.length);
+    public static void assertCommands(final org.kie.workbench.common.stunner.core.command.Command executedCommand,
+                                      final Class... expectedCommandClasses) {
+        //If only one command is expected; it's plausible the executed command is not a CompositeCommand with one element
+        if (expectedCommandClasses.length == 1) {
+            if (executedCommand.getClass().isAssignableFrom(expectedCommandClasses[0])) {
+                return;
+            }
+        }
 
-        for (int i = 0; i < commands.length; i++) {
-            assertThat(compositeCommand.getCommands().get(i)).isInstanceOf(commands[i]);
+        assertThat(executedCommand).isInstanceOf(CompositeCommand.class);
+        final CompositeCommand compositeCommand = (CompositeCommand) executedCommand;
+        assertThat(compositeCommand.getCommands()).hasSize(expectedCommandClasses.length);
+
+        for (int i = 0; i < expectedCommandClasses.length; i++) {
+            assertThat(compositeCommand.getCommands().get(i)).isInstanceOf(expectedCommandClasses[i]);
         }
     }
 }

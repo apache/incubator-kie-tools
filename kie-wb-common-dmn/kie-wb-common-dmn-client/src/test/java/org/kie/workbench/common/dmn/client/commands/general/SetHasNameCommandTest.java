@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -38,9 +39,9 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public class SetHasNameCommandTest {
 
-    private static final String NAME_OLD = "name-old";
+    private static final Name NAME_OLD = new Name("name-old");
 
-    private static final String NAME_NEW = "name-new";
+    private static final Name NAME_NEW = new Name("name-new");
 
     @Mock
     private org.uberfire.mvp.Command canvasOperation;
@@ -57,7 +58,7 @@ public class SetHasNameCommandTest {
 
     @Before
     public void setup() {
-        hasName.getName().setValue(NAME_OLD);
+        hasName.setName(NAME_OLD);
 
         this.command = new SetHasNameCommand(hasName,
                                              NAME_NEW,
@@ -77,7 +78,7 @@ public class SetHasNameCommandTest {
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.getGraphCommand(canvasHandler).execute(graphCommandExecutionContext));
         assertEquals(NAME_NEW,
-                     hasName.getName().getValue());
+                     hasName.getName());
     }
 
     @Test
@@ -89,7 +90,7 @@ public class SetHasNameCommandTest {
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.getGraphCommand(canvasHandler).undo(graphCommandExecutionContext));
         assertEquals(NAME_OLD,
-                     hasName.getName().getValue());
+                     hasName.getName());
     }
 
     @Test

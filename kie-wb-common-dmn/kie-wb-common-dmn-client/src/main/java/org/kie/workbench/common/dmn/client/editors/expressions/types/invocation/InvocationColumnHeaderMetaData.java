@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
@@ -34,7 +35,7 @@ public class InvocationColumnHeaderMetaData extends NameAndDataTypeHeaderMetaDat
     public InvocationColumnHeaderMetaData(final Optional<HasName> hasName,
                                           final HasTypeRef hasTypeRef,
                                           final Consumer<HasName> clearDisplayNameConsumer,
-                                          final BiConsumer<HasName, String> setDisplayNameConsumer,
+                                          final BiConsumer<HasName, Name> setDisplayNameConsumer,
                                           final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
                                           final CellEditorControlsView.Presenter cellEditorControls,
                                           final NameAndDataTypeEditorView.Presenter headerEditor) {

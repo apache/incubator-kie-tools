@@ -31,6 +31,7 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteHeaderValueCommand;
@@ -41,7 +42,6 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactory
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
@@ -83,7 +83,7 @@ import static org.mockito.Mockito.when;
 @RunWith(LienzoMockitoTestRunner.class)
 public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
-    private static final String NAME = "name";
+    private static final Name NAME = new Name("name");
 
     private static final QName TYPE_REF = new QName();
 
@@ -405,17 +405,6 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
         verify(gridLayer).draw();
         verify(gridLayer, never()).select(any(GridWidget.class));
-    }
-
-    @Test
-    public void testHeaderTextBoxFactory() {
-        appendColumns(GridColumn.class);
-        when(grid.getModel().getColumns().get(0).getHeaderMetaData()).thenReturn(Collections.singletonList(mock(EditableHeaderMetaData.class)));
-        when(mapper.getUiModel()).thenReturn(() -> grid.getModel());
-
-        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderTextBoxFactory();
-        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteHeaderValueCommand.class);
-        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetHeaderValueCommand.class);
     }
 
     @Test

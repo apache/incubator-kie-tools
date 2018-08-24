@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.commands.general;
 
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 
 public class DeleteHasNameCommand extends SetHasNameCommand {
 
@@ -25,7 +26,7 @@ public class DeleteHasNameCommand extends SetHasNameCommand {
     public DeleteHasNameCommand(final HasName hasName,
                                 final org.uberfire.mvp.Command canvasOperation) {
         super(hasName,
-              DEFAULT_TITLE,
+              new Name(DEFAULT_TITLE),
               canvasOperation);
     }
 }

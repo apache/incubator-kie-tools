@@ -19,25 +19,30 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.AddDecisionRuleCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.DeleteDecisionRuleCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.DeleteInputClauseCommand;
@@ -46,14 +51,18 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.Set
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.SetHitPolicyCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.SetOrientationCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
-import org.kie.workbench.common.dmn.client.commands.general.DeleteHeaderValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
-import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -97,35 +106,44 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils.assertCommands;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class DecisionTableGridTest {
 
-    private final static int DEFAULT_INSERT_RULE_ABOVE = 0;
+    private static final int DEFAULT_INSERT_RULE_ABOVE = 0;
 
-    private final static int DEFAULT_INSERT_RULE_BELOW = 1;
+    private static final int DEFAULT_INSERT_RULE_BELOW = 1;
 
-    private final static int DEFAULT_DELETE_RULE = 2;
+    private static final int DEFAULT_DELETE_RULE = 2;
 
-    private final static int INSERT_COLUMN_BEFORE = 0;
+    private static final int INSERT_COLUMN_BEFORE = 0;
 
-    private final static int INSERT_COLUMN_AFTER = 1;
+    private static final int INSERT_COLUMN_AFTER = 1;
 
-    private final static int DELETE_COLUMN = 2;
+    private static final int DELETE_COLUMN = 2;
 
-    private final static int DIVIDER = 3;
+    private static final int DIVIDER = 3;
+
+    private static final String INPUT_CLAUSE_NAME = "input-1";
+
+    private static final String OUTPUT_CLAUSE_NAME1 = "output-1";
+
+    private static final String OUTPUT_CLAUSE_NAME2 = "output-2";
+
+    private static final String NAME_NEW = "name-new";
 
     private static final String HASNAME_NAME = "name";
 
@@ -195,10 +213,10 @@ public class DecisionTableGridTest {
     private HitPolicyEditorView.Presenter hitPolicyEditor;
 
     @Mock
-    private GridCellTuple parent;
+    private NameAndDataTypeEditorView.Presenter headerEditor;
 
     @Mock
-    private HasExpression hasExpression;
+    private GridCellTuple parent;
 
     @Mock
     private Command command;
@@ -233,6 +251,11 @@ public class DecisionTableGridTest {
     @Captor
     private ArgumentCaptor<GridLayerRedrawManager.PrioritizedCommand> redrawCommandCaptor;
 
+    @Captor
+    private ArgumentCaptor<CompositeCommand> compositeCommandCaptor;
+
+    private Decision hasExpression = new Decision();
+
     private Optional<DecisionTable> expression = Optional.empty();
 
     private DecisionTableEditorDefinition definition;
@@ -256,6 +279,7 @@ public class DecisionTableGridTest {
                                                             listSelector,
                                                             translationService,
                                                             hitPolicyEditor,
+                                                            headerEditor,
                                                             new DecisionTableEditorDefinitionEnricher(sessionManager,
                                                                                                       new DMNGraphUtils(sessionManager)));
 
@@ -651,7 +675,9 @@ public class DecisionTableGridTest {
         addInputClause(1);
 
         verify(parent).proposeContainingColumnWidth(eq(grid.getWidth() + grid.getPadding() * 2));
-        verifyGridPanelRefreshAndEditHeaderCell();
+        verifyGridPanelRefreshAndEditHeaderCell(InputClauseColumnHeaderMetaData.class,
+                                                0,
+                                                1);
     }
 
     private void addInputClause(final int index) {
@@ -660,11 +686,12 @@ public class DecisionTableGridTest {
         grid.addInputClause(index);
     }
 
+    @SuppressWarnings("unchecked")
     private void mockInsertColumnCommandExecution() {
         when(sessionCommandManager.execute(eq(canvasHandler),
                                            any(AbstractCanvasGraphCommand.class))).thenAnswer((i) -> {
             final AbstractCanvasHandler handler = (AbstractCanvasHandler) i.getArguments()[0];
-            final AbstractCanvasGraphCommand command = (AbstractCanvasGraphCommand) i.getArguments()[1];
+            final org.kie.workbench.common.stunner.core.command.Command command = (org.kie.workbench.common.stunner.core.command.Command) i.getArguments()[1];
             return command.execute(handler);
         });
     }
@@ -692,7 +719,9 @@ public class DecisionTableGridTest {
         addOutputClause(2);
 
         verify(parent).proposeContainingColumnWidth(eq(grid.getWidth() + grid.getPadding() * 2));
-        verifyGridPanelRefreshAndEditHeaderCell();
+        verifyGridPanelRefreshAndEditHeaderCell(OutputClauseColumnHeaderMetaData.class,
+                                                1,
+                                                2);
     }
 
     private void addOutputClause(final int index) {
@@ -818,24 +847,25 @@ public class DecisionTableGridTest {
         verify(gridPanel).updatePanelSize();
     }
 
-    private void verifyGridPanelRefreshAndEditHeaderCell() {
-        verify(gridLayer, times(2)).batch(redrawCommandCaptor.capture());
+    private void verifyGridPanelRefreshAndEditHeaderCell(final Class<? extends NameAndDataTypeHeaderMetaData> headerMetaDataClass,
+                                                         final int uiHeaderRowIndex,
+                                                         final int uiColumnIndex) {
+        verify(gridLayer).batch(redrawCommandCaptor.capture());
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
 
-        final java.util.List<GridLayerRedrawManager.PrioritizedCommand> redrawCommands = redrawCommandCaptor.getAllValues();
+        final GridLayerRedrawManager.PrioritizedCommand redrawCommand = redrawCommandCaptor.getValue();
 
-        //First call redraws grid following addition of new row
-        final GridLayerRedrawManager.PrioritizedCommand redrawCommand0 = redrawCommands.get(0);
-        redrawCommand0.execute();
+        redrawCommand.execute();
 
         verify(gridLayer).draw();
 
-        //Second call displays the inline editor for the new row
-        final GridLayerRedrawManager.PrioritizedCommand redrawCommand1 = redrawCommands.get(1);
-        redrawCommand1.execute();
-
-        verify(gridLayerDomElementContainer).add(any(Widget.class));
+        verify(headerEditor).bind(any(headerMetaDataClass),
+                                  eq(uiHeaderRowIndex),
+                                  eq(uiColumnIndex));
+        verify(cellEditorControls).show(eq(headerEditor),
+                                        anyInt(),
+                                        anyInt());
     }
 
     @Test
@@ -887,78 +917,210 @@ public class DecisionTableGridTest {
     }
 
     @Test
-    public void testHeaderTextBoxFactoryWhenNested() {
-        setupGrid(makeHasNameForDecision(), 1);
-
-        final GridCellTuple tupleWithoutValue = new GridCellTuple(0, 2, gridWidget);
-        final GridCellValueTuple tupleWithValue = new GridCellValueTuple<>(0, 2, gridWidget, new BaseGridCellValue<>("value"));
-
-        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderTextBoxFactory();
-        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteHeaderValueCommand.class);
-        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetHeaderValueCommand.class);
-    }
-
-    @Test
-    public void testHeaderTextBoxFactoryWhenNotNested() {
+    public void testGetDisplayName() {
         setupGrid(makeHasNameForDecision(), 0);
 
-        final GridCellTuple tupleWithoutValue = new GridCellTuple(0, 2, gridWidget);
-        final GridCellValueTuple tupleWithValue = new GridCellValueTuple<>(0, 2, gridWidget, new BaseGridCellValue<>("value"));
+        assertThat(extractHeaderMetaData(0, 1).getDisplayName()).isEqualTo(INPUT_CLAUSE_NAME);
+        assertThat(extractHeaderMetaData(0, 2).getDisplayName()).isEqualTo(HASNAME_NAME);
 
-        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderTextBoxFactory();
-        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteHeaderValueCommand.class);
-        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetHeaderValueCommand.class);
+        addOutputClause(3);
+
+        assertThat(extractHeaderMetaData(0, 2).getDisplayName()).isEqualTo(HASNAME_NAME);
+        assertThat(extractHeaderMetaData(1, 2).getDisplayName()).isEqualTo(OUTPUT_CLAUSE_NAME1);
+        assertThat(extractHeaderMetaData(0, 3).getDisplayName()).isEqualTo(HASNAME_NAME);
+        assertThat(extractHeaderMetaData(1, 3).getDisplayName()).isEqualTo(OUTPUT_CLAUSE_NAME2);
+    }
+
+    private NameAndDataTypeHeaderMetaData extractHeaderMetaData(final int uiHeaderRowIndex,
+                                                                final int uiColumnIndex) {
+        final GridColumn column = grid.getModel().getColumns().get(uiColumnIndex);
+        return (NameAndDataTypeHeaderMetaData) column.getHeaderMetaData().get(uiHeaderRowIndex);
     }
 
     @Test
-    public void testHeaderHasNameTextBoxFactoryWhenNested() {
-        setupGrid(makeHasNameForDecision(), 1);
-
-        final GridCellTuple tupleWithoutValue = new GridCellTuple(0, 2, gridWidget);
-        final GridCellValueTuple tupleWithValue = new GridCellValueTuple<>(0, 2, gridWidget, new BaseGridCellValue<>("value"));
-
-        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderHasNameTextBoxFactory();
-        assertCommands(factory.getHasNoValueCommand().apply(tupleWithoutValue),
-                       DeleteHeaderValueCommand.class);
-        assertCommands(factory.getHasValueCommand().apply(tupleWithValue),
-                       SetHeaderValueCommand.class);
-    }
-
-    @Test
-    public void testHeaderHasNameTextBoxFactoryWhenNotNested() {
+    public void testSetDisplayNameWithNoChange() {
         setupGrid(makeHasNameForDecision(), 0);
 
-        final GridCellTuple tupleWithoutValue = new GridCellTuple(0, 2, gridWidget);
-        final GridCellValueTuple tupleWithValue = new GridCellValueTuple<>(0, 2, gridWidget, new BaseGridCellValue<>("value"));
+        assertHeaderMetaDataTest(0, 1, (md) -> md.setDisplayName(INPUT_CLAUSE_NAME));
+        assertHeaderMetaDataTest(0, 2, (md) -> md.setDisplayName(HASNAME_NAME));
 
-        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderHasNameTextBoxFactory();
-        assertCommands(factory.getHasNoValueCommand().apply(tupleWithoutValue),
-                       DeleteHeaderValueCommand.class, UpdateElementPropertyCommand.class);
-        assertCommands(factory.getHasValueCommand().apply(tupleWithValue),
-                       SetHeaderValueCommand.class, UpdateElementPropertyCommand.class);
+        addOutputClause(3);
+
+        assertHeaderMetaDataTest(0, 2, (md) -> md.setDisplayName(HASNAME_NAME));
+        assertHeaderMetaDataTest(1, 2, (md) -> md.setDisplayName(OUTPUT_CLAUSE_NAME1));
+        assertHeaderMetaDataTest(0, 3, (md) -> md.setDisplayName(HASNAME_NAME));
+        assertHeaderMetaDataTest(1, 3, (md) -> md.setDisplayName(OUTPUT_CLAUSE_NAME2));
     }
 
     @Test
-    public void testHeaderTextAreaFactoryWhenNested() {
-        setupGrid(makeHasNameForDecision(), 1);
-
-        final GridCellTuple tupleWithoutValue = new GridCellTuple(0, 1, gridWidget);
-        final GridCellValueTuple tupleWithValue = new GridCellValueTuple<>(0, 1, gridWidget, new BaseGridCellValue<>("value"));
-
-        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderTextBoxFactory();
-        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteHeaderValueCommand.class);
-        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetHeaderValueCommand.class);
-    }
-
-    @Test
-    public void testHeaderTextAreaFactoryWhenNotNested() {
+    public void testSetDisplayNameWithEmptyValue() {
         setupGrid(makeHasNameForDecision(), 0);
 
-        final GridCellTuple tupleWithoutValue = new GridCellTuple(0, 1, gridWidget);
-        final GridCellValueTuple tupleWithValue = new GridCellValueTuple<>(0, 1, gridWidget, new BaseGridCellValue<>("value"));
+        final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setDisplayName("");
 
-        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderTextBoxFactory();
-        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteHeaderValueCommand.class);
-        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetHeaderValueCommand.class);
+        assertHeaderMetaDataTest(0, 1, test, DeleteHasNameCommand.class);
+        assertHeaderMetaDataTest(0, 2, test, DeleteHasNameCommand.class, UpdateElementPropertyCommand.class);
+
+        addOutputClause(3);
+
+        assertHeaderMetaDataTest(0, 2, test, DeleteHasNameCommand.class, UpdateElementPropertyCommand.class);
+        assertHeaderMetaDataTest(1, 2, test, DeleteHasNameCommand.class);
+        assertHeaderMetaDataTest(0, 3, test, DeleteHasNameCommand.class, UpdateElementPropertyCommand.class);
+        assertHeaderMetaDataTest(1, 3, test, DeleteHasNameCommand.class);
+    }
+
+    @Test
+    public void testSetDisplayNameWithNullValue() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setDisplayName(null);
+
+        assertHeaderMetaDataTest(0, 1, test, DeleteHasNameCommand.class);
+        assertHeaderMetaDataTest(0, 2, test, DeleteHasNameCommand.class, UpdateElementPropertyCommand.class);
+
+        addOutputClause(3);
+
+        assertHeaderMetaDataTest(0, 2, test, DeleteHasNameCommand.class, UpdateElementPropertyCommand.class);
+        assertHeaderMetaDataTest(1, 2, test, DeleteHasNameCommand.class);
+        assertHeaderMetaDataTest(0, 3, test, DeleteHasNameCommand.class, UpdateElementPropertyCommand.class);
+        assertHeaderMetaDataTest(1, 3, test, DeleteHasNameCommand.class);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSetDisplayNameWithNonEmptyValue() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setDisplayName(NAME_NEW);
+
+        assertHeaderMetaDataTest(0, 1, test, SetHasNameCommand.class);
+        assertHeaderMetaDataTest(0, 2, test, SetHasNameCommand.class, UpdateElementPropertyCommand.class);
+
+        addOutputClause(3);
+
+        assertHeaderMetaDataTest(0, 2, test, SetHasNameCommand.class, UpdateElementPropertyCommand.class);
+        assertHeaderMetaDataTest(1, 2, test, SetHasNameCommand.class);
+        assertHeaderMetaDataTest(0, 3, test, SetHasNameCommand.class, UpdateElementPropertyCommand.class);
+        assertHeaderMetaDataTest(1, 3, test, SetHasNameCommand.class);
+    }
+
+    @Test
+    public void testGetTypeRef() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        assertThat(extractHeaderMetaData(0, 1).getTypeRef()).isNotNull();
+        assertThat(extractHeaderMetaData(0, 2).getTypeRef()).isNotNull();
+
+        addOutputClause(3);
+
+        assertThat(extractHeaderMetaData(0, 2).getTypeRef()).isNotNull();
+        assertThat(extractHeaderMetaData(1, 2).getTypeRef()).isNotNull();
+        assertThat(extractHeaderMetaData(0, 3).getTypeRef()).isNotNull();
+        assertThat(extractHeaderMetaData(1, 3).getTypeRef()).isNotNull();
+    }
+
+    @Test
+    public void testSetTypeRef() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setTypeRef(new QName(DMNModelInstrumentedBase.Namespace.FEEL.getUri(),
+                                                                                             BuiltInType.DATE.getName()));
+
+        assertHeaderMetaDataTest(0, 1, test, SetTypeRefCommand.class);
+        assertHeaderMetaDataTest(0, 2, test, SetTypeRefCommand.class);
+
+        addOutputClause(3);
+
+        assertHeaderMetaDataTest(0, 2, test, SetTypeRefCommand.class);
+        assertHeaderMetaDataTest(1, 2, test, SetTypeRefCommand.class);
+        assertHeaderMetaDataTest(0, 3, test, SetTypeRefCommand.class);
+        assertHeaderMetaDataTest(1, 3, test, SetTypeRefCommand.class);
+    }
+
+    @Test
+    public void testSetTypeRefWithoutChange() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setTypeRef(new QName());
+
+        assertHeaderMetaDataTest(0, 1, test);
+        assertHeaderMetaDataTest(0, 2, test);
+
+        addOutputClause(3);
+
+        assertHeaderMetaDataTest(0, 2, test);
+        assertHeaderMetaDataTest(1, 2, test);
+        assertHeaderMetaDataTest(0, 3, test);
+        assertHeaderMetaDataTest(1, 3, test);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void assertHeaderMetaDataTest(final int uiHeaderRowIndex,
+                                          final int uiColumnIndex,
+                                          final Consumer<NameAndDataTypeHeaderMetaData> test,
+                                          final Class... commands) {
+        reset(sessionCommandManager);
+
+        test.accept(extractHeaderMetaData(uiHeaderRowIndex, uiColumnIndex));
+
+        if (commands.length == 0) {
+            verify(sessionCommandManager, never()).execute(any(AbstractCanvasHandler.class),
+                                                           any(org.kie.workbench.common.stunner.core.command.Command.class));
+        } else {
+            verify(sessionCommandManager).execute(eq(canvasHandler),
+                                                  compositeCommandCaptor.capture());
+            GridFactoryCommandUtils.assertCommands(compositeCommandCaptor.getValue(),
+                                                   commands);
+        }
+    }
+
+    @Test
+    public void testAsDMNModelInstrumentedBase() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        assertThat(extractHeaderMetaData(0, 1).asDMNModelInstrumentedBase()).isInstanceOf(LiteralExpression.class);
+        assertThat(extractHeaderMetaData(0, 2).asDMNModelInstrumentedBase()).isInstanceOf(InformationItem.class);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testInputClauseHasNameWrapperForHeaderMetaData() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        final DecisionTable dtable = expression.get();
+
+        assertThat(dtable.getInput().get(0).getInputExpression().getText()).isEqualTo(grid.getModel().getColumns().get(1).getHeaderMetaData().get(0).getTitle());
+
+        extractHeaderMetaData(0, 1).setDisplayName(NAME_NEW);
+
+        verify(sessionCommandManager).execute(eq(canvasHandler),
+                                              compositeCommandCaptor.capture());
+        ((AbstractCanvasGraphCommand) compositeCommandCaptor.getValue().getCommands().get(0)).execute(canvasHandler);
+
+        assertThat(expression.get().getInput().get(0).getInputExpression().getText()).isEqualTo(NAME_NEW);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testOutputClauseHasNameWrapperForHeaderMetaData() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        //More than one OutputClause column is required before the tested wrapper is instantiated.
+        addOutputClause(3);
+
+        final DecisionTable dtable = expression.get();
+        final OutputClause outputClause = dtable.getOutput().get(0);
+        final GridColumn.HeaderMetaData outputClauseHeaderMetaData = grid.getModel().getColumns().get(2).getHeaderMetaData().get(1);
+        assertThat(outputClause.getName()).isEqualTo(outputClauseHeaderMetaData.getTitle());
+
+        reset(sessionCommandManager);
+
+        extractHeaderMetaData(1, 2).setDisplayName(NAME_NEW);
+
+        verify(sessionCommandManager).execute(eq(canvasHandler),
+                                              compositeCommandCaptor.capture());
+        ((AbstractCanvasGraphCommand) compositeCommandCaptor.getValue().getCommands().get(0)).execute(canvasHandler);
+
+        assertThat(outputClause.getName()).isEqualTo(NAME_NEW);
     }
 }

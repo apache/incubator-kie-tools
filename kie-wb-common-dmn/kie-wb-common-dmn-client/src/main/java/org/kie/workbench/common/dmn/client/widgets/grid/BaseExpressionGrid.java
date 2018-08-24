@@ -37,6 +37,7 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand;
@@ -233,7 +234,7 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
     }
 
     @SuppressWarnings("unchecked")
-    protected BiConsumer<HasName, String> setDisplayNameConsumer() {
+    protected BiConsumer<HasName, Name> setDisplayNameConsumer() {
         return (hn, name) -> sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                                            newHasNameHasValueCommand(hn, name).build());
     }
@@ -259,7 +260,7 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
     }
 
     protected CompositeCommand.Builder newHasNameHasValueCommand(final HasName hasName,
-                                                                 final String name) {
+                                                                 final Name name) {
         final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder = new CompositeCommand.Builder<>();
         commandBuilder.addCommand(new SetHasNameCommand(hasName,
                                                         name,
@@ -307,16 +308,6 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
                                                      sessionCommandManager,
                                                      newCellHasNoValueCommand(),
                                                      newCellHasValueCommand());
-    }
-
-    public TextBoxSingletonDOMElementFactory getHeaderTextBoxFactory() {
-        return new TextBoxSingletonDOMElementFactory(gridPanel,
-                                                     gridLayer,
-                                                     this,
-                                                     sessionManager,
-                                                     sessionCommandManager,
-                                                     newHeaderHasNoValueCommand(),
-                                                     newHeaderHasValueCommand());
     }
 
     public TextBoxSingletonDOMElementFactory getHeaderHasNameTextBoxFactory() {

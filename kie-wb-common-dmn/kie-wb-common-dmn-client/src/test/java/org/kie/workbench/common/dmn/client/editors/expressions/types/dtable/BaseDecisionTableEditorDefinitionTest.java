@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -108,6 +109,9 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
     private EventSourceMock<RefreshFormProperties> refreshFormPropertiesEvent;
 
     @Mock
+    private NameAndDataTypeEditorView.Presenter headerEditor;
+
+    @Mock
     protected GridCellTuple parent;
 
     @Mock
@@ -137,6 +141,7 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
                                                             listSelector,
                                                             translationService,
                                                             hitPolicyEditor,
+                                                            headerEditor,
                                                             new DecisionTableEditorDefinitionEnricher(sessionManager,
                                                                                                       new DMNGraphUtils(sessionManager)));
 

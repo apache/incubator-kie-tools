@@ -19,6 +19,8 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.enterprise.event.Event;
@@ -27,13 +29,15 @@ import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.AddDecisionRuleCommand;
@@ -48,6 +52,7 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.Set
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HasHitPolicyControl;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyEditorView;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.SelectionUtils;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
@@ -80,12 +85,10 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
     public static final String DESCRIPTION_GROUP = "DecisionTable$Description";
 
     private final HitPolicyEditorView.Presenter hitPolicyEditor;
+    private final NameAndDataTypeEditorView.Presenter headerEditor;
 
     private final TextBoxSingletonDOMElementFactory textBoxFactory = getBodyTextBoxFactory();
     private final TextAreaSingletonDOMElementFactory textAreaFactory = getBodyTextAreaFactory();
-    private final TextBoxSingletonDOMElementFactory headerTextBoxFactory = getHeaderTextBoxFactory();
-    private final TextBoxSingletonDOMElementFactory headerHasNameTextBoxFactory = getHeaderHasNameTextBoxFactory();
-    private final TextAreaSingletonDOMElementFactory headerTextAreaFactory = getHeaderTextAreaFactory();
 
     private class ListSelectorItemDefinition {
 
@@ -120,7 +123,8 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                              final ListSelectorView.Presenter listSelector,
                              final TranslationService translationService,
                              final int nesting,
-                             final HitPolicyEditorView.Presenter hitPolicyEditor) {
+                             final HitPolicyEditorView.Presenter hitPolicyEditor,
+                             final NameAndDataTypeEditorView.Presenter headerEditor) {
         super(parent,
               nodeUUID,
               hasExpression,
@@ -141,6 +145,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
               translationService,
               nesting);
         this.hitPolicyEditor = hitPolicyEditor;
+        this.headerEditor = headerEditor;
 
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
 
@@ -180,13 +185,31 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
     }
 
     private InputClauseColumn makeInputClauseColumn(final InputClause ic) {
-        final LiteralExpression le = ic.getInputExpression();
-        final InputClauseColumn column = new InputClauseColumn(new InputClauseColumnHeaderMetaData(le::getText,
-                                                                                                   le::setText,
-                                                                                                   headerTextAreaFactory),
+        final InputClauseColumn column = new InputClauseColumn(new InputClauseColumnHeaderMetaData(wrapInputClauseIntoHasName(ic),
+                                                                                                   ic.getInputExpression(),
+                                                                                                   clearDisplayNameConsumer(),
+                                                                                                   setDisplayNameConsumer(),
+                                                                                                   setTypeRefConsumer(),
+                                                                                                   cellEditorControls,
+                                                                                                   headerEditor),
                                                                textAreaFactory,
                                                                this);
         return column;
+    }
+
+    private HasName wrapInputClauseIntoHasName(final InputClause inputClause) {
+        return new HasName() {
+
+            @Override
+            public Name getName() {
+                return new Name(inputClause.getInputExpression().getText());
+            }
+
+            @Override
+            public void setName(final Name name) {
+                inputClause.getInputExpression().setText(name.getValue());
+            }
+        };
     }
 
     private OutputClauseColumn makeOutputClauseColumn(final OutputClause oc) {
@@ -202,20 +225,70 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
             expression.ifPresent(dtable -> {
                 if (hasName.isPresent()) {
                     final HasName name = hasName.get();
-                    final Name n = name.getName();
-                    metaData.add(new OutputClauseColumnExpressionNameHeaderMetaData(n::getValue,
-                                                                                    n::setValue,
-                                                                                    headerHasNameTextBoxFactory));
+
+                    HasTypeRef hasTypeRef = dtable;
+                    final DMNModelInstrumentedBase base = hasExpression.asDMNModelInstrumentedBase();
+                    if (base instanceof HasVariable) {
+                        final HasVariable hasVariable = (HasVariable) base;
+                        hasTypeRef = hasVariable.getVariable();
+                    }
+
+                    metaData.add(new OutputClauseColumnExpressionNameHeaderMetaData(name,
+                                                                                    hasTypeRef,
+                                                                                    clearExpressionDisplayNameConsumer(),
+                                                                                    setExpressionDisplayNameConsumer(),
+                                                                                    setTypeRefConsumer(),
+                                                                                    cellEditorControls,
+                                                                                    headerEditor));
                 } else {
                     metaData.add(new BaseHeaderMetaData(translationService.format(DMNEditorConstants.DecisionTableEditor_OutputClauseHeader)));
                 }
                 if (dtable.getOutput().size() > 1) {
-                    metaData.add(new OutputClauseColumnNameHeaderMetaData(oc::getName,
-                                                                          oc::setName,
-                                                                          headerTextBoxFactory));
+                    metaData.add(new OutputClauseColumnHeaderMetaData(wrapOutputClauseIntoHasName(oc),
+                                                                      oc,
+                                                                      clearDisplayNameConsumer(),
+                                                                      setDisplayNameConsumer(),
+                                                                      setTypeRefConsumer(),
+                                                                      cellEditorControls,
+                                                                      headerEditor));
                 }
             });
             return metaData;
+        };
+    }
+
+    private HasName wrapOutputClauseIntoHasName(final OutputClause outputClause) {
+        return new HasName() {
+
+            @Override
+            public Name getName() {
+                return new Name(outputClause.getName());
+            }
+
+            @Override
+            public void setName(final Name name) {
+                outputClause.setName(name.getValue());
+            }
+        };
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Consumer<HasName> clearExpressionDisplayNameConsumer() {
+        return (hn) -> {
+            final CompositeCommand.Builder commandBuilder = newHasNameHasNoValueCommand(hn);
+            getUpdateStunnerTitleCommand("").ifPresent(commandBuilder::addCommand);
+            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                          commandBuilder.build());
+        };
+    }
+
+    @SuppressWarnings("unchecked")
+    protected BiConsumer<HasName, Name> setExpressionDisplayNameConsumer() {
+        return (hn, name) -> {
+            final CompositeCommand.Builder commandBuilder = newHasNameHasValueCommand(hn, name);
+            getUpdateStunnerTitleCommand(name.getValue()).ifPresent(commandBuilder::addCommand);
+            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                          commandBuilder.build());
         };
     }
 

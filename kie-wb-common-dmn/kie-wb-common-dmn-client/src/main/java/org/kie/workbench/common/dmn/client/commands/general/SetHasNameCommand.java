@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -38,19 +39,19 @@ public class SetHasNameCommand extends AbstractCanvasGraphCommand implements Vet
                                                                              VetoUndoCommand {
 
     private final HasName hasName;
-    private final String name;
+    private final Name name;
     private final org.uberfire.mvp.Command canvasOperation;
 
-    private final Optional<String> oldName;
+    private final Optional<Name> oldName;
 
     public SetHasNameCommand(final HasName hasName,
-                             final String name,
+                             final Name name,
                              final org.uberfire.mvp.Command canvasOperation) {
         this.hasName = Objects.requireNonNull(hasName);
         this.name = Objects.requireNonNull(name);
         this.canvasOperation = Objects.requireNonNull(canvasOperation);
 
-        this.oldName = Optional.ofNullable(hasName.getName().getValue());
+        this.oldName = Optional.ofNullable(hasName.getName());
     }
 
     @Override
@@ -63,14 +64,14 @@ public class SetHasNameCommand extends AbstractCanvasGraphCommand implements Vet
 
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
-                hasName.getName().setValue(name);
+                hasName.setName(name);
 
                 return GraphCommandResultBuilder.SUCCESS;
             }
 
             @Override
             public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext gce) {
-                hasName.getName().setValue(oldName.orElse(null));
+                hasName.setName(oldName.orElse(null));
 
                 return GraphCommandResultBuilder.SUCCESS;
             }

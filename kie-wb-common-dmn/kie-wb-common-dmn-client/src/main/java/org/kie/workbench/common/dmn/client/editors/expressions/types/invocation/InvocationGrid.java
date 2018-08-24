@@ -189,10 +189,10 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
 
     @Override
     @SuppressWarnings("unchecked")
-    protected BiConsumer<HasName, String> setDisplayNameConsumer() {
+    protected BiConsumer<HasName, Name> setDisplayNameConsumer() {
         return (hn, name) -> {
             final CompositeCommand.Builder commandBuilder = newHasNameHasValueCommand(hn, name);
-            getUpdateStunnerTitleCommand(name).ifPresent(commandBuilder::addCommand);
+            getUpdateStunnerTitleCommand(name.getValue()).ifPresent(commandBuilder::addCommand);
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           commandBuilder.build());
         };

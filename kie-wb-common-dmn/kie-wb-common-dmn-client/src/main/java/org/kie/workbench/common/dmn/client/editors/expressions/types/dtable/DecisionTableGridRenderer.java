@@ -20,7 +20,21 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRender
 
 public class DecisionTableGridRenderer extends BaseExpressionGridRenderer {
 
+    static final double HEADER_HEIGHT = 96;
+
+    static final double HEADER_ROW_HEIGHT = 96;
+
     public DecisionTableGridRenderer() {
         super(false);
+    }
+
+    @Override
+    protected double getRequiredHeaderHeight(final boolean isHeaderHidden) {
+        return isHeaderHidden ? 0.0 : HEADER_HEIGHT;
+    }
+
+    @Override
+    protected double getRequiredHeaderRowHeight(final boolean isHeaderHidden) {
+        return isHeaderHidden ? 0.0 : HEADER_ROW_HEIGHT;
     }
 }

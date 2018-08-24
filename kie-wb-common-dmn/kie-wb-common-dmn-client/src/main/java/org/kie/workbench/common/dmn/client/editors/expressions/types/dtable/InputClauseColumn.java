@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeColumnRenderer;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNSimpleGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
@@ -46,7 +47,7 @@ public class InputClauseColumn extends DMNSimpleGridColumn<DecisionTableGrid, St
                              final TextAreaSingletonDOMElementFactory factory,
                              final DecisionTableGrid gridWidget) {
         super(headerMetaData,
-              new InputClauseColumnRenderer(factory),
+              new NameAndDataTypeColumnRenderer<>(factory),
               gridWidget);
         this.factory = PortablePreconditions.checkNotNull("factory",
                                                           factory);

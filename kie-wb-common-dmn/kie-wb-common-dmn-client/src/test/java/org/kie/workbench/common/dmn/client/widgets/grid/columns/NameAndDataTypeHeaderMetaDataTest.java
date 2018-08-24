@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -33,7 +34,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -44,7 +44,7 @@ public class NameAndDataTypeHeaderMetaDataTest {
 
     private static final String NAME_DATA_TYPE_COLUMN_GROUP = "NameAndDataTypeHeaderMetaDataTest$NameAndDataTypeColumn";
 
-    private static final String NAME = "name";
+    private static final Name NAME = new Name("name");
 
     @Mock
     private HasTypeRef hasTypeRef;
@@ -53,7 +53,7 @@ public class NameAndDataTypeHeaderMetaDataTest {
     private Consumer<HasName> clearDisplayNameConsumer;
 
     @Mock
-    private BiConsumer<HasName, String> setDisplayNameConsumer;
+    private BiConsumer<HasName, Name> setDisplayNameConsumer;
 
     @Mock
     private BiConsumer<HasTypeRef, QName> setTypeRefConsumer;
@@ -91,19 +91,19 @@ public class NameAndDataTypeHeaderMetaDataTest {
     @Test
     public void testGetTitleWithHasName() {
         final Decision decision = new Decision();
-        decision.getName().setValue(NAME);
+        decision.setName(NAME);
         setup(Optional.of(decision));
 
-        assertThat(metaData.getTitle()).isEqualTo(NAME);
+        assertThat(metaData.getTitle()).isEqualTo(NAME.getValue());
     }
 
     @Test
     public void testGetDisplayNameWithHasName() {
         final Decision decision = new Decision();
-        decision.getName().setValue(NAME);
+        decision.setName(NAME);
         setup(Optional.of(decision));
 
-        assertThat(metaData.getDisplayName()).isEqualTo(NAME);
+        assertThat(metaData.getDisplayName()).isEqualTo(NAME.getValue());
     }
 
     @Test
@@ -134,7 +134,7 @@ public class NameAndDataTypeHeaderMetaDataTest {
         final Decision decision = new Decision();
         setup(Optional.of(decision));
 
-        metaData.setDisplayName(NAME);
+        metaData.setDisplayName(NAME.getValue());
 
         verify(setDisplayNameConsumer).accept(eq(decision), eq(NAME));
     }
@@ -142,7 +142,7 @@ public class NameAndDataTypeHeaderMetaDataTest {
     @Test
     public void testSetDisplayNameWithHasNameWithEmptyValue() {
         final Decision decision = new Decision();
-        decision.getName().setValue(NAME);
+        decision.setName(NAME);
         setup(Optional.of(decision));
 
         metaData.setDisplayName("");
@@ -153,22 +153,22 @@ public class NameAndDataTypeHeaderMetaDataTest {
     @Test
     public void testSetDisplayNameWithHasNameWithoutChange() {
         final Decision decision = new Decision();
-        decision.getName().setValue(NAME);
+        decision.setName(NAME);
         setup(Optional.of(decision));
 
-        metaData.setDisplayName(NAME);
+        metaData.setDisplayName(NAME.getValue());
 
         verify(clearDisplayNameConsumer, never()).accept(any(HasName.class));
-        verify(setDisplayNameConsumer, never()).accept(any(HasName.class), anyString());
+        verify(setDisplayNameConsumer, never()).accept(any(HasName.class), any(Name.class));
     }
 
     @Test
     public void testSetDisplayNameWithoutHasName() {
         setup(Optional.empty());
 
-        metaData.setDisplayName(NAME);
+        metaData.setDisplayName(NAME.getValue());
 
-        verify(setDisplayNameConsumer, never()).accept(any(HasName.class), anyString());
+        verify(setDisplayNameConsumer, never()).accept(any(HasName.class), any(Name.class));
     }
 
     @Test

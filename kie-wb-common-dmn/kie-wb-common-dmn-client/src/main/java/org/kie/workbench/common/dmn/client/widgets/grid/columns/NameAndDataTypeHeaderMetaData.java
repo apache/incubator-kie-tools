@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.types.HasNameAndDataTypeControl;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
@@ -34,13 +35,13 @@ public abstract class NameAndDataTypeHeaderMetaData extends EditablePopupHeaderM
     private final Optional<HasName> hasName;
     private final HasTypeRef hasTypeRef;
     private final Consumer<HasName> clearDisplayNameConsumer;
-    private final BiConsumer<HasName, String> setDisplayNameConsumer;
+    private final BiConsumer<HasName, Name> setDisplayNameConsumer;
     private final BiConsumer<HasTypeRef, QName> setTypeRefConsumer;
 
     public NameAndDataTypeHeaderMetaData(final Optional<HasName> hasName,
                                          final HasTypeRef hasTypeRef,
                                          final Consumer<HasName> clearDisplayNameConsumer,
-                                         final BiConsumer<HasName, String> setDisplayNameConsumer,
+                                         final BiConsumer<HasName, Name> setDisplayNameConsumer,
                                          final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
                                          final CellEditorControlsView.Presenter cellEditorControls,
                                          final NameAndDataTypeEditorView.Presenter headerEditor) {
@@ -79,7 +80,7 @@ public abstract class NameAndDataTypeHeaderMetaData extends EditablePopupHeaderM
             if (name == null || name.trim().isEmpty()) {
                 clearDisplayNameConsumer.accept(hn);
             } else {
-                setDisplayNameConsumer.accept(hn, name);
+                setDisplayNameConsumer.accept(hn, new Name(name));
             }
         });
     }

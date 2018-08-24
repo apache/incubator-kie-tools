@@ -22,24 +22,24 @@ import java.util.function.Consumer;
 
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 
-public class InputClauseColumnHeaderMetaData extends NameAndDataTypeHeaderMetaData {
+public class OutputClauseColumnHeaderMetaData extends NameAndDataTypeHeaderMetaData {
 
-    private static final String NAME_DATA_TYPE_COLUMN_GROUP = "InputClauseColumnHeaderMetaData$NameAndDataTypeColumn";
+    private static final String NAME_DATA_TYPE_COLUMN_GROUP = "OutputClauseColumnHeaderMetaData$NameAndDataTypeColumn";
 
-    public InputClauseColumnHeaderMetaData(final HasName hasName,
-                                           final LiteralExpression hasTypeRef,
-                                           final Consumer<HasName> clearDisplayNameConsumer,
-                                           final BiConsumer<HasName, Name> setDisplayNameConsumer,
-                                           final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
-                                           final CellEditorControlsView.Presenter cellEditorControls,
-                                           final NameAndDataTypeEditorView.Presenter headerEditor) {
+    public OutputClauseColumnHeaderMetaData(final HasName hasName,
+                                            final OutputClause hasTypeRef,
+                                            final Consumer<HasName> clearDisplayNameConsumer,
+                                            final BiConsumer<HasName, Name> setDisplayNameConsumer,
+                                            final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
+                                            final CellEditorControlsView.Presenter cellEditorControls,
+                                            final NameAndDataTypeEditorView.Presenter headerEditor) {
         super(Optional.of(hasName),
               hasTypeRef,
               clearDisplayNameConsumer,

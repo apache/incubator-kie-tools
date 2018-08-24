@@ -20,9 +20,9 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRender
 
 public class InvocationGridRenderer extends BaseExpressionGridRenderer {
 
-    static final double HEADER_HEIGHT = 128;
+    static final double HEADER_HEIGHT = 96;
 
-    static final double HEADER_ROW_HEIGHT = 128;
+    static final double HEADER_ROW_HEIGHT = 96;
 
     @SuppressWarnings("unused")
     public InvocationGridRenderer(final boolean isHeaderHidden) {

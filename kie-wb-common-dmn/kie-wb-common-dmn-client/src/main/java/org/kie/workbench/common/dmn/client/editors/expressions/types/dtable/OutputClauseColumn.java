@@ -21,6 +21,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeColumnRenderer;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNSimpleGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
@@ -40,7 +41,7 @@ public class OutputClauseColumn extends DMNSimpleGridColumn<DecisionTableGrid, S
                               final TextAreaSingletonDOMElementFactory factory,
                               final DecisionTableGrid gridWidget) {
         super(headerMetaDataSupplier.get(),
-              new OutputClauseColumnRenderer(factory),
+              new NameAndDataTypeColumnRenderer<>(factory),
               gridWidget);
         this.headerMetaDataSupplier = PortablePreconditions.checkNotNull("headerMetaDataSupplier",
                                                                          headerMetaDataSupplier);

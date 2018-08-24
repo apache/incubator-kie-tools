@@ -16,23 +16,68 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
+import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
-import org.gwtbootstrap3.client.ui.TextBox;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
+import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
-public class OutputClauseColumnExpressionNameHeaderMetaData extends ClauseColumnHeaderMetaData<TextBox, TextBoxDOMElement> {
+public class OutputClauseColumnExpressionNameHeaderMetaData extends NameAndDataTypeHeaderMetaData {
 
-    private static final String NAME_CLAUSE_GROUP = "OutputClauseColumnExpressionNameHeaderMetaData$ExpressionName";
+    private static final String NAME_DATA_TYPE_COLUMN_GROUP = "OutputClauseColumnExpressionNameHeaderMetaData$NameAndDataTypeColumn";
 
-    public OutputClauseColumnExpressionNameHeaderMetaData(final Supplier<String> titleGetter,
-                                                          final Consumer<String> titleSetter,
-                                                          final SingletonDOMElementFactory<TextBox, TextBoxDOMElement> factory) {
-        super(titleGetter,
-              titleSetter,
-              factory,
-              NAME_CLAUSE_GROUP);
+    public OutputClauseColumnExpressionNameHeaderMetaData(final HasName hasName,
+                                                          final HasTypeRef hasTypeRef,
+                                                          final Consumer<HasName> clearDisplayNameConsumer,
+                                                          final BiConsumer<HasName, Name> setDisplayNameConsumer,
+                                                          final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
+                                                          final CellEditorControlsView.Presenter cellEditorControls,
+                                                          final NameAndDataTypeEditorView.Presenter headerEditor) {
+        super(Optional.of(hasName),
+              hasTypeRef,
+              clearDisplayNameConsumer,
+              setDisplayNameConsumer,
+              setTypeRefConsumer,
+              cellEditorControls,
+              headerEditor);
+    }
+
+    @Override
+    public String getColumnGroup() {
+        return NAME_DATA_TYPE_COLUMN_GROUP;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof OutputClauseColumnExpressionNameHeaderMetaData)) {
+            return false;
+        }
+
+        final OutputClauseColumnExpressionNameHeaderMetaData that = (OutputClauseColumnExpressionNameHeaderMetaData) o;
+
+        if (!getDisplayName().equals(that.getDisplayName())) {
+            return false;
+        }
+        if (!getTypeRef().equals(that.getTypeRef())) {
+            return false;
+        }
+        return getColumnGroup().equals(that.getColumnGroup());
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(getDisplayName().hashCode(),
+                                         getTypeRef().hashCode(),
+                                         getColumnGroup().hashCode());
     }
 }

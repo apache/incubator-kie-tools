@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
@@ -170,10 +171,10 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
 
     @Override
     @SuppressWarnings("unchecked")
-    protected BiConsumer<HasName, String> setDisplayNameConsumer() {
+    protected BiConsumer<HasName, Name> setDisplayNameConsumer() {
         return (hn, name) -> {
             final CompositeCommand.Builder commandBuilder = newHasNameHasValueCommand(hn, name);
-            getUpdateStunnerTitleCommand(name).ifPresent(commandBuilder::addCommand);
+            getUpdateStunnerTitleCommand(name.getValue()).ifPresent(commandBuilder::addCommand);
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           commandBuilder.build());
         };
