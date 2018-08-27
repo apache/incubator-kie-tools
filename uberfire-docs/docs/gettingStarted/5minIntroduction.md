@@ -18,10 +18,10 @@ This guide assumes you have the following software set up and working on your co
  mvn archetype:generate -B \
 -DarchetypeGroupId=org.uberfire \
 -DarchetypeArtifactId=uberfire-project-archetype \
--DarchetypeVersion=1.0.0-SNAPSHOT \
+-DarchetypeVersion=2.8.0-SNAPSHOT \
 -DgroupId=org.uberfire \
 -DartifactId=demo \
--Dversion=1.0.0-SNAPSHOT \
+-Dversion=2.8.0-SNAPSHOT \
 -Dpackage=org.uberfire \
 -DcapitalizedRootArtifactId=Demo
 ```
