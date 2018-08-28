@@ -35,6 +35,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.contributors.model.ContributorsDataSets;
 import org.kie.workbench.common.screens.library.client.events.WorkbenchProjectMetricsEvent;
 import org.kie.workbench.common.screens.library.client.util.ProjectMetricsFactory;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -84,7 +85,7 @@ public class ProjectMetricsScreenTest extends AbstractDisplayerTest {
     DisplayerListener displayerListener;
     @Mock
     Repository repository;
-    @Mock
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     WorkspaceProject project;
     ProjectMetricsFactory metricsFactory;
     ProjectMetricsScreen presenter;
@@ -98,6 +99,7 @@ public class ProjectMetricsScreenTest extends AbstractDisplayerTest {
         when(project.getRepository()).thenReturn(repository);
         when(repository.getAlias()).thenReturn("repo");
         when(project.getName()).thenReturn("project1");
+        when(project.getOrganizationalUnit().getName()).thenReturn("org1");
 
         contributorsDataSet = ContributorsData.INSTANCE.toDataSet();
         contributorsDataSet.setUUID(ContributorsDataSets.GIT_CONTRIB);

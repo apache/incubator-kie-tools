@@ -44,6 +44,7 @@ import static org.dashbuilder.displayer.Position.RIGHT;
 import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.COLUMN_AUTHOR;
 import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.COLUMN_DATE;
 import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.COLUMN_MSG;
+import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.COLUMN_ORG;
 import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.COLUMN_PROJECT;
 import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.COLUMN_REPO;
 import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSets.GIT_CONTRIB;
@@ -115,10 +116,13 @@ public class ProjectMetricsFactory {
     protected ColumnFilter createProjectFilter(WorkspaceProject project) {
         String repoAlias = project.getRepository().getAlias();
         String projectName = project.getName();
+        String space = project.getOrganizationalUnit().getName();
         return AND(equalsTo(COLUMN_REPO,
                             repoAlias),
                    equalsTo(COLUMN_PROJECT,
-                            projectName));
+                            projectName),
+                   equalsTo(COLUMN_ORG,
+                            space));
     }
 
     public DisplayerSettings buildCommitsPerAuthorSettings(WorkspaceProject project) {
