@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.EventInte
 import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
@@ -43,7 +44,6 @@ public class StartEventShapeDef
 
     public static final SVGShapeViewResources<BaseStartEvent, BPMNSVGViewFactory> VIEW_RESOURCES =
             new SVGShapeViewResources<BaseStartEvent, BPMNSVGViewFactory>()
-
                     .put(StartNoneEvent.class,
                          BPMNSVGViewFactory::startNoneEvent)
                     .put(StartTimerEvent.class,
@@ -55,8 +55,9 @@ public class StartEventShapeDef
                     .put(StartErrorEvent.class,
                          BPMNSVGViewFactory::startErrorEvent)
                     .put(StartConditionalEvent.class,
-                         BPMNSVGViewFactory::startConditionalEvent);
-
+                         BPMNSVGViewFactory::startConditionalEvent)
+                    .put(StartEscalationEvent.class,
+                         BPMNSVGViewFactory::startEscalationEvent);
 
     public static final Map<Class<? extends BaseStartEvent>, Glyph> GLYPHS =
             new HashMap<Class<? extends BaseStartEvent>, Glyph>() {{
@@ -72,6 +73,8 @@ public class StartEventShapeDef
                     BPMNGlyphFactory.EVENT_START_ERROR);
                 put(StartConditionalEvent.class,
                     BPMNGlyphFactory.EVENT_START_CONDITIONAL);
+                put(StartEscalationEvent.class,
+                    BPMNGlyphFactory.EVENT_START_ESCALATION);
             }};
 
     @Override

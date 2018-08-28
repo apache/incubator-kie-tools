@@ -249,6 +249,18 @@
       }
     },
     {
+      "id": "startEscalationEvent",
+      "name": "Start Event - Escalation",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-start-escalation.svg"
+      }
+    },
+    {
       "id": "intermediateTimerEvent",
       "name": "Intermediate Event - Timer",
       "shape": {
@@ -310,6 +322,18 @@
       }
     },
     {
+      "id": "intermediateEscalationCatchingEvent",
+      "name": "Catching Intermediate Event - Escalation",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate-escalation.svg"
+      }
+    },
+    {
       "id": "intermediateSignalThrowingEvent",
       "name": "Throwing Intermediate Event - Signal",
       "shape": {
@@ -331,6 +355,18 @@
       "icon": {
         "path": "icons/event/",
         "file": "event-intermediate-message-throwing.svg"
+      }
+    },
+    {
+      "id": "intermediateEscalationThrowingEvent",
+      "name": "Throwing Intermediate Event - Escalation",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate-escalation-throwing.svg"
       }
     },
     {
@@ -393,7 +429,18 @@
         "path": "icons/event/",
         "file": "event-end-error.svg"
       }
+    },
+    {
+      "id": "endEscalationEvent",
+      "name": "End Event - Escalation",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-end-escalation.svg"
+      }
     }
-
   ]
 }

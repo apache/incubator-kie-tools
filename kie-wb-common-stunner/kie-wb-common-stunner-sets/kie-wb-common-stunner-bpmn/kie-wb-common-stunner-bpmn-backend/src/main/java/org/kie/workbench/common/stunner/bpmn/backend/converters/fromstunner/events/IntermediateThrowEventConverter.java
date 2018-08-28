@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.prop
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.ThrowEventPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseThrowingIntermediateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageEventExecutionSet;
@@ -43,6 +44,7 @@ public class IntermediateThrowEventConverter {
         return NodeMatch.fromNode(BaseThrowingIntermediateEvent.class, PropertyWriter.class)
                 .when(IntermediateMessageEventThrowing.class, this::messageEvent)
                 .when(IntermediateSignalEventThrowing.class, this::signalEvent)
+                .when(IntermediateEscalationEventThrowing.class, this::escalationEvent)
                 .apply(node).value();
     }
 
@@ -84,6 +86,26 @@ public class IntermediateThrowEventConverter {
         MessageEventExecutionSet executionSet = definition.getExecutionSet();
 
         p.addMessage(executionSet.getMessageRef());
+
+        p.setBounds(n.getContent().getBounds());
+        return p;
+    }
+
+    private PropertyWriter escalationEvent(Node<View<IntermediateEscalationEventThrowing>, ?> n) {
+        IntermediateThrowEvent event = bpmn2.createIntermediateThrowEvent();
+        event.setId(n.getUUID());
+
+        IntermediateEscalationEventThrowing definition = n.getContent().getDefinition();
+        ThrowEventPropertyWriter p = propertyWriterFactory.of(event);
+
+        BPMNGeneralSet general = definition.getGeneral();
+        p.setName(general.getName().getValue());
+        p.setDocumentation(general.getDocumentation().getValue());
+
+        p.setAssignmentsInfo(
+                definition.getDataIOSet().getAssignmentsinfo());
+
+        p.addEscalation(definition.getExecutionSet().getEscalationRef());
 
         p.setBounds(n.getContent().getBounds());
         return p;

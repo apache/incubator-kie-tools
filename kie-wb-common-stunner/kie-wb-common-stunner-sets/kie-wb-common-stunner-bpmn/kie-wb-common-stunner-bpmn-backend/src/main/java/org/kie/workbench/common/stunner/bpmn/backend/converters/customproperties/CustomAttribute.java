@@ -44,6 +44,7 @@ public class CustomAttribute<T> {
     public static final AttributeDefinition<String> version = new StringAttribute(droolsns, "version", "1.0");
     public static final AttributeDefinition<String> errorName = new StringAttribute(droolsns, "erefname", "");
     public static final AttributeDefinition<String> msgref = new StringAttribute(droolsns, "msgref", "");
+    public static final AttributeDefinition<String> esccode = new StringAttribute(droolsns, "esccode", "");
     public static final AttributeDefinition<Boolean> boundarycaForBoundaryEvent = new BooleanAttribute(droolsns, "boundaryca", false) {
         @Override
         public Boolean getValue(BaseElement element) {

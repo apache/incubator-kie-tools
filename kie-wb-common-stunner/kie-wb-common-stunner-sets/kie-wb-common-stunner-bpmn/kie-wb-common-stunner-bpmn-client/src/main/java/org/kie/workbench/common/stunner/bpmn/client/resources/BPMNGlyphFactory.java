@@ -57,4 +57,8 @@ public interface BPMNGlyphFactory {
     ImageStripGlyph TASK_USER = ImageStripGlyph.create(BPMNIconsStrip.class, 34);
     ImageStripGlyph EVENT_START_CONDITIONAL = ImageStripGlyph.create(BPMNIconsStrip.class, 35);
     ImageStripGlyph EVENT_INTERMEDIATE_CONDITIONAL = ImageStripGlyph.create(BPMNIconsStrip.class, 36);
+    ImageStripGlyph EVENT_START_ESCALATION = ImageStripGlyph.create(BPMNIconsStrip.class, 37);
+    ImageStripGlyph EVENT_INTERMEDIATE_ESCALATION = ImageStripGlyph.create(BPMNIconsStrip.class, 38);
+    ImageStripGlyph EVENT_INTERMEDIATE_THROWING_ESCALATION = ImageStripGlyph.create(BPMNIconsStrip.class, 39);
+    ImageStripGlyph EVENT_END_ESCALATION = ImageStripGlyph.create(BPMNIconsStrip.class, 40);
 }

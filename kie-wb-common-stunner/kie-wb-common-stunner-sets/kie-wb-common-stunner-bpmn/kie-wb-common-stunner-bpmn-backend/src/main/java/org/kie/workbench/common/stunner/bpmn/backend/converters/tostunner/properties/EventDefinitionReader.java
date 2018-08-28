@@ -20,6 +20,8 @@ import java.util.Optional;
 
 import org.eclipse.bpmn2.Error;
 import org.eclipse.bpmn2.ErrorEventDefinition;
+import org.eclipse.bpmn2.Escalation;
+import org.eclipse.bpmn2.EscalationEventDefinition;
 import org.eclipse.bpmn2.Message;
 import org.eclipse.bpmn2.MessageEventDefinition;
 
@@ -34,6 +36,12 @@ public class EventDefinitionReader {
     public static String messageRefOf(MessageEventDefinition e) {
         return Optional.ofNullable(e.getMessageRef())
                 .map(Message::getName)
+                .orElse("");
+    }
+
+    public static String escalationRefOf(EscalationEventDefinition e) {
+        return Optional.ofNullable(e.getEscalationRef())
+                .map(Escalation::getEscalationCode)
                 .orElse("");
     }
 }

@@ -194,6 +194,25 @@
     fill: #4aa241;
 }
 
+#startEscalationEvent #event-background {
+    opacity: 1;
+    fill: #e8fae6;
+}
+#startEscalationEvent #start {
+    opacity: 1;
+    fill-opacity: 1;
+    fill: #4aa241;
+    stroke-opacity: 0;
+    stroke-dasharray: 15, 15;
+    stroke-width: 5px;
+    stroke: #4aa241;
+
+}
+#startEscalationEvent #escalation-catching {
+    opacity: 1;
+    fill: #4aa241;
+}
+
 #startMessageEvent #event-background {
     opacity: 1;
     fill: #e8fae6;
@@ -320,6 +339,25 @@
     fill: #e5a000;
 }
 
+#intermediateEscalationCatchingEvent #event-background {
+    opacity: 1;
+    fill: #fbefcf;
+}
+#intermediateEscalationCatchingEvent #intermediate {
+    opacity: 1;
+    fill-opacity: 1;
+    fill: #e5a000;
+    stroke-opacity: 0;
+    stroke-dasharray: 15, 15;
+    stroke-width: 5px;
+    stroke: #e5a000;
+
+}
+#intermediateEscalationCatchingEvent #escalation-catching {
+    opacity: 1;
+    fill: #e5a000;
+}
+
 #intermediateMessageCatchingEvent #event-background {
     opacity: 1;
     fill: #fbefcf;
@@ -362,7 +400,19 @@
 #intermediateSignalThrowingEvent #signal-throwing {
     opacity: 1;
     fill: #007a87;
+}
 
+#intermediateEscalationThrowingEvent #event-background {
+    opacity: 1;
+    fill: #bedee1;
+}
+#intermediateEscalationThrowingEvent #intermediate {
+    opacity: 1;
+    fill: #007a87;
+}
+#intermediateEscalationThrowingEvent #escalation-throwing {
+    opacity: 1;
+    fill: #007a87;
 }
 
 #intermediateMessageThrowingEvent #event-background {
@@ -402,6 +452,18 @@
     fill: #a30000;
 }
 
+#endEscalationEvent #event-background {
+    opacity: 1;
+    fill: #fce7e7;
+}
+#endEscalationEvent #end {
+    opacity: 1;
+    fill: #a30000;
+}
+#endEscalationEvent #escalation-catching {
+    opacity: 1;
+    fill: #a30000;
+}
 
 #endMessageEvent #event-background {
     opacity: 1;

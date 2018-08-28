@@ -23,11 +23,13 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.prop
 import org.kie.workbench.common.stunner.bpmn.definition.BaseCatchingIntermediateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.conditional.CancellingConditionalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.CancellingErrorEventExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.CancellingEscalationEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.CancellingMessageEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.CancellingSignalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.CancellingTimerEventExecutionSet;
@@ -54,6 +56,7 @@ public class IntermediateCatchEventConverter {
                 .when(IntermediateErrorEventCatching.class, this::errorEvent)
                 .when(IntermediateTimerEvent.class, this::timerEvent)
                 .when(IntermediateConditionalEvent.class, this::conditionalEvent)
+                .when(IntermediateEscalationEvent.class, this::escalationEvent)
 
                 .apply(node).value();
     }
@@ -152,6 +155,27 @@ public class IntermediateCatchEventConverter {
         CancellingConditionalEventExecutionSet executionSet = definition.getExecutionSet();
         p.setCancelActivity(executionSet.getCancelActivity().getValue());
         p.addCondition(executionSet.getConditionExpression());
+
+        p.setBounds(n.getContent().getBounds());
+        return p;
+    }
+
+    private PropertyWriter escalationEvent(Node<View<IntermediateEscalationEvent>, ?> n) {
+        CatchEventPropertyWriter p = createCatchEventPropertyWriter(n);
+        p.getFlowElement().setId(n.getUUID());
+
+        IntermediateEscalationEvent definition = n.getContent().getDefinition();
+
+        BPMNGeneralSet general = definition.getGeneral();
+        p.setName(general.getName().getValue());
+        p.setDocumentation(general.getDocumentation().getValue());
+
+        p.setAssignmentsInfo(
+                definition.getDataIOSet().getAssignmentsinfo());
+
+        CancellingEscalationEventExecutionSet executionSet = definition.getExecutionSet();
+        p.setCancelActivity(executionSet.getCancelActivity().getValue());
+        p.addEscalation(executionSet.getEscalationRef());
 
         p.setBounds(n.getContent().getBounds());
         return p;

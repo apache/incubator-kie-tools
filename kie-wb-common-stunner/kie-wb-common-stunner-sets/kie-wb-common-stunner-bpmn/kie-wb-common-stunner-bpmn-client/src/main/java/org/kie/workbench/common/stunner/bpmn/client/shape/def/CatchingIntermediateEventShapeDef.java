@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.EventCanc
 import org.kie.workbench.common.stunner.bpmn.definition.BaseCatchingIntermediateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
@@ -51,7 +52,9 @@ public class CatchingIntermediateEventShapeDef
                     .put(IntermediateMessageEventCatching.class,
                          BPMNSVGViewFactory::intermediateMessageCatchingEvent)
                     .put(IntermediateConditionalEvent.class,
-                         BPMNSVGViewFactory::intermediateConditionalEvent);
+                         BPMNSVGViewFactory::intermediateConditionalEvent)
+                    .put(IntermediateEscalationEvent.class,
+                         BPMNSVGViewFactory::intermediateEscalationCatchingEvent);
 
     public static final Map<Class<? extends BaseCatchingIntermediateEvent>, Glyph> GLYPHS =
             new HashMap<Class<? extends BaseCatchingIntermediateEvent>, Glyph>() {{
@@ -65,6 +68,8 @@ public class CatchingIntermediateEventShapeDef
                     BPMNGlyphFactory.EVENT_INTERMEDIATE_MESSAGE);
                 put(IntermediateConditionalEvent.class,
                     BPMNGlyphFactory.EVENT_INTERMEDIATE_CONDITIONAL);
+                put(IntermediateEscalationEvent.class,
+                    BPMNGlyphFactory.EVENT_INTERMEDIATE_ESCALATION);
             }};
 
     @Override

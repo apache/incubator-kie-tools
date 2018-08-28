@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.definition.StartConditionalEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
@@ -121,4 +122,25 @@ public class EventInterruptingViewHandlerTest extends EventViewHandlerTestBase {
         verify(prim1).setFillAlpha(eq(1d));
         verify(prim1).setStrokeAlpha(eq(0d));
     }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testHandleEscalationIsNotInterrupting() {
+        final StartEscalationEvent bean = new StartEscalationEvent();
+        bean.getExecutionSet().getIsInterrupting().setValue(false);
+        tested.handle(bean, view);
+        verify(prim1).setFillAlpha(eq(0d));
+        verify(prim1).setStrokeAlpha(eq(1d));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testHandleEscalationIsInterrupting() {
+        final StartEscalationEvent bean = new StartEscalationEvent();
+        bean.getExecutionSet().getIsInterrupting().setValue(true);
+        tested.handle(bean, view);
+        verify(prim1).setFillAlpha(eq(1d));
+        verify(prim1).setStrokeAlpha(eq(0d));
+    }
+
 }

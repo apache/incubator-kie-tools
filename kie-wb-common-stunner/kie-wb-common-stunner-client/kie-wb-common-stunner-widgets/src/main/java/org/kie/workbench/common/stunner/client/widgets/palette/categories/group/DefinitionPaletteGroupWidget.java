@@ -41,7 +41,7 @@ public class DefinitionPaletteGroupWidget implements DefinitionPaletteGroupWidge
         FULL_LIST
     }
 
-    public static final int COMPACT_ELEMENTS_LIST_SIZE = 6;
+    public static final int COMPACT_ELEMENTS_LIST_SIZE = 8;
 
     private final List<DefinitionPaletteItemWidget> hiddenList = new ArrayList<>();
 

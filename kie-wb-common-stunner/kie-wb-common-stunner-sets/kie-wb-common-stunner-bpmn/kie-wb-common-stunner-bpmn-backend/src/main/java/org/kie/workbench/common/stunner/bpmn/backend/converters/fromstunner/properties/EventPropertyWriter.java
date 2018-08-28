@@ -19,6 +19,8 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.pro
 import org.eclipse.bpmn2.ConditionalEventDefinition;
 import org.eclipse.bpmn2.Error;
 import org.eclipse.bpmn2.ErrorEventDefinition;
+import org.eclipse.bpmn2.Escalation;
+import org.eclipse.bpmn2.EscalationEventDefinition;
 import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.FormalExpression;
@@ -36,6 +38,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.proper
 import org.kie.workbench.common.stunner.bpmn.definition.property.common.ConditionExpression;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.ErrorRef;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.EscalationRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalScope;
@@ -170,6 +173,25 @@ public abstract class EventPropertyWriter extends PropertyWriter {
 
         conditionalEventDefinition.setCondition(conditionExpression);
         addEventDefinition(conditionalEventDefinition);
+    }
+
+    public void addEscalation(EscalationRef escalationRef) {
+        EscalationEventDefinition escalationEventDefinition =
+                bpmn2.createEscalationEventDefinition();
+        addEventDefinition(escalationEventDefinition);
+
+        Escalation escalation = bpmn2.createEscalation();
+        String escalationCode = escalationRef.getValue();
+        if (escalationCode == null || escalationCode.isEmpty()) {
+            return;
+        }
+
+        escalation.setId(Ids.fromString(escalationCode));
+        escalation.setEscalationCode(escalationCode);
+        escalationEventDefinition.setEscalationRef(escalation);
+
+        CustomAttribute.esccode.of(escalationEventDefinition).set(escalationCode);
+        addRootElement(escalation);
     }
 
     protected abstract void addEventDefinition(EventDefinition eventDefinition);

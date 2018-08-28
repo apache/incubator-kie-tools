@@ -23,11 +23,13 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.prop
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.ThrowEventPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseEndEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.ErrorEventExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.EscalationEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -50,6 +52,7 @@ public class EndEventConverter {
                 .when(EndSignalEvent.class, this::signalEvent)
                 .when(EndTerminateEvent.class, this::terminateEvent)
                 .when(EndErrorEvent.class, this::errorEvent)
+                .when(EndEscalationEvent.class, this::escalationEvent)
                 .apply(node).value();
     }
 
@@ -145,6 +148,27 @@ public class EndEventConverter {
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
+
+        p.setBounds(n.getContent().getBounds());
+        return p;
+    }
+
+    private PropertyWriter escalationEvent(Node<View<EndEscalationEvent>, ?> n) {
+        EndEvent event = bpmn2.createEndEvent();
+        event.setId(n.getUUID());
+
+        EndEscalationEvent definition = n.getContent().getDefinition();
+        ThrowEventPropertyWriter p = propertyWriterFactory.of(event);
+
+        BPMNGeneralSet general = definition.getGeneral();
+        p.setName(general.getName().getValue());
+        p.setDocumentation(general.getDocumentation().getValue());
+
+        p.setAssignmentsInfo(
+                definition.getDataIOSet().getAssignmentsinfo());
+
+        EscalationEventExecutionSet executionSet = definition.getExecutionSet();
+        p.addEscalation(executionSet.getEscalationRef());
 
         p.setBounds(n.getContent().getBounds());
         return p;

@@ -33,9 +33,12 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.proper
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.EventPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.ThrowEventPropertyReader;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.EscalationEventExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.EscalationRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.ScopedSignalEventExecutionSet;
@@ -68,8 +71,8 @@ public class IntermediateThrowEventConverter {
                 return Match.of(EventDefinition.class, BpmnNode.class)
                         .when(SignalEventDefinition.class, e -> signalEvent(event, e))
                         .when(MessageEventDefinition.class, e -> messageEvent(event, e))
+                        .when(EscalationEventDefinition.class, e -> escalationEvent(event, e))
                         .missing(ErrorEventDefinition.class)
-                        .missing(EscalationEventDefinition.class)
                         .missing(CompensateEventDefinition.class)
                         .missing(ConditionalEventDefinition.class)
                         .apply(eventDefinitions.get(0)).value();
@@ -140,4 +143,38 @@ public class IntermediateThrowEventConverter {
 
         return BpmnNode.of(node);
     }
+
+    private BpmnNode escalationEvent(
+            IntermediateThrowEvent event,
+            EscalationEventDefinition eventDefinition) {
+
+        Node<View<IntermediateEscalationEventThrowing>, Edge> node =
+                factoryManager.newNode(event.getId(),
+                                       IntermediateEscalationEventThrowing.class);
+
+        IntermediateEscalationEventThrowing definition = node.getContent().getDefinition();
+        EventPropertyReader p = propertyReaderFactory.of(event);
+
+        definition.setGeneral(new BPMNGeneralSet(
+                new Name(p.getName()),
+                new Documentation(p.getDocumentation())
+        ));
+
+        definition.setDataIOSet(new DataIOSet(
+                p.getAssignmentsInfo()
+        ));
+
+        definition.setExecutionSet(new EscalationEventExecutionSet(
+                new EscalationRef(EventDefinitionReader.escalationRefOf(eventDefinition))
+        ));
+
+        node.getContent().setBounds(p.getBounds());
+
+        definition.setDimensionsSet(p.getCircleDimensionSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setBackgroundSet(p.getBackgroundSet());
+
+        return BpmnNode.of(node);
+    }
+
 }

@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseEndEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
@@ -48,7 +49,9 @@ public class EndEventShapeDef
                     .put(EndTerminateEvent.class,
                          BPMNSVGViewFactory::endTerminateEvent)
                     .put(EndErrorEvent.class,
-                         BPMNSVGViewFactory::endErrorEvent);
+                         BPMNSVGViewFactory::endErrorEvent)
+                    .put(EndEscalationEvent.class,
+                         BPMNSVGViewFactory::endEscalationEvent);
 
     public static final Map<Class<? extends BaseEndEvent>, Glyph> GLYPHS =
             new HashMap<Class<? extends BaseEndEvent>, Glyph>() {{
@@ -62,6 +65,8 @@ public class EndEventShapeDef
                     BPMNGlyphFactory.EVENT_END_TERMINATE);
                 put(EndErrorEvent.class,
                     BPMNGlyphFactory.EVENT_END_ERROR);
+                put(EndEscalationEvent.class,
+                    BPMNGlyphFactory.EVENT_END_ESCALATION);
             }};
 
     @Override

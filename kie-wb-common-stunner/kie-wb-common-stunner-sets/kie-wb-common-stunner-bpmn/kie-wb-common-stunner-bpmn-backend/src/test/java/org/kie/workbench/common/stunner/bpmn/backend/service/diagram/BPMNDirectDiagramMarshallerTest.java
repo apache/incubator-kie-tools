@@ -57,6 +57,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
@@ -66,6 +67,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.InclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
@@ -78,6 +81,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
@@ -170,6 +174,7 @@ public class BPMNDirectDiagramMarshallerTest {
     private static final String BPMN_STARTMESSAGEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startMessageEvent.bpmn";
     private static final String BPMN_STARTERROREVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startErrorEvent.bpmn";
     private static final String BPMN_STARTCONDITIONALEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startConditionalEvent.bpmn";
+    private static final String BPMN_STARTESCALATIONEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startEscalationEvent.bpmn";
     private static final String BPMN_INTERMEDIATE_SIGNAL_EVENTCATCHING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateSignalEventCatching.bpmn";
     private static final String BPMN_INTERMEDIATE_ERROR_EVENTCATCHING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateErrorEventCatching.bpmn";
     private static final String BPMN_INTERMEDIATE_SIGNAL_EVENTTHROWING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateSignalEventThrowing.bpmn";
@@ -177,10 +182,13 @@ public class BPMNDirectDiagramMarshallerTest {
     private static final String BPMN_INTERMEDIATE_MESSAGE_EVENTTHROWING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateMessageEventThrowing.bpmn";
     private static final String BPMN_INTERMEDIATE_TIMER_EVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateTimerEvent.bpmn";
     private static final String BPMN_INTERMEDIATE_CONDITIONAL_EVENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateConditionalEvents.bpmn";
+    private static final String BPMN_INTERMEDIATE_ESCALATION_EVENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateEscalationEvents.bpmn";
+    private static final String BPMN_INTERMEDIATE_ESCALATION_EVENTTHROWING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateEscalationEventThrowing.bpmn";
     private static final String BPMN_ENDSIGNALEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endSignalEvent.bpmn";
     private static final String BPMN_ENDMESSAGEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endMessageEvent.bpmn";
     private static final String BPMN_ENDNONEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endNoneEvent.bpmn";
     private static final String BPMN_ENDTERMINATEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endTerminateEvent.bpmn";
+    private static final String BPMN_ENDESCALATIONEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endEscalationEvent.bpmn";
     private static final String BPMN_PROCESSPROPERTIES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/processProperties.bpmn";
     private static final String BPMN_BUSINESSRULETASKRULEFLOWGROUP = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/businessRuleTask.bpmn";
     private static final String BPMN_EVENT_SUBPROCESS_STARTERROREVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/isInterruptingStartErrorEvent.bpmn";
@@ -577,6 +585,34 @@ public class BPMNDirectDiagramMarshallerTest {
 
     @Test
     @SuppressWarnings("unchecked")
+    public void testUnmarshallStartEscalationEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_STARTESCALATIONEVENT);
+        assertDiagram(diagram,
+                      2);
+        assertEquals("StartEscalationEvent",
+                     diagram.getMetadata().getTitle());
+        Node<? extends Definition, ?> startEventNode = diagram.getGraph().getNode("_D5AAA79F-9CD6-43C1-92E2-5D3C9340A303");
+        assertNotNull(startEventNode);
+        StartEscalationEvent startEscalationEvent = (StartEscalationEvent) startEventNode.getContent().getDefinition();
+
+        assertNotNull(startEscalationEvent.getGeneral());
+        assertEquals("StartEscalationEventName",
+                     startEscalationEvent.getGeneral().getName().getValue());
+        assertEquals("StartEscalationEventDocumentation",
+                     startEscalationEvent.getGeneral().getDocumentation().getValue());
+        assertNotNull(startEscalationEvent.getExecutionSet());
+        assertEquals("EscalationCode",
+                     startEscalationEvent.getExecutionSet().getEscalationRef().getValue());
+        assertEquals(true,
+                     startEscalationEvent.getExecutionSet().getIsInterrupting().getValue());
+        DataIOSet dataIOSet = startEscalationEvent.getDataIOSet();
+        AssignmentsInfo assignmentsInfo = dataIOSet.getAssignmentsinfo();
+        assertEquals("||escalationOutput:String||[dout]escalationOutput->processVar1",
+                     assignmentsInfo.getValue());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void testUnmarshallIntermediateTimerEvent() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_INTERMEDIATE_TIMER_EVENT);
         assertDiagram(diagram,
@@ -640,6 +676,34 @@ public class BPMNDirectDiagramMarshallerTest {
                      boundaryConditionalEvent.getExecutionSet().getConditionExpression().getValue().getScript());
         assertEquals(true,
                      boundaryConditionalEvent.getExecutionSet().getCancelActivity().getValue());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshallIntermediateEscalationEvents() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_INTERMEDIATE_ESCALATION_EVENTS);
+        assertDiagram(diagram,
+                      3);
+        assertEquals("IntermediateEscalationEvents",
+                     diagram.getMetadata().getTitle());
+        Node<? extends Definition, ?> catchingEventNode = diagram.getGraph().getNode("_C7F2BA98-1100-4CF8-A994-40E2B65F6E5D");
+        assertNotNull(catchingEventNode);
+        IntermediateEscalationEvent intermediateEscalationEvent = (IntermediateEscalationEvent) catchingEventNode.getContent().getDefinition();
+
+        assertNotNull(intermediateEscalationEvent.getGeneral());
+        assertEquals("BoundaryEscalationEventName",
+                     intermediateEscalationEvent.getGeneral().getName().getValue());
+        assertEquals("BoundaryEscalationEventDocumentation",
+                     intermediateEscalationEvent.getGeneral().getDocumentation().getValue());
+        assertNotNull(intermediateEscalationEvent.getExecutionSet());
+        assertEquals(true,
+                     intermediateEscalationEvent.getExecutionSet().getCancelActivity().getValue());
+        assertEquals("EscalationCode",
+                     intermediateEscalationEvent.getExecutionSet().getEscalationRef().getValue());
+        DataIOSet dataIOSet = intermediateEscalationEvent.getDataIOSet();
+        AssignmentsInfo assignmentsInfo = dataIOSet.getAssignmentsinfo();
+        assertEquals("||escalationOutput:String||[dout]escalationOutput->processVar1",
+                     assignmentsInfo.getValue());
     }
 
     @Test
@@ -720,6 +784,32 @@ public class BPMNDirectDiagramMarshallerTest {
         DataIOSet dataIOSet = intermediateSignalEventThrowing.getDataIOSet();
         AssignmentsInfo assignmentsInfo = dataIOSet.getAssignmentsinfo();
         assertEquals("_input1:String||||[din]var1->_input1",
+                     assignmentsInfo.getValue());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshallIntermediateEscalationEventThrowing() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_INTERMEDIATE_ESCALATION_EVENTTHROWING);
+        assertDiagram(diagram,
+                      2);
+        assertEquals("IntermediateEscalationEventThrowing",
+                     diagram.getMetadata().getTitle());
+        Node<? extends Definition, ?> throwingEventNode = diagram.getGraph().getNode("_8516D854-F67F-4697-9837-40A32033AE25");
+        assertNotNull(throwingEventNode);
+        IntermediateEscalationEventThrowing throwingEscalationEvent = (IntermediateEscalationEventThrowing) throwingEventNode.getContent().getDefinition();
+
+        assertNotNull(throwingEscalationEvent.getGeneral());
+        assertEquals("ThrowingEscalationEventName",
+                     throwingEscalationEvent.getGeneral().getName().getValue());
+        assertEquals("ThrowingEscalationEventDocumentation",
+                     throwingEscalationEvent.getGeneral().getDocumentation().getValue());
+        assertNotNull(throwingEscalationEvent.getExecutionSet());
+        assertEquals("EscalationCode",
+                     throwingEscalationEvent.getExecutionSet().getEscalationRef().getValue());
+        DataIOSet dataIOSet = throwingEscalationEvent.getDataIOSet();
+        AssignmentsInfo assignmentsInfo = dataIOSet.getAssignmentsinfo();
+        assertEquals("escalationOutput:String||||[din]processVar1->escalationOutput",
                      assignmentsInfo.getValue());
     }
 
@@ -907,6 +997,32 @@ public class BPMNDirectDiagramMarshallerTest {
         DataIOSet dataIOSet = endErrorEvent.getDataIOSet();
         AssignmentsInfo assignmentsInfo = dataIOSet.getAssignmentsinfo();
         assertEquals("myErrorEventInput:String||||[din]var1->myErrorEventInput",
+                     assignmentsInfo.getValue());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshallEndEscalationEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ENDESCALATIONEVENT);
+        assertDiagram(diagram,
+                      2);
+        assertEquals("EndEscalationEvent",
+                     diagram.getMetadata().getTitle());
+        Node<? extends Definition, ?> endEventNode = diagram.getGraph().getNode("_8F6A4096-26AA-4C14-B1F0-B96ED24BD5C7");
+        assertNotNull(endEventNode);
+        EndEscalationEvent endEscalationEvent = (EndEscalationEvent) endEventNode.getContent().getDefinition();
+
+        assertNotNull(endEscalationEvent.getGeneral());
+        assertEquals("EndEscalationEventName",
+                     endEscalationEvent.getGeneral().getName().getValue());
+        assertEquals("EndEscalationEventDocumentation",
+                     endEscalationEvent.getGeneral().getDocumentation().getValue());
+        assertNotNull(endEscalationEvent.getExecutionSet());
+        assertEquals("EscalationCode",
+                     endEscalationEvent.getExecutionSet().getEscalationRef().getValue());
+        DataIOSet dataIOSet = endEscalationEvent.getDataIOSet();
+        AssignmentsInfo assignmentsInfo = dataIOSet.getAssignmentsinfo();
+        assertEquals("escalationInput:String||||[din]processVar1->escalationInput",
                      assignmentsInfo.getValue());
     }
 
@@ -1986,6 +2102,25 @@ public class BPMNDirectDiagramMarshallerTest {
     }
 
     @Test
+    public void testMarshallStartEscalationEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_STARTESCALATIONEVENT);
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      1,
+                      0);
+
+        assertTrue(result.contains("<bpmn2:startEvent id=\"_D5AAA79F-9CD6-43C1-92E2-5D3C9340A303\""));
+        assertTrue(result.contains(" name=\"StartEscalationEvent\""));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[StartEscalationEventName]]></drools:metaValue>"));
+        assertTrue(result.contains("<![CDATA[StartEscalationEventDocumentation]]></bpmn2:documentation>"));
+        assertTrue(result.contains("<bpmn2:escalationEventDefinition"));
+        assertTrue(result.contains("drools:esccode=\"EscalationCode\""));
+        assertTrue(result.contains("<bpmn2:escalation"));
+        assertTrue(result.contains("escalationCode=\"EscalationCode\""));
+    }
+
+    @Test
     public void testMarshallStartErrorEventEvent() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_STARTERROREVENT);
         String result = tested.marshall(diagram);
@@ -2139,6 +2274,25 @@ public class BPMNDirectDiagramMarshallerTest {
     }
 
     @Test
+    public void testMarshallIntermediateEscalationEventThrowing() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_INTERMEDIATE_ESCALATION_EVENTTHROWING);
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      1,
+                      0);
+
+        assertTrue(result.contains("<bpmn2:intermediateThrowEvent id=\"_8516D854-F67F-4697-9837-40A32033AE25\""));
+        assertTrue(result.contains(" name=\"ThrowingEscalationEventName\""));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[ThrowingEscalationEventName]]></drools:metaValue>"));
+        assertTrue(result.contains("<![CDATA[ThrowingEscalationEventDocumentation]]></bpmn2:documentation>"));
+        assertTrue(result.contains("<bpmn2:escalationEventDefinition"));
+        assertTrue(result.contains("drools:esccode=\"EscalationCode\""));
+        assertTrue(result.contains("<bpmn2:escalation"));
+        assertTrue(result.contains("escalationCode=\"EscalationCode\""));
+    }
+
+    @Test
     public void testMarshallIntermediateMessageEventCatching() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_INTERMEDIATE_MESSAGE_EVENTCATCHING);
         String result = tested.marshall(diagram);
@@ -2203,6 +2357,25 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(result.contains("<bpmn2:errorEventDefinition"));
         assertTrue(result.contains(" errorRef=\"MyError\""));
         assertTrue(result.contains(" drools:erefname=\"MyError\""));
+    }
+
+    @Test
+    public void testMarshallEndEscalationEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ENDESCALATIONEVENT);
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      1,
+                      0);
+
+        assertTrue(result.contains("<bpmn2:endEvent id=\"_8F6A4096-26AA-4C14-B1F0-B96ED24BD5C7\""));
+        assertTrue(result.contains(" name=\"EndEscalationEventName\""));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[EndEscalationEventName]]></drools:metaValue>"));
+        assertTrue(result.contains("<![CDATA[EndEscalationEventDocumentation]]></bpmn2:documentation>"));
+        assertTrue(result.contains("<bpmn2:escalationEventDefinition"));
+        assertTrue(result.contains("drools:esccode=\"EscalationCode\""));
+        assertTrue(result.contains("<bpmn2:escalation"));
+        assertTrue(result.contains("escalationCode=\"EscalationCode\""));
     }
 
     @Test
@@ -2595,6 +2768,26 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(result.contains("![CDATA[BoundaryConditionalEventCompletionCondition]]></bpmn2:condition>"));
         assertTrue(result.contains("</bpmn2:condition>"));
         assertTrue(result.contains("</bpmn2:conditionalEventDefinition>"));
+    }
+
+    @Test
+    public void testMarshallIntermediateEscalationEvents() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_INTERMEDIATE_ESCALATION_EVENTS);
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      2,
+                      0);
+
+        assertTrue(result.contains("<bpmn2:boundaryEvent id=\"_C7F2BA98-1100-4CF8-A994-40E2B65F6E5D\""));
+        assertTrue(result.contains(" name=\"BoundaryEscalationEventName\""));
+        assertTrue(result.contains("attachedToRef=\"_3817E92F-D45A-4878-AAB2-95B057C485A1\""));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[BoundaryEscalationEventName]]></drools:metaValue>"));
+        assertTrue(result.contains("<![CDATA[BoundaryEscalationEventDocumentation]]></bpmn2:documentation>"));
+        assertTrue(result.contains("<bpmn2:escalationEventDefinition"));
+        assertTrue(result.contains("drools:esccode=\"EscalationCode\""));
+        assertTrue(result.contains("<bpmn2:escalation"));
+        assertTrue(result.contains("escalationCode=\"EscalationCode\""));
     }
 
     @Test

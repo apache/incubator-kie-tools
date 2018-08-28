@@ -21,6 +21,7 @@ import java.util.Map;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseThrowingIntermediateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
@@ -36,12 +37,14 @@ public class ThrowingIntermediateEventShapeDef
     public static final SVGShapeViewResources<BaseThrowingIntermediateEvent, BPMNSVGViewFactory> VIEW_RESOURCES =
             new SVGShapeViewResources<BaseThrowingIntermediateEvent, BPMNSVGViewFactory>()
                     .put(IntermediateSignalEventThrowing.class, BPMNSVGViewFactory::intermediateSignalThrowingEvent)
-                    .put(IntermediateMessageEventThrowing.class, BPMNSVGViewFactory::intermediateMessageThrowingEvent);
+                    .put(IntermediateMessageEventThrowing.class, BPMNSVGViewFactory::intermediateMessageThrowingEvent)
+                    .put(IntermediateEscalationEventThrowing.class, BPMNSVGViewFactory::intermediateEscalationThrowingEvent);
 
     public static final Map<Class<? extends BaseThrowingIntermediateEvent>, Glyph> GLYPHS =
             new HashMap<Class<? extends BaseThrowingIntermediateEvent>, Glyph>() {{
                 put(IntermediateSignalEventThrowing.class, BPMNGlyphFactory.EVENT_INTERMEDIATE_THROWING_SIGNAL);
                 put(IntermediateMessageEventThrowing.class, BPMNGlyphFactory.EVENT_INTERMEDIATE_THROWING_MESSAGE);
+                put(IntermediateEscalationEventThrowing.class, BPMNGlyphFactory.EVENT_INTERMEDIATE_THROWING_ESCALATION);
             }};
 
     @Override

@@ -37,6 +37,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.proper
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
@@ -45,6 +46,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.CancelAct
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.conditional.CancellingConditionalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.CancellingErrorEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.ErrorRef;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.CancellingEscalationEventExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.EscalationRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.CancellingMessageEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.CancellingSignalEventExecutionSet;
@@ -81,7 +84,7 @@ public class IntermediateCatchEventConverter {
                         .when(MessageEventDefinition.class, e -> messageEvent(event, e))
                         .when(ErrorEventDefinition.class, e -> errorEvent(event, e))
                         .when(ConditionalEventDefinition.class, e -> conditionalEvent(event, e))
-                        .missing(EscalationEventDefinition.class)
+                        .when(EscalationEventDefinition.class, e -> escalationEvent(event, e))
                         .missing(CompensateEventDefinition.class)
                         .apply(eventDefinitions.get(0)).value();
             default:
@@ -102,7 +105,7 @@ public class IntermediateCatchEventConverter {
                         .when(MessageEventDefinition.class, e -> messageEvent(event, e))
                         .when(ErrorEventDefinition.class, e -> errorEvent(event, e))
                         .when(ConditionalEventDefinition.class, e -> conditionalEvent(event, e))
-                        .missing(EscalationEventDefinition.class)
+                        .when(EscalationEventDefinition.class, e -> escalationEvent(event, e))
                         .missing(CompensateEventDefinition.class)
                         .apply(eventDefinitions.get(0)).value()
                         .docked();
@@ -242,6 +245,37 @@ public class IntermediateCatchEventConverter {
         definition.setExecutionSet(new CancellingConditionalEventExecutionSet(
                 new CancelActivity(p.isCancelActivity()),
                 p.getConditionExpression(e)
+        ));
+
+        node.getContent().setBounds(p.getBounds());
+
+        definition.setDimensionsSet(p.getCircleDimensionSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setBackgroundSet(p.getBackgroundSet());
+
+        return BpmnNode.of(node);
+    }
+
+    private BpmnNode escalationEvent(CatchEvent event,
+                                     EscalationEventDefinition e) {
+        String nodeId = event.getId();
+        Node<View<IntermediateEscalationEvent>, Edge> node = factoryManager.newNode(nodeId,
+                                                                                    IntermediateEscalationEvent.class);
+
+        IntermediateEscalationEvent definition = node.getContent().getDefinition();
+        CatchEventPropertyReader p = propertyReaderFactory.of(event);
+
+        definition.setGeneral(new BPMNGeneralSet(
+                new Name(p.getName()),
+                new Documentation(p.getDocumentation())
+        ));
+
+        definition.setDataIOSet(
+                new DataIOSet(p.getAssignmentsInfo()));
+
+        definition.setExecutionSet(new CancellingEscalationEventExecutionSet(
+                new CancelActivity(p.isCancelActivity()),
+                new EscalationRef(EventDefinitionReader.escalationRefOf(e))
         ));
 
         node.getContent().setBounds(p.getBounds());

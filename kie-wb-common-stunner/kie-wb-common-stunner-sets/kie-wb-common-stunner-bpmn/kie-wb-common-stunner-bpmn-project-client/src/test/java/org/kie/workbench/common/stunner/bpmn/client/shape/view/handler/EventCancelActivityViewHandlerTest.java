@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
@@ -136,6 +137,32 @@ public class EventCancelActivityViewHandlerTest extends EventViewHandlerTestBase
     public void testHandleConditionalIsCancel() {
         final IntermediateConditionalEvent bean =
                 new IntermediateConditionalEvent();
+
+        bean.getExecutionSet().getCancelActivity().setValue(true);
+        tested.handle(bean, view);
+
+        verify(prim1).setFillAlpha(eq(1d));
+        verify(prim1).setStrokeAlpha(eq(0d));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testHandleEscalationIsNotCancel() {
+        final IntermediateEscalationEvent bean =
+                new IntermediateEscalationEvent();
+
+        bean.getExecutionSet().getCancelActivity().setValue(false);
+        tested.handle(bean, view);
+
+        verify(prim1).setFillAlpha(eq(0d));
+        verify(prim1).setStrokeAlpha(eq(1d));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testHandleEscalationIsCancel() {
+        final IntermediateEscalationEvent bean =
+                new IntermediateEscalationEvent();
 
         bean.getExecutionSet().getCancelActivity().setValue(true);
         tested.handle(bean, view);

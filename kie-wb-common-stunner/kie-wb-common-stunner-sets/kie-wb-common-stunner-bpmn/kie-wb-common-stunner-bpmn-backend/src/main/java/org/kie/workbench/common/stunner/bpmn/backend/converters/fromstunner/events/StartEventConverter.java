@@ -24,12 +24,14 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.prop
 import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.conditional.InterruptingConditionalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.InterruptingErrorEventExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.InterruptingEscalationEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.InterruptingMessageEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.InterruptingSignalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.InterruptingTimerEventExecutionSet;
@@ -55,6 +57,7 @@ public class StartEventConverter {
                 .when(StartErrorEvent.class, this::errorEvent)
                 .when(StartMessageEvent.class, this::messageEvent)
                 .when(StartConditionalEvent.class, this::conditionalEvent)
+                .when(StartEscalationEvent.class, this::escalationEvent)
                 .apply(node).value();
     }
 
@@ -186,6 +189,28 @@ public class StartEventConverter {
         InterruptingConditionalEventExecutionSet executionSet = definition.getExecutionSet();
         event.setIsInterrupting(executionSet.getIsInterrupting().getValue());
         p.addCondition(executionSet.getConditionExpression());
+
+        return p;
+    }
+
+    private PropertyWriter escalationEvent(Node<View<StartEscalationEvent>, ?> n) {
+        StartEvent event = bpmn2.createStartEvent();
+        event.setId(n.getUUID());
+
+        StartEscalationEvent definition = n.getContent().getDefinition();
+        CatchEventPropertyWriter p = propertyWriterFactory.of(event);
+
+        BPMNGeneralSet general = definition.getGeneral();
+        p.setName(general.getName().getValue());
+        p.setDocumentation(general.getDocumentation().getValue());
+        p.setSimulationSet(definition.getSimulationSet());
+        p.setBounds(n.getContent().getBounds());
+
+        InterruptingEscalationEventExecutionSet executionSet = definition.getExecutionSet();
+        event.setIsInterrupting(executionSet.getIsInterrupting().getValue());
+        p.addEscalation(executionSet.getEscalationRef());
+
+        p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
 
         return p;
     }

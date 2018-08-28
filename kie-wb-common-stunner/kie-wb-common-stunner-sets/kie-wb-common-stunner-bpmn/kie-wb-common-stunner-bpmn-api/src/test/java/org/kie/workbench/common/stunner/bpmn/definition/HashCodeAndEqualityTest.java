@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.bpmn.definition;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Actors;
@@ -39,6 +38,10 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.CancelAct
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.conditional.CancellingConditionalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.conditional.InterruptingConditionalEventExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.CancellingEscalationEventExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.EscalationEventExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.EscalationRef;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.InterruptingEscalationEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.CancellingMessageEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.InterruptingMessageEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageEventExecutionSet;
@@ -1639,6 +1642,262 @@ public class HashCodeAndEqualityTest {
                 .test();
     }
 
+    @Test
+    public void testEscalationRefEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new EscalationRef(), new EscalationRef())
+                .addTrueCase(new EscalationRef("ref"), new EscalationRef("ref"))
+                .addTrueCase(new EscalationRef(null), new EscalationRef(null))
+                .addFalseCase(new EscalationRef("ref"), null)
+                .addFalseCase(new EscalationRef("ref"), new EscalationRef("ref1"))
+                .test();
+    }
+
+    @Test
+    public void testCancellingEscalationEventExecutionSetEqualsAndHashCode() {
+        String ESCALATION_REF = "ESCALATION_REF";
+        String ESCALATION_REF_1 = "ESCALATION_REF_1";
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new CancellingEscalationEventExecutionSet(),
+                             new CancellingEscalationEventExecutionSet())
+
+                .addTrueCase(new CancellingEscalationEventExecutionSet(new CancelActivity(false), new EscalationRef()),
+                             new CancellingEscalationEventExecutionSet(new CancelActivity(false), new EscalationRef()))
+
+                .addTrueCase(new CancellingEscalationEventExecutionSet(new CancelActivity(false), new EscalationRef(ESCALATION_REF)),
+                             new CancellingEscalationEventExecutionSet(new CancelActivity(false), new EscalationRef(ESCALATION_REF)))
+
+                .addFalseCase(new CancellingEscalationEventExecutionSet(),
+                              null)
+
+                .addFalseCase(new CancellingEscalationEventExecutionSet(new CancelActivity(false), new EscalationRef(ESCALATION_REF)),
+                              new CancellingEscalationEventExecutionSet(new CancelActivity(true), new EscalationRef(ESCALATION_REF)))
+
+                .addFalseCase(new CancellingEscalationEventExecutionSet(new CancelActivity(false), new EscalationRef(ESCALATION_REF)),
+                              new CancellingEscalationEventExecutionSet(new CancelActivity(false), new EscalationRef(ESCALATION_REF_1)))
+
+                .test();
+    }
+
+    @Test
+    public void testInterruptingEscalationEventExecutionSetEqualsAndHashCode() {
+        String ESCALATION_REF = "ESCALATION_REF";
+        String ESCALATION_REF_1 = "ESCALATION_REF_1";
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new InterruptingEscalationEventExecutionSet(),
+                             new InterruptingEscalationEventExecutionSet())
+
+                .addTrueCase(new InterruptingEscalationEventExecutionSet(new IsInterrupting(false), new EscalationRef()),
+                             new InterruptingEscalationEventExecutionSet(new IsInterrupting(false), new EscalationRef()))
+
+                .addTrueCase(new InterruptingEscalationEventExecutionSet(new IsInterrupting(false), new EscalationRef(ESCALATION_REF)),
+                             new InterruptingEscalationEventExecutionSet(new IsInterrupting(false), new EscalationRef(ESCALATION_REF)))
+
+                .addFalseCase(new InterruptingEscalationEventExecutionSet(),
+                              null)
+
+                .addFalseCase(new InterruptingEscalationEventExecutionSet(new IsInterrupting(false), new EscalationRef(ESCALATION_REF)),
+                              new InterruptingEscalationEventExecutionSet(new IsInterrupting(true), new EscalationRef(ESCALATION_REF)))
+
+                .addFalseCase(new InterruptingEscalationEventExecutionSet(new IsInterrupting(false), new EscalationRef(ESCALATION_REF)),
+                              new InterruptingEscalationEventExecutionSet(new IsInterrupting(false), new EscalationRef(ESCALATION_REF_1)))
+
+                .test();
+    }
+
+    @Test
+    public void testEscalationEventExecutionSetEqualsAndHashCode() {
+        String ESCALATION_REF = "ESCALATION_REF";
+        String ESCALATION_REF_1 = "ESCALATION_REF_1";
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new EscalationEventExecutionSet(),
+                             new EscalationEventExecutionSet())
+
+                .addTrueCase(new EscalationEventExecutionSet(new EscalationRef()),
+                             new EscalationEventExecutionSet(new EscalationRef()))
+
+                .addTrueCase(new EscalationEventExecutionSet(new EscalationRef(ESCALATION_REF)),
+                             new EscalationEventExecutionSet(new EscalationRef(ESCALATION_REF)))
+
+                .addFalseCase(new EscalationEventExecutionSet(),
+                              null)
+
+                .addFalseCase(new EscalationEventExecutionSet(new EscalationRef(ESCALATION_REF)),
+                              new EscalationEventExecutionSet(new EscalationRef(ESCALATION_REF_1)))
+
+                .test();
+    }
+
+    @Test
+    public void testStartEscalationEventEqualsAndHashCode() {
+        String ESCALATION_REF = "ESCALATION_REF";
+        String ESCALATION_REF_1 = "ESCALATION_REF_1";
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new StartEscalationEvent(),
+                             new StartEscalationEvent())
+
+                .addTrueCase(new StartEscalationEvent(new BPMNGeneralSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingEscalationEventExecutionSet(), new DataIOSet()),
+                             new StartEscalationEvent(new BPMNGeneralSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingEscalationEventExecutionSet(), new DataIOSet()))
+
+                .addFalseCase(new StartEscalationEvent(),
+                              null)
+
+                .addFalseCase(new StartEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingEscalationEventExecutionSet(), new DataIOSet()),
+                              new StartEscalationEvent(new BPMNGeneralSet("name1", "doc1"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingEscalationEventExecutionSet(), new DataIOSet()))
+
+                .addFalseCase(new StartEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingEscalationEventExecutionSet(new IsInterrupting(true), new EscalationRef(ESCALATION_REF)), new DataIOSet()),
+                              new StartEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingEscalationEventExecutionSet(new IsInterrupting(false), new EscalationRef(ESCALATION_REF)), new DataIOSet()))
+
+                .addFalseCase(new StartEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingEscalationEventExecutionSet(new IsInterrupting(true), new EscalationRef(ESCALATION_REF)), new DataIOSet()),
+                              new StartEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingEscalationEventExecutionSet(new IsInterrupting(true), new EscalationRef(ESCALATION_REF_1)), new DataIOSet()))
+
+                .addFalseCase(new StartEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingEscalationEventExecutionSet(new IsInterrupting(false), new EscalationRef(ESCALATION_REF)), new DataIOSet()),
+                              new StartEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingEscalationEventExecutionSet(new IsInterrupting(false), new EscalationRef(ESCALATION_REF)), new DataIOSet("data")))
+
+                .addFalseCase(new StartEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingEscalationEventExecutionSet(new IsInterrupting(false), new EscalationRef(ESCALATION_REF)), new DataIOSet("data")),
+                              new StartEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingEscalationEventExecutionSet(null, new EscalationRef(ESCALATION_REF)), new DataIOSet()))
+
+                .addFalseCase(new StartEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingEscalationEventExecutionSet(new IsInterrupting(false), new EscalationRef(ESCALATION_REF)), new DataIOSet("data")),
+                              new StartEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingEscalationEventExecutionSet(new IsInterrupting(false), null), new DataIOSet()))
+
+                .addFalseCase(new StartEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingEscalationEventExecutionSet(new IsInterrupting(false), new EscalationRef(ESCALATION_REF)), new DataIOSet("data")),
+                              new StartEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingEscalationEventExecutionSet(new IsInterrupting(false), new EscalationRef(ESCALATION_REF)), null))
+
+                .test();
+    }
+
+    @Test
+    public void testIntermediateEscalationCatchingEventEqualsAndHashCode() {
+        String ESCALATION_REF = "ESCALATION_REF";
+        String ESCALATION_REF_1 = "ESCALATION_REF_1";
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new IntermediateEscalationEvent(),
+                             new IntermediateEscalationEvent())
+
+                .addTrueCase(new IntermediateEscalationEvent(new BPMNGeneralSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingEscalationEventExecutionSet(), new DataIOSet()),
+                             new IntermediateEscalationEvent(new BPMNGeneralSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingEscalationEventExecutionSet(), new DataIOSet()))
+
+                .addFalseCase(new IntermediateEscalationEvent(),
+                              null)
+
+                .addFalseCase(new IntermediateEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingEscalationEventExecutionSet(), new DataIOSet()),
+                              new IntermediateEscalationEvent(new BPMNGeneralSet("name1", "doc1"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingEscalationEventExecutionSet(), new DataIOSet()))
+
+                .addFalseCase(new IntermediateEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingEscalationEventExecutionSet(new CancelActivity(true), new EscalationRef(ESCALATION_REF)), new DataIOSet()),
+                              new IntermediateEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingEscalationEventExecutionSet(new CancelActivity(false), new EscalationRef(ESCALATION_REF)), new DataIOSet()))
+
+                .addFalseCase(new IntermediateEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingEscalationEventExecutionSet(new CancelActivity(true), new EscalationRef(ESCALATION_REF)), new DataIOSet()),
+                              new IntermediateEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingEscalationEventExecutionSet(new CancelActivity(true), new EscalationRef(ESCALATION_REF_1)), new DataIOSet()))
+
+                .addFalseCase(new IntermediateEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingEscalationEventExecutionSet(new CancelActivity(false), new EscalationRef(ESCALATION_REF)), new DataIOSet()),
+                              new IntermediateEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingEscalationEventExecutionSet(new CancelActivity(false), new EscalationRef(ESCALATION_REF)), new DataIOSet("data")))
+
+                .addFalseCase(new IntermediateEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingEscalationEventExecutionSet(new CancelActivity(false), new EscalationRef(ESCALATION_REF)), new DataIOSet("data")),
+                              new IntermediateEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingEscalationEventExecutionSet(null, new EscalationRef(ESCALATION_REF)), new DataIOSet()))
+
+                .addFalseCase(new IntermediateEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingEscalationEventExecutionSet(new CancelActivity(false), new EscalationRef(ESCALATION_REF)), new DataIOSet("data")),
+                              new IntermediateEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingEscalationEventExecutionSet(new CancelActivity(false), null), new DataIOSet()))
+
+                .addFalseCase(new IntermediateEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingEscalationEventExecutionSet(new CancelActivity(false), new EscalationRef(ESCALATION_REF)), new DataIOSet("data")),
+                              new IntermediateEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CancellingEscalationEventExecutionSet(new CancelActivity(false), new EscalationRef(ESCALATION_REF)), null))
+
+                .test();
+    }
+
+    @Test
+    public void testIntermediateEscalationThrowingEventEqualsAndHashCode() {
+        String ESCALATION_REF = "ESCALATION_REF";
+        String ESCALATION_REF_1 = "ESCALATION_REF_1";
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new IntermediateEscalationEventThrowing(),
+                             new IntermediateEscalationEventThrowing())
+
+                .addTrueCase(new IntermediateEscalationEventThrowing(new BPMNGeneralSet(), new DataIOSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet()),
+                             new IntermediateEscalationEventThrowing(new BPMNGeneralSet(), new DataIOSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet()))
+
+                .addFalseCase(new IntermediateEscalationEventThrowing(),
+                              null)
+
+                .addTrueCase(new IntermediateEscalationEventThrowing(new BPMNGeneralSet("name", "doc"), new DataIOSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet()),
+                             new IntermediateEscalationEventThrowing(new BPMNGeneralSet("name", "doc"), new DataIOSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet()))
+
+                .addTrueCase(new IntermediateEscalationEventThrowing(new BPMNGeneralSet("name", "doc"), new DataIOSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(new EscalationRef(ESCALATION_REF))),
+                             new IntermediateEscalationEventThrowing(new BPMNGeneralSet("name", "doc"), new DataIOSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(new EscalationRef(ESCALATION_REF))))
+
+                .addFalseCase(new IntermediateEscalationEventThrowing(new BPMNGeneralSet("name", "doc"), new DataIOSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(new EscalationRef(ESCALATION_REF))),
+                              new IntermediateEscalationEventThrowing(new BPMNGeneralSet("name1", "doc1"), new DataIOSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(new EscalationRef(ESCALATION_REF))))
+
+                .addFalseCase(new IntermediateEscalationEventThrowing(new BPMNGeneralSet("name", "doc"), new DataIOSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(new EscalationRef(ESCALATION_REF))),
+                              new IntermediateEscalationEventThrowing(new BPMNGeneralSet("name", "doc"), new DataIOSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(new EscalationRef(ESCALATION_REF_1))))
+
+                .addFalseCase(new IntermediateEscalationEventThrowing(new BPMNGeneralSet("name", "doc"), new DataIOSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(new EscalationRef(ESCALATION_REF))),
+                              new IntermediateEscalationEventThrowing(new BPMNGeneralSet("name", "doc"), new DataIOSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(null)))
+
+                .addFalseCase(new IntermediateEscalationEventThrowing(new BPMNGeneralSet("name", "doc"), new DataIOSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(new EscalationRef(ESCALATION_REF))),
+                              new IntermediateEscalationEventThrowing(new BPMNGeneralSet("name", "doc"), new DataIOSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), null))
+
+                .test();
+    }
+
+    @Test
+    public void testEndEscalationThrowingEventEqualsAndHashCode() {
+        String ESCALATION_REF = "ESCALATION_REF";
+        String ESCALATION_REF_1 = "ESCALATION_REF_1";
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new EndEscalationEvent(),
+                             new EndEscalationEvent())
+
+                .addTrueCase(new EndEscalationEvent(new BPMNGeneralSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(), new DataIOSet()),
+                             new EndEscalationEvent(new BPMNGeneralSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(), new DataIOSet()))
+
+                .addFalseCase(new EndEscalationEvent(),
+                              null)
+
+                .addTrueCase(new EndEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(), new DataIOSet()),
+                             new EndEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(), new DataIOSet()))
+
+                .addTrueCase(new EndEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(new EscalationRef(ESCALATION_REF)), new DataIOSet()),
+                             new EndEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(new EscalationRef(ESCALATION_REF)), new DataIOSet()))
+
+                .addFalseCase(new EndEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(new EscalationRef(ESCALATION_REF)), new DataIOSet()),
+                              new EndEscalationEvent(new BPMNGeneralSet("name1", "doc1"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(new EscalationRef(ESCALATION_REF)), new DataIOSet()))
+
+                .addFalseCase(new EndEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(new EscalationRef(ESCALATION_REF)), new DataIOSet()),
+                              new EndEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(new EscalationRef(ESCALATION_REF_1)), new DataIOSet()))
+
+                .addFalseCase(new EndEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(new EscalationRef(ESCALATION_REF)), new DataIOSet()),
+                              new EndEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(new EscalationRef(ESCALATION_REF)), new DataIOSet("data")))
+
+                .addFalseCase(new EndEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(new EscalationRef(ESCALATION_REF)), new DataIOSet()),
+                              new EndEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(null), new DataIOSet()))
+
+                .addFalseCase(new EndEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new EscalationEventExecutionSet(new EscalationRef(ESCALATION_REF)), new DataIOSet()),
+                              new EndEscalationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), null, new DataIOSet()))
+
+                .test();
+    }
+
+    @Test
+    public void testSignalScopeEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new SignalScope(), new SignalScope())
+                .addTrueCase(new SignalScope("scope"), new SignalScope("scope"))
+                .addTrueCase(new SignalScope(null), new SignalScope(null))
+                .addFalseCase(new SignalScope("scope"), null)
+                .addFalseCase(new SignalScope("scope"), new SignalScope("scope1"))
+                .test();
+    }
+
+    @Test
+    public void testSignalRefEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new SignalRef(), new SignalRef())
+                .addTrueCase(new SignalRef(null), new SignalRef(null))
+                .addFalseCase(new SignalRef("ref"), null)
+                .addFalseCase(new SignalRef("ref"), new SignalRef("ref1"))
+                .test();
+    }
+
     public static class HashCodeAndEqualityTestCase {
 
         private Object a;
@@ -1706,18 +1965,22 @@ public class HashCodeAndEqualityTest {
                              testCase.getA(),
                              testCase.getB());
                 assertEquals("HashCode check failed for test case element: " + index + " expected result is: " + testCase.isExpectedResult(),
-                             Objects.hashCode(testCase.getA()),
-                             Objects.hashCode(testCase.getB()));
+                             hashCode(testCase.getA()),
+                             hashCode(testCase.getB()));
             } else {
                 assertNotEquals("Equality check failed for test case element: " + index + " expected result is: " + testCase.isExpectedResult(),
                                 testCase.getA(),
                                 testCase.getB());
                 assertNotEquals("HashCode check failed for test case element: " + index + " expected result is: " + testCase.isExpectedResult(),
-                                Objects.hashCode(testCase.getA()),
-                                Objects.hashCode(testCase.getB()));
+                                hashCode(testCase.getA()),
+                                hashCode(testCase.getB()));
             }
             index++;
         }
+    }
+
+    private static Integer hashCode(Object value) {
+        return value != null ? value.hashCode() : null;
     }
 
     private class BaseStartEventStub extends BaseStartEvent {
