@@ -16,15 +16,6 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.RandomAccessFile;
-import java.net.URI;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -37,7 +28,6 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.transport.CredentialsProvider;
@@ -81,7 +71,7 @@ public class JGitFileSystemImpl implements JGitFileSystem {
     private FileSystemState state = FileSystemState.NORMAL;
     private CommitInfo batchCommitInfo = null;
     private Map<Path, Boolean> hadCommitOnBatchState = new ConcurrentHashMap<>();
-    private Lock lock;
+    private JGitFileSystemLock lock;
     private JGitFileSystemsEventsManager fsEventsManager;
 
     private List<WatchEvent<?>> postponedWatchEvents = Collections.synchronizedList(new ArrayList<>());
@@ -89,6 +79,7 @@ public class JGitFileSystemImpl implements JGitFileSystem {
     public JGitFileSystemImpl(final JGitFileSystemProvider provider,
                               final Map<String, String> fullHostNames,
                               final Git git,
+                              final JGitFileSystemLock lock,
                               final String name,
                               final CredentialsProvider credential,
                               JGitFileSystemsEventsManager fsEventsManager) {
@@ -100,7 +91,8 @@ public class JGitFileSystemImpl implements JGitFileSystem {
         this.name = checkNotEmpty("name",
                                   name);
 
-        this.lock = new Lock(git.getRepository().getDirectory().toURI());
+        this.lock = checkNotNull("lock",
+                                 lock);
         this.credential = checkNotNull("credential",
                                        credential);
         this.fileStore = new JGitFileStore(this.git.getRepository());
@@ -484,92 +476,8 @@ public class JGitFileSystemImpl implements JGitFileSystem {
         lock.unlock();
     }
 
-    //testing purposes
-    public boolean isLocked() {
-        return lock.isLocked();
-    }
-
-    public static class Lock {
-
-        private ReentrantLock lock = new ReentrantLock(true);
-        private FileLock physicalLock;
-        private java.nio.file.Path lockFile;
-        private FileChannel fileChannel;
-
-        public Lock(URI repoURI) {
-            this.lockFile = createLockInfra(repoURI);
-        }
-
-        public void lock() {
-            lock.lock();
-
-            if (needToCreatePhysicalLock()) {
-                physicalLockOnFS();
-            }
-        }
-
-        private boolean needToCreatePhysicalLock() {
-            return ((physicalLock == null || !physicalLock.isValid()) && lock.getHoldCount() == 1);
-        }
-
-        public boolean isLocked() {
-            return lock.isLocked();
-        }
-
-        public void unlock() {
-            if (lock.isLocked()) {
-                if (releasePhysicalLock()) {
-                    physicalUnLockOnFS();
-                }
-                lock.unlock();
-            }
-        }
-
-        private boolean releasePhysicalLock() {
-            return physicalLock != null && physicalLock.isValid() && lock.isLocked() && lock.getHoldCount() == 1;
-        }
-
-        java.nio.file.Path createLockInfra(URI uri) {
-            java.nio.file.Path lockFile = null;
-            try {
-                java.nio.file.Path repo = Paths.get(uri);
-                lockFile = repo.resolve("db.lock");
-                Files.createFile(lockFile);
-            } catch (FileAlreadyExistsException ignored) {
-            } catch (Exception e) {
-                LOGGER.error("Error building lock infra [" + toString() + "]",
-                             e);
-            }
-            return lockFile;
-        }
-
-        void physicalLockOnFS() {
-            try {
-                File file = lockFile.toFile();
-                RandomAccessFile raf = new RandomAccessFile(file,
-                                                            "rw");
-                fileChannel = raf.getChannel();
-                physicalLock = fileChannel.lock();
-            } catch (FileNotFoundException e) {
-                LOGGER.error("Error during lock of FS [" + toString() + "]",
-                             e);
-            } catch (java.io.IOException e) {
-                LOGGER.error("Error during lock of FS [" + toString() + "]",
-                             e);
-            }
-        }
-
-        void physicalUnLockOnFS() {
-            try {
-                physicalLock.release();
-                fileChannel.close();
-                fileChannel = null;
-                physicalLock = null;
-            } catch (java.io.IOException e) {
-                LOGGER.error("Error during unlock of FS [" + toString() + "]",
-                             e);
-            }
-        }
+    public JGitFileSystemLock getLock(){
+        return lock;
     }
 
     @Override
@@ -590,5 +498,10 @@ public class JGitFileSystemImpl implements JGitFileSystem {
     @Override
     public boolean hasPostponedEvents() {
         return !getPostponedWatchEvents().isEmpty();
+    }
+
+    @Override
+    public boolean hasBeenInUse() {
+        return lock.hasBeenInUse();
     }
 }

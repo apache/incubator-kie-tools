@@ -17,8 +17,6 @@
 package org.uberfire.java.nio.fs.jgit.manager;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,20 +29,15 @@ import org.uberfire.java.nio.fs.jgit.JGitFileSystemProxy;
 
 public class JGitFileSystemsCache {
 
-    //supplier for fs
+    //supplier for creation of new fs
     final Map<String, Supplier<JGitFileSystem>> fileSystemsSuppliers = new ConcurrentHashMap<>();
 
-    //limited ammount of real instances of FS
+    //limited amount of real instances of FS
     final Map<String, Supplier<JGitFileSystem>> memoizedSuppliers;
 
     public JGitFileSystemsCache(JGitFileSystemProviderConfiguration config) {
-        memoizedSuppliers = (Map) Collections.synchronizedMap(new LinkedHashMap<String, Supplier<JGitFileSystem>>(config.getJgitFileSystemsInstancesCache() + 1,
-                                                                                                                  0.75f,
-                                                                                                                  true) {
-            public boolean removeEldestEntry(Map.Entry eldest) {
-                return size() > config.getJgitFileSystemsInstancesCache();
-            }
-        });
+
+        memoizedSuppliers = JGitFileSystemsCacheDataStructure.create(config);
     }
 
     public void addSupplier(String fsKey,
@@ -59,14 +52,6 @@ public class JGitFileSystemsCache {
 
         createMemoizedSupplier(fsKey,
                                createFSSupplier);
-    }
-
-    Supplier<JGitFileSystem> createMemoizedSupplier(String fsKey,
-                                                    Supplier<JGitFileSystem> createFSSupplier) {
-        Supplier<JGitFileSystem> memoizedFSSupplier = MemoizedFileSystemsSupplier.of(createFSSupplier);
-        memoizedSuppliers.putIfAbsent(fsKey,
-                                      memoizedFSSupplier);
-        return memoizedFSSupplier;
     }
 
     public void remove(String fsName) {
@@ -87,6 +72,14 @@ public class JGitFileSystemsCache {
                                            newMemoizedSupplier);
         }
         return null;
+    }
+
+    private Supplier<JGitFileSystem> createMemoizedSupplier(String fsKey,
+                                                            Supplier<JGitFileSystem> createFSSupplier) {
+        Supplier<JGitFileSystem> memoizedFSSupplier = MemoizedFileSystemsSupplier.of(createFSSupplier);
+        memoizedSuppliers.putIfAbsent(fsKey,
+                                      memoizedFSSupplier);
+        return memoizedFSSupplier;
     }
 
     public void clear() {
@@ -112,13 +105,13 @@ public class JGitFileSystemsCache {
             return memoizedSuppliers.size();
         }
 
-        public Set<String> fileSystemsCacheKeys() {
+        public Set<String> memoizedFileSystemsCacheKeys() {
             return memoizedSuppliers.keySet();
         }
 
         @Override
         public String toString() {
-            return "JGitFileSystemsCacheInfo{fileSystemsCacheSize[" + fileSystemsCacheSize() + "], fileSystemsCacheKeys[" + fileSystemsCacheKeys() + "]}";
+            return "JGitFileSystemsCacheInfo{fileSystemsCacheSize[" + fileSystemsCacheSize() + "], memoizedFileSystemsCacheKeys[" + memoizedFileSystemsCacheKeys() + "]}";
         }
     }
 }

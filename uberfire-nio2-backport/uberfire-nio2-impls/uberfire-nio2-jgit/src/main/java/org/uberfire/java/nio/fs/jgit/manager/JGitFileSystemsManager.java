@@ -20,6 +20,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -27,6 +29,7 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemImpl;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystemLock;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration;
 import org.uberfire.java.nio.fs.jgit.util.Git;
@@ -43,7 +46,10 @@ public class JGitFileSystemsManager {
     private final JGitFileSystemProvider jGitFileSystemProvider;
 
     private final JGitFileSystemsCache fsCache;
+
     private final JGitFileSystemProviderConfiguration config;
+
+    final Map<String, JGitFileSystemLock> fileSystemsLocks = new ConcurrentHashMap<>();
 
     public JGitFileSystemsManager(final JGitFileSystemProvider jGitFileSystemProvider,
                                   final JGitFileSystemProviderConfiguration config) {
@@ -113,9 +119,11 @@ public class JGitFileSystemsManager {
                                          String fsName,
                                          CredentialsProvider credential,
                                          JGitFileSystemsEventsManager fsEventsManager) {
+        fileSystemsLocks.putIfAbsent(fsName, createLock(git));
         final JGitFileSystem fs = new JGitFileSystemImpl(jGitFileSystemProvider,
                                                          fullHostNames,
                                                          git,
+                                                         fileSystemsLocks.get(fsName),
                                                          fsName,
                                                          credential,
                                                          fsEventsManager);
@@ -123,6 +131,10 @@ public class JGitFileSystemsManager {
         fs.getGit().gc();
 
         return fs;
+    }
+
+    JGitFileSystemLock createLock(Git git) {
+        return new JGitFileSystemLock(git, config.getDefaultJgitCacheEvictThresholdTimeUnit(), config.getJgitCacheEvictThresholdDuration());
     }
 
     public void remove(String realFSKey) {

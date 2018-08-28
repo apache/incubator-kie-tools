@@ -24,8 +24,10 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
@@ -34,6 +36,7 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.jboss.byteman.contrib.bmunit.BMScript;
 import org.jboss.byteman.contrib.bmunit.BMUnitConfig;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,12 +50,22 @@ import org.uberfire.java.nio.fs.jgit.util.GitImpl;
 import org.uberfire.java.nio.fs.jgit.util.commands.GetRef;
 
 import static org.junit.Assert.*;
+import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.JGIT_CACHE_EVICT_THRESHOLD_DURATION;
+import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.JGIT_CACHE_EVICT_THRESHOLD_TIME_UNIT;
 
 @RunWith(org.jboss.byteman.contrib.bmunit.BMUnitRunner.class)
 @BMUnitConfig(loadDirectory = "target/test-classes", debug = true) // set "debug=true to see debug output
 public class JGitFileSystemImplProviderBytemanTest extends AbstractTestInfra {
 
     private static Logger logger = LoggerFactory.getLogger(JGitFileSystemImplProviderBytemanTest.class);
+
+    @Before
+    public void createGitFsProvider() {
+        Map<String, String> gitPreferences = getGitPreferences();
+        gitPreferences.put(JGIT_CACHE_EVICT_THRESHOLD_DURATION, "1");
+        gitPreferences.put(JGIT_CACHE_EVICT_THRESHOLD_TIME_UNIT, TimeUnit.MILLISECONDS.name());
+        provider = new JGitFileSystemProvider(gitPreferences);
+    }
 
     @Ignore("This test produces a strange behaviour that locks the other test. Is ignored until a solution is found.")
     @Test()
@@ -315,7 +328,7 @@ public class JGitFileSystemImplProviderBytemanTest extends AbstractTestInfra {
         }
         Object isLocked = null;
         try {
-            Method method = lock.getClass().getMethod("isLocked");
+            Method method = lock.getClass().getMethod("hasBeenInUse");
             isLocked = method.invoke(lock);
         } catch (Exception e) {
             fail(e.getMessage());

@@ -19,12 +19,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystemLock;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration;
 import org.uberfire.java.nio.fs.jgit.util.Git;
@@ -36,6 +38,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class JGitFileSystemsManagerTest {
 
+    private Git git;
     private JGitFileSystemProviderConfiguration config;
 
     private JGitFileSystemsManager manager;
@@ -43,6 +46,8 @@ public class JGitFileSystemsManagerTest {
     @Before
     public void setup() {
         config = mock(JGitFileSystemProviderConfiguration.class);
+        git = mock(Git.class);
+        when(git.getRepository()).thenReturn(mock(Repository.class));
     }
 
     @Test
@@ -53,17 +58,16 @@ public class JGitFileSystemsManagerTest {
         JGitFileSystem fs1 = mock(JGitFileSystem.class);
         when(fs1.getName()).thenReturn("fs1");
 
-        manager = new JGitFileSystemsManager(mock(JGitFileSystemProvider.class),
-                                             config);
+        manager = createFSManager();
 
         manager.newFileSystem(() -> new HashMap<>(),
-                              () -> mock(Git.class),
+                              () -> git,
                               () -> fs.getName(),
                               () -> mock(CredentialsProvider.class),
                               () -> mock(JGitFileSystemsEventsManager.class));
 
         manager.newFileSystem(() -> new HashMap<>(),
-                              () -> mock(Git.class),
+                              () -> git,
                               () -> fs1.getName(),
                               () -> mock(CredentialsProvider.class),
                               () -> mock(JGitFileSystemsEventsManager.class));
@@ -121,17 +125,16 @@ public class JGitFileSystemsManagerTest {
         JGitFileSystem fs1 = mock(JGitFileSystem.class);
         when(fs1.getName()).thenReturn("fs1");
 
-        manager = new JGitFileSystemsManager(mock(JGitFileSystemProvider.class),
-                                             config);
+        manager = createFSManager();
 
         manager.newFileSystem(() -> new HashMap<>(),
-                              () -> mock(Git.class),
+                              () -> git,
                               () -> fs.getName(),
                               () -> mock(CredentialsProvider.class),
                               () -> mock(JGitFileSystemsEventsManager.class));
 
         manager.newFileSystem(() -> new HashMap<>(),
-                              () -> mock(Git.class),
+                              () -> git,
                               () -> fs1.getName(),
                               () -> mock(CredentialsProvider.class),
                               () -> mock(JGitFileSystemsEventsManager.class));
@@ -158,5 +161,15 @@ public class JGitFileSystemsManagerTest {
             }
         }
         manager.clear();
+    }
+
+    private JGitFileSystemsManager createFSManager() {
+        return new JGitFileSystemsManager(mock(JGitFileSystemProvider.class),
+                                          config){
+            @Override
+            JGitFileSystemLock createLock(Git git) {
+                return mock(JGitFileSystemLock.class);
+            }
+        };
     }
 }

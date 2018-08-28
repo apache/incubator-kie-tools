@@ -85,4 +85,6 @@ public interface JGitFileSystem extends FileSystem,
     void clearPostponedWatchEvents();
 
     boolean hasPostponedEvents();
+
+    boolean hasBeenInUse();
 }

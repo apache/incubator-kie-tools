@@ -905,10 +905,7 @@ public class BatchTest {
 
     private void assertProperBatchCleanup() {
         assertFalse(fs1Batch.isOnBatch());
-        assertFalse(fs1Batch.isLocked());
         assertFalse(fs2Batch.isOnBatch());
-        assertFalse(fs2Batch.isLocked());
         assertFalse(fs3Batch.isOnBatch());
-        assertFalse(fs3Batch.isLocked());
     }
 }

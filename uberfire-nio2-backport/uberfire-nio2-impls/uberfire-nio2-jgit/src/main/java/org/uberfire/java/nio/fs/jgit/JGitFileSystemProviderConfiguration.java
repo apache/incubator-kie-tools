@@ -16,11 +16,14 @@
 package org.uberfire.java.nio.fs.jgit;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.config.ConfigProperties;
 
+import static java.util.stream.Collectors.joining;
 import static org.eclipse.jgit.lib.Constants.DEFAULT_REMOTE_NAME;
 
 public class JGitFileSystemProviderConfiguration {
@@ -54,6 +57,10 @@ public class JGitFileSystemProviderConfiguration {
     public static final String HTTPS_PROXY_PASSWORD = "https.proxyPassword";
     public static final String USER_DIR = "user.dir";
     public static final String JGIT_CACHE_INSTANCES = "org.uberfire.nio.jgit.cache.instances";
+    public static final String JGIT_CACHE_OVERFLOW_CLEANUP_SIZE = "org.uberfire.nio.jgit.cache.overflow.cleanup.size";
+    public static final String JGIT_REMOVE_ELDEST_ENTRY_ITERATIONS = "org.uberfire.nio.jgit.remove.eldest.iterations";
+    public static final String JGIT_CACHE_EVICT_THRESHOLD_DURATION = "org.uberfire.nio.jgit.cache.evict.threshold.duration";
+    public static final String JGIT_CACHE_EVICT_THRESHOLD_TIME_UNIT = "org.uberfire.nio.jgit.cache.evict.threshold.time.unit";
 
     public static final String GIT_ENV_KEY_DEST_PATH = "out-dir";
     public static final String GIT_ENV_KEY_USER_NAME = "username";
@@ -75,9 +82,13 @@ public class JGitFileSystemProviderConfiguration {
     public static final String DEFAULT_SSH_ALGORITHM = "RSA";
     public static final String DEFAULT_SSH_CERT_PASSPHRASE = "";
     public static final String DEFAULT_COMMIT_LIMIT_TO_GC = "20";
-    public static final String DEFAULT_JGIT_FILE_SYSTEM_INSTANCES_CACHE = "10000";
     public static final String DEFAULT_GIT_ENV_KEY_MIGRATE_FROM = "migrate-from";
     public static final String DEFAULT_ENABLE_GIT_KETCH = "false";
+    public static final String DEFAULT_JGIT_FILE_SYSTEM_INSTANCES_CACHE = "10000";
+    public static final String DEFAULT_JGIT_REMOVE_ELDEST_ENTRY_ITERATIONS = "10";
+    public static final String DEFAULT_JGIT_CACHE_OVERFLOW_CLEANUP_SIZE = "10";
+    public static final String DEFAULT_JGIT_CACHE_EVICT_THRESHOLD_DURATION = "5";
+    public static final TimeUnit DEFAULT_JGIT_CACHE_EVICT_THRESHOLD_TIME_UNIT = TimeUnit.MINUTES;
 
     private int commitLimit;
     private boolean daemonEnabled;
@@ -103,7 +114,17 @@ public class JGitFileSystemProviderConfiguration {
     private String httpProxyPassword;
     private String httpsProxyUser;
     private String httpsProxyPassword;
+
+    //Number of instances of filesystem in cache
     private int jgitFileSystemsInstancesCache;
+    //Number of instances that was removed by iteration in case of cache overflow
+    private int jgitCacheOverflowCleanupSize;
+    //Number of attempts to remove FS instances on cache
+    private int jgitRemoveEldestEntryIterations;
+    //Duration of Threshold of jgit file system instances evict
+    private long jgitCacheEvictThresholdDuration;
+    //TimeUnit of Threshold of jgit file system instances evict
+    private TimeUnit jgitCacheEvictThresholdTimeUnit;
 
     public void load(ConfigProperties systemConfig) {
         LOG.debug("Configuring from properties:");
@@ -156,6 +177,18 @@ public class JGitFileSystemProviderConfiguration {
         final ConfigProperties.ConfigProperty jgitFileSystemsInstancesCacheProp = systemConfig.get(JGIT_CACHE_INSTANCES,
                                                                                                    DEFAULT_JGIT_FILE_SYSTEM_INSTANCES_CACHE);
 
+        final ConfigProperties.ConfigProperty jgitFileSystemsCacheOverflowSizePropCacheProp = systemConfig.get(JGIT_CACHE_OVERFLOW_CLEANUP_SIZE,
+                                                                                                               DEFAULT_JGIT_CACHE_OVERFLOW_CLEANUP_SIZE);
+
+        final ConfigProperties.ConfigProperty jgitRemoveEldestEntryIterationsProp = systemConfig.get(JGIT_REMOVE_ELDEST_ENTRY_ITERATIONS,
+                                                                                                     DEFAULT_JGIT_REMOVE_ELDEST_ENTRY_ITERATIONS);
+
+        final ConfigProperties.ConfigProperty jgitCacheEvictThresoldDurationProp = systemConfig.get(JGIT_CACHE_EVICT_THRESHOLD_DURATION,
+                                                                                                    DEFAULT_JGIT_CACHE_EVICT_THRESHOLD_DURATION);
+
+        final ConfigProperties.ConfigProperty jgitCacheEvictThresoldTimeUnitProp = systemConfig.get(JGIT_CACHE_EVICT_THRESHOLD_TIME_UNIT,
+                                                                                                    DEFAULT_JGIT_CACHE_EVICT_THRESHOLD_TIME_UNIT.name());
+
         httpProxyUser = httpProxyUserProp.getValue();
         httpProxyPassword = httpProxyPasswordProp.getValue();
         httpsProxyUser = httpsProxyUserProp.getValue();
@@ -184,6 +217,36 @@ public class JGitFileSystemProviderConfiguration {
 
         if (jgitFileSystemsInstancesCache < 1) {
             jgitFileSystemsInstancesCache = Integer.valueOf(DEFAULT_JGIT_FILE_SYSTEM_INSTANCES_CACHE);
+        }
+
+        jgitCacheOverflowCleanupSize = jgitFileSystemsCacheOverflowSizePropCacheProp.getIntValue();
+
+        if (jgitCacheOverflowCleanupSize < 1) {
+            jgitCacheOverflowCleanupSize = Integer.valueOf(DEFAULT_JGIT_CACHE_OVERFLOW_CLEANUP_SIZE);
+        }
+
+        jgitRemoveEldestEntryIterations = jgitRemoveEldestEntryIterationsProp.getIntValue();
+        if (jgitRemoveEldestEntryIterations < 1) {
+            jgitRemoveEldestEntryIterations = Integer.valueOf(DEFAULT_JGIT_REMOVE_ELDEST_ENTRY_ITERATIONS);
+        }
+
+        jgitCacheEvictThresholdDuration = Long.valueOf(jgitCacheEvictThresoldDurationProp.getValue());
+        if (jgitCacheEvictThresholdDuration < 1) {
+            jgitCacheEvictThresholdDuration = Integer.valueOf(DEFAULT_JGIT_CACHE_EVICT_THRESHOLD_DURATION);
+        }
+
+        try {
+            jgitCacheEvictThresholdTimeUnit = TimeUnit.valueOf(jgitCacheEvictThresoldTimeUnitProp.getValue());
+        } catch (IllegalArgumentException e) {
+            String validValues = Stream.of(TimeUnit.values()).map(Enum::toString).collect(joining(","));
+            LOG.warn("Failed to parse TimeUnit from {}={}. Valid values are {}. Using default instead: {}",
+                     JGIT_CACHE_EVICT_THRESHOLD_TIME_UNIT,
+                     jgitCacheEvictThresholdTimeUnit,
+                     validValues,
+                     DEFAULT_JGIT_CACHE_EVICT_THRESHOLD_TIME_UNIT);
+            jgitCacheEvictThresholdTimeUnit = DEFAULT_JGIT_CACHE_EVICT_THRESHOLD_TIME_UNIT;
+
+
         }
 
         daemonEnabled = enabledProp.getBooleanValue();
@@ -301,5 +364,21 @@ public class JGitFileSystemProviderConfiguration {
 
     public int getJgitFileSystemsInstancesCache() {
         return jgitFileSystemsInstancesCache;
+    }
+
+    public int getJgitCacheOverflowCleanupSize() {
+        return jgitCacheOverflowCleanupSize;
+    }
+
+    public int getJgitRemoveEldestEntryIterations() {
+        return jgitRemoveEldestEntryIterations;
+    }
+
+    public TimeUnit getDefaultJgitCacheEvictThresholdTimeUnit() {
+        return jgitCacheEvictThresholdTimeUnit;
+    }
+
+    public long getJgitCacheEvictThresholdDuration() {
+        return jgitCacheEvictThresholdDuration;
     }
 }

@@ -17,7 +17,6 @@
 package org.uberfire.java.nio.fs.jgit;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -170,6 +169,11 @@ public class JGitFileSystemProxy implements JGitFileSystem {
     @Override
     public boolean hasPostponedEvents() {
         return cachedSupplier.get().hasPostponedEvents();
+    }
+
+    @Override
+    public boolean hasBeenInUse() {
+        return cachedSupplier.get().hasBeenInUse();
     }
 
     @Override
