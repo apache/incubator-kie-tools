@@ -111,18 +111,16 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
     }
 
     public void addChildElement(PropertyWriter p) {
-        this.childElements.put(p.getElement().getId(), p);
-        process.getFlowElements().add(p.getFlowElement());
-
-        ElementParameters simulationParameters = p.getSimulationParameters();
-        if (simulationParameters != null) {
-            this.simulationParameters.add(simulationParameters);
-        }
+        Processes.addChildElement(
+                p,
+                childElements,
+                process,
+                simulationParameters,
+                itemDefinitions,
+                rootElements);
 
         addChildShape(p.getShape());
         addChildEdge(p.getEdge());
-        this.itemDefinitions.addAll(p.getItemDefinitions());
-        this.rootElements.addAll(p.rootElements);
 
         if (p instanceof SubProcessPropertyWriter) {
             Collection<BasePropertyWriter> childElements =

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner;
 
 import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
@@ -119,7 +120,11 @@ public class GraphBuilder {
     public void buildGraph(BpmnNode rootNode) {
         this.addNode(rootNode.value());
         rootNode.getEdges().forEach(this::addEdge);
-        Deque<BpmnNode> workingSet = new ArrayDeque<>(rootNode.getChildren());
+        List<BpmnNode> nodes = rootNode.getChildren();
+
+        Deque<BpmnNode> workingSet =
+                new ArrayDeque<>(prioritized(nodes));
+
         Set<BpmnNode> workedOff = new HashSet<>();
         while (!workingSet.isEmpty()) {
             BpmnNode current = workingSet.pop();
@@ -128,7 +133,9 @@ public class GraphBuilder {
                 continue;
             }
             workedOff.add(current);
-            workingSet.addAll(current.getChildren());
+            workingSet.addAll(
+                    prioritized(current.getChildren()));
+
             logger.debug("{} :: {}",
                          current.getParent().value().getUUID(),
                          current.value().getUUID());
@@ -136,6 +143,20 @@ public class GraphBuilder {
             this.addChildNode(current);
             current.getEdges().forEach(this::addEdge);
         }
+    }
+
+    // make sure that docked nodes are processed *after* its siblings
+    // for compat with drawing routines
+    private Collection<BpmnNode> prioritized(List<BpmnNode> children) {
+        ArrayDeque<BpmnNode> prioritized = new ArrayDeque<>();
+        for (BpmnNode node : children) {
+            if (node.isDocked()) {
+                prioritized.add(node);
+            } else {
+                prioritized.push(node);
+            }
+        }
+        return prioritized;
     }
 
     private void addDockedNode(Node parent, Node candidate) {
@@ -166,7 +187,8 @@ public class GraphBuilder {
      */
     private void translate(Node<? extends View, ?> node, Bounds.Bound newOrigin) {
 
-        logger.debug("Translating {} into constraints {}", node.getContent().getBounds(), newOrigin);
+        logger.debug("Translating {} from {} into constraints {}",
+                     node.getUUID(), node.getContent().getBounds(), newOrigin);
 
         Bounds childBounds = node.getContent().getBounds();
         double constrainedX = childBounds.getUpperLeft().getX() - newOrigin.getX();

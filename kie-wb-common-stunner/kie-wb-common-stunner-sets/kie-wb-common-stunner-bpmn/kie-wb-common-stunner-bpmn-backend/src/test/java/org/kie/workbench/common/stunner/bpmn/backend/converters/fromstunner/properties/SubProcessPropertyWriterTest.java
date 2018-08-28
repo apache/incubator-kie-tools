@@ -16,39 +16,28 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
-import org.eclipse.bpmn2.Process;
-import org.eclipse.bpmn2.di.BPMNEdge;
-import org.eclipse.bpmn2.di.BPMNShape;
+import org.eclipse.bpmn2.SubProcess;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
-import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.di;
 
-public class ProcessPropertyWriterTest {
+public class SubProcessPropertyWriterTest {
 
-    ProcessPropertyWriter p ;
+    SubProcessPropertyWriter p ;
     FlatVariableScope variableScope;
 
     @Before
     public void before() {
         this.variableScope = new FlatVariableScope();
-        this.p = new ProcessPropertyWriter(
-                bpmn2.createProcess(), variableScope);
-    }
-
-    @Test
-    public void setIdWithWhitespace() {
-        p.setId("some weird   id \t");
-        Process process = p.getProcess();
-        assertThat(process.getId()).isEqualTo("someweirdid");
+        this.p = new SubProcessPropertyWriter(
+                bpmn2.createSubProcess(), variableScope);
     }
 
     @Test
     public void addChildElement() {
-        Process process = p.getProcess();
+        SubProcess process = (SubProcess) p.getElement();
 
         BoundaryEventPropertyWriter boundaryEventPropertyWriter =
                 new BoundaryEventPropertyWriter(bpmn2.createBoundaryEvent(), variableScope);
@@ -64,23 +53,4 @@ public class ProcessPropertyWriterTest {
         assertThat(process.getFlowElements().get(1)).isEqualTo(boundaryEventPropertyWriter.getFlowElement());
     }
 
-    @Test
-    public void addChildShape() {
-        BPMNShape bpmnShape = di.createBPMNShape();
-        bpmnShape.setId("a");
-        p.addChildShape(bpmnShape);
-        assertThatThrownBy(() -> p.addChildShape(bpmnShape))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageStartingWith("Cannot add the same shape twice");
-    }
-
-    @Test
-    public void addChildEdge() {
-        BPMNEdge bpmnEdge = di.createBPMNEdge();
-        bpmnEdge.setId("a");
-        p.addChildEdge(bpmnEdge);
-        assertThatThrownBy(() -> p.addChildEdge(bpmnEdge))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageStartingWith("Cannot add the same edge twice");
-    }
 }
