@@ -43,6 +43,21 @@ public interface GridColumnRenderer<T> {
                                                     final BiFunction<Boolean, GridColumn<?>, Boolean> columnRenderingConstraint);
 
     /**
+     * Renders the column's Header content.
+     * @param headerMetaData MetaData for the header
+     * @param context Contextual information to support rendering
+     * @param headerRowIndex Index of the header row being rendered. Zero based.
+     * @param blockWidth Width of the block of 'equal' header meta data objects.
+     * @param rowHeight Height of the header row.
+     * @return
+     */
+    Group renderHeaderContent(final List<GridColumn.HeaderMetaData> headerMetaData,
+                              final GridHeaderColumnRenderContext context,
+                              final int headerRowIndex,
+                              final double blockWidth,
+                              final double rowHeight);
+
+    /**
      * Renders the column.textual information to support rendering
      * @param column The column to render
      * @param context Contextual information to support rendering

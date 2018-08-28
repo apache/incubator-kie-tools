@@ -153,8 +153,8 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
                                                             blockStartColumnIndex,
                                                             blockEndColumnIndex);
 
-                    final Group headerGroup = renderHeaderContent(context,
-                                                                  headerMetaData,
+                    final Group headerGroup = renderHeaderContent(headerMetaData,
+                                                                  context,
                                                                   headerRowIndex,
                                                                   blockWidth,
                                                                   rowHeight);
@@ -183,11 +183,12 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
         return new BoundingBoxPathClipper(bb);
     }
 
-    protected Group renderHeaderContent(final GridHeaderColumnRenderContext context,
-                                        final List<GridColumn.HeaderMetaData> headerMetaData,
-                                        final int headerRowIndex,
-                                        final double blockWidth,
-                                        final double rowHeight) {
+    @Override
+    public Group renderHeaderContent(final List<GridColumn.HeaderMetaData> headerMetaData,
+                                     final GridHeaderColumnRenderContext context,
+                                     final int headerRowIndex,
+                                     final double blockWidth,
+                                     final double rowHeight) {
         final Group headerGroup = GWT.create(Group.class);
         final String title = headerMetaData.get(headerRowIndex).getTitle();
         final Text t = context.getRenderer().getTheme().getHeaderText();
