@@ -20,15 +20,23 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.TextLineBreakWrap;
 import com.ait.lienzo.shared.core.types.TextAlign;
+import com.google.gwt.core.client.GWT;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.GridRendererTheme;
 
 public class RendererUtils {
 
-    public static Group getExpressionCellText(final GridBodyCellRenderContext context, final GridCell<String> gridCell) {
+    public static final String FONT_STYLE_TYPE_REF = "italic";
+
+    public static final double SPACING = 8.0;
+
+    public static Group getExpressionCellText(final GridBodyCellRenderContext context,
+                                              final GridCell<String> gridCell) {
         final GridRenderer gridRenderer = context.getRenderer();
         final GridRendererTheme theme = gridRenderer.getTheme();
 
@@ -46,7 +54,8 @@ public class RendererUtils {
         return g;
     }
 
-    public static Group getCenteredCellText(final GridBodyCellRenderContext context, final GridCell<String> gridCell) {
+    public static Group getCenteredCellText(final GridBodyCellRenderContext context,
+                                            final GridCell<String> gridCell) {
         final GridRenderer gridRenderer = context.getRenderer();
         final GridRendererTheme theme = gridRenderer.getTheme();
 
@@ -58,5 +67,31 @@ public class RendererUtils {
                 .setY(context.getCellHeight() / 2);
         g.add(t);
         return g;
+    }
+
+    public static Group getNameAndDataTypeText(final NameAndDataTypeHeaderMetaData headerMetaData,
+                                               final GridHeaderColumnRenderContext context,
+                                               final double blockWidth,
+                                               final double rowHeight) {
+        final Group headerGroup = GWT.create(Group.class);
+
+        final Text name = context.getRenderer().getTheme().getHeaderText();
+        name.setText(headerMetaData.getTitle());
+        name.setListening(false);
+        name.setX(blockWidth / 2);
+        name.setY(rowHeight / 2 - SPACING);
+
+        final Text typeRef = context.getRenderer().getTheme().getHeaderText();
+        typeRef.setFontStyle(FONT_STYLE_TYPE_REF);
+        typeRef.setFontSize(BaseExpressionGridTheme.FONT_SIZE - 2.0);
+        typeRef.setText("(" + headerMetaData.getTypeRef() + ")");
+        typeRef.setListening(false);
+        typeRef.setX(blockWidth / 2);
+        typeRef.setY(rowHeight / 2 + SPACING);
+
+        headerGroup.add(name);
+        headerGroup.add(typeRef);
+
+        return headerGroup;
     }
 }

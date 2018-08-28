@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorD
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -52,6 +53,8 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
 
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
+
+    private NameAndDataTypeEditorView.Presenter headerEditor;
     private ParametersEditorView.Presenter parametersEditor;
 
     public FunctionEditorDefinition() {
@@ -69,6 +72,7 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
                                     final TranslationService translationService,
                                     final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                     final @FunctionGridSupplementaryEditor Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier,
+                                    final NameAndDataTypeEditorView.Presenter headerEditor,
                                     final ParametersEditorView.Presenter parametersEditor) {
         super(definitionUtils,
               sessionManager,
@@ -80,6 +84,7 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
               translationService);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.supplementaryEditorDefinitionsSupplier = supplementaryEditorDefinitionsSupplier;
+        this.headerEditor = headerEditor;
         this.parametersEditor = parametersEditor;
     }
 
@@ -137,6 +142,7 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
                                             nesting,
                                             expressionEditorDefinitionsSupplier,
                                             supplementaryEditorDefinitionsSupplier,
+                                            headerEditor,
                                             parametersEditor));
     }
 

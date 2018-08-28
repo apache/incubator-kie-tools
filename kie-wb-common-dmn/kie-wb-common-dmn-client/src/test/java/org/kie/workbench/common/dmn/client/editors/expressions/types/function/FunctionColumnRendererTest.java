@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.widgets.grid.columns;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.BaseNameAndDataTypeColumnRendererTest;
 import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.GridWidgetRegistry;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class NameAndDataTypeColumnRendererTest extends BaseNameAndDataTypeColumnRendererTest<NameAndDataTypeColumnRenderer> {
+public class FunctionColumnRendererTest extends BaseNameAndDataTypeColumnRendererTest<FunctionColumnRenderer> {
 
     @Mock
-    private TextAreaSingletonDOMElementFactory factory;
+    private GridWidgetRegistry registry;
 
     @Override
-    protected NameAndDataTypeColumnRenderer getColumnRenderer() {
-        return new NameAndDataTypeColumnRenderer<>(factory);
+    protected FunctionColumnRenderer getColumnRenderer() {
+        return new FunctionColumnRenderer(registry);
     }
 }

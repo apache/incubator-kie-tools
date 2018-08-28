@@ -14,26 +14,23 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.widgets.grid.columns;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
 import java.util.List;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.google.gwt.core.client.GWT;
-import org.gwtbootstrap3.client.ui.base.TextBoxBase;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumnRenderer;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
-import org.uberfire.ext.wires.core.grids.client.model.GridCell;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.BaseSingletonDOMElementFactory;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.single.impl.BaseGridColumnSingletonDOMElementRenderer;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.GridWidgetRegistry;
 
-public class NameAndDataTypeColumnRenderer<W extends TextBoxBase, E extends BaseDOMElement<String, W>> extends BaseGridColumnSingletonDOMElementRenderer<String, W, E> {
+public class FunctionColumnRenderer extends ExpressionEditorColumnRenderer {
 
-    public NameAndDataTypeColumnRenderer(final BaseSingletonDOMElementFactory<String, W, E> factory) {
-        super(factory);
+    public FunctionColumnRenderer(final GridWidgetRegistry registry) {
+        super(registry);
     }
 
     @Override
@@ -61,15 +58,5 @@ public class NameAndDataTypeColumnRenderer<W extends TextBoxBase, E extends Base
                                          headerRowIndex,
                                          blockWidth,
                                          rowHeight);
-    }
-
-    @Override
-    public Group renderCell(final GridCell<String> cell,
-                            final GridBodyCellRenderContext context) {
-        if (cell == null || cell.getValue() == null) {
-            return null;
-        }
-
-        return RendererUtils.getExpressionCellText(context, cell);
     }
 }

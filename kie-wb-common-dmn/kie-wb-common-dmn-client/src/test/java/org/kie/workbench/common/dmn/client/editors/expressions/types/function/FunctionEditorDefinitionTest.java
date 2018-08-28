@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -99,6 +100,9 @@ public class FunctionEditorDefinitionTest {
     private Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
 
     @Mock
+    private NameAndDataTypeEditorView.Presenter headerEditor;
+
+    @Mock
     private ParametersEditorView.Presenter parametersEditor;
 
     @Mock
@@ -135,6 +139,7 @@ public class FunctionEditorDefinitionTest {
                                                        translationService,
                                                        expressionEditorDefinitionsSupplier,
                                                        supplementaryEditorDefinitionsSupplier,
+                                                       headerEditor,
                                                        parametersEditor);
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add((ExpressionEditorDefinition) definition);

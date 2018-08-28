@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.enterprise.event.Event;
@@ -28,6 +30,9 @@ import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.definition.HasVariable;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
@@ -41,10 +46,10 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.HasParametersControl;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersEditorView;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -61,6 +66,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
@@ -72,6 +78,8 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
 
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
+
+    private final NameAndDataTypeEditorView.Presenter headerEditor;
     private final ParametersEditorView.Presenter parametersEditor;
 
     public FunctionGrid(final GridCellTuple parent,
@@ -94,6 +102,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                         final int nesting,
                         final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                         final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier,
+                        final NameAndDataTypeEditorView.Presenter headerEditor,
                         final ParametersEditorView.Presenter parametersEditor) {
         super(parent,
               nodeUUID,
@@ -116,6 +125,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
               nesting);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.supplementaryEditorDefinitionsSupplier = supplementaryEditorDefinitionsSupplier;
+        this.headerEditor = headerEditor;
         this.parametersEditor = parametersEditor;
 
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
@@ -142,19 +152,52 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
 
     @Override
     protected void initialiseUiColumns() {
-        final GridColumn expressionColumn = new ExpressionEditorColumn(gridLayer,
-                                                                       Arrays.asList(new FunctionColumnNameHeaderMetaData(() -> hasName.orElse(HasName.NOP).getName().getValue(),
-                                                                                                                          (s) -> hasName.orElse(HasName.NOP).getName().setValue(s),
-                                                                                                                          getHeaderHasNameTextBoxFactory()),
-                                                                                     new FunctionColumnParametersHeaderMetaData(expression::get,
-                                                                                                                                cellEditorControls,
-                                                                                                                                parametersEditor,
-                                                                                                                                this)),
-                                                                       this);
+        HasTypeRef hasTypeRef = expression.get();
+        final DMNModelInstrumentedBase base = hasExpression.asDMNModelInstrumentedBase();
+        if (base instanceof HasVariable) {
+            final HasVariable hasVariable = (HasVariable) base;
+            hasTypeRef = hasVariable.getVariable();
+        }
+
+        final GridColumn expressionColumn = new FunctionColumn(gridLayer,
+                                                               Arrays.asList(new FunctionColumnNameHeaderMetaData(hasName,
+                                                                                                                  hasTypeRef,
+                                                                                                                  clearDisplayNameConsumer(),
+                                                                                                                  setDisplayNameConsumer(),
+                                                                                                                  setTypeRefConsumer(),
+                                                                                                                  cellEditorControls,
+                                                                                                                  headerEditor),
+                                                                             new FunctionColumnParametersHeaderMetaData(expression::get,
+                                                                                                                        cellEditorControls,
+                                                                                                                        parametersEditor,
+                                                                                                                        this)),
+                                                               this);
 
         model.appendColumn(expressionColumn);
 
         getRenderer().setColumnRenderConstraint((isSelectionLayer, gridColumn) -> !isSelectionLayer || gridColumn.equals(expressionColumn));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Consumer<HasName> clearDisplayNameConsumer() {
+        return (hn) -> {
+            final CompositeCommand.Builder commandBuilder = newHasNameHasNoValueCommand(hn);
+            getUpdateStunnerTitleCommand("").ifPresent(commandBuilder::addCommand);
+            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                          commandBuilder.build());
+        };
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected BiConsumer<HasName, Name> setDisplayNameConsumer() {
+        return (hn, name) -> {
+            final CompositeCommand.Builder commandBuilder = newHasNameHasValueCommand(hn, name);
+            getUpdateStunnerTitleCommand(name.getValue()).ifPresent(commandBuilder::addCommand);
+            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                          commandBuilder.build());
+        };
     }
 
     @Override

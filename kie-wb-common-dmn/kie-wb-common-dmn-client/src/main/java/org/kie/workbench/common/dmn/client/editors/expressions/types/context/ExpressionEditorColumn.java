@@ -29,6 +29,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.impl.BaseGridColumnRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridWidgetRegistry;
 
 public class ExpressionEditorColumn extends DMNGridColumn<GridWidget, Optional<BaseExpressionGrid>> implements HasDOMElementResources {
@@ -44,8 +45,16 @@ public class ExpressionEditorColumn extends DMNGridColumn<GridWidget, Optional<B
     public ExpressionEditorColumn(final GridWidgetRegistry registry,
                                   final List<HeaderMetaData> headerMetaData,
                                   final GridWidget gridWidget) {
+        this(headerMetaData,
+             new ExpressionEditorColumnRenderer(registry),
+             gridWidget);
+    }
+
+    protected ExpressionEditorColumn(final List<HeaderMetaData> headerMetaData,
+                                     final BaseGridColumnRenderer<Optional<BaseExpressionGrid>> renderer,
+                                     final GridWidget gridWidget) {
         super(headerMetaData,
-              new ExpressionEditorColumnRenderer(registry),
+              renderer,
               gridWidget);
         setMovable(false);
         setResizable(false);
