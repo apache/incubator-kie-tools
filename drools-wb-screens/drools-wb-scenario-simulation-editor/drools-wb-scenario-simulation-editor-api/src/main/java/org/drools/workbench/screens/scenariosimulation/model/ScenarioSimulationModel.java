@@ -16,6 +16,9 @@
 
 package org.drools.workbench.screens.scenariosimulation.model;
 
+import java.util.Random;
+import java.util.stream.IntStream;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.soup.project.datamodel.imports.HasImports;
 import org.kie.soup.project.datamodel.imports.Imports;
@@ -34,19 +37,25 @@ public class ScenarioSimulationModel
 
         simulationDescriptor.addFactMapping(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION);
 
-        FactIdentifier givenFact = FactIdentifier.create("GIVEN", String.class.getCanonicalName());
-        FactIdentifier expectFact = FactIdentifier.create("EXPECT", String.class.getCanonicalName());
-
-        ExpressionIdentifier givenExpression = ExpressionIdentifier.create("GIVEN", FactMappingType.GIVEN);
-        ExpressionIdentifier expectedExpression = ExpressionIdentifier.create("EXPECTED", FactMappingType.EXPECTED);
-
-        simulationDescriptor.addFactMapping(givenFact, givenExpression);
-        simulationDescriptor.addFactMapping(expectFact, expectedExpression);
-
         Scenario scenario = simulation.addScenario();
         scenario.setDescription("Scenario example");
-        scenario.addMappingValue(givenFact, givenExpression, "sample");
-        scenario.addMappingValue(expectFact, expectedExpression, "sample");
+        Random random = new Random();
+
+        // Add GIVEN Facts
+        IntStream.range(1, 3).forEach(id -> {
+            ExpressionIdentifier givenExpression = ExpressionIdentifier.create(String.valueOf(random.nextLong()), FactMappingType.GIVEN);
+            FactIdentifier givenFact = FactIdentifier.create("GIVENFACT-" + id, String.class.getCanonicalName());
+            simulationDescriptor.addFactMapping("GIVEN-" + id, givenFact, givenExpression);
+            scenario.addMappingValue(givenFact, givenExpression, "given-sample-" + id);
+        });
+
+        // Add EXPECTED Facts
+        IntStream.range(1, 3).forEach(id -> {
+            ExpressionIdentifier expectedExpression = ExpressionIdentifier.create(String.valueOf(random.nextLong()), FactMappingType.EXPECTED);
+            FactIdentifier expectFact = FactIdentifier.create("EXPECTEDFACT-" + id, String.class.getCanonicalName());
+            simulationDescriptor.addFactMapping("EXPECTED-" + id, expectFact, expectedExpression);
+            scenario.addMappingValue(expectFact, expectedExpression, "expected-sample-" + id);
+        });
     }
 
     public ScenarioSimulationModel(Simulation simulation) {

@@ -94,11 +94,6 @@ public class ScenarioSimulationViewImpl
     @Override
     public MenuItem getRunScenarioMenuItem() {
         return new RunScenarioMenuItem(ScenarioSimulationEditorConstants.INSTANCE.runScenarioSimulation(),
-                                       new Command() {
-                                           @Override
-                                           public void execute() {
-                                               presenter.onRunScenario();
-                                           }
-                                       });
+                                       () -> presenter.onRunScenario());
     }
 }
