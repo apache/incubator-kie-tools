@@ -18,7 +18,6 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -40,12 +39,12 @@ public class OrganizationalUnit extends BusinessContextElement {
              null);
     }
 
-    public OrganizationalUnit(final @MapsTo("id") Id id,
-                              final @MapsTo("description") Description description,
-                              final @MapsTo("name") Name name,
-                              final @MapsTo("uri") String uri,
-                              final @MapsTo("decisionMade") List<DMNElementReference> decisionMade,
-                              final @MapsTo("decisionOwned") List<DMNElementReference> decisionOwned) {
+    public OrganizationalUnit(final Id id,
+                              final Description description,
+                              final Name name,
+                              final String uri,
+                              final List<DMNElementReference> decisionMade,
+                              final List<DMNElementReference> decisionOwned) {
         super(id,
               description,
               name,

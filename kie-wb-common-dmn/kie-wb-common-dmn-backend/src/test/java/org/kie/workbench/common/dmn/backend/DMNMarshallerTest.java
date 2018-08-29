@@ -67,7 +67,9 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.AuthorityRequirement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationRequirement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
@@ -417,6 +419,12 @@ public class DMNMarshallerTest {
                                                this::checkTextAnnotationGraph);
     }
 
+    @Test
+    public void testDecisionWithContext() throws Exception {
+        roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/DecisionWithContext.dmn"),
+                                               this::checkDecisionWithContext);
+    }
+
     private void checkTextAnnotationGraph(Graph<?, Node<?, ?>> graph) {
         Node<?, ?> textAnnotation = graph.getNode("60915990-9E1D-42DF-B7F6-0D28383BE9D1");
         assertNodeContentDefinitionIs(textAnnotation,
@@ -513,6 +521,38 @@ public class DMNMarshallerTest {
         assertNodeEdgesTo(knowledgeSourceInput,
                           knowledgeSource,
                           AuthorityRequirement.class);
+    }
+
+    private void checkDecisionWithContext(Graph<?, Node<?, ?>> g) {
+        Node<?, ?> decisionNode = g.getNode("_30810b88-8416-4c02-8ed1-8c19b7606243");
+        assertNodeContentDefinitionIs(decisionNode,
+                                      Decision.class);
+
+        Node<?, ?> rootNode = DMNMarshaller.findDMNDiagramRoot((Graph) g);
+        assertNotNull(rootNode);
+        assertRootNodeConnectedTo(rootNode,
+                                  decisionNode);
+        assertEquals("decisionNode parent is Definitions DMN root",
+                     "_153e2b47-3bd2-4db0-828c-db3fce0b3199",
+                     ((DMNElement) ((Decision) ((View<?>) decisionNode.getContent()).getDefinition()).getParent()).getId().getValue());
+
+        Context context = (Context) ((Decision) ((View<?>) decisionNode.getContent()).getDefinition()).getExpression();
+        assertEquals("contextNode's parent is decisionNode",
+                     "_30810b88-8416-4c02-8ed1-8c19b7606243",
+                     ((DMNElement) context.getParent()).getId().getValue());
+
+        Expression literalExpression1 = context.getContextEntry().get(0).getExpression();
+        assertEquals("literalExpression1's parent-parent is contextNode",
+                     "_0f38d114-5d6e-40dd-aa9c-9f031f9b0571",
+                     ((DMNElement) (literalExpression1).getParent()
+                                                       .getParent()).getId().getValue());
+
+        Expression literalExpression2 = context.getContextEntry().get(0).getExpression();
+        assertEquals("literalExpression2's parent-parent is contextNode",
+                     "_0f38d114-5d6e-40dd-aa9c-9f031f9b0571",
+                     ((DMNElement) (literalExpression2).getParent()
+                                                       .getParent()).getId().getValue());
+
     }
 
     private void checkDiamongGraph(Graph<?, Node<?, ?>> g) {

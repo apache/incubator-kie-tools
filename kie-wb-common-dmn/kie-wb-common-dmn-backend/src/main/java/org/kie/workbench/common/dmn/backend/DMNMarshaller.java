@@ -40,6 +40,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Association;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNElement;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
@@ -349,6 +350,9 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         connectEdge(edge,
                     dmnDiagramRoot,
                     child);
+        Definitions definitions = ((DMNDiagram)((View)dmnDiagramRoot.getContent()).getDefinition()).getDefinitions();
+        DMNModelInstrumentedBase childDRG = (DMNModelInstrumentedBase) ((View) child.getContent()).getDefinition();
+        childDRG.setParent(definitions);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})

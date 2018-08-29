@@ -42,7 +42,9 @@ public class FunctionDefinitionPropertyConverter {
                                                            description,
                                                            typeRef,
                                                            expression);
-
+        if (expression != null) {
+            expression.setParent(result);
+        }
         result.getNsContext().putAll(dmn.getNsContext());
         for (Entry<javax.xml.namespace.QName, String> kv : dmn.getAdditionalAttributes().entrySet()) {
             QName convertedQName = QNamePropertyConverter.wbFromDMN(kv.getKey());
@@ -51,6 +53,9 @@ public class FunctionDefinitionPropertyConverter {
 
         for (org.kie.dmn.model.api.InformationItem ii : dmn.getFormalParameter()) {
             InformationItem iiConverted = InformationItemPropertyConverter.wbFromDMN(ii);
+            if (iiConverted != null) {
+                iiConverted.setParent(result);
+            }
             result.getFormalParameter().add(iiConverted);
         }
 

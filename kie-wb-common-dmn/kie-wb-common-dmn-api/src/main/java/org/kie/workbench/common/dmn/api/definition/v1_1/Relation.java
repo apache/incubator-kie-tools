@@ -17,7 +17,6 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 import java.util.ArrayList;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -38,11 +37,11 @@ public class Relation extends Expression {
              null);
     }
 
-    public Relation(final @MapsTo("id") Id id,
-                    final @MapsTo("description") Description description,
-                    final @MapsTo("typeRef") QName typeRef,
-                    final @MapsTo("column") java.util.List<InformationItem> column,
-                    final @MapsTo("row") java.util.List<List> row) {
+    public Relation(final Id id,
+                    final Description description,
+                    final QName typeRef,
+                    final java.util.List<InformationItem> column,
+                    final java.util.List<List> row) {
         super(id,
               description,
               typeRef);

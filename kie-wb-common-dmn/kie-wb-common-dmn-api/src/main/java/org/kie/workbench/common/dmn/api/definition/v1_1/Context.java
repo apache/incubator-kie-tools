@@ -18,7 +18,6 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -36,9 +35,9 @@ public class Context extends Expression {
              new QName());
     }
 
-    public Context(final @MapsTo("id") Id id,
-                   final @MapsTo("description") Description description,
-                   final @MapsTo("typeRef") QName typeRef) {
+    public Context(final Id id,
+                   final Description description,
+                   final QName typeRef) {
         super(id,
               description,
               typeRef);

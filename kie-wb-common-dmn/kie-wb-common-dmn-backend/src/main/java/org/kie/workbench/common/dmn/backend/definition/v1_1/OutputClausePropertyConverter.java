@@ -40,6 +40,13 @@ public class OutputClausePropertyConverter {
         result.setDefaultOutputEntry(defaultOutputEntry);
         result.setTypeRef(typeRef);
 
+        if (outputValues != null) {
+            outputValues.setParent(result);
+        }
+        if (defaultOutputEntry != null) {
+            defaultOutputEntry.setParent(result);
+        }
+
         return result;
     }
 

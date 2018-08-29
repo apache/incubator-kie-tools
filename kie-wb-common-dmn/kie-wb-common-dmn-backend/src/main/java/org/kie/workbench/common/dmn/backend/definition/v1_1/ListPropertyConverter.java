@@ -38,6 +38,11 @@ public class ListPropertyConverter {
         }
 
         List result = new List(id, description, typeRef, expression);
+        for (Expression e : expression) {
+            if (e != null) {
+                e.setParent(result);
+            }
+        }
         return result;
     }
 

@@ -20,7 +20,6 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
@@ -94,14 +93,14 @@ public class KnowledgeSource extends DRGElement implements DMNViewDefinition {
              new RectangleDimensionsSet());
     }
 
-    public KnowledgeSource(final @MapsTo("id") Id id,
-                           final @MapsTo("description") org.kie.workbench.common.dmn.api.property.dmn.Description description,
-                           final @MapsTo("name") Name name,
-                           final @MapsTo("type") KnowledgeSourceType type,
-                           final @MapsTo("locationURI") LocationURI locationURI,
-                           final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
-                           final @MapsTo("fontSet") FontSet fontSet,
-                           final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
+    public KnowledgeSource(final Id id,
+                           final org.kie.workbench.common.dmn.api.property.dmn.Description description,
+                           final Name name,
+                           final KnowledgeSourceType type,
+                           final LocationURI locationURI,
+                           final BackgroundSet backgroundSet,
+                           final FontSet fontSet,
+                           final RectangleDimensionsSet dimensionsSet) {
         super(id,
               description,
               name);

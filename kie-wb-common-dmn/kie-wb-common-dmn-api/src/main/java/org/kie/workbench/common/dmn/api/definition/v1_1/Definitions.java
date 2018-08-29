@@ -20,7 +20,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -81,20 +80,20 @@ public class Definitions extends DMNElement implements HasName,
              "");
     }
 
-    public Definitions(final @MapsTo("id") Id id,
-                       final @MapsTo("description") Description description,
-                       final @MapsTo("name") Name name,
-                       final @MapsTo("_import") List<Import> _import,
-                       final @MapsTo("itemDefinition") List<ItemDefinition> itemDefinition,
-                       final @MapsTo("drgElement") List<DRGElement> drgElement,
-                       final @MapsTo("artifact") List<Artifact> artifact,
-                       final @MapsTo("elementCollection") List<ElementCollection> elementCollection,
-                       final @MapsTo("businessContextElement") List<BusinessContextElement> businessContextElement,
-                       final @MapsTo("expressionLanguage") String expressionLanguage,
-                       final @MapsTo("typeLanguage") String typeLanguage,
-                       final @MapsTo("namespace") String namespace,
-                       final @MapsTo("exporter") String exporter,
-                       final @MapsTo("exporterVersion") String exporterVersion) {
+    public Definitions(final Id id,
+                       final Description description,
+                       final Name name,
+                       final List<Import> _import,
+                       final List<ItemDefinition> itemDefinition,
+                       final List<DRGElement> drgElement,
+                       final List<Artifact> artifact,
+                       final List<ElementCollection> elementCollection,
+                       final List<BusinessContextElement> businessContextElement,
+                       final String expressionLanguage,
+                       final String typeLanguage,
+                       final String namespace,
+                       final String exporter,
+                       final String exporterVersion) {
         super(id,
               description);
         this.name = name;

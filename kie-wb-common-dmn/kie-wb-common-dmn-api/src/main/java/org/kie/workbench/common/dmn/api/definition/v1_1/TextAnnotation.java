@@ -20,7 +20,6 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
@@ -90,13 +89,13 @@ public class TextAnnotation extends Artifact implements DMNViewDefinition {
              new RectangleDimensionsSet());
     }
 
-    public TextAnnotation(final @MapsTo("id") Id id,
-                          final @MapsTo("description") org.kie.workbench.common.dmn.api.property.dmn.Description description,
-                          final @MapsTo("text") Text text,
-                          final @MapsTo("textFormat") TextFormat textFormat,
-                          final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
-                          final @MapsTo("fontSet") FontSet fontSet,
-                          final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
+    public TextAnnotation(final Id id,
+                          final org.kie.workbench.common.dmn.api.property.dmn.Description description,
+                          final Text text,
+                          final TextFormat textFormat,
+                          final BackgroundSet backgroundSet,
+                          final FontSet fontSet,
+                          final RectangleDimensionsSet dimensionsSet) {
         super(id,
               description);
         this.text = text;

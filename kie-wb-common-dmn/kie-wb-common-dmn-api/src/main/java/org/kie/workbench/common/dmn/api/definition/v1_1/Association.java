@@ -18,7 +18,6 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -65,8 +64,8 @@ public class Association extends Artifact {
              new org.kie.workbench.common.dmn.api.property.dmn.Description());
     }
 
-    public Association(final @MapsTo("id") Id id,
-                       final @MapsTo("description") org.kie.workbench.common.dmn.api.property.dmn.Description description) {
+    public Association(final Id id,
+                       final org.kie.workbench.common.dmn.api.property.dmn.Description description) {
         super(id,
               description);
     }

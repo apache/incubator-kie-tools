@@ -45,9 +45,15 @@ public class ItemDefinitionPropertyConverter {
 
         UnaryTests utConverted = UnaryTestsPropertyConverter.wbFromDMN(dmn.getAllowedValues());
         result.setAllowedValues(utConverted);
+        if (utConverted != null) {
+            utConverted.setParent(result);
+        }
 
         for (org.kie.dmn.model.api.ItemDefinition child : dmn.getItemComponent()) {
             ItemDefinition convertedChild = ItemDefinitionPropertyConverter.wbFromDMN(child);
+            if (convertedChild != null) {
+                convertedChild.setParent(result);
+            }
             result.getItemComponent().add(convertedChild);
         }
 

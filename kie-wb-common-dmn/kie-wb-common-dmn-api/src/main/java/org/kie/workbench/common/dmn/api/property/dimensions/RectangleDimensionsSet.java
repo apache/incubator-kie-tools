@@ -17,7 +17,6 @@ package org.kie.workbench.common.dmn.api.property.dimensions;
 
 import javax.validation.Valid;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
@@ -69,8 +68,8 @@ public class RectangleDimensionsSet implements DMNPropertySet {
              new Height());
     }
 
-    public RectangleDimensionsSet(final @MapsTo("width") Width width,
-                                  final @MapsTo("height") Height height) {
+    public RectangleDimensionsSet(final Width width,
+                                  final Height height) {
         this.width = width;
         this.height = height;
     }

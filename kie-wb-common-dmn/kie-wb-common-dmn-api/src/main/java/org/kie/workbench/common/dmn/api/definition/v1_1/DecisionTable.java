@@ -18,7 +18,6 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -49,16 +48,16 @@ public class DecisionTable extends Expression {
              "");
     }
 
-    public DecisionTable(final @MapsTo("id") Id id,
-                         final @MapsTo("description") Description description,
-                         final @MapsTo("typeRef") QName typeRef,
-                         final @MapsTo("input") List<InputClause> input,
-                         final @MapsTo("output") List<OutputClause> output,
-                         final @MapsTo("rule") List<DecisionRule> rule,
-                         final @MapsTo("hitPolicy") HitPolicy hitPolicy,
-                         final @MapsTo("aggregation") BuiltinAggregator aggregation,
-                         final @MapsTo("preferredOrientation") DecisionTableOrientation preferredOrientation,
-                         final @MapsTo("outputLabel") String outputLabel) {
+    public DecisionTable(final Id id,
+                         final Description description,
+                         final QName typeRef,
+                         final List<InputClause> input,
+                         final List<OutputClause> output,
+                         final List<DecisionRule> rule,
+                         final HitPolicy hitPolicy,
+                         final BuiltinAggregator aggregation,
+                         final DecisionTableOrientation preferredOrientation,
+                         final String outputLabel) {
         super(id,
               description,
               typeRef);

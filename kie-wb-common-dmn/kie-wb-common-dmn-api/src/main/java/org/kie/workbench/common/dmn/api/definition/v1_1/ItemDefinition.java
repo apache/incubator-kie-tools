@@ -18,7 +18,6 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
@@ -47,14 +46,14 @@ public class ItemDefinition extends NamedElement implements HasTypeRef {
              false);
     }
 
-    public ItemDefinition(final @MapsTo("id") Id id,
-                          final @MapsTo("description") Description description,
-                          final @MapsTo("name") Name name,
-                          final @MapsTo("typeRef") QName typeRef,
-                          final @MapsTo("allowedValues") UnaryTests allowedValues,
-                          final @MapsTo("itemComponent") List<ItemDefinition> itemComponent,
-                          final @MapsTo("typeLanguage") String typeLanguage,
-                          final @MapsTo("isCollection") Boolean isCollection) {
+    public ItemDefinition(final Id id,
+                          final Description description,
+                          final Name name,
+                          final QName typeRef,
+                          final UnaryTests allowedValues,
+                          final List<ItemDefinition> itemComponent,
+                          final String typeLanguage,
+                          final Boolean isCollection) {
         super(id,
               description,
               name);

@@ -17,7 +17,6 @@ package org.kie.workbench.common.dmn.api.property.font;
 
 import javax.validation.Valid;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
@@ -84,10 +83,10 @@ public class FontSet implements DMNPropertySet {
              new FontBorderSize());
     }
 
-    public FontSet(final @MapsTo("fontFamily") FontFamily fontFamily,
-                   final @MapsTo("fontColour") FontColour fontColour,
-                   final @MapsTo("fontSize") FontSize fontSize,
-                   final @MapsTo("fontBorderSize") FontBorderSize fontBorderSize) {
+    public FontSet(final FontFamily fontFamily,
+                   final FontColour fontColour,
+                   final FontSize fontSize,
+                   final FontBorderSize fontBorderSize) {
         this.fontFamily = fontFamily;
         this.fontColour = fontColour;
         this.fontSize = fontSize;

@@ -18,7 +18,6 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -43,13 +42,13 @@ public class DecisionService extends NamedElement {
              null);
     }
 
-    public DecisionService(final @MapsTo("id") Id id,
-                           final @MapsTo("description") Description description,
-                           final @MapsTo("name") Name name,
-                           final @MapsTo("outputDecision") List<DMNElementReference> outputDecision,
-                           final @MapsTo("encapsulatedDecision") List<DMNElementReference> encapsulatedDecision,
-                           final @MapsTo("inputDecision") List<DMNElementReference> inputDecision,
-                           final @MapsTo("inputData") List<DMNElementReference> inputData) {
+    public DecisionService(final Id id,
+                           final Description description,
+                           final Name name,
+                           final List<DMNElementReference> outputDecision,
+                           final List<DMNElementReference> encapsulatedDecision,
+                           final List<DMNElementReference> inputDecision,
+                           final List<DMNElementReference> inputData) {
         super(id,
               description,
               name);

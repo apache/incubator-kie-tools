@@ -40,6 +40,9 @@ public class LiteralExpressionPropertyConverter {
                                                          text,
                                                          importedValues,
                                                          expressionLanguage);
+        if (importedValues != null) {
+            importedValues.setParent(result);
+        }
         return result;
     }
 

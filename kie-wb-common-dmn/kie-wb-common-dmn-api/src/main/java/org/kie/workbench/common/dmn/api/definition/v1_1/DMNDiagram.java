@@ -20,7 +20,6 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.definition.DMNDefinition;
@@ -81,8 +80,8 @@ public class DMNDiagram extends DMNModelInstrumentedBase implements DMNDefinitio
              new Definitions());
     }
 
-    public DMNDiagram(final @MapsTo("id") Id id,
-                      final @MapsTo("definitions") Definitions definitions) {
+    public DMNDiagram(final Id id,
+                      final Definitions definitions) {
         this.id = id;
         this.definitions = definitions;
     }

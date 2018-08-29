@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -34,10 +33,10 @@ public class InputClause extends DMNElement {
              new UnaryTests());
     }
 
-    public InputClause(final @MapsTo("id") Id id,
-                       final @MapsTo("description") Description description,
-                       final @MapsTo("inputExpression") LiteralExpression inputExpression,
-                       final @MapsTo("inputValues") UnaryTests inputValues) {
+    public InputClause(final Id id,
+                       final Description description,
+                       final LiteralExpression inputExpression,
+                       final UnaryTests inputValues) {
         super(id,
               description);
         this.inputExpression = inputExpression;

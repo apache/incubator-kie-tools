@@ -18,7 +18,6 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -37,10 +36,10 @@ public class DecisionRule extends DMNElement {
              null);
     }
 
-    public DecisionRule(final @MapsTo("id") Id id,
-                        final @MapsTo("description") Description description,
-                        final @MapsTo("inputEntry") List<UnaryTests> inputEntry,
-                        final @MapsTo("outputEntry") List<LiteralExpression> outputEntry) {
+    public DecisionRule(final Id id,
+                        final Description description,
+                        final List<UnaryTests> inputEntry,
+                        final List<LiteralExpression> outputEntry) {
         super(id,
               description);
         this.inputEntry = inputEntry;

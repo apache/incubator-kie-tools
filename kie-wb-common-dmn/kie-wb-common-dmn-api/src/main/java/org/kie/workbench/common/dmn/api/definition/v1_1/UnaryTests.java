@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -34,10 +33,10 @@ public class UnaryTests extends DMNElement {
              "");
     }
 
-    public UnaryTests(final @MapsTo("id") Id id,
-                      final @MapsTo("description") Description description,
-                      final @MapsTo("text") String text,
-                      final @MapsTo("expressionLanguage") String expressionLanguage) {
+    public UnaryTests(final Id id,
+                      final Description description,
+                      final String text,
+                      final String expressionLanguage) {
         super(id,
               description);
         this.text = text;

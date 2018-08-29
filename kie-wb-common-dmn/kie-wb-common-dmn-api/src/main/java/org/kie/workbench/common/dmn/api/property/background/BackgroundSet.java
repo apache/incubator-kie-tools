@@ -17,7 +17,6 @@ package org.kie.workbench.common.dmn.api.property.background;
 
 import javax.validation.Valid;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
@@ -74,9 +73,9 @@ public class BackgroundSet implements DMNPropertySet {
              new BorderSize());
     }
 
-    public BackgroundSet(final @MapsTo("bgColour") BgColour bgColour,
-                         final @MapsTo("borderColour") BorderColour borderColour,
-                         final @MapsTo("borderSize") BorderSize borderSize) {
+    public BackgroundSet(final BgColour bgColour,
+                         final BorderColour borderColour,
+                         final BorderSize borderSize) {
         this.bgColour = bgColour;
         this.borderColour = borderColour;
         this.borderSize = borderSize;

@@ -30,7 +30,13 @@ public class BindingPropertyConverter {
         Expression convertedExpression = ExpressionPropertyConverter.wbFromDMN(dmn.getExpression());
 
         Binding result = new Binding();
+        if (convertedParameter != null) {
+            convertedParameter.setParent(result);
+        }
         result.setParameter(convertedParameter);
+        if (convertedExpression != null) {
+            convertedExpression.setParent(result);
+        }
         result.setExpression(convertedExpression);
         return result;
     }

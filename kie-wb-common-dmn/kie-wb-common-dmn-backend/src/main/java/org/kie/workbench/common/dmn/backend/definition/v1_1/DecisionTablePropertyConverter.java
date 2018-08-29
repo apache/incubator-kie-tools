@@ -40,13 +40,25 @@ public class DecisionTablePropertyConverter {
         result.setTypeRef(typeRef);
 
         for (org.kie.dmn.model.api.InputClause input : dmn.getInput()) {
-            result.getInput().add(InputClausePropertyConverter.wbFromDMN(input));
+            InputClause inputClauseConverted = InputClausePropertyConverter.wbFromDMN(input);
+            if (inputClauseConverted != null) {
+                inputClauseConverted.setParent(result);
+            }
+            result.getInput().add(inputClauseConverted);
         }
         for (org.kie.dmn.model.api.OutputClause input : dmn.getOutput()) {
-            result.getOutput().add(OutputClausePropertyConverter.wbFromDMN(input));
+            OutputClause outputClauseConverted = OutputClausePropertyConverter.wbFromDMN(input);
+            if (outputClauseConverted != null) {
+                outputClauseConverted.setParent(result);
+            }
+            result.getOutput().add(outputClauseConverted);
         }
         for (org.kie.dmn.model.api.DecisionRule dr : dmn.getRule()) {
-            result.getRule().add(DecisionRulePropertyConverter.wbFromDMN(dr));
+            DecisionRule decisionRuleConverted = DecisionRulePropertyConverter.wbFromDMN(dr);
+            if (decisionRuleConverted != null) {
+                decisionRuleConverted.setParent(result);
+            }
+            result.getRule().add(decisionRuleConverted);
         }
         if (dmn.getHitPolicy() != null) {
             result.setHitPolicy(HitPolicy.fromValue(dmn.getHitPolicy().value()));

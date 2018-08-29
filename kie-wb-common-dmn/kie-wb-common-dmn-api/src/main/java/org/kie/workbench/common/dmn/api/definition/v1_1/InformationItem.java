@@ -17,7 +17,6 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 import javax.validation.Valid;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -61,10 +60,10 @@ public class InformationItem extends DMNElement implements HasName,
              new QName());
     }
 
-    public InformationItem(final @MapsTo("id") Id id,
-                           final @MapsTo("description") Description description,
-                           final @MapsTo("name") Name name,
-                           final @MapsTo("typeRef") QName typeRef) {
+    public InformationItem(final Id id,
+                           final Description description,
+                           final Name name,
+                           final QName typeRef) {
         super(id,
               description);
         this.name = name;

@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
@@ -40,12 +39,12 @@ public class OutputClause extends DMNElement implements HasTypeRef {
              new QName());
     }
 
-    public OutputClause(final @MapsTo("id") Id id,
-                        final @MapsTo("description") Description description,
-                        final @MapsTo("outputValues") UnaryTests outputValues,
-                        final @MapsTo("defaultOutputEntry") LiteralExpression defaultOutputEntry,
-                        final @MapsTo("name") String name,
-                        final @MapsTo("typeRef") QName typeRef) {
+    public OutputClause(final Id id,
+                        final Description description,
+                        final UnaryTests outputValues,
+                        final LiteralExpression defaultOutputEntry,
+                        final String name,
+                        final QName typeRef) {
         super(id,
               description);
         this.outputValues = outputValues;

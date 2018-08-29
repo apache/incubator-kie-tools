@@ -20,7 +20,6 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
@@ -92,14 +91,14 @@ public class BusinessKnowledgeModel extends DRGElement implements HasVariable,
              new RectangleDimensionsSet());
     }
 
-    public BusinessKnowledgeModel(final @MapsTo("id") Id id,
-                                  final @MapsTo("description") org.kie.workbench.common.dmn.api.property.dmn.Description description,
-                                  final @MapsTo("name") Name name,
-                                  final @MapsTo("variable") InformationItem variable,
-                                  final @MapsTo("encapsulatedLogic") FunctionDefinition encapsulatedLogic,
-                                  final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
-                                  final @MapsTo("fontSet") FontSet fontSet,
-                                  final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
+    public BusinessKnowledgeModel(final Id id,
+                                  final org.kie.workbench.common.dmn.api.property.dmn.Description description,
+                                  final Name name,
+                                  final InformationItem variable,
+                                  final FunctionDefinition encapsulatedLogic,
+                                  final BackgroundSet backgroundSet,
+                                  final FontSet fontSet,
+                                  final RectangleDimensionsSet dimensionsSet) {
         super(id,
               description,
               name);

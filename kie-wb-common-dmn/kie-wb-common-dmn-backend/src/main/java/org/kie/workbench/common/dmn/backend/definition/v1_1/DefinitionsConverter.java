@@ -43,12 +43,19 @@ public class DefinitionsConverter {
         result.getNsContext().putAll(dmn.getNsContext());
 
         for (org.kie.dmn.model.api.ItemDefinition itemDef : dmn.getItemDefinition()) {
-            ItemDefinition itemDefConvered = ItemDefinitionPropertyConverter.wbFromDMN(itemDef);
-            result.getItemDefinition().add(itemDefConvered);
+            ItemDefinition itemDefConverted = ItemDefinitionPropertyConverter.wbFromDMN(itemDef);
+            if (itemDefConverted != null) {
+                itemDefConverted.setParent(result);
+            }
+            result.getItemDefinition().add(itemDefConverted);
         }
 
         for (org.kie.dmn.model.api.Import i : dmn.getImport()) {
-            result.getImport().add(ImportConverter.nodeFromDMN(i));
+            Import importConverted = ImportConverter.nodeFromDMN(i);
+            if (importConverted != null) {
+                importConverted.setParent(result);
+            }
+            result.getImport().add(importConverted);
         }
 
         return result;

@@ -27,7 +27,13 @@ public class ContextEntryPropertyConverter {
         Expression expression = ExpressionPropertyConverter.wbFromDMN(dmn.getExpression());
 
         ContextEntry result = new ContextEntry();
+        if (variable != null) {
+            variable.setParent(result);
+        }
         result.setVariable(variable);
+        if (expression != null) {
+            expression.setParent(result);
+        }
         result.setExpression(expression);
         return result;
     }

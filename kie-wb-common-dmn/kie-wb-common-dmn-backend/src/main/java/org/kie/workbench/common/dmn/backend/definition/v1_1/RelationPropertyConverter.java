@@ -39,6 +39,16 @@ public class RelationPropertyConverter {
         List<org.kie.workbench.common.dmn.api.definition.v1_1.List> convertedRow = row.stream().map(ListPropertyConverter::wbFromDMN).collect(Collectors.toList());
 
         Relation result = new Relation(id, description, typeRef, convertedColumn, convertedRow);
+        for (InformationItem c : convertedColumn) {
+            if (c != null) {
+                c.setParent(result);
+            }
+        }
+        for (org.kie.workbench.common.dmn.api.definition.v1_1.List r : convertedRow) {
+            if (r != null) {
+                r.setParent(result);
+            }
+        }
         return result;
     }
 

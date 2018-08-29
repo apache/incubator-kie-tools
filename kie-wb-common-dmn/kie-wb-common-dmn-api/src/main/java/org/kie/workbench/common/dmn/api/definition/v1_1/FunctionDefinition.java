@@ -18,7 +18,6 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
@@ -47,10 +46,10 @@ public class FunctionDefinition extends Expression implements HasExpression {
              null);
     }
 
-    public FunctionDefinition(final @MapsTo("id") Id id,
-                              final @MapsTo("description") Description description,
-                              final @MapsTo("typeRef") QName typeRef,
-                              final @MapsTo("expression") Expression expression) {
+    public FunctionDefinition(final Id id,
+                              final Description description,
+                              final QName typeRef,
+                              final Expression expression) {
         super(id,
               description,
               typeRef);

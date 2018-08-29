@@ -54,6 +54,11 @@ public class InputDataConverter implements NodeConverter<org.kie.dmn.model.api.I
                                             new FontSet(),
                                             new RectangleDimensionsSet());
         node.getContent().setDefinition(inputData);
+
+        if (informationItem != null) {
+            informationItem.setParent(inputData);
+        }
+
         return node;
     }
 

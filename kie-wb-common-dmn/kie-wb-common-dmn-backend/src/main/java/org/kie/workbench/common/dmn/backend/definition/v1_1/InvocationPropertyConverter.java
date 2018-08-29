@@ -40,9 +40,15 @@ public class InvocationPropertyConverter {
 
         Expression convertedExpression = ExpressionPropertyConverter.wbFromDMN(dmn.getExpression());
         result.setExpression(convertedExpression);
+        if (convertedExpression != null) {
+            convertedExpression.setParent(result);
+        }
 
         for (org.kie.dmn.model.api.Binding b : dmn.getBinding()) {
             Binding bConverted = BindingPropertyConverter.wbFromDMN(b);
+            if (bConverted != null) {
+                bConverted.setParent(result);
+            }
             result.getBinding().add(bConverted);
         }
 

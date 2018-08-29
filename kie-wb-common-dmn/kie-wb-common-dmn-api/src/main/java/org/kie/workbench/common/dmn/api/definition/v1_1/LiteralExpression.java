@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -40,12 +39,12 @@ public class LiteralExpression extends Expression {
              "");
     }
 
-    public LiteralExpression(final @MapsTo("id") Id id,
-                             final @MapsTo("description") org.kie.workbench.common.dmn.api.property.dmn.Description description,
-                             final @MapsTo("typeRef") QName typeRef,
-                             final @MapsTo("text") String text,
-                             final @MapsTo("importedValues") ImportedValues importedValues,
-                             final @MapsTo("expressionLanguage") String expressionLanguage) {
+    public LiteralExpression(final Id id,
+                             final org.kie.workbench.common.dmn.api.property.dmn.Description description,
+                             final QName typeRef,
+                             final String text,
+                             final ImportedValues importedValues,
+                             final String expressionLanguage) {
         super(id,
               description,
               typeRef);

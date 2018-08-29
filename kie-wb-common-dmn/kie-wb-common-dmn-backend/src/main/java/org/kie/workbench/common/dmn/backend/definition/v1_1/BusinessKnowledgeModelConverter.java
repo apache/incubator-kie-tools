@@ -62,6 +62,14 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
                                                                 new FontSet(),
                                                                 new RectangleDimensionsSet());
         node.getContent().setDefinition(bkm);
+
+        if (informationItem != null) {
+            informationItem.setParent(bkm);
+        }
+        if (functionDefinition != null) {
+            functionDefinition.setParent(bkm);
+        }
+
         return node;
     }
 

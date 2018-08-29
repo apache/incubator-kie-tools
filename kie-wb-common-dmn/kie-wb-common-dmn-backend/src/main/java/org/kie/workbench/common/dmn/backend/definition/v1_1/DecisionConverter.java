@@ -68,6 +68,14 @@ public class DecisionConverter implements NodeConverter<org.kie.dmn.model.api.De
                                          new FontSet(),
                                          new RectangleDimensionsSet());
         node.getContent().setDefinition(decision);
+
+        if (informationItem != null) {
+            informationItem.setParent(decision);
+        }
+        if (expression != null) {
+            expression.setParent(decision);
+        }
+
         return node;
     }
 
