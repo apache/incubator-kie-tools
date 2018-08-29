@@ -43,7 +43,7 @@ public class ModuleClassLoaderHelper {
         if (module instanceof InternalKieModule) {
             //will always be an internal kie module
             InternalKieModule internalModule = (InternalKieModule) module;
-            moduleClassLoader = new MapClassLoader(internalModule.getClassesMap(true),
+            moduleClassLoader = new MapClassLoader(internalModule.getClassesMap(),
                                                    dependenciesClassLoader);
         } else {
             moduleClassLoader = KieModuleMetaData.Factory.newKieModuleMetaData(module).getClassLoader();
