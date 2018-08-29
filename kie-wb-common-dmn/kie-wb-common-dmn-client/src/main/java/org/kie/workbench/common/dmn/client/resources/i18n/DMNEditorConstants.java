@@ -71,10 +71,10 @@ public class DMNEditorConstants {
     public static final String RelationEditor_DeleteRow = "RelationEditor.DeleteRow";
 
     @TranslationKey(defaultValue = "")
-    public static final String RelationEditor_InsertColumnBefore = "RelationEditor.InsertColumnBefore";
+    public static final String RelationEditor_InsertColumnLeft = "RelationEditor.InsertColumnLeft";
 
     @TranslationKey(defaultValue = "")
-    public static final String RelationEditor_InsertColumnAfter = "RelationEditor.InsertColumnAfter";
+    public static final String RelationEditor_InsertColumnRight = "RelationEditor.InsertColumnRight";
 
     @TranslationKey(defaultValue = "")
     public static final String RelationEditor_DeleteColumn = "RelationEditor.DeleteColumn";
@@ -113,19 +113,19 @@ public class DMNEditorConstants {
     public static final String DecisionTableEditor_DeleteDecisionRule = "DecisionTableEditor.DeleteDecisionRule";
 
     @TranslationKey(defaultValue = "")
-    public static final String DecisionTableEditor_InsertInputClauseBefore = "DecisionTableEditor.InsertInputClauseBefore";
+    public static final String DecisionTableEditor_InsertInputClauseLeft = "DecisionTableEditor.InsertInputClauseLeft";
 
     @TranslationKey(defaultValue = "")
-    public static final String DecisionTableEditor_InsertInputClauseAfter = "DecisionTableEditor.InsertInputClauseAfter";
+    public static final String DecisionTableEditor_InsertInputClauseRight = "DecisionTableEditor.InsertInputClauseRight";
 
     @TranslationKey(defaultValue = "")
     public static final String DecisionTableEditor_DeleteInputClause = "DecisionTableEditor.DeleteInputClause";
 
     @TranslationKey(defaultValue = "")
-    public static final String DecisionTableEditor_InsertOutputClauseBefore = "DecisionTableEditor.InsertOutputClauseBefore";
+    public static final String DecisionTableEditor_InsertOutputClauseLeft = "DecisionTableEditor.InsertOutputClauseLeft";
 
     @TranslationKey(defaultValue = "")
-    public static final String DecisionTableEditor_InsertOutputClauseAfter = "DecisionTableEditor.InsertOutputClauseAfter";
+    public static final String DecisionTableEditor_InsertOutputClauseRight = "DecisionTableEditor.InsertOutputClauseRight";
 
     @TranslationKey(defaultValue = "")
     public static final String DecisionTableEditor_DeleteOutputClause = "DecisionTableEditor.DeleteOutputClause";

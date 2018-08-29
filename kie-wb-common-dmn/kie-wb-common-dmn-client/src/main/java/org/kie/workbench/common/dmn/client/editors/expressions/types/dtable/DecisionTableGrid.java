@@ -331,10 +331,10 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
             switch (section) {
                 case INPUT_CLAUSES:
                     addItems(items,
-                             new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertInputClauseBefore),
+                             new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertInputClauseLeft),
                                                             !isMultiColumn,
                                                             () -> addInputClause(uiColumnIndex)),
-                             new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertInputClauseAfter),
+                             new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertInputClauseRight),
                                                             !isMultiColumn,
                                                             () -> addInputClause(uiColumnIndex + 1)),
                              new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_DeleteInputClause),
@@ -348,10 +348,10 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
 
                 case OUTPUT_CLAUSES:
                     addItems(items,
-                             new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertOutputClauseBefore),
+                             new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertOutputClauseLeft),
                                                             !isMultiColumn,
                                                             () -> addOutputClause(uiColumnIndex)),
-                             new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertOutputClauseAfter),
+                             new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertOutputClauseRight),
                                                             !isMultiColumn,
                                                             () -> addOutputClause(uiColumnIndex + 1)),
                              new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_DeleteOutputClause),

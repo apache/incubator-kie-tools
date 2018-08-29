@@ -474,10 +474,10 @@ public class DecisionTableGridTest {
         assertDefaultListItems(items.subList(4, 7), true);
 
         assertListSelectorItem(items.get(INSERT_COLUMN_BEFORE),
-                               DMNEditorConstants.DecisionTableEditor_InsertInputClauseBefore,
+                               DMNEditorConstants.DecisionTableEditor_InsertInputClauseLeft,
                                true);
         assertListSelectorItem(items.get(INSERT_COLUMN_AFTER),
-                               DMNEditorConstants.DecisionTableEditor_InsertInputClauseAfter,
+                               DMNEditorConstants.DecisionTableEditor_InsertInputClauseRight,
                                true);
         assertListSelectorItem(items.get(DELETE_COLUMN),
                                DMNEditorConstants.DecisionTableEditor_DeleteInputClause,
@@ -505,10 +505,10 @@ public class DecisionTableGridTest {
         assertDefaultListItems(items.subList(4, 7), true);
 
         assertListSelectorItem(items.get(INSERT_COLUMN_BEFORE),
-                               DMNEditorConstants.DecisionTableEditor_InsertOutputClauseBefore,
+                               DMNEditorConstants.DecisionTableEditor_InsertOutputClauseLeft,
                                true);
         assertListSelectorItem(items.get(INSERT_COLUMN_AFTER),
-                               DMNEditorConstants.DecisionTableEditor_InsertOutputClauseAfter,
+                               DMNEditorConstants.DecisionTableEditor_InsertOutputClauseRight,
                                true);
         assertListSelectorItem(items.get(DELETE_COLUMN),
                                DMNEditorConstants.DecisionTableEditor_DeleteOutputClause,
@@ -557,10 +557,10 @@ public class DecisionTableGridTest {
         assertDefaultListItems(items.subList(4, 7), true);
 
         assertListSelectorItem(items.get(INSERT_COLUMN_BEFORE),
-                               DMNEditorConstants.DecisionTableEditor_InsertInputClauseBefore,
+                               DMNEditorConstants.DecisionTableEditor_InsertInputClauseLeft,
                                false);
         assertListSelectorItem(items.get(INSERT_COLUMN_AFTER),
-                               DMNEditorConstants.DecisionTableEditor_InsertInputClauseAfter,
+                               DMNEditorConstants.DecisionTableEditor_InsertInputClauseRight,
                                false);
         assertListSelectorItem(items.get(DELETE_COLUMN),
                                DMNEditorConstants.DecisionTableEditor_DeleteInputClause,
@@ -582,10 +582,10 @@ public class DecisionTableGridTest {
         assertDefaultListItems(items.subList(4, 7), true);
 
         assertListSelectorItem(items.get(INSERT_COLUMN_BEFORE),
-                               DMNEditorConstants.DecisionTableEditor_InsertOutputClauseBefore,
+                               DMNEditorConstants.DecisionTableEditor_InsertOutputClauseLeft,
                                false);
         assertListSelectorItem(items.get(INSERT_COLUMN_AFTER),
-                               DMNEditorConstants.DecisionTableEditor_InsertOutputClauseAfter,
+                               DMNEditorConstants.DecisionTableEditor_InsertOutputClauseRight,
                                false);
         assertListSelectorItem(items.get(DELETE_COLUMN),
                                DMNEditorConstants.DecisionTableEditor_DeleteOutputClause,

@@ -376,9 +376,9 @@ public class RelationGridTest {
 
         assertThat(items.size()).isEqualTo(7);
         assertListSelectorItem(items.get(INSERT_COLUMN_BEFORE),
-                               DMNEditorConstants.RelationEditor_InsertColumnBefore);
+                               DMNEditorConstants.RelationEditor_InsertColumnLeft);
         assertListSelectorItem(items.get(INSERT_COLUMN_AFTER),
-                               DMNEditorConstants.RelationEditor_InsertColumnAfter);
+                               DMNEditorConstants.RelationEditor_InsertColumnRight);
         assertListSelectorItem(items.get(DELETE_COLUMN),
                                DMNEditorConstants.RelationEditor_DeleteColumn);
         assertThat(items.get(DIVIDER)).isInstanceOf(HasListSelectorControl.ListSelectorDividerItem.class);

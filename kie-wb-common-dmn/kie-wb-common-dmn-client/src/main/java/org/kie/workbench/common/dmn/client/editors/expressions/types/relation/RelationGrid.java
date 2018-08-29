@@ -176,13 +176,13 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
         final boolean isMultiRow = SelectionUtils.isMultiRow(model);
         final boolean isMultiColumn = SelectionUtils.isMultiColumn(model);
 
-        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_InsertColumnBefore),
+        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_InsertColumnLeft),
                                              !isMultiColumn && uiColumnIndex > 0,
                                              () -> {
                                                  cellEditorControls.hide();
                                                  expression.ifPresent(e -> addColumn(uiColumnIndex));
                                              }));
-        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_InsertColumnAfter),
+        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_InsertColumnRight),
                                              !isMultiColumn && uiColumnIndex > 0,
                                              () -> {
                                                  cellEditorControls.hide();
