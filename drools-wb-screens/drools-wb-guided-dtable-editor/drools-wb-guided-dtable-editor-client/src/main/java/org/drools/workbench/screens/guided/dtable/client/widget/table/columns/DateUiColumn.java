@@ -20,20 +20,17 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.shape.Text;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.datepicker.DatePickerDOMElement;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.datepicker.DatePickerSingletonDOMElementFactory;
-import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.uberfire.ext.widgets.common.client.common.DatePicker;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 
-public class DateUiColumn extends BaseSingletonDOMElementUiColumn<Date, DatePicker, DatePickerDOMElement, DatePickerSingletonDOMElementFactory> {
+import static org.kie.workbench.common.widgets.client.util.TimeZoneUtils.formatWithServerTimeZone;
 
-    private static final String droolsDateFormat = ApplicationPreferences.getDroolsDateFormat();
-    private static final DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat( droolsDateFormat );
+public class DateUiColumn extends BaseSingletonDOMElementUiColumn<Date, DatePicker, DatePickerDOMElement, DatePickerSingletonDOMElementFactory> {
 
     public DateUiColumn( final List<HeaderMetaData> headerMetaData,
                          final double width,
@@ -42,19 +39,23 @@ public class DateUiColumn extends BaseSingletonDOMElementUiColumn<Date, DatePick
                          final GuidedDecisionTablePresenter.Access access,
                          final DatePickerSingletonDOMElementFactory factory ) {
         super( headerMetaData,
-               new CellRenderer<Date, DatePicker, DatePickerDOMElement>( factory ) {
-                   @Override
-                   protected void doRenderCellContent( final Text t,
-                                                       final Date value,
-                                                       final GridBodyCellRenderContext context ) {
-                       t.setText( dateTimeFormat.format( value ) );
-                   }
-               },
+               makeColumnRenderer(factory),
                width,
                isResizable,
                isVisible,
                access,
                factory );
+    }
+
+    static CellRenderer<Date, DatePicker, DatePickerDOMElement> makeColumnRenderer(final DatePickerSingletonDOMElementFactory factory) {
+        return new CellRenderer<Date, DatePicker, DatePickerDOMElement>(factory) {
+            @Override
+            protected void doRenderCellContent(final Text text,
+                                               final Date value,
+                                               final GridBodyCellRenderContext context) {
+                text.setText(formatWithServerTimeZone(value));
+            }
+        };
     }
 
     @Override
@@ -65,5 +66,4 @@ public class DateUiColumn extends BaseSingletonDOMElementUiColumn<Date, DatePick
                                  ConsumerFactory.makeOnCreationCallback(cell ),
                                  ConsumerFactory.makeOnDisplayDatePickerCallback() );
     }
-
 }

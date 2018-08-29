@@ -30,6 +30,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
+import static org.kie.workbench.common.widgets.client.util.TimeZoneUtils.convertToServerTimeZone;
+
 /**
  * A DOMElement Factory for single-instance TextBoxes.
  */
@@ -102,9 +104,13 @@ public class DatePickerSingletonDOMElementFactory extends SingleValueSingletonDO
 
     @Override
     protected Date getValue() {
-        if (widget != null) {
-            return widget.getValue();
+        if (getWidget() != null) {
+            return convertToServerTimeZone(getWidget().getValue());
         }
         return null;
+    }
+
+    DatePicker getWidget() {
+        return widget;
     }
 }

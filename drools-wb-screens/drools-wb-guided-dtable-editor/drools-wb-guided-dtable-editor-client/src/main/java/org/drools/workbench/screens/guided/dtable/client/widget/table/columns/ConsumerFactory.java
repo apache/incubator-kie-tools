@@ -29,6 +29,8 @@ import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.ext.widgets.common.client.common.DatePicker;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 
+import static org.kie.workbench.common.widgets.client.util.TimeZoneUtils.convertFromServerTimeZone;
+
 /**
  * Factory for common consumers used by the different columns.
  */
@@ -103,11 +105,13 @@ public class ConsumerFactory {
     public static <E extends SingleValueDOMElement<Date, DatePicker>> Consumer<E> makeOnCreationCallback(final GridCell<Date> cell) {
         return (e) -> {
             final DatePicker widget = e.getWidget();
+            final Date value;
             if (hasValue(cell)) {
-                widget.setValue(cell.getValue().getValue());
+                value = cell.getValue().getValue();
             } else {
-                widget.setValue(new Date());
+                value = new Date();
             }
+            widget.setValue(convertFromServerTimeZone(value));
         };
     }
 
