@@ -88,7 +88,7 @@ public class IndexTestScenarioTest extends BaseIndexingTest<TestScenarioResource
 
         Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
+        List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath).getClusterId());
 
         //Test Scenarios using org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Applicant
         {

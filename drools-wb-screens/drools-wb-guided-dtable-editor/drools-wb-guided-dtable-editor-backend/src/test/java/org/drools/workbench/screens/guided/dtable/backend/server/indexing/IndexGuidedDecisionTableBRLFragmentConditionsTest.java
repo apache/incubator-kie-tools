@@ -54,7 +54,7 @@ public class IndexGuidedDecisionTableBRLFragmentConditionsTest extends BaseIndex
 
         Thread.sleep(7500); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
+        List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath).getClusterId());
 
         {
             final Query query = new SingleTermQueryBuilder(new ValueReferenceIndexTerm("org.drools.workbench.screens.guided.dtable.backend.server.indexing.classes.Applicant", ResourceType.JAVA))

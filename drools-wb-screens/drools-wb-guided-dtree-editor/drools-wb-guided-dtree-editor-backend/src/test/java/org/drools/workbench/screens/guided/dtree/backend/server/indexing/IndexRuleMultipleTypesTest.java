@@ -48,7 +48,7 @@ public class IndexRuleMultipleTypesTest extends BaseIndexingTest<GuidedDTreeReso
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
+        List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath).getClusterId());
 
         {
             final Query query = new SingleTermQueryBuilder( new ValueReferenceIndexTerm( "org.drools.workbench.screens.guided.dtree.backend.server.indexing.classes.Applicant", ResourceType.JAVA ) )

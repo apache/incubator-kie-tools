@@ -53,7 +53,7 @@ public class IndexGuidedDecisionTableAttributesTest extends BaseIndexingTest<Gui
 
         Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
+        List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath).getClusterId());
 
         //Decision Table defining a RuleFlow-Group named myRuleFlowGroup. This should match dtable1.gdst
         //This checks whether there is a Rule Attribute "ruleflow-group" and its Value is "myRuleflowGroup"

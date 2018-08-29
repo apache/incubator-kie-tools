@@ -47,7 +47,7 @@ public class IndexRuleAttributeNameAndValueCompositionTest extends BaseIndexingT
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
+        List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath).getClusterId());
 
         //DRL defining a RuleFlow-Group named myRuleFlowGroup. This should match drl5.drl
         //This checks whether there is a Rule Attribute "ruleflow-group" and its Value is "myRuleflowGroup"
