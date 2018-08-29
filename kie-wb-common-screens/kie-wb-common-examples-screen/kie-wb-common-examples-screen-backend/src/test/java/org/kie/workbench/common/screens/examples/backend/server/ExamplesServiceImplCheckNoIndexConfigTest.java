@@ -35,7 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
-import org.kie.workbench.common.screens.examples.validation.ExampleProjectValidators;
+import org.kie.workbench.common.screens.examples.validation.ImportProjectValidators;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
@@ -94,7 +94,7 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
     private SessionInfo sessionInfo;
 
     @Mock
-    private ExampleProjectValidators validators;
+    private ImportProjectValidators validators;
 
     private ExamplesServiceImpl service;
 

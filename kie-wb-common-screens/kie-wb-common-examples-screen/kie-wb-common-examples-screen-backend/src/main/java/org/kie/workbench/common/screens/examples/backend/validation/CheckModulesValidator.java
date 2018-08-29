@@ -24,14 +24,14 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.POMService;
 import org.kie.workbench.common.screens.examples.model.ExampleProjectError;
-import org.kie.workbench.common.screens.examples.validation.ExampleProjectValidator;
+import org.kie.workbench.common.screens.examples.validation.ImportProjectValidator;
 import org.uberfire.backend.vfs.Path;
 
 /**
  * Validates if Project POM contains any module. No modules should be found to be a valid project.
  */
 @ApplicationScoped
-public class CheckModulesValidator extends ExampleProjectValidator {
+public class CheckModulesValidator extends ImportProjectValidator {
 
     private POMService pomService;
 

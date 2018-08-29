@@ -37,7 +37,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.examples.client.resources.i18n.ExamplesScreenConstants;
 import org.kie.workbench.common.screens.examples.client.wizard.pages.BaseExamplesWizardPage;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
 import org.uberfire.client.callbacks.Callback;
@@ -54,7 +54,7 @@ public class ProjectPage extends BaseExamplesWizardPage implements ProjectPageVi
     private FetchRepositoryView fetchingRepositoryView;
     private Event<WizardPageSelectedEvent> pageSelectedEvent;
 
-    private List<ExampleProject> exampleProjects;
+    private List<ImportProject> importProjects;
     private Set<String> tags = new HashSet<>();
 
     public ProjectPage() {
@@ -93,7 +93,7 @@ public class ProjectPage extends BaseExamplesWizardPage implements ProjectPageVi
     public void destroy() {
         projectsView.destroy();
 
-        exampleProjects = null;
+        importProjects = null;
         tags.clear();
     }
 
@@ -126,17 +126,17 @@ public class ProjectPage extends BaseExamplesWizardPage implements ProjectPageVi
     }
 
     private void fetchRepository(final ExampleRepository selectedRepository) {
-        examplesService.call(new RemoteCallback<Set<ExampleProject>>() {
+        examplesService.call(new RemoteCallback<Set<ImportProject>>() {
                                  @Override
-                                 public void callback(final Set<ExampleProject> projects) {
+                                 public void callback(final Set<ImportProject> projects) {
                                      activeView = projectsView;
                                      model.getProjects().clear();
                                      model.setSourceRepository(selectedRepository);
 
-                                     final List<ExampleProject> sortedProjects = sort(projects);
+                                     final List<ImportProject> sortedProjects = sort(projects);
 
                                      projectsView.setProjectsInRepository(sortedProjects);
-                                     exampleProjects = sortedProjects;
+                                     importProjects = sortedProjects;
 
                                      pageSelectedEvent.fire(new WizardPageSelectedEvent(ProjectPage.this));
                                  }
@@ -153,13 +153,13 @@ public class ProjectPage extends BaseExamplesWizardPage implements ProjectPageVi
                              }).getProjects(selectedRepository);
     }
 
-    private List<ExampleProject> sort(final Set<ExampleProject> projects) {
-        final List<ExampleProject> sortedProjects = new ArrayList<ExampleProject>(projects);
+    private List<ImportProject> sort(final Set<ImportProject> projects) {
+        final List<ImportProject> sortedProjects = new ArrayList<ImportProject>(projects);
         Collections.sort(sortedProjects,
-                         new Comparator<ExampleProject>() {
+                         new Comparator<ImportProject>() {
                              @Override
-                             public int compare(final ExampleProject o1,
-                                                final ExampleProject o2) {
+                             public int compare(final ImportProject o1,
+                                                final ImportProject o2) {
                                  return o1.getName().compareTo(o2.getName());
                              }
                          });
@@ -177,19 +177,19 @@ public class ProjectPage extends BaseExamplesWizardPage implements ProjectPageVi
     }
 
     @Override
-    public void addProject(final ExampleProject project) {
+    public void addProject(final ImportProject project) {
         model.addProject(project);
         pageStatusChangedEvent.fire(new WizardPageStatusChangeEvent(this));
     }
 
     @Override
-    public void removeProject(final ExampleProject project) {
+    public void removeProject(final ImportProject project) {
         model.removeProject(project);
         pageStatusChangedEvent.fire(new WizardPageStatusChangeEvent(this));
     }
 
     @Override
-    public boolean isProjectSelected(ExampleProject project) {
+    public boolean isProjectSelected(ImportProject project) {
         return model.getProjects().contains(project);
     }
 
@@ -216,7 +216,7 @@ public class ProjectPage extends BaseExamplesWizardPage implements ProjectPageVi
     }
 
     private void updateProjectsInRepository(final Collection<String> tags) {
-        List<ExampleProject> resultList = exampleProjects.stream()
+        List<ImportProject> resultList = importProjects.stream()
                 .filter(p -> tags.stream().allMatch(userTag -> p.getTags().stream().anyMatch(projectTag -> projectTag.toLowerCase().contains(userTag.toLowerCase()))))
                 .sorted((o1, o2) -> o1.getName().compareTo(o2.getName()))
                 .collect(Collectors.toList());
@@ -228,7 +228,7 @@ public class ProjectPage extends BaseExamplesWizardPage implements ProjectPageVi
     @Override
     public void removeAllTags() {
         tags.clear();
-        projectsView.setProjectsInRepository(exampleProjects);
+        projectsView.setProjectsInRepository(importProjects);
         pageSelectedEvent.fire(new WizardPageSelectedEvent(ProjectPage.this));
     }
 }

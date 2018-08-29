@@ -38,7 +38,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 
 @Dependent
 @Templated
@@ -78,7 +78,7 @@ public class ProjectItemViewImpl extends Composite implements ProjectItemView {
     }
 
     @Override
-    public void setProject(final ExampleProject project,
+    public void setProject(final ImportProject project,
                            boolean selected) {
         final SafeHtmlBuilder shb = new SafeHtmlBuilder();
         shb.appendEscaped(project.getName());

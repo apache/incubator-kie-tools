@@ -26,7 +26,7 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 
 @Remote
 public interface LibraryService {
@@ -61,28 +61,7 @@ public interface LibraryService {
 
     Boolean hasAssets(final WorkspaceProject project);
 
-    /**
-     * Imports a project from a repository with full history (i.e. `git clone ${repositoryURL}`).
-     */
-    WorkspaceProject importProject(OrganizationalUnit targetOU, String repositoryURL, String username, String password);
-
-    /**
-     * @see #importProject(OrganizationalUnit, ExampleProject)
-     */
-    List<WorkspaceProject> importProjects(OrganizationalUnit targetOU, List<ExampleProject> projects);
-
-    /**
-     * Imports a project (preserving history) from the given {@link ExampleProject}.
-     */
-    WorkspaceProject importProject(OrganizationalUnit targetOU, ExampleProject example);
-
-    Set<ExampleProject> getExampleProjects();
-
-    Set<ExampleProject> getProjects(final String repositoryUrl);
-
-    Set<ExampleProject> getProjects(final String repositoryUrl,
-                                    final String userName,
-                                    final String password);
+    Set<ImportProject> getExampleProjects();
 
     List<OrganizationalUnit> getOrganizationalUnits();
 

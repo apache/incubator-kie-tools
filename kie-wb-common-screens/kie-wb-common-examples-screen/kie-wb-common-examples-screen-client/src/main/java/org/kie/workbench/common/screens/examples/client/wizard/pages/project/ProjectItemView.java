@@ -20,13 +20,13 @@ import com.google.gwt.event.dom.client.HasMouseOutHandlers;
 import com.google.gwt.event.dom.client.HasMouseOverHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 
 public interface ProjectItemView extends IsWidget,
                                          HasMouseOverHandlers,
                                          HasMouseOutHandlers,
                                          HasValueChangeHandlers<Boolean> {
 
-    void setProject( final ExampleProject project, boolean selected );
+    void setProject(final ImportProject project, boolean selected );
 
 }

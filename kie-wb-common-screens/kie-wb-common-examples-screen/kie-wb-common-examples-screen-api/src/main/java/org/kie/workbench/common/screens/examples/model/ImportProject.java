@@ -24,33 +24,38 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 
 @Portable
-public class ExampleProject {
+public class ImportProject {
 
     private Path root;
     private String name;
     private String description;
+    private String origin;
     private List<String> tags;
     private List<ExampleProjectError> errors;
 
-    public ExampleProject(final @MapsTo("root") Path root,
-                          final @MapsTo("name") String name,
-                          final @MapsTo("description") String description,
-                          final @MapsTo("tags") List<String> tags,
-                          final @MapsTo("errors") List<ExampleProjectError> errors) {
+    public ImportProject(final @MapsTo("root") Path root,
+                         final @MapsTo("name") String name,
+                         final @MapsTo("description") String description,
+                         final @MapsTo("origin") String origin,
+                         final @MapsTo("tags") List<String> tags,
+                         final @MapsTo("errors") List<ExampleProjectError> errors) {
         this.root = root;
         this.name = name;
         this.description = description;
+        this.origin = origin;
         this.tags = tags;
         this.errors = errors;
     }
 
-    public ExampleProject(Path root,
-                          String name,
-                          String description,
-                          List<String> tags) {
+    public ImportProject(Path root,
+                         String name,
+                         String description,
+                         String origin,
+                         List<String> tags) {
         this(root,
              name,
              description,
+             origin,
              tags,
              new ArrayList<>());
     }
@@ -76,11 +81,11 @@ public class ExampleProject {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ExampleProject)) {
+        if (!(o instanceof ImportProject)) {
             return false;
         }
 
-        ExampleProject that = (ExampleProject) o;
+        ImportProject that = (ImportProject) o;
 
         if (!root.equals(that.root)) {
             return false;
@@ -99,6 +104,8 @@ public class ExampleProject {
         int result = root.hashCode();
         result = 31 * result + name.hashCode();
         result = ~~result;
+        result = 31 * result + origin.hashCode();
+        result = ~~result;
         result = 31 * result + (tags != null ? tags.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (description != null ? description.hashCode() : 0);
@@ -108,5 +115,9 @@ public class ExampleProject {
 
     public List<ExampleProjectError> getErrors() {
         return errors;
+    }
+
+    public String getOrigin() {
+        return origin;
     }
 }

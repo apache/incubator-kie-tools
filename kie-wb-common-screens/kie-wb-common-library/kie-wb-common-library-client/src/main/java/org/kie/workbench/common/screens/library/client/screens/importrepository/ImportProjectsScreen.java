@@ -51,7 +51,7 @@ public class ImportProjectsScreen {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Try Samples Screen";
+        return this.presenter.getView().getTitle();
     }
 
     @WorkbenchPartView

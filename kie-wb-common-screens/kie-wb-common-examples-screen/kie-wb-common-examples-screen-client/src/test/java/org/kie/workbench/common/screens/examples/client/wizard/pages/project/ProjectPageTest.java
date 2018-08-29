@@ -30,7 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.examples.client.wizard.model.ExamplesWizardModel;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
 import org.mockito.ArgumentCaptor;
@@ -94,21 +94,23 @@ public class ProjectPageTest {
     private Caller<ExamplesService> examplesServiceCaller = new CallerMock<ExamplesService>(examplesService);
 
     @Captor
-    private ArgumentCaptor<List<ExampleProject>> projectsArgumentCaptor;
+    private ArgumentCaptor<List<ImportProject>> projectsArgumentCaptor;
 
     private ProjectPage page;
 
     private ExamplesWizardModel model;
 
-    private ExampleProject project1 = new ExampleProject(mock(Path.class),
-                                                         "project1",
-                                                         "",
-                                                         Arrays.asList("tag1",
+    private ImportProject project1 = new ImportProject(mock(Path.class),
+                                                       "project1",
+                                                       "",
+                                                       EXAMPLE_REPOSITORY,
+                                                       Arrays.asList("tag1",
                                                                        "tag2"));
-    private ExampleProject project2 = new ExampleProject(mock(Path.class),
-                                                         "project2",
-                                                         "",
-                                                         Arrays.asList("tag2",
+    private ImportProject project2 = new ImportProject(mock(Path.class),
+                                                       "project2",
+                                                       "",
+                                                       EXAMPLE_REPOSITORY,
+                                                       Arrays.asList("tag2",
                                                                        "tag3"));
 
     @Before
@@ -183,7 +185,7 @@ public class ProjectPageTest {
 
     @Test
     public void testPrepareView_NewRepositorySelected() {
-        when(examplesService.getProjects(any(ExampleRepository.class))).thenReturn(new HashSet<ExampleProject>() {{
+        when(examplesService.getProjects(any(ExampleRepository.class))).thenReturn(new HashSet<ImportProject>() {{
             add(project1);
             add(project2);
         }});
@@ -200,7 +202,7 @@ public class ProjectPageTest {
 
         verify(projectsView,
                times(1)).setProjectsInRepository(projectsArgumentCaptor.capture());
-        final List<ExampleProject> sortedProjects = projectsArgumentCaptor.getValue();
+        final List<ImportProject> sortedProjects = projectsArgumentCaptor.getValue();
         assertNotNull(sortedProjects);
         assertEquals(2,
                      sortedProjects.size());
@@ -226,10 +228,11 @@ public class ProjectPageTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testIsComplete_SelectedProjects() {
-        model.addProject(new ExampleProject(mock(Path.class),
-                                            "",
-                                            "",
-                                            Collections.EMPTY_LIST));
+        model.addProject(new ImportProject(mock(Path.class),
+                                           "",
+                                           "",
+                                           EXAMPLE_REPOSITORY,
+                                           Collections.EMPTY_LIST));
         final Callback<Boolean> callback = mock(Callback.class);
         page.isComplete(callback);
 
@@ -239,7 +242,7 @@ public class ProjectPageTest {
 
     @Test
     public void testAddProject() {
-        page.addProject(mock(ExampleProject.class));
+        page.addProject(mock(ImportProject.class));
         assertEquals(1,
                      model.getProjects().size());
         verify(pageStatusChangedEvent,
@@ -248,7 +251,7 @@ public class ProjectPageTest {
 
     @Test
     public void testRemoveProject() {
-        final ExampleProject project = mock(ExampleProject.class);
+        final ImportProject project = mock(ImportProject.class);
         model.addProject(project);
         page.removeProject(project);
         assertEquals(0,
@@ -259,7 +262,7 @@ public class ProjectPageTest {
 
     @Test
     public void testIsProjectSelected_Selected() {
-        final ExampleProject project = mock(ExampleProject.class);
+        final ImportProject project = mock(ImportProject.class);
         model.addProject(project);
 
         assertTrue(page.isProjectSelected(project));
@@ -267,7 +270,7 @@ public class ProjectPageTest {
 
     @Test
     public void testIsProjectSelected_NotSelected() {
-        final ExampleProject project = mock(ExampleProject.class);
+        final ImportProject project = mock(ImportProject.class);
 
         assertFalse(page.isProjectSelected(project));
     }
@@ -285,7 +288,7 @@ public class ProjectPageTest {
     }
 
     private void initExampleProjects() {
-        when(examplesService.getProjects(any(ExampleRepository.class))).thenReturn(new HashSet<ExampleProject>() {{
+        when(examplesService.getProjects(any(ExampleRepository.class))).thenReturn(new HashSet<ImportProject>() {{
             add(project1);
             add(project2);
         }});

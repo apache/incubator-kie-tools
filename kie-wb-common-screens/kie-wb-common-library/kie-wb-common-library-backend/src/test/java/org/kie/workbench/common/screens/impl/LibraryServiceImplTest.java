@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import javax.enterprise.event.Event;
 
@@ -38,17 +37,14 @@ import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
-import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
-import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.structure.security.RepositoryAction;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
 import org.kie.workbench.common.screens.explorer.backend.server.ExplorerServiceHelper;
@@ -72,18 +68,12 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.NoSuchFileException;
-import org.uberfire.java.nio.file.spi.FileSystemProvider;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
-import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 import org.uberfire.paging.PageResponse;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.spaces.Space;
 
-import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -210,20 +200,21 @@ public class LibraryServiceImplTest {
                                                     projectService,
                                                     moduleService,
                                                     examplesService,
-                                                    repositoryService,
                                                     ioService,
                                                     internalPreferences,
                                                     socialUserRepositoryAPI,
-                                                    indexOracle,
-                                                    newProjectEvent,
-                                                    pathUtil
+                                                    indexOracle
         ));
     }
 
     @Test
     public void queryingUnindexedProjectGivesUnindexedResult() throws Exception {
-        Branch branch = new Branch("fake-branch", mockPath("default:///a/b/c"));
-        final WorkspaceProject project = new WorkspaceProject(ou1, repo1, branch, mock(Module.class));
+        Branch branch = new Branch("fake-branch",
+                                   mockPath("default:///a/b/c"));
+        final WorkspaceProject project = new WorkspaceProject(ou1,
+                                                              repo1,
+                                                              branch,
+                                                              mock(Module.class));
         when(indexOracle.isIndexed(project)).thenReturn(false);
         when(ioService.exists(any())).thenReturn(true);
 
@@ -234,7 +225,8 @@ public class LibraryServiceImplTest {
                                                                 Collections.emptyList());
 
         AssetQueryResult result = libraryService.getProjectAssets(query);
-        assertEquals(ResultType.Unindexed, result.getResultType());
+        assertEquals(ResultType.Unindexed,
+                     result.getResultType());
         assertFalse(result.getAssetInfos().isPresent());
     }
 
@@ -279,8 +271,10 @@ public class LibraryServiceImplTest {
 
         final LibraryInfo libraryInfo = libraryService.getLibraryInfo(ou1);
 
-        assertEquals(1, libraryInfo.getProjects().size());
-        assertSame(project2, libraryInfo.getProjects().iterator().next());
+        assertEquals(1,
+                     libraryInfo.getProjects().size());
+        assertSame(project2,
+                   libraryInfo.getProjects().iterator().next());
     }
 
     @Test
@@ -350,7 +344,10 @@ public class LibraryServiceImplTest {
     @Test
     public void emptyFirstPage() throws Exception {
         final Branch branch = mock(Branch.class);
-        final WorkspaceProject project = spy(new WorkspaceProject(ou1, repo1, branch, null));
+        final WorkspaceProject project = spy(new WorkspaceProject(ou1,
+                                                                  repo1,
+                                                                  branch,
+                                                                  null));
         final Path path = mock(Path.class);
 
         when(branch.getPath()).thenReturn(path);
@@ -393,10 +390,10 @@ public class LibraryServiceImplTest {
 
         final Branch branch = mock(Branch.class);
         final Path path = mockPath("file://the_project");
-        final WorkspaceProject project =  spy(new WorkspaceProject(mock(OrganizationalUnit.class),
-                                                               repo1,
-                                                               branch,
-                                                               null));
+        final WorkspaceProject project = spy(new WorkspaceProject(mock(OrganizationalUnit.class),
+                                                                  repo1,
+                                                                  branch,
+                                                                  null));
 
         when(branch.getPath()).thenReturn(path);
 
@@ -471,7 +468,8 @@ public class LibraryServiceImplTest {
 
         final AssetQueryResult result = libraryService.getProjectAssets(query);
 
-        assertEquals(ResultType.Normal, result.getResultType());
+        assertEquals(ResultType.Normal,
+                     result.getResultType());
         assertTrue(result.getAssetInfos().isPresent());
         List<AssetInfo> projectAssets = result.getAssetInfos().get();
         assertTrue(projectAssets.isEmpty());
@@ -554,14 +552,14 @@ public class LibraryServiceImplTest {
         System.setProperty("org.kie.project.examples.repository.url",
                            "importProjectsUrl");
 
-        final Set<ExampleProject> exampleProjects = new HashSet<>();
-        exampleProjects.add(mock(ExampleProject.class));
-        doReturn(exampleProjects).when(examplesService).getProjects(new ExampleRepository("importProjectsUrl"));
+        final Set<ImportProject> importProjects = new HashSet<>();
+        importProjects.add(mock(ImportProject.class));
+        doReturn(importProjects).when(examplesService).getProjects(new ExampleRepository("importProjectsUrl"));
 
-        final Set<ExampleProject> loadedExampleProjects = libraryService.getExampleProjects();
+        final Set<ImportProject> loadedImportProjects = libraryService.getExampleProjects();
 
-        assertEquals(exampleProjects,
-                     loadedExampleProjects);
+        assertEquals(importProjects,
+                     loadedImportProjects);
     }
 
     @Test
@@ -572,148 +570,14 @@ public class LibraryServiceImplTest {
         final ExampleRepository playgroundRepository = new ExampleRepository("playgroundRepositoryUrl");
         doReturn(playgroundRepository).when(examplesService).getPlaygroundRepository();
 
-        final Set<ExampleProject> exampleProjects = new HashSet<>();
-        exampleProjects.add(mock(ExampleProject.class));
-        doReturn(exampleProjects).when(examplesService).getProjects(playgroundRepository);
+        final Set<ImportProject> importProjects = new HashSet<>();
+        importProjects.add(mock(ImportProject.class));
+        doReturn(importProjects).when(examplesService).getProjects(playgroundRepository);
 
-        final Set<ExampleProject> loadedExampleProjects = libraryService.getExampleProjects();
+        final Set<ImportProject> loadedImportProjects = libraryService.getExampleProjects();
 
-        assertEquals(exampleProjects,
-                     loadedExampleProjects);
-    }
-
-    @Test
-    public void importProjectWithCredentialsTest() {
-        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-        final Repository repo = mock(Repository.class);
-        final WorkspaceProject project = mock(WorkspaceProject.class);
-
-        final String repositoryURL = "file:///some/path/to/fake-repo.git";
-        final String username = "fakeUser";
-        final String password = "fakePassword";
-
-        final ArgumentCaptor<RepositoryEnvironmentConfigurations> configCaptor = ArgumentCaptor.forClass(RepositoryEnvironmentConfigurations.class);
-
-        when(repositoryService.createRepository(any(), any(), any(), configCaptor.capture())).thenReturn(repo);
-        when(projectService.resolveProject(any(Repository.class))).thenReturn(project);
-
-        final WorkspaceProject observedProject = libraryService.importProject(organizationalUnit, repositoryURL, username, password);
-
-        verify(repositoryService).createRepository(same(organizationalUnit), eq(GitRepository.SCHEME.toString()), eq("fake-repo"), any());
-        RepositoryEnvironmentConfigurations observedConfig = configCaptor.getValue();
-        assertEquals(username, observedConfig.getUserName());
-        assertEquals(password, observedConfig.getPassword());
-        assertEquals(repositoryURL, observedConfig.getOrigin());
-
-        verify(projectService).resolveProject(same(repo));
-
-        assertSame(project, observedProject);
-    }
-
-    @Test
-    public void importProjectWithoutCredentialsTest() {
-        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-        final Repository repo = mock(Repository.class);
-        final WorkspaceProject project = mock(WorkspaceProject.class);
-
-        final String repositoryURL = "file:///some/path/to/fake-repo.git";
-        final String username = null;
-        final String password = null;
-
-        final ArgumentCaptor<RepositoryEnvironmentConfigurations> configCaptor = ArgumentCaptor.forClass(RepositoryEnvironmentConfigurations.class);
-
-        when(repositoryService.createRepository(any(), any(), any(), configCaptor.capture())).thenReturn(repo);
-        when(projectService.resolveProject(any(Repository.class))).thenReturn(project);
-
-        final WorkspaceProject observedProject = libraryService.importProject(organizationalUnit, repositoryURL, username, password);
-
-        verify(repositoryService).createRepository(same(organizationalUnit), eq(GitRepository.SCHEME.toString()), eq("fake-repo"), any());
-        RepositoryEnvironmentConfigurations observedConfig = configCaptor.getValue();
-        assertEquals(username, observedConfig.getUserName());
-        assertEquals(password, observedConfig.getPassword());
-        assertEquals(repositoryURL, observedConfig.getOrigin());
-
-        verify(projectService).resolveProject(same(repo));
-
-        assertSame(project, observedProject);
-    }
-
-    @Test
-    public void importDefaultProjectTest() {
-        final OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl("myteam", "admin", "org.whatever");
-        organizationalUnit.getRepositories();
-
-        final Path exampleRoot = mock(Path.class);
-        final org.uberfire.java.nio.file.Path exampleRootNioPath = mock(org.uberfire.java.nio.file.Path.class);
-        when(pathUtil.convert(exampleRoot)).thenReturn(exampleRootNioPath);
-        final ExampleProject exampleProject = new ExampleProject(exampleRoot, "example", "description", emptyList());
-
-        String repoURL = "file:///some/repo/url";
-        when(pathUtil.getNiogitRepoPath(any())).thenReturn(repoURL);
-
-        final Repository repository = new GitRepository("example", new Space("myteam"));
-        final WorkspaceProject project = new WorkspaceProject(organizationalUnit,
-                                                              repository,
-                                                              new Branch("master", mock(Path.class)),
-                                                              new Module());
-        when(projectService.resolveProject(repository)).thenReturn(project);
-        when(repositoryService.createRepository(same(organizationalUnit), eq(GitRepository.SCHEME.toString()), any(), any())).thenReturn(repository);
-
-        final WorkspaceProject importedProject = libraryService.importProject(organizationalUnit,
-                                                                              exampleProject);
-
-        assertSame(project, importedProject);
-        final ArgumentCaptor<RepositoryEnvironmentConfigurations> configsCaptor = ArgumentCaptor.forClass(RepositoryEnvironmentConfigurations.class);
-        verify(repositoryService).createRepository(same(organizationalUnit), eq(GitRepository.SCHEME.toString()), any(), configsCaptor.capture());
-        final RepositoryEnvironmentConfigurations configs = configsCaptor.getValue();
-        assertEquals(repoURL, configs.getOrigin());
-        assertNull(configs.getSubdirectory());
-        verify(projectService).resolveProject(repository);
-    }
-
-    @Test
-    public void importProjectInSubdirectory() {
-        final OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl("myteam", "admin", "org.whatever");
-        organizationalUnit.getRepositories();
-
-
-        final String exampleURI = "default://master@system/repo/example";
-        final Path exampleRoot = PathFactory.newPath("example", exampleURI);
-        final JGitFileSystem fs = mock(JGitFileSystem.class);
-        final FileSystemProvider provider = mock(FileSystemProvider.class);
-        when(fs.provider()).thenReturn(provider);
-        final org.uberfire.java.nio.file.Path exampleRootNioPath = JGitPathImpl.create(fs, "/example", "master@system/repo", true);
-        final org.uberfire.java.nio.file.Path repoRoot = exampleRootNioPath.getParent();
-        when(fs.getRootDirectories()).thenReturn(() -> Stream.of(repoRoot).iterator());
-        when(pathUtil.convert(exampleRoot)).thenReturn(exampleRootNioPath);
-        when(pathUtil.stripProtocolAndBranch(any())).then(inv -> realPathUtil.stripProtocolAndBranch(inv.getArgumentAt(0, String.class)));
-        when(pathUtil.stripRepoNameAndSpace(any())).then(inv -> realPathUtil.stripRepoNameAndSpace(inv.getArgumentAt(0, String.class)));
-        when(pathUtil.convert(any(org.uberfire.java.nio.file.Path.class))).then(inv -> realPathUtil.convert(inv.getArgumentAt(0, org.uberfire.java.nio.file.Path.class)));
-        when(pathUtil.extractBranch(any())).then(inv -> realPathUtil.extractBranch(inv.getArgumentAt(0, String.class)));
-
-        final ExampleProject exampleProject = new ExampleProject(exampleRoot, "example", "description", emptyList());
-
-        String repoURL = "file:///some/repo/url";
-        when(pathUtil.getNiogitRepoPath(any())).thenReturn(repoURL);
-
-        final Repository repository = new GitRepository("example", new Space("myteam"));
-        final WorkspaceProject project = new WorkspaceProject(organizationalUnit,
-                                                              repository,
-                                                              new Branch("master", mock(Path.class)),
-                                                              new Module());
-        when(projectService.resolveProject(repository)).thenReturn(project);
-        when(repositoryService.createRepository(same(organizationalUnit), eq(GitRepository.SCHEME.toString()), any(), any())).thenReturn(repository);
-
-        final WorkspaceProject importedProject = libraryService.importProject(organizationalUnit,
-                                                                              exampleProject);
-
-        assertSame(project, importedProject);
-        final ArgumentCaptor<RepositoryEnvironmentConfigurations> configsCaptor = ArgumentCaptor.forClass(RepositoryEnvironmentConfigurations.class);
-        verify(repositoryService).createRepository(same(organizationalUnit), eq(GitRepository.SCHEME.toString()), any(), configsCaptor.capture());
-        final RepositoryEnvironmentConfigurations configs = configsCaptor.getValue();
-        assertEquals(repoURL, configs.getOrigin());
-        assertEquals("example", configs.getSubdirectory());
-        verify(projectService).resolveProject(repository);
+        assertEquals(importProjects,
+                     loadedImportProjects);
     }
 
     @Test

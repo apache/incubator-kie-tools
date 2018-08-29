@@ -24,7 +24,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.model.ExampleProjectError;
 import org.kie.workbench.common.screens.library.client.widgets.example.errors.ExampleProjectErrorPresenter;
 import org.kie.workbench.common.screens.library.client.widgets.example.errors.ExampleProjectOkPresenter;
@@ -37,7 +37,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ExampleProjectWidgetTest {
+public class ImportProjectWidgetTest {
 
     public static final String EXAMPLE_PROJECT_NAME = "Test Example Project";
     public static final String EXAMPLE_PROJECT_DESCRIPTION = "Example Project Description";
@@ -52,7 +52,7 @@ public class ExampleProjectWidgetTest {
     private ExampleProjectErrorPresenter exampleProjectErrorPresenter;
 
     @Mock
-    private ExampleProject exampleProject;
+    private ImportProject importProject;
 
     private ExampleProjectWidget widget;
     private List<ExampleProjectError> errors;
@@ -62,8 +62,8 @@ public class ExampleProjectWidgetTest {
         this.widget = new ExampleProjectWidget(this.view,
                                                this.exampleProjectOkPresenter,
                                                this.exampleProjectErrorPresenter);
-        when(exampleProject.getName()).thenReturn(EXAMPLE_PROJECT_NAME);
-        when(exampleProject.getDescription()).thenReturn(EXAMPLE_PROJECT_DESCRIPTION);
+        when(importProject.getName()).thenReturn(EXAMPLE_PROJECT_NAME);
+        when(importProject.getDescription()).thenReturn(EXAMPLE_PROJECT_DESCRIPTION);
 
         errors = Arrays.asList(new ExampleProjectError("AnId",
                                                        "An Error Description"));
@@ -71,8 +71,8 @@ public class ExampleProjectWidgetTest {
 
     @Test
     public void testProjectContainErrors() {
-        when(this.exampleProject.getErrors()).thenReturn(this.errors);
-        this.widget.init(this.exampleProject);
+        when(this.importProject.getErrors()).thenReturn(this.errors);
+        this.widget.init(this.importProject);
 
         verify(this.exampleProjectOkPresenter,
                never()).getView();
@@ -91,8 +91,8 @@ public class ExampleProjectWidgetTest {
 
     @Test
     public void testProjectNotContainsErrors() {
-        when(this.exampleProject.getErrors()).thenReturn(Collections.emptyList());
-        this.widget.init(this.exampleProject);
+        when(this.importProject.getErrors()).thenReturn(Collections.emptyList());
+        this.widget.init(this.importProject);
 
         verify(this.exampleProjectErrorPresenter,
                never())
@@ -109,8 +109,8 @@ public class ExampleProjectWidgetTest {
 
     @Test
     public void testSelectOkProject() {
-        when(this.exampleProject.getErrors()).thenReturn(Collections.emptyList());
-        this.widget.init(this.exampleProject);
+        when(this.importProject.getErrors()).thenReturn(Collections.emptyList());
+        this.widget.init(this.importProject);
 
         this.widget.select();
 
@@ -129,8 +129,8 @@ public class ExampleProjectWidgetTest {
 
     @Test
     public void testSelectErrorProject() {
-        when(this.exampleProject.getErrors()).thenReturn(errors);
-        this.widget.init(this.exampleProject);
+        when(this.importProject.getErrors()).thenReturn(errors);
+        this.widget.init(this.importProject);
 
         this.widget.select();
 

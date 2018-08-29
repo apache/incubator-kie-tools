@@ -18,18 +18,18 @@ package org.kie.workbench.common.screens.examples.client.wizard.pages.project;
 
 import java.util.List;
 
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.uberfire.client.mvp.UberView;
 
 public interface ProjectPageView extends UberView<ProjectPage> {
 
     interface Presenter {
 
-        void addProject(final ExampleProject project);
+        void addProject(final ImportProject project);
 
-        void removeProject(final ExampleProject project);
+        void removeProject(final ImportProject project);
 
-        boolean isProjectSelected(final ExampleProject project);
+        boolean isProjectSelected(final ImportProject project);
 
         void addTag(final String tag);
 
@@ -42,7 +42,7 @@ public interface ProjectPageView extends UberView<ProjectPage> {
 
     void initialise();
 
-    void setProjectsInRepository(final List<ExampleProject> projects);
+    void setProjectsInRepository(final List<ImportProject> projects);
 
     void destroy();
 }

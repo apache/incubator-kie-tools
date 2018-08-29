@@ -19,7 +19,7 @@ package org.kie.workbench.common.screens.examples.validation;
 
 import java.util.List;
 
-public interface ExampleProjectValidators {
+public interface ImportProjectValidators {
 
-    List<ExampleProjectValidator> getValidators();
+    List<ImportProjectValidator> getValidators();
 }

@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
@@ -52,10 +51,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ExamplesMetaData;
-import org.kie.workbench.common.screens.examples.validation.ExampleProjectValidators;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
+import org.kie.workbench.common.screens.examples.validation.ImportProjectValidators;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
@@ -69,24 +68,14 @@ import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.spaces.Space;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.kie.workbench.common.screens.examples.backend.server.ImportUtils.makeGitRepository;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ExamplesServiceImplTest {
@@ -133,7 +122,7 @@ public class ExamplesServiceImplTest {
     private ProjectScreenService projectScreenService;
 
     @Mock
-    private ExampleProjectValidators validators;
+    private ImportProjectValidators validators;
 
     private ExamplesServiceImpl service;
 
@@ -210,7 +199,7 @@ public class ExamplesServiceImplTest {
 
     @Test
     public void testGetProjects_NullRepository() {
-        final Set<ExampleProject> modules = service.getProjects(null);
+        final Set<ImportProject> modules = service.getProjects(null);
         assertNotNull(modules);
         assertEquals(0,
                      modules.size());
@@ -218,7 +207,7 @@ public class ExamplesServiceImplTest {
 
     @Test
     public void testGetProjects_NullRepositoryUrl() {
-        final Set<ExampleProject> modules = service.getProjects(new ExampleRepository(null));
+        final Set<ImportProject> modules = service.getProjects(new ExampleRepository(null));
         assertNotNull(modules);
         assertEquals(0,
                      modules.size());
@@ -226,7 +215,7 @@ public class ExamplesServiceImplTest {
 
     @Test
     public void testGetProjects_EmptyRepositoryUrl() {
-        final Set<ExampleProject> modules = service.getProjects(new ExampleRepository(""));
+        final Set<ImportProject> modules = service.getProjects(new ExampleRepository(""));
         assertNotNull(modules);
         assertEquals(0,
                      modules.size());
@@ -234,7 +223,7 @@ public class ExamplesServiceImplTest {
 
     @Test
     public void testGetProjects_WhiteSpaceRepositoryUrl() {
-        final Set<ExampleProject> modules = service.getProjects(new ExampleRepository("   "));
+        final Set<ImportProject> modules = service.getProjects(new ExampleRepository("   "));
         assertNotNull(modules);
         assertEquals(0,
                      modules.size());
@@ -258,15 +247,17 @@ public class ExamplesServiceImplTest {
 
         service.setPlaygroundRepository(mock(ExampleRepository.class));
 
-        final Set<ExampleProject> modules = service.getProjects(new ExampleRepository("https://github.com/guvnorngtestuser1/guvnorng-playground.git"));
+        String origin = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
+        final Set<ImportProject> modules = service.getProjects(new ExampleRepository(origin));
         assertNotNull(modules);
         assertEquals(1,
                      modules.size());
-        assertTrue(modules.contains(new ExampleProject(moduleRoot,
-                                                       "module1",
-                                                       "Example 'module1' module",
-                                                       Arrays.asList("tag1",
-                                                                     "tag2"))));
+        assertTrue(modules.contains(new ImportProject(moduleRoot,
+                                                      "module1",
+                                                      "Example 'module1' module",
+                                                      origin,
+                                                      Arrays.asList("tag1",
+                                                                    "tag2"))));
     }
 
     @Test
@@ -287,15 +278,17 @@ public class ExamplesServiceImplTest {
             add(module);
         }});
 
-        final Set<ExampleProject> modules = service.getProjects(new ExampleRepository("https://github.com/guvnorngtestuser1/guvnorng-playground.git"));
+        String origin = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
+        final Set<ImportProject> modules = service.getProjects(new ExampleRepository(origin));
         assertNotNull(modules);
         assertEquals(1,
                      modules.size());
-        assertTrue(modules.contains(new ExampleProject(moduleRoot,
-                                                       "module1",
-                                                       "This is custom description. This is a new line.",
-                                                       Arrays.asList("tag1",
-                                                                     "tag2"))));
+        assertTrue(modules.contains(new ImportProject(moduleRoot,
+                                                      "module1",
+                                                      "This is custom description. This is a new line.",
+                                                      origin,
+                                                      Arrays.asList("tag1",
+                                                                    "tag2"))));
     }
 
     @Test
@@ -317,15 +310,17 @@ public class ExamplesServiceImplTest {
             add(module);
         }});
 
-        final Set<ExampleProject> modules = service.getProjects(new ExampleRepository("https://github.com/guvnorngtestuser1/guvnorng-playground.git"));
+        String origin = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
+        final Set<ImportProject> modules = service.getProjects(new ExampleRepository(origin));
         assertNotNull(modules);
         assertEquals(1,
                      modules.size());
-        assertTrue(modules.contains(new ExampleProject(moduleRoot,
-                                                       "module1",
-                                                       "pom description",
-                                                       Arrays.asList("tag1",
-                                                                     "tag2"))));
+        assertTrue(modules.contains(new ImportProject(moduleRoot,
+                                                      "module1",
+                                                      "pom description",
+                                                      origin,
+                                                      Arrays.asList("tag1",
+                                                                    "tag2"))));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -343,17 +338,15 @@ public class ExamplesServiceImplTest {
     @Test(expected = IllegalStateException.class)
     public void testSetupExamples_ZeroModules() {
         service.setupExamples(mock(ExampleOrganizationalUnit.class),
-                              Collections.<ExampleProject>emptyList());
+                              Collections.emptyList());
     }
 
     @Test
     public void testSetupExamples_NewOrganizationalUnitNewRepository() {
         final ExampleOrganizationalUnit exOU = mock(ExampleOrganizationalUnit.class);
-        final ExampleProject exModule = mock(ExampleProject.class);
+        final ImportProject exModule = mock(ImportProject.class);
         doReturn("module").when(exModule).getName();
-        final List<ExampleProject> exModules = new ArrayList<ExampleProject>() {{
-            add(exModule);
-        }};
+        final List<ImportProject> exModules = Collections.singletonList(exModule);
         final OrganizationalUnit ou = mock(OrganizationalUnit.class);
         doReturn("ou").when(ou).getName();
         final GitRepository repository = mock(GitRepository.class);
@@ -402,14 +395,12 @@ public class ExamplesServiceImplTest {
     @Test
     public void testSetupExamples_ProjectCopy() {
         final ExampleOrganizationalUnit exOU = mock(ExampleOrganizationalUnit.class);
-        final ExampleProject exProject1 = mock(ExampleProject.class);
+        final ImportProject exProject1 = mock(ImportProject.class);
         doReturn("project 1").when(exProject1).getName();
-        final ExampleProject exProject2 = mock(ExampleProject.class);
+        final ImportProject exProject2 = mock(ImportProject.class);
         doReturn("project 2").when(exProject1).getName();
-        final List<ExampleProject> exProjects = new ArrayList<ExampleProject>() {{
-            add(exProject1);
-            add(exProject2);
-        }};
+        final List<ImportProject> exProjects = Arrays.asList(exProject1,
+                                                             exProject2);
         final OrganizationalUnit ou = mock(OrganizationalUnit.class);
         doReturn("ou").when(ou).getName();
         final GitRepository repository1 = mock(GitRepository.class);
@@ -542,18 +533,5 @@ public class ExamplesServiceImplTest {
 
         verify(repositoryFactory,
                never()).newRepository(any(ConfigGroup.class));
-    }
-
-    private GitRepository makeGitRepository() {
-        final GitRepository repository = new GitRepository("guvnorng-playground",
-                                                           new Space("space"));
-
-        final HashMap<String, Branch> branches = new HashMap<>();
-        branches.put("master",
-                     new Branch("master",
-                                mock(Path.class)));
-        repository.setBranches(branches);
-
-        return repository;
     }
 }

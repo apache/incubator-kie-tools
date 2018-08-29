@@ -22,7 +22,7 @@ import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.model.ExampleProjectError;
 import org.kie.workbench.common.screens.library.client.widgets.example.errors.ExampleProjectErrorPresenter;
 import org.kie.workbench.common.screens.library.client.widgets.example.errors.ExampleProjectOkPresenter;
@@ -44,7 +44,7 @@ public class ExampleProjectWidget {
         void setDisabled();
     }
 
-    private ExampleProject model;
+    private ImportProject model;
     private boolean selected;
 
     private final ExampleProjectWidget.View view;
@@ -60,12 +60,12 @@ public class ExampleProjectWidget {
         this.exampleProjectErrorPresenter = exampleProjectErrorPresenter;
     }
 
-    public void init(final ExampleProject exampleProject) {
+    public void init(final ImportProject importProject) {
         this.view.init(this);
-        this.model = exampleProject;
-        view.setup(exampleProject.getName(),
-                   exampleProject.getDescription(),
-                   this.buildErrors(exampleProject));
+        this.model = importProject;
+        view.setup(importProject.getName(),
+                   importProject.getDescription(),
+                   this.buildErrors(importProject));
         this.disableViewIfHasErrors();
     }
 
@@ -99,8 +99,8 @@ public class ExampleProjectWidget {
         }
     }
 
-    private HTMLElement buildErrors(ExampleProject exampleProject) {
-        List<ExampleProjectError> errors = exampleProject.getErrors();
+    private HTMLElement buildErrors(ImportProject importProject) {
+        List<ExampleProjectError> errors = importProject.getErrors();
         if (errors.isEmpty()) {
             return this.exampleProjectOkPresenter.getView().getElement();
         } else {

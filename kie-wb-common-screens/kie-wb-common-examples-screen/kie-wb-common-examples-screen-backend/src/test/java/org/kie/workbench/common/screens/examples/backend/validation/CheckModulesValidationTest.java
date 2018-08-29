@@ -26,7 +26,7 @@ import org.guvnor.common.services.project.service.POMService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.model.ExampleProjectError;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -45,7 +45,7 @@ public class CheckModulesValidationTest {
     private POMService pomService;
 
     @Mock
-    private ExampleProject exampleProject;
+    private ImportProject importProject;
 
     @Mock
     private POM pom;
@@ -54,7 +54,7 @@ public class CheckModulesValidationTest {
     public void setUp() {
         Path path = mock(Path.class);
         when(path.toURI()).thenReturn("/");
-        when(this.exampleProject.getRoot()).thenReturn(path);
+        when(this.importProject.getRoot()).thenReturn(path);
         when(this.pomService.load(any())).thenReturn(this.pom);
 
         this.validator = new CheckModulesValidator(this.pomService);
@@ -63,7 +63,7 @@ public class CheckModulesValidationTest {
     @Test
     public void testProjectHasNoModules() {
         when(this.pom.getModules()).thenReturn(Collections.EMPTY_LIST);
-        Optional<ExampleProjectError> error = this.validator.validate(exampleProject);
+        Optional<ExampleProjectError> error = this.validator.validate(importProject);
         assertFalse(error.isPresent());
     }
 
@@ -71,7 +71,7 @@ public class CheckModulesValidationTest {
     public void testProjectHasModules() {
         when(this.pom.getModules()).thenReturn(Arrays.asList("aModule"));
 
-        Optional<ExampleProjectError> error = this.validator.validate(exampleProject);
+        Optional<ExampleProjectError> error = this.validator.validate(importProject);
         assertTrue(error.isPresent());
         assertEquals(CheckModulesValidator.class.getCanonicalName(),
                      error.get().getId());

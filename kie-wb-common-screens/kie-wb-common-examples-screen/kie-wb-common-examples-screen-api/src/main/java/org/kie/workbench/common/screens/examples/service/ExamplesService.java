@@ -22,13 +22,14 @@ import java.util.Set;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ExamplesMetaData;
 import org.uberfire.commons.lifecycle.PriorityDisposable;
 
 @Remote
-public interface ExamplesService extends PriorityDisposable {
+public interface ExamplesService extends ImportService,
+                                         PriorityDisposable {
 
     String EXAMPLES_SYSTEM_PROPERTY = "org.kie.demo";
 
@@ -36,8 +37,8 @@ public interface ExamplesService extends PriorityDisposable {
 
     ExampleRepository getPlaygroundRepository();
 
-    Set<ExampleProject> getProjects(final ExampleRepository repository);
-
     WorkspaceProjectContextChangeEvent setupExamples(final ExampleOrganizationalUnit exampleTargetOU,
-                                            final List<ExampleProject> exampleProjects);
+                                                     final List<ImportProject> importProjects);
+
+    Set<ImportProject> getExampleProjects();
 }

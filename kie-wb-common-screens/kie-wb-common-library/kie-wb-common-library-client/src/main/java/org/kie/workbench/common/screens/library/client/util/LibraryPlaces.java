@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -51,7 +50,8 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.security.shared.exception.UnauthorizedException;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.soup.commons.validation.PortablePreconditions;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
+import org.kie.workbench.common.screens.library.client.screens.importrepository.Source;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetListUpdated;
@@ -63,7 +63,6 @@ import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspe
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportProjectsSetupEvent;
 import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportRepositoryPopUpPresenter;
-import org.kie.workbench.common.screens.library.client.screens.importrepository.Source;
 import org.kie.workbench.common.screens.library.client.screens.project.close.CloseUnsavedProjectAssetsPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.widgets.library.LibraryToolbarPresenter;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
@@ -92,8 +91,6 @@ import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInf
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.events.ResourceDeletedEvent;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
-
-import static org.kie.workbench.common.screens.library.client.screens.importrepository.Source.Kind.EXTERNAL;
 
 @ApplicationScoped
 public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
@@ -206,7 +203,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
                          final ManagedInstance<ImportRepositoryPopUpPresenter> importRepositoryPopUpPresenters,
                          final @Routed Event<ProjectAssetListUpdated> assetListUpdatedEvent,
                          final CloseUnsavedProjectAssetsPopUpPresenter closeUnsavedProjectAssetsPopUpPresenter,
-                         final @Source(EXTERNAL) Event<ImportProjectsSetupEvent> importProjectsSetupEvent) {
+                         final @Source(Source.Kind.EXTERNAL) Event<ImportProjectsSetupEvent> importProjectsSetupEvent) {
         this.breadcrumbs = breadcrumbs;
         this.ts = ts;
         this.projectMetricsEvent = projectMetricsEvent;
@@ -716,7 +713,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         importRepositoryPopUpPresenter.show();
     }
 
-    public void goToExternalImportPresenter(final Set<ExampleProject> projects) {
+    public void goToExternalImportPresenter(final Set<ImportProject> projects) {
         closeAllPlacesOrNothing(() -> {
             // TODO add title
             final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(LibraryPlaces.IMPORT_PROJECTS_SCREEN);
@@ -839,10 +836,9 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         closingLibraryPlaces = false;
     }
 
-    public WorkspaceProjectContext getWorkbenchContext(){
+    public WorkspaceProjectContext getWorkbenchContext() {
         return projectContext;
     }
-
 
     public WorkspaceProject getActiveWorkspace() {
         return this.projectContext.getActiveWorkspaceProject().orElseThrow(() -> new IllegalStateException("No active workspace project found"));
@@ -861,7 +857,8 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
                 closeAllPlacesOrNothing(this::goToProject);
             }
 
-            if (Utils.hasModuleChanged(previous.getModule(), current.getModule())) {
+            if (Utils.hasModuleChanged(previous.getModule(),
+                                       current.getModule())) {
                 setupLibraryBreadCrumbs(projectContext.getActiveWorkspaceProject().get());
             }
         }

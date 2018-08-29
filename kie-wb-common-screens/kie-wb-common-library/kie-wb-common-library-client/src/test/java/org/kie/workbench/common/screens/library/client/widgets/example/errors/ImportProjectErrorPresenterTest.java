@@ -30,7 +30,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ExampleProjectErrorPresenterTest {
+public class ImportProjectErrorPresenterTest {
 
     public static final String VALIDATOR = "Validator";
     public static final String VALIDATOR_ID = "org.id.with.dots." + VALIDATOR;

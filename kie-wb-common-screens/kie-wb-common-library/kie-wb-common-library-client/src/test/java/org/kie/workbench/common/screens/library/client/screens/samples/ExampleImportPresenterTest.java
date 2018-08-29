@@ -27,15 +27,16 @@ import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeE
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
 import org.kie.workbench.common.screens.library.api.LibraryService;
+import org.kie.workbench.common.screens.library.client.screens.importrepository.ExamplesImportPresenter;
 import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
-import org.kie.workbench.common.screens.library.client.widgets.common.TileWidget;
 import org.kie.workbench.common.screens.library.client.widgets.example.ExampleProjectWidget;
 import org.kie.workbench.common.screens.library.client.widgets.example.errors.ExampleProjectErrorPresenter;
 import org.kie.workbench.common.screens.library.client.widgets.example.errors.ExampleProjectOkPresenter;
@@ -98,15 +99,15 @@ public class ExampleImportPresenterTest {
 
         doReturn(tileWidget).when(tileWidgets).get();
 
-        importPresenter = ImportPresenter.examplesImportPresenter(view,
-                                                                  libraryPlaces,
-                                                                  libraryServiceCaller,
-                                                                  tileWidgets,
-                                                                  examplesServiceCaller,
-                                                                  mock(WorkspaceProjectContext.class),
-                                                                  notificationEvent,
-                                                                  projectContextChangeEvent,
-                                                                  new Elemental2DomUtil());
+        importPresenter = new ExamplesImportPresenter(view,
+                                                      libraryPlaces,
+                                                      tileWidgets,
+                                                      examplesServiceCaller,
+                                                      mock(WorkspaceProjectContext.class),
+                                                      notificationEvent,
+                                                      projectContextChangeEvent,
+                                                      new Elemental2DomUtil(),
+                                                      mock(TranslationService.class));
     }
 
     @Test
@@ -124,26 +125,30 @@ public class ExampleImportPresenterTest {
 
     @Test
     public void filterProjectsTest() {
-        Set<ExampleProject> projects = new HashSet<>();
-        projects.add(new ExampleProject(mock(Path.class),
-                                        "p1a",
-                                        "p1a description",
-                                        null));
-        projects.add(new ExampleProject(mock(Path.class),
-                                        "p3b",
-                                        "p3b description",
-                                        null));
-        projects.add(new ExampleProject(mock(Path.class),
-                                        "p2a",
-                                        "p2a description",
-                                        null));
-        doReturn(projects).when(libraryService).getExampleProjects();
+        Set<ImportProject> projects = new HashSet<>();
+        projects.add(new ImportProject(mock(Path.class),
+                                       "p1a",
+                                       "p1a description",
+                                       "git@git.com",
+                                       null));
+        projects.add(new ImportProject(mock(Path.class),
+                                       "p3b",
+                                       "p3b description",
+                                       "git@git.com",
+                                       null));
+        projects.add(new ImportProject(mock(Path.class),
+                                       "p2a",
+                                       "p2a description",
+                                       "git@git.com",
+                                       null));
+        doReturn(projects).when(examplesService).getExampleProjects();
 
         Map<String, String> params = new HashMap<>();
         params.put("repositoryUrl",
                    "repoUrl");
         importPresenter.onStartup(new DefaultPlaceRequest(LibraryPlaces.PROJECT_SCREEN,
                                                           params));
+
         final List<ExampleProjectWidget> filteredProjects = importPresenter.filterProjects("a");
 
         assertEquals(2,

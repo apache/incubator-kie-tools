@@ -26,7 +26,7 @@ public class ExamplesModel {
 
     private ExampleRepository sourceRepository;
     private ExampleOrganizationalUnit targetOrganizationalUnit;
-    private List<ExampleProject> projects = new ArrayList<ExampleProject>();
+    private List<ImportProject> projects = new ArrayList<ImportProject>();
 
     public ExampleRepository getSourceRepository() {
         return sourceRepository;
@@ -44,7 +44,7 @@ public class ExamplesModel {
         this.targetOrganizationalUnit = targetOrganizationalUnit;
     }
 
-    public List<ExampleProject> getProjects() {
+    public List<ImportProject> getProjects() {
         return projects;
     }
 }

@@ -19,25 +19,24 @@ package org.kie.workbench.common.screens.examples.backend.validation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import com.google.common.collect.Lists;
-import org.kie.workbench.common.screens.examples.validation.ExampleProjectValidator;
-import org.kie.workbench.common.screens.examples.validation.ExampleProjectValidators;
+import org.kie.workbench.common.screens.examples.validation.ImportProjectValidator;
+import org.kie.workbench.common.screens.examples.validation.ImportProjectValidators;
 
 @ApplicationScoped
-public class ExampleProjectValidatorsImpl implements ExampleProjectValidators {
+public class ImportProjectValidatorsImpl implements ImportProjectValidators {
 
-    private List<ExampleProjectValidator> validators;
+    private List<ImportProjectValidator> validators;
 
-    public ExampleProjectValidatorsImpl() {
+    public ImportProjectValidatorsImpl() {
     }
 
     @Inject
-    public ExampleProjectValidatorsImpl(Instance<ExampleProjectValidator> validators) {
+    public ImportProjectValidatorsImpl(Instance<ImportProjectValidator> validators) {
 
         if (validators == null) {
             this.validators = new ArrayList<>();
@@ -47,7 +46,7 @@ public class ExampleProjectValidatorsImpl implements ExampleProjectValidators {
     }
 
     @Override
-    public List<ExampleProjectValidator> getValidators() {
+    public List<ImportProjectValidator> getValidators() {
         return this.validators;
     }
 }

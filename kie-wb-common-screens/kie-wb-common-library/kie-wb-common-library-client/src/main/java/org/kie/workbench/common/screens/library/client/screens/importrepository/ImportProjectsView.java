@@ -90,11 +90,6 @@ public class ImportProjectsView implements ImportPresenter.View,
     }
 
     @Override
-    public String getTrySamplesLabel() {
-        return ts.format(LibraryConstants.TrySamples);
-    }
-
-    @Override
     public String getNoProjectsToImportMessage() {
         return ts.format(LibraryConstants.NoProjectsToImport);
     }
@@ -117,6 +112,11 @@ public class ImportProjectsView implements ImportPresenter.View,
     @Override
     public String getImportProjectsSuccessMessage() {
         return ts.format(LibraryConstants.ImportProjectsSuccess);
+    }
+
+    @Override
+    public String getTitle() {
+        return this.title.getTextContent();
     }
 
     @EventHandler("filter-text")

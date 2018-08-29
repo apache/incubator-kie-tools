@@ -47,7 +47,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.explorer.model.URIStructureExplorerModel;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetListUpdated;
@@ -732,11 +732,12 @@ public class LibraryPlacesTest {
         final PartDefinitionImpl part = new PartDefinitionImpl(trySamplesScreen);
         part.setSelectable(false);
 
-        final Set<ExampleProject> projects = singleton(new ExampleProject(PathFactory.newPath("example",
-                                                                                              "default://master@system/repo/example"),
-                                                                          "example",
-                                                                          "description",
-                                                                          emptyList()));
+        final Set<ImportProject> projects = singleton(new ImportProject(PathFactory.newPath("example",
+                                                                                            "default://master@system/repo/example"),
+                                                                        "example",
+                                                                        "description",
+                                                                        "git@git.com",
+                                                                        emptyList()));
         libraryPlaces.goToExternalImportPresenter(projects);
 
         verify(placeManager).goTo(eq(part),

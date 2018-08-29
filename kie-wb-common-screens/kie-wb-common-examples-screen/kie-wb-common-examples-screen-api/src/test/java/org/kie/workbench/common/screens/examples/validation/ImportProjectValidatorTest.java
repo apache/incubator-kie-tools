@@ -23,7 +23,7 @@ import org.guvnor.common.services.project.service.POMService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.model.ExampleProjectError;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -35,31 +35,31 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ExampleProjectValidatorTest {
+public class ImportProjectValidatorTest {
 
-    private ExampleProjectValidator exampleProjectValidator;
+    private ImportProjectValidator importProjectValidator;
 
     @Mock
     private POMService pomService;
 
     @Mock
-    private ExampleProject exampleProject;
+    private ImportProject importProject;
 
     @Captor
     private ArgumentCaptor<Path> pathCaptor;
 
     @Before
     public void setUp() {
-        this.exampleProjectValidator = spy(new TestValidator());
+        this.importProjectValidator = spy(new TestValidator());
     }
 
     @Test
     public void testGetPomWithFinalSlash() {
         Path path = mock(Path.class);
         when(path.toURI()).thenReturn("/");
-        when(this.exampleProject.getRoot()).thenReturn(path);
-        this.exampleProjectValidator.getPom(this.pomService,
-                                            path);
+        when(this.importProject.getRoot()).thenReturn(path);
+        this.importProjectValidator.getPom(this.pomService,
+                                           path);
 
         verify(this.pomService).load(pathCaptor.capture());
         assertEquals("/pom.xml",
@@ -70,16 +70,16 @@ public class ExampleProjectValidatorTest {
     public void testGetPomWithoutFinalSlash() {
         Path path = mock(Path.class);
         when(path.toURI()).thenReturn("/testPath");
-        when(this.exampleProject.getRoot()).thenReturn(path);
-        this.exampleProjectValidator.getPom(this.pomService,
-                                            path);
+        when(this.importProject.getRoot()).thenReturn(path);
+        this.importProjectValidator.getPom(this.pomService,
+                                           path);
 
         verify(this.pomService).load(pathCaptor.capture());
         assertEquals("/testPath/pom.xml",
                      pathCaptor.getValue().toURI());
     }
 
-    private class TestValidator extends ExampleProjectValidator {
+    private class TestValidator extends ImportProjectValidator {
 
         @Override
         protected Optional<ExampleProjectError> getError(Path projectPath) {

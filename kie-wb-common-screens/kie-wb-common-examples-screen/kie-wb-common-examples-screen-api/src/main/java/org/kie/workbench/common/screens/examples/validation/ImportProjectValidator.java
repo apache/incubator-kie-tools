@@ -21,31 +21,31 @@ import java.util.Optional;
 
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.POMService;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.model.ExampleProjectError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 
-public abstract class ExampleProjectValidator {
+public abstract class ImportProjectValidator {
 
     public static final String POM_XML = "pom.xml";
-    private Logger logger = LoggerFactory.getLogger(ExampleProjectValidator.class);
+    private Logger logger = LoggerFactory.getLogger(ImportProjectValidator.class);
 
-    public Optional<ExampleProjectError> validate(ExampleProject exampleProject) {
+    public Optional<ExampleProjectError> validate(ImportProject importProject) {
         if (logger.isDebugEnabled()) {
             logger.debug("Validation project [{}]",
-                         exampleProject.getName());
+                         importProject.getName());
         }
 
-        Path rootPath = exampleProject.getRoot();
+        Path rootPath = importProject.getRoot();
 
         Optional<ExampleProjectError> error = this.getError(rootPath);
 
         if (logger.isDebugEnabled() && error.isPresent()) {
             logger.debug("Error found [{} - {} - {}]",
-                         exampleProject.getName(),
+                         importProject.getName(),
                          error.get().getId(),
                          error.get().getDescription());
         }

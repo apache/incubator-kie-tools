@@ -17,7 +17,7 @@
 package org.kie.workbench.common.screens.examples.client.wizard.model;
 
 import org.kie.soup.commons.validation.PortablePreconditions;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ExamplesModel;
 
@@ -42,12 +42,12 @@ public class ExamplesWizardModel extends ExamplesModel {
         this.selectedBranch = selectedBranch;
     }
 
-    public void addProject(final ExampleProject project) {
+    public void addProject(final ImportProject project) {
         getProjects().add(PortablePreconditions.checkNotNull("project",
                                                              project));
     }
 
-    public void removeProject(final ExampleProject project) {
+    public void removeProject(final ImportProject project) {
         getProjects().remove(PortablePreconditions.checkNotNull("project",
                                                                 project));
     }

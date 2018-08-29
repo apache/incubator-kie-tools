@@ -17,17 +17,16 @@
 package org.kie.workbench.common.screens.library.client.screens.importrepository;
 
 import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
-import org.kie.workbench.common.screens.library.api.LibraryService;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
+import org.kie.workbench.common.screens.examples.model.ExampleRepository;
+import org.kie.workbench.common.screens.examples.service.ProjectImportService;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
 public class ImportRepositoryPopUpPresenter {
@@ -56,17 +55,17 @@ public class ImportRepositoryPopUpPresenter {
 
     private View view;
 
-    private Caller<LibraryService> libraryService;
+    private Caller<ProjectImportService> importService;
 
     private LibraryPlaces libraryPlaces;
 
     @Inject
     public ImportRepositoryPopUpPresenter(final View view,
                                           final LibraryPlaces libraryPlaces,
-                                          final Caller<LibraryService> libraryService) {
+                                          final Caller<ProjectImportService> importService) {
         this.view = view;
         this.libraryPlaces = libraryPlaces;
-        this.libraryService = libraryService;
+        this.importService = importService;
     }
 
     @PostConstruct
@@ -86,20 +85,22 @@ public class ImportRepositoryPopUpPresenter {
         }
 
         view.showBusyIndicator(view.getLoadingMessage());
-        libraryService.call((Set<ExampleProject> projects) -> {
-                                view.hideBusyIndicator();
-                                if (projects.isEmpty()) {
-                                    view.showError(view.getNoProjectsToImportMessage());
-                                } else {
-                                    view.hide();
-                                    libraryPlaces.goToExternalImportPresenter(projects);
-                                }
-
-        }, (Message message, Throwable throwable) -> {
-                view.hideBusyIndicator();
-                view.showError(view.getNoProjectsToImportMessage());
-                return false;
-        }).getProjects(repositoryUrl, view.getUserName(), view.getPassword());
+        importService.call((Set<ImportProject> projects) -> {
+                               view.hideBusyIndicator();
+                               if (projects.isEmpty()) {
+                                   view.showError(view.getNoProjectsToImportMessage());
+                               } else {
+                                   view.hide();
+                                   libraryPlaces.goToExternalImportPresenter(projects);
+                               }
+                           },
+                           (Message message, Throwable throwable) -> {
+                               view.hideBusyIndicator();
+                               view.showError(view.getNoProjectsToImportMessage());
+                               return false;
+                           }).getProjects(new ExampleRepository(repositoryUrl,
+                                                                view.getUserName(),
+                                                                view.getPassword()));
     }
 
     public void cancel() {

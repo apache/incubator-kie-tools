@@ -37,7 +37,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.screens.examples.model.ExampleProject;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 
 @Dependent
 @Templated
@@ -83,9 +83,9 @@ public class ProjectPageViewImpl extends Composite implements ProjectPageView {
     }
 
     @Override
-    public void setProjectsInRepository(final List<ExampleProject> projects) {
+    public void setProjectsInRepository(final List<ImportProject> projects) {
         this.projects.removeAllChildren();
-        for (ExampleProject project : projects) {
+        for (ImportProject project : projects) {
             final ProjectItemView w = makeProjectWidget(project);
             this.projects.appendChild(w.asWidget().getElement());
         }
@@ -98,7 +98,7 @@ public class ProjectPageViewImpl extends Composite implements ProjectPageView {
         tagList.removeAllChildren();
     }
 
-    private ProjectItemView makeProjectWidget(final ExampleProject project) {
+    private ProjectItemView makeProjectWidget(final ImportProject project) {
         final ProjectItemView projectItemView = projectItemViewInstance.get();
         projectItemView.setProject(project,
                                    presenter.isProjectSelected(project));

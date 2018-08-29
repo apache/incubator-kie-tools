@@ -18,17 +18,15 @@ package org.kie.workbench.common.screens.library.client.screens.samples;
 
 import javax.inject.Inject;
 
+import org.kie.workbench.common.screens.library.client.screens.importrepository.Source;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
 import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportPresenter;
-import org.kie.workbench.common.screens.library.client.screens.importrepository.Source;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
-
-import static org.kie.workbench.common.screens.library.client.screens.importrepository.Source.Kind.EXAMPLE;
 
 @WorkbenchScreen(identifier = LibraryPlaces.IMPORT_SAMPLE_PROJECTS_SCREEN,
         owningPerspective = LibraryPerspective.class)
@@ -37,7 +35,7 @@ public class ImportExamplesProjectsScreen {
     private ImportPresenter presenter;
 
     @Inject
-    public ImportExamplesProjectsScreen(final @Source(EXAMPLE) ImportPresenter presenter) {
+    public ImportExamplesProjectsScreen(final @Source(Source.Kind.EXAMPLE) ImportPresenter presenter) {
         this.presenter = presenter;
     }
 
