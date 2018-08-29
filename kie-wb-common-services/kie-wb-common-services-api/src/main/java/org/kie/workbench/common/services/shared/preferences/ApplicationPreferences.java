@@ -30,40 +30,44 @@ public class ApplicationPreferences {
     public static final String DEFAULT_COUNTRY = "drools.defaultcountry";
     public static final String KIE_VERSION_PROPERTY_NAME = "kie_version";
     public static final String KIE_PRODUCTIZED = "kie_productized";
+    public static final String KIE_TIMEZONE_OFFSET = "kie_timezone_offset";
 
-    public static ApplicationPreferences instance = new ApplicationPreferences( Collections.<String, String>emptyMap() );
+    public static ApplicationPreferences instance = new ApplicationPreferences(Collections.<String, String>emptyMap());
     private Map<String, String> preferences = Collections.<String, String>emptyMap();
 
-    private ApplicationPreferences( Map<String, String> preferences ) {
+    private ApplicationPreferences(Map<String, String> preferences) {
         this.preferences = preferences;
     }
 
-    public static void setUp( Map<String, String> map ) {
-        instance = new ApplicationPreferences( map );
+    public static void setUp(Map<String, String> map) {
+        instance = new ApplicationPreferences(map);
     }
 
-    public static boolean getBooleanPref( String name ) {
-        return Boolean.parseBoolean( instance.preferences.get( name ) );
+    public static boolean getBooleanPref(String name) {
+        return Boolean.parseBoolean(instance.preferences.get(name));
     }
 
-    public static String getStringPref( String name ) {
-        return instance.preferences.get( name );
+    public static String getStringPref(String name) {
+        return instance.preferences.get(name);
     }
 
     public static String getDroolsDateFormat() {
-        return getStringPref( DATE_FORMAT );
+        return getStringPref(DATE_FORMAT);
     }
 
     public static String getDroolsDateTimeFormat() {
-        return getStringPref( DATE_TIME_FORMAT );
+        return getStringPref(DATE_TIME_FORMAT);
     }
 
     public static String getCurrentDroolsVersion() {
-        return instance.preferences.get( KIE_VERSION_PROPERTY_NAME );
+        return instance.preferences.get(KIE_VERSION_PROPERTY_NAME);
+    }
+
+    public static int getKieTimezoneOffset() {
+        return Integer.parseInt(instance.preferences.get(KIE_TIMEZONE_OFFSET));
     }
 
     public static boolean isProductized() {
-        return Boolean.parseBoolean( instance.preferences.get( KIE_PRODUCTIZED ) );
+        return Boolean.parseBoolean(instance.preferences.get(KIE_PRODUCTIZED));
     }
-
 }

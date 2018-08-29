@@ -93,9 +93,8 @@ public abstract class AbstractCellFactory<T> {
 
     // Make a new Cell for Date columns
     protected DecoratedGridCellValueAdaptor<Date> makeDateCell() {
-        return new DecoratedGridCellValueAdaptor<Date>( new PopupDateEditCell( DATE_FORMAT,
-                                                                               isReadOnly ),
-                                                        eventBus );
+        return new DecoratedGridCellValueAdaptor<Date>(new PopupDateEditCell(isReadOnly),
+                                                       eventBus);
     }
 
     // Make a new Cell for Numeric columns

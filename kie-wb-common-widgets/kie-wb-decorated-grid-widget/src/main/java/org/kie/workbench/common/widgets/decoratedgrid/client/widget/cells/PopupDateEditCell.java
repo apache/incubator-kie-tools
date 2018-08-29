@@ -17,13 +17,20 @@ package org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells;
 
 import java.util.Date;
 
+import com.google.gwt.cell.client.ValueUpdater;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
+import org.kie.workbench.common.widgets.client.util.TimeZoneUtils;
 import org.uberfire.ext.widgets.common.client.common.DatePicker;
+
+import static org.kie.workbench.common.widgets.client.util.TimeZoneUtils.FORMATTER;
+import static org.kie.workbench.common.widgets.client.util.TimeZoneUtils.convertFromServerTimeZone;
+import static org.kie.workbench.common.widgets.client.util.TimeZoneUtils.formatWithServerTimeZone;
 
 /**
  * A Popup Date Editor.
@@ -31,18 +38,13 @@ import org.uberfire.ext.widgets.common.client.common.DatePicker;
 public class PopupDateEditCell extends AbstractPopupEditCell<Date, Date> {
 
     private final DatePicker datePicker;
-    private final DateTimeFormat format;
 
-    public PopupDateEditCell( DateTimeFormat format,
-                              boolean isReadOnly ) {
-        super( isReadOnly );
-        if ( format == null ) {
-            throw new IllegalArgumentException( "format == null" );
-        }
+    public PopupDateEditCell(final boolean isReadOnly) {
 
-        this.format = format;
-        this.datePicker = new DatePicker();
-        datePicker.setFormat( format.getPattern() );
+        super(isReadOnly);
+
+        this.datePicker = GWT.create(DatePicker.class);
+        datePicker.setFormat(getPattern());
 
         // See https://issues.jboss.org/browse/GUVNOR-2322
         // The DatePicker was being closed, before the ValueChangeHandler invoked, in response to the
@@ -69,27 +71,30 @@ public class PopupDateEditCell extends AbstractPopupEditCell<Date, Date> {
     }
 
     @Override
-    public void render( Context context,
-                        Date value,
-                        SafeHtmlBuilder sb ) {
-        if ( value != null ) {
-            sb.append( renderer.render( format.format( value ) ) );
+    public void render(Context context,
+                       Date value,
+                       SafeHtmlBuilder sb) {
+        if (value != null) {
+            sb.append(getRenderer().render(formatWithServerTimeZone(value)));
         }
     }
 
     // Commit the change
     @Override
     protected void commit() {
+        final Date date = convertToServerTimeZone(getDatePicker().getValue());
+        setValue(lastContext,
+                 lastParent,
+                 date);
 
-        // Update value
-        Date date = datePicker.getValue();
-        setValue( lastContext,
-                  lastParent,
-                  date );
-        if ( valueUpdater != null ) {
-            valueUpdater.update( date );
+        if (getValueUpdater() != null) {
+            getValueUpdater().update(date);
         }
         panel.hide();
+    }
+
+    Date convertToServerTimeZone(final Date value) {
+        return TimeZoneUtils.convertToServerTimeZone(value);
     }
 
     // Start editing the cell
@@ -110,18 +115,33 @@ public class PopupDateEditCell extends AbstractPopupEditCell<Date, Date> {
                              month,
                              dom );
         }
-        datePicker.setValue( date );
+        getDatePicker().setValue(convertFromServerTimeZone(date));
 
-        panel.setPopupPositionAndShow( new PositionCallback() {
-            public void setPosition( int offsetWidth,
-                                     int offsetHeight ) {
-                panel.setPopupPosition( parent.getAbsoluteLeft()
-                                                + offsetX,
-                                        parent.getAbsoluteTop()
-                                                + offsetY );
+        panel.setPopupPositionAndShow(new PositionCallback() {
+            public void setPosition(int offsetWidth,
+                                    int offsetHeight) {
+                panel.setPopupPosition(parent.getAbsoluteLeft()
+                                               + offsetX,
+                                       parent.getAbsoluteTop()
+                                               + offsetY);
             }
         } );
 
     }
 
+    String getPattern() {
+        return FORMATTER.getPattern();
+    }
+
+    DatePicker getDatePicker() {
+        return datePicker;
+    }
+
+    ValueUpdater<Date> getValueUpdater() {
+        return valueUpdater;
+    }
+
+    SafeHtmlRenderer<String> getRenderer() {
+        return renderer;
+    }
 }
