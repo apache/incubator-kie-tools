@@ -41,7 +41,7 @@
       <plugin>
         <groupId>io.takari.maven.plugins</groupId>
         <artifactId>takari-lifecycle-plugin</artifactId>
-        <version>${version.io.takari.maven.plugins}</version>
+        <version>${version.io.takari.maven.plugins.compiler}</version>
         <executions>
           <execution>
             <id>compile</id>

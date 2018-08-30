@@ -15,7 +15,7 @@
       <plugin>
         <groupId>io.takari.maven.plugins</groupId>
         <artifactId>takari-lifecycle-plugin</artifactId>
-        <version>${version.io.takari.maven.plugins}</version>
+        <version>${version.io.takari.maven.plugins.compiler}</version>
         <configuration>
           <compilerId>jdt</compilerId>
           <source>1.8</source>
