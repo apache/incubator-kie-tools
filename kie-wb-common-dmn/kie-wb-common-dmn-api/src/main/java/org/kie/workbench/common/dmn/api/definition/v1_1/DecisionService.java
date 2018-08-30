@@ -126,6 +126,6 @@ public class DecisionService extends NamedElement {
                                          outputDecision != null ? outputDecision.hashCode() : 0,
                                          encapsulatedDecision != null ? encapsulatedDecision.hashCode() : 0,
                                          inputDecision != null ? inputDecision.hashCode() : 0,
-                                         inputData != null ? inputDecision.hashCode() : 0);
+                                         inputData != null ? inputData.hashCode() : 0);
     }
 }
