@@ -118,23 +118,18 @@ If you were able to use the IDE GUI to import the code style successfully above,
 2. In the search field, type '*file and code templates*'.
 3. Select the *Includes* tab.
 4. Select *File Header* in the left-hand list.
-5. Replace the content on the right-hand side with the following, then click *Apply* and/or *OK*:
+5. Remove any line in the template referencing @author, as KIE convention is to omit this in lieu of Git history information.
 
-         /*
-          * Copyright ${YEAR} Red Hat, Inc. and/or its affiliates.
-          *
-          * Licensed under the Apache License, Version 2.0 (the "License");
-          * you may not use this file except in compliance with the License.
-          * You may obtain a copy of the License at
-          *
-          *     http://www.apache.org/licenses/LICENSE-2.0
-          *
-          * Unless required by applicable law or agreed to in writing, software
-          * distributed under the License is distributed on an "AS IS" BASIS,
-          * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-          * See the License for the specific language governing permissions and
-          * limitations under the License.
-         */
+***Configure Copyright Template***
+1. Open **Preferences** from the **File** (linux/Win) menu or **IntelliJ IDEA** app menu (mac).
+2. In the search field, type '*copyright*'.
+3. Select *Copyright Profiles*, located under *Copyright*.
+4. Click the plus (+) sign in the top-left corner, then enter "KIE Copyright" in the name field in the popup.
+5. Replace the contents of the *Copyright text* field with the contents of the [KIE licensing file](https://raw.githubusercontent.com/kiegroup/droolsjbpm-build-bootstrap/master/ide-configuration/LICENSE-ASL-2.0-HEADER.txt).
+6. Within the newly pasted text, replace "*${year}*" with "*$today.year*", then click *Apply*.
+7. In the left-hand navigation tree, select *Copyright*, the parent node of the currently screen item.
+8. Use the *Default project copyright* dropdown to select the newly created "*KIE Copyright*" value.
+9. Click *Apply* and/or *OK*.
 
 ***Configure GWT Facets***
 1. If you don't already have a local copy of the GWT SDK, download the latest version [from here](http://www.gwtproject.org/download.html) and extract it somewhere safe where you keep other SDK's.
