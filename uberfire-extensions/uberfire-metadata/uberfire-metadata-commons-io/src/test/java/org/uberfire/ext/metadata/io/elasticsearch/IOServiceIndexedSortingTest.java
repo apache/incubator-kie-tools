@@ -58,7 +58,7 @@ public class IOServiceIndexedSortingTest extends BaseIndexTest {
         writeFile("bFile.txt");
         writeFile("aFile.txt");
 
-        List<String> indices = Arrays.asList(toKCluster(base.getFileSystem()).getClusterId());
+        List<String> indices = Arrays.asList(toKCluster(base).getClusterId());
         IndexProvider provider = this.config.getIndexProvider();
 
         {

@@ -212,7 +212,7 @@ public class BatchIndexTest extends BaseIndexTest {
                        DublinCoreView.class).run(ioService().get("git://temp-repo-test/").getFileSystem(),
                                                  () -> {
                                                      try {
-                                                         final String index = toKCluster(ioService().get("git://temp-repo-test/").getFileSystem()).getClusterId();
+                                                         final String index = toKCluster(ioService().get("git://temp-repo-test/")).getClusterId();
 
                                                          {
 

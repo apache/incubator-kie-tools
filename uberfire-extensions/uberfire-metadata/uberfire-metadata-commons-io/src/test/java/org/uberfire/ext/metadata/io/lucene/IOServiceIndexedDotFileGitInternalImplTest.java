@@ -60,7 +60,7 @@ public class IOServiceIndexedDotFileGitInternalImplTest extends BaseIndexTest {
 
         waitForCountDown(5000);
 
-        final String index = toKCluster(path1.getFileSystem()).getClusterId();
+        final String index = toKCluster(path1).getClusterId();
 
         TermQuery query = new TermQuery(new Term("name",
                                                  "value"));

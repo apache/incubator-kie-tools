@@ -15,72 +15,75 @@
  */
 package org.uberfire.ext.widgets.common.client.breadcrumbs.widget;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.uberfire.client.mvp.UberElement;
+import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
-public class BreadcrumbsPresenter {
+public class DefaultBreadcrumbsPresenter implements BreadcrumbPresenter {
 
     private final View view;
-    private PlaceRequest placeRequest;
+    private Command selectCommand;
     private boolean removeDeepLevelBreadcrumbsAfterActivation = true;
 
     @Inject
-    public BreadcrumbsPresenter(final View view) {
+    public DefaultBreadcrumbsPresenter(final View view) {
         this.view = view;
+    }
+
+    @PostConstruct
+    public void init() {
         view.init(this);
     }
 
-    public void activate() {
-        view.activate();
-    }
-
-    public void deactivate() {
-        view.deactivate();
-    }
-
     public void setup(final String label,
-                      final PlaceRequest placeRequest,
+                      final boolean removeDeepLevelBreadcrumbsAfterActivation,
                       final Command selectCommand) {
-        setup(label,
-              placeRequest,
-              selectCommand,
-              true);
-    }
-
-    public void setup(final String label,
-                      final PlaceRequest placeRequest,
-                      final Command selectCommand,
-                      final boolean removeDeepLevelBreadcrumbsAfterActivation) {
-        this.placeRequest = placeRequest;
+        this.selectCommand = selectCommand;
         this.removeDeepLevelBreadcrumbsAfterActivation = removeDeepLevelBreadcrumbsAfterActivation;
-        view.setup(label,
-                   selectCommand);
+        view.setup(label);
+
+        if (selectCommand == null) {
+            view.setNoAction();
+        }
     }
 
     public boolean hasToRemoveDeepLevelBreadcrumbsAfterActivation() {
         return removeDeepLevelBreadcrumbsAfterActivation;
     }
 
-    public PlaceRequest getPlaceRequest() {
-        return placeRequest;
+    @Override
+    public void activate() {
+        view.activate();
     }
 
-    public UberElement<BreadcrumbsPresenter> getView() {
+    @Override
+    public void deactivate() {
+        view.deactivate();
+    }
+
+    @Override
+    public View getView() {
         return view;
     }
 
-    public interface View extends UberElement<BreadcrumbsPresenter> {
+    public void onClick() {
+        if (selectCommand != null) {
+            selectCommand.execute();
+        }
+    }
 
-        void setup(String label,
-                   Command clickCommand);
+    public interface View extends UberElemental<DefaultBreadcrumbsPresenter> {
+
+        void setup(String label);
 
         void activate();
 
         void deactivate();
+
+        void setNoAction();
     }
 }

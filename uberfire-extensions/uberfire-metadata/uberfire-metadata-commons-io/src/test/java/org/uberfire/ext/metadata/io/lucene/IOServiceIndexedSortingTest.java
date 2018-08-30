@@ -60,7 +60,7 @@ public class IOServiceIndexedSortingTest extends BaseIndexTest {
 
         waitForCountDown(5000);
 
-        final String index = toKCluster(base.getFileSystem()).getClusterId();
+        final String index = toKCluster(base).getClusterId();
 
         {
             final Sort sort = new Sort(new SortField(FieldFactory.FILE_NAME_FIELD_SORTED,

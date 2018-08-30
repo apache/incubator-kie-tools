@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-.breadcrumb-link {
-    cursor: pointer;
-}
+package org.uberfire.ext.widgets.common.client.breadcrumbs.widget;
 
-.breadcrumb-last{
-    color: inherit;
-    text-decoration-line: none;
-    pointer-events: none;
+import org.uberfire.client.mvp.UberElemental;
+
+public interface BreadcrumbPresenter {
+
+    void activate();
+
+    void deactivate();
+
+    UberElemental<? extends BreadcrumbPresenter> getView();
 }

@@ -18,16 +18,20 @@ package org.guvnor.common.services.project.backend.server;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.events.NewProjectEvent;
+import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.DeploymentMode;
+import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
+import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -51,6 +55,7 @@ public class WorkspaceProjectServiceImpl
     private Event<NewProjectEvent> newProjectEvent;
     private ModuleService<? extends Module> moduleService;
     private SpacesAPI spaces;
+    private ModuleRepositoryResolver repositoryResolver;
 
     public WorkspaceProjectServiceImpl() {
     }
@@ -60,12 +65,14 @@ public class WorkspaceProjectServiceImpl
                                        final RepositoryService repositoryService,
                                        final SpacesAPI spaces,
                                        final Event<NewProjectEvent> newProjectEvent,
-                                       final Instance<ModuleService<? extends Module>> moduleServices) {
+                                       final Instance<ModuleService<? extends Module>> moduleServices,
+                                       final ModuleRepositoryResolver repositoryResolver) {
         this.organizationalUnitService = organizationalUnitService;
         this.repositoryService = repositoryService;
         this.spaces = spaces;
         this.newProjectEvent = newProjectEvent;
         moduleService = moduleServices.get();
+        this.repositoryResolver = repositoryResolver;
     }
 
     @Override
@@ -129,9 +136,13 @@ public class WorkspaceProjectServiceImpl
     public WorkspaceProject newProject(final OrganizationalUnit organizationalUnit,
                                        final POM pom,
                                        final DeploymentMode mode) {
-
         String newName = this.createFreshProjectName(organizationalUnit,
                                                      pom.getName());
+        pom.setName(newName);
+
+        if (DeploymentMode.VALIDATED.equals(mode)) {
+            checkRepositories(pom);
+        }
 
         final Repository repository = repositoryService.createRepository(organizationalUnit,
                                                                          "git",
@@ -143,10 +154,7 @@ public class WorkspaceProjectServiceImpl
             throw new IllegalStateException("New repository should always have a branch.");
         }
 
-        pom.setName(newName);
-
         try {
-
             final Module module = moduleService.newModule(repository.getDefaultBranch().get().getPath(),
                                                           pom,
                                                           mode);
@@ -273,5 +281,13 @@ public class WorkspaceProjectServiceImpl
             }
         }
         return defaultBranch;
+    }
+
+    private void checkRepositories(final POM pom) {
+        final Set<MavenRepositoryMetadata> repositories = repositoryResolver.getRepositoriesResolvingArtifact(pom.getGav());
+        if (repositories.size() > 0) {
+            throw new GAVAlreadyExistsException(pom.getGav(),
+                                                repositories);
+        }
     }
 }

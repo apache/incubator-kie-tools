@@ -32,6 +32,7 @@ import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.DeploymentMode;
+import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -83,6 +84,9 @@ public class WorkspaceProjectServiceImplNewWorkspaceWorkspaceProjectTest {
     @Mock
     private SpacesAPI spaces;
 
+    @Mock
+    private ModuleRepositoryResolver repositoryResolver;
+
     private POM pom;
 
     @Before
@@ -109,7 +113,8 @@ public class WorkspaceProjectServiceImplNewWorkspaceWorkspaceProjectTest {
                                                                   repositoryService,
                                                                   spaces,
                                                                   newProjectEvent,
-                                                                  moduleServices);
+                                                                  moduleServices,
+                                                                  repositoryResolver);
     }
 
     @Test

@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.metadata.io;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -66,7 +67,9 @@ public final class KObjectUtil {
 
             @Override
             public String getClusterId() {
-                return ((FileSystemId) path.getFileSystem()).id();
+                final String fsId = ((FileSystemId) path.getFileSystem()).id();
+                final String segmentId = ((SegmentedPath) path).getSegmentId();
+                return fsId + File.separator + segmentId;
             }
 
             @Override
@@ -97,7 +100,9 @@ public final class KObjectUtil {
 
             @Override
             public String getClusterId() {
-                return ((FileSystemId) path.getFileSystem()).id();
+                final String fsId = ((FileSystemId) path.getFileSystem()).id();
+                final String segmentId = ((SegmentedPath) path).getSegmentId();
+                return fsId + File.separator + segmentId;
             }
 
             @Override
@@ -240,12 +245,10 @@ public final class KObjectUtil {
         };
     }
 
-    public static KCluster toKCluster(final FileSystemId fs) {
-        return new KClusterImpl(fs.id());
-    }
-
-    public static KCluster toKCluster(final FileSystem fs) {
-        return toKCluster((FileSystemId) fs);
+    public static KCluster toKCluster(final Path fsPath) {
+        final String fsId = ((FileSystemId) fsPath.getFileSystem()).id();
+        final String segmentId = ((SegmentedPath) fsPath).getSegmentId();
+        return new KClusterImpl(fsId + File.separator + segmentId);
     }
 
     private static String sha1(final String input) {

@@ -67,4 +67,16 @@ public class PathUtilTest {
         assertEquals(Optional.empty(), result);
     }
 
+    @Test
+    public void replaceBranchName() {
+        final String newUri = pathUtil.replaceBranch("new-branch", "git://current-branch@space/repo/some/path");
+        assertEquals("git://new-branch@space/repo/some/path", newUri);
+    }
+
+    @Test
+    public void replaceMissingBranchName() {
+        final String newUri = pathUtil.replaceBranch("new-branch", "git://space/repo/some/path");
+        assertEquals("git://space/repo/some/path", newUri);
+    }
+
 }

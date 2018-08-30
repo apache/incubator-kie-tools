@@ -84,7 +84,7 @@ public class ElasticFullTextSearchIndexTest extends BaseIndexTest {
 
         waitForCountDown(10000);
 
-        List<String> indices = Arrays.asList(toKCluster(path1.getFileSystem()).getClusterId());
+        List<String> indices = Arrays.asList(toKCluster(path1).getClusterId());
         IndexProvider provider = this.config.getIndexProvider();
 
         {

@@ -31,6 +31,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mocks.FileSystemTestingUtils;
+import org.uberfire.rpc.SessionInfo;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -51,6 +52,9 @@ public class RepositoryCopierImplTest {
     @Mock
     private RepositoryService repositoryService;
 
+    @Mock
+    private SessionInfo sessionInfo;
+
     private RepositoryCopierImpl copier;
 
     private IOService ioService;
@@ -63,7 +67,8 @@ public class RepositoryCopierImplTest {
         copier = new RepositoryCopierImpl(ioService,
                                           newBranchEventEvent,
                                           configuredRepositories,
-                                          repositoryService);
+                                          repositoryService,
+                                          sessionInfo);
     }
 
     @After

@@ -30,6 +30,7 @@ import org.uberfire.ext.metadata.io.IndexerDispatcher.IndexerDispatcherFactory;
 import org.uberfire.ext.metadata.model.KCluster;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.FileSystemId;
+import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileVisitResult;
 import org.uberfire.java.nio.file.Path;
@@ -38,6 +39,7 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.java.nio.file.Files.newDirectoryStream;
 import static org.uberfire.java.nio.file.Files.walkFileTree;
 
 public final class BatchIndex {
@@ -87,7 +89,7 @@ public final class BatchIndex {
                             indexDisposed.set(true);
 
                             if (!indexFinished.get()) {
-                                indexEngine.delete(KObjectUtil.toKCluster(fs));
+                                fs.getRootDirectories().forEach(rootPath -> indexEngine.delete(KObjectUtil.toKCluster(rootPath)));
                             }
                         }
                     });
@@ -105,56 +107,69 @@ public final class BatchIndex {
         }
     }
 
+    private boolean hasContent(Path dir) {
+        // TODO remove this filter when AF-1073 is resolved
+        try (DirectoryStream<Path> children = newDirectoryStream(dir, path -> !path.endsWith("readme.md"))) {
+            return children.iterator().hasNext();
+        }
+    }
+
     public void run(final FileSystem fs, final Runnable callback) {
         if (fs == null) {
             return;
         }
 
         final Collection<Runnable> exceptionCleanup = new ArrayList<>(1);
-        try {
-            final KCluster cluster = KObjectUtil.toKCluster(fs);
-            final IndexerDispatcher dispatcher = dispatcherFactory.create(indexersFactory.getIndexers(), cluster);
+        for (Path rootPath : fs.getRootDirectories()) {
+            final KCluster cluster = KObjectUtil.toKCluster(rootPath);
 
-            for (Path root : fs.getRootDirectories()) {
-                if (indexDisposed.get()) {
-                    break;
+            if (indexEngine.freshIndex(cluster) && hasContent(rootPath)) {
+                indexEngine.prepareBatch(cluster);
+
+                try {
+                    final IndexerDispatcher dispatcher = dispatcherFactory.create(indexersFactory.getIndexers(), cluster);
+
+                    if (indexDisposed.get()) {
+                        break;
+                    }
+                    exceptionCleanup.add(() -> dispatcher.dispose());
+
+                    queueIndexingEvents(rootPath, dispatcher);
+
+
+                    if (!indexDisposed.get()) {
+                        logInformation("Starting indexing of " + cluster.getClusterId() + " ...");
+                        dispatcher.schedule(executorService)
+                        .thenRun(() -> {
+                            logInformation("Completed indexing of " + cluster.getClusterId());
+                            if (callback != null) {
+                                callback.run();
+                            }
+                        })
+                        .exceptionally(ex -> {
+                            try {
+                                throw ex;
+                            } catch (DisposedException de) {
+                                logWarning("Batch index couldn't finish. [@" + cluster.getClusterId() + "]");
+                            } catch (IllegalStateException ise) {
+                                logError("Index fails - Index has an invalid state. [@" + cluster.getClusterId() + "]", ex);
+                            } catch (Throwable t) {
+                                logError("Index fails. [@" + cluster.getClusterId() + "]", ex);
+                            }
+                            return null;
+                        });
+                    } else {
+                        logWarning("Batch index couldn't finish. [@" + cluster.getClusterId() + "]");
+                    }
+                } catch (final Exception ex) {
+                    if (indexDisposed.get()) {
+                        logWarning("Batch index couldn't finish. [@" + cluster.getClusterId() + "]");
+                    } else {
+                        logError("Index fails. [@" + cluster.getClusterId() + "]", ex);
+                        exceptionCleanup.forEach(action -> action.run());
+                    }
                 }
-                exceptionCleanup.add(() -> dispatcher.dispose());
 
-                queueIndexingEvents(root, dispatcher);
-
-            }
-
-            if (!indexDisposed.get()) {
-                logInformation("Starting indexing of " + fs.getName() + " ...");
-                dispatcher.schedule(executorService)
-                .thenRun(() -> {
-                    logInformation("Completed indexing of " + fs.getName());
-                    if (callback != null) {
-                        callback.run();
-                    }
-                })
-                .exceptionally(ex -> {
-                    try {
-                        throw ex;
-                    } catch (DisposedException de) {
-                        logWarning("Batch index couldn't finish. [@" + fs.getName() + "]");
-                    } catch (IllegalStateException ise) {
-                        logError("Index fails - Index has an invalid state. [@" + fs.getName() + "]", ex);
-                    } catch (Throwable t) {
-                        logError("Index fails. [@" + fs.getName() + "]", ex);
-                    }
-                    return null;
-                });
-            } else {
-                logWarning("Batch index couldn't finish. [@" + fs.getName() + "]");
-            }
-        } catch (final Exception ex) {
-            if (indexDisposed.get()) {
-                logWarning("Batch index couldn't finish. [@" + fs.getName() + "]");
-            } else {
-                logError("Index fails. [@" + fs.getName() + "]", ex);
-                exceptionCleanup.forEach(action -> action.run());
             }
         }
     }

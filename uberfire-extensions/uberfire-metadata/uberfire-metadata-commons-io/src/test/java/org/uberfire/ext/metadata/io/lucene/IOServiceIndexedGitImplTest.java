@@ -126,7 +126,7 @@ public class IOServiceIndexedGitImplTest extends BaseIndexTest {
         assertTrue(config.getMetaModelStore().getMetaObject(Path.class.getName()).getProperty("int.hello").get().getTypes().contains(String.class));
         assertTrue(config.getMetaModelStore().getMetaObject(Path.class.getName()).getProperty("custom").get().getTypes().contains(Date.class));
 
-        final String index = toKCluster(path2.getFileSystem()).getClusterId();
+        final String index = toKCluster(path2).getClusterId();
 
         {
             TermQuery query = new TermQuery(new Term("int.hello",

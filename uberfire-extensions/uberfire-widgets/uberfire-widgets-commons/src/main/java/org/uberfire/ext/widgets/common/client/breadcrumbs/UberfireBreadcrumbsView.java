@@ -18,16 +18,17 @@ package org.uberfire.ext.widgets.common.client.breadcrumbs;
 
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.Div;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLOListElement;
+import elemental2.dom.Node;
 import org.jboss.errai.common.client.dom.Element;
-import org.jboss.errai.common.client.dom.OrderedList;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.ext.widgets.common.client.breadcrumbs.widget.BreadcrumbsPresenter;
-
-import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
+import org.uberfire.client.mvp.UberElemental;
+import org.uberfire.ext.widgets.common.client.breadcrumbs.widget.BreadcrumbPresenter;
 
 @Templated
 public class UberfireBreadcrumbsView implements UberElement<UberfireBreadcrumbs>,
@@ -36,31 +37,33 @@ public class UberfireBreadcrumbsView implements UberElement<UberfireBreadcrumbs>
 
     @Inject
     @DataField
-    OrderedList breadcrumbs;
+    HTMLOListElement breadcrumbs;
+
     @Inject
     @DataField
-    Div breadcrumbsToolbar;
-    private UberfireBreadcrumbs presenter;
+    HTMLDivElement breadcrumbsToolbar;
+
+    @Inject
+    private Elemental2DomUtil elemental2DomUtil;
 
     @Override
-    public void init(UberfireBreadcrumbs presenter) {
-        this.presenter = presenter;
+    public void init(final UberfireBreadcrumbs presenter) {
     }
 
     @Override
     public void clear() {
-        removeAllChildren(breadcrumbs);
-        removeAllChildren(breadcrumbsToolbar);
+        elemental2DomUtil.removeAllElementChildren(breadcrumbs);
+        elemental2DomUtil.removeAllElementChildren(breadcrumbsToolbar);
     }
 
     @Override
-    public void addBreadcrumb(UberElement<BreadcrumbsPresenter> view) {
+    public void addBreadcrumb(UberElemental<? extends BreadcrumbPresenter> view) {
         breadcrumbs.appendChild(view.getElement());
     }
 
     @Override
     public void addBreadcrumbToolbar(Element toolbar) {
-        removeAllChildren(breadcrumbsToolbar);
-        breadcrumbsToolbar.appendChild(toolbar);
+        elemental2DomUtil.removeAllElementChildren(breadcrumbsToolbar);
+        breadcrumbsToolbar.appendChild((Node) toolbar);
     }
 }

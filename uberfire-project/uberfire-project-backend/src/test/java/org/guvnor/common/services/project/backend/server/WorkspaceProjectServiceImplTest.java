@@ -23,9 +23,11 @@ import java.util.List;
 import java.util.Optional;
 import javax.enterprise.inject.Instance;
 
+import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -74,6 +76,9 @@ public class WorkspaceProjectServiceImplTest {
     @Mock
     ModuleService moduleService;
 
+    @Mock
+    ModuleRepositoryResolver repositoryResolver;
+
     SpacesAPI spaces = new SpacesAPIImpl();
 
     Space space1;
@@ -97,7 +102,8 @@ public class WorkspaceProjectServiceImplTest {
                                                                   repositoryService,
                                                                   spaces,
                                                                   new EventSourceMock<>(),
-                                                                  moduleServices);
+                                                                  moduleServices,
+                                                                  repositoryResolver);
     }
 
     private void setUpOUs() {
@@ -300,9 +306,10 @@ public class WorkspaceProjectServiceImplTest {
                           "description",
                           "url",
                           null);
+        when(this.repositoryResolver.getRepositoriesResolvingArtifact(any(GAV.class))).thenReturn(Collections.emptySet());
         when(this.repositoryService.createRepository(eq(this.ou1),
                                                      eq("git"),
-                                                     eq(pom.getName()),
+                                                     any(),
                                                      any()))
                 .thenReturn(this.repository1);
 

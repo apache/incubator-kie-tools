@@ -67,7 +67,7 @@ public class IOServiceIndexedDotFileGitImplTest extends BaseIndexTest {
                      mo.getProperty("name").get().getTypes().size());
         assertTrue(mo.getProperty("name").get().getTypes().contains(String.class));
 
-        final String index = toKCluster(path.getFileSystem()).getClusterId();
+        final String index = toKCluster(path).getClusterId();
 
         TermQuery query = new TermQuery(new Term("name",
                                                  "value"));

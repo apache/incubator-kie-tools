@@ -237,15 +237,9 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
             throws IllegalArgumentException, FileSystemNotFoundException,
             ProviderNotFoundException, SecurityException {
         final FileSystem fs = super.getFileSystem(uri);
-        maybeSetupBatchIndex(fs);
+        setupBatchIndex(fs);
         setupWatchService(fs);
         return fs;
-    }
-
-    private void maybeSetupBatchIndex(final FileSystem fs) {
-        if (shouldPerformInitialIndex(fs)) {
-            setupBatchIndex(fs);
-        }
     }
 
     @Override
@@ -255,22 +249,9 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
             ProviderNotFoundException, IOException, SecurityException {
         final FileSystem fs = super.newFileSystem(uri,
                                                   env);
-        maybeSetupBatchIndex(fs);
+        setupBatchIndex(fs);
         setupWatchService(fs);
         return fs;
-    }
-
-    private boolean shouldPerformInitialIndex(FileSystem fs) {
-        return indexEngine.freshIndex(KObjectUtil.toKCluster(fs)) && rootDirStream(fs).filter(dir -> hasContent(dir))
-                                                                                      .findAny()
-                                                                                      .isPresent();
-    }
-
-    private boolean hasContent(Path dir) {
-        // TODO remove this filter when AF-1073 is resolved
-        try (DirectoryStream<Path> children = newDirectoryStream(dir, path -> !path.endsWith("readme.md"))) {
-            return children.iterator().hasNext();
-        }
     }
 
     private Stream<Path> rootDirStream(FileSystem fs) {
@@ -292,7 +273,6 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     }
 
     private void setupBatchIndex(FileSystem fs) {
-        indexEngine.prepareBatch(KObjectUtil.toKCluster(fs));
         batchIndex.runAsync(fs);
     }
 
@@ -330,15 +310,17 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
 
                         @Override
                         public void run() {
-                            final KCluster kCluster = KObjectUtil.toKCluster(fs);
-                            IndexerDispatcher dispatcher = dispatcherFactory.create(indexersFactory.getIndexers(), kCluster);
-                            final Set<Path> eventRealPaths = getRealCreatedPaths(events);
-                            try {
-                                queueEvents(events, eventRealPaths, dispatcher);
-                                scheduleIndexing(dispatcher, events, kCluster);
-                            } catch (DisposedException e) {
-                                return;
-                            }
+                            fs.getRootDirectories().forEach(rootPath -> {
+                                final KCluster kCluster = KObjectUtil.toKCluster(rootPath);
+                                IndexerDispatcher dispatcher = dispatcherFactory.create(indexersFactory.getIndexers(), kCluster);
+                                final Set<Path> eventRealPaths = getRealCreatedPaths(events);
+                                try {
+                                    queueEvents(events, eventRealPaths, dispatcher);
+                                    scheduleIndexing(dispatcher, events, kCluster);
+                                } catch (DisposedException e) {
+                                    return;
+                                }
+                            });
                         }
 
                         private void scheduleIndexing(IndexerDispatcher dispatcher, List<WatchEvent<?>> events, KCluster kCluster) {
@@ -443,12 +425,18 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     @Override
     public void delete(final Path path,
                        final DeleteOption... options) throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException, SecurityException {
-        super.delete(path,
-                     options);
         if (path instanceof FSPath) {
             FileSystem fileSystem = path.getFileSystem();
             cleanupDeletedFS(fileSystem);
         }
+        deleteRepositoryFiles(path,
+                              options);
+    }
+
+    void deleteRepositoryFiles(Path path,
+                               DeleteOption[] options) {
+        super.delete(path,
+                     options);
     }
 
     private void cleanupDeletedFS(FileSystem fs) {
@@ -456,7 +444,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         if (ws != null && !ws.isClose()) {
             ws.close();
         }
-        indexEngine.delete(KObjectUtil.toKCluster(fs));
+        fs.getRootDirectories().forEach(rootPath -> indexEngine.delete(KObjectUtil.toKCluster(rootPath)));
     }
 
     @Override

@@ -83,7 +83,7 @@ public class LuceneFullTextSearchIndexTest extends BaseIndexTest {
 
         waitForCountDown(10000);
 
-        final String index = toKCluster(path1.getFileSystem()).getClusterId();
+        final String index = toKCluster(path1).getClusterId();
 
         {
 

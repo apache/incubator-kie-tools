@@ -66,7 +66,7 @@ public class IOServiceIndexedDeleteFileTest extends BaseIndexTest {
 
         waitForCountDown(10000);
 
-        List<String> indices = Arrays.asList(toKCluster(path.getFileSystem()).getClusterId());
+        List<String> indices = Arrays.asList(toKCluster(path).getClusterId());
         IndexProvider provider = this.config.getIndexProvider();
 
         //Check the file has been indexed

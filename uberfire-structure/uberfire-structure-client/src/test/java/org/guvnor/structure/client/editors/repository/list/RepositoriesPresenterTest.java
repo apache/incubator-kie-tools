@@ -30,6 +30,7 @@ import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -212,7 +213,8 @@ public class RepositoriesPresenterTest {
 
         //Emulates the context receiving the new branch event for a branch created in r1.
         guvnorStructureContext.onNewBranch(new NewBranchEvent(r1,
-                                                              "theNewBranch"));
+                                                              "theNewBranch",
+                                                              mock(User.class)));
 
         verify(handler).onNewBranchAdded("r1",
                                          "theNewBranch",

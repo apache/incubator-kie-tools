@@ -113,7 +113,7 @@ public class IOServiceIndexedGitImplTest extends BaseIndexTest {
         assertTrue(config.getMetaModelStore().getMetaObject(Path.class.getName()).getProperty("int.hello").get().getTypes().contains(String.class));
         assertTrue(config.getMetaModelStore().getMetaObject(Path.class.getName()).getProperty("custom").get().getTypes().contains(Date.class));
 
-        List<String> indices = Arrays.asList(toKCluster(path2.getFileSystem()).getClusterId());
+        List<String> indices = Arrays.asList(toKCluster(path2).getClusterId());
         IndexProvider provider = this.config.getIndexProvider();
 
         {

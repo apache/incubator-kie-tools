@@ -71,7 +71,7 @@ public class IOServiceIndexedDotFileGitImplTest extends BaseIndexTest {
                      mo.getProperty("name").get().getTypes().size());
         assertTrue(mo.getProperty("name").get().getTypes().contains(String.class));
 
-        List<String> indices = Arrays.asList(toKCluster(path.getFileSystem()).getClusterId());
+        List<String> indices = Arrays.asList(toKCluster(path).getClusterId());
         IndexProvider provider = this.config.getIndexProvider();
 
         //Check the file has been indexed

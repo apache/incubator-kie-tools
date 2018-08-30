@@ -35,6 +35,7 @@ public class PathUtil {
     private final Pattern repoAndSpace = Pattern.compile("^[^/]+/[^/]+/");
     private final Pattern protocolAndBranch = Pattern.compile("^[A-Za-z]+://([^@]+@)?");
     private final Pattern branchNameExtractor = Pattern.compile("^[A-Za-z]+://([^@]+)@.*");
+    private final Pattern branchNameReplacer = Pattern.compile("(^[A-Za-z]+://)([^@]+)(@.*)");
 
     public org.uberfire.backend.vfs.Path normalizePath(org.uberfire.backend.vfs.Path path) {
         return Paths.normalizePath(path);
@@ -82,4 +83,9 @@ public class PathUtil {
         }
     }
 
+    public String replaceBranch(final String newBranchName,
+                                final String uri) {
+        final Matcher matcher = branchNameReplacer.matcher(uri);
+        return matcher.replaceFirst("$1" + newBranchName + "$3");
+    }
 }

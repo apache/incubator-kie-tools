@@ -219,7 +219,7 @@ public class BatchIndexTest extends BaseIndexTest {
 
                                                          Thread.sleep(2000l);
 
-                                                         KCluster kcluster = toKCluster(ioService().get("git://elastic-temp-repo-test/").getFileSystem());
+                                                         KCluster kcluster = toKCluster(ioService().get("git://elastic-temp-repo-test/"));
                                                          List<String> indices = Arrays.asList(kcluster.getClusterId());
                                                          IndexProvider provider = ((ElasticSearchConfig) this.config).getIndexProvider();
 

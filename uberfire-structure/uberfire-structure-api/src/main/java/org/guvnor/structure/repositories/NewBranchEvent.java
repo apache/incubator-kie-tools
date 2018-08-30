@@ -17,6 +17,7 @@ package org.guvnor.structure.repositories;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.jboss.errai.security.shared.api.identity.User;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -25,14 +26,15 @@ public class NewBranchEvent {
 
     private final Repository repository;
     private final String newBranchName;
+    private final User user;
 
     public NewBranchEvent(@MapsTo("repository") final Repository repository,
-                          @MapsTo("newBranchName") final String newBranchName) {
+                          @MapsTo("newBranchName") final String newBranchName,
+                          @MapsTo("user") final User user) {
 
-        this.repository = checkNotNull("repository",
-                                       repository);
-        this.newBranchName = checkNotNull("newBranchName",
-                                          newBranchName);
+        this.repository = checkNotNull("repository", repository);
+        this.newBranchName = checkNotNull("newBranchName", newBranchName);
+        this.user = checkNotNull("user", user);
     }
 
     public Repository getRepository() {
@@ -41,5 +43,9 @@ public class NewBranchEvent {
 
     public String getNewBranchName() {
         return newBranchName;
+    }
+
+    public User getUser() {
+        return user;
     }
 }

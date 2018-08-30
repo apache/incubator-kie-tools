@@ -28,6 +28,7 @@ import javax.enterprise.inject.Instance;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -80,6 +81,9 @@ public class WorkspaceProjectServiceImplResolveWorkspaceWorkspaceProjectTest {
     @Mock
     Module module;
 
+    @Mock
+    ModuleRepositoryResolver repositoryResolver;
+
     private Path path;
     private Path branchRoot;
     private Branch masterBranch;
@@ -115,7 +119,8 @@ public class WorkspaceProjectServiceImplResolveWorkspaceWorkspaceProjectTest {
                                                                   repositoryService,
                                                                   spaces,
                                                                   new EventSourceMock<>(),
-                                                                  moduleServices);
+                                                                  moduleServices,
+                                                                  repositoryResolver);
     }
 
     @Test

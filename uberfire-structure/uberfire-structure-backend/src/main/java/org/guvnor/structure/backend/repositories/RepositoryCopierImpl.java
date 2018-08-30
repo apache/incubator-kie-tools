@@ -38,6 +38,7 @@ import org.uberfire.java.nio.file.FileVisitor;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.StandardCopyOption;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.Space;
 
 public class RepositoryCopierImpl
@@ -47,6 +48,7 @@ public class RepositoryCopierImpl
     private Event<NewBranchEvent> newBranchEventEvent;
     private ConfiguredRepositories configuredRepositories;
     private RepositoryService repositoryService;
+    private SessionInfo sessionInfo;
 
     public RepositoryCopierImpl() {
     }
@@ -55,11 +57,13 @@ public class RepositoryCopierImpl
     public RepositoryCopierImpl(final @Named("ioStrategy") IOService ioService,
                                 final Event<NewBranchEvent> newBranchEventEvent,
                                 final ConfiguredRepositories configuredRepositories,
-                                final RepositoryService repositoryService) {
+                                final RepositoryService repositoryService,
+                                final SessionInfo sessionInfo) {
         this.ioService = ioService;
         this.newBranchEventEvent = newBranchEventEvent;
         this.configuredRepositories = configuredRepositories;
         this.repositoryService = repositoryService;
+        this.sessionInfo = sessionInfo;
     }
 
     @Override
@@ -147,7 +151,8 @@ public class RepositoryCopierImpl
 
         if (branch.isPresent()) {
             newBranchEventEvent.fire(new NewBranchEvent(repository,
-                                                        branch.get().getName()));
+                                                        branch.get().getName(),
+                                                        sessionInfo.getIdentity()));
         } else {
             throw new IllegalStateException("Could not find a branch that was just created. The Path used was " + nioTargetRepositoryRoot.getRoot());
         }
@@ -165,7 +170,8 @@ public class RepositoryCopierImpl
 
         if (branch.isPresent()) {
             newBranchEventEvent.fire(new NewBranchEvent(repository,
-                                                        branch.get().getName()));
+                                                        branch.get().getName(),
+                                                        sessionInfo.getIdentity()));
         } else {
             throw new IllegalStateException("Could not find a branch that was just created. The Path used was " + nioTargetRepositoryRoot.getRoot());
         }
