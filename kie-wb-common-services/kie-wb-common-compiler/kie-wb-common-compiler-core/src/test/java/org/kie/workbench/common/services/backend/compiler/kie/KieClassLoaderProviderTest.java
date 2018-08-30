@@ -18,6 +18,7 @@ package org.kie.workbench.common.services.backend.compiler.kie;
 
 import java.io.IOException;
 import java.net.URLClassLoader;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,6 @@ import org.kie.workbench.common.services.backend.compiler.AFCompiler;
 import org.kie.workbench.common.services.backend.compiler.CompilationRequest;
 import org.kie.workbench.common.services.backend.compiler.CompilationResponse;
 import org.kie.workbench.common.services.backend.compiler.TestUtilMaven;
-import org.kie.workbench.common.services.backend.compiler.configuration.KieDecorator;
 import org.kie.workbench.common.services.backend.compiler.configuration.MavenCLIArgs;
 import org.kie.workbench.common.services.backend.compiler.impl.DefaultCompilationRequest;
 import org.kie.workbench.common.services.backend.compiler.impl.WorkspaceCompilationInfo;
@@ -74,7 +74,7 @@ public class KieClassLoaderProviderTest {
 
         uberfireTmp = Paths.get(tmp.toAbsolutePath().toString());
 
-        AFCompiler compiler = KieMavenCompilerFactory.getCompiler(KieDecorator.NONE);
+        final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(new HashSet<>());
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(uberfireTmp);
         CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
@@ -86,7 +86,7 @@ public class KieClassLoaderProviderTest {
     @Test
     public void loadProjectClassloaderTest() throws Exception {
         //we use NIO for this part of the test because Uberfire lack the implementation to copy a tree
-        CompilationResponse res = compileProjectInRepo(MavenCLIArgs.CLEAN, MavenCLIArgs.COMPILE, MavenCLIArgs.INSTALL);
+        CompilationResponse res = compileProjectInRepo(MavenCLIArgs.COMPILE);
         TestUtil.saveMavenLogIfCompilationResponseNotSuccessfull(tmp, res, this.getClass(), testName);
         assertThat(res.isSuccessful()).isTrue();
 
@@ -102,7 +102,7 @@ public class KieClassLoaderProviderTest {
     @Test
     public void loadProjectClassloaderFromStringTest() throws Exception {
         //we use NIO for this part of the test because Uberfire lack the implementation to copy a tree
-        CompilationResponse res = compileProjectInRepo(MavenCLIArgs.CLEAN, MavenCLIArgs.COMPILE, MavenCLIArgs.INSTALL);
+        CompilationResponse res = compileProjectInRepo(MavenCLIArgs.COMPILE);
         TestUtil.saveMavenLogIfCompilationResponseNotSuccessfull(tmp, res, this.getClass(), testName);
         assertThat(res.isSuccessful()).isTrue();
 

@@ -24,7 +24,7 @@
         <directory>src/main/filtered-resources</directory>
       </resource>
     </resources>
-    <plugins>
+    <!--<plugins>
       <plugin>
         <groupId>io.takari.maven.plugins</groupId>
         <artifactId>takari-lifecycle-plugin</artifactId>
@@ -61,6 +61,6 @@
           <skip>true</skip>
         </configuration>
       </plugin>
-    </plugins>
+    </plugins>-->
   </build>
 </project>

@@ -16,7 +16,6 @@
 package org.kie.workbench.common.services.backend.compiler.rest.server;
 
 import java.util.concurrent.CompletableFuture;
-
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;

@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.services.backend.compiler;
 
+import java.util.EnumSet;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -53,12 +55,11 @@ public class MavenOutputTest {
                           tmpNio);
 
         Path tmp = Paths.get(tmpNio.toAbsolutePath().toString());
-
-        AFCompiler compiler = KieMavenCompilerFactory.getCompiler(KieDecorator.LOG_OUTPUT_AFTER);
+        final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.ENABLE_LOGGING, KieDecorator.ENABLE_INCREMENTAL_BUILD ));
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(tmp);
         CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
-                                                               new String[]{MavenCLIArgs.CLEAN, MavenCLIArgs.COMPILE},
+                                                               new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.TRUE);
         CompilationResponse res = compiler.compile(req);
         TestUtil.saveMavenLogIfCompilationResponseNotSuccessfull(tmpNio, res, this.getClass(), testName);

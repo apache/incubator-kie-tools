@@ -17,7 +17,6 @@ package org.kie.workbench.common.services.backend.compiler.impl.decorators;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.HashMap;
@@ -102,7 +101,7 @@ public class JGITCompilerBeforeDecoratorTest {
         final FileSystem fileSystem = createFileSystem("myrepodecorator");
 
         //Compile the repo
-        JGITCompilerBeforeDecorator compiler = new JGITCompilerBeforeDecorator(new BaseMavenCompiler());
+        JGITCompilerBeforeDecorator compiler = new JGITCompilerBeforeDecorator(new BaseMavenCompiler(true,false));
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(fileSystem.getPath("/"));
         CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
@@ -137,7 +136,7 @@ public class JGITCompilerBeforeDecoratorTest {
         InputStream input = new FileInputStream(new File("target/test-classes/kjar-2-single-resources_override/src/main/java/dummy/PersonOverride.java"));
         override.put(path, input);
 
-        JGITCompilerBeforeDecorator compiler = new JGITCompilerBeforeDecorator(new BaseMavenCompiler());
+        JGITCompilerBeforeDecorator compiler = new JGITCompilerBeforeDecorator(new BaseMavenCompiler(true,false));
         CompilationResponse res = compiler.compile(req, override);
 
         final java.nio.file.Path tempPath = ((Git) compiler.getGitMap().get(fileSystem)).getRepository().getDirectory().toPath().getParent();
@@ -165,7 +164,7 @@ public class JGITCompilerBeforeDecoratorTest {
 
         Map<Path, InputStream> override = new HashMap<>();
 
-        JGITCompilerBeforeDecorator compiler = new JGITCompilerBeforeDecorator(new BaseMavenCompiler());
+        JGITCompilerBeforeDecorator compiler = new JGITCompilerBeforeDecorator(new BaseMavenCompiler(true,false));
         CompilationResponse res = compiler.compile(req, override);
 
         final java.nio.file.Path tempPath = ((Git) compiler.getGitMap().get(fileSystem)).getRepository().getDirectory().toPath().getParent();

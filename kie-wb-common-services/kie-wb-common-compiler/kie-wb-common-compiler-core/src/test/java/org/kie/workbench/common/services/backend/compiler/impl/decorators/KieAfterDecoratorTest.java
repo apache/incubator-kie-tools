@@ -44,10 +44,10 @@ public class KieAfterDecoratorTest extends BaseCompilerTest {
 
         CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
-                                                               new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
+                                                               new String[]{MavenCLIArgs.COMPILE, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);
 
-        KieAfterDecorator decorator = new KieAfterDecorator(new BaseMavenCompiler());
+        KieAfterDecorator decorator = new KieAfterDecorator(new BaseMavenCompiler(false,false));
         KieCompilationResponse kieRes = (KieCompilationResponse) decorator.compile(req);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(kieRes.isSuccessful()).isTrue();
@@ -67,10 +67,10 @@ public class KieAfterDecoratorTest extends BaseCompilerTest {
 
         CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
-                                                               new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
+                                                               new String[]{MavenCLIArgs.COMPILE, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);
 
-        KieAfterDecorator decorator = new KieAfterDecorator(new BaseMavenCompiler());
+        KieAfterDecorator decorator = new KieAfterDecorator(new BaseMavenCompiler(false,false));
         KieCompilationResponse kieRes = (KieCompilationResponse) decorator.compile(req, override);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(kieRes.isSuccessful()).isTrue();
@@ -84,10 +84,10 @@ public class KieAfterDecoratorTest extends BaseCompilerTest {
     public void compileWithouKieMavenPlugin() throws Exception {
         CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                createdNewPrjInRepo("normal-dummy", ResourcesConstants.DUMMY),
-                                                               new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
+                                                               new String[]{MavenCLIArgs.COMPILE, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);
 
-        KieAfterDecorator decorator = new KieAfterDecorator(new BaseMavenCompiler());
+        KieAfterDecorator decorator = new KieAfterDecorator(new BaseMavenCompiler(false,false));
         KieCompilationResponse kieRes = (KieCompilationResponse) decorator.compile(req);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(kieRes.isSuccessful()).isTrue();
@@ -101,10 +101,10 @@ public class KieAfterDecoratorTest extends BaseCompilerTest {
     public void compileWithFailedResponse() throws Exception {
         CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                createdNewPrjInRepo("kjar-2-fail", ResourcesConstants.KJAR_2_SINGLE_FAIL_RESOURCES),
-                                                               new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
+                                                               new String[]{MavenCLIArgs.COMPILE, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);
 
-        KieAfterDecorator decorator = new KieAfterDecorator(new BaseMavenCompiler());
+        KieAfterDecorator decorator = new KieAfterDecorator(new BaseMavenCompiler(true,false));
         KieCompilationResponse kieRes = (KieCompilationResponse) decorator.compile(req);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(kieRes.isSuccessful()).isFalse();

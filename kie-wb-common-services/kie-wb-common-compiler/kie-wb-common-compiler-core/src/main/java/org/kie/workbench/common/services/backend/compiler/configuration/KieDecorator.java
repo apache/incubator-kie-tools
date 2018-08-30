@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,11 @@
  */
 package org.kie.workbench.common.services.backend.compiler.configuration;
 
-/***
- * It contains all the types of decorator of a MavenCompiler provided with Kie projects
- */
 public enum KieDecorator {
 
-    NONE,
-    CLASSPATH_DEPS_AFTER_DECORATOR,
-    JGIT_BEFORE,
-    KIE_AFTER,
-    KIE_AND_CLASSPATH_AFTER_DEPS,
-    LOG_OUTPUT_AFTER,
-    JGIT_BEFORE_AND_LOG_AFTER,
-    JGIT_BEFORE_AND_KIE_AFTER,
-    JGIT_BEFORE_AND_KIE_AND_LOG_AFTER,
-    JGIT_BEFORE_AND_KIE_AND_LOG_AND_CLASSPATH_AFTER,
-    KIE_LOG_AND_CLASSPATH_DEPS_AFTER,
-    KIE_AND_LOG_AFTER
+    STORE_BUILD_CLASSPATH,
+    ENABLE_INCREMENTAL_BUILD,
+    UPDATE_JGIT_BEFORE_BUILD,
+    STORE_KIE_OBJECTS,
+    ENABLE_LOGGING
 }

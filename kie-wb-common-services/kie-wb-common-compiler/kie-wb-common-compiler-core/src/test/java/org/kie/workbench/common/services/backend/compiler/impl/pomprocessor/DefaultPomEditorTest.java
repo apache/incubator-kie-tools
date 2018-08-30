@@ -62,7 +62,7 @@ public class DefaultPomEditorTest extends BaseCompilerTest {
         assertThat(editor.getHistory()).isEmpty();
         CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
-                                                               new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
+                                                               new String[]{MavenCLIArgs.COMPILE, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);
 
         assertThat(editor.write(Paths.get(tmpRoot.toAbsolutePath() + "/dummy/pom.xml"), req)).isTrue();
@@ -73,7 +73,7 @@ public class DefaultPomEditorTest extends BaseCompilerTest {
         assertThat(editor.getHistory()).isEmpty();
         CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
-                                                               new String[]{MavenCLIArgs.INSTALL, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
+                                                               new String[]{MavenCLIArgs.COMPILE, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);
 
         editor.write(Paths.get(tmpRoot.toAbsolutePath() + "/dummy/pom.xml"), req);

@@ -15,8 +15,6 @@
  */
 package org.kie.workbench.common.services.backend.compiler.offprocess;
 
-import java.util.concurrent.CompletableFuture;
-
 import org.kie.workbench.common.services.backend.compiler.CompilationRequest;
 import org.kie.workbench.common.services.backend.compiler.CompilationResponse;
 

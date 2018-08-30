@@ -21,6 +21,7 @@ import java.util.concurrent.ExecutorService;
 import org.guvnor.common.services.backend.cache.LRUCache;
 import org.kie.workbench.common.services.backend.compiler.AFCompiler;
 import org.kie.workbench.common.services.backend.compiler.CompilationRequest;
+import org.kie.workbench.common.services.backend.compiler.configuration.KieDecorator;
 import org.kie.workbench.common.services.backend.compiler.configuration.MavenCLIArgs;
 import org.kie.workbench.common.services.backend.compiler.impl.BaseMavenCompiler;
 import org.kie.workbench.common.services.backend.compiler.impl.DefaultCompilationRequest;
@@ -61,7 +62,7 @@ public class DefaultRemoteExecutor implements RemoteExecutor {
     }
 
     private CompilerAggregateEntryCache setupCompileInfo(String workingDir) {
-        AFCompiler compiler = new KieAfterDecorator(new OutputLogAfterDecorator(new ClasspathDepsAfterDecorator(new BaseMavenCompiler())));
+        AFCompiler compiler = new KieAfterDecorator(new OutputLogAfterDecorator(new ClasspathDepsAfterDecorator(new BaseMavenCompiler(true, true))));
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(Paths.get(workingDir));
         return new CompilerAggregateEntryCache(compiler, info);
     }

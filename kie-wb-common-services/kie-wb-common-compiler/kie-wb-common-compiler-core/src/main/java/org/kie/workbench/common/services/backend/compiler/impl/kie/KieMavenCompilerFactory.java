@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.services.backend.compiler.impl.kie;
 
+import java.util.Set;
+
 import org.kie.workbench.common.services.backend.compiler.AFCompiler;
 import org.kie.workbench.common.services.backend.compiler.CompilationResponse;
 import org.kie.workbench.common.services.backend.compiler.configuration.KieDecorator;
@@ -36,71 +38,29 @@ public class KieMavenCompilerFactory {
     /**
      * Provides a Maven compiler decorated with a Decorator Behaviour
      */
-    public static <T extends CompilationResponse> AFCompiler<T> getCompiler(KieDecorator decorator) {
-        return createAndAddNewCompiler(decorator);
+    public static <T extends CompilationResponse> AFCompiler<T> getCompiler(Set<KieDecorator> decorators) {
+        return createAndAddNewCompiler(decorators);
     }
 
-    private static <T extends CompilationResponse> AFCompiler<T> createAndAddNewCompiler(KieDecorator decorator) {
+    private static <T extends CompilationResponse> AFCompiler<T> createAndAddNewCompiler(Set<KieDecorator> decorators) {
 
-        AFCompiler compiler;
-        switch (decorator) {
-            case NONE:
-                compiler = new BaseMavenCompiler();
-                break;
+        boolean enableIncremental = decorators.contains(KieDecorator.ENABLE_INCREMENTAL_BUILD);
+        boolean enableLogging = decorators.contains(KieDecorator.ENABLE_LOGGING);
 
-            case CLASSPATH_DEPS_AFTER_DECORATOR:
-                compiler = new ClasspathDepsAfterDecorator(new BaseMavenCompiler());
-                break;
+        //Order of the construction of the decorators matters, DO not change the order.
+        AFCompiler compiler = new BaseMavenCompiler(enableIncremental, enableLogging);
 
-            case KIE_AFTER:
-                compiler = new KieAfterDecorator(new BaseMavenCompiler());
-                break;
-
-            case KIE_AND_CLASSPATH_AFTER_DEPS:
-                compiler = new KieAfterDecorator(new ClasspathDepsAfterDecorator(new BaseMavenCompiler()));
-                break;
-
-            case KIE_LOG_AND_CLASSPATH_DEPS_AFTER:
-                compiler = new KieAfterDecorator(new OutputLogAfterDecorator(new ClasspathDepsAfterDecorator(new BaseMavenCompiler())));
-                break;
-
-            case KIE_AND_LOG_AFTER:
-                compiler = new KieAfterDecorator(new OutputLogAfterDecorator(new BaseMavenCompiler()));
-                break;
-
-            case JGIT_BEFORE:
-                compiler = new JGITCompilerBeforeDecorator(new BaseMavenCompiler());
-                break;
-
-            case JGIT_BEFORE_AND_LOG_AFTER:
-                compiler = new JGITCompilerBeforeDecorator(new OutputLogAfterDecorator(new BaseMavenCompiler()));
-                break;
-
-            case JGIT_BEFORE_AND_KIE_AFTER:
-                compiler = new JGITCompilerBeforeDecorator(new KieAfterDecorator(new BaseMavenCompiler()));
-                break;
-
-            case LOG_OUTPUT_AFTER:
-                compiler = new OutputLogAfterDecorator(new BaseMavenCompiler());
-                break;
-
-            case JGIT_BEFORE_AND_KIE_AND_LOG_AFTER:
-                compiler = new JGITCompilerBeforeDecorator(
-                        new KieAfterDecorator(
-                                new OutputLogAfterDecorator(
-                                        new BaseMavenCompiler())));
-                break;
-
-            case JGIT_BEFORE_AND_KIE_AND_LOG_AND_CLASSPATH_AFTER:
-                compiler = new JGITCompilerBeforeDecorator(
-                        new KieAfterDecorator(
-                                new OutputLogAfterDecorator(
-                                        new ClasspathDepsAfterDecorator(
-                                                new BaseMavenCompiler()))));
-                break;
-
-            default:
-                compiler = new BaseMavenCompiler();
+        if (decorators.contains(KieDecorator.STORE_BUILD_CLASSPATH)) {
+            compiler = new ClasspathDepsAfterDecorator(compiler);
+        }
+        if (decorators.contains(KieDecorator.ENABLE_LOGGING)) {
+            compiler = new OutputLogAfterDecorator(compiler);
+        }
+        if (decorators.contains(KieDecorator.STORE_KIE_OBJECTS)) {
+            compiler = new KieAfterDecorator(compiler);
+        }
+        if (decorators.contains(KieDecorator.UPDATE_JGIT_BEFORE_BUILD)) {
+            compiler = new JGITCompilerBeforeDecorator(compiler);
         }
         return compiler;
     }

@@ -25,7 +25,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.inject.Inject;
 
 import org.apache.maven.artifact.Artifact;

@@ -33,21 +33,14 @@ public class MavenBannedVars {
 
     private static Properties loadProperties(String propName) {
         Properties prop = new Properties();
-        InputStream in = MavenBannedVars.class.getClassLoader().getResourceAsStream(propName);
-        if (in == null) {
-            logger.info("{} not available with the classloader no Banned EnvVars Found . \n", propName);
-        } else {
-            try {
+        try (InputStream in = MavenBannedVars.class.getClassLoader().getResourceAsStream(propName)) {
+            if (in == null) {
+                logger.info("{} not available with the classloader no Banned EnvVars Found . \n", propName);
+            } else {
                 prop.load(in);
-            } catch (IOException e) {
-                logger.error(e.getMessage());
-            } finally {
-                try{
-                    in.close();
-                }catch (Exception e){
-                    logger.error(e.getMessage());
-                }
             }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
         }
         return prop;
     }

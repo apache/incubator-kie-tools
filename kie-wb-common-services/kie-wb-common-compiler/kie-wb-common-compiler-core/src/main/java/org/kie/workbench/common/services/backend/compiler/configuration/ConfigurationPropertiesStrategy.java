@@ -84,25 +84,18 @@ public class ConfigurationPropertiesStrategy implements ConfigurationStrategy {
 
     private Properties loadProperties(String propName) {
         Properties prop = new Properties();
-        InputStream in = getClass().getClassLoader().getResourceAsStream(propName);
-        if (in == null) {
-            logger.info("{} not available with the classloader, skip to the next ConfigurationStrategy. \n", propName);
-            valid = Boolean.FALSE;
-        } else {
-            try {
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream(propName)) {
+            if (in == null) {
+                logger.info("{} not available with the classloader, skip to the next ConfigurationStrategy. \n", propName);
+                valid = Boolean.FALSE;
+            } else {
                 prop.load(in);
                 valid = Boolean.TRUE;
                 setUpValues(prop);
-            } catch (IOException e) {
-                logger.error(e.getMessage());
-                valid = Boolean.FALSE;
-            } finally {
-                try{
-                    in.close();
-                }catch (Exception e){
-                    logger.error(e.getMessage());
-                }
             }
+        } catch (Exception e) {
+            valid = Boolean.FALSE;
+            logger.error(e.getMessage());
         }
         return prop;
     }

@@ -15,6 +15,9 @@
  */
 package org.kie.workbench.common.services.backend.compiler.impl.kie;
 
+import java.util.EnumSet;
+import java.util.HashSet;
+
 import org.junit.Test;
 import org.kie.workbench.common.services.backend.compiler.AFCompiler;
 import org.kie.workbench.common.services.backend.compiler.configuration.KieDecorator;
@@ -30,37 +33,37 @@ public class KieMavenCompilerFactoryTest {
 
     @Test
     public void noneTest() {
-        AFCompiler none = KieMavenCompilerFactory.getCompiler(KieDecorator.NONE);
+        final AFCompiler none = KieMavenCompilerFactory.getCompiler(new HashSet<>());
         assertThat(none).isInstanceOf(BaseMavenCompiler.class);
     }
 
     @Test
     public void logOutputAfterDecoratorTest() {
-        AFCompiler logAfter = KieMavenCompilerFactory.getCompiler(KieDecorator.LOG_OUTPUT_AFTER);
+        final AFCompiler logAfter = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.ENABLE_LOGGING ));
         assertThat(logAfter).isInstanceOf(OutputLogAfterDecorator.class);
     }
 
     @Test
     public void kieAfterDecoratorTest() {
-        AFCompiler kieAfter = KieMavenCompilerFactory.getCompiler(KieDecorator.KIE_AFTER);
+        final AFCompiler kieAfter = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.STORE_KIE_OBJECTS));
         assertThat(kieAfter).isInstanceOf(KieAfterDecorator.class);
     }
 
     @Test
     public void jGitBeforeDecoratorTest() {
-        AFCompiler jgitBefore = KieMavenCompilerFactory.getCompiler(KieDecorator.JGIT_BEFORE);
+        final AFCompiler jgitBefore = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.UPDATE_JGIT_BEFORE_BUILD ));
         assertThat(jgitBefore).isInstanceOf(JGITCompilerBeforeDecorator.class);
     }
 
     @Test
     public void classpathDepsAfterDecoratorTest() {
-        AFCompiler classpathAfter = KieMavenCompilerFactory.getCompiler(KieDecorator.CLASSPATH_DEPS_AFTER_DECORATOR);
+        final AFCompiler classpathAfter = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.STORE_BUILD_CLASSPATH));
         assertThat(classpathAfter).isInstanceOf(ClasspathDepsAfterDecorator.class);
     }
 
     @Test
     public void kieAndLogAfterDecoratorTest() {
-        AFCompiler kieAfterDecorator = KieMavenCompilerFactory.getCompiler(KieDecorator.KIE_AND_LOG_AFTER);
+        final AFCompiler kieAfterDecorator = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.STORE_KIE_OBJECTS, KieDecorator.ENABLE_LOGGING ));
         assertThat(kieAfterDecorator).isInstanceOf(KieAfterDecorator.class);
         AFCompiler outputLofAfterDecorator = ((KieAfterDecorator) kieAfterDecorator).getCompiler();
         assertThat(outputLofAfterDecorator).isInstanceOf(OutputLogAfterDecorator.class);
@@ -70,7 +73,7 @@ public class KieMavenCompilerFactoryTest {
 
     @Test
     public void kieAndClasspathAfterDepsTest() {
-        AFCompiler kieAfterDecorator = KieMavenCompilerFactory.getCompiler(KieDecorator.KIE_AND_CLASSPATH_AFTER_DEPS);
+        final AFCompiler kieAfterDecorator = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.STORE_KIE_OBJECTS, KieDecorator.STORE_BUILD_CLASSPATH ));
         assertThat(kieAfterDecorator).isInstanceOf(KieAfterDecorator.class);
         AFCompiler classpathAfter = ((KieAfterDecorator) kieAfterDecorator).getCompiler();
         assertThat(classpathAfter).isInstanceOf(ClasspathDepsAfterDecorator.class);
@@ -80,7 +83,7 @@ public class KieMavenCompilerFactoryTest {
 
     @Test
     public void kieLogAndClasspathDepsAfterTest() {
-        AFCompiler kieAfterDecorator = KieMavenCompilerFactory.getCompiler(KieDecorator.KIE_LOG_AND_CLASSPATH_DEPS_AFTER);
+        final AFCompiler kieAfterDecorator = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.STORE_KIE_OBJECTS, KieDecorator.ENABLE_LOGGING, KieDecorator.STORE_BUILD_CLASSPATH ));
         assertThat(kieAfterDecorator).isInstanceOf(KieAfterDecorator.class);
         AFCompiler outputLofAfterDecorator = ((KieAfterDecorator) kieAfterDecorator).getCompiler();
         assertThat(outputLofAfterDecorator).isInstanceOf(OutputLogAfterDecorator.class);
@@ -92,7 +95,7 @@ public class KieMavenCompilerFactoryTest {
 
     @Test
     public void jgitBeforeAndLogAfterDecoratorTest() {
-        AFCompiler jgitBeforeAndLogAfter = KieMavenCompilerFactory.getCompiler(KieDecorator.JGIT_BEFORE_AND_LOG_AFTER);
+        final AFCompiler jgitBeforeAndLogAfter = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.UPDATE_JGIT_BEFORE_BUILD, KieDecorator.ENABLE_LOGGING ));
         assertThat(jgitBeforeAndLogAfter).isInstanceOf(JGITCompilerBeforeDecorator.class);
         AFCompiler outputLofAfterDecorator = ((JGITCompilerBeforeDecorator) jgitBeforeAndLogAfter).getCompiler();
         assertThat(outputLofAfterDecorator).isInstanceOf(OutputLogAfterDecorator.class);
@@ -102,7 +105,7 @@ public class KieMavenCompilerFactoryTest {
 
     @Test
     public void jgitBeforeAndKieAfterDecoratorTest() {
-        AFCompiler jgitBeforeAndLogAfter = KieMavenCompilerFactory.getCompiler(KieDecorator.JGIT_BEFORE_AND_KIE_AFTER);
+        final AFCompiler jgitBeforeAndLogAfter = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.UPDATE_JGIT_BEFORE_BUILD, KieDecorator.STORE_KIE_OBJECTS ));
         assertThat(jgitBeforeAndLogAfter).isInstanceOf(JGITCompilerBeforeDecorator.class);
         AFCompiler kieAfterDecorator = ((JGITCompilerBeforeDecorator) jgitBeforeAndLogAfter).getCompiler();
         assertThat(kieAfterDecorator).isInstanceOf(KieAfterDecorator.class);
@@ -112,7 +115,7 @@ public class KieMavenCompilerFactoryTest {
 
     @Test
     public void jgitBeforeAndKieAndLogAfterDecoratorTest() {
-        AFCompiler jgitBeforeAndLogAfter = KieMavenCompilerFactory.getCompiler(KieDecorator.JGIT_BEFORE_AND_KIE_AND_LOG_AFTER);
+        final AFCompiler jgitBeforeAndLogAfter = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.UPDATE_JGIT_BEFORE_BUILD, KieDecorator.STORE_KIE_OBJECTS, KieDecorator.ENABLE_LOGGING ));
         assertThat(jgitBeforeAndLogAfter).isInstanceOf(JGITCompilerBeforeDecorator.class);
         AFCompiler kieAfterDecorator = ((JGITCompilerBeforeDecorator) jgitBeforeAndLogAfter).getCompiler();
         assertThat(kieAfterDecorator).isInstanceOf(KieAfterDecorator.class);
@@ -124,7 +127,7 @@ public class KieMavenCompilerFactoryTest {
 
     @Test
     public void jgitBeforeAndKieAndLogAndClasspathAfterTest() {
-        AFCompiler jgitBeforeAndLogAfter = KieMavenCompilerFactory.getCompiler(KieDecorator.JGIT_BEFORE_AND_KIE_AND_LOG_AND_CLASSPATH_AFTER);
+        AFCompiler jgitBeforeAndLogAfter = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.UPDATE_JGIT_BEFORE_BUILD, KieDecorator.STORE_KIE_OBJECTS, KieDecorator.ENABLE_LOGGING, KieDecorator.STORE_BUILD_CLASSPATH ));
         assertThat(jgitBeforeAndLogAfter).isInstanceOf(JGITCompilerBeforeDecorator.class);
         AFCompiler kieAfterDecorator = ((JGITCompilerBeforeDecorator) jgitBeforeAndLogAfter).getCompiler();
         assertThat(kieAfterDecorator).isInstanceOf(KieAfterDecorator.class);

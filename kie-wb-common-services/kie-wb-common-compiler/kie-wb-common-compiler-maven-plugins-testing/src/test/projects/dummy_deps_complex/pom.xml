@@ -38,7 +38,7 @@
       </resource>
     </resources>
     <plugins>
-      <plugin>
+      <!--<plugin>
         <groupId>io.takari.maven.plugins</groupId>
         <artifactId>takari-lifecycle-plugin</artifactId>
         <version>${version.io.takari.maven.plugins.compiler}</version>
@@ -73,7 +73,7 @@
           <skipMain>true</skipMain>
           <skip>true</skip>
         </configuration>
-      </plugin>
+      </plugin>-->
     </plugins>
   </build>
 </project>

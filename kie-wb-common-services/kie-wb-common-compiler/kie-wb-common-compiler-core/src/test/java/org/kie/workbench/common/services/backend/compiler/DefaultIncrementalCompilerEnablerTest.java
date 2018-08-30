@@ -39,7 +39,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DefaultIncrementalCompilerEnablerTest {
 
     private String mavenRepo;
-    private Logger logger = LoggerFactory.getLogger(DefaultIncrementalCompilerEnablerTest.class);
 
     @Before
     public void setUp() throws Exception {
@@ -72,7 +71,7 @@ public class DefaultIncrementalCompilerEnablerTest {
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(tmp);
         CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
-                                                               new String[]{MavenCLIArgs.CLEAN, MavenCLIArgs.COMPILE},
+                                                               new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.FALSE);
         DefaultIncrementalCompilerEnabler enabler = new DefaultIncrementalCompilerEnabler();
         assertThat(enabler.process(req).getResult()).isTrue();
@@ -119,7 +118,7 @@ public class DefaultIncrementalCompilerEnablerTest {
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(tmp);
         CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
                                                                info,
-                                                               new String[]{MavenCLIArgs.CLEAN, MavenCLIArgs.COMPILE},
+                                                               new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.FALSE);
         DefaultIncrementalCompilerEnabler enabler = new DefaultIncrementalCompilerEnabler();
         assertThat(enabler.process(req).getResult()).isTrue();

@@ -19,7 +19,6 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
-
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.services.backend.compiler.impl.kie.KieCompilationResponse;

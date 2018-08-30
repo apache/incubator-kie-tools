@@ -44,7 +44,7 @@ import org.uberfire.java.nio.file.StandardOpenOption;
  * <p>
  * MavenCompiler compiler = new DefaultMavenCompiler();
  * or
- * MavenCompiler compiler = MavenCompilerFactory.getCompiler(Decorator.LOG_OUTPUT_AFTER);
+ * MavenCompiler compiler = KieMavenCompilerFactory.getCompiler(EnumSet.of( KieDecorator.ENABLE_LOGGING );
  * <p>
  * WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(tmp);
  * CompilationRequest req = new DefaultCompilationRequest(mavenRepo, info,new String[]{MavenArgs.COMPILE}, Boolean.TRUE );
@@ -55,12 +55,20 @@ public class BaseMavenCompiler<T extends CompilationResponse> implements AFCompi
     private static final Logger logger = LoggerFactory.getLogger(BaseMavenCompiler.class);
     private int writeBlockSize = 1024;
     private ReusableAFMavenCli cli;
+    private boolean changedPoms;
+    private boolean skipLog;
 
     private IncrementalCompilerEnabler enabler;
 
-    public BaseMavenCompiler() {
+    public BaseMavenCompiler(boolean enableIncremental, boolean enableLogging) {
         cli = new ReusableAFMavenCli();
         enabler = new DefaultIncrementalCompilerEnabler();
+        if(!enableIncremental){
+            changedPoms = true;
+        }
+        if(!enableLogging){
+            skipLog = true;
+        }
     }
 
     public Boolean cleanInternalCache() {
@@ -69,14 +77,19 @@ public class BaseMavenCompiler<T extends CompilationResponse> implements AFCompi
 
     @Override
     public T compile(CompilationRequest req) {
-        MDC.clear();
-        MDC.put(MavenConfig.COMPILATION_ID, req.getRequestUUID());
-        Thread.currentThread().setName(req.getRequestUUID());
-        if (logger.isDebugEnabled()) {
-            logger.debug("KieCompilationRequest:{}", req);
+        if(!skipLog) {
+            MDC.clear();
+            MDC.put(MavenConfig.COMPILATION_ID, req.getRequestUUID());
+            Thread.currentThread().setName(req.getRequestUUID());
+            if (logger.isDebugEnabled()) {
+                logger.debug("KieCompilationRequest:{}", req);
+            }
         }
 
-        enabler.process(req);
+        if(!changedPoms) {
+            enabler.process(req);
+            changedPoms = true;
+        }
 
         req.getKieCliRequest().getRequest().setLocalRepositoryPath(req.getMavenRepo());
         /**

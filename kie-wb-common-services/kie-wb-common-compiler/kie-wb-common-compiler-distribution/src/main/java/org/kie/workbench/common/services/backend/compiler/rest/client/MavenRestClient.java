@@ -18,7 +18,6 @@ package org.kie.workbench.common.services.backend.compiler.rest.client;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
-
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.core.MediaType;

@@ -48,16 +48,6 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${version.org.apache.maven.plugins.maven-compiler-plugin}</version>
-        <executions>
-          <execution>
-            <id>default-compile</id>
-            <phase>none</phase>
-          </execution>
-        </executions>
-        <configuration>
-          <skipMain>true</skipMain>
-          <skip>true</skip>
-        </configuration>
       </plugin>
     </plugins>
   </build>
