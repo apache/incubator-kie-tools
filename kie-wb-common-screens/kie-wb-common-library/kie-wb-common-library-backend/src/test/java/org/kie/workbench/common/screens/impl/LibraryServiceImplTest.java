@@ -15,13 +15,15 @@
  */
 package org.kie.workbench.common.screens.impl;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
-
 import javax.enterprise.event.Event;
 
 import org.ext.uberfire.social.activities.model.SocialUser;
@@ -35,17 +37,20 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
+import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Branch;
+import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.security.RepositoryAction;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
 import org.kie.workbench.common.screens.explorer.backend.server.ExplorerServiceHelper;
 import org.kie.workbench.common.screens.library.api.AssetInfo;
@@ -69,25 +74,19 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.NoSuchFileException;
+import org.uberfire.java.nio.file.spi.FileSystemProvider;
 import org.uberfire.paging.PageResponse;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LibraryServiceImplTest {
@@ -97,6 +96,9 @@ public class LibraryServiceImplTest {
 
     @Mock
     private AuthorizationManager authorizationManager;
+
+    @Mock
+    private SessionInfo sessionInfo;
 
     @Mock
     private WorkspaceProjectService projectService;
@@ -132,12 +134,15 @@ public class LibraryServiceImplTest {
     private RepositoryService repositoryService;
 
     @Mock
-    private Event<NewProjectEvent> newProjectEvent;
-
-    @Mock
     private PathUtil pathUtil;
 
     private final PathUtil realPathUtil = new PathUtil();
+
+    @Mock
+    private ConfiguredRepositories configuredRepositories;
+
+    @Mock
+    private Event<NewBranchEvent> newBranchEvent;
 
     @Mock
     private OrganizationalUnit ou1;
@@ -161,11 +166,6 @@ public class LibraryServiceImplTest {
     private List<OrganizationalUnit> ous;
     private Set<Module> modulesMock;
 
-    private Branch makeBranch(final String branchName) {
-        return new Branch(branchName,
-                          mock(Path.class));
-    }
-
     @Before
     public void setup() {
         ous = Arrays.asList(ou1,
@@ -174,10 +174,16 @@ public class LibraryServiceImplTest {
         when(ou1.getIdentifier()).thenReturn("ou1");
         when(ou2.getIdentifier()).thenReturn("ou2");
         when(repo1.getAlias()).thenReturn("repo_created_by_user");
-        when(repo1.getBranches()).thenReturn(Arrays.asList(makeBranch("repo1-branch1"),
-                                                           makeBranch("repo1-branch2")));
+        final List<Branch> repo1Branches = Arrays.asList(makeBranch("repo1-branch1",
+                                                                    repo1.getAlias()),
+                                                         makeBranch("repo1-branch2",
+                                                                    repo1.getAlias()));
+        when(repo1.getBranches()).thenReturn(repo1Branches);
+        when(repo1.getBranch(anyString())).then(inv -> repo1Branches.stream().filter(b -> b.getName().equals(inv.getArgumentAt(0, String.class))).findFirst());
         when(repo2Default.getAlias()).thenReturn("ou2-repo-alias");
-        when(repo2Default.getBranches()).thenReturn(Collections.singletonList(makeBranch("repo2-branch1")));
+        final List<Branch> repo2Branches = Collections.singletonList(makeBranch("repo2-branch1",
+                                                                                repo2Default.getAlias()));
+        when(repo2Default.getBranches()).thenReturn(repo2Branches);
         when(ou2.getRepositories()).thenReturn(Arrays.asList(repo1,
                                                              repo2Default));
 
@@ -191,11 +197,13 @@ public class LibraryServiceImplTest {
         when(preferences.getOrganizationalUnitPreferences()).thenReturn(spy(new LibraryOrganizationalUnitPreferences()));
         when(preferences.getProjectPreferences()).thenReturn(spy(new LibraryProjectPreferences()));
 
+        when(sessionInfo.getIdentity()).thenReturn(mock(User.class));
+
         libraryService = spy(new LibraryServiceImpl(ouService,
                                                     refactoringQueryService,
                                                     preferences,
                                                     authorizationManager,
-                                                    mock(SessionInfo.class),
+                                                    sessionInfo,
                                                     explorerServiceHelper,
                                                     projectService,
                                                     moduleService,
@@ -203,7 +211,11 @@ public class LibraryServiceImplTest {
                                                     ioService,
                                                     internalPreferences,
                                                     socialUserRepositoryAPI,
-                                                    indexOracle
+                                                    indexOracle,
+                                                    repositoryService,
+                                                    pathUtil,
+                                                    newBranchEvent,
+                                                    configuredRepositories
         ));
     }
 
@@ -651,5 +663,47 @@ public class LibraryServiceImplTest {
         libraryService.getNumberOfAssets(query);
 
         verify(refactoringQueryService).queryHitCount(any(RefactoringPageRequest.class));
+    }
+
+    @Test
+    public void addBranchTest() throws URISyntaxException {
+        final WorkspaceProject project = mock(WorkspaceProject.class);
+        doReturn(repo1).when(project).getRepository();
+
+        final org.uberfire.java.nio.file.Path baseBranchPath = mock(org.uberfire.java.nio.file.Path.class);
+        final Path path = repo1.getBranches().stream().filter(b -> b.getName().equals("repo1-branch1")).findFirst().get().getPath();
+        final FileSystem fileSystem = mock(FileSystem.class);
+        final FileSystemProvider fileSystemProvider = mock(FileSystemProvider.class);
+        doReturn(fileSystemProvider).when(fileSystem).provider();
+        doReturn(fileSystem).when(baseBranchPath).getFileSystem();
+        doReturn(baseBranchPath).when(pathUtil).convert(path);
+
+        doReturn(repo1).when(repositoryService).getRepository(any());
+
+        doReturn(Optional.of(makeBranch("new-branch", "repo1"))).when(repo1).getBranch(any(Path.class));
+
+        final org.uberfire.java.nio.file.Path newBranchPath = mock(org.uberfire.java.nio.file.Path.class);
+        doReturn(newBranchPath).when(ioService).get(new URI("default://new-branch@repo1/"));
+
+        doReturn("default://new-branch@repo1/").when(pathUtil).replaceBranch(anyString(), anyString());
+
+        final ArgumentCaptor<NewBranchEvent> newBranchEventArgumentCaptor = ArgumentCaptor.forClass(NewBranchEvent.class);
+
+        libraryService.addBranch("new-branch", "repo1-branch1", project);
+
+        verify(fileSystemProvider).copy(baseBranchPath, newBranchPath);
+
+        verify(newBranchEvent).fire(newBranchEventArgumentCaptor.capture());
+        final NewBranchEvent newBranchEvent = newBranchEventArgumentCaptor.getValue();
+        assertEquals("new-branch", newBranchEvent.getNewBranchName());
+        assertEquals(repo1, newBranchEvent.getRepository());
+    }
+
+    private Branch makeBranch(final String branchName,
+                              final String repoName) {
+        final Path path = mock(Path.class);
+        doReturn("default://" + branchName + "@" + repoName + "/").when(path).toURI();
+        return new Branch(branchName,
+                          path);
     }
 }

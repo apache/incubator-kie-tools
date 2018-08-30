@@ -19,6 +19,8 @@ package org.kie.workbench.common.widgets.client.widget;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import elemental2.dom.Element;
 import elemental2.dom.HTMLTableElement;
@@ -32,15 +34,19 @@ public abstract class ListPresenter<T, P extends ListItemPresenter<T, ?, ?>> {
 
     private static final Elemental2DomUtil elemental2DomUtil = new Elemental2DomUtil();
 
-    private final ManagedInstance<P> itemPresenters;
+    private final Function<T, P> itemPresenters;
 
     private List<T> objects;
     private List<P> presenters;
     private Element listElement;
     private BiConsumer<T, P> itemPresenterConfigurator;
 
-    public ListPresenter(final ManagedInstance<P> itemPresenters) {
+    public ListPresenter(final Function<T, P> itemPresenters) {
         this.itemPresenters = itemPresenters;
+    }
+
+    public ListPresenter(final ManagedInstance<P> itemPresenters) {
+        this.itemPresenters = item -> itemPresenters.get();
     }
 
     public void setup(final Element listElement,
@@ -100,7 +106,7 @@ public abstract class ListPresenter<T, P extends ListItemPresenter<T, ?, ?>> {
     }
 
     public P newPresenterFor(final T o) {
-        final P listItemPresenter = this.itemPresenters.get();
+        final P listItemPresenter = this.itemPresenters.apply(o);
         listItemPresenter.setListPresenter(this);
         itemPresenterConfigurator.accept(o, listItemPresenter);
         return listItemPresenter;

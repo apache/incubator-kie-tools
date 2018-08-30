@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
@@ -44,6 +46,8 @@ import org.uberfire.ext.editor.commons.backend.validation.ValidationUtils;
 @ApplicationScoped
 public class ValidationServiceImpl
         implements ValidationService {
+
+    private final Pattern branchNameValidator = Pattern.compile("^(?!/|\\.|.*([/.]\\.|//|@|\\\\))[^\000-\037\177 ~^:?*\\[/]+(?<!\\.lock|[\\.])$");
 
     private org.uberfire.ext.editor.commons.service.ValidationService validationService;
     private PackageNameValidator packageNameValidator;
@@ -98,6 +102,12 @@ public class ValidationServiceImpl
     @Override
     public boolean isFileNameValid(String fileName) {
         return validationService.isFileNameValid(fileName);
+    }
+
+    @Override
+    public boolean isBranchNameValid(final String branchName) {
+        final Matcher branchNameMatcher = branchNameValidator.matcher(branchName);
+        return branchNameMatcher.matches();
     }
 
     @Override

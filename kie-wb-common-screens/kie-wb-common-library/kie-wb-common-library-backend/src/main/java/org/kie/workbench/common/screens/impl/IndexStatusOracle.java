@@ -61,7 +61,7 @@ public class IndexStatusOracle {
         try {
             Path rootPath = Paths.convert(project.getRootPath());
             FileSystem fileSystem = rootPath.getFileSystem();
-            KCluster cluster = KObjectUtil.toKCluster(fileSystem);
+            KCluster cluster = KObjectUtil.toKCluster(rootPath);
 
             return Optional.of(cluster);
         } catch (Throwable t) {

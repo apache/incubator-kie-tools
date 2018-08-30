@@ -36,9 +36,6 @@ public class LibraryView implements LibraryScreen.View,
     private LibraryScreen presenter;
 
     @Inject
-    private ProjectsDetailScreen projectsDetailScreen;
-
-    @Inject
     private TranslationService ts;
 
     @Inject

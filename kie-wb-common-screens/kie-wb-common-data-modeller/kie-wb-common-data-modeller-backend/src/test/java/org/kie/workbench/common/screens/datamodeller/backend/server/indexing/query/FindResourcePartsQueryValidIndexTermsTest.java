@@ -82,7 +82,7 @@ public class FindResourcePartsQueryValidIndexTermsTest extends BaseIndexingTest<
         // wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
         Thread.sleep(5000);
 
-        List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
+        List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath).getClusterId());
 
         {
             final Query query = new SingleTermQueryBuilder( new ValueResourceIndexTerm( "*", ResourceType.JAVA, TermSearchType.WILDCARD ) ).build();

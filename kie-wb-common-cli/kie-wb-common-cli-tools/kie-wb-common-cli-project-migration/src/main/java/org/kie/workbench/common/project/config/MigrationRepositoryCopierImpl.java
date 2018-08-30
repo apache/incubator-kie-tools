@@ -24,6 +24,7 @@ import javax.inject.Named;
 import org.guvnor.structure.backend.repositories.RepositoryCopierImpl;
 import org.guvnor.structure.repositories.NewBranchEvent;
 import org.uberfire.io.IOService;
+import org.uberfire.rpc.SessionInfo;
 
 @Alternative
 public class MigrationRepositoryCopierImpl extends RepositoryCopierImpl {
@@ -36,10 +37,12 @@ public class MigrationRepositoryCopierImpl extends RepositoryCopierImpl {
     public MigrationRepositoryCopierImpl(final @Named("ioStrategy") IOService ioService,
                                          final Event<NewBranchEvent> newBranchEventEvent,
                                          final MigrationConfiguredRepositories configuredRepositories,
-                                         final MigrationRepositoryServiceImpl repositoryService) {
+                                         final MigrationRepositoryServiceImpl repositoryService,
+                                         final SessionInfo sessionInfo) {
         super(ioService,
               newBranchEventEvent,
               configuredRepositories,
-              repositoryService);
+              repositoryService,
+              sessionInfo);
     }
 }

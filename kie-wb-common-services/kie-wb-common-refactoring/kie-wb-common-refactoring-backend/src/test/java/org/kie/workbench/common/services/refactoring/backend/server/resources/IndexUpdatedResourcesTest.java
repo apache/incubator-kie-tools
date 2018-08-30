@@ -52,7 +52,7 @@ public class IndexUpdatedResourcesTest extends BaseIndexingTest {
 
         Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath.getFileSystem()).getClusterId());
+        List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath).getClusterId());
 
         searchFor(index,
                   new TermQuery(new Term("title", "lucene")),

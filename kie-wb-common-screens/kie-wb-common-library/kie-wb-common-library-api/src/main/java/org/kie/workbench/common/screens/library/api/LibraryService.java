@@ -71,4 +71,8 @@ public interface LibraryService {
                   final OrganizationalUnit selectedOrganizationalUnit);
 
     List<SocialUser> getAllUsers();
+
+    void addBranch(final String newBranchName,
+                   final String baseBranchName,
+                   final WorkspaceProject project);
 }

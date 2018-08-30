@@ -36,9 +36,6 @@ public class PopulatedLibraryView implements PopulatedLibraryScreen.View,
     private PopulatedLibraryScreen presenter;
 
     @Inject
-    private ProjectsDetailScreen projectsDetailScreen;
-
-    @Inject
     private TranslationService ts;
 
     @Inject

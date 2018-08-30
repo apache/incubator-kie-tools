@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.services.refactoring.backend.server.util;
 
+import java.io.File;
 import java.util.Set;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -58,7 +59,9 @@ public class KObjectUtil {
 
             @Override
             public String getClusterId() {
-                return ((FileSystemId) path.getFileSystem()).id();
+                final String fsId = ((FileSystemId) path.getFileSystem()).id();
+                final String segmentId = ((SegmentedPath) path).getSegmentId();
+                return fsId + File.separator + segmentId;
             }
 
             @Override
@@ -103,7 +106,9 @@ public class KObjectUtil {
 
             @Override
             public String getClusterId() {
-                return ((FileSystemId) path.getFileSystem()).id();
+                final String fsId = ((FileSystemId) path.getFileSystem()).id();
+                final String segmentId = ((SegmentedPath) path).getSegmentId();
+                return fsId + File.separator + segmentId;
             }
 
             @Override

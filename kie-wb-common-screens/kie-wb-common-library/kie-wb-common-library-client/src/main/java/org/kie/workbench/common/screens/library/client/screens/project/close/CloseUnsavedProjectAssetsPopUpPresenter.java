@@ -51,9 +51,9 @@ public class CloseUnsavedProjectAssetsPopUpPresenter {
     private final ManagedInstance<CloseUnsavedProjectAssetsPopUpListItemPresenter> closeUnsavedProjectAssetsPopUpListItemPresenters;
     private final TranslationService translationService;
 
-    Optional<Command> proceedCallback;
+    Command proceedCallback;
 
-    Optional<Command> cancelCallback;
+    Command cancelCallback;
 
     @Inject
     public CloseUnsavedProjectAssetsPopUpPresenter(final CloseUnsavedProjectAssetsPopUpPresenter.View view,
@@ -71,8 +71,8 @@ public class CloseUnsavedProjectAssetsPopUpPresenter {
 
     public void show(final WorkspaceProject project,
                      final List<PlaceRequest> uncloseablePlaces,
-                     final Optional<Command> proceedCallback,
-                     final Optional<Command> cancelCallback) {
+                     final Command proceedCallback,
+                     final Command cancelCallback) {
         this.proceedCallback = proceedCallback;
         this.cancelCallback = cancelCallback;
 
@@ -88,12 +88,12 @@ public class CloseUnsavedProjectAssetsPopUpPresenter {
 
     public void proceed() {
         view.hide();
-        proceedCallback.ifPresent(Command::execute);
+        proceedCallback.execute();
     }
 
     public void cancel() {
         view.hide();
-        cancelCallback.ifPresent(Command::execute);
+        cancelCallback.execute();
     }
 
     private String getLabel(final WorkspaceProject project, final PlaceRequest place) {

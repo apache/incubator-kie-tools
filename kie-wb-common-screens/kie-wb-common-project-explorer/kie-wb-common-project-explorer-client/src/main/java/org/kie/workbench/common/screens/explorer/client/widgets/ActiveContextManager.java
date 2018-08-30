@@ -153,11 +153,4 @@ public class ActiveContextManager {
                           context.getActiveModule().orElse(null),
                           context.getActivePackage().orElse(null));
     }
-
-    public void onBranchCreated(@Observes final NewBranchEvent event) {
-        if (activeContextItems.getActiveProject().getRepository().getAlias().equals(event.getRepository().getAlias())) {
-            initActiveContext(activeContextItems.getActiveProject().getRepository(),
-                              activeContextItems.getActiveProject().getBranch());
-        }
-    }
 }

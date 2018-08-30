@@ -26,7 +26,6 @@ import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
@@ -47,7 +46,6 @@ public class LibraryPerspective {
     @Inject
     public LibraryPerspective(final LibraryPlaces libraryPlaces) {
         this.libraryPlaces = libraryPlaces;
-        this.libraryPlaces.init(this);
     }
 
     @Perspective
@@ -62,26 +60,22 @@ public class LibraryPerspective {
 
     @OnStartup
     public void onStartup(final PlaceRequest placeRequest) {
-        final boolean refresh = Boolean.parseBoolean(placeRequest.getParameter("refresh",
-                                                                               "true"));
-        this.refresh = refresh;
+        this.refresh = Boolean.parseBoolean(placeRequest.getParameter("refresh", "true"));
+        this.libraryPlaces.init(this);
     }
 
     public void perspectiveChangeEvent(@Observes PerspectiveChange event) {
         if (event.getIdentifier().equals(LibraryPlaces.LIBRARY_PERSPECTIVE)) {
-            libraryPlaces.refresh(getRefreshCallBack());
-        }
-    }
-
-    private Command getRefreshCallBack() {
-        if (refresh) {
-            return () -> {
-                if (getRootPanel() != null) {
-                    libraryPlaces.goToLibrary();
-                }
-            };
-        } else {
-            return null;
+            if (refresh) {
+                libraryPlaces.refresh(() -> {
+                    if (getRootPanel() != null) {
+                        libraryPlaces.goToLibrary();
+                    }
+                });
+            } else {
+                libraryPlaces.refresh(() -> {
+                });
+            }
         }
     }
 

@@ -75,8 +75,8 @@ public class CloseUnsavedProjectAssetsPopUpPresenterTest {
 
         presenter.show(project,
                        uncloseablePlaces,
-                       Optional.of(proceedCallback),
-                       Optional.of(cancelCallback));
+                       proceedCallback,
+                       cancelCallback);
 
         verify(view).clearPlaces();
         verify(closeUnsavedProjectAssetsPopUpListItemPresenter).setup("screen");
@@ -87,22 +87,22 @@ public class CloseUnsavedProjectAssetsPopUpPresenterTest {
 
     @Test
     public void proceedTest() {
-        presenter.proceedCallback = Optional.of(mock(Command.class));
+        presenter.proceedCallback = mock(Command.class);
 
         presenter.proceed();
 
         verify(view).hide();
-        verify(presenter.proceedCallback.get()).execute();
+        verify(presenter.proceedCallback).execute();
     }
 
     @Test
     public void cancelTest() {
-        presenter.cancelCallback = Optional.of(mock(Command.class));
+        presenter.cancelCallback = mock(Command.class);
 
         presenter.cancel();
 
         verify(view).hide();
-        verify(presenter.cancelCallback.get()).execute();
+        verify(presenter.cancelCallback).execute();
     }
 
     private ObservablePath createPath(final String uri) {

@@ -130,4 +130,94 @@ public class ValidationServiceImplTest {
         assertFalse(validationService.isProjectNameValid(" test "));
         assertFalse(validationService.isProjectNameValid("test!"));
     }
+
+    @Test
+    public void testValidateBranchName() {
+        assertTrue(validationService.isBranchNameValid("test"));
+        assertTrue(validationService.isBranchNameValid("test#"));
+        assertTrue(validationService.isBranchNameValid("test!"));
+        assertTrue(validationService.isBranchNameValid("test-"));
+        assertTrue(validationService.isBranchNameValid("test_"));
+        assertTrue(validationService.isBranchNameValid("test&"));
+        assertTrue(validationService.isBranchNameValid("test%"));
+
+        assertFalse(validationService.isBranchNameValid("@test"));
+        assertFalse(validationService.isBranchNameValid("test@"));
+        assertFalse(validationService.isBranchNameValid("te@st"));
+
+        assertFalse(validationService.isBranchNameValid("/test"));
+        assertFalse(validationService.isBranchNameValid("test/"));
+        assertFalse(validationService.isBranchNameValid("te/st"));
+
+        assertFalse(validationService.isBranchNameValid("..test"));
+        assertFalse(validationService.isBranchNameValid("test.."));
+        assertFalse(validationService.isBranchNameValid("te..st"));
+
+        assertTrue(validationService.isBranchNameValid("\041test"));
+        assertTrue(validationService.isBranchNameValid("test\041"));
+        assertTrue(validationService.isBranchNameValid("te\041st"));
+
+        assertFalse(validationService.isBranchNameValid("\000test"));
+        assertFalse(validationService.isBranchNameValid("test\000"));
+        assertFalse(validationService.isBranchNameValid("te\000st"));
+
+        assertFalse(validationService.isBranchNameValid("\010test"));
+        assertFalse(validationService.isBranchNameValid("test\010"));
+        assertFalse(validationService.isBranchNameValid("te\010st"));
+
+        assertFalse(validationService.isBranchNameValid("\037test"));
+        assertFalse(validationService.isBranchNameValid("test\037"));
+        assertFalse(validationService.isBranchNameValid("te\037st"));
+
+        assertFalse(validationService.isBranchNameValid("\177test"));
+        assertFalse(validationService.isBranchNameValid("test\177"));
+        assertFalse(validationService.isBranchNameValid("te\177st"));
+
+        assertFalse(validationService.isBranchNameValid(" test"));
+        assertFalse(validationService.isBranchNameValid("test "));
+        assertFalse(validationService.isBranchNameValid("te st"));
+
+        assertFalse(validationService.isBranchNameValid("~test"));
+        assertFalse(validationService.isBranchNameValid("test~"));
+        assertFalse(validationService.isBranchNameValid("te~st"));
+
+        assertFalse(validationService.isBranchNameValid("^test"));
+        assertFalse(validationService.isBranchNameValid("test^"));
+        assertFalse(validationService.isBranchNameValid("te^st"));
+
+        assertFalse(validationService.isBranchNameValid(":test"));
+        assertFalse(validationService.isBranchNameValid("test:"));
+        assertFalse(validationService.isBranchNameValid("te:st"));
+
+        assertFalse(validationService.isBranchNameValid("?test"));
+        assertFalse(validationService.isBranchNameValid("test?"));
+        assertFalse(validationService.isBranchNameValid("te?st"));
+
+        assertFalse(validationService.isBranchNameValid("*test"));
+        assertFalse(validationService.isBranchNameValid("test*"));
+        assertFalse(validationService.isBranchNameValid("te*st"));
+
+        assertFalse(validationService.isBranchNameValid("[test"));
+        assertFalse(validationService.isBranchNameValid("test["));
+        assertFalse(validationService.isBranchNameValid("te[st"));
+
+        assertFalse(validationService.isBranchNameValid(".test"));
+        assertFalse(validationService.isBranchNameValid("test."));
+        assertTrue(validationService.isBranchNameValid("te.st"));
+
+        assertFalse(validationService.isBranchNameValid("//test"));
+        assertFalse(validationService.isBranchNameValid("test//"));
+        assertFalse(validationService.isBranchNameValid("te//st"));
+
+        assertFalse(validationService.isBranchNameValid("@{test"));
+        assertFalse(validationService.isBranchNameValid("test@{"));
+        assertFalse(validationService.isBranchNameValid("te@{st"));
+
+        assertFalse(validationService.isBranchNameValid("@"));
+
+        assertFalse(validationService.isBranchNameValid("\\test"));
+        assertFalse(validationService.isBranchNameValid("test\\"));
+        assertFalse(validationService.isBranchNameValid("te\\st"));
+
+    }
 }

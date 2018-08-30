@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.backend.server.WorkspaceProjectServiceImpl;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.ModuleService;
 import org.uberfire.spaces.SpacesAPI;
 
@@ -39,11 +40,13 @@ public class MigrationWorkspaceProjectServiceImpl extends WorkspaceProjectServic
                                                 final MigrationRepositoryServiceImpl repositoryService,
                                                 final SpacesAPI spaces,
                                                 final Event<NewProjectEvent> newProjectEvent,
-                                                final Instance<ModuleService<? extends Module>> moduleServices) {
+                                                final Instance<ModuleService<? extends Module>> moduleServices,
+                                                final ModuleRepositoryResolver repositoryResolver) {
         super(organizationalUnitService,
               repositoryService,
               spaces,
               newProjectEvent,
-              moduleServices);
+              moduleServices,
+              repositoryResolver);
     }
 }

@@ -25,6 +25,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 
 import static org.mockito.Mockito.*;
@@ -51,6 +52,7 @@ public class LibraryPerspectiveTest {
 
     @Test
     public void testLibraryPlacesIsInitialized() throws Exception {
+        perspective.onStartup(mock(PlaceRequest.class));
         verify(libraryPlaces).init(any(LibraryPerspective.class));
     }
 

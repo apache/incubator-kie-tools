@@ -460,4 +460,16 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String DuplicatedProjectName = "DuplicatedProjectName";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AddBranch = "AddBranch";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AddBranchSuccess = "AddBranchSuccess";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DuplicatedBranchValidation = "DuplicatedBranchValidation";
+
+    @TranslationKey(defaultValue = "")
+    public static final String InvalidBranchName = "InvalidBranchName";
 }
